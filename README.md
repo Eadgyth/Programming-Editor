@@ -61,5 +61,9 @@ m.bussiek@web.de<br>
 CONTRIBUTORS<br>
 I hope for contributions and critiques.<br>
 <p>
-LICENSE: MIT, see LICENSE
+LICENSE: MIT, see LICENSE<br>
+<p>
+SCREENSHOT<br>
+Under Windows 10, setting the system look and feel<br>
+<img src="your_relative_path_here" width="350"/>
 
