@@ -1,0 +1,444 @@
+package eg.document;
+
+import javax.swing.JTextPane;
+
+import javax.swing.text.StyledDocument;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.Element;
+import javax.swing.text.BadLocationException;
+
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
+
+import javax.swing.undo.UndoManager;
+
+import java.awt.EventQueue;
+import java.awt.Color;
+
+//--Eadgyth--//
+import eg.utils.Finder;
+
+/**
+ * The editing of text during typing
+ */
+class TypeText implements DocumentListener {
+
+   public UndoManager undomanager = new UndoManager();
+
+   private StyledDocument lineDoc;
+   private StyledDocument doc;  
+   private Element el;
+
+   private SimpleAttributeSet normalSet = new SimpleAttributeSet(); 
+   private SimpleAttributeSet comSet    = new SimpleAttributeSet();
+   private SimpleAttributeSet brSet     = new SimpleAttributeSet();
+   private SimpleAttributeSet keySet    = new SimpleAttributeSet();
+   private SimpleAttributeSet strLitSet = new SimpleAttributeSet();
+
+   private TypeText.Coloring col = new TypeText.Coloring();
+   private AutoIndent autoInd;
+   private RowNumbers rowNum;
+
+   private String[] keywords;
+   private String lineCmnt;
+   private boolean useLineCmnt = false;
+   private String blockCmntStart;
+   private String blockCmntEnd;
+   private boolean useBlockCmnt = false;
+   private boolean useStringLit = false;
+   private boolean useIndent = false;
+   private boolean constrainWord = false;
+   private boolean isStyleChanged = false;
+   /*
+    * true to call modifying methods from this update methods */
+   private boolean isDocListen = true; 
+   /*
+    * true to call text coloring and indentation from this update methods */
+   private boolean isTextModify = false;
+
+   public TypeText(EditArea editArea) {
+      lineDoc = editArea.lineNumbers().getStyledDocument();
+      doc = editArea.textArea().getStyledDocument();
+      el = doc.getParagraphElement(0);
+      setStyles();
+
+      doc.addUndoableEditListener(new UndoableEditListener() {
+         public void undoableEditHappened(UndoableEditEvent e) {
+            if (!isStyleChanged && isDocListen) {
+               undomanager.addEdit(e.getEdit());
+            }
+         }
+      });
+
+      doc.addDocumentListener(this);
+
+      rowNum = new RowNumbers(lineDoc, editArea.scrolledArea());
+      autoInd = new AutoIndent(editArea.textArea(), doc, normalSet);
+   }
+
+   /**
+    * Updates row numbers, synthax coloring and auto indentation
+    * upon inserting text
+    * @see TextDocument#enableTextModify(boolean)
+    */ 
+   public void insertUpdate(DocumentEvent de) {
+      isStyleChanged = false;
+
+      if (isDocListen) {
+         String in = getDocText();
+         int pos = de.getOffset();
+         updateRowNumber(in);
+         if (isTextModify) {
+            insertTextModify(de, in, pos);
+         }
+      }
+   }
+
+   /**
+    * Updates row numbers, synthax coloring and auto indentation
+    * upon removing text
+    * @see TextDocument#enableTextModify(boolean)
+    */
+   public void removeUpdate(DocumentEvent de) {
+      isStyleChanged = false;
+
+      if (isDocListen) {
+         String in = getDocText();
+         int pos = de.getOffset();
+         updateRowNumber(in);
+         if (isTextModify) {
+            removeTextModify(de, in, pos);
+         }
+      }
+   }
+
+   /**
+    * Disables adding a change of text style to the undo manager
+    */
+   public void changedUpdate(DocumentEvent de) {
+      isStyleChanged = true;
+   }
+   
+   StyledDocument doc() {
+      return doc;
+   }
+
+   SimpleAttributeSet normalSet() {
+      return normalSet;
+   }
+   
+   /**
+    * @param isDocListen  true to enable the methods called in this update
+    * methods
+    */
+   void enableDocListen(boolean isDocListen) {
+      this.isDocListen = isDocListen;
+   }
+
+   void enableTextModify(boolean isTextModify) {
+      this.isTextModify = isTextModify;
+   }
+
+   String getDocText() {
+      String in = null;
+      try {
+         in = doc.getText(0, doc.getLength());
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+      return in;
+   }
+
+   void configTypeText(String[] keywords, String lineCmnt, String blockCmntStart,
+            String blockCmntEnd, boolean useStringLit, boolean useIndent,
+            boolean constrainWord) {
+      this.keywords = keywords;
+      this.lineCmnt = lineCmnt;
+      useLineCmnt = lineCmnt.length() > 0;
+      this.blockCmntStart = blockCmntStart;
+      this.blockCmntEnd = blockCmntEnd;
+      useBlockCmnt = blockCmntStart.length() > 0;
+      this.useStringLit = useStringLit;
+      this.useIndent = useIndent;
+      if (!useIndent) {
+         autoInd.resetIndent();
+      }
+      this.constrainWord = constrainWord;
+   }
+
+   void changeIndentUnit(String indentUnit) {
+      autoInd.changeIndentUnit(indentUnit);
+   }
+
+   void updateRowNumber(String in) {
+      rowNum.updateRowNumber(in);
+   }
+
+   void backInBlack(int length, int pos) {
+      doc.setCharacterAttributes(pos, length, normalSet, false);
+   }
+
+   void colorAll(boolean enableTextModify) {
+      this.isTextModify = false;
+      String all = getDocText();
+      backInBlack(all.length(), 0);
+      col.color(all, 0);
+      this.isTextModify = enableTextModify;
+   }  
+   
+   void colorAllNew() {
+      String all = getDocText();
+      col.color(all, 0);
+   }
+
+   String getIndentUnit() {
+      return autoInd.getIndentUnit();
+   }
+
+   private void insertTextModify(DocumentEvent de, String in, int pos) {
+      if (pos > 0 && useIndent) {
+         autoInd.openBracketIndent(in, pos);
+      }
+
+      EventQueue.invokeLater(() -> {
+         col.color(in, pos);
+         if (useIndent) {
+            autoInd.closeBracketIndent(in, pos); // must be invoked later
+         }
+      });
+   }
+
+   private void removeTextModify(DocumentEvent de, String in, int pos) {
+      EventQueue.invokeLater( () -> {
+         if (useBlockCmnt) {
+            col.uncommentBlock(in, pos);
+         }
+         col.color(in, pos);
+      });
+   } 
+
+   private void setStyles() {
+      StyleConstants.setForeground(normalSet, Color.BLACK);
+      StyleConstants.setLineSpacing(normalSet, 0.2f );
+      StyleConstants.setBold(normalSet, false);
+      doc.setParagraphAttributes(0, el.getEndOffset(), normalSet, false);
+
+      Color commentGreen = new Color(0, 150, 50);
+      StyleConstants.setForeground(comSet, commentGreen);
+      StyleConstants.setBold(comSet, false);
+
+      StyleConstants.setBold(brSet, true);
+
+      Color keyPink = new Color(230, 40, 100);
+      StyleConstants.setForeground(keySet, keyPink);
+      StyleConstants.setBold(keySet, true);
+
+      Color strLitOrange = new Color( 180, 130, 20 );
+      StyleConstants.setForeground(strLitSet, strLitOrange );
+      StyleConstants.setBold(strLitSet, false );
+   }
+
+   /**
+    * Synthax coloring
+    */  
+   private class Coloring {
+
+      /**
+       * Colors synthax
+       * <p>
+       * If called by the document listener's update methods, that is if
+       * isTextModify is true, only the current line is modified. 
+       * If called when textModify is false the entire passed in String is
+       * modified. For  block comments always the entire document is modified
+       */
+      void color(String in, int pos) {
+         String chunk = null;
+         if (isTextModify) {
+            chunk = Finder.currLine(in, pos);
+            pos = in.lastIndexOf("\n", pos) + 1;
+         }
+         else {
+            chunk = in;
+         }
+
+         // positions of previous block comment start and next block comment end
+         int indBlockStart = Finder.indLastBlockStart(in, pos, blockCmntStart,
+               blockCmntEnd);
+         int indBlockEnd   = Finder.indNextBlockEnd(in, pos, blockCmntStart,
+               blockCmntEnd);
+
+         // if cursor is not inside a block comment or using block comments 
+         // is disbled
+         if ((indBlockStart == -1 || indBlockEnd == -1) || !useBlockCmnt) {
+            
+            // first set back to black
+            backInBlack(chunk.length(), pos);
+
+            // brackets (bold)
+            for (int i = 0; i < Keywords.BRACKETS.length; i++) {
+               brackets(chunk, Keywords.BRACKETS[i], pos);
+            }
+
+            // keywords
+            for (int i = 0; i < keywords.length; i++) {
+               keys(chunk, keywords[i], keySet, pos);
+            }
+
+            // String literals:
+            // if the entire document is to be scanned text is plitted in
+            // lines because string literals cannot span several lines.
+            if (useStringLit) {
+               if (!isTextModify) {
+                  if (chunk.replaceAll("\n", "").length() > 0) {
+                     String[] chunkArr = chunk.split("\n");
+                     int[] startOfLines = Finder.startOfLines(chunkArr);
+                     for (int i = 0; i < chunkArr.length; i++) {
+                        stringLiterals(chunkArr[i], startOfLines[i] + pos);
+                     }
+                  }
+               }
+               //
+               // if only a line is scanned
+               else {
+                  stringLiterals(chunk, pos);
+               }
+            }
+            
+            // line comments
+            if (useLineCmnt) {
+               lineComments(chunk, pos);
+            }
+         }
+         
+         // always the entire document  
+         if (useBlockCmnt) {               
+            blockComments(in);       
+         }       
+      }
+
+      void keys(String in, String query, SimpleAttributeSet set, int pos) {
+         int index = 0;
+         int nextPos = 0;
+
+         while (index != -1) {
+            index = in.indexOf(query, index + nextPos);
+            if (index != -1) {
+               boolean ok = !constrainWord || Finder.isWord(in, query, index);
+               if (ok) {
+                  doc.setCharacterAttributes(index + pos, query.length(),
+                        set, false);
+               }
+            }  
+            nextPos = 1; 
+         }
+      }
+
+      private void brackets(String in, String query, int pos) {
+         int index = 0;
+         int nextPos = 0;
+
+         while (index != -1) {
+            index = in.indexOf(query, index + nextPos);
+            if (index != -1) {
+               doc.setCharacterAttributes(index + pos, 1, brSet, false);
+            }
+            nextPos = 1;
+         }
+      }
+
+      private void stringLiterals(String in, int pos) {
+         int indStart = 0;
+         int indEnd = 0;
+         int nextPos = 1;
+
+         while ( indStart != -1 && indEnd != -1 ) {
+            indStart = in.indexOf( "\"", indEnd + nextPos );
+            if ( indStart != -1 ) {
+               indEnd = in.indexOf( "\"", indStart + 1 );
+               if ( indEnd != -1 ) {
+                  int length = indEnd - indStart;
+                  doc.setCharacterAttributes( indStart + pos, length + 1,
+                        strLitSet, false );
+               }    
+            }
+            nextPos = 2;
+         }
+      }
+
+      private void lineComments(String in, int pos) {
+         int lineComInd = 0;
+         int nextPos = 0;
+
+         while (lineComInd != -1) {
+            lineComInd = in.indexOf(lineCmnt, lineComInd + nextPos );
+            if (lineComInd != -1 && !Finder.isInQuotes( in, lineComInd)) {
+               int lineEndInd = in.indexOf("\n", lineComInd + 1);
+               int length = 0;
+               if (lineEndInd != -1) {
+                  length = lineEndInd - lineComInd;
+               }
+               else {
+                  length = in.length() - lineComInd;
+               }
+               doc.setCharacterAttributes(lineComInd + pos, length,
+                     comSet, false);
+            }
+            nextPos = 1;
+         }
+      }
+
+      private void blockComments(String in) {
+         int indStart = 0;
+         int nextPos = 0;
+
+         while (indStart != -1) {
+            indStart = in.indexOf(blockCmntStart, indStart + nextPos);
+            if (indStart != -1 && !Finder.isInQuotes(in, indStart)) {       
+               int indEnd = in.indexOf(blockCmntEnd, indStart + 1);
+               if (indEnd != -1 && !Finder.isInQuotes(in, indEnd)) {
+                  int indNextStart = in.substring
+                        (indStart + 1, indEnd).indexOf(blockCmntStart, 0);
+                   
+                  if (indNextStart == -1) {
+                     int length = indEnd - indStart + blockCmntEnd.length();
+                     doc.setCharacterAttributes(indStart, length, comSet, false);
+                     //
+                     // maybe we want to outcomment a part of an existing block
+                     if (isTextModify) {
+                        uncommentBlock(in, indEnd + 2);
+                        uncommentBlock(in, indStart - 2);
+                     }
+                  }
+               }
+            }         
+            nextPos = 1;
+         }
+      }
+
+      private void uncommentBlock(String in, int pos) {
+         
+         // positions of previous block comment start and next block comment end
+         int indBlockStart = Finder.indLastBlockStart(in, pos, blockCmntStart,
+               blockCmntEnd);
+         int indBlockEnd   = Finder.indNextBlockEnd(in, pos, blockCmntStart,
+               blockCmntEnd);
+
+         if (indBlockStart != -1 && indBlockEnd == -1) {
+            String toUncomment = in.substring(indBlockStart, pos);
+            enableTextModify(false);
+            color(toUncomment, indBlockStart);
+            enableTextModify(true);
+         }
+         else if (indBlockEnd != -1 && indBlockStart == -1) {
+            String toUncomment = in.substring(pos, indBlockEnd + blockCmntEnd.length());
+            enableTextModify(false);
+            color(toUncomment, pos);
+            enableTextModify(true);
+         }
+      }
+   } //class Coloring
+}//class Text

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+      <title>Eadgyth help</title>
+   </head>
+   <body>
+      <h2>Eadgyth help (still in progress)</h2>
+      <h4>Requirements</h4>
+      <p>It is required that a Java
+         development kit (JDK) is installed and the computer is set up to use
+         the JDK. For the JDK of Oracle, see:<br>      
+      <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html">
+      Oracle JDK</a></p>
+      <p>The Java runtime environment must be version JRE 8 to run Eadgyth.</P>
+      <h4>Configuring a java project</h4>
+      <ol>
+         <li>Open a java source file or save an unnamed tab as a java source file.
+         Only at the first time you will be asked to enter the filepath of
+         the JDK.</li><br>
+         <li>Open the &lsquo;Project settings&rsquo; window in the menu &lsquo;Project&rsquo;.</li><br>
+         <li>Enter the name of the source file that contains the main method in the text field
+         &lsquo;Name of main program file&rsquo; (without extension).</li><br>
+         <li>If this file is part of a package enter the package name in the text field &lsquo;Package&rsquo;.
+         If it is located in a sub-package(s) enter the package path with normal file separators
+         (slash in Windows).</li><br>
+         <li>If source files (or packages) are located in a separate directory, the name of this directory
+         (e.g., &lsquo;scr&rsquo;) is entered in the text field &lsquo;Sources directory&rsquo;.</li><br>
+         <li>A separate destination directory for compiled source files (e.g., &lsquo;bin&rsquo;) maybe
+         entered in the text field &lsquo;Executables directory&rsquo; (the folder will be created during
+         compilation).</li><br>
+         <li>Click ok. If entries are correct the project can be viewed in the &lsquo;Project explorer&rsquo;
+         that is opened in the menu &lsquo;View&rsquo;</li><br>
+         <li>Compile the source file(s) using &lsquo;Save all and compile&rsquo; in the &lsquo;Project&rsquo;
+         menu. If errors occur you will be asked to open the console to view messages.</li><br>
+         <li>Run the project using &lsquo;Run&rsquo; in the &lsquo;Project&rsquo; menu (this will open the
+         console panel).</li><br>
+         <li>A jar file may be created by using &lsquo'Build&rsquo in the &lsquoProject&rsquo menu.<p>
+      </ol>
+      <h5>Further options</h5>
+      <ul>
+         <li>Arguments for a start script may be entered in the text field &lsquo;Arguments&rsquo; (separated by
+         single spaces).</li><br>
+         <li>The name of a build file (jar file in the case of java) can be specified in the field
+         &lsquo;Name for jar file&rsquo;. If the field is not filled, the jar name is the name of the java file that
+         contains the main method.</li><br>
+         <li>The project can be changed by opening a file that does not belong to the current project. Then proceed
+         as in steps 2 to 7.</li><br>
+         <li>An existing project configuration will be retrieved upon opening any file of a project previously worked on.
+         </li><br>
+      </ul>
+      <h4>Using the console</h4>
+      <p>The console area shall show messages after compilation of a project and the output of a program that was
+      started as in step 10 (see above). Interactive programs can be run too, but it is not clear yet if this works
+      in all situations.</p>
+      <p>In addition, self-chosen system commands entered in a dialogue maybe run in the current working directory
+      (the root directory of a project). For example, a created jar file may be tested by the command
+      java -jar SomeProgram.jar. A run process can be forcibly quit using the &lsquo;stop&rsquo; button. Note that
+      &lsquo;system command&rsquo; does not mean that it is possible to run directly terminal commands. While it is
+      possible to run the terminal in the console (by using the system command that starts the terminal) a program
+      thereupon started from this terminal cannot be forcibly quit using the &lsquo;stop&rsquo; button.</p>
+      <h5>To run a command...</h5>
+      <ol>
+         <li>Open the console panel in the menu &lsquo;View&rsquo;.</li><br>
+         <li>Press the button &lsquo;Cmd&rsquo; and enter a command in the shown dialog window. Click ok in the
+         dialog window to run the command.</li><br>
+         <li>To run a previous command press the &lsquo;>&rsquo; button; to change a command open the command
+         dialog again by pressing the &lsquo;Cmd...&rsquo; button.<br>
+      </ol>
+   </body>
+</html>
+      
