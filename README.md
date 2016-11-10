@@ -65,5 +65,5 @@ LICENSE: MIT, see LICENSE<br>
 <p>
 SCREENSHOT<br>
 Under Windows 10, setting the system look and feel<br>
-<img src="your_relative_path_here" width="350"/>
+<img src="Screenshots/Windows10SystemLAF.png" width="350"/>
 
