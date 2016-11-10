@@ -61,4 +61,5 @@ m.bussiek@web.de<br>
 CONTRIBUTORS<br>
 I hope for contributions and critiques.<br>
 <p>
-LICENSE: MIT, see LICENSE.md
+LICENSE: MIT, see LICENSE
+
