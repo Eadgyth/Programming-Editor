@@ -24,7 +24,7 @@ import eg.utils.Finder;
 /**
  * The editing of text during typing
  */
-class TypeText implements DocumentListener {
+public class TypeText implements DocumentListener {
 
    public UndoManager undomanager = new UndoManager();
 
@@ -129,11 +129,7 @@ class TypeText implements DocumentListener {
    SimpleAttributeSet normalSet() {
       return normalSet;
    }
-   
-   /**
-    * @param isDocListen  true to enable the methods called in this update
-    * methods
-    */
+
    void enableDocListen(boolean isDocListen) {
       this.isDocListen = isDocListen;
    }
@@ -198,6 +194,10 @@ class TypeText implements DocumentListener {
    String getIndentUnit() {
       return autoInd.getIndentUnit();
    }
+   
+   //
+   //--private
+   //
 
    private void insertTextModify(DocumentEvent de, String in, int pos) {
       if (pos > 0 && useIndent) {
@@ -253,7 +253,7 @@ class TypeText implements DocumentListener {
        * If called by the document listener's update methods, that is if
        * isTextModify is true, only the current line is modified. 
        * If called when textModify is false the entire passed in String is
-       * modified. For  block comments always the entire document is modified
+       * modified. For block comments always the entire document is modified
        */
       void color(String in, int pos) {
          String chunk = null;

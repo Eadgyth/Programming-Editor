@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Define a project root for txt file to view files in the file explorer
+ * Represents a project using text files although the class can only
+ * define a project's directories but does not perform any actions
  */
 public class TxtActions implements ProjectActions {
    
@@ -26,22 +27,18 @@ public class TxtActions implements ProjectActions {
    }
    
    @Override
-   public void configFromSetWin(String dir) {
-      projConf.configFromSetWin(dir, ".txt");
-      if (projConf.getProjectPath().length() > 0) {
-      }
+   public void configFromSetWin(String dir, String suffix) {
+      projConf.configFromSetWin(dir, suffix);
    }
    
    @Override
    public void findPreviousProjectRoot(String dir) {
       projConf.findPreviousProjectRoot(dir);
-      if (projConf.getProjectPath().length() > 0) {
-      }
    }
    
    @Override
    public String getProjectRoot() {
-       return projConf.getProjectPath();
+       return projConf.getProjectRoot();
    }
    
    @Override

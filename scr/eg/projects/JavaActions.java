@@ -15,7 +15,7 @@ import eg.javatools.*;
 import eg.ui.MainWin;
 
 /**
- * A programming project in Java
+ * Represents a programming project in Java
  */
 public class JavaActions implements ProjectActions {
 
@@ -55,9 +55,9 @@ public class JavaActions implements ProjectActions {
    }
    
    @Override
-   public void configFromSetWin(String dir) {
-      projConf.configFromSetWin(dir, ".java");
-      if (projConf.getProjectPath().length() > 0) {
+   public void configFromSetWin(String dir, String suffix) {
+      projConf.configFromSetWin(dir, suffix);
+      if (projConf.getProjectRoot().length() > 0) {
          setStartCommand();
          proc.addWorkingDir(getProjectRoot());
       }
@@ -66,7 +66,7 @@ public class JavaActions implements ProjectActions {
    @Override
    public void findPreviousProjectRoot(String dir) {
       projConf.findPreviousProjectRoot(dir);
-      if (projConf.getProjectPath().length() > 0) {
+      if (projConf.getProjectRoot().length() > 0) {
          setStartCommand();
          proc.addWorkingDir(getProjectRoot());
       }
@@ -79,7 +79,7 @@ public class JavaActions implements ProjectActions {
    
    @Override
    public String getProjectRoot() {
-      return projConf.getProjectPath();
+      return projConf.getProjectRoot();
    }
    
    @Override                                                                          
@@ -94,7 +94,7 @@ public class JavaActions implements ProjectActions {
       EventQueue.invokeLater(() -> {
          try {
             mw.setCursor(MainWin.BUSY_CURSOR);
-            comp.compile(projConf.getProjectPath(), projConf.getExecutableDir(),
+            comp.compile(projConf.getProjectRoot(), projConf.getExecutableDir(),
                   projConf.getSourceDir());           
          }
          catch(Exception e) {
@@ -148,7 +148,7 @@ public class JavaActions implements ProjectActions {
       }
       cw.setText("");
       EventQueue.invokeLater(() -> {
-         jar.createJar(projConf.getProjectPath(), projConf.getMainMethod(),
+         jar.createJar(projConf.getProjectRoot(), projConf.getMainFile(),
                projConf.getPackageDir(), projConf.getExecutableDir(), projConf.getBuildName());
          String info = "Saved jar file named " + jar.getUsedJarName();
          ShowJOption.infoMessage(info);
@@ -164,7 +164,7 @@ public class JavaActions implements ProjectActions {
    
    private boolean isProjectSet() {
       boolean set = true;
-      if (projConf.getMainMethod().length() == 0) {
+      if (projConf.getMainFile().length() == 0) {
          makeSetWinVisible(true);
          set = false;
       }
@@ -181,7 +181,7 @@ public class JavaActions implements ProjectActions {
    }
    
    private void setStartCommand() {
-      String main = projConf.getMainMethod();
+      String main = projConf.getMainFile();
       if (projConf.getArgs().length() > 0) {
          main += " " + projConf.getArgs();
       }

@@ -1,31 +1,20 @@
 package eg.projects;
 
-import javax.swing.KeyStroke;
-import javax.swing.JComponent;
-import javax.swing.JButton;
-
-import java.awt.event.ActionListener;
-
 import java.io.File;
-import java.io.IOException;
 
 //--Eadgyth--//
 import eg.Preferences;
 import eg.utils.ShowJOption;
 
 /**
- * The configuration of a project. A project may be retrieved from
- * the preferences by passing in the directory of a file or be newly 
- * set by entries in this {@link SettingsWin}.
+ * Represents the configuration of a project
  */
-public class ProjectConfig {
+public class ProjectConfig implements Configurable {
 
-   private static final String USER_HOME = System.getProperty("user.home");
    private static final String F_SEP = File.separator;
    
    private final Preferences prefs = new Preferences();
-   
-   private SettingsWin setWin; // = new ProjectSetWin();
+   private final SettingsWin setWin;
    
    private String path = "";
 
@@ -38,52 +27,50 @@ public class ProjectConfig {
    private String buildName = "";
    
    /**
-    * Contructor defines which features are displayed in the project's
-    * settings window
-    * @param mainKind  the name of the kind of main program file
-    * @param moduleKind  the name of the kind of module(e.g. package). Null
-    * to skip asking for a name of a module
-    * @param useArgs  true to ask for arguments in a start skript
-    * @param buildKind  the name for the kind of build. Null to skip asking
-    * for a build
-    * May be the empty String or null
+    * @param setWin  the reference to an object of {@link SettingsWin}
+    * which is set up to ask for the desired inputs
     */
-   public ProjectConfig(String mainKind, String moduleKind, boolean useArgs,
-         String buildKind) {
-      setWin = new SettingsWin(mainKind, moduleKind, useArgs, buildKind);
+   public ProjectConfig(SettingsWin setWin) {
+      this.setWin = setWin;
       prefs.readPrefs();
    }       
 
-   /**
-    * @return  this {@link SettingsWin} object
-    */
+   @Override
    public SettingsWin getSetWin() {
       return setWin;
    }
-
-   public void findPreviousProjectRoot(String path) {
-      this.path = path;
-      findPreviousProject();
-   }
    
-   public boolean isInProjectPath(String path) {
-      this.path = path;
-      return previousProjectPath() != null;
-   }  
-   
+   @Override
    public void makeSetWinVisible(boolean isVisible) {
       setWin.makeVisible(isVisible);
    }
    
-   public String getPath() {
-      return path;
+   @Override
+   public void configFromSetWin(String dir, String suffix) {     
+      findNewProjectRoot(dir, suffix);
+      if (projectPath.length() > 0) {
+         setWin.makeVisible(false);
+      }
    }
    
-   public String getProjectPath() {
+   @Override
+   public void findPreviousProjectRoot(String dir) {
+      this.path = dir;
+      findPreviousProject();
+   }
+   
+   @Override
+   public String getProjectRoot() {
       return projectPath;
    }
    
-   public String getMainMethod() {
+   @Override
+   public boolean isInProjectPath(String path) {
+      this.path = path;
+      return previousProjectRoot() != null;
+   }
+   
+   public String getMainFile() {
       return mainFile;
    }
    
@@ -100,35 +87,24 @@ public class ProjectConfig {
    }
    
    /**
-    * @return  the arguments for a start command as entered in the
-    * text field of the ProjectSetWin window
+    * @return  the name for a build entered in the text field
+    * {@code SettingsWin}
     */
    public String getBuildName() {
       return buildName;
    }
    
    /**
-    * @return  the arguments for a start command as entered in the
-    * text field of the ProjectSetWin window
+    * @return  the arguments for a start command entered in the
+    * text field of {@code SettingsWin}
     */ 
    public String getArgs() {
       return args;
    }
    
    /**
-    * Stores inputs in text fieds of ProjectSetWIn window and determines
-    * the project root directory
-    */
-   public void configFromSetWin(String path, String suffix) {     
-      findProjectRoot(path, suffix);
-      if (projectPath.length() > 0) {
-         setWin.makeVisible(false);
-      }
-   }
-   
-   /**
-    * Returns true if the main program file exists in the path specified
-    * by executables directory and package
+    * Returns true if the main (program) file exists in the path specified
+    * by the executables directory and the module directory
     */
    public boolean mainProgramFileExists(String suffix) { 
       File target = new File(projectPath + F_SEP + execDir + F_SEP + moduleDir
@@ -137,14 +113,14 @@ public class ProjectConfig {
    }
 
    private void findPreviousProject() {
-      String previousProjectPath = previousProjectPath();
+      String previousProjectRoot = previousProjectRoot();
          
-      if (previousProjectPath != null) {
+      if (previousProjectRoot != null) {
 
-         projectPath = previousProjectPath;
+         projectPath = previousProjectRoot;
          
          mainFile = prefs.prop.getProperty("recentMain");
-         setWin.displayMainFile(mainFile);
+         setWin.displayFile(mainFile);
          
          moduleDir = prefs.prop.getProperty("recentModule");
          setWin.displayModule(moduleDir);
@@ -160,7 +136,7 @@ public class ProjectConfig {
       else {
          projectPath = "";
          setWin.displayModule("");
-         setWin.displayMainFile("");
+         setWin.displayFile("");
          setWin.displaySourcesDir("");
          setWin.displayExecDir("");
          mainFile = "";
@@ -168,7 +144,7 @@ public class ProjectConfig {
       }
    }
 
-   private String previousProjectPath() { 
+   private String previousProjectRoot() { 
       File newFile = new File(path);
       File project = new File(prefs.prop.getProperty("recentProject"));
       String newFileStr = newFile.getPath();
@@ -187,35 +163,33 @@ public class ProjectConfig {
       }  
       return newFileStr;
    }
-   
-   /*
-    * Searches project path based on entries in java settings window and the
-    * path of an opened file. The project path is assigned to this 'projectPath'
-    * and saved in Preferences file
-    */
-   private void findProjectRoot(String path, String suffix) {
-      this.path = path;
+
+   private void findNewProjectRoot(String dir, String suffix) {
+      this.path = dir;
       projectPath = "";
-      textFieldsIn();
-      File search = new File(path);
-   
-      String pathToSearch
-            = path + F_SEP + sourceDir + F_SEP + moduleDir + F_SEP
+      getTextFieldsInput();
+      /*
+       * may include sourceDir and/or moduleDir to begin with */
+      File search = new File(dir);
+
+      final String pathRelToRoot = sourceDir + F_SEP + moduleDir + F_SEP
             + mainFile + suffix;
-      
+      String pathToSearch = dir + F_SEP + pathRelToRoot;    
       File searchPath = new File(pathToSearch);
-      boolean isUserHome = false;        
-      while(!searchPath.exists() & !isUserHome) {
+      
+      while(!searchPath.exists()) {
+         if (search.getParentFile() == null) {
+            search = null;
+            break;
+         }
          String newPath = search.getParent();
-         search = new File(newPath);
-         isUserHome = search.getPath().equals(USER_HOME);
-         pathToSearch = newPath + F_SEP + sourceDir + F_SEP + moduleDir
-               + F_SEP + mainFile + suffix;
+         search = new File(newPath);     
+         pathToSearch = newPath + F_SEP + pathRelToRoot;
          searchPath = new File(pathToSearch);
       }
 
-      if (isUserHome) {
-         ShowJOption.warnMessageToFront("A valid file could not be found");
+      if (search == null) {
+         ShowJOption.warnMessageToFront("A valid filepath could not be built");
       }
       else {
          projectPath = search.toString();
@@ -223,7 +197,7 @@ public class ProjectConfig {
       }
    }
    
-   private void textFieldsIn() {
+   private void getTextFieldsInput() {
       mainFile = setWin.mainFileIn();
       prefs.storePrefs("recentMain", mainFile);
 

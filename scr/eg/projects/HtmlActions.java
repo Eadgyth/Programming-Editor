@@ -7,7 +7,7 @@ import java.io.IOException;
 import eg.utils.ShowJOption;
 
 /**
- * A programming project in HTML
+ * Represents a project to write a webpage in HTML
  */
 public class HtmlActions implements ProjectActions {
    
@@ -30,9 +30,9 @@ public class HtmlActions implements ProjectActions {
    }
    
    @Override
-   public void configFromSetWin(String dir) {
-      projConf.configFromSetWin(dir, ".html");
-      if (projConf.getProjectPath().length() > 0) {
+   public void configFromSetWin(String dir, String suffix) {
+      projConf.configFromSetWin(dir, suffix);
+      if (projConf.getProjectRoot().length() > 0) {
          setHtmlFile();
       }
    }
@@ -40,14 +40,14 @@ public class HtmlActions implements ProjectActions {
    @Override
    public void findPreviousProjectRoot(String dir) {
       projConf.findPreviousProjectRoot(dir);
-      if (projConf.getProjectPath().length() > 0) {
+      if (projConf.getProjectRoot().length() > 0) {
          setHtmlFile();
       }
    }
    
    @Override
    public String getProjectRoot() {
-       return projConf.getProjectPath();
+       return projConf.getProjectRoot();
    }
    
    @Override
@@ -85,7 +85,7 @@ public class HtmlActions implements ProjectActions {
    }
    
    private void setHtmlFile() {
-      htmlFile = new File(projConf.getProjectPath() + File.separator
-               + projConf.getMainMethod() + ".html");
+      htmlFile = new File(projConf.getProjectRoot() + File.separator
+               + projConf.getMainFile() + ".html");
    }
 }

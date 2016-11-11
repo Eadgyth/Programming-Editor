@@ -1,21 +1,17 @@
 package eg.projects;
 
-import eg.Preferences;
 import eg.console.*;
 import eg.ui.MainWin;
 
 /**
- * Creation of objects of classes that are used for a programming
- * project in the Eadgyth editor. Objects returned are of type
- * {@link ProjectActions}
+ * The creation of objects of the classes that represent a project. These
+ * classes are of type {@link ProjectActions}
  */
 public class ProjectFactory {
 
-   private Preferences prefs = new Preferences();
-
-   private MainWin mw;
-   private ProcessStarter proc;
-   private ConsolePanel cw;
+   private final MainWin mw;
+   private final ProcessStarter proc;
+   private final ConsolePanel cw;
 
    private ProjectActions projActJava = null;
    private ProjectActions projActHtml = null;
@@ -34,12 +30,11 @@ public class ProjectFactory {
 
    /**
     * Returns an object of a class that implements the ProjectActions
-    * interface.
+    * interface and that is selected based on the extension of the
+    * file which belongs to the project.
     * <p>
-    * Already created objects are maintained and re-assigned to
-    * ProjectActions of the language remains the same.
-    * <p>
-    * This method has to be modified if new project actions are implemented.
+    * This method has to be modified if new project actions (languages,
+    * file types) are implemented.
     * @return  an object of type {@link ProjectActions}.
     */
    public ProjectActions getProjAct(String filename) {      
@@ -82,8 +77,9 @@ public class ProjectFactory {
    private void createProjActJava() {
       if (projActJava == null) {
          projActJava = new JavaActions(mw, proc, cw);
-         projActJava.setProjectConfig(new ProjectConfig("Main class", "Package",
-               true, "jar file"));
+         SettingsWin setWin = new SettingsWin("Main class", "Package",
+               true, true, "jar file");
+         projActJava.setProjectConfig(new ProjectConfig(setWin));
       }
       actionOptions(true, true, true);
    }
@@ -91,7 +87,9 @@ public class ProjectFactory {
    private void createProjActHtml() {
       if (projActHtml == null) {
          projActHtml = new HtmlActions();
-         projActHtml.setProjectConfig(new ProjectConfig("HTML file", null, false, null));
+         SettingsWin setWin = new SettingsWin("HTML file", "Subfolder",
+               false, false, null);
+         projActHtml.setProjectConfig(new ProjectConfig(setWin));
       }
       actionOptions(false, true, false);
    }
@@ -99,7 +97,9 @@ public class ProjectFactory {
    private void createProjActText() {
       if (projActTxt == null) {
          projActTxt = new TxtActions();
-         projActTxt.setProjectConfig(new ProjectConfig("Text file", null, false, null));
+         SettingsWin setWin = new SettingsWin("Text file", "Subfolder",
+               false, false, null);
+         projActTxt.setProjectConfig(new ProjectConfig(setWin));
       }
       actionOptions(false, false, false);
    }

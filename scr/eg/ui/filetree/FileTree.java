@@ -112,8 +112,14 @@ public class FileTree extends Observable {
       File f = new File(fileToAdd);
       String parent = f.getParent();
       DefaultMutableTreeNode searchNode = searchNode(parent);
-      model.insertNodeInto(new DefaultMutableTreeNode(f),
-               searchNode, searchNode.getChildCount());
+      /*
+       * may be null if a folder further down from the project root
+       * is the root of the current tree
+       */
+      if (searchNode != null) {
+         model.insertNodeInto(new DefaultMutableTreeNode(f),
+                  searchNode, searchNode.getChildCount());
+      }
    }
    
    /**

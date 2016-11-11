@@ -25,6 +25,7 @@ import java.io.IOException;
 
 //--Eadgyth--//
 import eg.utils.ShowJOption;
+import eg.utils.FileUtils;
 import eg.document.TextDocument;
 import eg.ui.MainWin;
 import eg.ui.TabbedPane;
@@ -337,7 +338,8 @@ public class TabActions implements Observer{
    }
 
    private void setNewProject() {
-      projAct.configFromSetWin(txtDoc[iTab].dir());
+      projAct.configFromSetWin(txtDoc[iTab].dir(),
+            FileUtils.extension(txtDoc[iTab].filename()));
       if (projAct.getProjectRoot().length() > 0) {        
          updateProjectDisplay(projAct.getProjectRoot());
          mw.enableExtra(projFact.isCompile(), projFact.isRun(), projFact.isBuild());

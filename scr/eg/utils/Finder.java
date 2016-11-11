@@ -28,8 +28,7 @@ public class Finder {
    /**
     * @param in  the String in which a line is searched
     * @param pos  the position that is found in the searched line
-    * @return  the line within a multi-line text where the specified position
-    * is found
+    * @return  the line that includes the specified position
     */
    public static String currLine(String in, int pos) {
       int indLastReturn = in.lastIndexOf("\n", pos);
