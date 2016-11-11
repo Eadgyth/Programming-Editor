@@ -1,12 +1,10 @@
 # Java-Programming-Editor / Eadgyth
-A text editor written in Java that helps programming (currently in Java) and to easily configure a
-programming project. It is mainly indented for writing smaller applications, may be
+A text editor written in Java that helps programming (currently in Java) and that is extensible by plugins which may be developed to work with text files in many ways. It is mainly indented for writing smaller applications, may be
 for home-requirements.<br>
 <p>
-Eadgyth features opening files in tabs, a file tree view, a simple console,
-syntax coloring, auto indentation (still simple) and line numbering. Java code can be
-compiled and run within the program and a jar file can be created (containing only .class files, though).
-The program can be extended by plugins.
+Eadgyth features opening files in tabs, a file tree view, a simple console, syntax coloring,
+auto indentation (still simple) and line numbering. Java code can be compiled and run within
+the program and a jar file can be created (containing only .class files, though).
 <p>
 REQUIREMENTS FOR TESTING <br>
 Running the program requires JAVA 8 (JRE 8) and, for compiling java source files,
