@@ -50,12 +50,10 @@ public class FileTree extends Observable {
    /*
     * The panel to which the tree is added and that is added to the scroll pane */
    private final JPanel holdTreePnl  = new JPanel();
-
    private final JScrollPane scroll  = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);  
    private final JToolBar toolbar    = new JToolBar(JToolBar.HORIZONTAL);
-
    private final JButton upBt        = new JButton(UIManager.getIcon(
          "FileChooser.upFolderIcon"));
    private final JButton   refreshBt = new JButton(IconFiles.refreshIcon);
@@ -67,7 +65,6 @@ public class FileTree extends Observable {
    private DefaultTreeModel model;
    private DefaultMutableTreeNode root;
    private MouseListener ml;
-   private ArrayList<Integer> expandedRows;
    private String pathHelper = "";
    private String projRoot = "";
 
@@ -122,56 +119,16 @@ public class FileTree extends Observable {
    //--private methods--//
    //
    
-  private File getSelectedFile() {
-      DefaultMutableTreeNode node =
-            (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-      Object nodeInfo = null;
-      if (node != null) {
-         nodeInfo = node.getUserObject();
-      }
-      return (File) nodeInfo;
-   }
-   
-   private void folderDown(String child) {
-      setNewTree(child);
-      upBt.setEnabled(true);
-   }
-   
-   private void showMenu(Component c, int x, int y) {
-      int row = tree.getRowForLocation(x, y);
-      tree.setSelectionRow(row);
-      if (!tree.isSelectionEmpty() && getSelectedFile().isFile()) {
-         popupFile.showMenu(c, x, y);
-      }
-      if (!tree.isSelectionEmpty() && getSelectedFile().isDirectory()) {
-         popupDir.showMenu(c, x, y);
-      }
-   }
-
-   private void initTreePanel() {
-      holdTreePnl.setLayout(new BorderLayout());
-      scroll.setBorder(new MatteBorder(0, 1, 1, 1, Constants.BORDER_GRAY));
-      scroll.setViewportView(holdTreePnl);
-      initToolbar();
-      fileTreePnl.add(toolbar, BorderLayout.NORTH);
-      fileTreePnl.add(scroll, BorderLayout.CENTER);
-      upBt.addActionListener(e -> folderUp());
-      refreshBt.addActionListener(e -> refreshTree());
-      upBt.setEnabled(false);
-      popupFile.deleteAct(e -> deleteFile());
-      popupDir.newFolderAct(e -> newFolder());
-   }
-   
    private void setNewTree(String path) {
       if (path.length() > 0) {
          if (tree != null) {
             holdTreePnl.remove(tree);
          }   
-         setTree(path);
          pathHelper = path;
          if (path.equals(projRoot)) {
             upBt.setEnabled(false);
          }
+         setTree(path);
       }     
    }
    
@@ -232,6 +189,17 @@ public class FileTree extends Observable {
       tree.addMouseListener(ml);
    }
    
+   private void showMenu(Component c, int x, int y) {
+      int row = tree.getRowForLocation(x, y);
+      tree.setSelectionRow(row);
+      if (!tree.isSelectionEmpty() && getSelectedFile().isFile()) {
+         popupFile.showMenu(c, x, y);
+      }
+      if (!tree.isSelectionEmpty() && getSelectedFile().isDirectory()) {
+         popupDir.showMenu(c, x, y);
+      }
+   }
+   
    private void deleteFile() {
       DefaultMutableTreeNode selectedNode = getSelectedNode();
       File f = getSelectedFile();
@@ -275,8 +243,23 @@ public class FileTree extends Observable {
       }
    }
    
+   private void folderDown(String child) {
+      setNewTree(child);
+      upBt.setEnabled(true);
+   }
+   
    private void refreshTree() {
       setNewTree(pathHelper);
+   }
+   
+   private File getSelectedFile() {
+      DefaultMutableTreeNode node =
+            (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+      Object nodeInfo = null;
+      if (node != null) {
+         nodeInfo = node.getUserObject();
+      }
+      return (File) nodeInfo;
    }
    
    private DefaultMutableTreeNode getSelectedNode() {
@@ -293,6 +276,20 @@ public class FileTree extends Observable {
          }
       }
       return null;
+   }
+   
+   private void initTreePanel() {
+      holdTreePnl.setLayout(new BorderLayout());
+      scroll.setBorder(new MatteBorder(0, 1, 1, 1, Constants.BORDER_GRAY));
+      scroll.setViewportView(holdTreePnl);
+      initToolbar();
+      fileTreePnl.add(toolbar, BorderLayout.NORTH);
+      fileTreePnl.add(scroll, BorderLayout.CENTER);
+      upBt.addActionListener(e -> folderUp());
+      refreshBt.addActionListener(e -> refreshTree());
+      upBt.setEnabled(false);
+      popupFile.deleteAct(e -> deleteFile());
+      popupDir.newFolderAct(e -> newFolder());
    }
 
    private void initToolbar() {
