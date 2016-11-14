@@ -139,6 +139,7 @@ public class Eadgyth {
       menu.openAct(e -> ta.openFileByChooser());
       tBar.openAct(e -> ta.openFileByChooser());
       menu.closeAct(e -> ta.tryClose());
+      menu.closeAllAct(e -> ta.tryCloseAll());
       menu.saveAct(e -> ta.saveOrSaveAs());
       tBar.saveAct(e -> ta.saveOrSaveAs());      
       menu.saveAllAct(e -> ta.saveAll());

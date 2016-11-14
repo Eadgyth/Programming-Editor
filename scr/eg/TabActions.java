@@ -197,19 +197,39 @@ public class TabActions implements Observer{
          }
       } 
    }
+   
+   /**
+    * Closes all tabs or selects the first tab which is found
+    * unsaved
+    */
+   public void tryCloseAll() {
+      int count = unsavedTab();
+      if (count == tabPane.tabCount()) {     
+         while(tabPane.tabCount() > 0) {
+            tabPane.removeTab(iTab);
+         }
+         newEmptyTab();
+      }
+      else {
+         tabPane.selectTab(count);                 
+         int res = saveOrCloseOption(count);
+         if (res == JOptionPane.YES_OPTION) {
+            saveOrSaveAs();
+            tryCloseAll();
+         }
+         else if (res == JOptionPane.NO_OPTION) {
+            close();
+            tryCloseAll();
+         }
+      }    
+   }
 
    /**
     * Exits the programm or selects the first tab which is found
     * unsaved
     */
    public void tryExit() {
-      int count;
-      for (count = 0; count < tabPane.tabCount(); count++) { 
-         if (!txtDoc[count].isContentSaved()) {
-            break;
-         }
-      }
-
+      int count = unsavedTab();
       if (count == tabPane.tabCount()) {     
          System.exit(0);
       }
@@ -237,7 +257,7 @@ public class TabActions implements Observer{
          return;
       }
       
-      if (isProjectSet & projAct.isInProjectPath(txtDoc[iTab].dir())) {
+      if (isProjectSet && projAct.isInProjectPath(txtDoc[iTab].dir())) {
          projAct.makeSetWinVisible(true);
       }
       else {
@@ -339,6 +359,40 @@ public class TabActions implements Observer{
       });
    }
    
+   private int saveOrCloseOption(int index) {
+      String filename = txtDoc[index].filename();
+      if (filename.length() == 0) {
+         filename = "unnamed";
+      }
+      return ShowJOption.confirmYesNoCancel
+            ("Save changes in " + filename + " ?");
+   }
+   
+   private int unsavedTab() {
+      int count;
+      for (count = 0; count < tabPane.tabCount(); count++) { 
+         if (!txtDoc[count].isContentSaved()) {
+            break;
+         }
+      }
+      return count;
+   }
+
+   private void close() {
+      int count = iTab; // remember the index of the tab that will be removed
+      tabPane.removeTab(iTab);
+      for (int i = count; i < tabPane.tabCount(); i++) {
+         txtDoc[i] = txtDoc[i + 1];
+      }
+      if (tabPane.tabCount() > 0) {
+         int index = tabPane.selectedIndex();
+         mw.displayFrameTitle(txtDoc[index].filepath());
+      }
+      else { 
+         newEmptyTab();
+      }     
+   }
+   
    private void retrieveProject(String newPath) {
       ProjectActions prNew
             = projFact.getProjAct(FileUtils.extension(txtDoc[iTab].filepath()));
@@ -369,30 +423,6 @@ public class TabActions implements Observer{
       File file = new File(path);
       mw.showProjectInfo(file.getName());
       fileTree.setProjectTree(path);
-   }
-   
-   private int saveOrCloseOption(int index) {
-      String filename = txtDoc[index].filename();
-      if (filename.length() == 0) {
-         filename = "unnamed";
-      }
-      return ShowJOption.confirmYesNoCancel
-            ("Save changes in " + filename + " ?");
-   }    
-
-   private void close() {
-      int count = iTab; // remember the index of the tab that will be removed
-      tabPane.removeTab(iTab);
-      for (int i = count; i < tabPane.tabCount(); i++) {
-         txtDoc[i] = txtDoc[i + 1];
-      }
-      if (tabPane.tabCount() > 0) {
-         int index = tabPane.selectedIndex();
-         mw.displayFrameTitle(txtDoc[index].filepath());
-      }
-      else { 
-         newEmptyTab();
-      }     
    }
    
    private void changeTabEvent(ChangeEvent changeEvent) {

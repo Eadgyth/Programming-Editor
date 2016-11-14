@@ -34,6 +34,7 @@ public class Menu {
    private final JMenuItem newFileItm       = new JMenuItem("New" );
    private final JMenuItem open             = new JMenuItem("Open", IconFiles.openIcon);
    private final JMenuItem close            = new JMenuItem("Close", IconFiles.closeIcon);
+   private final JMenuItem closeAll         = new JMenuItem("Close all");
    private final JMenuItem save             = new JMenuItem("Save", IconFiles.saveIcon);
    private final JMenuItem saveAll          = new JMenuItem("Save all");
    private final JMenuItem saveAs           = new JMenuItem("Save as ...");
@@ -122,6 +123,10 @@ public class Menu {
 
    public void closeAct(ActionListener al) {
       close.addActionListener(al);
+   }
+   
+   public void closeAllAct(ActionListener al) {
+      closeAll.addActionListener(al);
    }
 
    public void saveAllAct(ActionListener al) {
@@ -326,6 +331,7 @@ public class Menu {
       file.add(newFileItm);
       file.add(open);
       file.add(close);
+      file.add(closeAll);
       file.addSeparator();
       file.add(save);
       file.add(saveAll);
