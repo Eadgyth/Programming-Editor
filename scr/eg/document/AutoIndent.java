@@ -19,19 +19,18 @@ import eg.Preferences;
  * The indention of a previous line is added to a new line, is increased
  * upon typing an opening curly brackets and reduced upon typing a closing
  * curly bracked. <p>
- * The indentation method is so far very simple
+ * The indentation is so far very simple
  */
 class AutoIndent {
    
-   private final static Preferences prefs = new Preferences();
+   private final static Preferences PREFS = new Preferences();
+   private final JTextPane textArea;
+   private final StyledDocument doc;
+   private final SimpleAttributeSet normalSet;
 
    private String indentUnit;
    private int indentLength;  
    private String indent = "";
-
-   private JTextPane textArea;
-   private StyledDocument doc;
-   private SimpleAttributeSet normalSet;
 
    AutoIndent(JTextPane textArea, StyledDocument doc,
          SimpleAttributeSet normalSet)
@@ -40,8 +39,8 @@ class AutoIndent {
       this.doc = doc;
       this.normalSet = normalSet;
       
-      prefs.readPrefs();
-      indentUnit = prefs.prop.getProperty("indentUnit");
+      PREFS.readPrefs();
+      indentUnit = PREFS.prop.getProperty("indentUnit");
       indentLength = indentUnit.length();
       
       textArea.addKeyListener(listener);
@@ -51,6 +50,10 @@ class AutoIndent {
       return indentUnit;
    }
    
+   void resetIndent() {
+      indent = "";
+   }
+   
    /**
     * Assigns to this the indentation unit and the indentation
     * length. Saves the indentation unit to preferences.
@@ -58,7 +61,7 @@ class AutoIndent {
    void changeIndentUnit(String indentUnit) {
       this.indentUnit = indentUnit;
       indentLength = indentUnit.length();    
-      prefs.storePrefs("indentUnit", indentUnit);
+      PREFS.storePrefs("indentUnit", indentUnit);
    }  
 
    /**
@@ -90,10 +93,6 @@ class AutoIndent {
             }   
          }
       }
-   }
-   
-   void resetIndent() {
-      indent = "";
    }
 
    /*
