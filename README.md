@@ -38,11 +38,10 @@ in the currently selected tab and can have a graphical view that is integrated i
 A template for writing a plugin and two simple example plugins are included<br>
 <p>
 ENCOUNTERED PROBLEMS/LIMITATIONS <br>
-1) Quickly repeating undo/redo actions have caused the program to hang.
+1) Undo/redo actions have caused the program to hang in situations that are not clear.
 <br>
-2) I try to make the syntax coloring, which uses the StyledDocument, effective by letting
-the updates be done only in the current line (except for block comments). Problems have occured
-when larger chunks of text are pasted in the text area or are deleted /replaced.
+2) Deleting or pasting chunks of multi-line text has caused problems (not clear in what
+situation).
 <br>
 3) The console has a function to run system commands (defined the class 'ProcessStarter' in the
 package 'eg.console'). Interactive programs that then require reading from and writing to the
@@ -51,7 +50,7 @@ in Java seem to work fine.
 <br>
 4) The built in packing of a jar file bundles only .class files.
 <br>
-5) I have observed that the rendering of the GUI has gone wrong after the computer was in
+5) The rendering of the GUI has gone wrong after the computer was in
 sleep mode when the system look and feel was selected.
 <br>
 <p>
