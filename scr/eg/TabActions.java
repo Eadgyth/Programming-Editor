@@ -45,6 +45,7 @@ public class TabActions implements Observer{
    private final PluginStarter plugStart;
    private final ChangeListener changeListener;
    private final WindowListener winListener;
+
    private ProjectActions projAct;
 
    /* The index of the selected tab */
@@ -145,22 +146,6 @@ public class TabActions implements Observer{
    }
 
    /**
-    * Saves all open files and compiles project
-    */
-   public void saveAndCompile() {
-      saveAll();
-      projAct.compile();
-   }
-   
-   public void runProj() {
-      projAct.runProject();
-   }
-   
-   public void buildProj() {
-      projAct.build();
-   }
-
-   /**
     * Saves the file of a selected tab as a new file selected
     * in file chooser
     */
@@ -247,8 +232,8 @@ public class TabActions implements Observer{
     * See also {@link SettingsWin} 
     */
    public void openProjectSetWin() {
-      if (tabPane.tabCount() == 1 & txtDoc[iTab].filename().length() == 0) {
-         ShowJOption.infoMessage("A file must be opened to set a project");
+      if (txtDoc[iTab].filename().length() == 0) {
+         ShowJOption.infoMessage("A project cannot be set for an unnamed tab");
          return;
       }
       
@@ -271,10 +256,32 @@ public class TabActions implements Observer{
             }
             if (result == -1) {
                projNew.makeSetWinVisible(true);
-               projNew.getSetWin().okAct(e -> setNewProject(projNew));
+               projNew.getSetWin().okAct(e -> configureProject(projNew));
             }
          }
       }
+   }
+   
+   /**
+    * Saves all open files and compiles this project
+    */
+   public void saveAndCompile() {
+      saveAll();
+      projAct.compile();
+   }
+   
+   /**
+    * Runs this project
+    */
+   public void runProj() {
+      projAct.runProject();
+   }
+   
+   /**
+    * Creates a build of this project
+    */
+   public void buildProj() {
+      projAct.build();
    }
 
    //
@@ -338,9 +345,9 @@ public class TabActions implements Observer{
    private void retrieveProject(String newPath) {
       ProjectActions prNew
             = projFact.getProjAct(FileUtils.extension(txtDoc[iTab].filepath()));
-      if (prNew != null & projAct != prNew) {
+      if (prNew != null) {
          projAct = prNew;
-         projAct.getSetWin().okAct(e -> setNewProject(prNew));
+         projAct.getSetWin().okAct(e -> configureProject(projAct));
          projAct.findPreviousProjectRoot(newPath);
          if (projAct.getProjectRoot().length() > 0) {
             isProjectSet = true;
@@ -349,13 +356,15 @@ public class TabActions implements Observer{
       }
    }
 
-   private void setNewProject(ProjectActions projNew) {
-      projNew.configFromSetWin(txtDoc[iTab].dir(),
+   private void configureProject(ProjectActions proj) {
+      proj.configFromSetWin(txtDoc[iTab].dir(),
             FileUtils.extension(txtDoc[iTab].filename()));
-      if (projNew.getProjectRoot().length() > 0) {
-         projAct = projNew;       
-         updateProjectDisplay(projAct.getProjectRoot());
-         isProjectSet = true;
+      if (proj.getProjectRoot().length() > 0) {
+         if (projAct != proj) {
+            projAct = proj;       
+            updateProjectDisplay(projAct.getProjectRoot());
+            isProjectSet = true;
+         }
       }
    }
 
