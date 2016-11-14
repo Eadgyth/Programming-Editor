@@ -189,6 +189,26 @@ public class FileTree extends Observable {
       tree.addMouseListener(ml);
    }
    
+   private void folderUp() {
+      String parent = new File(pathHelper).getParent();
+      String rootParent = new File(projRoot).getParent();
+      if (!rootParent.equals(parent)) {
+         setNewTree(parent);
+      }
+      if (projRoot.equals(parent)) {
+         upBt.setEnabled(false);
+      }
+   }
+   
+   private void folderDown(String child) {
+      setNewTree(child);
+      upBt.setEnabled(true);
+   }
+   
+   private void refreshTree() {
+      setNewTree(pathHelper);
+   }
+   
    private void showMenu(Component c, int x, int y) {
       int row = tree.getRowForLocation(x, y);
       tree.setSelectionRow(row);
@@ -230,26 +250,6 @@ public class FileTree extends Observable {
             ShowJOption.warnMessage("Creating " + newDir.getName() + " failed");
          }
       }
-   }
-   
-   private void folderUp() {
-      String parent = new File(pathHelper).getParent();
-      String rootParent = new File(projRoot).getParent();
-      if (!rootParent.equals(parent)) {
-         setNewTree(parent);
-      }
-      if (projRoot.equals(parent)) {
-         upBt.setEnabled(false);
-      }
-   }
-   
-   private void folderDown(String child) {
-      setNewTree(child);
-      upBt.setEnabled(true);
-   }
-   
-   private void refreshTree() {
-      setNewTree(pathHelper);
    }
    
    private File getSelectedFile() {
