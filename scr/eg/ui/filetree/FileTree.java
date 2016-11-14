@@ -2,14 +2,11 @@ package eg.ui.filetree;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.Dimension;
 import java.awt.Component;
 
 import java.awt.event.*;
 
 import javax.swing.Box;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.JScrollPane;
@@ -30,15 +27,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.filechooser.FileSystemView;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-
-import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -216,8 +204,8 @@ public class FileTree extends Observable {
    }
    
    private File[] sortFoldersAndFiles(File[] fList) {
-      List<File> allFiles = new ArrayList<File>();
-      List<File> files    = new ArrayList<File>();
+      List<File> allFiles = new ArrayList<>();
+      List<File> files    = new ArrayList<>();
       
       for (int i = 0; i < fList.length; i++ ) {
          if (fList[i].isDirectory()) {
@@ -233,7 +221,7 @@ public class FileTree extends Observable {
    }         
 
    private void initTree() {
-      UIManager.put("Tree.rowHeight", new Integer(20));
+      UIManager.put("Tree.rowHeight", 20);
       tree = new JTree(model);
       tree.setRootVisible(false);
       tree.setFont(Constants.VERDANA_PLAIN_11);
@@ -296,7 +284,7 @@ public class FileTree extends Observable {
    }
   
    private DefaultMutableTreeNode searchNode(String nodeStr) {
-      DefaultMutableTreeNode node = null;
+      DefaultMutableTreeNode node;
       Enumeration e = root.breadthFirstEnumeration();
       while (e.hasMoreElements()) {
          node = (DefaultMutableTreeNode) e.nextElement();
@@ -324,10 +312,11 @@ public class FileTree extends Observable {
       }
    }
    
-   private MouseListener mouseListener = new MouseAdapter() {
+   private final MouseListener mouseListener = new MouseAdapter() {
+      @Override
       public void mouseClicked(MouseEvent e) {
          if (SwingUtilities.isLeftMouseButton(e)) {
-            File f = null;
+            File f;
             if (e.getClickCount() == 2) {
                f = getSelectedFile();
                if (f != null ) {

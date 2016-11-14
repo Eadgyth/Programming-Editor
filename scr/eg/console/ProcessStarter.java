@@ -5,21 +5,17 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.OutputStream;
 import java.io.File;
 
 import java.util.List;
 import java.util.Arrays;
 
 import java.awt.EventQueue;
-import java.awt.AWTException;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyAdapter;
 
-import javax.swing.JOptionPane;
 
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
@@ -69,6 +65,8 @@ public class ProcessStarter {
 
    /**
     * Adds to this the working directory for a started process
+    * @param workingDir  the working directory for a started
+    * process
     */
    public void addWorkingDir(String workingDir) {
       this.workingDir = workingDir;
@@ -91,6 +89,7 @@ public class ProcessStarter {
       }
 
       runProcess = new Thread() {
+         @Override
          public void run() {  
             List<String> cmdList = Arrays.asList(cmd.split(" "));
             display = "<<Run: " + cmd + ">>\n";
@@ -111,6 +110,7 @@ public class ProcessStarter {
                captureInput();
 
                KeyListener keyListener = new KeyAdapter() {             
+                  @Override
                   public void keyPressed(KeyEvent e) { 
                      int key = e.getKeyCode();
                      if (key == KeyEvent.VK_ENTER) {
@@ -127,17 +127,15 @@ public class ProcessStarter {
                };
                cw.addKeyListen(keyListener);
 
-               CaretListener caretListener = new CaretListener() {
-                  public void caretUpdate(CaretEvent e) {
-                     if (!isActive) {
-                        return;
-                     }
-                     if (e.getDot() < caretPos) {
-                        EventQueue.invokeLater(() -> {
+               CaretListener caretListener = (CaretEvent e) -> {
+                   if (!isActive) {
+                       return;
+                   }
+                   if (e.getDot() < caretPos) {
+                       EventQueue.invokeLater(() -> {
                            cw.setCaret(cw.getText().length()); // cannot be caretPos
-                        });
-                     }
-                  }
+                       });
+                   }
                };
                cw.addCaretListen(caretListener);
             }
@@ -169,11 +167,9 @@ public class ProcessStarter {
     */
    public void endProcess() {
       if (process != null) {
-         kill = new Runnable() {
-            public void run() {
-               process.destroy();
-               apparentExitVal = -1;
-            }
+         kill = () -> {
+             process.destroy();
+             apparentExitVal = -1;
          };
          new Thread(kill).start();
       }
@@ -221,13 +217,9 @@ public class ProcessStarter {
                   }
                }
             }
-            catch (IOException ioe) {
+            catch (IOException | InterruptedException ioe) {
                cw.appendText("<<" + ioe.getMessage() + ">>\n");
                ioe.printStackTrace();
-            }
-            catch (InterruptedException ie) {
-               cw.appendText("<<" + ie.getMessage() + ">>\n");
-               ie.printStackTrace();
             }
             finally {
                cw.setCaret(cw.getText().length());

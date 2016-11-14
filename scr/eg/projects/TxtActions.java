@@ -1,20 +1,14 @@
 package eg.projects;
 
-import java.io.File;
-import java.io.IOException;
-
 /**
  * Represents a project using text files although the class can only
  * define a project's directories but does not perform any actions
  */
 public class TxtActions implements ProjectActions {
    
-   private ProjectConfig projConf;
-   
-   @Override
-   public void setProjectConfig(ProjectConfig projConf) {
-      this.projConf = projConf;
-   }
+   private final ProjectConfig projConf
+         = new ProjectConfig(new SettingsWin("Text file", "Subfolder",
+           false, false, null));
    
    @Override
    public SettingsWin getSetWin() {
@@ -54,7 +48,7 @@ public class TxtActions implements ProjectActions {
    }
    
    /**
-    * not used
+    * Not used
     */
    @Override
    public void runProject() {

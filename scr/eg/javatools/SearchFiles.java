@@ -7,7 +7,7 @@ import java.io.FilenameFilter;
 
 public class SearchFiles {
 
-   private List<File> resultList = new ArrayList<File>();
+   private final List<File> resultList = new ArrayList<>();
    
    public List<File> filteredFiles(String path, String suffix) {
       testPath(path);
@@ -26,6 +26,7 @@ public class SearchFiles {
 
    private void getFiles(String path, String suffix) {
       FilenameFilter filter = new FilenameFilter() {
+         @Override
          public boolean accept(File direct, String name) {
             return name.endsWith(suffix);
          }
@@ -38,9 +39,9 @@ public class SearchFiles {
          resultList.add(f);
       }
 
-      for ( int i = 0; i < filesInPath.length; i++ ) {
+      for (int i = 0; i < filesInPath.length; i++) {
          if ( filesInPath[i].isDirectory() ) {    
-            getFiles( filesInPath[i].toString(), suffix );
+            getFiles(filesInPath[i].toString(), suffix);
          }
       }
    }

@@ -3,13 +3,10 @@ package eg.document;
 import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.EventQueue;
-import java.awt.Dimension;
 
 import javax.swing.JTextPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.BorderFactory;
 import javax.swing.KeyStroke;
 
 import javax.swing.text.DefaultCaret;
@@ -28,12 +25,11 @@ import eg.Constants;
  */
 class EditArea {
 
-   private final static Preferences prefs = new Preferences();
-
    private final JPanel scrolledArea = new JPanel(new BorderLayout());
 
    private final JTextPane textArea = new JTextPane();
    private final JTextPane lineNumbers = new JTextPane();
+
    private final JPanel disabledWordwrapArea
          = new JPanel(new BorderLayout());
    private final JScrollPane scrollRowArea = new JScrollPane(
@@ -42,7 +38,11 @@ class EditArea {
    private final JScrollPane scrollSimpleArea = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-   private JScrollPane scrollLines;
+   private final JScrollPane scrollLines = new JScrollPane(
+         JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+         JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+         
+    private final static Preferences prefs = new Preferences();
 
    private String font;
    private int fontSize;
@@ -84,11 +84,15 @@ class EditArea {
       return lineNumbers;
    }
    
+   /**
+    * @return  the panel that contains this text area in the scroll pane and
+    * and the area that shows line numbers
+    */
    JPanel scrolledArea() {
       return scrolledArea;
    }
    
-    /**
+   /**
     * @return  the font of this text area
     * 
     */
@@ -176,10 +180,6 @@ class EditArea {
       scrollRowArea.getVerticalScrollBar().setUnitIncrement(15);
       scrollRowArea.setBorder(null);
       scrollRowArea.setViewportView(disabledWordwrapArea);
-
-      scrollLines = new JScrollPane(
-            JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
       scrollLines.setViewportView(lineNumbers);
       scrollLines.setBorder(new MatteBorder(0, 0, 0, 1, Constants.BORDER_GRAY));
 

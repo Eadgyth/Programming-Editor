@@ -34,6 +34,7 @@ public class PluginStarter {
    /**
     * Starts the ith plugin of listed plugins
     * @param iPlugin  the ith plugin from a list of plugins
+    * @throws java.io.IOException
     */
    public void startPlugin(int iPlugin) throws IOException {
       if (plugins == null ) {

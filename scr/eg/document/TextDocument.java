@@ -6,20 +6,14 @@ import javax.swing.JTextPane;
 import javax.swing.JPanel;
 
 import javax.swing.text.Document;
-import javax.swing.text.StyledDocument;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.BadLocationException;
-
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.CannotRedoException;
 
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import java.util.Arrays;
 
 //--Eadgyth--//
 import eg.Constants;
@@ -61,6 +55,7 @@ public class TextDocument {
 
    /**
     * Returns the name of this file
+    * @return  the String that represents the name of this file
     */
    public String filename() {
       return filename;
@@ -68,6 +63,7 @@ public class TextDocument {
 
    /**
     * Returns this full filepath
+    * @return  the String that represents the filepath of this file
     */
    public String filepath() {
       return filepath;
@@ -75,6 +71,7 @@ public class TextDocument {
 
    /**
     * Returns the directory of this file
+    * @return  the String that represents the directory of this file
     */
    public String dir() {
       return dir;
@@ -97,13 +94,12 @@ public class TextDocument {
     */
    public void saveToFile() {
       content();
-
       try (FileWriter writer = new FileWriter(filepath)) {
          writer.write(content);        
       }
       catch(IOException e) {
          e.printStackTrace();
-      };
+      }
    }
 
    /**
@@ -263,8 +259,8 @@ public class TextDocument {
    }
 
    /**
-    * @param isEnabled  true to enable the methods called by the
-    * update methods of this {@link TypeText} (coloring, indentation)
+    * @param isEnabled  true to enable syntax coloring and
+    * auto-indentation
     */
    public void enableTextModify(boolean isEnabled) {
       typeText.enableTextModify(isEnabled);
@@ -292,28 +288,14 @@ public class TextDocument {
     * Performs undo action
     */
    public void undo() {
-      try {
-         if (typeText.undomanager.canUndo()) {
-            typeText.undomanager.undo();
-         }
-      }
-      catch (CannotUndoException cue) {
-         cue.printStackTrace();
-      }
+     typeText.undo();
    }
 
    /**
     * Performs redo action
     */
    public void redo() {
-      try {
-         if (typeText.undomanager.canRedo()) {
-            typeText.undomanager.redo();
-         }
-      }
-      catch (CannotRedoException cre) {
-         cre.printStackTrace();
-      }
+      typeText.redo();
    }
 
    /**
@@ -367,12 +349,12 @@ public class TextDocument {
     * empty Strings
     */
    public void colorSearchedText(String[] searchTerms, boolean constrainWord) {
-      for (int i = 0; i < searchTerms.length; i++) {
-         if (searchTerms[i].length() == 0) {
-            throw new IllegalArgumentException("'searchTerms' contains an"
-                  + " empty element");
-         }
-      }
+       for (String searchTerm : searchTerms) {
+           if (searchTerm.length() == 0) {
+               throw new IllegalArgumentException("'searchTerms' contains an"
+                       + " empty element");
+           }
+       }
       if (searchTerms == null) {
          throw new IllegalArgumentException("Argument 'searchTerms' is null");
       }

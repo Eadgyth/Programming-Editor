@@ -1,12 +1,10 @@
 package eg;
 
-import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.JFrame;
 import javax.swing.JFileChooser;
 import javax.swing.Icon;
 
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileView;
 import javax.swing.filechooser.FileSystemView;
@@ -57,6 +55,7 @@ public class FileChooserOpen {
       chooser = new JFileChooser();
       if ("Metal".equals(Constants.CURR_LAF_STR)) {       
          chooser.setFileView(new FileView(){
+            @Override
             public Icon getIcon(File f) {
                return FileSystemView.getFileSystemView().getSystemIcon(f);
             }

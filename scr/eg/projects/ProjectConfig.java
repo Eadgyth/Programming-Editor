@@ -14,7 +14,7 @@ public class ProjectConfig implements Configurable {
    private static final String F_SEP = File.separator;
    
    private final Preferences prefs = new Preferences();
-   private final SettingsWin setWin;
+   private SettingsWin setWin;
    
    private String path = "";
 
@@ -33,7 +33,7 @@ public class ProjectConfig implements Configurable {
    public ProjectConfig(SettingsWin setWin) {
       this.setWin = setWin;
       prefs.readPrefs();
-   }       
+   }
 
    @Override
    public SettingsWin getSetWin() {
@@ -70,26 +70,43 @@ public class ProjectConfig implements Configurable {
       return previousProjectRoot() != null;
    }
    
+   /**
+    * @return  the of the (main program) file which a project was
+    * was defined for and that was entered in the text field of
+    * {@code SettingsWin} or found in prefs
+    */ 
    public String getMainFile() {
       return mainFile;
    }
-   
+
+   /**
+    * @return  the directory of the module or path of modules entered
+    * in the text field of {@code SettingsWin} or found in prefs
+    */ 
    public String getPackageDir() {
       return moduleDir;
    }
    
+   /**
+    * @return  the name for the executables directory entered in the
+    * text field of {@code SettingsWin} or found in prefs
+    */ 
    public String getExecutableDir() {
       return execDir;
    }
    
+   /**
+    * @return  the name for the sources directory entered in the
+    * text field of {@code SettingsWin} or found in prefs
+    */ 
    public String getSourceDir() {
       return sourceDir;
    }
-   
+
    /**
-    * @return  the name for a build entered in the text field
-    * {@code SettingsWin}
-    */
+    * @return  the name for a build entered in the
+    * text field of {@code SettingsWin}
+    */ 
    public String getBuildName() {
       return buildName;
    }
@@ -130,8 +147,6 @@ public class ProjectConfig implements Configurable {
          
          execDir = prefs.prop.getProperty("recentExecDir");
          setWin.displayExecDir(execDir);
-
-         setWin.resetArgsTf();
       }
       else {
          projectPath = "";
@@ -140,7 +155,6 @@ public class ProjectConfig implements Configurable {
          setWin.displaySourcesDir("");
          setWin.displayExecDir("");
          mainFile = "";
-         setWin.resetArgsTf();
       }
    }
 
@@ -198,7 +212,7 @@ public class ProjectConfig implements Configurable {
    }
    
    private void getTextFieldsInput() {
-      mainFile = setWin.mainFileIn();
+      mainFile = setWin.projectFileIn();
       prefs.storePrefs("recentMain", mainFile);
 
       moduleDir = setWin.moduleIn();

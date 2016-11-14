@@ -17,9 +17,9 @@ class RowNumbers {
 
    private final static Color NUM_GRAY = new Color( 70, 70, 70 );
 
-   private SimpleAttributeSet lineSet = new SimpleAttributeSet();
-   private StyledDocument lineDoc;
-   private JPanel scrolledArea; // to revalidate when width of lineDoc changes
+   private final SimpleAttributeSet lineSet = new SimpleAttributeSet();
+   private final StyledDocument lineDoc;
+   private final JPanel scrolledArea; // to revalidate when width of lineDoc changes
    
    private int rowNumberHelper;
 

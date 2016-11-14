@@ -14,8 +14,6 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.awt.EventQueue;
-
 //--Eadgyth--//
 import eg.console.ConsolePanel;
 
@@ -31,9 +29,9 @@ public class CreateJar {
 
    private final static String SEP = File.separator;
 
+   private final ConsolePanel cw;
    private String usedJarName = "";   
-   private ConsolePanel cw;
-
+   
    /**
     * @param cw  the reference to {@link ConsolePanel} in whose
     * text area messages are displeayed
@@ -76,8 +74,8 @@ public class CreateJar {
       pb.directory(new File(root + SEP + dir));
 
       BufferedReader br = null;
-      InputStreamReader isr = null;
-      InputStream is = null;
+      InputStreamReader isr;
+      InputStream is;
 
       try {
          Process p = pb.start();
@@ -95,7 +93,9 @@ public class CreateJar {
       }
       finally {
          try {
-            br.close();
+            if (br != null) {
+               br.close();
+            }
          }
          catch (IOException e) {
             e.printStackTrace();
@@ -104,7 +104,7 @@ public class CreateJar {
    }
 
    private List<String> commandForJar(String path, String jarName, String dir) {
-      List<String> commandForJar = new ArrayList<String>();
+      List<String> commandForJar = new ArrayList<>();
 
       /* ( c: create jar file; v: verbose output; f: output to file, not stdout;
          m: include manifest info ) */ 
@@ -122,15 +122,14 @@ public class CreateJar {
    }
 
    private void createManifest(File manifest, String main, String packageName ) {
-      try {
-         PrintWriter write = new PrintWriter(manifest);
-         if (packageName.length() > 0) {
-            write.println("Main-Class: " + packageName + "." + main);
-         }
-         else {
-            write.println("Main-Class: " + main);
-         }
-         write.close();
+
+          try (PrintWriter write = new PrintWriter(manifest)) {
+              if (packageName.length() > 0) {
+                  write.println("Main-Class: " + packageName + "." + main);
+              }
+              else {
+                  write.println("Main-Class: " + main);
+              }
       }
       catch(IOException e) {
          e.printStackTrace();
@@ -141,7 +140,7 @@ public class CreateJar {
       if ( path.endsWith( SEP ) ) {
          path = path.substring(0, path.length() - 1);
       }
-      List<File> relativePath = new ArrayList<File>();
+      List<File> relativePath = new ArrayList<>();
       for (File i : listOfFiles) {
          String filePath = i.getAbsolutePath();
          relativePath.add(new File(filePath.substring(path.length() + 1)));
@@ -157,14 +156,14 @@ public class CreateJar {
                = new File(projectPath + SEP + dir + SEP + main + ".jar");
          File destination = new File(projectPath  + SEP + main + ".jar");
 
-         InputStream in = new FileInputStream(source);
-         OutputStream out = new FileOutputStream(destination);
-         byte[] buf = new byte[1024];
-         int length;
-         while ((length = in.read(buf)) > 0) {
-            out.write(buf, 0, length);
-         }
-         in.close();
+         OutputStream out;
+          try (InputStream in = new FileInputStream(source)) {
+              out = new FileOutputStream(destination);
+              byte[] buf = new byte[1024];
+              int length;
+              while ((length = in.read(buf)) > 0) {
+                  out.write(buf, 0, length);
+              }}
          out.close();
       }
    }

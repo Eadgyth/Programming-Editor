@@ -42,7 +42,7 @@ class PluginLoader {
    
    private static List<Class<Pluggable>> extractClassesFromJARs(File[] jars, ClassLoader cl)
          throws IOException {
-      List<Class<Pluggable>> classes = new ArrayList<Class<Pluggable>>();
+      List<Class<Pluggable>> classes = new ArrayList<>();
       for (File jar : jars) {
          classes.addAll(PluginLoader.extractClassesFromJAR(jar, cl));
       }
@@ -52,7 +52,7 @@ class PluginLoader {
    @SuppressWarnings("unchecked")
    private static List<Class<Pluggable>> extractClassesFromJAR(File jar, ClassLoader cl)
          throws IOException {
-     List<Class<Pluggable>> classes = new ArrayList<Class<Pluggable>>();
+     List<Class<Pluggable>> classes = new ArrayList<>();
      JarInputStream jaris = new JarInputStream(new FileInputStream(jar));
      JarEntry ent = null;
      while ((ent = jaris.getNextJarEntry()) != null) {
@@ -83,7 +83,7 @@ class PluginLoader {
    }
    
    private static List<Pluggable> createPluggableObjects(List<Class<Pluggable>> pluggables) { 
-     List<Pluggable> plugs = new ArrayList<Pluggable>(pluggables.size());
+     List<Pluggable> plugs = new ArrayList<>(pluggables.size());
      for (Class<Pluggable> plug : pluggables) {
        try {
          plugs.add(plug.newInstance());

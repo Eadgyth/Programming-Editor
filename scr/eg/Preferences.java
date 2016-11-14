@@ -20,9 +20,11 @@ public class Preferences {
       }
       finally {
         try {
-           reader.close();
+           if (reader != null){
+              reader.close();
+           }
         }
-        catch ( Exception e ) { }
+        catch (IOException e) { }
       }
    }
    
@@ -41,8 +43,10 @@ public class Preferences {
       }
       finally {
          try {
-            writer.close();
-         } catch ( Exception e ) {
+            if (writer != null) {
+               writer.close();
+            }
+         } catch (IOException e) {
             e.printStackTrace();
          }
       }
@@ -61,8 +65,10 @@ public class Preferences {
       }
       finally {
          try {
-            reader.close();
-         } catch ( Exception e ) {
+            if (reader != null) {
+               reader.close();
+            }
+         } catch (IOException e) {
             e.printStackTrace();
          }
       }

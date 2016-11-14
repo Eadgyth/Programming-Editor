@@ -1,17 +1,13 @@
 package eg.ui;
 
-import java.io.IOException;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
-import java.awt.Color;
 
 import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
-import java.awt.event.MouseMotionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -20,9 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-
-import javax.swing.event.ChangeListener;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -30,8 +23,6 @@ import javax.swing.border.MatteBorder;
 //--Eadgyth--//
 import eg.Constants;
 import eg.Preferences;
-import eg.ui.filetree.FileTree;
-import eg.console.ConsolePanel;
 
 /**
  * The main window with a split view to which areas components can
@@ -74,15 +65,15 @@ public class MainWin {
    public MainWin(Menu menu, Toolbar tBar) {
       this.menu = menu;
       this.tBar = tBar;
+
       prefs.readPrefs();
       initSplitPane();
       initStatusbar();
       initAllComponents();
       initFunctionPnl();
-      enableExtra(false, false, false);
       showHideAct();
       initFrame();
-      showProjectInfo("not set");
+      showProjectLb.setText("Project root: not set");
    }
    
    /**
@@ -90,7 +81,7 @@ public class MainWin {
     * which is intended for the text area
     * @param c  the Component that is added
     */
-   public void addToTextArea(Component c) {
+   public void addTextArea(Component c) {
       splitHor.setRightComponent(c);
    }
    
@@ -163,25 +154,18 @@ public class MainWin {
    }
 
    /**
-    * Enable the menu item to show the file explorer
+    * Enables/Disables selected menu items and toolbar buttons for
+    * project
     */
-    public void enableFileViewItm(boolean isEnabled) {
-       menu.enableFileViewItm(true);
-    }
-
-   /**
-    * Displays if or which project is defined
-    */
-   public void showProjectInfo(String txt) {
-      showProjectLb.setText("Project root: " + txt);
-   }
-
-   /**
-    * Enables menu items and toolbar buttons
-    */
-   public void enableExtra(boolean isCompile, boolean isRun, boolean isBuild) {
+   public void allowProjectEvents(boolean isCompile, boolean isRun,
+         boolean isBuild) {
       menu.enableExtra(isCompile, isRun, isBuild);
       tBar.enableExtraBts(isCompile, isRun);
+   }
+   
+   public void showProjectInfo(String project) {
+      showProjectLb.setText("Project root: " + project);
+      menu.enableFileViewItm(true);
    }
 
    /**
@@ -294,22 +278,6 @@ public class MainWin {
     */
    public void winListen(WindowListener wl) {
       frame.addWindowListener(wl);
-   }
-
-   /**
-    * Adds the same event handler to the run button in this Toolbar
-    * and to the run menu item in this menu
-    */
-   public void runAct(ActionListener al) {
-      menu.runAct(al);
-      tBar.runAct(al);
-   }
-
-   /**
-    * Adds an event handler to the build menu item in this menu
-    */
-   public void buildAct(ActionListener al) {
-      menu.buildAct(al);
    }
    
    //

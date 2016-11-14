@@ -3,25 +3,19 @@ package eg;
 import java.util.Observer;
 import java.util.Observable;
 
-import java.awt.Container;
-import java.awt.EventQueue;
-
 import java.awt.event.WindowListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.ActionEvent;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import java.io.File;
-import java.io.IOException;
 
 //--Eadgyth--//
 import eg.utils.ShowJOption;
@@ -40,17 +34,18 @@ import eg.plugin.PluginStarter;
 public class TabActions implements Observer{
 
    private final TabbedPane tabPane = new TabbedPane();
+   private final TextDocument[] txtDoc = new TextDocument[20];
+   private final FileChooserOpen fo = new FileChooserOpen();
+   private final FileChooserSave fs = new FileChooserSave();
+   private final Preferences prefs = new Preferences();   
    private final MainWin mw;
    private final FileTree fileTree;
    private final ProjectFactory projFact;
    private final Edit edit;
-   private final TextDocument[] txtDoc = new TextDocument[20];
-   private final Preferences prefs = new Preferences();   
-   private final FileChooserOpen fo = new FileChooserOpen();
-   private final FileChooserSave fs = new FileChooserSave();
    private final PluginStarter plugStart;
-   
-   private ProjectActions projAct = null;
+   private final ChangeListener changeListener;
+   private final WindowListener winListener;
+   private ProjectActions projAct;
 
    /* The index of the selected tab */
    private int iTab = 0;
@@ -61,6 +56,16 @@ public class TabActions implements Observer{
    public TabActions(MainWin mw, Edit edit,
           FileTree fileTree, ProjectFactory projFact,
           PluginStarter plugStart) {
+       
+      this.winListener = new WindowAdapter() {
+         @Override
+         public void windowClosing(WindowEvent we) {
+            tryExit();
+         }
+      };    
+      this.changeListener = (ChangeEvent changeEvent) -> {
+         changeTabEvent(changeEvent);
+      };
 
       this.mw = mw;
       this.fileTree = fileTree;
@@ -68,10 +73,9 @@ public class TabActions implements Observer{
       this.edit = edit;
       this.plugStart = plugStart;
 
-      mw.addToTextArea(tabPane.tabbedPane());
+      mw.addTextArea(tabPane.tabbedPane());
       mw.winListen(winListener);
       tabPane.changeListen(changeListener);
-      fileTree.addObserver(this);  
       prefs.readPrefs();  
       newEmptyTab();
    }
@@ -147,6 +151,14 @@ public class TabActions implements Observer{
       saveAll();
       projAct.compile();
    }
+   
+   public void runProj() {
+      projAct.runProject();
+   }
+   
+   public void buildProj() {
+      projAct.build();
+   }
 
    /**
     * Saves the file of a selected tab as a new file selected
@@ -220,7 +232,7 @@ public class TabActions implements Observer{
          tabPane.selectTab(count);                 
          int res = saveOrCloseOption(count);
          if (res == JOptionPane.YES_OPTION) {
-            txtDoc[iTab].saveToFile();
+            saveOrSaveAs();
             tryExit();
          }
          else if (res == JOptionPane.NO_OPTION) {
@@ -231,30 +243,37 @@ public class TabActions implements Observer{
    }
 
    /**
-    * Configures a project by entries in the project settings
-    * window using the file at the selected tab
+    * Sets visible the settings window of a {@code ProjectActions} object <p>
+    * See also {@link SettingsWin} 
     */
    public void openProjectSetWin() {
       if (tabPane.tabCount() == 1 & txtDoc[iTab].filename().length() == 0) {
          ShowJOption.infoMessage("A file must be opened to set a project");
          return;
       }
-      int result = -1;
-      if (isProjectSet & !projAct.isInProjectPath(txtDoc[iTab].dir())) {
-         result = ShowJOption.confirmYesNo("Change project ?");
-      }
-      /*
-       * new ProjectActions object depending on the file extension */
-      if (result == JOptionPane.YES_OPTION) {
-         ProjectActions prNew = projFact.getProjAct(txtDoc[iTab].filepath());
-         if (prNew != null & projAct != prNew) {
-            projAct = prNew;
-            projAct.getSetWin().okAct(e -> setNewProject());
-         }
-         result = -1;
-      }
-      if (result == -1) {
+      
+      if (isProjectSet & projAct.isInProjectPath(txtDoc[iTab].dir())) {
          projAct.makeSetWinVisible(true);
+      }
+      else {
+         ProjectActions projNew 
+               = projFact.getProjAct(FileUtils.extension(txtDoc[iTab].filepath()));
+         if (projNew == null) {
+            ShowJOption.infoMessage("A project cannot be set for this file type");
+         }
+         else {         
+            int result = -1;
+            if (isProjectSet) {
+               result = ShowJOption.confirmYesNo("Change project ?");
+            }
+            if (result == JOptionPane.YES_OPTION) {         
+               result = -1;
+            }
+            if (result == -1) {
+               projNew.makeSetWinVisible(true);
+               projNew.getSetWin().okAct(e -> setNewProject(projNew));
+            }
+         }
       }
    }
 
@@ -317,45 +336,32 @@ public class TabActions implements Observer{
    }
    
    private void retrieveProject(String newPath) {
-      ProjectActions prNew = projFact.getProjAct(txtDoc[iTab].filepath());
-      if (prNew != null && projAct != prNew) {
-         projAct = null;
+      ProjectActions prNew
+            = projFact.getProjAct(FileUtils.extension(txtDoc[iTab].filepath()));
+      if (prNew != null & projAct != prNew) {
          projAct = prNew;
-         registerProjectActions();
-         projAct.getSetWin().okAct(e -> setNewProject());
-      }
-      if (projAct != null) {
-         mw.enableExtra(projFact.isCompile(), projFact.isRun(), projFact.isBuild());
+         projAct.getSetWin().okAct(e -> setNewProject(prNew));
          projAct.findPreviousProjectRoot(newPath);
          if (projAct.getProjectRoot().length() > 0) {
             isProjectSet = true;
             updateProjectDisplay(projAct.getProjectRoot());
          }
-         else {
-            mw.showProjectInfo("not set");
-         }
       }
    }
 
-   private void setNewProject() {
-      projAct.configFromSetWin(txtDoc[iTab].dir(),
+   private void setNewProject(ProjectActions projNew) {
+      projNew.configFromSetWin(txtDoc[iTab].dir(),
             FileUtils.extension(txtDoc[iTab].filename()));
-      if (projAct.getProjectRoot().length() > 0) {        
+      if (projNew.getProjectRoot().length() > 0) {
+         projAct = projNew;       
          updateProjectDisplay(projAct.getProjectRoot());
-         mw.enableExtra(projFact.isCompile(), projFact.isRun(), projFact.isBuild());
          isProjectSet = true;
       }
    }
-   
-   /**
-    * Updates the display when a new project is defined either by
-    * finding the recent project upon opening the first file or by
-    * the configs in the project settings window
-    */
+
    private void updateProjectDisplay(String path) {
       File file = new File(path);
       mw.showProjectInfo(file.getName());
-      mw.enableFileViewItm(true);
       fileTree.setProjectTree(path);
    }
    
@@ -383,27 +389,14 @@ public class TabActions implements Observer{
       }     
    }
    
-   private ChangeListener changeListener = new ChangeListener() {
-      public void stateChanged(ChangeEvent changeEvent) {
-         JTabbedPane sourceTb = (JTabbedPane) changeEvent.getSource();
-         iTab = sourceTb.getSelectedIndex();
-         if (iTab > -1) {           
-            mw.displayFrameTitle(txtDoc[iTab].filepath());       
-            focusInSelectedTab();
-            edit.setTextObject(txtDoc[iTab]);
-            plugStart.setTextDocument(txtDoc[iTab]);
-         }
+   private void changeTabEvent(ChangeEvent changeEvent) {
+      JTabbedPane sourceTb = (JTabbedPane) changeEvent.getSource();
+      iTab = sourceTb.getSelectedIndex();
+      if (iTab > -1) {
+         mw.displayFrameTitle(txtDoc[iTab].filepath());
+         focusInSelectedTab();
+         edit.setTextObject(txtDoc[iTab]);
+         plugStart.setTextDocument(txtDoc[iTab]);
       }
-   };
-
-   private WindowListener winListener = new WindowAdapter() {
-      public void windowClosing(WindowEvent we) {
-         tryExit();
-      }
-   };
-   
-   private void registerProjectActions() {
-      mw.runAct(e -> projAct.runProject());
-      mw.buildAct(e -> projAct.build());
    }
 }

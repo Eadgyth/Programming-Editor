@@ -1,12 +1,8 @@
 package eg.projects;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
 import java.awt.EventQueue;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
 
 //--Eadgyth--//
 import eg.utils.ShowJOption;
@@ -19,15 +15,16 @@ import eg.ui.MainWin;
  */
 public class JavaActions implements ProjectActions {
 
-   private ProjectConfig projConf;
-
-   private Compile comp;
-   private CreateJar jar;
-   private ProcessStarter proc;
-   private ConsolePanel cw;
-   private MainWin mw;
+   private final Compile comp;
+   private final CreateJar jar;
+   private final ProcessStarter proc;
+   private final ConsolePanel cw;
+   private final MainWin mw;
    
-   private Runnable runSetCaret;
+   private final ProjectConfig projConf
+         = new ProjectConfig(new SettingsWin("Main class", "Package",
+           true, true, "jar file"));
+   
    private String startCommand = "";
 
    public JavaActions(MainWin mw, ProcessStarter proc, ConsolePanel cw) {
@@ -37,11 +34,6 @@ public class JavaActions implements ProjectActions {
  
       comp = new Compile(cw);
       jar = new CreateJar(cw);
-   }
-   
-   @Override
-   public void setProjectConfig(ProjectConfig projConf) {
-      this.projConf = projConf;
    }
    
    @Override

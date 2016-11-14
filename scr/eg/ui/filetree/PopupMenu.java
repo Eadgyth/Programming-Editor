@@ -4,7 +4,6 @@ import java.awt.event.*;
 import java.awt.Component;
 
 import javax.swing.JPopupMenu;
-import javax.swing.JPanel;
 import javax.swing.JMenuItem;
 
 /**

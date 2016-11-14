@@ -3,17 +3,11 @@ package eg;
 import java.awt.Toolkit;
 import java.awt.EventQueue;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
-
-import javax.swing.JTextPane;
-import javax.swing.text.BadLocationException;
 
 import java.io.IOException;
 
@@ -140,24 +134,18 @@ public class Edit {
       if (txtDoc.selectedText() == null) {
          return;
       }
-
-      txtDoc.enableTextModify(false);
-
+      
       String sel = txtDoc.selectedText();
-      String[] selection = sel.split("\n");
       int start = txtDoc.selectionStart();
-
-      /* remove the selection of a first empty line */
-      if (selection[0].length() == 0) {
-         txtDoc.select(start + 1, txtDoc.selectionEnd());
-         sel = txtDoc.selectedText();
-         selection = sel.split("\n");
-         start = txtDoc.selectionStart();
+      String startingLine = Finder.currLine(txtDoc.getDocText(), start);
+      if (!startingLine.startsWith(indentUnit)) {
+         return;
       }
 
-      int startOfFirstLine = txtDoc.getDocText().lastIndexOf("\n", start);
-
-      /* count spaces at the beginning of selection */
+      txtDoc.enableTextModify(false);
+      String[] selection = sel.split("\n");
+      /*
+       * count spaces at the beginning of selection */
       int countSpaces = 0;       
       for (int i = 0; i < selection[0].length(); i++) {
          if (selection[0].substring(i, i + 1).equals(" ")) {
@@ -167,39 +155,41 @@ public class Edit {
             break;
          }
       }
-
       int[] startOfLines = Finder.startOfLines(selection);
-
+      /*
+       * add an indent unit to empty lines or lines with too few spaces */
       for (int i = 0; i < selection.length; i++) {         
-         if (selection[i].length() == 0 ) {
-            txtDoc.insertStr(start + startOfLines[i] , indentUnit);
+         if (selection[i].length() == 0) {
+            txtDoc.insertStr(start + startOfLines[i], indentUnit);
             for (int j = i + 1; j < selection.length; j++) {
                startOfLines[j] += indentLength;
             }
          }
+         if (selection[i].matches("[\\s]+")) {
+            int length = selection[i].length();
+            if (length < indentLength) {
+               txtDoc.insertStr(start + startOfLines[i], indentUnit);
+               for (int j = i + 1; j < selection.length; j++) {
+                  startOfLines[j] += indentLength;
+               }
+            }
+         } 
       }
-
+      /*
+       * renew selection */
+      int startOfFirstLine = txtDoc.getDocText().lastIndexOf("\n", start);
       int startUpdate = start - indentLength + countSpaces;
-
-      if (countSpaces < indentLength && startUpdate > startOfFirstLine) {     
+      if (countSpaces != indentLength && startUpdate > startOfFirstLine) {
          txtDoc.select(startUpdate, txtDoc.selectionEnd());
          sel = txtDoc.selectedText();
          selection = sel.split("\\n");
          start = txtDoc.selectionStart();
       }        
-
-      if (sel.substring(0, indentLength).equals(indentUnit)) {
-         if (isIndentUnit(selection)) {
-            startOfLines = Finder.startOfLines(selection);
-            for (int i = 0; i < selection.length; i++) {
-               txtDoc.removeStr(start + startOfLines[i] - i * indentLength,
-                     indentLength);
-            }
-         }
-         else {
-            ShowJOption.warnMessage
-                  ("Operation blocked because indentation of lines is not consistent");
-         }
+     
+      startOfLines = Finder.startOfLines(selection);
+      for (int i = 0; i < selection.length; i++) {
+         txtDoc.removeStr(start + startOfLines[i] - i * indentLength,
+               indentLength);
       }
 
       if (txtDoc.isComputerLanguage()) {
@@ -212,11 +202,9 @@ public class Edit {
     */
    public void clearSpaces() {
       txtDoc.enableTextModify(false);
-
       String allTxt = txtDoc.getDocText();
       String[] allTxtArr = allTxt.split("\n");
       int[] startOfLines = Finder.startOfLines(allTxtArr);
-
       for (int i = 0; i < allTxtArr.length; i++) {
          if (allTxtArr[i].matches("[\\s]+")) {
             txtDoc.removeStr(startOfLines[i], allTxtArr[i].length());
@@ -225,7 +213,6 @@ public class Edit {
             }
          }
       }
-
       if (txtDoc.isComputerLanguage()) {
          txtDoc.enableTextModify(true);
       }
@@ -247,6 +234,8 @@ public class Edit {
 
    /**
     * Changes the language
+    * @param newLanguage  the language that is used
+    * for the automatic editing of text during typing
     */
    public void changeLanguage(String newLanguage) {
       txtDoc.changeLanguage(newLanguage);
@@ -254,34 +243,15 @@ public class Edit {
 
    private String getClipboard() {
       String inClipboard = "";
-
       Toolkit toolkit = Toolkit.getDefaultToolkit();
       Clipboard clipboard = toolkit.getSystemClipboard();
       Transferable content = clipboard.getContents(null);
       try {
          inClipboard = (String) content.getTransferData(DataFlavor.stringFlavor);
       }
-      catch (UnsupportedFlavorException ufe) {
+      catch (UnsupportedFlavorException | IOException ufe) {
          ufe.printStackTrace();
       }
-      catch (IOException ioe) {
-         ioe.printStackTrace();
-      }
       return inClipboard;
-   }
-
-   /*
-    * @return  if all lines except the first begin with an
-    * indentation unit
-    */
-   private boolean isIndentUnit(String[] in) {
-      boolean isIndentUnit = true;
-
-      for (int i = 1; i < in.length; i++) {
-         if (!in[i].startsWith(indentUnit)) {
-            isIndentUnit = false;
-         }   
-      }
-      return isIndentUnit;
    }
 }

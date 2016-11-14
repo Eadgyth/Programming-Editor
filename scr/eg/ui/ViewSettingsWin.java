@@ -1,10 +1,7 @@
 package eg.ui;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 
 import java.awt.event.ActionListener;
 
@@ -17,8 +14,6 @@ import javax.swing.JButton;
 import javax.swing.BoxLayout;
 import javax.swing.Box;
 import javax.swing.BorderFactory;
-import javax.swing.UIManager;
-import javax.swing.LookAndFeel;
 
 //--Eadgyth--//
 import eg.Preferences;
@@ -34,11 +29,11 @@ class ViewSettingsWin {
    private final JFrame frame = new JFrame("View settings");
    private final Preferences prefs = new Preferences();
    
-   private JComboBox<String> selectLaf = new JComboBox<>(LAF_OPT);
-   private JCheckBox checkLineNumbers  = new JCheckBox();
-   private JCheckBox checkToolbar      = new JCheckBox();
-   private JCheckBox checkStatusbar    = new JCheckBox();
-   private JButton okBt                = new JButton("OK");
+   private final JComboBox<String> selectLaf = new JComboBox<>(LAF_OPT);
+   private final JCheckBox checkLineNumbers  = new JCheckBox();
+   private final JCheckBox checkToolbar      = new JCheckBox();
+   private final JCheckBox checkStatusbar    = new JCheckBox();
+   private final JButton okBt                = new JButton("OK");
    
    public ViewSettingsWin() {
       prefs.readPrefs();
@@ -145,7 +140,6 @@ class ViewSettingsWin {
       return checkBxPnl;
    }
       
-   
    private JPanel setLafPanel() {      
       JLabel lafLabel = new JLabel( 
             "Look & feel (takes effect after restarting Eadgyth):");

@@ -5,26 +5,19 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.BorderFactory;
-import javax.swing.UIManager;
-import javax.swing.LookAndFeel;
 
 import javax.swing.border.TitledBorder;
 import javax.swing.border.LineBorder;
 
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.*;
 
 import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 //--Eadgyth--//
 import eg.ui.IconFiles;
@@ -51,13 +44,13 @@ public class SettingsWin {
    /**
     * Defines which inputs are asked for.
     * <p>
-    * @param fileKind  a description for the kind of file of the project.
-    * Is not null.
+    * @param fileKind  a description for the kind of file which a project is
+    * configured for. Is not null.
     * @param moduleKind  a description for the kind of module (e.g. package/
     * directory relative to the project root). Null to skip asking for a module
     * @param useScrExec  true to ask for the directories that contain source
     * files and executables, respectively
-    * @param useArgs  true to ask for additional arguments of a start skript
+    * @param useArgs  true to ask for additional arguments of a start script
     * @param buildKind  the name for the kind of build. Null to skip asking
     * for a build
     */
@@ -80,63 +73,82 @@ public class SettingsWin {
    public void okAct(ActionListener al) {
       okBt.addActionListener(al);
    }
-
-   //
-   //-- inputs in text fields
-   //
-   String mainFileIn() {
+   
+   /**
+    * @return the input in the text field for the name of the
+    * file which a project is configured for
+    */
+   String projectFileIn() {
       return fileTf.getText();
    }
 
+   /**
+    * @return  the input in the text field for the module / subdirectory
+    */
    String moduleIn() {
       return moduleTf.getText();
    }
 
+   /**
+    * @return  the input in the text field for the directory of source
+    * files
+    */
    public String sourcesDirIn() {
       return sourcesDirTf.getText();
    }
 
+   /**
+    * @return  the input in the text field for the directory of
+    * executables
+    */
    public String execDirIn() {
       return execDirTf.getText();
    }
 
+   /**
+    * @return  the input in the text field for arguments
+    */
    public String argsIn() {
       return argsTf.getText();
    }
 
+   /**
+    * @return  the input in the text field for a name of a build
+    */
    public String buildNameIn() {
       return buildTf.getText();
    }
 
-   //
-   // display text in text fields
-   //
-
+   /**
+    * Shows in the text field the name of the file which a project
+    * is set for
+    */
    public void displayFile(String in) {
       fileTf.setText(in);
    }
 
+   /**
+    * Shows in the text field the directory of the module
+    */
    public void displayModule(String in) {
       moduleTf.setText(in);
    }
 
    /**
-    * Shows the name of the directory containin source files
+    * Shows in the text field the name of the directory that
+    * containins source files
     */
    public void displaySourcesDir(String in) {
       sourcesDirTf.setText(in);
    }
 
    /**
-    * Shows the name of the directory containin executable files
+    * Shows in the text field the name of the directory
+    * containin executable files
     */
    public void displayExecDir(String in) {
       execDirTf.setText(in);
    }
-
-   public void resetArgsTf() {
-      argsTf.setText("");
-   } 
 
    private JPanel projectPanel(String fileKind, String moduleKind, boolean useScrExec) {
       GridLayout grid = new GridLayout(1, 0);

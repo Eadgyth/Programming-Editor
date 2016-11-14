@@ -13,17 +13,21 @@ public class Toolbar {
 
    private final JToolBar toolbar = new JToolBar(JToolBar.HORIZONTAL);
 
-   private JButton openBt    = new JButton(IconFiles.openIcon);
-   private JButton saveBt    = new JButton(IconFiles.saveIcon);
-   private JButton undoBt    = new JButton(IconFiles.undoIcon);
-   private JButton redoBt    = new JButton(IconFiles.redoIcon);
-   private JButton indentBt  = new JButton(IconFiles.indentIcon);
-   private JButton outdentBt = new JButton(IconFiles.outdentIcon); 
-   private JButton compileBt = new JButton(IconFiles.compileIcon);
-   private JButton runBt     = new JButton(IconFiles.runIcon);
+   private final JButton openBt    = new JButton(IconFiles.openIcon);
+   private final JButton saveBt    = new JButton(IconFiles.saveIcon);
+   private final JButton undoBt    = new JButton(IconFiles.undoIcon);
+   private final JButton redoBt    = new JButton(IconFiles.redoIcon);
+   private final JButton indentBt  = new JButton(IconFiles.indentIcon);
+   private final JButton outdentBt = new JButton(IconFiles.outdentIcon); 
+   private final JButton compileBt = new JButton(IconFiles.compileIcon);
+   private final JButton runBt     = new JButton(IconFiles.runIcon);
    
    public Toolbar() {
       initToolbar();
+   }
+   
+   JToolBar toolbar() {
+      return toolbar;
    }
    
    //
@@ -57,12 +61,8 @@ public class Toolbar {
       compileBt.addActionListener(al);
    }
    
-   void runAct(ActionListener al) {
+   public void runAct(ActionListener al) {
       runBt.addActionListener(al);
-   }
-   
-   JToolBar toolbar() {
-      return toolbar;
    }
    
    void disableExtraBts() {
@@ -79,6 +79,8 @@ public class Toolbar {
       toolbar.setOpaque(false);
       toolbar.setBorder(null);
       toolbar.setFloatable(false);
+      
+      enableExtraBts(false, false);
 
       JButton[] bts = new JButton[] {
          openBt, saveBt, undoBt, redoBt, indentBt,

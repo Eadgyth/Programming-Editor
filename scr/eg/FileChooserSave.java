@@ -48,6 +48,7 @@ public class FileChooserSave {
       chooser = new JFileChooser();
       if ("Metal".equals(Constants.CURR_LAF_STR)) {
          chooser.setFileView(new FileView(){
+            @Override
             public Icon getIcon(File f)
             {
                return FileSystemView.getFileSystemView().getSystemIcon(f);

@@ -5,15 +5,12 @@ import java.io.IOException;
 import java.util.Locale;
 
 import javax.swing.UIManager;
-import javax.swing.LookAndFeel;
 
 import javax.swing.border.EmptyBorder;
 
-import java.awt.Font;
 import java.awt.Color;
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.Insets; 
+import java.awt.Insets;
 
 //--Eadgyth--//
 import eg.console.*;
@@ -24,6 +21,8 @@ import eg.ui.filetree.FileTree;
 import eg.projects.ProjectFactory;
 import eg.ui.ViewSettings;
 import eg.plugin.PluginStarter;
+import java.awt.event.ActionEvent;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * Contains the main method.
@@ -47,10 +46,12 @@ public class Eadgyth {
       ProjectFactory projFact  = new ProjectFactory(mw, proc, cw);
       PluginStarter  plugStart = new PluginStarter(mw);
       Edit           edit      = new Edit();
-      TabActions     ta        = new TabActions(mw, edit, fileTree, projFact, plugStart);
+      TabActions     ta        = new TabActions(mw, edit, fileTree, projFact,
+              plugStart);
       FontSetting    fontSet   = new FontSetting(ta.getTextDocument());
       ViewSettings   viewSet   = new ViewSettings(mw, ta.getTextDocument());
       
+      fileTree.addObserver(ta);
       mw.addFileView(fileTree.fileTreePnl());
       mw.addConsoleView(cw.consolePnl());
 
@@ -58,7 +59,7 @@ public class Eadgyth {
       registerTabActions(ta, mw, menu, tBar);
       menu.openViewSettingsAct(e -> viewSet.makeSetWinVisible());
       menu.fontAct(e -> fontSet.makeFontSetWinVisible(true));
-      menu.selectPlugAct(e -> {
+      menu.selectPlugAct((ActionEvent e) -> {
          try {
             plugStart.startPlugin(menu.getPluginIndex(e));
             if (!menu.isFunctionPnlSelected()) {
@@ -87,7 +88,9 @@ public class Eadgyth {
          try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
          } 
-         catch (Exception e) {
+         catch (ClassNotFoundException | IllegalAccessException 
+                 | InstantiationException 
+                 | UnsupportedLookAndFeelException e) {
             e.getMessage();
          }
       }
@@ -144,5 +147,8 @@ public class Eadgyth {
       menu.openJavaSetWinAct(e -> ta.openProjectSetWin());
       menu.compileAct(e -> ta.saveAndCompile());
       tBar.compileAct(e -> ta.saveAndCompile());
+      menu.runAct(e -> ta.runProj());
+      tBar.runAct(e -> ta.runProj());
+      menu.buildAct(e -> ta.buildProj());
    }
 }

@@ -1,12 +1,9 @@
 package eg.document;
 
-import javax.swing.JTextPane;
-
 import javax.swing.text.StyledDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.Element;
-import javax.swing.text.BadLocationException;
 
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
@@ -14,33 +11,35 @@ import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 
 import javax.swing.undo.UndoManager;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.CannotRedoException;
 
 import java.awt.EventQueue;
 import java.awt.Color;
 
 //--Eadgyth--//
 import eg.utils.Finder;
+import javax.swing.text.BadLocationException;
 
 /**
  * The editing of text during typing
  */
 public class TypeText implements DocumentListener {
 
-   public UndoManager undomanager = new UndoManager();
+   private final UndoManager undomanager = new UndoManager();
+   private final StyledDocument lineDoc;
+   private final StyledDocument doc;  
+   private final Element el;
 
-   private StyledDocument lineDoc;
-   private StyledDocument doc;  
-   private Element el;
+   private final SimpleAttributeSet normalSet = new SimpleAttributeSet(); 
+   private final SimpleAttributeSet comSet    = new SimpleAttributeSet();
+   private final SimpleAttributeSet brSet     = new SimpleAttributeSet();
+   private final SimpleAttributeSet keySet    = new SimpleAttributeSet();
+   private final SimpleAttributeSet strLitSet = new SimpleAttributeSet();
 
-   private SimpleAttributeSet normalSet = new SimpleAttributeSet(); 
-   private SimpleAttributeSet comSet    = new SimpleAttributeSet();
-   private SimpleAttributeSet brSet     = new SimpleAttributeSet();
-   private SimpleAttributeSet keySet    = new SimpleAttributeSet();
-   private SimpleAttributeSet strLitSet = new SimpleAttributeSet();
-
-   private TypeText.Coloring col = new TypeText.Coloring();
-   private AutoIndent autoInd;
-   private RowNumbers rowNum;
+   private final TypeText.Coloring col = new TypeText.Coloring();
+   private final AutoIndent autoInd;
+   private final RowNumbers rowNum;
 
    private String[] keywords;
    private String lineCmnt;
@@ -64,16 +63,15 @@ public class TypeText implements DocumentListener {
       doc = editArea.textArea().getStyledDocument();
       el = doc.getParagraphElement(0);
       setStyles();
-
-      doc.addUndoableEditListener(new UndoableEditListener() {
-         public void undoableEditHappened(UndoableEditEvent e) {
-            if (!isStyleChanged && isDocListen) {
-               undomanager.addEdit(e.getEdit());
-            }
-         }
-      });
-
+      
       doc.addDocumentListener(this);
+
+      doc.addUndoableEditListener((UndoableEditEvent e) -> {
+          if (!isStyleChanged && isDocListen) {
+              undomanager.addEdit(e.getEdit());
+          }
+      });
+      undomanager.setLimit(1000);
 
       rowNum = new RowNumbers(lineDoc, editArea.scrolledArea());
       autoInd = new AutoIndent(editArea.textArea(), doc, normalSet);
@@ -84,14 +82,15 @@ public class TypeText implements DocumentListener {
     * upon inserting text
     * @see TextDocument#enableTextModify(boolean)
     */ 
+   @Override
    public void insertUpdate(DocumentEvent de) {
       isStyleChanged = false;
 
       if (isDocListen) {
          String in = getDocText();
-         int pos = de.getOffset();
          updateRowNumber(in);
          if (isTextModify) {
+            int pos = de.getOffset();
             insertTextModify(de, in, pos);
          }
       }
@@ -102,14 +101,15 @@ public class TypeText implements DocumentListener {
     * upon removing text
     * @see TextDocument#enableTextModify(boolean)
     */
+   @Override
    public void removeUpdate(DocumentEvent de) {
       isStyleChanged = false;
 
       if (isDocListen) {
          String in = getDocText();
-         int pos = de.getOffset();
          updateRowNumber(in);
          if (isTextModify) {
+            int pos = de.getOffset();
             removeTextModify(de, in, pos);
          }
       }
@@ -118,6 +118,7 @@ public class TypeText implements DocumentListener {
    /**
     * Disables adding a change of text style to the undo manager
     */
+   @Override
    public void changedUpdate(DocumentEvent de) {
       isStyleChanged = true;
    }
@@ -129,6 +130,10 @@ public class TypeText implements DocumentListener {
    SimpleAttributeSet normalSet() {
       return normalSet;
    }
+   
+   String getIndentUnit() {
+      return autoInd.getIndentUnit();
+   }
 
    void enableDocListen(boolean isDocListen) {
       this.isDocListen = isDocListen;
@@ -136,17 +141,6 @@ public class TypeText implements DocumentListener {
 
    void enableTextModify(boolean isTextModify) {
       this.isTextModify = isTextModify;
-   }
-
-   String getDocText() {
-      String in = null;
-      try {
-         in = doc.getText(0, doc.getLength());
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
-      return in;
    }
 
    void configTypeText(String[] keywords, String lineCmnt, String blockCmntStart,
@@ -164,6 +158,17 @@ public class TypeText implements DocumentListener {
          autoInd.resetIndent();
       }
       this.constrainWord = constrainWord;
+   }
+   
+   String getDocText() {
+      String in = null;
+      try {
+         in = doc.getText(0, doc.getLength());
+      }
+      catch (BadLocationException e) {
+         e.printStackTrace();
+      }
+      return in;
    }
 
    void changeIndentUnit(String indentUnit) {
@@ -190,9 +195,31 @@ public class TypeText implements DocumentListener {
       String all = getDocText();
       col.color(all, 0);
    }
+   
+   void undo() {
+      try {
+         if (undomanager.canUndo()) {
+            enableTextModify(false);
+            undomanager.undo();
+            colorAll(true);
+         }
+      }
+      catch (CannotUndoException cue) {
+         cue.printStackTrace();
+      }
+   }
 
-   String getIndentUnit() {
-      return autoInd.getIndentUnit();
+   void redo() {
+      try {
+         if (undomanager.canRedo()) {
+            enableTextModify(false);
+            undomanager.redo();
+            colorAll(true);
+         }
+      }
+      catch (CannotRedoException cre) {
+         cre.printStackTrace();
+      }
    }
    
    //
@@ -203,7 +230,6 @@ public class TypeText implements DocumentListener {
       if (pos > 0 && useIndent) {
          autoInd.openBracketIndent(in, pos);
       }
-
       EventQueue.invokeLater(() -> {
          col.color(in, pos);
          if (useIndent) {
@@ -256,7 +282,7 @@ public class TypeText implements DocumentListener {
        * modified. For block comments always the entire document is modified
        */
       void color(String in, int pos) {
-         String chunk = null;
+         String chunk;
          if (isTextModify) {
             chunk = Finder.currLine(in, pos);
             pos = in.lastIndexOf("\n", pos) + 1;
@@ -377,7 +403,7 @@ public class TypeText implements DocumentListener {
             lineComInd = in.indexOf(lineCmnt, lineComInd + nextPos );
             if (lineComInd != -1 && !Finder.isInQuotes( in, lineComInd)) {
                int lineEndInd = in.indexOf("\n", lineComInd + 1);
-               int length = 0;
+               int length;
                if (lineEndInd != -1) {
                   length = lineEndInd - lineComInd;
                }

@@ -11,13 +11,11 @@ import eg.utils.ShowJOption;
  */
 public class HtmlActions implements ProjectActions {
    
-   private ProjectConfig projConf;
+   private final ProjectConfig projConf
+         = new ProjectConfig(new SettingsWin("HTML file", "Subfolder",
+           false, false, null));
+
    private File htmlFile;
-   
-   @Override
-   public void setProjectConfig(ProjectConfig projConf) {
-      this.projConf = projConf;
-   }
    
    @Override
    public SettingsWin getSetWin() {

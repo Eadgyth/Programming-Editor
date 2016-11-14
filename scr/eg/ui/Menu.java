@@ -1,11 +1,8 @@
 package eg.ui;
 
 import java.io.File;
-import java.io.IOException;
 
 import java.awt.Toolkit;
-import java.awt.Font;
-import java.awt.Color;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,13 +11,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.border.LineBorder;
-import javax.swing.Action;
-import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 import javax.swing.Box;
-
-import java.util.List;
 
 //--Eadgyth--//
 import eg.javatools.SearchFiles;
@@ -35,65 +27,65 @@ public class Menu {
       "Plain text", "Java", "HTML"
    };
 
-   private JMenuBar menuMain = new JMenuBar();
+   private final JMenuBar menuMain = new JMenuBar();
 
    /* File */   
-   private JMenu     file             = new JMenu("File");
-   private JMenuItem newFileItm       = new JMenuItem("New" );
-   private JMenuItem open             = new JMenuItem("Open", IconFiles.openIcon);
-   private JMenuItem close            = new JMenuItem("Close", IconFiles.closeIcon);
-   private JMenuItem save             = new JMenuItem("Save", IconFiles.saveIcon);
-   private JMenuItem saveAll          = new JMenuItem("Save all");
-   private JMenuItem saveAs           = new JMenuItem("Save as ...");
-   private JMenuItem exit             = new JMenuItem("Exit");
+   private final JMenu     file             = new JMenu("File");
+   private final JMenuItem newFileItm       = new JMenuItem("New" );
+   private final JMenuItem open             = new JMenuItem("Open", IconFiles.openIcon);
+   private final JMenuItem close            = new JMenuItem("Close", IconFiles.closeIcon);
+   private final JMenuItem save             = new JMenuItem("Save", IconFiles.saveIcon);
+   private final JMenuItem saveAll          = new JMenuItem("Save all");
+   private final JMenuItem saveAs           = new JMenuItem("Save as ...");
+   private final JMenuItem exit             = new JMenuItem("Exit");
 
    /* Edit */
-   private JMenu     edit             = new JMenu("Edit");
-   private JMenuItem undo             = new JMenuItem("Undo", IconFiles.undoIcon);
-   private JMenuItem redo             = new JMenuItem("Redo", IconFiles.redoIcon);
-   private JMenuItem selectAll        = new JMenuItem("Select all");
-   private JMenuItem copy             = new JMenuItem("Copy");
-   private JMenuItem paste            = new JMenuItem("Paste");
-   private JMenuItem indent           = new JMenuItem("Indent selection more ",
-                                                IconFiles.indentIcon);
-   private JMenuItem outdent          = new JMenuItem("Indent selection less",
-                                                IconFiles.outdentIcon);
-   private JMenuItem changeIndent     = new JMenuItem("Indent/outdent length");
-   private JMenuItem clearSpaces      = new JMenuItem("Clear spaces");
-   private JMenu     language         = new JMenu("Language in new tabs");
-   private JCheckBoxMenuItem[]
-                     selectLanguage   = new JCheckBoxMenuItem[LANGUAGES.length];
+   private final JMenu     edit             = new JMenu("Edit");
+   private final JMenuItem undo             = new JMenuItem("Undo", IconFiles.undoIcon);
+   private final JMenuItem redo             = new JMenuItem("Redo", IconFiles.redoIcon);
+   private final JMenuItem selectAll        = new JMenuItem("Select all");
+   private final JMenuItem copy             = new JMenuItem("Copy");
+   private final JMenuItem paste            = new JMenuItem("Paste");
+   private final JMenuItem indent           = new JMenuItem("Indent selection more ",
+                                                  IconFiles.indentIcon);
+   private final JMenuItem outdent          = new JMenuItem("Indent selection less",
+                                                  IconFiles.outdentIcon);
+   private final JMenuItem changeIndent     = new JMenuItem("Indent/outdent length");
+   private final JMenuItem clearSpaces      = new JMenuItem("Clear spaces");
+   private final JMenu     language         = new JMenu("Language in new tabs");
+   private final JCheckBoxMenuItem[]
+                           selectLanguage   = new JCheckBoxMenuItem[LANGUAGES.length];
    /* Format */
-   private JMenu     format           = new JMenu("Format");
-   private JMenuItem font             = new JMenuItem("Font ...");
+   private final JMenu     format           = new JMenu("Format");
+   private final JMenuItem font             = new JMenuItem("Font ...");
 
    /* View */ 
-   private JMenu     view             = new JMenu("View");
-   private JCheckBoxMenuItem
-                     showConsoleItm   = new JCheckBoxMenuItem("Console");
-   private JCheckBoxMenuItem
-                     fileViewItm      = new JCheckBoxMenuItem("Project explorer");
-   private JCheckBoxMenuItem
-                     functionItm      = new JCheckBoxMenuItem("Function panel");
-   private JMenuItem openViewSettings = new JMenuItem("Other...");
+   private final JMenu     view             = new JMenu("View");
+   private final JCheckBoxMenuItem
+                           showConsoleItm   = new JCheckBoxMenuItem("Console");
+   private final JCheckBoxMenuItem
+                           fileViewItm      = new JCheckBoxMenuItem("Project explorer");
+   private final JCheckBoxMenuItem
+                           functionItm      = new JCheckBoxMenuItem("Function panel");
+   private final JMenuItem openViewSettings = new JMenuItem("Other...");
 
    /* project methods */
-   private JMenu     extra            = new JMenu("Project");
-   private JMenuItem compile          = new JMenuItem("Save all and compile",
-                                               IconFiles.compileIcon);
-   private JMenuItem run              = new JMenuItem("Run", IconFiles.runIcon);
-   private JMenuItem build            = new JMenuItem("Build");
-   private JMenuItem openJavaSetWin   = new JMenuItem("Project settings");
+   private final JMenu     extra            = new JMenu("Project");
+   private final JMenuItem compile          = new JMenuItem("Save all and compile",
+                                                  IconFiles.compileIcon);
+   private final JMenuItem run              = new JMenuItem("Run", IconFiles.runIcon);
+   private final JMenuItem build            = new JMenuItem("Build");
+   private final JMenuItem openJavaSetWin   = new JMenuItem("Project settings");
    
    /* plugins */
-   private JMenu     plugMenu         = new JMenu("Plugins");
-   private JMenu     allPlugsMenu     = new JMenu("Add in function panel");
-   private JMenuItem[] selectPlugItm  = null;
+   private final JMenu     plugMenu         = new JMenu("Plugins");
+   private final JMenu     allPlugsMenu     = new JMenu("Add in function panel");
+   private JMenuItem[]     selectPlugItm    = null;
 
    /* Help */ 
-   private JMenu     question         = new JMenu("?");
-   private JMenuItem about            = new JMenuItem("About Eadgyth");
-   private JMenuItem showHelp         = new JMenuItem("Show help");
+   private final JMenu     question         = new JMenu("?");
+   private final JMenuItem about            = new JMenuItem("About Eadgyth");
+   private final JMenuItem showHelp         = new JMenuItem("Show help");
 
    private final Preferences prefs = new Preferences();
 
@@ -222,11 +214,11 @@ public class Menu {
       compile.addActionListener(al);
    }
 
-   void runAct(ActionListener al) {
+   public void runAct(ActionListener al) {
       run.addActionListener(al);
    }
 
-   void buildAct(ActionListener al) {
+   public void buildAct(ActionListener al) {
       build.addActionListener(al);
    }
 
@@ -316,7 +308,7 @@ public class Menu {
    void enableExtra(boolean isCompile, boolean isRun, boolean isBuild) {
       compile.setEnabled(isCompile);
       run.setEnabled(isRun);
-      build.setEnabled(isBuild);      
+      build.setEnabled(isBuild);
    }
 
    //
@@ -378,6 +370,7 @@ public class Menu {
       // view
       view.add(showConsoleItm);
       view.add(fileViewItm);
+      fileViewItm.setEnabled(false);
       view.add(functionItm);
       view.addSeparator();
       view.add(openViewSettings);
@@ -399,9 +392,12 @@ public class Menu {
 
       // extra
       extra.add(compile);
+      compile.setEnabled(false);
       extra.add(run);
+      run.setEnabled(false);
       extra.addSeparator();
       extra.add(build);
+      build.setEnabled(false);
       extra.addSeparator();
       extra.add(openJavaSetWin);
       menuMain.add(extra);    

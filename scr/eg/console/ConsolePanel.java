@@ -6,12 +6,9 @@ import javax.swing.border.*;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 
-import javax.swing.text.DefaultCaret;
-
 import javax.swing.event.CaretListener;
 
 import java.awt.*;
-import java.awt.Font;
 import java.awt.event.*;
 
 import java.awt.event.KeyListener;
@@ -28,18 +25,18 @@ public class ConsolePanel {
 
    private final Color areaFontColor = new Color(60, 60, 60);
 
-   private JPanel    consolePnl = new JPanel(new BorderLayout());
-   private JTextArea area       = new JTextArea();
-   private JToolBar  toolbar    = new JToolBar(JToolBar.HORIZONTAL);
+   private final JPanel    consolePnl = new JPanel(new BorderLayout());
+   private final JTextArea area       = new JTextArea();
+   private final JToolBar  toolbar    = new JToolBar(JToolBar.HORIZONTAL);
 
-   private JButton   setCmdBt   = new JButton("Cmd...");
-   private JButton   runBt      = new JButton(IconFiles.runConsIcon);
-   private JButton   runEadBt   = new JButton(IconFiles.eadgythIconSmall);
-   private JButton   stopBt     = new JButton(IconFiles.stopProcessIcon);
-   private JButton   clearBt    = new JButton(IconFiles.clearIcon);
-   private JButton   closeBt    = new JButton(IconFiles.closeIcon);
+   private final JButton   setCmdBt   = new JButton("Cmd...");
+   private final JButton   runBt      = new JButton(IconFiles.runConsIcon);
+   private final JButton   runEadBt   = new JButton(IconFiles.eadgythIconSmall);
+   private final JButton   stopBt     = new JButton(IconFiles.stopProcessIcon);
+   private final JButton   clearBt    = new JButton(IconFiles.clearIcon);
+   private final JButton   closeBt    = new JButton(IconFiles.closeIcon);
 
-   private JScrollPane scroll   = new JScrollPane(
+   private final JScrollPane scroll   = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -73,6 +70,7 @@ public class ConsolePanel {
    
    /**
     * Places the cursor at the specified position
+     * @param pos  the position where the caret is set
     */
    public void setCaret(int pos) {
       area.setCaretPosition(pos);

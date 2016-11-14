@@ -1,15 +1,11 @@
 package eg.javatools;
 
-import javax.swing.JOptionPane;
-
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
-import javax.tools.SimpleJavaFileObject;
 import javax.tools.ToolProvider;
 import javax.tools.JavaCompiler.CompilationTask;
-import javax.tools.JavaFileObject.Kind;
 import javax.tools.StandardJavaFileManager;
 
 import java.io.File;
@@ -22,6 +18,7 @@ import java.util.ArrayList;
 import eg.Preferences;
 import eg.utils.ShowJOption;
 import eg.console.ConsolePanel;
+import java.io.IOException;
 
 /**
  * Compiles java files in a given working directory using the JavaCompiler API
@@ -85,18 +82,18 @@ public class Compile {
          Iterable<String> compilationOptions = Arrays.asList(compileOptions);      
          JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
          DiagnosticCollector<JavaFileObject> diagnostics
-               = new DiagnosticCollector<JavaFileObject>();
-         StandardJavaFileManager fileManager 
-               = compiler.getStandardFileManager(null, null, null);
-         Iterable<? extends JavaFileObject> units;
-         List<File> classes = new SearchFiles().filteredFiles(projectPath
-               + SEP + sourceDir, ".java");
-         File[] fileArr = classes.toArray(new File[classes.size()]);
-         units = fileManager.getJavaFileObjects(fileArr);
-         CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
-               compilationOptions, null, units);
-         isCompiled = task.call();
-         fileManager.close();
+               = new DiagnosticCollector<>();
+          try (StandardJavaFileManager fileManager
+                  = compiler.getStandardFileManager(null, null, null)) {
+              Iterable<? extends JavaFileObject> units;
+              List<File> classes = new SearchFiles().filteredFiles(projectPath
+                      + SEP + sourceDir, ".java");
+              File[] fileArr = classes.toArray(new File[classes.size()]);
+              units = fileManager.getJavaFileObjects(fileArr);
+              CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
+                      compilationOptions, null, units);
+              isCompiled = task.call();
+          }
 
          if (isCompiled) {
             cp.appendText("<<compilation successful>>");
@@ -125,7 +122,7 @@ public class Compile {
             }
          }
       }
-      catch (Exception e) {
+      catch (IOException e) {
          e.printStackTrace();
       }
    }
@@ -134,7 +131,7 @@ public class Compile {
     * @return  the directory where class files/packages are saved
     */
    private String targetDir(String projectPath, String classDir) {
-      String targetDir = null;
+      String targetDir;
       if (classDir.length() > 0) {
          File target = new File(projectPath + SEP + classDir);
          target.mkdirs();

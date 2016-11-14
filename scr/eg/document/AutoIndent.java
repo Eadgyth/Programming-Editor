@@ -5,12 +5,10 @@ import javax.swing.JTextPane;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
-import javax.swing.SwingUtilities;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyAdapter;
-import java.awt.EventQueue;
 
 //--Eadgyth--//
 import eg.Preferences;
@@ -133,6 +131,7 @@ class AutoIndent {
    KeyListener listener = new KeyAdapter() {
       boolean isEnter = false;
       
+      @Override
       public void keyPressed(KeyEvent e) {
          int key = e.getKeyCode();
          if (key == KeyEvent.VK_ENTER) {
@@ -140,6 +139,7 @@ class AutoIndent {
          }
       }
 
+      @Override
       public void keyReleased(KeyEvent e) {
          int pos = textArea.getCaretPosition();
          int key = e.getKeyCode();

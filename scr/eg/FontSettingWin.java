@@ -15,9 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
 //--Eadgyth--//
-import eg.Preferences;
 import eg.ui.IconFiles;
-import eg.Constants;
 
 /**
  * A frame that contains combo boxes to select font and font size
