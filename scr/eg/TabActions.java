@@ -247,14 +247,11 @@ public class TabActions implements Observer{
             ShowJOption.infoMessage("A project cannot be set for this file type");
          }
          else {         
-            int result = -1;
+            int result = 0;
             if (isProjectSet) {
                result = ShowJOption.confirmYesNo("Change project ?");
             }
-            if (result == JOptionPane.YES_OPTION) {         
-               result = -1;
-            }
-            if (result == -1) {
+            if (result == 0) {
                projNew.makeSetWinVisible(true);
                projNew.getSetWin().okAct(e -> configureProject(projNew));
             }
