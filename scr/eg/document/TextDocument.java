@@ -192,7 +192,8 @@ public class TextDocument {
    }
 
    /**
-    * sets the caret in this text area
+    * Sets the caret in this text area at the sepecified
+    * position
     */
    public void setCaret(int pos) {
       textArea.setCaretPosition(pos);
@@ -341,7 +342,7 @@ public class TextDocument {
    
    /**
     * Colors text elements specified by a array of search terms in the
-    * keyword color.
+    * keyword color if the language is not a computer language.
     * @param searchTerms  the array of Strings that contain search terms
     * to be colored
     * @param constrainWord  true to color only words
@@ -372,8 +373,8 @@ public class TextDocument {
    //
    
    /**
-    * Controls which keywords are used, which signal is used for
-    * line and block comments and if line and/or block comments are enabled.
+    * Controls which text modification are done upon typing depending on
+    * the language.
     * This method has to be modified if other languages are implemented in
     * Eadgyth.
     */
