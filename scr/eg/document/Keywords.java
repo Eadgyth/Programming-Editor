@@ -24,17 +24,22 @@ class Keywords {
    };
    
    final static String[] HTML_KEYWORDS = {
-      "a",
-      "body",
-      "head", "html", "h1", "h2", "h3", "h4", "h5",
-      "li",
-      "meta",
-      "ol",
-      "p",
-      "style",
-      "table", "title",
-      "ul",
-      "&lsquo;"
+      ">",
+      "<a ",
+      "<b",
+      "<body", "</body",
+      "<head", "</head", "<html",  "</html",
+      "<h1", "</h1", "<h2", "</h2", "<h3", "</h3",
+      "<h4", "</h4", "<h5", "</h5", "<h6", "</h6",
+      "<img",
+      "<li", "</li",
+      "<meta ",
+      "<ol", "</ol",
+      "<p", "</p",
+      "<style", "</style",
+      "<table", "</table", "<title", "</title",
+      "<ul", "</ul",
+      "&lsquo;", "&rsquo"
    };
    
    final static String[] BRACKETS = {

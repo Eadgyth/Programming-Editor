@@ -386,7 +386,7 @@ public class TextDocument {
             break;
          case HTML_NAME:
             typeText.configTypeText(Keywords.HTML_KEYWORDS, "",
-                  "<!--", "-->", true, true, true);
+                  "<!--", "-->", true, true, false);
             break;
          /*
           * just to reset the indentation, textModify is switched off anyway */
