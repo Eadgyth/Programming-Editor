@@ -328,11 +328,9 @@ public class TabActions implements Observer{
                return;
             }
          }
-
          addNewTab(txtDoc[openIndex].filename(),
                txtDoc[openIndex].scrolledTextArea(), openIndex);
-         mw.displayFrameTitle(txtDoc[openIndex].filepath());
-           
+         mw.displayFrameTitle(txtDoc[openIndex].filepath());       
          if (!isProjectSet) {
             retrieveProject(txtDoc[openIndex].dir());
          }      
