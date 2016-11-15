@@ -6,6 +6,10 @@ import javax.swing.JToolBar;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 
+//--Eadgyth--
+import eg.TabActions;
+import eg.Edit;
+
 /**
  * The main toolbar with methods to add action listeners to the buttons
  */
@@ -30,39 +34,18 @@ public class Toolbar {
       return toolbar;
    }
    
-   //
-   //-- add action listeners
-   //
-   public void openAct(ActionListener al) {
-      openBt.addActionListener(al);
+   public void registerTabActions(TabActions ta) {
+      openBt.addActionListener(e -> ta.openFileByChooser());
+      saveBt.addActionListener(e -> ta.saveOrSaveAs());      
+      compileBt.addActionListener(e -> ta.saveAndCompile());
+      runBt.addActionListener(e -> ta.runProj());
    }
    
-   public void saveAct(ActionListener al) {
-      saveBt.addActionListener(al);
-   }
-   
-   public void undoAct(ActionListener al) {
-      undoBt.addActionListener(al);
-   }
-   
-   public void redoAct(ActionListener al) {
-      redoBt.addActionListener(al);
-   }
-   
-   public void indentAct(ActionListener al) {
-      indentBt.addActionListener(al);
-   }
-   
-   public void outdentAct(ActionListener al) {
-      outdentBt.addActionListener(al);
-   }
-
-   public void compileAct(ActionListener al) {
-      compileBt.addActionListener(al);
-   }
-   
-   public void runAct(ActionListener al) {
-      runBt.addActionListener(al);
+   public void registerEdit(Edit edit) {
+      undoBt.addActionListener(e -> edit.undo());
+      redoBt.addActionListener(e -> edit.redo());
+      indentBt.addActionListener(e -> edit.indentSelection());   
+      outdentBt.addActionListener(e -> edit.outdentSelection());
    }
    
    void disableExtraBts() {

@@ -53,10 +53,10 @@ public class FileTree extends Observable {
    private final JScrollPane scroll  = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);  
-   private final JToolBar toolbar    = new JToolBar(JToolBar.HORIZONTAL);
+   private final JToolBar toolbar;
    private final JButton upBt        = new JButton(UIManager.getIcon(
          "FileChooser.upFolderIcon"));
-   private final JButton   refreshBt = new JButton(IconFiles.refreshIcon);
+   private final JButton   renewBt   = new JButton(IconFiles.refreshIcon);
    private final JButton   closeBt   = new JButton(IconFiles.closeIcon);
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
    private final PopupMenu popupDir  = new PopupMenu(PopupMenu.FOLDER_OPT);
@@ -70,6 +70,7 @@ public class FileTree extends Observable {
 
    public FileTree() {
       ml = mouseListener;
+      toolbar = createToolbar();
       initTreePanel();
    }
    
@@ -178,7 +179,6 @@ public class FileTree extends Observable {
    }         
 
    private void initTree() {
-      UIManager.put("Tree.rowHeight", 20);
       tree = new JTree(model);
       tree.setRootVisible(false);
       tree.setFont(Constants.VERDANA_PLAIN_11);
@@ -205,7 +205,7 @@ public class FileTree extends Observable {
       upBt.setEnabled(true);
    }
    
-   private void refreshTree() {
+   private void renewTree() {
       setNewTree(pathHelper);
    }
    
@@ -282,31 +282,25 @@ public class FileTree extends Observable {
       holdTreePnl.setLayout(new BorderLayout());
       scroll.setBorder(new MatteBorder(0, 1, 1, 1, Constants.BORDER_GRAY));
       scroll.setViewportView(holdTreePnl);
-      initToolbar();
       fileTreePnl.add(toolbar, BorderLayout.NORTH);
       fileTreePnl.add(scroll, BorderLayout.CENTER);
       upBt.addActionListener(e -> folderUp());
-      refreshBt.addActionListener(e -> refreshTree());
+      renewBt.addActionListener(e -> renewTree());
       upBt.setEnabled(false);
       popupFile.deleteAct(e -> deleteFile());
       popupDir.newFolderAct(e -> newFolder());
    }
 
-   private void initToolbar() {
+   private JToolBar createToolbar() {
       JButton[] bts = new JButton[] {
-         upBt, refreshBt, closeBt
+         upBt, renewBt, closeBt
+      };  
+      String[] tooltips = new String[] {
+         "Folder up",
+         "Renew tree",
+         "Close the project explorer",
       };
-      for (int i = 0; i < bts.length; i++) {
-         if (i == bts.length - 1) {
-            toolbar.add(Box.createHorizontalGlue());
-         }
-         toolbar.add(bts[i]);
-         toolbar.setOpaque(false);
-         toolbar.setFloatable(false);
-         toolbar.setBorder(null);
-         bts[i].setBorder(new EmptyBorder(2, 5, 2, 5));
-         bts[i].setFocusable(false);
-      }
+      return eg.utils.UiComponents.toolbarLastBtRight(bts, tooltips);
    }
    
    private final MouseListener mouseListener = new MouseAdapter() {

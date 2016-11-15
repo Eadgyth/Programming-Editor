@@ -17,6 +17,8 @@ import javax.swing.Box;
 //--Eadgyth--//
 import eg.javatools.SearchFiles;
 import eg.Preferences;
+import eg.TabActions;
+import eg.Edit;
 
 /**
  * The main menu
@@ -76,7 +78,7 @@ public class Menu {
                                                   IconFiles.compileIcon);
    private final JMenuItem run              = new JMenuItem("Run", IconFiles.runIcon);
    private final JMenuItem build            = new JMenuItem("Build");
-   private final JMenuItem openJavaSetWin   = new JMenuItem("Project settings");
+   private final JMenuItem projectSetWin    = new JMenuItem("Project settings");
    
    /* plugins */
    private final JMenu     plugMenu         = new JMenu("Plugins");
@@ -104,91 +106,34 @@ public class Menu {
       return menuMain;
    }
 
-   //
-   //-- add action listeners
-   //
-
-   // for file menu
-   public void newFileAct(ActionListener al) {
-      newFileItm.addActionListener(al);
-   }
-
-   public void openAct(ActionListener al) {
-      open.addActionListener(al);
-   }
-
-   public void saveAct(ActionListener al) {
-      save.addActionListener(al);
-   }
-
-   public void closeAct(ActionListener al) {
-      close.addActionListener(al);
+   public void registerTabActions(TabActions ta) {
+      newFileItm.addActionListener(e -> ta.newEmptyTab());
+      open.addActionListener(e -> ta.openFileByChooser());
+      close.addActionListener(e -> ta.tryClose());
+      closeAll.addActionListener(e -> ta.tryCloseAll());
+      save.addActionListener(e -> ta.saveOrSaveAs());     
+      saveAll.addActionListener(e -> ta.saveAll());
+      saveAs.addActionListener(e -> ta.saveAs());      
+      exit.addActionListener(e -> ta.tryExit());
+      projectSetWin.addActionListener(e -> ta.openProjectSetWin());
+      compile.addActionListener(e -> ta.saveAndCompile());
+      run.addActionListener(e -> ta.runProj());
+      build.addActionListener(e -> ta.buildProj());
    }
    
-   public void closeAllAct(ActionListener al) {
-      closeAll.addActionListener(al);
-   }
-
-   public void saveAllAct(ActionListener al) {
-      saveAll.addActionListener(al);
-   }
-
-   public void saveAsAct(ActionListener al) {
-      saveAs.addActionListener(al);
-   }
-
-   public void exitAct(ActionListener al) {
-      exit.addActionListener(al);
-   }
-
-   // edit
-   public void undoAct(ActionListener al) {
-      undo.addActionListener(al);
-   }
-
-   public void redoAct(ActionListener al) {
-      redo.addActionListener(al);
-   }
-
-   public void selectAllAct(ActionListener al) {
-      selectAll.addActionListener(al);
-   }
-
-   public void copyAct(ActionListener al) {
-      copy.addActionListener(al);
-   }
-
-   public void pasteAct(ActionListener al) {
-      paste.addActionListener(al);
-   }
-
-   public void indentAct(ActionListener al) {
-      indent.addActionListener(al);
-   }
-
-   public void outdentAct(ActionListener al) {
-      outdent.addActionListener(al);
-   }
-
-   public void clearSpacesAct(ActionListener al) {
-      clearSpaces.addActionListener(al);
-   }
-
-   public void changeIndentAct(ActionListener al) {
-      changeIndent.addActionListener(al);
-   }
-
-   public void languageAct(ActionListener al) {
+   public void registerEdit(Edit edit) {
+      undo.addActionListener(e -> edit.undo());
+      redo.addActionListener(e -> edit.redo());
+      selectAll.addActionListener(e -> edit.selectAll());
+      copy.addActionListener(e -> edit.setClipboard());  
+      paste.addActionListener(e -> edit.pasteText());   
+      indent.addActionListener(e -> edit.indentSelection());
+      outdent.addActionListener(e -> edit.outdentSelection());
+      clearSpaces.addActionListener(e -> edit.clearSpaces());
+      changeIndent.addActionListener(e -> edit.setNewIndentUnit());
       for (int i = 0; i < selectLanguage.length; i++) {
-         selectLanguage[i].addActionListener(al);
-      }
-   }
-   
-   public void selectPlugAct(ActionListener al) {
-      if (selectPlugItm != null) {
-         for (int i = 0; i < selectPlugItm.length; i++) {
-            selectPlugItm[i].addActionListener(al);
-         }
+         selectLanguage[i].addActionListener(e ->
+               edit.changeLanguage(getNewLanguage(e)));
       }
    }
 
@@ -213,43 +158,15 @@ public class Menu {
    public void openViewSettingsAct(ActionListener al) {
       openViewSettings.addActionListener(al);
    }
-
-   // project
-   public void compileAct(ActionListener al) {
-      compile.addActionListener(al);
-   }
-
-   public void runAct(ActionListener al) {
-      run.addActionListener(al);
-   }
-
-   public void buildAct(ActionListener al) {
-      build.addActionListener(al);
-   }
-
-   public void openJavaSetWinAct(ActionListener al) {
-      openJavaSetWin.addActionListener(al);
-   }
-
-   //
-   // --get values
-   //
-
-   /**
-    * @return  the language selected by the language menu
-    */
-   public String getNewLanguage(ActionEvent e) {
-      String newLanguage = null;
-
-      for (int i = 0; i < selectLanguage.length; i++) {
-         if (e.getSource() == selectLanguage[i]) {
-            newLanguage = LANGUAGES[i];
-         }
-         else selectLanguage[i].setState(false);
-      }
-      return newLanguage;
-   }
    
+   public void selectPlugAct(ActionListener al) {
+      if (selectPlugItm != null) {
+         for (int i = 0; i < selectPlugItm.length; i++) {
+            selectPlugItm[i].addActionListener(al);
+         }
+      }
+   }
+
    /**
     * @return  the index of the plugin selected in the menu
     */
@@ -396,7 +313,7 @@ public class Menu {
       }
       menuMain.add(plugMenu);
 
-      // extra
+      // project
       extra.add(compile);
       compile.setEnabled(false);
       extra.add(run);
@@ -405,7 +322,7 @@ public class Menu {
       extra.add(build);
       build.setEnabled(false);
       extra.addSeparator();
-      extra.add(openJavaSetWin);
+      extra.add(projectSetWin);
       menuMain.add(extra);    
       menuMain.add(Box.createHorizontalStrut(8));
 
@@ -413,6 +330,19 @@ public class Menu {
       question.add(about);
       question.add(showHelp);    
       menuMain.add(question);
+   }
+
+   private String getNewLanguage(ActionEvent e) {
+      System.out.println("Select new language called");
+      String newLanguage = null;
+
+      for (int i = 0; i < selectLanguage.length; i++) {
+         if (e.getSource() == selectLanguage[i]) {
+            newLanguage = LANGUAGES[i];
+         }
+         else selectLanguage[i].setState(false);
+      }
+      return newLanguage;
    }
 
    private void shortCuts() {

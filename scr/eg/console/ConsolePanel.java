@@ -1,10 +1,13 @@
 package eg.console;
 
-import javax.swing.Box;
-import javax.swing.*;
-import javax.swing.border.*;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
+
+import javax.swing.border.MatteBorder;
+import javax.swing.border.LineBorder;
 
 import javax.swing.event.CaretListener;
 
@@ -16,6 +19,7 @@ import java.awt.event.KeyListener;
 //--Eadgyth--//
 import eg.ui.IconFiles;
 import eg.Constants;
+import eg.utils.UiComponents;
 
 /**
  * Class consists in a text area to write to and to read from and a toolbar.
@@ -27,7 +31,7 @@ public class ConsolePanel {
 
    private final JPanel    consolePnl = new JPanel(new BorderLayout());
    private final JTextArea area       = new JTextArea();
-   private final JToolBar  toolbar    = new JToolBar(JToolBar.HORIZONTAL);
+   private final JToolBar  toolbar;
 
    private final JButton   setCmdBt   = new JButton("Cmd...");
    private final JButton   runBt      = new JButton(IconFiles.runConsIcon);
@@ -52,7 +56,7 @@ public class ConsolePanel {
       runBt.setEnabled(false);
       stopBt.setEnabled(false);
 
-      initToolbar();
+      toolbar = createToolbar();
       clearAct();
 
       consolePnl.setBorder(new MatteBorder(1, 0, 1, 0, Constants.BORDER_GRAY));
@@ -177,16 +181,11 @@ public class ConsolePanel {
       stopBt.addActionListener(al);
    }
 
-   private void initToolbar() {
-      toolbar.setOpaque(false);
-      toolbar.setBorder(null);
-      toolbar.setFloatable(false);
-
+   private JToolBar createToolbar() {
       JButton[] bts = new JButton[] {
          setCmdBt, runBt, runEadBt, stopBt, clearBt, closeBt
       };
-
-      String[] toolTips = new String[] {
+      String[] tooltips = new String[] {
          "Run a new system command",
          "Run a previous system command",
          "Run a new Eadgyth",
@@ -194,16 +193,7 @@ public class ConsolePanel {
          "Clear the console",
          "Close the console"
       };
-
-      for (int i = 0; i < bts.length; i++) {
-         if (i == bts.length - 1) {
-            toolbar.add(Box.createHorizontalGlue());
-         }
-         toolbar.add(bts[i]);
-         bts[i].setBorder(new EmptyBorder(3, 5, 3, 5));
-         bts[i].setToolTipText(toolTips[i]);
-         bts[i].setFocusable(false);
-      }
+      return UiComponents.toolbarLastBtRight(bts, tooltips);
    }
 
    private void clearAct() {

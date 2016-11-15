@@ -51,27 +51,19 @@ public class Eadgyth {
       FontSetting    fontSet   = new FontSetting(ta.getTextDocument());
       ViewSettings   viewSet   = new ViewSettings(mw, ta.getTextDocument());
       
+      tBar.registerTabActions(ta);
+      tBar.registerEdit(edit);
+      menu.registerTabActions(ta);
+      menu.registerEdit(edit);
+      menu.openViewSettingsAct(e -> viewSet.makeSetWinVisible());
+      menu.fontAct(e -> fontSet.makeFontSetWinVisible(true));
+      fileTree.closeAct(e -> mw.hideFileView());
+      cw.closeAct(e -> mw.hideConsole());
+      startPlugin(plugStart, mw, menu);
+      
       fileTree.addObserver(ta);
       mw.addFileView(fileTree.fileTreePnl());
       mw.addConsoleView(cw.consolePnl());
-
-      registerEditActions(edit, mw, menu, tBar);
-      registerTabActions(ta, mw, menu, tBar);
-      menu.openViewSettingsAct(e -> viewSet.makeSetWinVisible());
-      menu.fontAct(e -> fontSet.makeFontSetWinVisible(true));
-      menu.selectPlugAct((ActionEvent e) -> {
-         try {
-            plugStart.startPlugin(menu.getPluginIndex(e));
-            if (!menu.isFunctionPnlSelected()) {
-               mw.showFunctionPnl();
-            }
-         }
-         catch (IOException ioe) {
-            ioe.printStackTrace();
-         }
-      });
-      fileTree.closeAct(e -> mw.hideFileView());
-      cw.closeAct(e -> mw.hideConsole());
       
       EventQueue.invokeLater(() -> {
          mw.makeVisible();
@@ -113,43 +105,20 @@ public class Eadgyth {
          UIManager.put("TabbedPane.contentAreaColor",
                new javax.swing.plaf.ColorUIResource(Color.WHITE));
       }
+      UIManager.put("Tree.rowHeight", 20);
    }
    
-   private static void registerEditActions(Edit edit, MainWin mw, Menu menu,
-         Toolbar tBar) {
-      menu.undoAct(e -> edit.undo());
-      tBar.undoAct(e -> edit.undo());
-      menu.redoAct(e -> edit.redo());
-      tBar.redoAct(e -> edit.redo());
-      menu.selectAllAct(e -> edit.selectAll());
-      menu.copyAct(e -> edit.setClipboard());  
-      menu.pasteAct(e -> edit.pasteText());   
-      menu.indentAct(e -> edit.indentSelection());
-      tBar.indentAct(e -> edit.indentSelection());   
-      menu.outdentAct(e -> edit.outdentSelection());
-      tBar.outdentAct(e -> edit.outdentSelection());
-      menu.clearSpacesAct(e -> edit.clearSpaces());
-      menu.changeIndentAct(e -> edit.setNewIndentUnit());
-      menu.languageAct(e -> edit.changeLanguage(menu.getNewLanguage(e)));
-   }
-   
-   private static void registerTabActions(TabActions ta, MainWin mw, Menu menu,
-         Toolbar tBar) {
-      menu.newFileAct(e -> ta.newEmptyTab());
-      menu.openAct(e -> ta.openFileByChooser());
-      tBar.openAct(e -> ta.openFileByChooser());
-      menu.closeAct(e -> ta.tryClose());
-      menu.closeAllAct(e -> ta.tryCloseAll());
-      menu.saveAct(e -> ta.saveOrSaveAs());
-      tBar.saveAct(e -> ta.saveOrSaveAs());      
-      menu.saveAllAct(e -> ta.saveAll());
-      menu.saveAsAct(e -> ta.saveAs());      
-      menu.exitAct(e -> ta.tryExit());
-      menu.openJavaSetWinAct(e -> ta.openProjectSetWin());
-      menu.compileAct(e -> ta.saveAndCompile());
-      tBar.compileAct(e -> ta.saveAndCompile());
-      menu.runAct(e -> ta.runProj());
-      tBar.runAct(e -> ta.runProj());
-      menu.buildAct(e -> ta.buildProj());
+   private static void startPlugin(PluginStarter plugStart, MainWin mw, Menu menu) {
+       menu.selectPlugAct((ActionEvent e) -> {
+         try {
+            plugStart.startPlugin(menu.getPluginIndex(e));
+            if (!menu.isFunctionPnlSelected()) {
+               mw.showFunctionPnl();
+            }
+         }
+         catch (IOException ioe) {
+            ioe.printStackTrace();
+         }
+      });
    }
 }

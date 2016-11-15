@@ -40,7 +40,7 @@ public class TxtActions implements ProjectActions {
       return projConf.isInProjectPath(dir);
    }
    
-   /**
+     /**
     * Not used
     */
    @Override

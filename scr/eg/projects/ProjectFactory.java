@@ -41,7 +41,7 @@ public class ProjectFactory {
          case ".html":
             newProj = htmlAct();
             break;
-         case "txt":
+         case ".txt":
             newProj = txtAct();
             break;
       }

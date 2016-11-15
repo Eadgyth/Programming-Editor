@@ -22,8 +22,8 @@ public interface Configurable {
    
    /**
     * Configures a project based on entries in the window of the
-    * {@code SettingsWin} object that is used to 
-    * configure this project
+    * {@code SettingsWin} object that is used to configure
+    * this project
     * @param dir  the directory of the opened file
     * @param suffix  the extension of the file
     */

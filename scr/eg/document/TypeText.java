@@ -80,7 +80,6 @@ public class TypeText implements DocumentListener {
    /**
     * Updates row numbers, synthax coloring and auto indentation
     * upon inserting text
-    * @see TextDocument#enableTextModify(boolean)
     */ 
    @Override
    public void insertUpdate(DocumentEvent de) {
@@ -99,7 +98,6 @@ public class TypeText implements DocumentListener {
    /**
     * Updates row numbers, synthax coloring and auto indentation
     * upon removing text
-    * @see TextDocument#enableTextModify(boolean)
     */
    @Override
    public void removeUpdate(DocumentEvent de) {
