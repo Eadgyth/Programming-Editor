@@ -13,7 +13,7 @@ import eg.ui.MainWin;
 /**
  * Represents a programming project in Java
  */
-public class JavaActions implements ProjectActions {
+public class JavaActions extends ProjectConfig implements ProjectActions {
 
    private final Compile comp;
    private final CreateJar jar;
@@ -21,13 +21,12 @@ public class JavaActions implements ProjectActions {
    private final ConsolePanel cw;
    private final MainWin mw;
    
-   private final ProjectConfig projConf
-         = new ProjectConfig(new SettingsWin("Main class", "Package",
-           true, true, "jar file"));
-   
    private String startCommand = "";
 
    public JavaActions(MainWin mw, ProcessStarter proc, ConsolePanel cw) {
+      super(new SettingsWin("Main class", "Package",
+           true, true, "jar file"));
+
       this.mw = mw;
       this.proc = proc;
       this.cw = cw;
@@ -38,40 +37,42 @@ public class JavaActions implements ProjectActions {
    
    @Override
    public SettingsWin getSetWin() {
-      return projConf.getSetWin();
+      return super.getSetWin();
    }
    
    @Override
    public void makeSetWinVisible(boolean isVisible) {
-      projConf.makeSetWinVisible(isVisible);
+      super.makeSetWinVisible(isVisible);
    }
    
    @Override
-   public void configFromSetWin(String dir, String suffix) {
-      projConf.configFromSetWin(dir, suffix);
-      if (projConf.getProjectRoot().length() > 0) {
+   public boolean configFromSetWin(String dir, String suffix) {
+      boolean success = super.configFromSetWin(dir, suffix);
+      if (success) {
          setStartCommand();
          proc.addWorkingDir(getProjectRoot());
       }
+      return success;
    }
    
    @Override
-   public void findPreviousProjectRoot(String dir) {
-      projConf.findPreviousProjectRoot(dir);
-      if (projConf.getProjectRoot().length() > 0) {
+   public boolean findPreviousProjectRoot(String dir) {
+      boolean success = super.findPreviousProjectRoot(dir);
+      if (success) {
          setStartCommand();
          proc.addWorkingDir(getProjectRoot());
       }
+      return success;
    }
    
    @Override
    public boolean isInProjectPath(String dir) {
-      return projConf.isInProjectPath(dir);
+      return super.isInProjectPath(dir);
    }
    
    @Override
    public String getProjectRoot() {
-      return projConf.getProjectRoot();
+      return super.getProjectRoot();
    }
    
    @Override                                                                          
@@ -86,8 +87,8 @@ public class JavaActions implements ProjectActions {
       EventQueue.invokeLater(() -> {
          try {
             mw.setCursor(MainWin.BUSY_CURSOR);
-            comp.compile(projConf.getProjectRoot(), projConf.getExecutableDir(),
-                  projConf.getSourceDir());           
+            comp.compile(getProjectRoot(), getExecutableDir(),
+                  getSourceDir());           
          }
          catch(Exception e) {
             e.printStackTrace();
@@ -140,8 +141,8 @@ public class JavaActions implements ProjectActions {
       }
       cw.setText("");
       EventQueue.invokeLater(() -> {
-         jar.createJar(projConf.getProjectRoot(), projConf.getMainFile(),
-               projConf.getPackageDir(), projConf.getExecutableDir(), projConf.getBuildName());
+         jar.createJar(getProjectRoot(), getMainFile(),
+               getPackageDir(), getExecutableDir(), getBuildName());
          String info = "Saved jar file named " + jar.getUsedJarName();
          ShowJOption.infoMessage(info);
       });
@@ -156,7 +157,7 @@ public class JavaActions implements ProjectActions {
    
    private boolean isProjectSet() {
       boolean set = true;
-      if (projConf.getMainFile().length() == 0) {
+      if (getMainFile().length() == 0) {
          makeSetWinVisible(true);
          set = false;
       }
@@ -164,7 +165,7 @@ public class JavaActions implements ProjectActions {
    }
    
    private boolean mainClassFileExists() {
-      boolean exists = projConf.mainProgramFileExists(".class");
+      boolean exists = mainProgramFileExists(".class");
       if (!exists) {
          ShowJOption.warnMessage("Main class file could not be found");
          exists = false;
@@ -173,22 +174,22 @@ public class JavaActions implements ProjectActions {
    }
    
    private void setStartCommand() {
-      String main = projConf.getMainFile();
-      if (projConf.getArgs().length() > 0) {
-         main += " " + projConf.getArgs();
+      String main = getMainFile();
+      if (getArgs().length() > 0) {
+         main += " " + getArgs();
       }
 
-      if (projConf.getExecutableDir().length() == 0 && projConf.getPackageDir().length() == 0 ) {
+      if (getExecutableDir().length() == 0 && getPackageDir().length() == 0 ) {
          startCommand = "java " + main;
       }
-      else if (projConf.getExecutableDir().length() == 0 && projConf.getPackageDir().length() > 0 ) {
-         startCommand = "java " + projConf.getPackageDir() + "." + main;
+      else if (getExecutableDir().length() == 0 && getPackageDir().length() > 0 ) {
+         startCommand = "java " + getPackageDir() + "." + main;
       }
-      else if (projConf.getExecutableDir().length() > 0 && projConf.getPackageDir().length() == 0 ) {
-         startCommand = "java -cp " + projConf.getExecutableDir() + " " + main;
+      else if (getExecutableDir().length() > 0 && getPackageDir().length() == 0 ) {
+         startCommand = "java -cp " + getExecutableDir() + " " + main;
       }
-      else if (projConf.getExecutableDir().length() > 0 && projConf.getPackageDir().length() > 0 ) {
-         startCommand = "java -cp " + projConf.getExecutableDir() + " " + projConf.getPackageDir()
+      else if (getExecutableDir().length() > 0 && getPackageDir().length() > 0 ) {
+         startCommand = "java -cp " + getExecutableDir() + " " + getPackageDir()
                + "." + main;
       }
    }

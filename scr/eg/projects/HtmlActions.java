@@ -9,48 +9,51 @@ import eg.utils.ShowJOption;
 /**
  * Represents a project to write a webpage in HTML
  */
-public class HtmlActions implements ProjectActions {
-   
-   private final ProjectConfig projConf
-         = new ProjectConfig(new SettingsWin("HTML file", "Subfolder",
-           false, false, null));
+public class HtmlActions extends ProjectConfig implements ProjectActions {
 
    private File htmlFile;
    
+   public HtmlActions() {
+      super(new SettingsWin("HTML file", "Subfolder",
+           false, false, null));
+   }
+   
    @Override
    public SettingsWin getSetWin() {
-      return projConf.getSetWin();
+      return super.getSetWin();
    }
    
    @Override
    public void makeSetWinVisible(boolean enable) {
-      projConf.makeSetWinVisible(enable);
+       super.makeSetWinVisible(enable);
    }
    
    @Override
-   public void configFromSetWin(String dir, String suffix) {
-      projConf.configFromSetWin(dir, suffix);
-      if (projConf.getProjectRoot().length() > 0) {
+   public boolean configFromSetWin(String dir, String suffix) {
+      boolean success = super.configFromSetWin(dir, suffix);
+      if (success) {
          setHtmlFile();
       }
+      return success;
    }
    
    @Override
-   public void findPreviousProjectRoot(String dir) {
-      projConf.findPreviousProjectRoot(dir);
-      if (projConf.getProjectRoot().length() > 0) {
+   public boolean findPreviousProjectRoot(String dir) {
+      boolean success = super.findPreviousProjectRoot(dir);
+      if (success) {
          setHtmlFile();
       }
+      return success;
    }
    
    @Override
    public String getProjectRoot() {
-       return projConf.getProjectRoot();
+       return super.getProjectRoot();
    }
    
    @Override
    public boolean isInProjectPath(String dir) {
-      return projConf.isInProjectPath(dir);
+      return super.isInProjectPath(dir);
    }
    
    /**
@@ -83,7 +86,7 @@ public class HtmlActions implements ProjectActions {
    }
    
    private void setHtmlFile() {
-      htmlFile = new File(projConf.getProjectRoot() + File.separator
-               + projConf.getMainFile() + ".html");
+      htmlFile = new File(getProjectRoot() + File.separator
+               + getMainFile() + ".html");
    }
 }

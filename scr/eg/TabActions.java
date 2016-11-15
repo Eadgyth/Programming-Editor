@@ -312,7 +312,7 @@ public class TabActions implements Observer{
       else {
          int openIndex = 0;
          boolean isUnnamedBlank = txtDoc[openIndex].filename().length() == 0
-               && txtDoc[openIndex].getText().length() == 0;
+               && txtDoc[openIndex].textLength() == 0;
          if (isUnnamedBlank && tabPane.tabCount() == 1) { 
             txtDoc[openIndex].openFile(file);
          }
@@ -328,11 +328,9 @@ public class TabActions implements Observer{
                return;
             }
          }
-
          addNewTab(txtDoc[openIndex].filename(),
                txtDoc[openIndex].scrolledTextArea(), openIndex);
-         mw.displayFrameTitle(txtDoc[openIndex].filepath());
-           
+         mw.displayFrameTitle(txtDoc[openIndex].filepath());           
          if (!isProjectSet) {
             retrieveProject(txtDoc[openIndex].dir());
          }      
@@ -399,8 +397,7 @@ public class TabActions implements Observer{
       if (prNew != null) {
          projAct = prNew;
          projAct.getSetWin().okAct(e -> configureProject(projAct));
-         projAct.findPreviousProjectRoot(newPath);
-         if (projAct.getProjectRoot().length() > 0) {
+         if (projAct.findPreviousProjectRoot(newPath)) {
             isProjectSet = true;
             updateProjectDisplay(projAct.getProjectRoot());
          }
@@ -408,9 +405,9 @@ public class TabActions implements Observer{
    }
 
    private void configureProject(ProjectActions proj) {
-      proj.configFromSetWin(txtDoc[iTab].dir(),
-            FileUtils.extension(txtDoc[iTab].filename()));
-      if (proj.getProjectRoot().length() > 0) {
+      if (proj.configFromSetWin(txtDoc[iTab].dir(),
+            FileUtils.extension(txtDoc[iTab].filename()))) {
+      //if (proj.getProjectRoot().length() > 0) {
          if (projAct != proj) {
             projAct = proj;       
             updateProjectDisplay(projAct.getProjectRoot());

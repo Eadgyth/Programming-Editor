@@ -9,14 +9,12 @@ import eg.utils.ShowJOption;
 /**
  * Represents the configuration of a project
  */
-public class ProjectConfig implements Configurable {
+public abstract class ProjectConfig implements Configurable {
 
    private static final String F_SEP = File.separator;
    
    private final Preferences prefs = new Preferences();
-   private SettingsWin setWin;
-   
-   private String path = "";
+   private final SettingsWin setWin;
 
    private String projectPath = "";
    private String mainFile = "";
@@ -46,17 +44,19 @@ public class ProjectConfig implements Configurable {
    }
    
    @Override
-   public void configFromSetWin(String dir, String suffix) {     
+   public boolean configFromSetWin(String dir, String suffix) {     
       findNewProjectRoot(dir, suffix);
-      if (projectPath.length() > 0) {
+      boolean success = projectPath.length() > 0;
+      if (success) {
          setWin.makeVisible(false);
       }
+      return success;
    }
    
    @Override
-   public void findPreviousProjectRoot(String dir) {
-      this.path = dir;
-      findPreviousProject();
+   public boolean findPreviousProjectRoot(String dir) {
+      findPreviousProject(dir);
+      return projectPath.length() > 0;
    }
    
    @Override
@@ -65,9 +65,8 @@ public class ProjectConfig implements Configurable {
    }
    
    @Override
-   public boolean isInProjectPath(String path) {
-      this.path = path;
-      return previousProjectRoot() != null;
+   public boolean isInProjectPath(String dir) {
+      return previousProjectRoot(dir) != null;
    }
    
    /**
@@ -128,9 +127,13 @@ public class ProjectConfig implements Configurable {
             + F_SEP + mainFile + suffix);
       return target.exists();
    }
+   
+   //
+   //--private--
+   //
 
-   private void findPreviousProject() {
-      String previousProjectRoot = previousProjectRoot();
+   private void findPreviousProject(String dir) {
+      String previousProjectRoot = previousProjectRoot(dir);
          
       if (previousProjectRoot != null) {
 
@@ -158,8 +161,8 @@ public class ProjectConfig implements Configurable {
       }
    }
 
-   private String previousProjectRoot() { 
-      File newFile = new File(path);
+   private String previousProjectRoot(String dir) { 
+      File newFile = new File(dir);
       File project = new File(prefs.prop.getProperty("recentProject"));
       String newFileStr = newFile.getPath();
       String projStr = project.getPath();
@@ -179,7 +182,6 @@ public class ProjectConfig implements Configurable {
    }
 
    private void findNewProjectRoot(String dir, String suffix) {
-      this.path = dir;
       projectPath = "";
       getTextFieldsInput();
       /*
