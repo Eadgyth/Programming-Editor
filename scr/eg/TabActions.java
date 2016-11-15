@@ -407,7 +407,6 @@ public class TabActions implements Observer{
    private void configureProject(ProjectActions proj) {
       if (proj.configFromSetWin(txtDoc[iTab].dir(),
             FileUtils.extension(txtDoc[iTab].filename()))) {
-      //if (proj.getProjectRoot().length() > 0) {
          if (projAct != proj) {
             projAct = proj;       
             updateProjectDisplay(projAct.getProjectRoot());
