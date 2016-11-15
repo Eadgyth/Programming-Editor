@@ -55,7 +55,7 @@ public abstract class ProjectConfig implements Configurable {
    
    @Override
    public boolean findPreviousProjectRoot(String dir) {
-      findPreviousProject(dir);
+      configurePreviousProject(dir);
       return projectPath.length() > 0;
    }
    
@@ -70,33 +70,28 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    /**
-    * @return  the of the (main program) file which a project was
-    * was defined for and that was entered in the text field of
-    * {@code SettingsWin} or found in prefs
+    * @return  the name of project's main file
     */ 
    public String getMainFile() {
       return mainFile;
    }
 
    /**
-    * @return  the directory of the module or path of modules entered
-    * in the text field of {@code SettingsWin} or found in prefs
+    * @return  the directory of the module or path of modules
     */ 
    public String getPackageDir() {
       return moduleDir;
    }
    
    /**
-    * @return  the name for the executables directory entered in the
-    * text field of {@code SettingsWin} or found in prefs
+    * @return  the name for the executables directory
     */ 
    public String getExecutableDir() {
       return execDir;
    }
    
    /**
-    * @return  the name for the sources directory entered in the
-    * text field of {@code SettingsWin} or found in prefs
+    * @return  the name for the sources directory
     */ 
    public String getSourceDir() {
       return sourceDir;
@@ -104,7 +99,7 @@ public abstract class ProjectConfig implements Configurable {
 
    /**
     * @return  the name for a build entered in the
-    * text field of {@code SettingsWin}
+    * text field of this {@code SettingsWin}
     */ 
    public String getBuildName() {
       return buildName;
@@ -112,15 +107,20 @@ public abstract class ProjectConfig implements Configurable {
    
    /**
     * @return  the arguments for a start command entered in the
-    * text field of {@code SettingsWin}
+    * text field of this {@code SettingsWin}
     */ 
    public String getArgs() {
       return args;
    }
    
    /**
-    * Returns true if the main (program) file exists in the path specified
-    * by the executables directory and the module directory
+    * Returns if the main executable file exists.
+    * <p>
+    * The filepath consists in the project's root directory, the executables'
+    * directory, the module's directory and the project's main file.
+    * @param suffix  the extension of the project's main file
+    * @return  true if the filepath specified by this project configuration
+    * exists.
     */
    public boolean mainProgramFileExists(String suffix) { 
       File target = new File(projectPath + F_SEP + execDir + F_SEP + moduleDir
@@ -132,7 +132,7 @@ public abstract class ProjectConfig implements Configurable {
    //--private--
    //
 
-   private void findPreviousProject(String dir) {
+   private void configurePreviousProject(String dir) {
       String previousProjectRoot = previousProjectRoot(dir);
          
       if (previousProjectRoot != null) {
@@ -204,10 +204,7 @@ public abstract class ProjectConfig implements Configurable {
          searchPath = new File(pathToSearch);
       }
 
-      if (search == null) {
-         ShowJOption.warnMessageToFront("A valid filepath could not be built");
-      }
-      else {
+      if (search != null) {
          projectPath = search.toString();
          prefs.storePrefs("recentProject", projectPath);
       }

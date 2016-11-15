@@ -413,6 +413,9 @@ public class TabActions implements Observer{
             isProjectSet = true;
          }
       }
+      else {
+         ShowJOption.warnMessageToFront("A valid filepath could not be built");
+      }
    }
 
    private void updateProjectDisplay(String path) {

@@ -22,15 +22,16 @@ public interface Configurable {
    /**
     * Returns whether a project was successfully configured based on
     * entries in the window of this {@code SettingsWin} object
-    * @param dir  the directory of the opened file
-    * @param suffix  the extension of the file
+    * @param dir  the directory of project's main file
+    * @param suffix  the extension of the project's main file
     */
    public boolean configFromSetWin(String dir, String suffix);
    
   /**
-    * Returns whether a previously used project was found
-    * @param dir  the directory that includes the directory of a
-    * previous project or not  
+    * Returns if a previously used project could be assigned to this class
+    * @param dir  the directory that may include the directory of a
+    * previous project 
+    * @return  if a prvious project could be assigned to this class
     */
    public boolean findPreviousProjectRoot(String dir);
    
