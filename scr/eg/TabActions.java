@@ -312,7 +312,7 @@ public class TabActions implements Observer{
       else {
          int openIndex = 0;
          boolean isUnnamedBlank = txtDoc[openIndex].filename().length() == 0
-               && txtDoc[openIndex].getText().length() == 0;
+               && txtDoc[openIndex].textLength() == 0;
          if (isUnnamedBlank && tabPane.tabCount() == 1) { 
             txtDoc[openIndex].openFile(file);
          }
