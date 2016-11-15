@@ -7,8 +7,7 @@ import javax.swing.JToolBar;
 import javax.swing.border.EmptyBorder;
 
 /**
- * Contains the file view panel that consists in a panel in which a JTree showing
- * the project's file system can be displayed and a toolbar. 
+ * Static method(s) to create UI components
  */
 public class UiComponents {
 
