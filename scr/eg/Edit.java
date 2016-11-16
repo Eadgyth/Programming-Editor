@@ -237,7 +237,7 @@ public class Edit {
     * @param newLanguage  the language that is used
     * for the automatic editing of text during typing
     */
-   public void changeLanguage(String newLanguage) {
+   public void changeLanguage(Languages newLanguage) {
       txtDoc.changeLanguage(newLanguage);
    }
 
