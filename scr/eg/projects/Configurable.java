@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 public interface Configurable {
    
    /**
-    * Adds an event handler to the ok button of this {@code SettingsWin}
+    * Adds an event handler at the ok button of this {@code SettingsWin}
     * object 
     */
    public void addOkAction(ActionListener al);
