@@ -1,8 +1,10 @@
 package eg.projects;
 
+import java.awt.event.ActionListener;
+
 /**
- * Represents a project using text files although the class can only
- * define a project's directories but does not perform any actions
+ * Represents a project using text files although the class does not
+ * perform any actions
  */
 public class TxtActions extends ProjectConfig implements ProjectActions {
 
@@ -12,8 +14,8 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   public SettingsWin getSetWin() {
-      return super.getSetWin();
+   public void addOkAction(ActionListener al) {
+      super.addOkAction(al);
    }
    
    @Override

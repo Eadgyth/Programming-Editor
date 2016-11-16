@@ -1,15 +1,17 @@
 package eg.projects;
 
+import java.awt.event.ActionListener;
+
 /**
  * The interface to configure a project
  */
 public interface Configurable {
    
    /**
-    * Returns this {@code SettingsWin} object
-    * @return  this {@link SettingsWin} object
+    * Adds an event handler to the ok button of this {@code SettingsWin}
+    * object 
     */
-   public SettingsWin getSetWin();
+   public void addOkAction(ActionListener al);
    
    /**
     * Makes the window of this {@code SettingsWin} object 

@@ -2,6 +2,8 @@ package eg.projects;
 
 import java.io.File;
 
+import java.awt.event.ActionListener;
+
 //--Eadgyth--//
 import eg.Preferences;
 import eg.utils.ShowJOption;
@@ -34,8 +36,8 @@ public abstract class ProjectConfig implements Configurable {
    }
 
    @Override
-   public SettingsWin getSetWin() {
-      return setWin;
+   public void addOkAction(ActionListener al) {
+      setWin.okAct(al);
    }
    
    @Override

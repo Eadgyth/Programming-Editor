@@ -3,6 +3,8 @@ package eg.projects;
 import java.io.File;
 import java.io.IOException;
 
+import java.awt.event.ActionListener;
+
 //--Eadgyth--//
 import eg.utils.ShowJOption;
 
@@ -19,8 +21,8 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   public SettingsWin getSetWin() {
-      return super.getSetWin();
+   public void addOkAction(ActionListener al) {
+      super.addOkAction(al);
    }
    
    @Override

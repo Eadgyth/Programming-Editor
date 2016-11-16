@@ -273,7 +273,7 @@ public class TabActions implements Observer{
             }
             if (result == 0) {
                projNew.makeSetWinVisible(true);
-               projNew.getSetWin().okAct(e -> configureProject(projNew));
+               projNew.addOkAction(e -> configureProject(projNew));
             }
          }
       }
@@ -396,7 +396,7 @@ public class TabActions implements Observer{
             = projFact.getProjAct(FileUtils.extension(txtDoc[iTab].filepath()));
       if (prNew != null) {
          projAct = prNew;
-         projAct.getSetWin().okAct(e -> configureProject(projAct));
+         projAct.addOkAction(e -> configureProject(projAct));
          if (projAct.findPreviousProjectRoot(newPath)) {
             isProjectSet = true;
             updateProjectDisplay(projAct.getProjectRoot());

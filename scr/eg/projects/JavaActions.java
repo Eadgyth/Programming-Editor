@@ -1,6 +1,7 @@
 package eg.projects;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
@@ -36,8 +37,8 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   public SettingsWin getSetWin() {
-      return super.getSetWin();
+   public void addOkAction(ActionListener al) {
+      super.addOkAction(al);
    }
    
    @Override
