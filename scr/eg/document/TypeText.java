@@ -5,6 +5,9 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.Element;
 
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
+
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.UndoableEditEvent;
@@ -50,7 +53,6 @@ public class TypeText implements DocumentListener {
    private boolean useStringLit = false;
    private boolean useIndent = false;
    private boolean constrainWord = false;
-   private boolean isStyleChanged = false;
    /*
     * true to call modifying methods from this update methods */
    private boolean isDocListen = true; 
@@ -67,9 +69,14 @@ public class TypeText implements DocumentListener {
       doc.addDocumentListener(this);
 
       doc.addUndoableEditListener((UndoableEditEvent e) -> {
-          if (!isStyleChanged && isDocListen) {
-              undomanager.addEdit(e.getEdit());
-          }
+         AbstractDocument.DefaultDocumentEvent event =
+               (AbstractDocument.DefaultDocumentEvent)e.getEdit();
+         if (event.getType().equals(DocumentEvent.EventType.CHANGE)) {
+            return;
+         }
+         if (isDocListen) {
+             undomanager.addEdit(e.getEdit());
+         }
       });
       undomanager.setLimit(1000);
 
@@ -83,8 +90,6 @@ public class TypeText implements DocumentListener {
     */ 
    @Override
    public void insertUpdate(DocumentEvent de) {
-      isStyleChanged = false;
-
       if (isDocListen) {
          String in = getDocText();
          updateRowNumber(in);
@@ -101,8 +106,6 @@ public class TypeText implements DocumentListener {
     */
    @Override
    public void removeUpdate(DocumentEvent de) {
-      isStyleChanged = false;
-
       if (isDocListen) {
          String in = getDocText();
          updateRowNumber(in);
@@ -118,7 +121,6 @@ public class TypeText implements DocumentListener {
     */
    @Override
    public void changedUpdate(DocumentEvent de) {
-      isStyleChanged = true;
    }
    
    StyledDocument doc() {
@@ -197,9 +199,11 @@ public class TypeText implements DocumentListener {
    void undo() {
       try {
          if (undomanager.canUndo()) {
-            enableTextModify(false);
             undomanager.undo();
-            colorAll(true);
+            if (isTextModify) {
+               enableTextModify(false);
+               colorAll(true);
+            }
          }
       }
       catch (CannotUndoException cue) {
@@ -210,9 +214,11 @@ public class TypeText implements DocumentListener {
    void redo() {
       try {
          if (undomanager.canRedo()) {
-            enableTextModify(false);
             undomanager.redo();
-            colorAll(true);
+             if (isTextModify) {
+               enableTextModify(false);
+               colorAll(true);
+            }
          }
       }
       catch (CannotRedoException cre) {
@@ -279,7 +285,7 @@ public class TypeText implements DocumentListener {
        * If called when textModify is false the entire passed in String is
        * modified. For block comments always the entire document is modified
        */
-      void color(String in, int pos) {
+      void color(String in, int pos) {    
          String chunk;
          if (isTextModify) {
             chunk = Finder.currLine(in, pos);
