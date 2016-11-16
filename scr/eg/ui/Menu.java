@@ -19,6 +19,7 @@ import eg.javatools.SearchFiles;
 import eg.Preferences;
 import eg.TabActions;
 import eg.Edit;
+import eg.Languages;
 
 /**
  * The main menu
@@ -274,7 +275,8 @@ public class Menu {
       prefs.readPrefs();
       for (int i = 0; i < selectLanguage.length; i++) {
          selectLanguage[i] = new JCheckBoxMenuItem(LANGUAGES[i]);
-         if (prefs.prop.getProperty("language").equals(LANGUAGES[i])) {
+         if (prefs.prop.getProperty("language").equals(
+               eg.Languages.values()[i].toString())) {
             selectLanguage[i].setState(true);
          }
       }
@@ -332,17 +334,15 @@ public class Menu {
       menuMain.add(question);
    }
 
-   private String getNewLanguage(ActionEvent e) {
-      System.out.println("Select new language called");
-      String newLanguage = null;
-
+   private Languages getNewLanguage(ActionEvent e) {
+      Languages lang = null;
       for (int i = 0; i < selectLanguage.length; i++) {
          if (e.getSource() == selectLanguage[i]) {
-            newLanguage = LANGUAGES[i];
+            lang = Languages.values()[i];
          }
          else selectLanguage[i].setState(false);
       }
-      return newLanguage;
+      return lang;
    }
 
    private void shortCuts() {

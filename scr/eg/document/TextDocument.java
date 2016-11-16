@@ -18,20 +18,17 @@ import java.io.IOException;
 //--Eadgyth--//
 import eg.Constants;
 import eg.Preferences;
+import eg.Languages;
+
 import eg.utils.ShowJOption;
 
 /**
- * The text document to which a file is assigned and which has
- * the components to edit text, control coloring and indentation,
- * set the font and show line numbering
+ * Class represents the text document
  */
 public class TextDocument {
 
-   private final static String JAVA_NAME = "Java";
-   private final static String HTML_NAME = "HTML";
-   private final static String PLAIN_TEXT_NAME = "Plain text";
-   
-   private final Preferences prefs = new Preferences();
+   private final static Preferences PREFS = new Preferences();
+
    private final JTextPane textArea;
    private final EditArea editArea;
    private final TypeText typeText;
@@ -43,13 +40,13 @@ public class TextDocument {
    private String content;
 
    public TextDocument() {
-      prefs.readPrefs();
+      PREFS.readPrefs();
       boolean withLineNumbers =
-            Constants.SHOW.equals(prefs.prop.getProperty("lineNumbers"));
+            Constants.SHOW.equals(PREFS.prop.getProperty("lineNumbers"));
       editArea = new EditArea(withLineNumbers);
       this.textArea = editArea.textArea();
       typeText = new TypeText(editArea);
-      language = prefs.prop.getProperty("language");
+      language = PREFS.prop.getProperty("language");
       openSettings();
    }
 
@@ -114,7 +111,7 @@ public class TextDocument {
 
    /**
     * @return  if the content of the text area equals the content 
-    * after opening a file or saving the file the last time
+    * since the last saving point
     */ 
    public boolean isContentSaved() {
       return content.equals(textArea.getText());
@@ -129,14 +126,7 @@ public class TextDocument {
    }
 
    /**
-    * @return  this text area's content
-    */
-   public String getText() {
-      return textArea.getText();
-   }
-
-   /**
-    * @return  this styled document's content
+    * @return  the content of this document
     */
    public String getDocText() {
       return typeText.getDocText();
@@ -150,7 +140,7 @@ public class TextDocument {
    }
 
    /**
-    * Selects text
+    * Selects the entire text
     */
    public void selectAll() {
       textArea.selectAll();
@@ -248,7 +238,7 @@ public class TextDocument {
     * set to plain text
     */
    public boolean isComputerLanguage() {
-      return !PLAIN_TEXT_NAME.equals(language);
+      return !Languages.PLAIN_TEXT.toString().equals(language);
    }
 
    public void showLineNumbers() {
@@ -276,24 +266,23 @@ public class TextDocument {
    }
 
    /**
-    * Colors the entire text in this text area
-    * @param enableTextModify   true to enable the methods called by the
-    * update methods of this {@link TypeText} after the text has been
-    * colored
+    * Colors keyword/syntax of the entire text in this text area
+    * @param enableTextModify   true to enable the coloring
+    * during typing after the entire text has been scanned
     */
    public void colorAll(boolean enableTextModify) {
       typeText.colorAll(enableTextModify);
    }
 
    /**
-    * Performs undo action
+    * Performs an undo action
     */
    public void undo() {
      typeText.undo();
    }
 
    /**
-    * Performs redo action
+    * Performs a redo action
     */
    public void redo() {
       typeText.redo();
@@ -324,25 +313,24 @@ public class TextDocument {
    }
 
    /**
-    * Changes this language (plain text, java or HTML). Takes effect only
-    * if this file is unnamed.
+    * Changes this language if this file is unnamed.
     */
-   public void changeLanguage(String language) {
-      if (JAVA_NAME.equals(language) & filename.length() == 0) {
+   public void changeLanguage(Languages language) {
+      if (language == Languages.JAVA & filename.length() == 0) {
          changeToJava();
       }
-      if (HTML_NAME.equals(language) & filename.length() == 0) {
+      if (language == Languages.HTML & filename.length() == 0) {
          changeToHtml();
       }
-      else if (PLAIN_TEXT_NAME.equals(language) & filename.length() == 0) {
+      else if (language == Languages.PLAIN_TEXT & filename.length() == 0) {
          changeToPlain();
       }
-      prefs.storePrefs("language", language);
+      PREFS.storePrefs("language", language.toString());
    }
    
    /**
-    * Colors text elements specified by a array of search terms in the
-    * keyword color if the language is not a computer language.
+    * Colors text elements specified by an array of search terms in the
+    * keyword color if this language is plain text.
     * @param searchTerms  the array of Strings that contain search terms
     * to be colored
     * @param constrainWord  true to color only words
@@ -378,19 +366,19 @@ public class TextDocument {
     * This method has to be modified if other languages are implemented in
     * Eadgyth.
     */
-   private void configTypeText(String language) {
+   private void configTypeText(Languages language) {
       switch(language) {
-         case JAVA_NAME:
+         case JAVA:
             typeText.configTypeText(Keywords.JAVA_KEYWORDS, "//",
                   "/*", "*/", true, true, true);
             break;
-         case HTML_NAME:
+         case HTML:
             typeText.configTypeText(Keywords.HTML_KEYWORDS, "",
                   "<!--", "-->", true, true, false);
             break;
          /*
           * just to reset the indentation, textModify is switched off anyway */
-         case PLAIN_TEXT_NAME:
+         case PLAIN_TEXT:
             typeText.configTypeText(null, "", "", "", false, false, false);
             break;
       }
@@ -433,11 +421,13 @@ public class TextDocument {
    private void openSettings() {
       updateRowNumber();
       if (filename.endsWith(".java")
-            || (filename.length() == 0 & JAVA_NAME.equals(language))) {
+            || (filename.length() == 0
+            & Languages.JAVA.toString().equals(language))) {
          changeToJava();
       }
       else if (filename.endsWith(".html")
-            || (filename.length() == 0 & HTML_NAME.equals(language))) {
+            || (filename.length() == 0
+            & Languages.HTML.toString().equals(language))) {
          changeToHtml();
       }
       else {
@@ -446,22 +436,22 @@ public class TextDocument {
    }
 
    private void changeToJava() {
-      configTypeText(JAVA_NAME);
+      configTypeText(Languages.JAVA);
       typeText.colorAll(true);
-      language = JAVA_NAME;
+      language = Languages.JAVA.toString();
    }
    
    private void changeToHtml() {
-      configTypeText(HTML_NAME);
+      configTypeText(Languages.HTML);
       typeText.colorAll(true);
-      language = HTML_NAME;
+      language = Languages.HTML.toString();
    }
 
    private void changeToPlain() {
-      configTypeText(PLAIN_TEXT_NAME);
+      configTypeText(Languages.PLAIN_TEXT);
       typeText.backInBlack(getDocText().length(), 0);
       typeText.enableTextModify(false);
-      language = PLAIN_TEXT_NAME;
+      language = Languages.PLAIN_TEXT.toString();
    }
 
    private void updateRowNumber() {
