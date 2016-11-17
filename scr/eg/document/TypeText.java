@@ -266,7 +266,7 @@ public class TypeText implements DocumentListener {
       StyleConstants.setForeground(brSet, bracketBlue);
       StyleConstants.setBold(brSet, true);
 
-      Color strLitOrange = new Color(255, 140, 0);
+      Color strLitOrange = new Color(230, 140, 50);
       StyleConstants.setForeground(strLitSet, strLitOrange );
       StyleConstants.setBold(strLitSet, false );
    }
