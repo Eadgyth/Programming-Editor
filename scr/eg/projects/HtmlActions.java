@@ -16,7 +16,7 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    private File htmlFile;
    
    public HtmlActions() {
-      super(new SettingsWin("HTML file", "Subfolder",
+      super(new SettingsWin("HTML file", "Subdirectory",
            false, false, null));
    }
    

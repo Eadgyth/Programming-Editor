@@ -161,8 +161,7 @@ public class SettingsWin {
       // module/subdir panel
       if (moduleKind != null) {
          grid.setRows(2);
-         JLabel moduleLb = new JLabel(moduleKind
-               + " containing the " + fileKind.toLowerCase() + ":");
+         JLabel moduleLb = new JLabel(moduleKind + ":");
          projPnl.add(holdLbAndTf(moduleLb, moduleTf));
       }
 

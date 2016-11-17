@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 public class TxtActions extends ProjectConfig implements ProjectActions {
 
    public TxtActions() {
-      super(new SettingsWin("Text file", "Subfolder",
+      super(new SettingsWin("Name of a text file in the project", "Subdirectory",
            false, false, null));
    }
    

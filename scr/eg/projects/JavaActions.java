@@ -25,7 +25,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    private String startCommand = "";
 
    public JavaActions(MainWin mw, ProcessStarter proc, ConsolePanel cw) {
-      super(new SettingsWin("Main class", "Package",
+      super(new SettingsWin("Name of main class", "Package containing the main class",
            true, true, "jar file"));
 
       this.mw = mw;
