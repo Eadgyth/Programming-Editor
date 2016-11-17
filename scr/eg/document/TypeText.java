@@ -36,8 +36,8 @@ public class TypeText implements DocumentListener {
 
    private final SimpleAttributeSet normalSet = new SimpleAttributeSet(); 
    private final SimpleAttributeSet comSet    = new SimpleAttributeSet();
-   private final SimpleAttributeSet brSet     = new SimpleAttributeSet();
    private final SimpleAttributeSet keySet    = new SimpleAttributeSet();
+   private final SimpleAttributeSet brSet     = new SimpleAttributeSet();
    private final SimpleAttributeSet strLitSet = new SimpleAttributeSet();
 
    private final TypeText.Coloring col = new TypeText.Coloring();
@@ -65,7 +65,7 @@ public class TypeText implements DocumentListener {
       doc = editArea.textArea().getStyledDocument();
       el = doc.getParagraphElement(0);
       setStyles();
-      
+
       doc.addDocumentListener(this);
 
       doc.addUndoableEditListener((UndoableEditEvent e) -> {
@@ -116,13 +116,10 @@ public class TypeText implements DocumentListener {
       }
    }
 
-   /**
-    * Disables adding a change of text style to the undo manager
-    */
    @Override
    public void changedUpdate(DocumentEvent de) {
    }
-   
+
    StyledDocument doc() {
       return doc;
    }
@@ -130,7 +127,7 @@ public class TypeText implements DocumentListener {
    SimpleAttributeSet normalSet() {
       return normalSet;
    }
-   
+
    String getIndentUnit() {
       return autoInd.getIndentUnit();
    }
@@ -159,7 +156,7 @@ public class TypeText implements DocumentListener {
       }
       this.constrainWord = constrainWord;
    }
-   
+
    String getDocText() {
       String in = null;
       try {
@@ -190,12 +187,12 @@ public class TypeText implements DocumentListener {
       col.color(all, 0);
       this.isTextModify = enableTextModify;
    }  
-   
+
    void colorAllNew() {
       String all = getDocText();
       col.color(all, 0);
    }
-   
+
    void undo() {
       try {
          if (undomanager.canUndo()) {
@@ -225,7 +222,7 @@ public class TypeText implements DocumentListener {
          cre.printStackTrace();
       }
    }
-   
+
    //
    //--private
    //
@@ -257,17 +254,19 @@ public class TypeText implements DocumentListener {
       StyleConstants.setBold(normalSet, false);
       doc.setParagraphAttributes(0, el.getEndOffset(), normalSet, false);
 
-      Color commentGreen = new Color(0, 150, 50);
+      Color commentGreen = new Color(0, 170, 90);
       StyleConstants.setForeground(comSet, commentGreen);
       StyleConstants.setBold(comSet, false);
 
+      Color keyPink = new Color(240, 15, 150);
+      StyleConstants.setForeground(keySet, keyPink);
+      StyleConstants.setBold(keySet, false);
+
+      Color bracketBlue = new Color(70, 0, 220);
+      StyleConstants.setForeground(brSet, bracketBlue);
       StyleConstants.setBold(brSet, true);
 
-      Color keyPink = new Color(230, 40, 100);
-      StyleConstants.setForeground(keySet, keyPink);
-      StyleConstants.setBold(keySet, true);
-
-      Color strLitOrange = new Color( 180, 130, 20 );
+      Color strLitOrange = new Color(180, 120, 20);
       StyleConstants.setForeground(strLitSet, strLitOrange );
       StyleConstants.setBold(strLitSet, false );
    }
@@ -304,18 +303,18 @@ public class TypeText implements DocumentListener {
          // if cursor is not inside a block comment or using block comments 
          // is disbled
          if ((indBlockStart == -1 || indBlockEnd == -1) || !useBlockCmnt) {
-            
+
             // first set back to black
             backInBlack(chunk.length(), pos);
-
-            // brackets (bold)
-            for (int i = 0; i < Keywords.BRACKETS.length; i++) {
-               brackets(chunk, Keywords.BRACKETS[i], pos);
-            }
 
             // keywords
             for (int i = 0; i < keywords.length; i++) {
                keys(chunk, keywords[i], keySet, pos);
+            }
+
+            // brackets
+            for (int i = 0; i < Keywords.BRACKETS.length; i++) {
+               brackets(chunk, Keywords.BRACKETS[i], pos);
             }
 
             // String literals:
@@ -337,13 +336,13 @@ public class TypeText implements DocumentListener {
                   stringLiterals(chunk, pos);
                }
             }
-            
+
             // line comments
             if (useLineCmnt) {
                lineComments(chunk, pos);
             }
          }
-         
+
          // always the entire document  
          if (useBlockCmnt) {               
             blockComments(in);       
@@ -353,7 +352,6 @@ public class TypeText implements DocumentListener {
       void keys(String in, String query, SimpleAttributeSet set, int pos) {
          int index = 0;
          int nextPos = 0;
-
          while (index != -1) {
             index = in.indexOf(query, index + nextPos);
             if (index != -1) {
@@ -384,7 +382,6 @@ public class TypeText implements DocumentListener {
          int indStart = 0;
          int indEnd = 0;
          int nextPos = 1;
-
          while ( indStart != -1 && indEnd != -1 ) {
             indStart = in.indexOf( "\"", indEnd + nextPos );
             if ( indStart != -1 ) {
@@ -402,7 +399,6 @@ public class TypeText implements DocumentListener {
       private void lineComments(String in, int pos) {
          int lineComInd = 0;
          int nextPos = 0;
-
          while (lineComInd != -1) {
             lineComInd = in.indexOf(lineCmnt, lineComInd + nextPos );
             if (lineComInd != -1 && !Finder.isInQuotes( in, lineComInd)) {
@@ -432,7 +428,7 @@ public class TypeText implements DocumentListener {
                if (indEnd != -1 && !Finder.isInQuotes(in, indEnd)) {
                   int indNextStart = in.substring
                         (indStart + 1, indEnd).indexOf(blockCmntStart, 0);
-                   
+
                   if (indNextStart == -1) {
                      int length = indEnd - indStart + blockCmntEnd.length();
                      doc.setCharacterAttributes(indStart, length, comSet, false);
@@ -450,7 +446,7 @@ public class TypeText implements DocumentListener {
       }
 
       private void uncommentBlock(String in, int pos) {
-         
+
          // positions of previous block comment start and next block comment end
          int indBlockStart = Finder.indLastBlockStart(in, pos, blockCmntStart,
                blockCmntEnd);

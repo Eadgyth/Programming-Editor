@@ -46,7 +46,7 @@ public class ConsolePanel {
 
    public ConsolePanel() {
       scroll.setViewportView(area);
-      scroll.setBorder(new MatteBorder(0, 1, 0, 1, Constants.BORDER_GRAY));
+      scroll.setBorder(null);
 
       area.setBorder(new LineBorder(Color.WHITE, 5));
       area.setFont(Constants.VERDANA_PLAIN_11);
@@ -59,7 +59,7 @@ public class ConsolePanel {
       toolbar = createToolbar();
       clearAct();
 
-      consolePnl.setBorder(new MatteBorder(1, 0, 1, 0, Constants.BORDER_GRAY));
+      consolePnl.setBorder(new LineBorder(Constants.BORDER_GRAY));
       consolePnl.add(toolbar, BorderLayout.NORTH);
       consolePnl.add(scroll, BorderLayout.CENTER);
    }

@@ -16,8 +16,6 @@ import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
-import javax.swing.border.*;
-
 import javax.swing.border.LineBorder;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -280,10 +278,11 @@ public class FileTree extends Observable {
    
    private void initTreePanel() {
       holdTreePnl.setLayout(new BorderLayout());
-      scroll.setBorder(new MatteBorder(0, 1, 1, 1, Constants.BORDER_GRAY));
+      scroll.setBorder(null);
       scroll.setViewportView(holdTreePnl);
       fileTreePnl.add(toolbar, BorderLayout.NORTH);
       fileTreePnl.add(scroll, BorderLayout.CENTER);
+      fileTreePnl.setBorder(new LineBorder(Constants.BORDER_GRAY));
       upBt.addActionListener(e -> folderUp());
       renewBt.addActionListener(e -> renewTree());
       upBt.setEnabled(false);

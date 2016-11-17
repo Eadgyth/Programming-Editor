@@ -43,6 +43,6 @@ class Keywords {
    };
    
    final static String[] BRACKETS = {
-      "{","}","(",")"
+      "(",")"
    };
 }

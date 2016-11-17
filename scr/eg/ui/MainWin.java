@@ -18,7 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JSplitPane;
 
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
+import javax.swing.border.LineBorder;
 
 //--Eadgyth--//
 import eg.Constants;
@@ -115,7 +115,7 @@ public class MainWin {
       if (cCenter != null) {
          functionPnl.remove(cCenter);
       }
-      functTitleLb.setText(title);
+      functTitleLb.setText(" " + title);
       if (c != null) {
          functionPnl.add(c, BorderLayout.CENTER);
       }
@@ -317,7 +317,7 @@ public class MainWin {
       splitHorAll = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
             splitVert, null);
       splitHorAll.setDividerSize(0);
-      splitHorAll.setBorder(new MatteBorder(1, 0, 0, 0, Constants.BORDER_GRAY));
+      splitHorAll.setBorder(null/*new MatteBorder(1, 0, 0, 0, Constants.BORDER_GRAY)*/);
    }
 
    private void initStatusbar() {
@@ -330,8 +330,9 @@ public class MainWin {
    private void initFunctionPnl() {
       functTitlePnl.setLayout(new BoxLayout(functTitlePnl, BoxLayout.LINE_AXIS));
       functTitlePnl.add(functTitleLb);
-      functTitleLb.setFont(Constants.SANSSERIF_BOLD_12);
-      functTitleLb.setText("No function selected");
+      functionPnl.setBorder(new LineBorder(Constants.BORDER_GRAY));
+      functTitleLb.setFont(Constants.SANSSERIF_PLAIN_12);
+      functTitleLb.setText(" No function selected");
       JButton closeBt = new JButton(IconFiles.closeIcon);
       closeBt.setBorder(new EmptyBorder(3, 5, 3, 5));
       closeBt.setContentAreaFilled(false);
