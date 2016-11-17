@@ -38,19 +38,17 @@ in the currently selected tab and can have a graphical view that is integrated i
 A template for writing a plugin and two simple example plugins are included<br>
 <p>
 ENCOUNTERED PROBLEMS/LIMITATIONS <br>
-1) Undo/redo actions have caused the program to hang in situations that are not clear.
+1) The Undo/redo is a place holder for a real undo/redo as it simply undoes/redoes single
+characters.
 <br>
-2) Deleting or pasting chunks of multi-line text has caused problems (not clear in what
-situation).
-<br>
-3) The console has a function to run system commands (defined the class 'ProcessStarter' in the
+2) The console has a function to run system commands (defined the class 'ProcessStarter' in the
 package 'eg.console'). Interactive programs that then require reading from and writing to the
 started process by typing in the console are not guaranteed to work. Interactive programs
 in Java seem to work fine.
 <br>
-4) The built in packing of a jar file bundles only .class files.
+3) The built in packing of a jar file bundles only .class files.
 <br>
-5) The rendering of the GUI has gone wrong after the computer was in
+4) The rendering of the GUI has gone wrong after the computer was in
 sleep mode when the system look and feel was selected.
 <br>
 <p>
