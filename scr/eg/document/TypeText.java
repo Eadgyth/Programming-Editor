@@ -254,11 +254,11 @@ public class TypeText implements DocumentListener {
       StyleConstants.setBold(normalSet, false);
       doc.setParagraphAttributes(0, el.getEndOffset(), normalSet, false);
 
-      Color commentGreen = new Color(0, 170, 90);
+      Color commentGreen = new Color(60, 190, 80);
       StyleConstants.setForeground(comSet, commentGreen);
       StyleConstants.setBold(comSet, false);
 
-      Color keyPink = new Color(240, 15, 150);
+      Color keyPink = new Color(230, 0, 110);
       StyleConstants.setForeground(keySet, keyPink);
       StyleConstants.setBold(keySet, false);
 
@@ -266,7 +266,7 @@ public class TypeText implements DocumentListener {
       StyleConstants.setForeground(brSet, bracketBlue);
       StyleConstants.setBold(brSet, true);
 
-      Color strLitOrange = new Color(180, 120, 20);
+      Color strLitOrange = new Color(255, 140, 0);
       StyleConstants.setForeground(strLitSet, strLitOrange );
       StyleConstants.setBold(strLitSet, false );
    }
