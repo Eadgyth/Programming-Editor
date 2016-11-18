@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 //--Eadgyth--//
 import eg.Preferences;
-import eg.utils.ShowJOption;
+import eg.utils.JOptions;
 import eg.console.ConsolePanel;
 import java.io.IOException;
 
@@ -153,7 +153,7 @@ public class Compile {
       if (!new File(jdkPath).exists()) {
          String notFound = "The JDK was not found."
                + " Enter or correct the filepath of the JDK.";
-         jdkPath = ShowJOption.dialogRes(notFound, "Location of JDK", jdkPath);
+         jdkPath = JOptions.dialogRes(notFound, "Location of JDK", jdkPath);
          if (jdkPath != null) { // if ok clicked
             prefs.storeSettings(jdkPath);
             setJdkPath();

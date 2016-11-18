@@ -108,7 +108,6 @@ public class Edit {
       }
 
       txtDoc.enableTextModify(false);
-
       String sel = txtDoc.selectedText();
       String[] selection = sel.replaceAll("\\r", "").split("\\n");
       int start = txtDoc.selectionStart();
@@ -118,10 +117,8 @@ public class Edit {
          txtDoc.insertStr(start + startOfLines[i]
                + i * (indentLength), indentUnit);
       }
-
       txtDoc.select(start, (sel.length()
             + selection.length * indentLength) + start);
-
       if (txtDoc.isComputerLanguage()) {
          txtDoc.enableTextModify(true);
       }
@@ -141,7 +138,6 @@ public class Edit {
       if (!startingLine.startsWith(indentUnit)) {
          return;
       }
-
       txtDoc.enableTextModify(false);
       String[] selection = sel.split("\n");
       /*
@@ -184,14 +180,12 @@ public class Edit {
          sel = txtDoc.selectedText();
          selection = sel.split("\\n");
          start = txtDoc.selectionStart();
-      }        
-     
+      }           
       startOfLines = Finder.startOfLines(selection);
       for (int i = 0; i < selection.length; i++) {
          txtDoc.removeStr(start + startOfLines[i] - i * indentLength,
                indentLength);
       }
-
       if (txtDoc.isComputerLanguage()) {
          txtDoc.enableTextModify(true);
       }
@@ -235,7 +229,7 @@ public class Edit {
    /**
     * Changes the language
     * @param newLanguage  the language that is used
-    * for the automatic editing of text during typing
+    * for the editing of text during typing
     */
    public void changeLanguage(Languages newLanguage) {
       txtDoc.changeLanguage(newLanguage);

@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
 //--Eadgyth--//
-import eg.utils.ShowJOption;
+import eg.utils.JOptions;
 import eg.console.*;
 import eg.javatools.*;
 import eg.ui.MainWin;
@@ -97,14 +97,14 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
          finally {
             mw.setCursor(MainWin.DEF_CURSOR); 
          }
-         EventQueue.invokeLater(() -> cw.setCaret(0));
+         cw.setCaret(0); // scroll to top
 
          if (!mw.isConsoleSelected()) {
             if (comp.isCompiled()) {
-               ShowJOption.infoMessage("Compilation successful");
+               JOptions.infoMessage("Compilation successful");
             }
             else {
-               int result = ShowJOption.confirmYesNo("Compilation failed\n"
+               int result = JOptions.confirmYesNo("Compilation failed\n"
                      + comp.getFirstError()
                      + "\nOpen console window to view messages?");
                if (result == JOptionPane.YES_OPTION) {
@@ -145,12 +145,12 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
          jar.createJar(getProjectRoot(), getMainFile(),
                getPackageDir(), getExecutableDir(), getBuildName());
          String info = "Saved jar file named " + jar.getUsedJarName();
-         ShowJOption.infoMessage(info);
+         JOptions.infoMessage(info);
       });
    }
    
    private void askForSettings() {
-      int result = ShowJOption.confirmYesNo("Set project?");
+      int result = JOptions.confirmYesNo("Set project?");
       if (result == JOptionPane.YES_OPTION) {         
          makeSetWinVisible(true);
       }
@@ -168,7 +168,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    private boolean mainClassFileExists() {
       boolean exists = mainProgramFileExists(".class");
       if (!exists) {
-         ShowJOption.warnMessage("Main class file could not be found");
+         JOptions.warnMessage("Main class file could not be found");
          exists = false;
       }
       return exists;

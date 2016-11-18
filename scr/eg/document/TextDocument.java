@@ -20,7 +20,8 @@ import eg.Constants;
 import eg.Preferences;
 import eg.Languages;
 
-import eg.utils.ShowJOption;
+import eg.utils.JOptions;
+import eg.ui.EditArea;
 
 /**
  * Class represents the text document
@@ -31,7 +32,7 @@ public class TextDocument {
 
    private final JTextPane textArea;
    private final EditArea editArea;
-   private final TypeText typeText;
+   private final TypingEdit type;
 
    private String filename = "";
    private String filepath = "";
@@ -39,13 +40,11 @@ public class TextDocument {
    private String language;
    private String content;
 
-   public TextDocument() {
-      PREFS.readPrefs();
-      boolean withLineNumbers =
-            Constants.SHOW.equals(PREFS.prop.getProperty("lineNumbers"));
-      editArea = new EditArea(withLineNumbers);
+   public TextDocument(EditArea editArea) {
+      this.editArea = editArea;
       this.textArea = editArea.textArea();
-      typeText = new TypeText(editArea);
+      type = new TypingEdit(editArea);
+      PREFS.readPrefs();
       language = PREFS.prop.getProperty("language");
       openSettings();
    }
@@ -75,11 +74,16 @@ public class TextDocument {
    }
 
    /**
-    * @param filepath  the existing file whose content is shown in this text area
+    * @param filepath  the existing file whose content is shown in
+    * this text area
     */
    public void openFile(File filepath) {
+      if (this.filepath().length() != 0) {
+         throw new IllegalStateException("Illegal attempt to assign a file"
+               + " to a TextDocument which a file was assigned to before");
+      }
       assignFileStrings(filepath);
-      EventQueue.invokeLater( () -> {
+      EventQueue.invokeLater(() -> {
          displayFileContent();
          openSettings();
       });
@@ -116,27 +120,27 @@ public class TextDocument {
    public boolean isContentSaved() {
       return content.equals(textArea.getText());
    }
-
-    /**
-    * @return  the JPanel that contains the scolled text area with
-    * line numbers
+   
+   /**
+    * @return  if this language is a computer language, i.e. not
+    * set to plain text
     */
-   public JPanel scrolledTextArea() {
-      return editArea.scrolledArea();
+   public boolean isComputerLanguage() {
+      return !Languages.PLAIN_TEXT.toString().equals(language);
    }
 
    /**
     * @return  the content of this document
     */
    public String getDocText() {
-      return typeText.getDocText();
+      return type.getDocText();
    }
    
    /**
     * @return  the length of text shown in this text area
     */
    public int textLength() {
-      return textArea.getText().length();
+      return type.getDocText().length();
    }
 
    /**
@@ -196,33 +200,11 @@ public class TextDocument {
       textArea.requestFocusInWindow();
    }
 
-   public void setFontSize(int size) {
-      editArea.setFontSize(size);
-   }
-
-   public void setFont(String font) {
-      editArea.setFont(font);
-   }
-
-   /**
-    * @return  the font of this text area
-    */
-   public String getFont() {
-      return editArea.getFont();
-   }
-
-   /**
-    * @return  the font size of this text area
-    */
-   public int getFontSize() {
-      return editArea.getFontSize();
-   }
-
    /**
     * @return  the current indentation unit
     */
    public String getIndentUnit() {
-      return typeText.getIndentUnit();
+      return type.getIndentUnit();
    }
 
    /**
@@ -230,23 +212,7 @@ public class TextDocument {
     * white spaces
     */
    public void changeIndentUnit(String indentUnit) {
-      typeText.changeIndentUnit(indentUnit);
-   }
-
-   /**
-    * @return  if this language is a computer language, i.e. not
-    * set to plain text
-    */
-   public boolean isComputerLanguage() {
-      return !Languages.PLAIN_TEXT.toString().equals(language);
-   }
-
-   public void showLineNumbers() {
-      editArea.showLineNumbers();
-   }
-
-   public void hideLineNumbers() {
-      editArea.hideLineNumbers();
+      type.changeIndentUnit(indentUnit);
    }
 
    /**
@@ -254,7 +220,7 @@ public class TextDocument {
     * auto-indentation
     */
    public void enableTextModify(boolean isEnabled) {
-      typeText.enableTextModify(isEnabled);
+      type.enableTextModify(isEnabled);
    }
 
    /**
@@ -262,7 +228,8 @@ public class TextDocument {
     * and spanning the specified length in black
     */
    public void backInBlack(int length, int pos) {
-      typeText.backInBlack(length, pos);
+      type.doc().setCharacterAttributes(pos, length,
+            type.normalSet(), false);
    }
 
    /**
@@ -271,21 +238,21 @@ public class TextDocument {
     * during typing after the entire text has been scanned
     */
    public void colorAll(boolean enableTextModify) {
-      typeText.colorAll(enableTextModify);
+      type.colorAll(enableTextModify);
    }
 
    /**
     * Performs an undo action
     */
    public void undo() {
-     typeText.undo();
+      type.undo();
    }
 
    /**
     * Performs a redo action
     */
    public void redo() {
-      typeText.redo();
+      type.redo();
    }
 
    /**
@@ -293,7 +260,7 @@ public class TextDocument {
     */
    public void insertStr(int pos, String toInsert) {
       try {
-         typeText.doc().insertString(pos, toInsert, typeText.normalSet());
+         type.doc().insertString(pos, toInsert, type.normalSet());
       }
       catch (BadLocationException ble) {
          ble.printStackTrace();
@@ -305,7 +272,7 @@ public class TextDocument {
     */   
    public void removeStr(int start, int length) {
       try {
-         typeText.doc().remove(start, length);
+         type.doc().remove(start, length);
       }
       catch (BadLocationException ble) {
          ble.printStackTrace();
@@ -313,7 +280,8 @@ public class TextDocument {
    }
 
    /**
-    * Changes this language if this file is unnamed.
+    * Changes this language if no file has been assigned
+    * and saves language to 'prefs'
     */
    public void changeLanguage(Languages language) {
       if (language == Languages.JAVA & filename.length() == 0) {
@@ -338,22 +306,23 @@ public class TextDocument {
     * empty Strings
     */
    public void colorSearchedText(String[] searchTerms, boolean constrainWord) {
-       for (String searchTerm : searchTerms) {
-           if (searchTerm.length() == 0) {
-               throw new IllegalArgumentException("'searchTerms' contains an"
-                       + " empty element");
-           }
-       }
       if (searchTerms == null) {
          throw new IllegalArgumentException("Argument 'searchTerms' is null");
       }
+      for (String searchTerm : searchTerms) {
+         if (searchTerm.length() == 0) {
+            throw new IllegalArgumentException("'searchTerms' contains an"
+                  + " empty element");
+          }
+      }
       if (isComputerLanguage()) {
-         ShowJOption.infoMessage("The coloring of text requires"
+         JOptions.infoMessage("The coloring of text requires"
             + " that the language is plain txt");
          return;
       }
-      typeText.configTypeText(searchTerms, "", "", "", false, false, constrainWord);
-      typeText.colorAll(true);
+      type.configColoring(searchTerms, "", "", "", false, false, constrainWord);
+      type.enableIndent(false);
+      colorAll(true);
    }         
    
    //
@@ -366,20 +335,23 @@ public class TextDocument {
     * This method has to be modified if other languages are implemented in
     * Eadgyth.
     */
-   private void configTypeText(Languages language) {
+   private void configColoring(Languages language) {
       switch(language) {
          case JAVA:
-            typeText.configTypeText(Keywords.JAVA_KEYWORDS, "//",
+            type.configColoring(Keywords.JAVA_KEYWORDS, "//",
                   "/*", "*/", true, true, true);
+            type.enableIndent(true);
             break;
          case HTML:
-            typeText.configTypeText(Keywords.HTML_KEYWORDS, "",
+            type.configColoring(Keywords.HTML_KEYWORDS, "",
                   "<!--", "-->", true, true, false);
+            type.enableIndent(true);
             break;
          /*
           * just to reset the indentation, textModify is switched off anyway */
          case PLAIN_TEXT:
-            typeText.configTypeText(null, "", "", "", false, false, false);
+            type.configColoring(null, "", "", "", false, false, false);
+            type.enableIndent(false);
             break;
       }
    }
@@ -389,8 +361,8 @@ public class TextDocument {
    }
 
    private void displayFileContent() {
-      typeText.enableDocListen(false);
-      typeText.enableTextModify(false);
+      type.enableDocListen(false);
+      type.enableTextModify(false);
 
       // set text attributes later to speed up placing larger pieces of text
       Document blank = new DefaultStyledDocument();
@@ -399,17 +371,17 @@ public class TextDocument {
       try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
          String line;
          while ((line = br.readLine()) != null) {
-            insertStr(typeText.doc().getLength(), line + "\n");
+            insertStr(type.doc().getLength(), line + "\n");
          }
       }
       catch (IOException e) {
          e.printStackTrace();
       }   
-      editArea.textArea().setDocument(typeText.doc()); // doc is the StyledDocument
+      editArea.textArea().setDocument(type.doc()); // doc is the StyledDocument
       if (textArea.getText().endsWith("\n")) {
-         removeStr(typeText.doc().getLength() - 1, 1);
+         removeStr(type.doc().getLength() - 1, 1);
       }
-      typeText.enableDocListen(true);
+      type.enableDocListen(true);
    }
 
    private void assignFileStrings(File filepath) {
@@ -436,26 +408,26 @@ public class TextDocument {
    }
 
    private void changeToJava() {
-      configTypeText(Languages.JAVA);
-      typeText.colorAll(true);
+      configColoring(Languages.JAVA);
+      colorAll(true);
       language = Languages.JAVA.toString();
    }
    
    private void changeToHtml() {
-      configTypeText(Languages.HTML);
-      typeText.colorAll(true);
+      configColoring(Languages.HTML);
+      colorAll(true);
       language = Languages.HTML.toString();
    }
 
    private void changeToPlain() {
-      configTypeText(Languages.PLAIN_TEXT);
-      typeText.backInBlack(getDocText().length(), 0);
-      typeText.enableTextModify(false);
+      configColoring(Languages.PLAIN_TEXT);
+      backInBlack(getDocText().length(), 0);
+      enableTextModify(false);
       language = Languages.PLAIN_TEXT.toString();
    }
 
    private void updateRowNumber() {
       content();
-      typeText.updateRowNumber(content);
+      type.updateRowNumber(content);
    }
 }

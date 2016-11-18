@@ -20,8 +20,8 @@ import eg.javatools.SearchFiles;
 /**
  * Static methods that load plugins provided as jar files.
  * <p>
- * Following http://www.java-blog-buch.de/d-plugin-entwicklung-in-java (many thanks)
- * </p>
+ * Following http://www.java-blog-buch.de/d-plugin-entwicklung-in-java
+ * (many thanks)
  */
 class PluginLoader {
    
@@ -52,34 +52,35 @@ class PluginLoader {
    @SuppressWarnings("unchecked")
    private static List<Class<Pluggable>> extractClassesFromJAR(File jar, ClassLoader cl)
          throws IOException {
-     List<Class<Pluggable>> classes = new ArrayList<>();
-     JarInputStream jaris = new JarInputStream(new FileInputStream(jar));
-     JarEntry ent = null;
-     while ((ent = jaris.getNextJarEntry()) != null) {
-       if (ent.getName().toLowerCase().endsWith(".class")) {
-         try {
-           Class<?> cls = cl.loadClass(ent.getName().substring(0, ent.getName().length() - 6).replace('/', '.'));
-           if (PluginLoader.isPluggableClass(cls)) {
-             classes.add((Class<Pluggable>)cls);
-           }
-         }
-         catch (ClassNotFoundException e) {
-           System.err.println("Can't load Class " + ent.getName());
-           e.printStackTrace();
-         }
-       }
+      List<Class<Pluggable>> classes = new ArrayList<>();
+      JarInputStream jaris = new JarInputStream(new FileInputStream(jar));
+      JarEntry ent = null;
+      while ((ent = jaris.getNextJarEntry()) != null) {
+         if (ent.getName().toLowerCase().endsWith(".class")) {
+            try {
+               Class<?> cls = cl.loadClass(ent.getName().substring(
+                    0, ent.getName().length() - 6).replace('/', '.'));
+               if (PluginLoader.isPluggableClass(cls)) {
+                  classes.add((Class<Pluggable>)cls);
+               }
+            }
+            catch (ClassNotFoundException e) {
+               System.err.println("Can't load Class " + ent.getName());
+               e.printStackTrace();
+            }
+        }
      }
      jaris.close();
      return classes;
    }
    
    private static boolean isPluggableClass(Class<?> cls) {
-     for (Class<?> i : cls.getInterfaces()) {
-       if (i.equals(Pluggable.class)) {
-         return true;
-       }
-     }
-     return false;
+      for (Class<?> i : cls.getInterfaces()) {
+         if (i.equals(Pluggable.class)) {
+            return true;
+         }
+      }
+      return false;
    }
    
    private static List<Pluggable> createPluggableObjects(List<Class<Pluggable>> pluggables) { 

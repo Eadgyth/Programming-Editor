@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 
 //--Eadgyth--//
 import eg.Preferences;
-import eg.utils.ShowJOption;
 
 /**
  * Represents the configuration of a project

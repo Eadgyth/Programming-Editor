@@ -23,7 +23,7 @@ import javax.swing.event.CaretEvent;
 import java.io.Reader;
 
 //--Eadgyth--//
-import eg.utils.ShowJOption;
+import eg.utils.JOptions;
 
 /**
  *  The starting of an external process
@@ -142,7 +142,7 @@ public class ProcessStarter {
             catch(IOException ioe) {
                cw.appendText("<<Error: cannot run " + cmd 
                   + "in the directory " + workingDir + ">>\n");
-               ioe.printStackTrace();
+               System.out.println(ioe.getMessage());
             }
          }
       };
@@ -157,7 +157,7 @@ public class ProcessStarter {
    public boolean isProcessEnded() {
       boolean isEnded = process == null;
       if (!isEnded) {
-         ShowJOption.warnMessage("A currently running process must be quit first");
+         JOptions.warnMessage("A currently running process must be quit first");
       }
       return isEnded;
    }
@@ -251,7 +251,7 @@ public class ProcessStarter {
     * is entered in a dialog window
     */
    private void startNewCmd() {
-      String cmd = ShowJOption.dialogRes(
+      String cmd = JOptions.dialogRes(
                "Run a system command in the working directory '"
                + workingDirName +"'",
                "Command", previousCmd);

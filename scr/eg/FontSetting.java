@@ -1,7 +1,7 @@
 package eg;
 
 //--Eadgyth--//
-import eg.document.TextDocument;
+import eg.ui.EditArea;
 
 /**
  * The setting of the font and font size
@@ -9,10 +9,10 @@ import eg.document.TextDocument;
 public class FontSetting {
 
    private final FontSettingWin fontSetWin = new FontSettingWin();
-   private final TextDocument[] txtDoc;
+   private final EditArea[] editArea;
 
-   public FontSetting(TextDocument[] txtDoc) {
-      this.txtDoc = txtDoc;
+   public FontSetting(EditArea[] editArea) {
+      this.editArea = editArea;
       fontSetWin.okAct(e -> setFont());
    }
    
@@ -23,10 +23,10 @@ public class FontSetting {
    private void setFont() {
       String currentFont = fontSetWin.fontComboBxRes();
       int currentFontSize = fontSetWin.sizeComboBxRes();
-       for (TextDocument txt : txtDoc) {
-           if (txt != null) {
-               txt.setFont(currentFont);
-               txt.setFontSize(currentFontSize);
+       for (EditArea ea : editArea) {
+           if (ea != null) {
+               ea.setFont(currentFont);
+               ea.setFontSize(currentFontSize);
            }
        }
       fontSetWin.makeVisible(false);

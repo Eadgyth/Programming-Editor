@@ -2,7 +2,7 @@ package eg.ui;
 
 //--Eadgyth--//
 import eg.Preferences;
-import eg.document.TextDocument;
+import eg.ui.EditArea;
 import eg.Constants;
 
 /**
@@ -12,7 +12,7 @@ import eg.Constants;
 public class ViewSettings {
 
    private final MainWin mw;
-   private final TextDocument[] txtDoc;
+   private final EditArea[] editArea;
    private final Preferences prefs = new Preferences();
    private final ViewSettingsWin viewSetWin = new ViewSettingsWin();
    
@@ -21,9 +21,9 @@ public class ViewSettings {
    private boolean isShowStatusbar;
    private int selectedLafInd;
    
-   public ViewSettings(MainWin mw, TextDocument[] txtDoc) {
+   public ViewSettings(MainWin mw, EditArea[] editArea) {
       this.mw = mw;
-      this.txtDoc = txtDoc;
+      this.editArea = editArea;
       isShowStatusbar = viewSetWin.isShowStatusbar();
       isShowToolbar = viewSetWin.isShowToolbar();
       isShowLineNumbers = viewSetWin.isShowLineNumbers();
@@ -64,13 +64,13 @@ public class ViewSettings {
    }
    
    private void showHideLineNumbers() {
-      for (int i = 0; i < txtDoc.length; i++) {
-         if (txtDoc[i] != null) {
+      for (int i = 0; i < editArea.length; i++) {
+         if (editArea[i] != null) {
             if (!isShowLineNumbers) {
-               txtDoc[i].hideLineNumbers();
+               editArea[i].hideLineNumbers();
             }
             else {
-               txtDoc[i].showLineNumbers();
+               editArea[i].showLineNumbers();
             }
          }
       }

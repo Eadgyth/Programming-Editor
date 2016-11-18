@@ -155,7 +155,7 @@ public class MainWin {
 
    /**
     * Enables/Disables selected menu items and toolbar buttons for
-    * project
+    * a project
     */
    public void allowProjectEvents(boolean isCompile, boolean isRun,
          boolean isBuild) {
@@ -316,6 +316,7 @@ public class MainWin {
       splitVert.setBorder(null);
       splitHorAll = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
             splitVert, null);
+      splitHorAll.setResizeWeight(1);
       splitHorAll.setDividerSize(0);
       splitHorAll.setBorder(null/*new MatteBorder(1, 0, 0, 0, Constants.BORDER_GRAY)*/);
    }

@@ -25,7 +25,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
- * Contains the main method.
+ * Contains the main method
  * <p>
  * @version 1.0 beta
  * @author Malte Bussiek, m.bussiek@web.de
@@ -37,19 +37,20 @@ public class Eadgyth {
       Locale.setDefault(Locale.US);
       setLaf();
       
-      ConsolePanel   cw        = new ConsolePanel();
-      ProcessStarter proc      = new ProcessStarter(cw);
-      FileTree       fileTree  = new FileTree();
-      Menu           menu      = new Menu();
-      Toolbar        tBar      = new Toolbar();
-      MainWin        mw        = new MainWin(menu, tBar);
-      ProjectFactory projFact  = new ProjectFactory(mw, proc, cw);
-      PluginStarter  plugStart = new PluginStarter(mw);
-      Edit           edit      = new Edit();
-      TabActions     ta        = new TabActions(mw, edit, fileTree, projFact,
-              plugStart);
-      FontSetting    fontSet   = new FontSetting(ta.getTextDocument());
-      ViewSettings   viewSet   = new ViewSettings(mw, ta.getTextDocument());
+      ConsolePanel    cw        = new ConsolePanel();
+      ProcessStarter  proc      = new ProcessStarter(cw);
+      FileTree        fileTree  = new FileTree();
+      Menu            menu      = new Menu();
+      Toolbar         tBar      = new Toolbar();
+      MainWin         mw        = new MainWin(menu, tBar);
+      ProjectFactory  projFact  = new ProjectFactory(mw, proc, cw);
+      PluginStarter   plugStart = new PluginStarter(mw);
+      Edit            edit      = new Edit();
+      DocumentChanger docChange = new DocumentChanger(mw, edit, plugStart);
+      TabActions      ta        = new TabActions(mw, fileTree, projFact,
+              docChange);
+      FontSetting     fontSet   = new FontSetting(ta.getEditArea());
+      ViewSettings    viewSet   = new ViewSettings(mw, ta.getEditArea());
       
       tBar.registerTabActions(ta);
       tBar.registerEdit(edit);
@@ -57,13 +58,12 @@ public class Eadgyth {
       menu.registerEdit(edit);
       menu.openViewSettingsAct(e -> viewSet.makeSetWinVisible());
       menu.fontAct(e -> fontSet.makeFontSetWinVisible(true));
-      fileTree.closeAct(e -> mw.hideFileView());
       cw.closeAct(e -> mw.hideConsole());
-      startPlugin(plugStart, mw, menu);
-      
+      fileTree.closeAct(e -> mw.hideFileView());    
       fileTree.addObserver(ta);
       mw.addFileView(fileTree.fileTreePnl());
       mw.addConsoleView(cw.consolePnl());
+      startPlugin(plugStart, mw, menu); 
       
       EventQueue.invokeLater(() -> {
          mw.makeVisible();
@@ -83,7 +83,7 @@ public class Eadgyth {
          catch (ClassNotFoundException | IllegalAccessException 
                  | InstantiationException 
                  | UnsupportedLookAndFeelException e) {
-            e.getMessage();
+            System.out.println(e.getMessage());
          }
       }
       if ("Windows".equals(Constants.CURR_LAF_STR)) {
@@ -117,7 +117,7 @@ public class Eadgyth {
             }
          }
          catch (IOException ioe) {
-            ioe.printStackTrace();
+            System.out.println(ioe.getMessage());
          }
       });
    }

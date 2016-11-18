@@ -18,13 +18,15 @@ import javax.swing.event.ChangeListener;
 import java.io.File;
 
 //--Eadgyth--//
-import eg.utils.ShowJOption;
+import eg.utils.JOptions;
 import eg.utils.FileUtils;
 import eg.document.TextDocument;
 import eg.ui.MainWin;
 import eg.ui.TabbedPane;
+import eg.ui.EditArea;
 import eg.ui.filetree.FileTree;
-import eg.projects.*;
+import eg.projects.ProjectActions;
+import eg.projects.ProjectFactory;
 import eg.plugin.PluginStarter;
 
 /**
@@ -35,14 +37,14 @@ public class TabActions implements Observer{
 
    private final TabbedPane tabPane = new TabbedPane();
    private final TextDocument[] txtDoc = new TextDocument[20];
+   private final EditArea[] editArea = new EditArea[20];
    private final FileChooserOpen fo = new FileChooserOpen();
    private final FileChooserSave fs = new FileChooserSave();
    private final Preferences prefs = new Preferences();   
    private final MainWin mw;
    private final FileTree fileTree;
    private final ProjectFactory projFact;
-   private final Edit edit;
-   private final PluginStarter plugStart;
+   private final DocumentChanger docChange;
    private final ChangeListener changeListener;
    private final WindowListener winListener;
 
@@ -51,12 +53,11 @@ public class TabActions implements Observer{
    /* The index of the selected tab */
    private int iTab = 0;
 
-   /* Set if a java project is defined*/
+   /* Set if a project is defined*/
    private boolean isProjectSet = false;
    
-   public TabActions(MainWin mw, Edit edit,
-          FileTree fileTree, ProjectFactory projFact,
-          PluginStarter plugStart) {
+   public TabActions(MainWin mw, FileTree fileTree, ProjectFactory projFact,
+          DocumentChanger docChange) {
        
       this.winListener = new WindowAdapter() {
          @Override
@@ -71,8 +72,7 @@ public class TabActions implements Observer{
       this.mw = mw;
       this.fileTree = fileTree;
       this.projFact = projFact;
-      this.edit = edit;
-      this.plugStart = plugStart;
+      this.docChange = docChange;
 
       mw.addTextArea(tabPane.tabbedPane());
       mw.winListen(winListener);
@@ -88,21 +88,36 @@ public class TabActions implements Observer{
    public TextDocument[] getTextDocument() {
       return txtDoc;
    }
+   
+   /**
+    * Returns the array of type {@code EditArea}
+    * @return  this array of type {@link EditArea}
+    */
+   public EditArea[] getEditArea() {
+      return editArea;
+   }
 
    public void focusInSelectedTab() { 
       txtDoc[iTab].requestFocus();
    }
+
+   /**
+    * Opens a new Tab to which no file is assigned
+    */
+   public void newEmptyTab() {
+      editArea[tabPane.tabCount()] = new EditArea();
+      txtDoc[tabPane.tabCount()] = new TextDocument(editArea[tabPane.tabCount()]);
+      addNewTab("unnamed", editArea[tabPane.tabCount()].scrolledArea(),
+            tabPane.tabCount());       
+   }
    
+   /**
+    * Opens a file selected in {@code FileTree}
+    */
    @Override
    public void update(Observable o, Object arg) {
       File f = new File(arg.toString());
       open(f);
-   }
-
-   public void newEmptyTab() {
-      txtDoc[tabPane.tabCount()] = new TextDocument();
-      addNewTab("unnamed", txtDoc[tabPane.tabCount()].scrolledTextArea(),
-            tabPane.tabCount());       
    }
 
    /**
@@ -114,7 +129,7 @@ public class TabActions implements Observer{
          return;
       }     
       if (!f.exists()) {
-         ShowJOption.warnMessage(f.getName() + " is was not found");
+         JOptions.warnMessage(f.getName() + " is was not found");
       }
       else {
          open(f);
@@ -155,7 +170,7 @@ public class TabActions implements Observer{
          return; // if cancel or close window clicked
       }
       if (f.exists()) {
-         ShowJOption.warnMessage(f.getName() + " already exists");
+         JOptions.warnMessage(f.getName() + " already exists");
       }
       else {      
          txtDoc[iTab].saveFileAs(f);
@@ -248,12 +263,12 @@ public class TabActions implements Observer{
    }
 
    /**
-    * Sets visible the settings window of a {@code ProjectActions} object <p>
-    * See also {@link SettingsWin} 
+    * Sets visible the {@code SettingsWin} frame of a project which the 
+    * selected tab belongs to or of a newly created project otherwise 
     */
    public void openProjectSetWin() {
       if (txtDoc[iTab].filename().length() == 0) {
-         ShowJOption.infoMessage("A project cannot be set for an unnamed tab");
+         JOptions.infoMessage("A project cannot be set for an unnamed tab");
          return;
       }
       
@@ -264,12 +279,12 @@ public class TabActions implements Observer{
          ProjectActions projNew 
                = projFact.getProjAct(FileUtils.extension(txtDoc[iTab].filepath()));
          if (projNew == null) {
-            ShowJOption.infoMessage("A project cannot be set for this file type");
+            JOptions.infoMessage("A project cannot be set for this file type");
          }
          else {         
             int result = 0;
             if (isProjectSet) {
-               result = ShowJOption.confirmYesNo("Change project ?");
+               result = JOptions.confirmYesNo("Change project ?");
             }
             if (result == 0) {
                projNew.makeSetWinVisible(true);
@@ -307,7 +322,7 @@ public class TabActions implements Observer{
 
    private void open(File file) {
       if (isFileOpen(file.toString())) {
-         ShowJOption.warnMessage(file.getName() + " is open");
+         JOptions.warnMessage(file.getName() + " is open");
       }
       else {
          int openIndex = 0;
@@ -319,17 +334,18 @@ public class TabActions implements Observer{
          else {
             openIndex = tabPane.tabCount();
             if (openIndex < txtDoc.length) {
-               txtDoc[openIndex] = new TextDocument();
+               editArea[openIndex] = new EditArea();
+               txtDoc[openIndex] = new TextDocument(editArea[openIndex]);
                txtDoc[openIndex].openFile(file);
             }
             else {
-               ShowJOption.warnMessage("Could not open " + file.getName()
+               JOptions.warnMessage("Could not open " + file.getName()
                   + ". The maximum number of tabs is reached.");
                return;
             }
          }
          addNewTab(txtDoc[openIndex].filename(),
-               txtDoc[openIndex].scrolledTextArea(), openIndex);
+               editArea[openIndex].scrolledArea(), openIndex);
          mw.displayFrameTitle(txtDoc[openIndex].filepath());           
          if (!isProjectSet) {
             retrieveProject(txtDoc[openIndex].dir());
@@ -362,7 +378,7 @@ public class TabActions implements Observer{
       if (filename.length() == 0) {
          filename = "unnamed";
       }
-      return ShowJOption.confirmYesNoCancel
+      return JOptions.confirmYesNoCancel
             ("Save changes in " + filename + " ?");
    }
    
@@ -381,6 +397,7 @@ public class TabActions implements Observer{
       tabPane.removeTab(iTab);
       for (int i = count; i < tabPane.tabCount(); i++) {
          txtDoc[i] = txtDoc[i + 1];
+         editArea[i] = editArea[i+1];
       }
       if (tabPane.tabCount() > 0) {
          int index = tabPane.selectedIndex();
@@ -414,7 +431,7 @@ public class TabActions implements Observer{
          }
       }
       else {
-         ShowJOption.warnMessageToFront("A valid filepath could not be built");
+         JOptions.warnMessageToFront("A valid filepath could not be built");
       }
    }
 
@@ -428,10 +445,7 @@ public class TabActions implements Observer{
       JTabbedPane sourceTb = (JTabbedPane) changeEvent.getSource();
       iTab = sourceTb.getSelectedIndex();
       if (iTab > -1) {
-         mw.displayFrameTitle(txtDoc[iTab].filepath());
-         focusInSelectedTab();
-         edit.setTextObject(txtDoc[iTab]);
-         plugStart.setTextDocument(txtDoc[iTab]);
+         docChange.assignTextDocument(txtDoc[iTab]);
       }
    }
 }
