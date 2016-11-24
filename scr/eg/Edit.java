@@ -12,15 +12,16 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 //--Eadgyth--//
-import eg.utils.*;
+import eg.utils.JOptions;
+import eg.utils.Finder;
 import eg.document.TextDocument;
 
 /**
- * Represents the editing of text in a selected tab.
+ * The editing of text in a selected tab.
  */ 
 public class Edit {
 
-   /* Numbers of white spaces in indentation unit */
+   /* Options for the numbers of white spaces in indentation unit */
    private static final String[] SPACE_NUMBER = { "1", "2", "3", "4", "5", "6" };
 
    private TextDocument txtDoc;
@@ -82,11 +83,11 @@ public class Edit {
       }
    }
 
-   /**
-    * Sets a new indentation length
-    */
+  /**
+   * Sets a new indentation length
+   */
    public void setNewIndentUnit() {
-      String selectedNumber = ShowJOption.comboBoxRes("Number of spaces:",
+      String selectedNumber = JOptions.comboBoxRes("Number of spaces:",
             "Indentation length", SPACE_NUMBER, String.valueOf(indentLength));
 
       if (selectedNumber != null) {    // if not cancelled
@@ -245,6 +246,9 @@ public class Edit {
       }
       catch (UnsupportedFlavorException | IOException ufe) {
          ufe.printStackTrace();
+      }
+      if (inClipboard == null) {
+         JOptions.infoMessage("No contents loaded from the cliboard");
       }
       return inClipboard;
    }

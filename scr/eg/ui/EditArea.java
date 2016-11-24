@@ -1,7 +1,9 @@
 package eg.ui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Font;
 
 import javax.swing.JTextPane;
@@ -19,9 +21,8 @@ import eg.Preferences;
 import eg.Constants;
 
 /**
- * The scolled text area which consist in the text area,
- * the line numbers (which can be shown or hidden) and the font
- * (which can be changed)
+ * The scolled text area which consist in the text area to edit
+ * text, the area that displays the line numbers and the font
  */
 public class EditArea {
 
@@ -33,12 +34,17 @@ public class EditArea {
 
    private final JPanel disabledWordwrapArea
          = new JPanel(new BorderLayout());
+   private final JPanel enabledWordwrapArea = new JPanel();
+
+   private final JScrollPane scrollWrapArea = new JScrollPane(
+         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
    private final JScrollPane scrollRowArea = new JScrollPane(
-         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+         JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
    private final JScrollPane scrollSimpleArea = new JScrollPane(
-         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+         JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
    private final JScrollPane scrollLines = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_NEVER,
          JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -54,14 +60,21 @@ public class EditArea {
       initFont();
       initScrolledRowArea();
       initScrollSimpleArea();
-      disabledWordwrapArea.add(textArea, BorderLayout.CENTER);
-      boolean withLineNumbers =
+      intitScrollWrapArea();
+      boolean isLineNumbers =
             Constants.SHOW.equals(PREFS.prop.getProperty("lineNumbers"));
-      if (withLineNumbers) {
-         showLineNumbers();
+      boolean isWordWrap =
+            "enabled".equals(PREFS.prop.getProperty("wordWrap"));
+      if (isWordWrap) {
+         enableWordWrap();
       }
       else {
-         hideLineNumbers();
+         if (isLineNumbers) {
+            showLineNumbers();
+         }
+         else {
+            hideLineNumbers();
+         }
       }
       removeCopyPasteKeys();
    }
@@ -81,26 +94,11 @@ public class EditArea {
    }
    
    /**
-    * @return  the panel that contains this text area in the scroll pane and
-    * and the area that shows line numbers
+    * @return  the JPanel that contains the area to edit text and,
+    * if selected, the area showing line numbers in a scroll pane
     */
    public JPanel scrolledArea() {
       return scrolledArea;
-   }
-   
-   /**
-    * @return  the font of this text area
-    * 
-    */
-   public String getFont() {
-      return font;
-   }
-   
-   /**
-    * @return  the font size of this text area
-    */
-   public int getFontSize() {
-      return fontSize;
    }
    
    /**
@@ -125,8 +123,13 @@ public class EditArea {
       PREFS.storePrefs("font", font);
    }
    
+   /**
+    * Shows the area that displays line numbers.
+    * <p> Invoking this mathod also annules wordwrap
+    */
    public void showLineNumbers() {
-      scrolledArea.remove(scrollSimpleArea);
+      removeCenterComponent();
+      disabledWordwrapArea.add(textArea, BorderLayout.CENTER);
       scrollRowArea.setViewportView(disabledWordwrapArea);
       scrolledArea.add(scrollLines, BorderLayout.WEST);
       scrolledArea.add(scrollRowArea, BorderLayout.CENTER);
@@ -135,9 +138,13 @@ public class EditArea {
       scrolledArea.revalidate();
    }
    
+   /**
+    * Hides the area that displays line numbers
+    */
    public void hideLineNumbers() {
-      scrolledArea.remove(scrollRowArea);
       scrolledArea.remove(scrollLines);
+      removeCenterComponent();
+      disabledWordwrapArea.add(textArea, BorderLayout.CENTER);
       scrollSimpleArea.setViewportView(disabledWordwrapArea);
       scrolledArea.add(scrollSimpleArea, BorderLayout.CENTER);
       textArea.requestFocusInWindow();
@@ -145,6 +152,24 @@ public class EditArea {
       scrolledArea.revalidate();
    }
    
+   /**
+    * Enables wordwrap.
+    * <p> Invoking this method also hides the area that displays
+    * line numbers
+    */
+   public void enableWordWrap() {
+      scrolledArea.remove(scrollLines);
+      removeCenterComponent();
+      scrollWrapArea.setViewportView(textArea);
+      scrolledArea.add(scrollWrapArea, BorderLayout.CENTER);
+      textArea.requestFocusInWindow();
+      scrolledArea.repaint();
+      scrolledArea.revalidate();
+   }
+   
+   //
+   //--private methods
+   //
    private void initFont() {
       font = PREFS.prop.getProperty("font");
       fontSize = Integer.parseInt(PREFS.prop.getProperty("fontSize"));
@@ -166,6 +191,12 @@ public class EditArea {
       caretLine.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
    }
    
+   private void intitScrollWrapArea() {
+      scrollWrapArea.getVerticalScrollBar().setUnitIncrement(15);
+      scrollWrapArea.setBorder(null);
+      scrollWrapArea.setViewportView(enabledWordwrapArea);
+   }
+   
    private void initScrollSimpleArea() {
       scrollSimpleArea.getVerticalScrollBar().setUnitIncrement(15);
       scrollSimpleArea.setBorder(null);
@@ -178,10 +209,18 @@ public class EditArea {
       scrollRowArea.setViewportView(disabledWordwrapArea);
       scrollLines.setViewportView(lineArea);
       scrollLines.setBorder(new MatteBorder(0, 0, 0, 1, Constants.BORDER_GRAY));
-
-      /* link line numbers pane to input pane scrolling */
+      /*
+       * link row number area scolling to text area scrolling */
       scrollLines.getVerticalScrollBar().setModel
             (scrollRowArea.getVerticalScrollBar().getModel());
+   }
+   
+   private void removeCenterComponent() {
+      BorderLayout layout = (BorderLayout) scrolledArea.getLayout();
+      Component c = layout.getLayoutComponent(BorderLayout.CENTER);
+      if (c != null) {
+         scrolledArea.remove(c);
+      }
    }
 
    /* Remove keys by binding the strokes to an invalid action name */

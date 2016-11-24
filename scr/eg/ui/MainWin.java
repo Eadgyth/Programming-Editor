@@ -16,6 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -25,8 +27,7 @@ import eg.Constants;
 import eg.Preferences;
 
 /**
- * The main window with a split view to which areas components can
- * be added
+ * The main window
  */
 public class MainWin {
 
@@ -44,70 +45,53 @@ public class MainWin {
    private final JPanel functionPnl = new JPanel(new BorderLayout());
    private final JPanel functTitlePnl = new JPanel();
    private final JLabel functTitleLb = new JLabel();
+   private final JToolBar toolbar;
+   private final JTabbedPane tabbedPane;
+   private final JPanel fileViewPnl;
+   private final JPanel consolePnl;
 
    private final Menu menu;
-   private final Toolbar tBar;
    private final Preferences prefs = new Preferences();
-
+   
    private JSplitPane splitHorAll;
    private JSplitPane splitHor;
    private JSplitPane splitVert;
-   private JPanel fileView;
-   private JPanel consoleView;
    private int dividerLocVert = 0;
    private int dividerLocHorAll = 0;
    private int dividerLocHor = 0;
 
    /**
     * @param menu  a reference to {@link Menu}
-    * @param tBar  a reference to {@link Toolbar}
+    * @param toolbar  a reference to a JToolBar
+    * @param tabbedPane  a reference to a JTabbedPane
+    * @param fileViewPnl  a reference to a JPanel that shows the file view
+    * @param consolePnl  a refence to a JPanel that shows the console
     */
-   public MainWin(Menu menu, Toolbar tBar) {
+   public MainWin(Menu menu, JToolBar toolbar, JTabbedPane tabbedPane,
+         JPanel fileViewPnl, JPanel consolePnl) {
       this.menu = menu;
-      this.tBar = tBar;
+      this.toolbar = toolbar;
+      this.tabbedPane = tabbedPane;
+      this.fileViewPnl = fileViewPnl;
+      this.consolePnl = consolePnl;
 
       prefs.readPrefs();
       initSplitPane();
       initStatusbar();
       initAllComponents();
       initFunctionPnl();
-      showHideAct();
       initFrame();
       showProjectLb.setText("Project root: not set");
    }
    
    /**
-    * Adds a component at the upper right of the left split area
-    * which is intended for the text area
-    * @param c  the Component that is added
-    */
-   public void addTextArea(Component c) {
-      splitHor.setRightComponent(c);
-   }
-   
-   /**
-    * Adds a JPanel at the upper left of the left split area
-    * that is intended for the file view
-    * @param pnl  the JPanel that is added
-    */
-   public void addFileView(JPanel pnl) {
-      fileView = pnl;
-   }
-   
-   /**
-    * Adds a JPanel at the bottom of the left split area
-    * that is intended for the console view
-    * @param pnl  the JPanel that is added
-    */
-   public void addConsoleView(JPanel pnl) {
-      consoleView = pnl;
-   }
-   
-   /**
-    * Adds a component to this 'function panel' which is at the right 
-    * split area. This panel is intended for plugins.
-    * @param c  the Component that is added
-    * @param title  the title (filename) for the tab
+    * Adds a component to this 'function panel' which is added to
+    * the right of this split pane.
+    * <p> The 'function panel' has a border layout in whose center the
+    * specified component is added. The specified title is shown in a panel
+    * at the north.
+    * @param c  the Component that is added to the right of this plit window
+    * @param title  the title for the function
     */
    public void addToFunctionPanel(Component c, String title) {
       BorderLayout layout = (BorderLayout) functionPnl.getLayout();
@@ -152,20 +136,9 @@ public class MainWin {
    public boolean isConsoleSelected() {
       return menu.isConsoleSelected();
    }
-
-   /**
-    * Enables/Disables selected menu items and toolbar buttons for
-    * a project
-    */
-   public void allowProjectEvents(boolean isCompile, boolean isRun,
-         boolean isBuild) {
-      menu.enableExtra(isCompile, isRun, isBuild);
-      tBar.enableExtraBts(isCompile, isRun);
-   }
    
    public void showProjectInfo(String project) {
       showProjectLb.setText("Project root: " + project);
-      menu.enableFileViewItm(true);
    }
 
    /**
@@ -174,11 +147,11 @@ public class MainWin {
     */
    public void showToolbar(boolean isShowToolbar) {
       if (isShowToolbar) {
-         allComponents.add(tBar.toolbar(), BorderLayout.NORTH);
+         allComponents.add(toolbar, BorderLayout.NORTH);
          prefs.storePrefs("toolbar", Constants.SHOW);
       }
       else {
-         allComponents.remove(tBar.toolbar());
+         allComponents.remove(toolbar);
          prefs.storePrefs("toolbar", Constants.HIDE);
       }
       allComponents.revalidate();
@@ -205,12 +178,12 @@ public class MainWin {
     */
    public void showConsole() {
       splitVert.setDividerSize(6);
-      splitVert.setRightComponent(consoleView);
+      splitVert.setRightComponent(consolePnl);
       if (dividerLocVert == 0) {
          dividerLocVert = (int)(frame.getHeight() * 0.65);
       }
       splitVert.setDividerLocation(dividerLocVert);
-      menu.selectShowConsole(true); 
+      menu.selectShowConsole(true);
    }
 
    /**
@@ -228,11 +201,12 @@ public class MainWin {
     */
    public void showFileView() {
       splitHor.setDividerSize(6);
-      splitHor.setLeftComponent(fileView);
+      splitHor.setLeftComponent(fileViewPnl);
       if (dividerLocHor == 0) {
          dividerLocHor = (int)(frame.getWidth() * 0.2);
       }
       splitHor.setDividerLocation(dividerLocHor);
+      menu.selectShowFileView(true);
    }
 
    /**
@@ -273,8 +247,7 @@ public class MainWin {
    //
 
    /**
-    * Adds a window listener to this JFrame (to defined a window
-    * closing handler)
+    * Adds a window listener to this JFrame
     */
    public void winListen(WindowListener wl) {
       frame.addWindowListener(wl);
@@ -296,7 +269,7 @@ public class MainWin {
    private void initAllComponents() {
       prefs.readPrefs();
       if (Constants.SHOW.equals(prefs.prop.getProperty("toolbar"))) {
-         allComponents.add(tBar.toolbar(), BorderLayout.NORTH);
+         allComponents.add(toolbar, BorderLayout.NORTH);
       }
       allComponents.add(splitHorAll, BorderLayout.CENTER);
       if (Constants.SHOW.equals(prefs.prop.getProperty("statusbar"))) {
@@ -307,7 +280,7 @@ public class MainWin {
 
    private void initSplitPane() {      
       splitHor = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
-           null, null);
+           null, tabbedPane);
       splitHor.setDividerSize(0);
       splitHor.setBorder(null);
       splitVert = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true,
@@ -346,38 +319,5 @@ public class MainWin {
       functTitlePnl.add(Box.createHorizontalGlue());
       functTitlePnl.add(closeBt);
       functionPnl.add(functTitlePnl, BorderLayout.NORTH);
-   }
-
-   private void showHideAct() {
-      menu.showConsoleAct(e -> showHideConsole());
-      menu.showFileViewAct(e -> showHideFileView());
-      menu.showFunctionPnlAct(e -> showHideFunctionPnl());
-   }
-
-   private void showHideConsole() {
-      if (menu.isConsoleSelected()) {
-         showConsole();
-      }
-      else {
-         hideConsole();
-      }
-   }
-
-   private void showHideFileView() {
-      if (menu.isFileViewSelected()) {
-         showFileView();
-      }
-      else {
-         hideFileView();
-      }
-   }
-
-   private void showHideFunctionPnl() {
-      if (menu.isFunctionPnlSelected()) {
-         showFunctionPnl();
-      }
-      else {
-         hideFunctionPnl();
-      }
-   }
+   }  
 }

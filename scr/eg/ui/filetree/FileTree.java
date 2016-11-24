@@ -4,9 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 
-import java.awt.event.*;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.JScrollPane;
@@ -32,13 +34,12 @@ import java.util.Enumeration;
 import java.util.Observable;
 
 //--Eadyth--//
-import eg.utils.ShowJOption;
+import eg.utils.JOptions;
 import eg.Constants;
 import eg.ui.IconFiles;
 
 /**
- * Contains the file view panel that consists in a panel in which a JTree showing
- * the project's file system can be displayed and a toolbar. 
+ * The display of the file tree of a project
  */
 public class FileTree extends Observable {
 
@@ -48,12 +49,14 @@ public class FileTree extends Observable {
    /*
     * The panel to which the tree is added and that is added to the scroll pane */
    private final JPanel holdTreePnl  = new JPanel();
+
    private final JScrollPane scroll  = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);  
+         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
    private final JToolBar toolbar;
    private final JButton upBt        = new JButton(UIManager.getIcon(
-         "FileChooser.upFolderIcon"));
+                                       "FileChooser.upFolderIcon"));
    private final JButton   renewBt   = new JButton(IconFiles.refreshIcon);
    private final JButton   closeBt   = new JButton(IconFiles.closeIcon);
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
@@ -66,6 +69,9 @@ public class FileTree extends Observable {
    private String pathHelper = "";
    private String projRoot = "";
 
+   /**
+    * The display of a project's file tree
+    */
    public FileTree() {
       ml = mouseListener;
       toolbar = createToolbar();
@@ -73,7 +79,7 @@ public class FileTree extends Observable {
    }
    
    /**
-    * Returns the reference to this panel that contains the file tree
+    * Returns the reference to this panel that shows the file tree
     * and the toolbar
     */
    public JPanel fileTreePnl() {
@@ -98,8 +104,7 @@ public class FileTree extends Observable {
       DefaultMutableTreeNode searchNode = searchNode(parent);
       /*
        * may be null if a folder further down from the project root
-       * is the root of the current tree
-       */
+       * is the root of the current tree */
       if (searchNode != null) {
          model.insertNodeInto(new DefaultMutableTreeNode(f),
                   searchNode, searchNode.getChildCount());
@@ -221,14 +226,14 @@ public class FileTree extends Observable {
    private void deleteFile() {
       DefaultMutableTreeNode selectedNode = getSelectedNode();
       File f = getSelectedFile();
-      int res = ShowJOption.confirmYesNo("Delete " + f.getName() + " ?");
+      int res = JOptions.confirmYesNo("Delete " + f.getName() + " ?");
       if (res == JOptionPane.YES_OPTION) {
          boolean success = f.delete();
          if (success) {
             model.removeNodeFromParent(selectedNode);
          }
          else {
-            ShowJOption.warnMessage("Deleting " + f.getName() + " failed");
+            JOptions.warnMessage("Deleting " + f.getName() + " failed");
          }
       }
    }
@@ -236,7 +241,8 @@ public class FileTree extends Observable {
    private void newFolder() {
       DefaultMutableTreeNode parent = getSelectedNode();
       File f = getSelectedFile();
-      String newFolder = ShowJOption.dialogRes("Enter name of new folder", "New folder", "");
+      String newFolder = JOptions.dialogRes("Enter name of new folder",
+            "New folder", "");
       if (newFolder != null) {
          File newDir = new File(f.toString() + File.separator + newFolder);
          boolean succes = newDir.mkdirs();
@@ -245,8 +251,24 @@ public class FileTree extends Observable {
                parent, parent.getChildCount());
          }
          else {
-            ShowJOption.warnMessage("Creating " + newDir.getName() + " failed");
+            JOptions.warnMessage("Creating " + newDir.getName() + " failed");
          }
+      }
+   }
+   
+   private void openFile(String fileStr) {
+      boolean isAllowedFile
+             = fileStr.endsWith(".java")
+            || fileStr.endsWith(".txt")
+            || fileStr.endsWith(".properties")
+            || fileStr.endsWith(".html");
+      if (isAllowedFile) {
+         setChanged();
+         notifyObservers(fileStr);
+      }
+      else {
+         JOptions.warnMessageToFront(
+                "No function is associated with this file type");
       }
    }
    
@@ -280,6 +302,7 @@ public class FileTree extends Observable {
       holdTreePnl.setLayout(new BorderLayout());
       scroll.setBorder(null);
       scroll.setViewportView(holdTreePnl);
+      scroll.getVerticalScrollBar().setUnitIncrement(10);
       fileTreePnl.add(toolbar, BorderLayout.NORTH);
       fileTreePnl.add(scroll, BorderLayout.CENTER);
       fileTreePnl.setBorder(new LineBorder(Constants.BORDER_GRAY));
@@ -312,21 +335,9 @@ public class FileTree extends Observable {
                if (f != null ) {
                   String fStr = f.toString();
                   if (f.isFile()) {
-                      boolean isAllowedFile
-                             = fStr.endsWith(".java")
-                            || fStr.endsWith(".txt")
-                            || fStr.endsWith(".properties")
-                            || fStr.endsWith(".html");
-                      if (isAllowedFile) {
-                         setChanged();
-                         notifyObservers(fStr);
-                      }
-                      else {
-                         ShowJOption.warnMessageToFront(
-                                "No function is associated with this file type");
-                     }
+                     openFile(fStr); 
                   }
-                  else {
+                  else { // is directory
                      folderDown(fStr);
                   }
                }

@@ -2,6 +2,8 @@ package eg.projects;
 
 import eg.console.*;
 import eg.ui.MainWin;
+import eg.ui.Menu;
+import eg.ui.Toolbar;
 
 /**
  * The creation of objects of the classes that represent a project. These
@@ -13,8 +15,11 @@ public class ProjectFactory {
    private final ProcessStarter proc;
    private final ConsolePanel cw;
 
-   public ProjectFactory(MainWin mw, ProcessStarter proc,
-         ConsolePanel cw) {
+   private boolean isCompile;
+   private boolean isRun;
+   private boolean isBuild;
+
+   public ProjectFactory(MainWin mw, ProcessStarter proc, ConsolePanel cw) {
       this.mw = mw;
       this.proc = proc;
       this.cw = cw;
@@ -48,21 +53,39 @@ public class ProjectFactory {
       return newProj;
    }
    
+   public boolean isCompile() {
+      return isCompile;
+   }
+   
+   public boolean isRun() {
+      return isRun;
+   }
+   
+   public boolean isBuild() {
+      return isBuild;
+   }
+   
    private ProjectActions javaAct() {
       ProjectActions java = new JavaActions(mw, proc, cw);
-      mw.allowProjectEvents(true, true, true);
+      enableActions(true, true, true);
       return java;
    }
    
    private ProjectActions htmlAct() { 
       ProjectActions html = new HtmlActions();
-      mw.allowProjectEvents(false, true, false);
+      enableActions(false, true, false);
       return html;
    }
    
    private ProjectActions txtAct() {
       ProjectActions txt = new TxtActions();
-      mw.allowProjectEvents(false, false, false);
+      enableActions(false, false, false);
       return txt;
+   }
+   
+   private void enableActions(boolean isCompile, boolean isRun, boolean isBuild) {
+      this.isCompile = isCompile;
+      this.isRun = isRun;
+      this.isBuild = isBuild;
    }
 }

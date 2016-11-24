@@ -4,13 +4,15 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Opens the Help file in the default browser upon creating
- * an object of this class
+ * Opens the Help file in the default browser
  */
 public class Help {
 
    private final static String FILE_SEP = File.separator;
 
+   /**
+    * Creates a Help and opens the Help file
+    */
    public Help(){
       try{
          File htmlFile = new File("Resources" + FILE_SEP + "Help.html");

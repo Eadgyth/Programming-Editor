@@ -13,8 +13,8 @@ import java.awt.Color;
 import eg.utils.Finder;
 
 /*
-* The coloring of syntax / search words
-*/
+ * The coloring of syntax / search words
+ */
 class Coloring {
    
    private final SimpleAttributeSet comSet    = new SimpleAttributeSet();

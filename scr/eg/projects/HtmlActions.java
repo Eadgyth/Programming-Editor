@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.awt.event.ActionListener;
 
 //--Eadgyth--//
-import eg.utils.ShowJOption;
+import eg.utils.JOptions;
 
 /**
  * Represents a project to write a webpage in HTML
@@ -49,8 +49,13 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
+   public String getProjectName() {
+      return super.getProjectName();
+   }
+   
+   @Override
    public String getProjectRoot() {
-       return super.getProjectRoot();
+      return super.getProjectRoot();
    }
    
    @Override
@@ -76,7 +81,7 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
          }
       }
       catch (IOException e) {
-         ShowJOption.warnMessage("No defautl browser could be launched");
+         JOptions.warnMessage("No defautl browser could be launched");
       }
    }
    
@@ -89,6 +94,6 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    
    private void setHtmlFile() {
       htmlFile = new File(getProjectRoot() + File.separator
-               + getMainFile() + ".html");
+            + getModuleDir() + File.separator + getMainFile() + ".html");
    }
 }

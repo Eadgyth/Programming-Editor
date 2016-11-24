@@ -70,10 +70,10 @@ public class ProcessStarter {
     */
    public void addWorkingDir(String workingDir) {
       this.workingDir = workingDir;
-      workingDirTemp = workingDir;
       File f = new File(workingDir);
       this.workingDirName = f.getName();
-      previousCmd = "";
+      workingDirTemp = workingDir;
+      //previousCmd = "";
    }
 
    /**
@@ -266,7 +266,7 @@ public class ProcessStarter {
    }
 
    private void startPreviousCmd() {
-       startProcess(previousCmd);
+      startProcess(previousCmd);
    }
    
    private void runEadgyth() {

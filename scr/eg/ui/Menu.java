@@ -18,6 +18,7 @@ import javax.swing.Box;
 import eg.javatools.SearchFiles;
 import eg.Preferences;
 import eg.TabActions;
+import eg.CurrentProject;
 import eg.Edit;
 import eg.Languages;
 
@@ -62,7 +63,8 @@ public class Menu {
    /* Format */
    private final JMenu     format           = new JMenu("Format");
    private final JMenuItem font             = new JMenuItem("Font ...");
-
+   private final JCheckBoxMenuItem
+                           wordWrapItm      = new JCheckBoxMenuItem("Wordwrap");
    /* View */ 
    private final JMenu     view             = new JMenu("View");
    private final JCheckBoxMenuItem
@@ -73,13 +75,14 @@ public class Menu {
                            functionItm      = new JCheckBoxMenuItem("Function panel");
    private final JMenuItem openViewSettings = new JMenuItem("Other...");
 
-   /* project methods */
-   private final JMenu     extra            = new JMenu("Project");
+   /* project */
+   private final JMenu     project          = new JMenu("Project");
    private final JMenuItem compile          = new JMenuItem("Save all and compile",
                                                   IconFiles.compileIcon);
    private final JMenuItem run              = new JMenuItem("Run", IconFiles.runIcon);
    private final JMenuItem build            = new JMenuItem("Build");
-   private final JMenuItem projectSetWin    = new JMenuItem("Project settings");
+   private final JMenuItem setProjectItm    = new JMenuItem("Project Settings");
+   private final JMenuItem changeProjItm    = new JMenuItem("Change project");
    
    /* plugins */
    private final JMenu     plugMenu         = new JMenu("Plugins");
@@ -100,14 +103,13 @@ public class Menu {
       assembleMenu();
       implActions();
       shortCuts();
-      fileViewItm.setEnabled(false);
    }
 
    JMenuBar getMenuBar() {
       return menuMain;
    }
 
-   public void registerTabActions(TabActions ta) {
+   public void registerFileActions(TabActions ta) {
       newFileItm.addActionListener(e -> ta.newEmptyTab());
       open.addActionListener(e -> ta.openFileByChooser());
       close.addActionListener(e -> ta.tryClose());
@@ -116,11 +118,15 @@ public class Menu {
       saveAll.addActionListener(e -> ta.saveAll());
       saveAs.addActionListener(e -> ta.saveAs());      
       exit.addActionListener(e -> ta.tryExit());
-      projectSetWin.addActionListener(e -> ta.openProjectSetWin());
       compile.addActionListener(e -> ta.saveAndCompile());
-      run.addActionListener(e -> ta.runProj());
-      build.addActionListener(e -> ta.buildProj());
    }
+   
+   public void registerProjectActions(CurrentProject currProj) {
+      changeProjItm.addActionListener(e -> currProj.changeProject());
+      run.addActionListener(e -> currProj.runProj());
+      setProjectItm.addActionListener(e -> currProj.openSettingsWindow());
+      build.addActionListener(e -> currProj.buildProj());
+   }      
    
    public void registerEdit(Edit edit) {
       undo.addActionListener(e -> edit.undo());
@@ -141,6 +147,10 @@ public class Menu {
    // format
    public void fontAct(ActionListener al) {
       font.addActionListener(al);
+   }
+   
+   public void wordWrapAct(ActionListener al) {
+      wordWrapItm.addActionListener(al);
    }
 
    // view
@@ -204,6 +214,10 @@ public class Menu {
    public boolean isFunctionPnlSelected() {
       return functionItm.getState();
    }
+   
+   public boolean isWordWrapSelected() {
+      return wordWrapItm.getState();
+   }
 
    //
    //--change state of items
@@ -219,16 +233,23 @@ public class Menu {
    public void selectFunctionPnl(boolean select) {
       functionItm.setState(select);
    }
+   
+   public void selectWordWrapItm(boolean select) {
+      wordWrapItm.setState(select);
+   }
 
    /**
     * Enables to open the file explorer
-    * @param isEnabled  true to enable to open the file explorer 
     */
-   public void enableFileViewItm(boolean isEnabled) {
-      fileViewItm.setEnabled(isEnabled);
+   public void enableFileViewItm() {
+      fileViewItm.setEnabled(true);
+   }
+   
+   public void enableChangeProjItm() {
+      changeProjItm.setEnabled(true);
    }
 
-   void enableExtra(boolean isCompile, boolean isRun, boolean isBuild) {
+   public void enableProjItms(boolean isCompile, boolean isRun, boolean isBuild) {
       compile.setEnabled(isCompile);
       run.setEnabled(isRun);
       build.setEnabled(isBuild);
@@ -275,7 +296,8 @@ public class Menu {
       prefs.readPrefs();
       for (int i = 0; i < selectLanguage.length; i++) {
          selectLanguage[i] = new JCheckBoxMenuItem(LANGUAGES[i]);
-         if (prefs.prop.getProperty("language").equals(eg.Languages.values()[i].toString())) {
+         if (prefs.prop.getProperty("language").equals(
+               eg.Languages.values()[i].toString())) {
             selectLanguage[i].setState(true);
          }
       }
@@ -288,6 +310,10 @@ public class Menu {
 
       // format
       format.add(font);
+      format.add(wordWrapItm);
+      if ("enabled".equals(prefs.prop.getProperty("wordWrap"))) {
+         wordWrapItm.setState(true);
+      }
       menuMain.add(format);
       menuMain.add(Box.createHorizontalStrut(5));
 
@@ -315,16 +341,18 @@ public class Menu {
       menuMain.add(plugMenu);
 
       // project
-      extra.add(compile);
+      project.add(compile);
       compile.setEnabled(false);
-      extra.add(run);
+      project.add(run);
       run.setEnabled(false);
-      extra.addSeparator();
-      extra.add(build);
+      project.addSeparator();
+      project.add(build);
       build.setEnabled(false);
-      extra.addSeparator();
-      extra.add(projectSetWin);
-      menuMain.add(extra);    
+      project.addSeparator();
+      project.add(setProjectItm);
+      project.add(changeProjItm);
+      changeProjItm.setEnabled(false);
+      menuMain.add(project);    
       menuMain.add(Box.createHorizontalStrut(8));
 
       // question

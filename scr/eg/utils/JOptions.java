@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerListModel;
 import javax.swing.UIManager;
 
 /**
@@ -67,7 +69,7 @@ public class JOptions {
    public static String dialogRes(String message, String title, String init) {
       JFrame frame = new JFrame(); 
       frame.setAlwaysOnTop(true);
-      Object resObj = JOptionPane.showInputDialog( frame, message, title,
+      Object resObj = JOptionPane.showInputDialog(frame, message, title,
             JOptionPane.QUESTION_MESSAGE, null, null, init);
       String res = null;
       if (resObj != null) {

@@ -8,10 +8,11 @@ import javax.swing.border.EmptyBorder;
 
 //--Eadgyth--
 import eg.TabActions;
+import eg.CurrentProject;
 import eg.Edit;
 
 /**
- * The main toolbar with methods to add action listeners to the buttons
+ * The main toolbar
  */
 public class Toolbar {
 
@@ -30,15 +31,18 @@ public class Toolbar {
       initToolbar();
    }
    
-   JToolBar toolbar() {
+   public JToolBar toolbar() {
       return toolbar;
    }
    
-   public void registerTabActions(TabActions ta) {
+   public void registerFileActions(TabActions ta) {
       openBt.addActionListener(e -> ta.openFileByChooser());
       saveBt.addActionListener(e -> ta.saveOrSaveAs());      
       compileBt.addActionListener(e -> ta.saveAndCompile());
-      runBt.addActionListener(e -> ta.runProj());
+   }
+   
+   public void registerProjectActions(CurrentProject currProj) {
+      runBt.addActionListener(e -> currProj.runProj());
    }
    
    public void registerEdit(Edit edit) {
@@ -48,22 +52,21 @@ public class Toolbar {
       outdentBt.addActionListener(e -> edit.outdentSelection());
    }
    
-   void disableExtraBts() {
-      compileBt.setEnabled(false);
-      runBt.setEnabled(false);
-   }
-   
-   void enableExtraBts(boolean isCompile, boolean isRun) {
+   public void enableProjBts(boolean isCompile, boolean isRun) {
       compileBt.setEnabled(isCompile);
       runBt.setEnabled(isRun);
    }
 
+   //
+   //--private methods
+   //
+   
    private void initToolbar() { 
       toolbar.setOpaque(false);
       toolbar.setBorder(null);
       toolbar.setFloatable(false);
       
-      enableExtraBts(false, false);
+      enableProjBts(false, false);
 
       JButton[] bts = new JButton[] {
          openBt, saveBt, undoBt, redoBt, indentBt,

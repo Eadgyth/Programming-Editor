@@ -34,6 +34,11 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
+   public String getProjectName() {
+      return super.getProjectName();
+   }
+   
+   @Override
    public String getProjectRoot() {
        return super.getProjectRoot();
    }

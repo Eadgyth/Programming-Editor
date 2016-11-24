@@ -31,9 +31,12 @@ public class EditorAccess {
    }
    
    /**
-    * Adds a Component to the 'function panel' in the main window
-    * @param c  the Component to be added
-    * @param title  a title for the plugin
+    * Adds a component to the 'function panel' of the Main Window. The panel
+    * is at the right split area and has a BorderLayout. The title is shown NORTH
+    * and the Component is shown in the CENTER of the Layout.
+    * @param c  the Component that is added in teh center of the
+    * 'function panel'
+    * @param title  the title for the function
     */
    public void addToFunctionPanel(java.awt.Component c, String title) {
       mw.addToFunctionPanel(c, title);

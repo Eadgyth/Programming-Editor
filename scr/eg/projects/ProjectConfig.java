@@ -8,13 +8,24 @@ import java.awt.event.ActionListener;
 import eg.Preferences;
 
 /**
- * Represents the configuration of a project
+ * Represents the configuration of a project.
+ * <p>
+ * 'Configuration' firstly refers to the finding of the project root
+ * which in the simplest case would be the parent of the main project
+ * file (or of a specifiable subdirectory where the file is saved). <br>
+ * It depends on the parameters passed to the contructor of
+ * {@link SettingsWin} which other properties are asked for. For example,
+ * the project root of a Java project with a subdirectory for sources and a
+ * main class in a package is found by returning the parent of the path
+ * [sources Dir.]/[package Dir]/[main java file]. <br>
+ * The project may be configured by the entries in the settings window
+ * or by reading in entries in the 'prefs' file
  */
 public abstract class ProjectConfig implements Configurable {
 
-   private static final String F_SEP = File.separator;
+   private final static String F_SEP = File.separator;
    
-   private final Preferences prefs = new Preferences();
+   private final static Preferences PREFS = new Preferences();
    private final SettingsWin setWin;
 
    private String projectPath = "";
@@ -31,7 +42,7 @@ public abstract class ProjectConfig implements Configurable {
     */
    public ProjectConfig(SettingsWin setWin) {
       this.setWin = setWin;
-      prefs.readPrefs();
+      PREFS.readPrefs();
    }
 
    @Override
@@ -66,35 +77,51 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    @Override
+   public String getProjectName() {
+      File f = new File(projectPath);
+      return f.getName();
+   }
+   
+   @Override
    public boolean isInProjectPath(String dir) {
       return previousProjectRoot(dir) != null;
    }
    
    /**
+    * Returns the project's main file
     * @return  the name of project's main file
     */ 
-   public String getMainFile() {
+   protected String getMainFile() {
       return mainFile;
    }
 
    /**
-    * @return  the directory of the module or path of modules
+    * Returns the name of the directory that represents a module
+    * @return  the directory of a module. The module is a subdirectory
+    * of the project root (if asked for) a subdirectory of the
+    * 'sources' directory.
     */ 
-   public String getPackageDir() {
+   protected String getModuleDir() {
       return moduleDir;
    }
    
    /**
-    * @return  the name for the executables directory
+    * Returns the name of the directory where executable files are
+    * saved
+    * @return  the name of the directory where executable files are
+    * saved
     */ 
-   public String getExecutableDir() {
+   protected String getExecutableDir() {
       return execDir;
    }
    
    /**
-    * @return  the name for the sources directory
+    * Returns the name of the directoy where source files are
+    * saved
+    * @return  the name of the directoy where source files are
+    * saved
     */ 
-   public String getSourceDir() {
+   protected String getSourceDir() {
       return sourceDir;
    }
 
@@ -102,7 +129,7 @@ public abstract class ProjectConfig implements Configurable {
     * @return  the name for a build entered in the
     * text field of this {@code SettingsWin}
     */ 
-   public String getBuildName() {
+   protected String getBuildName() {
       return buildName;
    }
    
@@ -110,12 +137,12 @@ public abstract class ProjectConfig implements Configurable {
     * @return  the arguments for a start command entered in the
     * text field of this {@code SettingsWin}
     */ 
-   public String getArgs() {
+   protected String getArgs() {
       return args;
    }
    
    /**
-    * Returns if the main executable file exists.
+    * Returns if the main exectubale file exists.
     * <p>
     * The filepath consists in the project's root directory, the executables'
     * directory, the module's directory and the project's main file.
@@ -123,7 +150,7 @@ public abstract class ProjectConfig implements Configurable {
     * @return  true if the filepath specified by this project configuration
     * exists.
     */
-   public boolean mainProgramFileExists(String suffix) { 
+   protected boolean mainProgramFileExists(String suffix) { 
       File target = new File(projectPath + F_SEP + execDir + F_SEP + moduleDir
             + F_SEP + mainFile + suffix);
       return target.exists();
@@ -140,16 +167,16 @@ public abstract class ProjectConfig implements Configurable {
 
          projectPath = previousProjectRoot;
          
-         mainFile = prefs.prop.getProperty("recentMain");
+         mainFile = PREFS.prop.getProperty("recentMain");
          setWin.displayFile(mainFile);
          
-         moduleDir = prefs.prop.getProperty("recentModule");
+         moduleDir = PREFS.prop.getProperty("recentModule");
          setWin.displayModule(moduleDir);
          
-         sourceDir = prefs.prop.getProperty("recentSourceDir");
+         sourceDir = PREFS.prop.getProperty("recentSourceDir");
          setWin.displaySourcesDir(sourceDir);
          
-         execDir = prefs.prop.getProperty("recentExecDir");
+         execDir = PREFS.prop.getProperty("recentExecDir");
          setWin.displayExecDir(execDir);
       }
       else {
@@ -164,12 +191,17 @@ public abstract class ProjectConfig implements Configurable {
 
    private String previousProjectRoot(String dir) { 
       File newFile = new File(dir);
-      File project = new File(prefs.prop.getProperty("recentProject"));
+      File project;
+      if (projectPath.length() > 0) {
+         project = new File(projectPath);
+      }
+      else {  
+         project = new File(PREFS.prop.getProperty("recentProject"));
+      }
       String newFileStr = newFile.getPath();
       String projStr = project.getPath();
 
       boolean isEqual = projStr.equals(newFileStr);
-     
       while(!isEqual) {
          if (newFile.getParentFile() == null) {
             newFileStr = null;
@@ -207,22 +239,21 @@ public abstract class ProjectConfig implements Configurable {
 
       if (search != null) {
          projectPath = search.toString();
-         prefs.storePrefs("recentProject", projectPath);
       }
    }
    
    private void getTextFieldsInput() {
       mainFile = setWin.projectFileIn();
-      prefs.storePrefs("recentMain", mainFile);
+      PREFS.storePrefs("recentMain", mainFile);
 
       moduleDir = setWin.moduleIn();
-      prefs.storePrefs("recentModule", moduleDir );
+      PREFS.storePrefs("recentModule", moduleDir );
       
       sourceDir = setWin.sourcesDirIn();
-      prefs.storePrefs("recentSourceDir", sourceDir);
+      PREFS.storePrefs("recentSourceDir", sourceDir);
       
       execDir = setWin.execDirIn();
-      prefs.storePrefs("recentExecDir", execDir );
+      PREFS.storePrefs("recentExecDir", execDir );
       
       args = setWin.argsIn();
       

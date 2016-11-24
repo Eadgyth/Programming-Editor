@@ -14,6 +14,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 
+import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoableEdit;
@@ -23,12 +24,14 @@ import javax.swing.undo.CannotRedoException;
 import java.awt.EventQueue;
 import java.awt.Color;
 
+import java.util.Vector;
+
 //--Eadgyth--//
 import eg.ui.EditArea;
 
 /** 
- * Class edits the display in the {@code EditArea} that shall happen
- * during typing. <p>
+ * Responsible for the edits the display in the {@code EditArea} that shall
+ * happen during typing. <p>
  * The changes include the line numbering, the syntax / keyword coloring;
  * auto-indentation and undo/redo editing
  */
@@ -47,11 +50,11 @@ class TypingEdit {
     * true to call modifying methods from this update methods */
    private boolean isDocListen = true; 
    /*
-    * true to call text coloring and indentation from the update methods
-    * of this DocumentListener */
+    * true to call text coloring and indentation from this
+    * update methods */
    private boolean isTextModify = false;
    /*
-    * Controls separately if indentation is used */
+    * Controls separately if auto-indentation is used */
    private boolean isIndent = false;
 
    TypingEdit(EditArea editArea) {
@@ -60,7 +63,7 @@ class TypingEdit {
       setStyles();
 
       doc.addDocumentListener(docListen);
-      doc.addUndoableEditListener(new DocUndomanager());
+      doc.addUndoableEditListener(new DocUndoManager());
       undomanager.setLimit(1000);
 
       col = new Coloring(doc, normalSet);
@@ -131,13 +134,10 @@ class TypingEdit {
       enableTextModify(enableTextModify);
    }
 
-   void undo() {
+   public void undo() {
       try {
          if (undomanager.canUndo()) {
             undomanager.undo();
-            if (isTextModify) {
-               colorAll(true);
-            }
          }
       }
       catch (CannotUndoException cue) {
@@ -218,9 +218,8 @@ class TypingEdit {
       });
     }
    
-   private class DocUndomanager implements UndoableEditListener {
-      final DocCompoundEdit compEdit = new DocCompoundEdit();
-
+   class DocUndoManager implements UndoableEditListener {
+      DocCompoundEdit compEdit = new DocCompoundEdit();
       @Override
       public void undoableEditHappened (UndoableEditEvent e) {
          if (!isDocListen) {
@@ -233,20 +232,18 @@ class TypingEdit {
          if (event.getType().equals(DocumentEvent.EventType.CHANGE)) {
             return;
          }
-         try {
-            UndoableEdit edit = e.getEdit();
-            int start = event.getOffset();
-            int length = event.getLength();
-            String text = event.getDocument().getText(start, length);       
-            undomanager.addEdit(e.getEdit());
-            //compEdit.addEdit(e.getEdit());
-         } catch (BadLocationException e1) {
-            e1.printStackTrace();
-         }
+         compEdit = new DocCompoundEdit();
+         UndoableEdit edit = e.getEdit();
+         compEdit.addEdit(edit);
+         
+         undomanager.addEdit(compEdit.lastEdit());
       }
    }
    
    class DocCompoundEdit extends CompoundEdit {
-      // please help
+      
+      public UndoableEdit lastEdit() {
+         return super.lastEdit();
+      }      
    }
 }

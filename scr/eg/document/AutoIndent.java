@@ -41,7 +41,7 @@ class AutoIndent {
       
       PREFS.readPrefs();
       indentUnit = PREFS.prop.getProperty("indentUnit");
-      indentLength = indentUnit.length();     
+      indentLength = indentUnit.length();
       textArea.addKeyListener(listener);
    }
    

@@ -16,4 +16,10 @@ public class FileUtils {
          return null;
       }
    }
+   
+   public static boolean renameFile(String oldName, String newName) {
+      File oldFile = new File(oldName);
+      File newFile = new File(newName);
+      return oldFile.renameTo(newFile);
+   }
 }

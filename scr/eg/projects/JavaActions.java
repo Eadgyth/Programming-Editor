@@ -51,7 +51,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       boolean success = super.configFromSetWin(dir, suffix);
       if (success) {
          setStartCommand();
-         proc.addWorkingDir(getProjectRoot());
       }
       return success;
    }
@@ -61,7 +60,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       boolean success = super.findPreviousProjectRoot(dir);
       if (success) {
          setStartCommand();
-         proc.addWorkingDir(getProjectRoot());
       }
       return success;
    }
@@ -72,7 +70,13 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
+   public String getProjectName() {
+      return super.getProjectName();
+   }
+   
+   @Override
    public String getProjectRoot() {
+      proc.addWorkingDir(super.getProjectRoot());
       return super.getProjectRoot();
    }
    
@@ -123,9 +127,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       if (!mainClassFileExists()) {
          return;
       }
-      if (!proc.isProcessEnded()) {
-         return;
-      }
       if (!mw.isConsoleSelected()) {
          mw.showConsole();
       }
@@ -143,17 +144,10 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       cw.setText("");
       EventQueue.invokeLater(() -> {
          jar.createJar(getProjectRoot(), getMainFile(),
-               getPackageDir(), getExecutableDir(), getBuildName());
+               getModuleDir(), getExecutableDir(), getBuildName());
          String info = "Saved jar file named " + jar.getUsedJarName();
          JOptions.infoMessage(info);
       });
-   }
-   
-   private void askForSettings() {
-      int result = JOptions.confirmYesNo("Set project?");
-      if (result == JOptionPane.YES_OPTION) {         
-         makeSetWinVisible(true);
-      }
    }
    
    private boolean isProjectSet() {
@@ -180,17 +174,17 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
          main += " " + getArgs();
       }
 
-      if (getExecutableDir().length() == 0 && getPackageDir().length() == 0 ) {
+      if (getExecutableDir().length() == 0 && getModuleDir().length() == 0 ) {
          startCommand = "java " + main;
       }
-      else if (getExecutableDir().length() == 0 && getPackageDir().length() > 0 ) {
-         startCommand = "java " + getPackageDir() + "." + main;
+      else if (getExecutableDir().length() == 0 && getModuleDir().length() > 0 ) {
+         startCommand = "java " + getModuleDir() + "." + main;
       }
-      else if (getExecutableDir().length() > 0 && getPackageDir().length() == 0 ) {
+      else if (getExecutableDir().length() > 0 && getModuleDir().length() == 0 ) {
          startCommand = "java -cp " + getExecutableDir() + " " + main;
       }
-      else if (getExecutableDir().length() > 0 && getPackageDir().length() > 0 ) {
-         startCommand = "java -cp " + getExecutableDir() + " " + getPackageDir()
+      else if (getExecutableDir().length() > 0 && getModuleDir().length() > 0 ) {
+         startCommand = "java -cp " + getExecutableDir() + " " + getModuleDir()
                + "." + main;
       }
    }

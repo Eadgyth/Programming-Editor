@@ -31,11 +31,16 @@ public interface Configurable {
    
   /**
     * Returns if a previously used project could be assigned to this class
-    * @param dir  the directory that may include the directory of a
+    * @param dir  the directory that may include the root directory of a
     * previous project 
     * @return  if a prvious project could be assigned to this class
     */
    public boolean findPreviousProjectRoot(String dir);
+   
+    /**
+     * Returns the project's name
+     */
+    public String getProjectName();
    
    /**
     * Returns this project's root directory

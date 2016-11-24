@@ -97,6 +97,7 @@ public class TabbedPane {
 
    private JTabbedPane initTab() {  
       tabbedPane = new JTabbedPane();
+      //tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
       tabbedPane.setBorder(null);
       tabbedPane.setFocusable(false);
       tabbedPane.addMouseMotionListener(mml);

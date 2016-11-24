@@ -12,14 +12,19 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Insets;
 
+import java.awt.event.WindowListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 //--Eadgyth--//
 import eg.console.*;
 import eg.ui.MainWin;
 import eg.ui.Menu;
 import eg.ui.Toolbar;
 import eg.ui.filetree.FileTree;
-import eg.projects.ProjectFactory;
 import eg.ui.ViewSettings;
+import eg.ui.TabbedPane;
+import eg.projects.ProjectFactory;
 import eg.plugin.PluginStarter;
 import java.awt.event.ActionEvent;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -42,27 +47,35 @@ public class Eadgyth {
       FileTree        fileTree  = new FileTree();
       Menu            menu      = new Menu();
       Toolbar         tBar      = new Toolbar();
-      MainWin         mw        = new MainWin(menu, tBar);
+      TabbedPane      tabPane   = new TabbedPane();
+      MainWin         mw        = new MainWin(menu, tBar.toolbar(), tabPane.tabbedPane(),
+                                      fileTree.fileTreePnl(), cw.consolePnl());
       ProjectFactory  projFact  = new ProjectFactory(mw, proc, cw);
-      PluginStarter   plugStart = new PluginStarter(mw);
+      CurrentProject  currProj  = new CurrentProject(projFact, mw, fileTree, menu, tBar);
+      ViewSettings    viewSet   = new ViewSettings(mw, menu);
       Edit            edit      = new Edit();
-      DocumentChanger docChange = new DocumentChanger(mw, edit, plugStart);
-      TabActions      ta        = new TabActions(mw, fileTree, projFact,
-              docChange);
+      PluginStarter   plugStart = new PluginStarter(mw);
+      DocumentUpdate  docUpdate = new DocumentUpdate(viewSet, edit, plugStart);
+      TabActions      ta        = new TabActions(tabPane, mw, currProj, docUpdate);
       FontSetting     fontSet   = new FontSetting(ta.getEditArea());
-      ViewSettings    viewSet   = new ViewSettings(mw, ta.getEditArea());
       
-      tBar.registerTabActions(ta);
+      // register handlers
+      WindowListener winListener = new WindowAdapter() {
+         public void windowClosing(WindowEvent we) {
+            ta.tryExit();
+         }
+      };
+      mw.winListen(winListener);     
+      tBar.registerFileActions(ta);
+      tBar.registerProjectActions(currProj);
       tBar.registerEdit(edit);
-      menu.registerTabActions(ta);
+      menu.registerFileActions(ta);
+      menu.registerProjectActions(currProj);
       menu.registerEdit(edit);
-      menu.openViewSettingsAct(e -> viewSet.makeSetWinVisible());
       menu.fontAct(e -> fontSet.makeFontSetWinVisible(true));
       cw.closeAct(e -> mw.hideConsole());
-      fileTree.closeAct(e -> mw.hideFileView());    
+      fileTree.closeAct(e -> mw.hideFileView());   
       fileTree.addObserver(ta);
-      mw.addFileView(fileTree.fileTreePnl());
-      mw.addConsoleView(cw.consolePnl());
       startPlugin(plugStart, mw, menu); 
       
       EventQueue.invokeLater(() -> {
@@ -74,18 +87,19 @@ public class Eadgyth {
    private static void setLaf() {
       Preferences prefs = new Preferences();
       prefs.readPrefs();
-      int topTabInset = 0;
 
       if ("System".equals(prefs.prop.getProperty("LaF"))) {
          try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
          } 
-         catch (ClassNotFoundException | IllegalAccessException 
-                 | InstantiationException 
-                 | UnsupportedLookAndFeelException e) {
+         catch (ClassNotFoundException 
+              | IllegalAccessException 
+              | InstantiationException 
+              | UnsupportedLookAndFeelException e) {
             System.out.println(e.getMessage());
          }
       }
+      int topTabInset = 0;
       if ("Windows".equals(Constants.CURR_LAF_STR)) {
          topTabInset = -2;
       }
@@ -96,8 +110,9 @@ public class Eadgyth {
       UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
       UIManager.put("Menu.font", Constants.SANSSERIF_PLAIN_12);
       UIManager.put("MenuItem.font", Constants.SANSSERIF_PLAIN_12);
+      UIManager.put("CheckBoxMenuItem.font", Constants.SANSSERIF_PLAIN_12);
       UIManager.getDefaults().put("TabbedPane.contentBorderInsets",
-            new Insets(topTabInset, 0, 0, 0));
+               new Insets(topTabInset, 0, 0, 0));
       UIManager.put("SplitPaneDivider.border", new EmptyBorder(0, 0, 0, 0));
       if ("Metal".equals(Constants.CURR_LAF_STR)) {
          UIManager.put("TabbedPane.selected", 

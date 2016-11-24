@@ -92,6 +92,7 @@ public class Preferences {
             "lineNumbers",
             "statusbar",
             "language",
+            "wordWrap"
        };
  
       //search property to update
@@ -113,7 +114,8 @@ public class Preferences {
             prop.getProperty("toolbar" ),
             prop.getProperty("lineNumbers" ),
             prop.getProperty("statusbar"),
-            prop.getProperty("language")
+            prop.getProperty("language"),
+            prop.getProperty("wordWrap")
       };
       allValues[i] = newProperty;
 

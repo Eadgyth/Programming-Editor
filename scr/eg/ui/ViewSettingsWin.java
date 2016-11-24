@@ -114,7 +114,7 @@ class ViewSettingsWin {
       else {
          checkLineNumbers.setSelected(false);
       }
-      return checkBxPnl(checkLineNumbers, "Show line numbers");
+      return checkBxPnl(checkLineNumbers, "Show line numbers when wordwrap is disabled");
    }
    
    private JPanel setStatusBarPanel() {      
