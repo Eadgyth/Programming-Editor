@@ -215,15 +215,33 @@ public class CurrentProject {
       mw.showProjectInfo(projToSet.getProjectName());
       String root = projToSet.getProjectRoot();
       fileTree.setProjectTree(root);
+      prefs.storePrefs("recentProject", root);
       if (recent.size() == 1) {
          menu.enableFileViewItm();
       }
       if (recent.size() == 2) {
          menu.enableChangeProjItm();
       }
-      menu.enableProjItms(projFact.isCompile(), projFact.isRun(),
-            projFact.isBuild());
-      tBar.enableProjBts(projFact.isCompile(), projFact.isRun());
-      prefs.storePrefs("recentProject", root);
+      enableActions();
+   }
+   
+   private void enableActions() {
+      String ext = FileUtils.extension(txtDoc.filepath());
+      switch (ext) {
+          case ".java":
+            enableActions(true, true, true);
+            break;
+         case ".html":
+            enableActions(false, true, false);
+            break;
+         case ".txt":
+            enableActions(false, false, false);
+            break;
+      }
+   }
+   
+   private void enableActions(boolean isCompile, boolean isRun, boolean isBuild) {
+      menu.enableProjItms(isCompile, isRun, isBuild);
+      tBar.enableProjBts(isCompile, isRun);
    }
 }

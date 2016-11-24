@@ -15,10 +15,6 @@ public class ProjectFactory {
    private final ProcessStarter proc;
    private final ConsolePanel cw;
 
-   private boolean isCompile;
-   private boolean isRun;
-   private boolean isBuild;
-
    public ProjectFactory(MainWin mw, ProcessStarter proc, ConsolePanel cw) {
       this.mw = mw;
       this.proc = proc;
@@ -41,51 +37,15 @@ public class ProjectFactory {
       ProjectActions newProj = null;
       switch (extension) {
          case ".java":
-            newProj = javaAct();
+            newProj = new JavaActions(mw, proc, cw);
             break;
          case ".html":
-            newProj = htmlAct();
+            newProj = new HtmlActions();
             break;
          case ".txt":
-            newProj = txtAct();
+            newProj = new TxtActions();
             break;
       }
       return newProj;
-   }
-   
-   public boolean isCompile() {
-      return isCompile;
-   }
-   
-   public boolean isRun() {
-      return isRun;
-   }
-   
-   public boolean isBuild() {
-      return isBuild;
-   }
-   
-   private ProjectActions javaAct() {
-      ProjectActions java = new JavaActions(mw, proc, cw);
-      enableActions(true, true, true);
-      return java;
-   }
-   
-   private ProjectActions htmlAct() { 
-      ProjectActions html = new HtmlActions();
-      enableActions(false, true, false);
-      return html;
-   }
-   
-   private ProjectActions txtAct() {
-      ProjectActions txt = new TxtActions();
-      enableActions(false, false, false);
-      return txt;
-   }
-   
-   private void enableActions(boolean isCompile, boolean isRun, boolean isBuild) {
-      this.isCompile = isCompile;
-      this.isRun = isRun;
-      this.isBuild = isBuild;
    }
 }
