@@ -232,25 +232,21 @@ public abstract class ProjectConfig implements Configurable {
             + mainFile + suffix;
       
       String parent;
-      if (projectPath.length() > 0) { // if already set
-         parent = projectPath + F_SEP;
+      if (dirRelToRoot.length() > 0) {
+         int start = dir.indexOf(dirRelToRoot);
+         parent = dir.substring(0, start - 1);
       }
       else {
-         if (dirRelToRoot.length() > 0) {
-            int start = dir.indexOf(dirRelToRoot);
-            parent = dir.substring(0, start);
-         }
-         else {
-            parent = dir;
-         }
+         parent = dir;
       }
-      boolean isSet = new File(parent + filePathRelToRoot).exists();
-      if (isSet) {
-         projectPath = parent;
-      }
-      else {
+      boolean isSet = new File(parent + F_SEP + filePathRelToRoot).exists();
+      if (!isSet) {
          JOptions.warnMessageToFront("A valid filepath could not be found");
       }
+      else {
+         projectPath = parent;
+      }
+         
       return isSet;
    }
    
