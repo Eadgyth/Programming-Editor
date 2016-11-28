@@ -12,7 +12,7 @@ public interface Pluggable {
    public void setEditorAccess(EditorAccess acc);
 
    /**
-    * starts a plugin
+    * Starts a plugin
     */
    public void start();
 }

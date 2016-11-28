@@ -7,7 +7,7 @@ import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 
 //--Eadgyth--
-import eg.TabActions;
+import eg.TabbedFiles;
 import eg.CurrentProject;
 import eg.Edit;
 
@@ -35,10 +35,10 @@ public class Toolbar {
       return toolbar;
    }
    
-   public void registerFileActions(TabActions ta) {
-      openBt.addActionListener(e -> ta.openFileByChooser());
-      saveBt.addActionListener(e -> ta.saveOrSaveAs());      
-      compileBt.addActionListener(e -> ta.saveAndCompile());
+   public void registerFileActions(TabbedFiles tf) {
+      openBt.addActionListener(e -> tf.openFileByChooser());
+      saveBt.addActionListener(e -> tf.saveOrSaveAs());      
+      compileBt.addActionListener(e -> tf.saveAndCompile());
    }
    
    public void registerProjectActions(CurrentProject currProj) {
@@ -63,7 +63,7 @@ public class Toolbar {
    
    private void initToolbar() { 
       toolbar.setOpaque(false);
-      toolbar.setBorder(null);
+      toolbar.setBorder(/*eg.Constants.LOW_ETCHED*/ null);
       toolbar.setFloatable(false);
       
       enableProjBts(false, false);

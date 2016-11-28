@@ -7,35 +7,39 @@ import java.util.ArrayList;
 
 //--Eadgyth--//
 import eg.ui.MainWin;
-import eg.ui.filetree.FileTree;
-import eg.ui.Menu;
 import eg.ui.Toolbar;
+
+import eg.ui.filetree.FileTree;
+import eg.ui.menu.Menu;
+
 import eg.projects.ProjectActions;
 import eg.projects.ProjectFactory;
 import eg.document.TextDocument;
+
 import eg.utils.FileUtils;
 import eg.utils.JOptions;
 
 /**
- * The current project that is configured for a file of a
+ * The current project that is configured for tha file of a
  * {@code TextDocument}.
  * <p>
- * A project is represented by an object of {@link ProjectActions}.
+ * A project is represented by an object of type {@link ProjectActions}.
+ * <p>
  * A successfully configured project is assigned to this current
- * project and also added to this list of projects. By this any of the
- * listed projects  are re-assigned to the current project if the
+ * project and also added to this list of projects. By this any of
+ * the listed projects are re-assigned to the current project if the
  * currently set {@link TextDocument} belongs to it.
  * <p>
  * See also {@link eg.projects.ProjectConfig}
  */
 public class CurrentProject {
 
-   private final Preferences prefs = new Preferences();
    private final ProjectFactory projFact;
    private final MainWin mw;
    private final FileTree fileTree;
    private final Menu menu;
    private final Toolbar tBar;
+   private final Preferences prefs = new Preferences();
 
    private ProjectActions proj;
    private List<ProjectActions> recent = new ArrayList<>();
@@ -91,8 +95,8 @@ public class CurrentProject {
     */
    public void openSettingsWindow() {
       if (txtDoc.filename().length() == 0) {
-         JOptions.infoMessage("A project can be set after a file was"
-               + " opened or a new file was saved");
+         JOptions.titledInfoMessage("A project can be set after a file was"
+               + " opened or a new file was saved", "Note");
          return;
       }
 
@@ -109,7 +113,8 @@ public class CurrentProject {
             ProjectActions projNew 
                   = projFact.getProjAct(FileUtils.extension(txtDoc.filepath()));
             if (projNew == null) {
-               JOptions.infoMessage("A project cannot be set for this file type");
+               JOptions.titledInfoMessage(
+                     "A project cannot be set for this file type", "Note");
             }
             else {         
                int result = 0;
@@ -140,6 +145,7 @@ public class CurrentProject {
          if (recent != null) {
             changeProject(recent);
          }
+         
       }
    } 
 
@@ -184,11 +190,8 @@ public class CurrentProject {
          if (proj != projToConf) {
             proj = projToConf;
             recent.add(proj);
-            updateProjectSetting(proj);
          }
-      }
-      else {
-         JOptions.warnMessageToFront("A valid filepath could not be found");
+         updateProjectSetting(proj);
       }
    }
 
@@ -217,10 +220,10 @@ public class CurrentProject {
       fileTree.setProjectTree(root);
       prefs.storePrefs("recentProject", root);
       if (recent.size() == 1) {
-         menu.enableFileViewItm();
+         menu.getViewMenu().enableFileView();
       }
       if (recent.size() == 2) {
-         menu.enableChangeProjItm();
+         menu.getProjectMenu().enableChangeProjItm();
       }
       enableActions();
    }
@@ -241,7 +244,7 @@ public class CurrentProject {
    }
    
    private void enableActions(boolean isCompile, boolean isRun, boolean isBuild) {
-      menu.enableProjItms(isCompile, isRun, isBuild);
+      menu.getProjectMenu().enableProjItms(isCompile, isRun, isBuild);
       tBar.enableProjBts(isCompile, isRun);
    }
 }

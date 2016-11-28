@@ -3,13 +3,19 @@ package eg;
 import java.awt.Font;
 import java.awt.Color;
 
+import javax.swing.border.Border;
+import javax.swing.BorderFactory;
+import javax.swing.border.EtchedBorder;
 import javax.swing.UIManager;
 import javax.swing.LookAndFeel;
 
 public class Constants {
+   
+    // Borders
+    public final static Border LOW_ETCHED = new EtchedBorder(EtchedBorder.LOWERED);  
 
     // colors
-    public final static Color BORDER_GRAY = new Color(150, 150, 150);
+    public final static Color BORDER_GRAY = new Color(160, 160, 160);
 
     // fonts
     public final static Font SANSSERIF_PLAIN_12 = new Font("SansSerif", Font.PLAIN, 12);

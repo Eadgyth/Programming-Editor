@@ -1,16 +1,13 @@
 import eg.plugin.*;
 
 /**
- * A template for a plugin.
- * EditorAccess has a method addToFunctionPanel(Component c, String title)
- * which adds a component to the right Panel of the Editor's split window and
- * a method getTextDocument() which returns a reference to the TextDocument
- * object in the currently selected tab.
+ * A template for a plugin
  */ 
 public class TemplatePlugin implements Pluggable {
  
   private EditorAccess acc;
- 
+  private javax.swing.JLabel exampleComponent;
+  
   @Override
   public void setEditorAccess(EditorAccess acc) {
      this.acc = acc;
@@ -18,6 +15,9 @@ public class TemplatePlugin implements Pluggable {
  
   @Override
   public void start() {
-     acc.addToFunctionPanel(new javax.swing.JLabel("Hello World"), "TemplatePlugin");
+     if (exampleComponent == null) {
+        exampleComponent = new javax.swing.JLabel("Hello, World");
+     }
+     acc.addToFunctionPanel(exampleComponent, "TemplatePlugin");
   }
 } 

@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
 
 import javax.swing.border.EmptyBorder;
 
@@ -95,9 +96,9 @@ public class TabbedPane {
       tabbedPane.addChangeListener(cl);
    }
 
-   private JTabbedPane initTab() {  
+   private JTabbedPane initTab() {
       tabbedPane = new JTabbedPane();
-      //tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+     // tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
       tabbedPane.setBorder(null);
       tabbedPane.setFocusable(false);
       tabbedPane.addMouseMotionListener(mml);

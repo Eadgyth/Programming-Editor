@@ -37,24 +37,25 @@ public class EditArea {
    private final JPanel enabledWordwrapArea = new JPanel();
 
    private final JScrollPane scrollWrapArea = new JScrollPane(
-         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
    private final JScrollPane scrollRowArea = new JScrollPane(
-         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-         JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
    private final JScrollPane scrollSimpleArea = new JScrollPane(
-         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-         JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
    private final JScrollPane scrollLines = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_NEVER,
          JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
    private String font;
    private int fontSize;
+   private boolean isWordWrap;
 
    public EditArea() {
-      PREFS.readPrefs();   
-      scrolledArea.setBorder(new LineBorder(Constants.BORDER_GRAY, 2));
+      PREFS.readPrefs(); 
+      scrolledArea.setBorder(Constants.LOW_ETCHED);
       initTextArea();
       initLineNumbersArea();
       initFont();
@@ -63,9 +64,7 @@ public class EditArea {
       intitScrollWrapArea();
       boolean isLineNumbers =
             Constants.SHOW.equals(PREFS.prop.getProperty("lineNumbers"));
-      boolean isWordWrap =
-            "enabled".equals(PREFS.prop.getProperty("wordWrap"));
-      if (isWordWrap) {
+      if ("enabled".equals(PREFS.prop.getProperty("wordWrap"))) {
          enableWordWrap();
       }
       else {
@@ -99,6 +98,13 @@ public class EditArea {
     */
    public JPanel scrolledArea() {
       return scrolledArea;
+   }
+   
+   /**
+    * If wordwrap is enabled
+    */
+   public boolean isWordWrap() {
+      return isWordWrap;
    }
    
    /**
@@ -136,6 +142,7 @@ public class EditArea {
       textArea.requestFocusInWindow();
       scrolledArea.repaint();
       scrolledArea.revalidate();
+      isWordWrap = false;
    }
    
    /**
@@ -150,6 +157,7 @@ public class EditArea {
       textArea.requestFocusInWindow();
       scrolledArea.repaint();
       scrolledArea.revalidate();
+      isWordWrap = false;
    }
    
    /**
@@ -165,6 +173,7 @@ public class EditArea {
       textArea.requestFocusInWindow();
       scrolledArea.repaint();
       scrolledArea.revalidate();
+      isWordWrap = true;
    }
    
    //

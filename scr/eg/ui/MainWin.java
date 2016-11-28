@@ -2,12 +2,15 @@ package eg.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
 
 import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
+
+import javax.swing.border.Border;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -25,6 +28,8 @@ import javax.swing.border.LineBorder;
 //--Eadgyth--//
 import eg.Constants;
 import eg.Preferences;
+
+import eg.ui.menu.Menu;
 
 /**
  * The main window
@@ -44,7 +49,7 @@ public class MainWin {
 
    private final JPanel functionPnl = new JPanel(new BorderLayout());
    private final JPanel functTitlePnl = new JPanel();
-   private final JLabel functTitleLb = new JLabel();
+   private final JLabel functTitleLb = new JLabel(" No function selected");
    private final JToolBar toolbar;
    private final JTabbedPane tabbedPane;
    private final JPanel fileViewPnl;
@@ -86,7 +91,7 @@ public class MainWin {
    
    /**
     * Adds a component to this 'function panel' which is added to
-    * the right of this split pane.
+    * the right of this split area.
     * <p> The 'function panel' has a border layout in whose center the
     * specified component is added. The specified title is shown in a panel
     * at the north.
@@ -134,9 +139,12 @@ public class MainWin {
     * @return  if the console was opened
     */
    public boolean isConsoleSelected() {
-      return menu.isConsoleSelected();
+      return menu.getViewMenu().isConsoleSelected();
    }
    
+   /**
+    * Shows the name of a project in the status bar
+    */
    public void showProjectInfo(String project) {
       showProjectLb.setText("Project root: " + project);
    }
@@ -183,7 +191,7 @@ public class MainWin {
          dividerLocVert = (int)(frame.getHeight() * 0.65);
       }
       splitVert.setDividerLocation(dividerLocVert);
-      menu.selectShowConsole(true);
+      menu.getViewMenu().selectShowConsole(true);
    }
 
    /**
@@ -193,7 +201,7 @@ public class MainWin {
       dividerLocVert = splitVert.getDividerLocation();
       splitVert.setDividerSize(0);
       splitVert.setRightComponent(null);
-      menu.selectShowConsole(false);
+      menu.getViewMenu().selectShowConsole(false);
    }
 
    /**
@@ -206,7 +214,7 @@ public class MainWin {
          dividerLocHor = (int)(frame.getWidth() * 0.2);
       }
       splitHor.setDividerLocation(dividerLocHor);
-      menu.selectShowFileView(true);
+      menu.getViewMenu().selectShowFileView(true);
    }
 
    /**
@@ -216,7 +224,7 @@ public class MainWin {
       dividerLocHor = splitHor.getDividerLocation();
       splitHor.setDividerSize(0);
       splitHor.setLeftComponent(null);
-      menu.selectShowFileView(false);
+      menu.getViewMenu().selectShowFileView(false);
    }
 
    /**
@@ -229,7 +237,7 @@ public class MainWin {
          dividerLocHorAll = (int)(frame.getWidth() * 0.7);
       }
       splitHorAll.setDividerLocation(dividerLocHorAll);
-      menu.selectFunctionPnl(true);
+      menu.getViewMenu().selectFunctionPnl(true);
    }
 
    /**
@@ -239,7 +247,7 @@ public class MainWin {
       dividerLocHorAll = splitHorAll.getDividerLocation();
       splitHorAll.setDividerSize(0);
       splitHorAll.setRightComponent(null);
-      menu.selectFunctionPnl(false);
+      menu.getViewMenu().selectFunctionPnl(false);
    }
    
    //
@@ -291,7 +299,7 @@ public class MainWin {
             splitVert, null);
       splitHorAll.setResizeWeight(1);
       splitHorAll.setDividerSize(0);
-      splitHorAll.setBorder(null/*new MatteBorder(1, 0, 0, 0, Constants.BORDER_GRAY)*/);
+      splitHorAll.setBorder(null);
    }
 
    private void initStatusbar() {
@@ -304,9 +312,9 @@ public class MainWin {
    private void initFunctionPnl() {
       functTitlePnl.setLayout(new BoxLayout(functTitlePnl, BoxLayout.LINE_AXIS));
       functTitlePnl.add(functTitleLb);
-      functionPnl.setBorder(new LineBorder(Constants.BORDER_GRAY));
       functTitleLb.setFont(Constants.SANSSERIF_PLAIN_12);
-      functTitleLb.setText(" No function selected");
+      //functTitleLb.setText(" No function selected");
+      functionPnl.setBorder(Constants.LOW_ETCHED);
       JButton closeBt = new JButton(IconFiles.closeIcon);
       closeBt.setBorder(new EmptyBorder(3, 5, 3, 5));
       closeBt.setContentAreaFilled(false);
@@ -314,7 +322,7 @@ public class MainWin {
       closeBt.setFocusable(false);
       closeBt.addActionListener(e -> {
          hideFunctionPnl();
-         menu.selectFunctionPnl(false);
+         menu.getViewMenu().selectFunctionPnl(false);
       });
       functTitlePnl.add(Box.createHorizontalGlue());
       functTitlePnl.add(closeBt);

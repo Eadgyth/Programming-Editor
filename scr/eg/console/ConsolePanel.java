@@ -59,7 +59,7 @@ public class ConsolePanel {
       toolbar = createToolbar();
       clearAct();
 
-      consolePnl.setBorder(new LineBorder(Constants.BORDER_GRAY));
+      consolePnl.setBorder(Constants.LOW_ETCHED);
       consolePnl.add(toolbar, BorderLayout.NORTH);
       consolePnl.add(scroll, BorderLayout.CENTER);
    }

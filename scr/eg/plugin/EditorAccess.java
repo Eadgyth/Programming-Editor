@@ -31,11 +31,8 @@ public class EditorAccess {
    }
    
    /**
-    * Adds a component to the 'function panel' of the Main Window. The panel
-    * is at the right split area and has a BorderLayout. The title is shown NORTH
-    * and the Component is shown in the CENTER of the Layout.
-    * @param c  the Component that is added in teh center of the
-    * 'function panel'
+    * Adds a component to the 'function panel' of the main window
+    * @param c  the Component that is added to the right of this plit window
     * @param title  the title for the function
     */
    public void addToFunctionPanel(java.awt.Component c, String title) {

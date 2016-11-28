@@ -7,17 +7,18 @@ import java.awt.event.ActionListener;
 //--Eadgyth--//
 import eg.Preferences;
 
+import eg.utils.JOptions;
+
 /**
  * Represents the configuration of a project.
  * <p>
- * 'Configuration' firstly refers to the finding of the project root
+ * 'Configuration' firstly means the finding of the project root
  * which in the simplest case would be the parent of the main project
  * file (or of a specifiable subdirectory where the file is saved). <br>
  * It depends on the parameters passed to the contructor of
  * {@link SettingsWin} which other properties are asked for. For example,
- * the project root of a Java project with a subdirectory for sources and a
- * main class in a package is found by returning the parent of the path
- * [sources Dir.]/[package Dir]/[main java file]. <br>
+ * the project root of a Java project may be the parent of the path
+ * [sources Dir.]/[package Dir.]/[main java file]. <br>
  * The project may be configured by the entries in the settings window
  * or by reading in entries in the 'prefs' file
  */
@@ -56,9 +57,8 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    @Override
-   public boolean configFromSetWin(String dir, String suffix) {     
-      findNewProjectRoot(dir, suffix);
-      boolean success = projectPath.length() > 0;
+   public boolean configFromSetWin(String dir, String suffix) {
+      boolean success = configureProject(dir, suffix);
       if (success) {
          setWin.makeVisible(false);
       }
@@ -214,32 +214,44 @@ public abstract class ProjectConfig implements Configurable {
       return newFileStr;
    }
 
-   private void findNewProjectRoot(String dir, String suffix) {
-      projectPath = "";
+   private boolean configureProject(String dir, String suffix) {
       getTextFieldsInput();
-      /*
-       * may include sourceDir and/or moduleDir to begin with */
-      File search = new File(dir);
 
-      final String pathRelToRoot = sourceDir + F_SEP + moduleDir + F_SEP
-            + mainFile + suffix;
-      String pathToSearch = dir + F_SEP + pathRelToRoot;    
-      File searchPath = new File(pathToSearch);
+      String dirRelToRoot = "";
+      if (sourceDir.length() > 0 & moduleDir.length() == 0) {
+         dirRelToRoot += sourceDir;
+      }
+      else if (sourceDir.length() == 0 & moduleDir.length() > 0) {
+         dirRelToRoot += moduleDir;
+      }
+      else if (sourceDir.length() > 0 & moduleDir.length() > 0) {
+         dirRelToRoot += sourceDir + F_SEP + moduleDir;
+      }
       
-      while(!searchPath.exists()) {
-         if (search.getParentFile() == null) {
-            search = null;
-            break;
+      String filePathRelToRoot = dirRelToRoot + F_SEP
+            + mainFile + suffix;
+      
+      String parent;
+      if (projectPath.length() > 0) { // if already set
+         parent = projectPath + F_SEP;
+      }
+      else {
+         if (dirRelToRoot.length() > 0) {
+            int start = dir.indexOf(dirRelToRoot);
+            parent = dir.substring(0, start);
          }
-         String newPath = search.getParent();
-         search = new File(newPath);     
-         pathToSearch = newPath + F_SEP + pathRelToRoot;
-         searchPath = new File(pathToSearch);
+         else {
+            parent = dir;
+         }
       }
-
-      if (search != null) {
-         projectPath = search.toString();
+      boolean isSet = new File(parent + filePathRelToRoot).exists();
+      if (isSet) {
+         projectPath = parent;
       }
+      else {
+         JOptions.warnMessageToFront("A valid filepath could not be found");
+      }
+      return isSet;
    }
    
    private void getTextFieldsInput() {
@@ -248,7 +260,7 @@ public abstract class ProjectConfig implements Configurable {
 
       moduleDir = setWin.moduleIn();
       PREFS.storePrefs("recentModule", moduleDir );
-      
+           
       sourceDir = setWin.sourcesDirIn();
       PREFS.storePrefs("recentSourceDir", sourceDir);
       

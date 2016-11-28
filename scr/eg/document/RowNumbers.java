@@ -17,7 +17,7 @@ import eg.utils.Finder;
  */
 class RowNumbers {
 
-   private final static Color NUM_GRAY = new Color(100, 100, 100);
+   private final static Color NUM_GRAY = new Color(160, 160, 160);
 
    private final SimpleAttributeSet lineSet = new SimpleAttributeSet();
    private final StyledDocument lineDoc;

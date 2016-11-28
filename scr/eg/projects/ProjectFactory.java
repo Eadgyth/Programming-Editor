@@ -2,7 +2,7 @@ package eg.projects;
 
 import eg.console.*;
 import eg.ui.MainWin;
-import eg.ui.Menu;
+import eg.ui.menu.Menu;
 import eg.ui.Toolbar;
 
 /**

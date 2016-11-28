@@ -305,7 +305,7 @@ public class FileTree extends Observable {
       scroll.getVerticalScrollBar().setUnitIncrement(10);
       fileTreePnl.add(toolbar, BorderLayout.NORTH);
       fileTreePnl.add(scroll, BorderLayout.CENTER);
-      fileTreePnl.setBorder(new LineBorder(Constants.BORDER_GRAY));
+      fileTreePnl.setBorder(Constants.LOW_ETCHED);
       upBt.addActionListener(e -> folderUp());
       renewBt.addActionListener(e -> renewTree());
       upBt.setEnabled(false);
