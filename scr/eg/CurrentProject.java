@@ -91,7 +91,7 @@ public class CurrentProject {
 
    /**
     * Opens the window of the {@code SettingsWin} object of a 
-    * previously or newly created project
+    * previously or a newly created project
     */
    public void openSettingsWindow() {
       if (txtDoc.filename().length() == 0) {
@@ -106,8 +106,9 @@ public class CurrentProject {
       else {
          ProjectActions recent = searchRecent(txtDoc.dir());
          if (recent != null) {
-            changeProject(recent);
-            proj.makeSetWinVisible(true);
+            if (changeProject(recent)) {
+               proj.makeSetWinVisible(true);
+            }
          }
          else {   
             ProjectActions projNew 
@@ -144,8 +145,7 @@ public class CurrentProject {
       else {
          if (recent != null) {
             changeProject(recent);
-         }
-         
+         }        
       }
    } 
 
@@ -205,12 +205,16 @@ public class CurrentProject {
       return old;
    }      
    
-   private void changeProject(ProjectActions recent) {
+   private boolean changeProject(ProjectActions recent) {
       int result = JOptions.confirmYesNo("Change to project '"
             + recent.getProjectName() + "' ?");
       if (result == 0) {
          proj = recent;
          updateProjectSetting(proj);
+         return true;
+      }
+      else {
+         return false;
       }
    }
 
