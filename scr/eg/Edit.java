@@ -17,7 +17,8 @@ import eg.utils.Finder;
 import eg.document.TextDocument;
 
 /**
- * The editing of text in a selected tab.
+ * The editing of the document in the selected tab by actions
+ * that are invoked in the edit menu / toolbar
  */ 
 public class Edit {
 

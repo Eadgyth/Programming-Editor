@@ -20,7 +20,7 @@ import eg.utils.FileUtils;
 import eg.utils.JOptions;
 
 /**
- * The current project that is configured for tha file of a
+ * The current project that is configured for the file of a
  * {@code TextDocument}.
  * <p>
  * A project is represented by an object of type {@link ProjectActions}.
