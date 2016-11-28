@@ -148,8 +148,8 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Saves the file of a selected tab as a new file selected
-    * in file chooser
+    * Saves the content of a selected tab as a new file specified
+    * in the file chooser
     */
    public void saveAs() {
       File f = fs.fileToSave();
