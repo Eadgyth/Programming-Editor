@@ -94,13 +94,13 @@ public class CurrentProject {
     * previously or a newly created project
     */
    public void openSettingsWindow() {
-      if (txtDoc.filename().length() == 0) {
+      if (!isProjectSet() & txtDoc.filename().length() == 0) {
          JOptions.titledInfoMessage("A project can be set after a file was"
                + " opened or a new file was saved", "Note");
          return;
       }
-
-      if (isProjectSet() && proj.isInProjectPath(txtDoc.dir())) {
+      if (isProjectSet() & (txtDoc.filename().length() == 0
+            || proj.isInProjectPath(txtDoc.dir()))) {
          proj.makeSetWinVisible(true);
       }      
       else {
@@ -184,7 +184,7 @@ public class CurrentProject {
    }
    
    /**
-    * stores the settings of the current project to prefs
+    * Stores the settings of the current project to prefs
     */
    public void storeConfig() {
       if (isProjectSet()) {

@@ -87,9 +87,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    
    @Override                                                                          
    public void compile() {
-      if (!isProjectSet()) {
-         return;
-      }
       if (!proc.isProcessEnded()) {
          return;
       }
@@ -113,7 +110,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
                JOptions.infoMessage("Compilation successful");
             }
             else {
-               int result = JOptions.confirmYesNo("Compilation failed\n"
+               int result = JOptions.confirmYesNo("Compilation failed."
                      + comp.getFirstError()
                      + "\nOpen console window to view messages?");
                if (result == JOptionPane.YES_OPTION) {
@@ -126,9 +123,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
 
    @Override
    public void runProject() {
-      if (!isProjectSet()) {
-         return;
-      } 
       if (!mainClassFileExists()) {
          return;
       }
@@ -140,10 +134,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
 
    @Override
    public void build() {
-      System.out.println(getProjectRoot());
-      if (!isProjectSet()) {
-         return;
-      } 
       if (!mainClassFileExists()) {
          return;
       }
@@ -155,16 +145,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
          JOptions.infoMessage(info);
       });
    }
-   
-   private boolean isProjectSet() {
-      boolean set = true;
-      if (getMainFile().length() == 0) {
-         makeSetWinVisible(true);
-         set = false;
-      }
-      return set;
-   }
-   
+
    private boolean mainClassFileExists() {
       boolean exists = mainProgramFileExists(".class");
       if (!exists) {
