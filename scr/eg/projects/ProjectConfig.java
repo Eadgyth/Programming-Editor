@@ -87,6 +87,11 @@ public abstract class ProjectConfig implements Configurable {
       return previousProjectRoot(dir) != null;
    }
    
+   @Override
+   public void storeConfig() {
+      storeInputs();
+   }
+   
    /**
     * Returns the project's main file
     * @return  the name of project's main file
@@ -164,8 +169,6 @@ public abstract class ProjectConfig implements Configurable {
       String previousProjectRoot = previousProjectRoot(dir);
          
       if (previousProjectRoot != null) {
-
-         projectPath = previousProjectRoot;
          
          mainFile = PREFS.prop.getProperty("recentMain");
          setWin.displayFile(mainFile);
@@ -178,14 +181,8 @@ public abstract class ProjectConfig implements Configurable {
          
          execDir = PREFS.prop.getProperty("recentExecDir");
          setWin.displayExecDir(execDir);
-      }
-      else {
-         projectPath = "";
-         setWin.displayModule("");
-         setWin.displayFile("");
-         setWin.displaySourcesDir("");
-         setWin.displayExecDir("");
-         mainFile = "";
+         
+         projectPath = previousProjectRoot;
       }
    }
 
@@ -210,8 +207,8 @@ public abstract class ProjectConfig implements Configurable {
          newFile    = new File(newFile.getParent());
          newFileStr = newFile.getAbsolutePath();
          isEqual    = projStr.equals(newFileStr);
-      }  
-      return newFileStr;
+      }
+      return newFileStr;         
    }
 
    private boolean configureProject(String dir, String suffix) {
@@ -231,10 +228,12 @@ public abstract class ProjectConfig implements Configurable {
       String filePathRelToRoot = dirRelToRoot + F_SEP
             + mainFile + suffix;
       
-      String parent;
+      String parent = "";
       if (dirRelToRoot.length() > 0) {
          int start = dir.indexOf(dirRelToRoot);
-         parent = dir.substring(0, start - 1);
+         if (start != -1) {
+            parent = dir.substring(0, start - 1);
+         }
       }
       else {
          parent = dir;
@@ -245,6 +244,7 @@ public abstract class ProjectConfig implements Configurable {
       }
       else {
          projectPath = parent;
+         storeInputs();
       }
          
       return isSet;
@@ -252,19 +252,18 @@ public abstract class ProjectConfig implements Configurable {
    
    private void getTextFieldsInput() {
       mainFile = setWin.projectFileIn();
-      PREFS.storePrefs("recentMain", mainFile);
-
       moduleDir = setWin.moduleIn();
-      PREFS.storePrefs("recentModule", moduleDir );
-           
       sourceDir = setWin.sourcesDirIn();
-      PREFS.storePrefs("recentSourceDir", sourceDir);
-      
       execDir = setWin.execDirIn();
-      PREFS.storePrefs("recentExecDir", execDir );
-      
       args = setWin.argsIn();
-      
       buildName = setWin.buildNameIn();
+   }
+   
+   private void storeInputs() {
+      PREFS.storePrefs("recentProject", projectPath);
+      PREFS.storePrefs("recentMain", mainFile);
+      PREFS.storePrefs("recentModule", moduleDir);
+      PREFS.storePrefs("recentSourceDir", sourceDir);
+      PREFS.storePrefs("recentExecDir", execDir);
    }
 }

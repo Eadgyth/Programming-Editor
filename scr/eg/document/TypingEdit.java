@@ -37,7 +37,7 @@ import eg.ui.EditArea;
  */
 class TypingEdit {
 
-   private final UndoManager undomanager = new UndoManager();
+   private final DocUndoManager undomanager = new DocUndoManager();
    private final StyledDocument doc;  
    private final Element el;
    private final SimpleAttributeSet normalSet = new SimpleAttributeSet(); 
@@ -134,28 +134,14 @@ class TypingEdit {
       enableTextModify(enableTextModify);
    }
 
-   public void undo() {
-      try {
-         if (undomanager.canUndo()) {
-            undomanager.undo();
-         }
-      }
-      catch (CannotUndoException cue) {
-         cue.printStackTrace();
-      }
+    public void undo() {
+       undomanager.undo();
    }
 
    void redo() {
-      try {
-         if (undomanager.canRedo()) {
-            undomanager.redo();
-             if (isTextModify) {
-                colorAll(true);
-            }
-         }
-      }
-      catch (CannotRedoException cre) {
-         cre.printStackTrace();
+      undomanager.redo();
+      if (isTextModify) {
+          colorAll(true);
       }
    }
 
@@ -218,8 +204,8 @@ class TypingEdit {
       });
     }
    
-   class DocUndoManager implements UndoableEditListener {
-      DocCompoundEdit compEdit = new DocCompoundEdit();
+   class DocUndoManager extends UndoManager implements UndoableEditListener {
+      
       @Override
       public void undoableEditHappened (UndoableEditEvent e) {
          if (!isDocListen) {
@@ -232,18 +218,31 @@ class TypingEdit {
          if (event.getType().equals(DocumentEvent.EventType.CHANGE)) {
             return;
          }
-         compEdit = new DocCompoundEdit();
-         UndoableEdit edit = e.getEdit();
-         compEdit.addEdit(edit);
-         
-         undomanager.addEdit(compEdit.lastEdit());
+         addEdit(e.getEdit());
+         undomanager.addEdit(lastEdit());
       }
-   }
    
-   class DocCompoundEdit extends CompoundEdit {
-      
-      public UndoableEdit lastEdit() {
-         return super.lastEdit();
-      }      
+      public void undo() {
+         System.out.println("undo");
+         try {
+            if (super.canUndo()) {
+               super.undo();
+            }
+         }
+         catch (CannotUndoException cue) {
+            cue.printStackTrace();
+         }
+      }
+   
+      public void redo() {
+         try {
+            if (super.canRedo()) {
+               super.redo();
+            }
+         }
+         catch (CannotRedoException cre) {
+            cre.printStackTrace();
+         }
+      }
    }
 }

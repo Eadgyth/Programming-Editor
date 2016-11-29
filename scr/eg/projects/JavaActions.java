@@ -70,6 +70,11 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
+   public void storeConfig() {
+      super.storeConfig();
+   }
+   
+   @Override
    public String getProjectName() {
       return super.getProjectName();
    }
@@ -135,6 +140,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
 
    @Override
    public void build() {
+      System.out.println(getProjectRoot());
       if (!isProjectSet()) {
          return;
       } 

@@ -55,4 +55,9 @@ public interface Configurable {
     * directory
     */
    public boolean isInProjectPath(String dir);
+   
+   /**
+    * Stores current configuration to 'prefs'
+    */
+   public void storeConfig();
 }

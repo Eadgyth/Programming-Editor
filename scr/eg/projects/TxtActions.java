@@ -48,6 +48,11 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
       return super.isInProjectPath(dir);
    }
    
+   @Override
+   public void storeConfig() {
+      super.storeConfig();
+   }
+   
    /**
     * Not used
     */

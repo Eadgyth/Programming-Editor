@@ -20,7 +20,7 @@ public class ProjectMenu {
                                         IconFiles.compileIcon);
    private final JMenuItem run        = new JMenuItem("Run", IconFiles.runIcon);
    private final JMenuItem build      = new JMenuItem("Build");
-   private final JMenuItem setProject = new JMenuItem("Set up project");
+   private final JMenuItem setProject = new JMenuItem("Project settings");
    private final JMenuItem changeProj = new JMenuItem("Switch project");
    
    ProjectMenu() {

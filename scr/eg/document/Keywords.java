@@ -26,7 +26,7 @@ class Keywords {
    final static String[] HTML_KEYWORDS = {
       ">",
       "<a ",
-      "<b",
+      "<b", "<br",
       "<body", "</body",
       "<head", "</head", "<html",  "</html",
       "<h1", "</h1", "<h2", "</h2", "<h3", "</h3",

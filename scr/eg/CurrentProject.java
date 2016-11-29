@@ -145,7 +145,10 @@ public class CurrentProject {
       else {
          if (recent != null) {
             changeProject(recent);
-         }        
+         }
+         else {
+            openSettingsWindow();
+         }   
       }
    } 
 
@@ -179,6 +182,15 @@ public class CurrentProject {
    public void buildProj() {
       proj.build();
    }
+   
+   /**
+    * stores the settings of the current project to prefs
+    */
+   public void storeConfig() {
+      if (isProjectSet()) {
+         proj.storeConfig();
+      }
+   }
 
    //
    //--private methods
@@ -194,16 +206,6 @@ public class CurrentProject {
          updateProjectSetting(proj);
       }
    }
-
-   private ProjectActions searchRecent(String dir) {
-      ProjectActions old = null;
-      for (ProjectActions p : recent) {
-         if (p.isInProjectPath(dir)) {
-            old = p;
-         }
-      }
-      return old;
-   }      
    
    private boolean changeProject(ProjectActions recent) {
       int result = JOptions.confirmYesNo("Change to project '"
@@ -218,11 +220,20 @@ public class CurrentProject {
       }
    }
 
+   private ProjectActions searchRecent(String dir) {
+      ProjectActions old = null;
+      for (ProjectActions p : recent) {
+         if (p.isInProjectPath(dir)) {
+            old = p;
+         }
+      }
+      return old;
+   }
+
    private void updateProjectSetting(ProjectActions projToSet) {
       mw.showProjectInfo(projToSet.getProjectName());
       String root = projToSet.getProjectRoot();
       fileTree.setProjectTree(root);
-      prefs.storePrefs("recentProject", root);
       if (recent.size() == 1) {
          menu.getViewMenu().enableFileView();
       }

@@ -73,7 +73,6 @@ public class ProcessStarter {
       File f = new File(workingDir);
       this.workingDirName = f.getName();
       workingDirTemp = workingDir;
-      //previousCmd = "";
    }
 
    /**
@@ -141,8 +140,8 @@ public class ProcessStarter {
             }
             catch(IOException ioe) {
                cw.appendText("<<Error: cannot run " + cmd 
-                  + "in the directory " + workingDir + ">>\n");
-               System.out.println(ioe.getMessage());
+                  + " in the directory " + workingDir + ">>\n");
+               System.out.println(ioe.getMessage());  
             }
          }
       };

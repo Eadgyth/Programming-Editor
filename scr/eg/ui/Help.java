@@ -21,6 +21,8 @@ public class Help {
             java.awt.Desktop.getDesktop().open(htmlFile);
          }
       }
-      catch (IOException e) {}
+      catch (IOException e) {
+         System.out.println(e.getMessage());
+      }
    }
 }

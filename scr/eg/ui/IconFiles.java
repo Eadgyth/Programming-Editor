@@ -50,8 +50,6 @@ public class IconFiles {
          = new ImageIcon(EAD_DIR + "run.png" );
    public final static ImageIcon runConsIcon
          = new ImageIcon(EAD_DIR + "runCons.png" );
-   public final static ImageIcon eadgythIconSmall
-         = new ImageIcon(EAD_DIR + "EadgythIconSmall.png");
    public final static ImageIcon compileIcon
          = new ImageIcon(EAD_DIR + "compile.png");
    public final static ImageIcon eadgythIcon

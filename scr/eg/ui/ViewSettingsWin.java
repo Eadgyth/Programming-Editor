@@ -1,6 +1,7 @@
 package eg.ui;
 
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Dimension;
 
 import java.awt.event.ActionListener;
@@ -69,30 +70,22 @@ class ViewSettingsWin {
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       frame.setResizable(false);
       frame.setLocation(550, 100);
-      frame.setContentPane(combinedPanel());
-      frame.setSize(500, 200);
+      frame.setContentPane(allPanels());
+      frame.pack();
       frame.setVisible(false);
       frame.setAlwaysOnTop(true);
       frame.setIconImage(IconFiles.eadgythIcon.getImage());
    }
    
-   private JPanel combinedPanel() {
-      JPanel combined = new JPanel(new FlowLayout());
-      combined.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-      combined.add(allPanels());
-      combined.add(buttonsPanel());
-      frame.getRootPane().setDefaultButton(okBt);
-      
-      return combined;
-   }
-   
    private JPanel allPanels() {
-      JPanel allPanels = new JPanel();
-      allPanels.setPreferredSize(new Dimension(480, 100));
+      JPanel allPanels = new JPanel(new GridLayout(5,1));
+      allPanels.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       allPanels.add(setLineNumberPanel());
       allPanels.add(setToolbarPanel());
       allPanels.add(setStatusBarPanel());      
       allPanels.add(setLafPanel());
+      allPanels.add(buttonsPanel());
+      frame.getRootPane().setDefaultButton(okBt);
       
       return allPanels;
    }
@@ -104,7 +97,7 @@ class ViewSettingsWin {
       else {
          checkToolbar.setSelected(false);
       }    
-      return checkBxPnl(checkToolbar, "Show toolbar");
+      return checkBxPnl(checkToolbar, "Show toolbar:");
    }
    
    private JPanel setLineNumberPanel() {      
@@ -114,7 +107,7 @@ class ViewSettingsWin {
       else {
          checkLineNumbers.setSelected(false);
       }
-      return checkBxPnl(checkLineNumbers, "Show line numbers when wordwrap is disabled");
+      return checkBxPnl(checkLineNumbers, "Show line numbers when wordwrap is disabled:");
    }
    
    private JPanel setStatusBarPanel() {      
@@ -124,40 +117,45 @@ class ViewSettingsWin {
       else {
          checkStatusbar.setSelected(false);
       }      
-      return checkBxPnl(checkStatusbar, "Show status bar");
+      return checkBxPnl(checkStatusbar, "Show status bar:");
    }
    
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
       JLabel label = new JLabel(title);
       label.setFont(Constants.SANSSERIF_BOLD_12);
+      JPanel holdCheckBx = new JPanel(new FlowLayout(FlowLayout.LEFT));
       
       JPanel checkBxPnl = new JPanel(); 
       checkBxPnl.setLayout(new BoxLayout(checkBxPnl, BoxLayout.LINE_AXIS));
-      checkBxPnl.setPreferredSize(new Dimension(480, 20));
       checkBox.setHorizontalTextPosition(JCheckBox.LEFT);     
       checkBxPnl.add(label);
+      checkBxPnl.add(Box.createHorizontalGlue());
       checkBxPnl.add(checkBox);
+      checkBxPnl.add(Box.createRigidArea(new Dimension(80, 0)));
       return checkBxPnl;
    }
       
    private JPanel setLafPanel() {      
       JLabel lafLabel = new JLabel( 
-            "Look & feel (takes effect after restarting Eadgyth):");
+            "Look & feel (needs restarting Eadgyth):");
       lafLabel.setFont(Constants.SANSSERIF_BOLD_12);
       selectLaf.setFont(Constants.SANSSERIF_PLAIN_12);
 
       JPanel setLafPanel = new JPanel();
       setLafPanel.setLayout(new BoxLayout(setLafPanel, BoxLayout.LINE_AXIS));
-      setLafPanel.setPreferredSize(new Dimension(480, 20));
       setLafPanel.add(lafLabel);
       setLafPanel.add(Box.createHorizontalGlue());
-      setLafPanel.add(selectLaf);
+      JPanel holdComboBx = new JPanel(new FlowLayout());
+      setLafPanel.add(Box.createRigidArea(new Dimension(60, 0)));
+      holdComboBx.add(selectLaf);
+      setLafPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+      setLafPanel.add(holdComboBx);
       return setLafPanel;
    }
    
    private JPanel buttonsPanel() {
       JPanel buttonsPanel = new JPanel(new FlowLayout());   
-      buttonsPanel.add( okBt );
+      buttonsPanel.add(okBt);
       return buttonsPanel;
    }
 }

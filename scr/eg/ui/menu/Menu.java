@@ -66,19 +66,18 @@ public class Menu {
       if ("Windows".equals(eg.Constants.CURR_LAF_STR)) {
          strutSize = 5;
       }
-      Component strut = Box.createHorizontalStrut(strutSize);
       menuMain.add(fileMenu.getMenu());
-      menuMain.add(strut);
+      menuMain.add(Box.createHorizontalStrut(strutSize));
       menuMain.add(editMenu.getMenu());
-      menuMain.add(strut);
+      menuMain.add(Box.createHorizontalStrut(strutSize));
       menuMain.add(formatMenu.getMenu());
-      menuMain.add(strut);
+      menuMain.add(Box.createHorizontalStrut(strutSize));
       menuMain.add(viewMenu.getMenu());    
-      menuMain.add(strut);
+      menuMain.add(Box.createHorizontalStrut(strutSize));
       menuMain.add(plugMenu.getMenu());
-      menuMain.add(strut);
+      menuMain.add(Box.createHorizontalStrut(strutSize));
       menuMain.add(projectMenu.getMenu());    
-      menuMain.add(strut);
+      menuMain.add(Box.createHorizontalStrut(strutSize));
       menuMain.add(helpMenu.getMenu());
    }
 }

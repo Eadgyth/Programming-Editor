@@ -148,8 +148,8 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Saves the content of a selected tab as a new file specified
-    * in the file chooser
+    * Saves the content a selected tab as a new file specified
+    * in file chooser
     */
    public void saveAs() {
       File f = fs.fileToSave();
@@ -231,7 +231,8 @@ public class TabbedFiles implements Observer{
     */
    public void tryExit() {
       int count = unsavedTab();
-      if (count == tabPane.tabCount()) {     
+      if (count == tabPane.tabCount()) {
+         currProj.storeConfig();   
          System.exit(0);
       }
       else {

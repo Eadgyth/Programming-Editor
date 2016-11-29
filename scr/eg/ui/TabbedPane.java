@@ -45,7 +45,7 @@ public class TabbedPane {
    /**
     * @param title  the title for the tab
     * @param toAdd  the added Component
-    * @param closeBt  the button displayed in the tab.
+    * @param closeBt  the button displayed in the tab
     * @param index  the tab index at which a component is added
     */
    public void addNewTab(String title, Component toAdd, JButton closeBt,

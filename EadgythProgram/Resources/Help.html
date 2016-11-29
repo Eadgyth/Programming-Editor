@@ -5,82 +5,87 @@
       <title>Eadgyth help</title>
    </head>
    <body>
+      <style>
+       *{
+         font-family: sans-serif;
+       }
+      </style>
       
       <h2>Eadgyth help (still in progress)</h2>
       <h4>Requirements</h4>
+      <p>The Java runtime environment must be version JRE 8 to run Eadgyth.</P>
+      <h4>Configuring a java project</h4>
       <p>It is required that a Java
          development kit (JDK) is installed and the computer is set up to use
          the JDK. For the JDK of Oracle, see:<br>      
       <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html">
       Oracle JDK</a></p>
-      <p>The Java runtime environment must be version JRE 8 to run Eadgyth.</P>
-      <h4>Configuring a java project</h4>
-      <p> The setting of a project starts with an existing file. This is to say that
-          also the project's working directory, subdirectory (e.g. for source files,
-          package) must be created before a project can be configured. On the other
-          hand no extra configuration file is created so that a project can be defined
-          for any existing directory that contains source files.
       <ol>
          <li>Open a java source file or save an unnamed tab as a java source file.
              Only at the first time you will be asked to enter the filepath of
              the JDK.</li>
-         <li>Open the settings window using &lsquo;Set up project&rsquo; in the menu
+         <li>Open the settings window using &lsquo;Project settings&rsquo; in the menu
              &lsquo;Project&rsquo;.</li>
          <li>Enter the name of the source file that contains the main method in the text
              field &lsquo;Name of main program file&rsquo; (without extension).</li>
-         <li>If this file is part of a package enter the package name in the text field
-             &lsquo;Package&rsquo;. If it is located in a sub-package(s) enter the package
-             path with normal file separators (slash in Windows).</li>
-         <li>If source files (or packages) are located in a separate directory, the name of
-             this directory (e.g., &lsquo;scr&rsquo;) is entered in the text field &lsquo;Sources
-             directory&rsquo;.</li>
-         <li>A separate destination directory for compiled source files (e.g., &lsquo;bin&rsquo;)
-             maybe entered in the text field &lsquo;Executables directory&rsquo; (the folder will
-             be created during compilation).</li>
+         <li>If this file is within a package enter the package name in the text field
+             &lsquo;Package with main class&rsquo;. If it is located in a sub-package
+             enter the path with normal file separators (slash in Windows).</li>
+         <li>A separate directory for source files (or packages) may be entered in the text
+             field &lsquo;Sources directory&rsquo;.</li>
+         <li>A separate destination directory for compiled class files maybe entered in the
+             text field &lsquo;Executables directory&rsquo; (the folder will be created
+             during compilation).</li>
          <li>Click ok. If entries are correct the project can be viewed in the &lsquo;Project
-             explorer&rsquo; that is opened in the menu &lsquo;View&rsquo;</li>
+             explorer&rsquo; that is opened in the &lsquo;View&rsquo; menu</li>
          <li>Compile the source file(s) using &lsquo;Save all and compile&rsquo; in the
-             &lsquo;Project&rsquo; menu. If errors occur you will be asked to open the console to
-             view messages.</li>
-         <li>Run the project using &lsquo;Run&rsquo; in the &lsquo;Project&rsquo; menu (this will
-             open the console panel).</li>
-         <li>A jar file may be created by using &lsquo;Build&rsquo; in the &lsquo;Project&rsquo; menu.<p>
+             &lsquo;Project&rsquo; menu. If errors occur you will be asked to open the
+             console to view messages.</li>
+         <li>Run the project using &lsquo;Run&rsquo; in the &lsquo;Project&rsquo; menu (this
+             will also open the console panel).</li>
+         <li>A jar file may be created by using &lsquo;Build&rsquo; in the &lsquo;Project&rsquo;
+             menu.</li>
       </ol>
       <h5>Further options</h5>
       <ul>
          <li>Arguments for a start script may be entered in the text field &lsquo;Arguments&rsquo;
              (separated by single spaces).</li>
          <li>The name of a build file (jar file in the case of java) can be specified in the field
-             &lsquo;Name for jar file&rsquo;. If the field is not filled, the jar name is the name of the
-             java file that contains the main method.</li>
+             &lsquo;Name for jar file&rsquo;. If the field is not filled, the jar name is the name of
+             the java file that contains the main method.</li>
          <li>The project can be changed by opening a file that does not belong to the current project.
-             Then proceed as in steps 2 to 7 if the projects was not previouly configures or use
-             &lsquo;Switch project&rsquo;.</li>
          <li>An existing project configuration will be retrieved upon opening any file of a project
              previously worked on.</li>
-         <li> A project maybe also defined for a txt file (which only allows viewing file in the project
-               explorer) or for a HTML file which can be shown in Web browser using &lsquo;Run&rsquo; in
-               the &lsquo;Project&rsquo; menu.
+         <li>A project maybe also defined for a txt file (which only allows viewing files in the project
+             explorer) or for a HTML file which can be shown in Web browser using &lsquo;Run&rsquo; in
+             the &lsquo;Project&rsquo; menu. The keyword coloring for html code is rudimentary though.
          </li>
       </ul>
       <h4>Using the console</h4>
-      <p>The console area shall show messages after compilation of a project and the output of a program that was
-      started as in step 9 (see above). Interactive programs can be run too, but it is not clear yet if this works
-      in all situations.</p>
-      <p>In addition, self-chosen system commands entered in a dialogue maybe run in the current working directory
-      (the root directory of a project). For example, a created jar file may be tested by the command
-      java -jar SomeProgram.jar. A run process can be forcibly quit using the &lsquo;stop&rsquo; button. Note that
-      &lsquo;system command&rsquo; does not mean that it is possible to run directly terminal commands. While it is
-      possible to run the terminal in the console (by using the system command that starts the terminal) a program
-      thereupon started from this terminal cannot be forcibly quit using the &lsquo;stop&rsquo; button.</p>
-      <h5>To run a command...</h5>
+      <p>The console area shall show messages after compilation of a project and the output of a program
+      that was started as in step 9 (see above). Interactive programs can be run too, but it is not clear
+      yet if this works in all situations.</p>
+      <p>In addition, self-chosen system commands entered in a dialogue maybe run in the current working
+      directory (the root directory of a project). For example, a created jar file may be tested by the
+      command java -jar SomeProgram.jar. A run process can be forcibly quit using the &lsquo;stop&rsquo;
+      button.</p>
+      <p> Note that the term &lsquo;system command&rsquo; does not mean that it is possible to run
+      directly terminal commands. While it is possible to run the terminal in the console (by using the
+      system command that starts the terminal) a program thereupon started from this terminal cannot be
+      forcibly quit using the &lsquo;stop&rsquo; button.</p>
+      <h5>To run a system command...</h5>
       <ol>
          <li>Open the console panel in the menu &lsquo;View&rsquo;.</li>
-         <li>Press the button &lsquo;Cmd&rsquo; and enter a command in the shown dialog window. Click ok in the
-         dialog window to run the command.</li>
-         <li>To run a previous command press the &lsquo;>&rsquo; button; to change a command open the command
-         dialog again by pressing the &lsquo;Cmd...&rsquo; button.
+         <li>Press the button &lsquo;Cmd...&rsquo; and enter a command in the shown dialog window. Click
+             ok in the dialog window to run the command.</li>
+         <li>To run a previous command press the &lsquo;>&rsquo; button; to change a command open the
+             command dialog again by pressing the &lsquo;Cmd...&rsquo; button.
       </ol>
+      <h5>Further options</h5>
+      <ul>
+         <li>A new instance of Eadgyth can be run from the console by pressing the button with Eadgyth icon.
+             One reason to do this would be to view the output from a tested new plugin.</li>
+      </ul>
    </body>
 </html>
       

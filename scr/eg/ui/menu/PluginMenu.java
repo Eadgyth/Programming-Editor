@@ -24,6 +24,7 @@ public class PluginMenu {
    private JMenuItem[] selectPlugItm = null;
    
    PluginMenu() {
+      
       menu.add(allPlugsMenu);
       File[] plugJars = null;
       plugJars = new SearchFiles().filteredFilesToArr("./Plugins", ".jar");
@@ -50,7 +51,7 @@ public class PluginMenu {
             }
          }
          catch (IOException ioe) {
-            System.out.println(ioe.getMessage());
+            System.out.println(ioe.getMessage());  
          }
       });
    }
