@@ -94,41 +94,33 @@ public class CurrentProject {
     * previously or a newly created project
     */
    public void openSettingsWindow() {
-      if (!isProjectSet() & txtDoc.filename().length() == 0) {
-         JOptions.titledInfoMessage("A project can be set after a file was"
-               + " opened or a new file was saved", "Note");
-         return;
-      }
-      if (isProjectSet() && (txtDoc.filename().length() == 0
-            || proj.isInProjectPath(txtDoc.dir()))) {
-         proj.makeSetWinVisible(true);
-      }      
-      else {
-         ProjectActions recent = searchRecent(txtDoc.dir());
-         if (recent != null) {
-            if (changeProject(recent)) {
-               proj.makeSetWinVisible(true);
-            }
+      if (!isProjectSet()) {
+         if (txtDoc.filename().length() == 0) {
+            JOptions.titledInfoMessage("A project can be set after a file was"
+                  + " opened or a new file was saved", "Note");
          }
-         else {   
-            ProjectActions projNew 
-                  = projFact.getProjAct(FileUtils.extension(txtDoc.filepath()));
-            if (projNew == null) {
-               JOptions.titledInfoMessage(
-                     "A project cannot be set for this file type", "Note");
-            }
-            else {         
-               int result = 0;
-               if (isProjectSet()) {
-                  result = JOptions.confirmYesNo("Set new project ?");
-               }
-               if (result == 0) {
-                  projNew.makeSetWinVisible(true);
-                  projNew.addOkAction(e -> configureProject(projNew));
-               }
-            }
+         else {
+            newProject();
          }
       }
+      else {  
+         if (txtDoc.filename().length() == 0
+               || proj.isInProjectPath(txtDoc.dir())) {
+            proj.makeSetWinVisible(true);
+         }      
+         else if (txtDoc.filename().length() > 0
+               & !proj.isInProjectPath(txtDoc.dir())) {
+            ProjectActions recent = searchRecent(txtDoc.dir());
+            if (recent != null) {
+               if (changeProject(recent)) {
+                  proj.makeSetWinVisible(true);
+               }
+            }
+            else {
+               newProject();
+            }
+         }
+      }       
    }
    
    /**
@@ -195,6 +187,25 @@ public class CurrentProject {
    //
    //--private methods
    //
+   
+   private void newProject() {
+      ProjectActions projNew 
+            = projFact.getProjAct(FileUtils.extension(txtDoc.filepath()));
+      if (projNew == null) {
+         JOptions.titledInfoMessage(
+               "A project cannot be set for this file type", "Note");
+      }
+      else {         
+         int result = 0;
+         if (isProjectSet()) {
+            result = JOptions.confirmYesNo("Set new project ?");
+         }
+         if (result == 0) {
+            projNew.makeSetWinVisible(true);
+            projNew.addOkAction(e -> configureProject(projNew));
+         }
+      }
+   }
 
    private void configureProject(ProjectActions projToConf) {
       if (projToConf.configFromSetWin(txtDoc.dir(),
