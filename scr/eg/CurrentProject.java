@@ -99,7 +99,7 @@ public class CurrentProject {
                + " opened or a new file was saved", "Note");
          return;
       }
-      if (isProjectSet() & (txtDoc.filename().length() == 0
+      if (isProjectSet() && (txtDoc.filename().length() == 0
             || proj.isInProjectPath(txtDoc.dir()))) {
          proj.makeSetWinVisible(true);
       }      
