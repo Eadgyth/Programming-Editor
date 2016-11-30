@@ -148,7 +148,7 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Saves the content a selected tab as a new file specified
+    * Saves the content of a selected tab as a new file specified
     * in file chooser
     */
    public void saveAs() {
@@ -161,13 +161,9 @@ public class TabbedFiles implements Observer{
       }
       else {      
          txtDoc[iTab].saveFileAs(f);
-         if (!currProj.isProjectSet()) {
-            currProj.retrieveProject();
-         }
-         else {
-           currProj.addFileToTree(txtDoc[iTab].dir(),
+         currProj.retrieveProject();
+         currProj.addFileToTree(txtDoc[iTab].dir(),
                  txtDoc[iTab].filepath());
-         }
          tabPane.changeTabTitle(iTab, txtDoc[iTab].filename());
          mw.displayFrameTitle(txtDoc[iTab].filepath());
          prefs.storePrefs("recentPath", txtDoc[iTab].dir());
@@ -226,7 +222,7 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Exits the programm or selects the first tab which is found
+    * Exits the program or selects the first tab which is found
     * unsaved
     */
    public void tryExit() {
@@ -250,7 +246,7 @@ public class TabbedFiles implements Observer{
    }
    
    /**
-    * Saves all open files and compiles this project
+    * Saves all open files and compiles the current project
     */
    public void saveAndCompile() {
       saveAll();
@@ -288,9 +284,7 @@ public class TabbedFiles implements Observer{
          addNewTab(txtDoc[openIndex].filename(),
                editArea[openIndex].scrolledArea(), openIndex);
          mw.displayFrameTitle(txtDoc[openIndex].filepath());         
-         if (!currProj.isProjectSet()) {
-            currProj.retrieveProject();
-         }      
+         currProj.retrieveProject();      
          prefs.storePrefs("recentPath", txtDoc[openIndex].dir());
       }
    }

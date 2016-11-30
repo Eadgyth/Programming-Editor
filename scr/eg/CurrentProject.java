@@ -70,21 +70,25 @@ public class CurrentProject {
    }
 
    /**
-    * Creates a new project which can be configured in its settings window.
+    * Tries to assign to this the project that was active when the program was
+    * closed the last time.
     * <p>
-    * If the directory of the current {@link TextDocument} includes the
-    * project root that is saved in 'prefs' the project is directly
-    * configured and assigned to this current project.
+    * Retrieving a previous project requires that (i) no other project has
+    * been assigned and (ii) the current {@link TextDocument} is part of the
+    * the previous project (which is saved in 'prefs').
     */
    public void retrieveProject() {
-      ProjectActions prNew
-            = projFact.getProjAct(FileUtils.extension(txtDoc.filepath()));
-      if (prNew != null) {
-         prNew.addOkAction(e -> configureProject(prNew));
-         if (prNew.findPreviousProjectRoot(txtDoc.dir())) {
-            recent.add(prNew);
-            proj = prNew;
-            updateProjectSetting(proj);
+      if (!isProjectSet()) {
+         ProjectActions prPrevious
+               = projFact.getProjAct(FileUtils.extension(txtDoc.filepath()));
+         if (prPrevious != null) {
+            System.out.println(prPrevious.findPreviousProjectRoot(txtDoc.dir()));     
+            if (prPrevious.findPreviousProjectRoot(txtDoc.dir())) {        
+               prPrevious.addOkAction(e -> configureProject(prPrevious));
+               recent.add(prPrevious);
+               proj = prPrevious;
+               updateProjectSetting(proj);
+            }
          }
       }
    }
@@ -149,7 +153,7 @@ public class CurrentProject {
     * to this current project
     */
    public void addFileToTree(String dir, String file) {
-      if (proj.isInProjectPath(dir)) {
+      if (isProjectSet() & proj.isInProjectPath(dir)) {
          fileTree.addFile(file);
       }
    }
