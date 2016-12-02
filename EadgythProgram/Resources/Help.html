@@ -19,8 +19,10 @@
          of Oracle, see:      
          <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html">
          Oracle JDK</a>. Also, the filepath of the JDK must be saved in the
-         &lsquo;settings&rsquo; file. This, if not done already, the program asks
-         for the first time it is tried to compile source files.</p>
+         &lsquo;settings.properties&rsquo; file in the program folder. If this is not
+         done in the file itself already, the program asks to enter the filepath in a
+         dialog the first time it is tried to compile source files or if a new version
+         of the JDK was installed.</p>
       <h4>Configuring and testing a Java project</h4>
       <h5>Project settings</h5>
       <p>The setting of a project always starts from an existing file that is opened
@@ -45,7 +47,7 @@
              during compilation).</li>
          <li>Click ok. If entries are correct the project can be viewed in the &lsquo;Project
              explorer&rsquo; that is opened in the &lsquo;View&rsquo; menu.</li>
-      </ol>
+      </ol>    
       <h5>Compiling and running a project</h5>
       <ol>
          <li>Compile the source file(s) using &lsquo;Save all and compile&rsquo; in the
@@ -60,43 +62,49 @@
          <li>A jar file may be created by using &lsquo;Build&rsquo; in the &lsquo;Project&rsquo;
              menu.</li>
       </ol>
+      <h5>Other projects than Java?</h5>
+      <ul>
+         <li>A project maybe also defined for a txt file (which only allows viewing files in the
+             project explorer) or for a file that contains HTML code. The latter can be viewd in
+             a web browser (the default browser) by using &lsquo;Run&rsquo; in the
+             &lsquo;Project&rsquo; menu. The keyword coloring for html code is so far very
+             rudimentary though.</li>
+      </ul>  
       <h5>Changing between projects</h5>
       <ul>
-         <li>A new project can be set by opening a file that is not part of the current project
-             and then opening the settings window (&lsquo;Project&rsquo; > &lsquo;Project
-             settings&rsquo;). The new file must be in the selected tab.
+         <li>Different projects may set. A new project is set by opening a file that is not part
+             of the currently active project and then opening the settings window
+             (&lsquo;Project&rsquo; > &lsquo;Project settings&rsquo;). The new file must be found
+             in the selected tab.
          <li>Changing between already set projects is done by selecting a file that is part of
              the project to be set active and using &lsquo;Project&rsquo; > &lsquo;Change
              project&rsquo;.      
-         <li>A project maybe also defined for a txt file (which only allows viewing files in the project
-             explorer) or for a HTML file which can be shown in Web browser by using &lsquo;Run&rsquo; in
-             the &lsquo;Project&rsquo; menu. The keyword coloring for html code is rudimentary though.
-         </li>
       </ul>
-
       <h4>Using the console</h4>
       <p>The console area shall show messages after compilation of a project and the output of a
       program that is tested. Interactive programs can be run too, at least Java programs.</p>
       <p>In addition, self-chosen system commands entered in a dialog can be run in the current
-      working directory. For example, a created jar file may be tested by the command 
-      java -jar SomeProgram.jar. A run process can be forcibly quit using the &lsquo;stop&rsquo;
-      button.</p>
-      <p> Note that the console is not a terminal so that terminal commands are initially invalid.
-      While it is possible to run the terminal in the console (by using the system command that
-      starts the terminal) a program thereupon started from this terminal cannot be forcibly quit
+      working directory (a project's root directory if a project is set). For example, a created
+      jar file may be tested by the command  java -jar SomeProgram.jar. A run process can be
+      forcibly quit using the &lsquo;stop&rsquo; button.</p>
+      <p> Note that the console does not work as the terminal of the operating system. However,
+      it is possible (or rather not prohibited) to run the system's terminal in the console by
+      running the command that starts the terminal (e.g., cmd.exe in Windows). It is only important
+      to note that a tested program thereupon started from this terminal cannot be forcibly quit
       using the &lsquo;stop&rsquo; button.</p>
       <h5>To run a system command...</h5>
       <ol>
          <li>Open the console panel in the menu &lsquo;View&rsquo;.</li>
-         <li>Press the button &lsquo;Cmd...&rsquo; and enter a command in the shown dialog window. Click
-             ok in the dialog window to run the command.</li>
-         <li>To run a previous command press the &lsquo;>&rsquo; button; to change a command open the
-             command dialog again by pressing the &lsquo;Cmd...&rsquo; button.
+         <li>Press the button &lsquo;Cmd...&rsquo; and enter a command in the shown dialog window.
+              Click ok in the dialog window to run the command.</li>
+         <li>To run a previous command press the &lsquo;>&rsquo; button; to change a command open
+             the command dialog again by pressing the &lsquo;Cmd...&rsquo; button.
       </ol>
       <h5>Further options</h5>
       <ul>
-         <li>A new instance of Eadgyth can be run from the console by pressing the button with Eadgyth icon.
-             One reason to do this would be to view the output from a tested new plugin.</li>
+         <li>A new instance of Eadgyth can be run from the console by pressing the button with
+             the Eadgyth icon. One reason to do this would be to view the output when a new plugin
+             is tested.</li>
       </ul>
    </body>
 </html>

@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JMenuBar;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
@@ -50,12 +51,14 @@ public class MainWin {
    private final JPanel functionPnl = new JPanel(new BorderLayout());
    private final JPanel functTitlePnl = new JPanel();
    private final JLabel functTitleLb = new JLabel(" No function selected");
+   private final JButton closeFunctBt = new JButton(IconFiles.closeIcon);
+   
+   private final JMenuBar menubar;
    private final JToolBar toolbar;
    private final JTabbedPane tabbedPane;
    private final JPanel fileViewPnl;
    private final JPanel consolePnl;
 
-   private final Menu menu;
    private final Preferences prefs = new Preferences();
    
    private JSplitPane splitHorAll;
@@ -65,16 +68,9 @@ public class MainWin {
    private int dividerLocHorAll = 0;
    private int dividerLocHor = 0;
 
-   /**
-    * @param menu  a reference to {@link Menu}
-    * @param toolbar  a reference to a JToolBar
-    * @param tabbedPane  a reference to a JTabbedPane
-    * @param fileViewPnl  a reference to a JPanel that shows the file view
-    * @param consolePnl  a refence to a JPanel that shows the console
-    */
-   public MainWin(Menu menu, JToolBar toolbar, JTabbedPane tabbedPane,
+   public MainWin(JMenuBar menubar, JToolBar toolbar, JTabbedPane tabbedPane,
          JPanel fileViewPnl, JPanel consolePnl) {
-      this.menu = menu;
+      this.menubar = menubar;
       this.toolbar = toolbar;
       this.tabbedPane = tabbedPane;
       this.fileViewPnl = fileViewPnl;
@@ -86,30 +82,7 @@ public class MainWin {
       initAllComponents();
       initFunctionPnl();
       initFrame();
-      showProjectLb.setText("Project root: not set");
-   }
-   
-   /**
-    * Adds a component to this 'function panel' which is added to
-    * the right of this split area.
-    * <p> The 'function panel' has a border layout in whose center the
-    * specified component is added. The specified title is shown in a panel
-    * at the north.
-    * @param c  the Component that is added to the right of this plit window
-    * @param title  the title for the function
-    */
-   public void addToFunctionPanel(Component c, String title) {
-      BorderLayout layout = (BorderLayout) functionPnl.getLayout();
-      Component cCenter = layout.getLayoutComponent(BorderLayout.CENTER);
-      if (cCenter != null) {
-         functionPnl.remove(cCenter);
-      }
-      functTitleLb.setText(" " + title);
-      if (c != null) {
-         functionPnl.add(c, BorderLayout.CENTER);
-      }
-      functionPnl.revalidate();
-      functionPnl.repaint();
+      showProjectLb.setText("Project: not set");
    }
 
    /**
@@ -134,19 +107,35 @@ public class MainWin {
    public void displayFrameTitle(String title) {
       frame.setTitle(title);
    }
-
-   /**
-    * @return  if the console was opened
-    */
-   public boolean isConsoleSelected() {
-      return menu.getViewMenu().isConsoleSelected();
-   }
    
    /**
     * Shows the name of a project in the status bar
     */
    public void showProjectInfo(String project) {
-      showProjectLb.setText("Project root: " + project);
+      showProjectLb.setText("Project: " + project);
+   }
+   
+   /**
+    * Adds a component to this 'function panel' which is added to
+    * the right of this split area.
+    * <p> The 'function panel' has a border layout in whose center the
+    * specified component is added. The specified title is shown in a panel
+    * at the north.
+    * @param c  the Component that is added to the right of this plit window
+    * @param title  the title for the function
+    */
+   public void addToFunctionPanel(Component c, String title) {
+      BorderLayout layout = (BorderLayout) functionPnl.getLayout();
+      Component cCenter = layout.getLayoutComponent(BorderLayout.CENTER);
+      if (cCenter != null) {
+         functionPnl.remove(cCenter);
+      }
+      functTitleLb.setText(" " + title);
+      if (c != null) {
+         functionPnl.add(c, BorderLayout.CENTER);
+      }
+      functionPnl.revalidate();
+      functionPnl.repaint();
    }
 
    /**
@@ -191,7 +180,6 @@ public class MainWin {
          dividerLocVert = (int)(frame.getHeight() * 0.65);
       }
       splitVert.setDividerLocation(dividerLocVert);
-      menu.getViewMenu().selectShowConsole(true);
    }
 
    /**
@@ -201,7 +189,6 @@ public class MainWin {
       dividerLocVert = splitVert.getDividerLocation();
       splitVert.setDividerSize(0);
       splitVert.setRightComponent(null);
-      menu.getViewMenu().selectShowConsole(false);
    }
 
    /**
@@ -214,7 +201,6 @@ public class MainWin {
          dividerLocHor = (int)(frame.getWidth() * 0.2);
       }
       splitHor.setDividerLocation(dividerLocHor);
-      menu.getViewMenu().selectShowFileView(true);
    }
 
    /**
@@ -224,7 +210,6 @@ public class MainWin {
       dividerLocHor = splitHor.getDividerLocation();
       splitHor.setDividerSize(0);
       splitHor.setLeftComponent(null);
-      menu.getViewMenu().selectShowFileView(false);
    }
 
    /**
@@ -237,7 +222,6 @@ public class MainWin {
          dividerLocHorAll = (int)(frame.getWidth() * 0.7);
       }
       splitHorAll.setDividerLocation(dividerLocHorAll);
-      menu.getViewMenu().selectFunctionPnl(true);
    }
 
    /**
@@ -247,7 +231,6 @@ public class MainWin {
       dividerLocHorAll = splitHorAll.getDividerLocation();
       splitHorAll.setDividerSize(0);
       splitHorAll.setRightComponent(null);
-      menu.getViewMenu().selectFunctionPnl(false);
    }
    
    //
@@ -259,6 +242,10 @@ public class MainWin {
     */
    public void winListen(WindowListener wl) {
       frame.addWindowListener(wl);
+   }
+   
+   public void closeFunctAct(ActionListener al) {
+      closeFunctBt.addActionListener(al);
    }
    
    //
@@ -283,7 +270,7 @@ public class MainWin {
       if (Constants.SHOW.equals(prefs.prop.getProperty("statusbar"))) {
          allComponents.add(statusBar, BorderLayout.SOUTH);
       }
-      frame.setJMenuBar(menu.getMenuBar());
+      frame.setJMenuBar(menubar);
    }
 
    private void initSplitPane() {      
@@ -313,19 +300,13 @@ public class MainWin {
       functTitlePnl.setLayout(new BoxLayout(functTitlePnl, BoxLayout.LINE_AXIS));
       functTitlePnl.add(functTitleLb);
       functTitleLb.setFont(Constants.SANSSERIF_PLAIN_12);
-      //functTitleLb.setText(" No function selected");
       functionPnl.setBorder(Constants.LOW_ETCHED);
-      JButton closeBt = new JButton(IconFiles.closeIcon);
-      closeBt.setBorder(new EmptyBorder(3, 5, 3, 5));
-      closeBt.setContentAreaFilled(false);
-      closeBt.setToolTipText("Close function area");
-      closeBt.setFocusable(false);
-      closeBt.addActionListener(e -> {
-         hideFunctionPnl();
-         menu.getViewMenu().selectFunctionPnl(false);
-      });
+      closeFunctBt.setBorder(new EmptyBorder(3, 5, 3, 5));
+      closeFunctBt.setContentAreaFilled(false);
+      closeFunctBt.setToolTipText("Close function area");
+      closeFunctBt.setFocusable(false);
       functTitlePnl.add(Box.createHorizontalGlue());
-      functTitlePnl.add(closeBt);
+      functTitlePnl.add(closeFunctBt);
       functionPnl.add(functTitlePnl, BorderLayout.NORTH);
    }  
 }

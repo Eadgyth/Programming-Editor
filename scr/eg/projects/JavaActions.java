@@ -3,32 +3,32 @@ package eg.projects;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
 
-import javax.swing.JOptionPane;
+import java.lang.reflect.InvocationTargetException;
 
 //--Eadgyth--//
 import eg.utils.JOptions;
 import eg.console.*;
 import eg.javatools.*;
-import eg.ui.MainWin;
+import eg.ui.ViewSettings;
 
 /**
  * Represents a programming project in Java
  */
 public class JavaActions extends ProjectConfig implements ProjectActions {
 
+   private final ViewSettings viewSet;
    private final Compile comp;
    private final CreateJar jar;
    private final ProcessStarter proc;
    private final ConsolePanel cw;
-   private final MainWin mw;
-   
-   private String startCommand = "";
 
-   public JavaActions(MainWin mw, ProcessStarter proc, ConsolePanel cw) {
+   private String startCommand = "";
+   private Thread compileThread;
+
+   public JavaActions(ViewSettings viewSet, ProcessStarter proc, ConsolePanel cw) {
       super(new SettingsWin("Name of main class", "Package containing the main class",
            true, true, "jar file"));
-
-      this.mw = mw;
+      this.viewSet = viewSet;
       this.proc = proc;
       this.cw = cw;
  
@@ -86,36 +86,25 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override                                                                          
-   public void compile() {
-      if (!proc.isProcessEnded()) {
-         return;
-      }
-      cw.setText("");
+   public void compile() {      
+      cw.setText("");     
       EventQueue.invokeLater(() -> {
-         try {
-            mw.setCursor(MainWin.BUSY_CURSOR);
+         if (proc.isProcessEnded()) {    
             comp.compile(getProjectRoot(), getExecutableDir(),
-                  getSourceDir());           
+                         getSourceDir());                     
          }
-         catch(Exception e) {
-            e.printStackTrace();
-         }
-         finally {
-            mw.setCursor(MainWin.DEF_CURSOR); 
-         }
-         cw.setCaret(0); // scroll to top
-
-         if (!mw.isConsoleSelected()) {
-            if (comp.isCompiled()) {
-               JOptions.infoMessage("Compilation successful");
+         cw.setCaret(0);
+         if (!viewSet.isConsoleSelected()) {
+            if (!comp.success()) {
+               int result = JOptions.confirmYesNo("Compilation failed\n"
+                     + comp.getMessage()
+                     + "\nOpen console window to view messages?");
+               if (result == 0) {
+                  viewSet.setShowConsoleState(true);
+               }
             }
             else {
-               int result = JOptions.confirmYesNo("Compilation failed."
-                     + comp.getFirstError()
-                     + "\nOpen console window to view messages?");
-               if (result == JOptionPane.YES_OPTION) {
-                  mw.showConsole();
-               }
+               JOptions.infoMessage("Compilation successful");
             }
          }
       });
@@ -126,8 +115,8 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       if (!mainClassFileExists()) {
          return;
       }
-      if (!mw.isConsoleSelected()) {
-         mw.showConsole();
+      if (!viewSet.isConsoleSelected()) {
+         viewSet.setShowConsoleState(true);
       }
       proc.startProcess(startCommand);
    }
@@ -138,12 +127,8 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
          return;
       }
       cw.setText("");
-      EventQueue.invokeLater(() -> {
-         jar.createJar(getProjectRoot(), getMainFile(),
-               getModuleDir(), getExecutableDir(), getBuildName());
-         String info = "Saved jar file named " + jar.getUsedJarName();
-         JOptions.infoMessage(info);
-      });
+      jar.createJar(getProjectRoot(), getMainFile(),
+            getModuleDir(), getExecutableDir(), getBuildName());
    }
 
    private boolean mainClassFileExists() {
@@ -175,4 +160,13 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
                + "." + main;
       }
    }
+   
+   private Runnable startCompile = new Runnable() {
+      public void run() {
+         if (proc.isProcessEnded()) {               
+            
+            
+         }     
+      }
+   };
 }

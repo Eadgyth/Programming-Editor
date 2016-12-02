@@ -32,9 +32,9 @@ public class ViewMenu {
    }
    
    public void registerAct(ViewSettings viewSet) {
-      showConsole.addActionListener(e -> viewSet.showHideConsole());
-      showFileView.addActionListener(e -> viewSet.showHideFileView());
-      showFunction.addActionListener(e -> viewSet.showHideFunctionPnl());
+      showConsole.addActionListener(e -> viewSet.showConsole(isConsoleSelected()));
+      showFileView.addActionListener(e -> viewSet.showFileView(isFileViewSelected()));
+      showFunction.addActionListener(e -> viewSet.showFunction(isFunctionPnlSelected()));
       openViewSettings.addActionListener(e -> viewSet.makeViewSetWinVisible());
    }
    
@@ -55,7 +55,7 @@ public class ViewMenu {
    }
 
    /**
-    * @return  true if this checkbox menu item for showing the function panel
+    * @return  if this checkbox menu item for showing the function panel
     * is selected
     */
    public boolean isFunctionPnlSelected() {
@@ -70,7 +70,7 @@ public class ViewMenu {
       showFileView.setState(select);
    }
 
-   public void selectFunctionPnl(boolean select) {
+   public void selectShowFunction(boolean select) {
       showFunction.setState(select);
    }
    

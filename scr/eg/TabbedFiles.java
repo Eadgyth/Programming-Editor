@@ -343,6 +343,21 @@ public class TabbedFiles implements Observer{
       }     
    }
    
+   private void selectTabByName(String searchedName) {
+      int count;
+      for (count = 0; count < tabPane.tabCount(); count++) { 
+         if (txtDoc[count].filename().equals(searchedName)) {
+            break;
+         }
+      }
+      if (count < tabPane.tabCount()) {
+         tabPane.selectTab(count);
+      }
+      else {
+         JOptions.warnMessage(searchedName + " is not open");
+      }
+   }
+   
    private void changeTabEvent(ChangeEvent changeEvent) {
       JTabbedPane sourceTb = (JTabbedPane) changeEvent.getSource();
       iTab = sourceTb.getSelectedIndex();

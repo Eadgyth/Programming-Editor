@@ -7,24 +7,18 @@ import javax.swing.text.Element;
 import javax.swing.text.BadLocationException;
 
 import javax.swing.text.AbstractDocument;
-import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
-
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 
-import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.UndoManager;
-import javax.swing.undo.CompoundEdit;
-import javax.swing.undo.UndoableEdit;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.CannotRedoException;
 
 import java.awt.EventQueue;
 import java.awt.Color;
 
-import java.util.Vector;
 
 //--Eadgyth--//
 import eg.ui.EditArea;
@@ -108,7 +102,7 @@ class TypingEdit {
          in = doc.getText(0, doc.getLength());
       }
       catch (BadLocationException e) {
-         e.printStackTrace();
+         System.out.println(e.getMessage());
       }
       return in;
    }
@@ -121,17 +115,22 @@ class TypingEdit {
       autoInd.changeIndentUnit(indentUnit);
    }
 
-   void updateRowNumber(String in) {
-      rowNum.updateRowNumber(in);
+   void updateRowNumber(String content) {
+      rowNum.updateRowNumber(content);
+   }
+   
+   void colorAll() {
+      col.color(getDocText(), 0);
+      enableTextModify(true);
    }
 
-   void colorAll(boolean enableTextModify) {
+   void recolorAll() {
       enableTextModify(false);
       String all = getDocText();
       doc.setCharacterAttributes(0, all.length(),
             normalSet(), false);
       col.color(all, 0);
-      enableTextModify(enableTextModify);
+      enableTextModify(true);
    }
 
     public void undo() {
@@ -141,7 +140,7 @@ class TypingEdit {
    void redo() {
       undomanager.redo();
       if (isTextModify) {
-          colorAll(true);
+          recolorAll();
       }
    }
 
@@ -156,10 +155,12 @@ class TypingEdit {
       doc.setParagraphAttributes(0, el.getEndOffset(), normalSet, false);
    }
    
-   private DocumentListener docListen = new DocumentListener() {
+   private final DocumentListener docListen = new DocumentListener() {
+      @Override
       public void changedUpdate(DocumentEvent documentEvent) {
       }
 
+      @Override
       public void insertUpdate(DocumentEvent de) {
          if (isDocListen) {
             String in = getDocText();
@@ -171,6 +172,7 @@ class TypingEdit {
          }
       }
 
+      @Override
       public void removeUpdate(DocumentEvent de) {
          if (isDocListen) {
             String in = getDocText();
@@ -218,22 +220,23 @@ class TypingEdit {
          if (event.getType().equals(DocumentEvent.EventType.CHANGE)) {
             return;
          }
-         addEdit(e.getEdit());
-         undomanager.addEdit(lastEdit());
+         //addEdit(e.getEdit());
+         undomanager.addEdit(e.getEdit());
       }
    
+      @Override
       public void undo() {
-         System.out.println("undo");
          try {
             if (super.canUndo()) {
                super.undo();
             }
          }
          catch (CannotUndoException cue) {
-            cue.printStackTrace();
+            System.out.println(cue.getMessage());
          }
       }
    
+      @Override
       public void redo() {
          try {
             if (super.canRedo()) {
@@ -241,7 +244,7 @@ class TypingEdit {
             }
          }
          catch (CannotRedoException cre) {
-            cre.printStackTrace();
+            System.out.println(cre.getMessage());
          }
       }
    }

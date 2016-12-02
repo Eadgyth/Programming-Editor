@@ -1,7 +1,6 @@
 package eg;
 
 import java.awt.Toolkit;
-import java.awt.EventQueue;
 
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -65,22 +64,20 @@ public class Edit {
 
       String clipboard = getClipboard();
       String selection = txtDoc.selectedText();
-      int pos = txtDoc.caretPosition();
+      int pos = txtDoc.getCaretPos();
 
       if (selection == null) {
          txtDoc.insertStr(pos, clipboard);
-         txtDoc.setCaret(pos + clipboard.length());
+         txtDoc.setCaretPos(pos + clipboard.length());
       }
       else {
          txtDoc.removeStr(pos - selection.length(), selection.length());
          txtDoc.insertStr(pos - selection.length(), clipboard);
-         txtDoc.setCaret(pos - selection.length() + clipboard.length());
+         txtDoc.setCaretPos(pos - selection.length() + clipboard.length());
       }
 
       if (txtDoc.isComputerLanguage()) {
-         EventQueue.invokeLater(() -> {
-            txtDoc.colorAll(true);
-         });
+         txtDoc.recolorAll();
       }
    }
 
@@ -246,7 +243,7 @@ public class Edit {
          inClipboard = (String) content.getTransferData(DataFlavor.stringFlavor);
       }
       catch (UnsupportedFlavorException | IOException ufe) {
-         ufe.printStackTrace();
+         System.out.println(ufe.getMessage());
       }
       if (inClipboard == null) {
          JOptions.infoMessage("No contents loaded from the cliboard");

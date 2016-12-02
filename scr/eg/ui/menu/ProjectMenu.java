@@ -21,7 +21,7 @@ public class ProjectMenu {
    private final JMenuItem run        = new JMenuItem("Run", IconFiles.runIcon);
    private final JMenuItem build      = new JMenuItem("Build");
    private final JMenuItem setProject = new JMenuItem("Project settings");
-   private final JMenuItem changeProj = new JMenuItem("Switch project");
+   private final JMenuItem changeProj = new JMenuItem("Change project");
    
    ProjectMenu() {
       assembleMenu();

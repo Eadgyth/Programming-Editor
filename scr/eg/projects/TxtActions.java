@@ -2,15 +2,21 @@ package eg.projects;
 
 import java.awt.event.ActionListener;
 
+//--Eadgyth--//
+import eg.console.ProcessStarter;
+
 /**
  * Represents a project using text files although the class does not
  * perform any actions
  */
 public class TxtActions extends ProjectConfig implements ProjectActions {
 
-   public TxtActions() {
+   private final ProcessStarter proc;
+
+   public TxtActions(ProcessStarter proc) {
       super(new SettingsWin("Name of a text file in the project", "Subdirectory",
            false, false, null));
+      this.proc = proc;
    }
    
    @Override
@@ -40,7 +46,8 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
    
    @Override
    public String getProjectRoot() {
-       return super.getProjectRoot();
+      proc.addWorkingDir(super.getProjectRoot());
+      return super.getProjectRoot();
    }
    
    @Override
@@ -57,7 +64,7 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
     * Not used
     */
    @Override
-   public void compile() {  
+   public void compile() {
    }
    
    /**

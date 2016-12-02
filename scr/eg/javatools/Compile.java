@@ -9,6 +9,7 @@ import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.StandardJavaFileManager;
 
 import java.io.File;
+import java.io.IOException;
 
 import java.util.List;
 import java.util.Arrays;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import eg.Preferences;
 import eg.utils.JOptions;
 import eg.console.ConsolePanel;
-import java.io.IOException;
 
 /**
  * Compiles java files in a given working directory using the JavaCompiler API
@@ -26,34 +26,27 @@ import java.io.IOException;
 public class Compile {
 
    private final static String SEP = File.separator;
-   private final Preferences prefs = new Preferences();
+   private final static Preferences PREFS = new Preferences();
+   private static String jdkPath = null;
+   
    private final ConsolePanel cp;
    
-   private String jdkPath = null;
-
+   private boolean success = false;
    private ArrayList<String> errorInfo;
-   private boolean isCompiled = false;
-
+   
    /**
     * @param cp  the reference to {@link ConsolePanel} in whose
     * text area messages are displeayed
     */
    public Compile(ConsolePanel cp) {
       this.cp = cp;
-      setJdkPath(); 
    }
-
-   /**
-    * @return  true if a compilation task was successful
-    */
-   public boolean isCompiled() {
-      return isCompiled;
+   
+   public boolean success() {
+      return success;
    }
-
-   /**
-    * @return  the first item of the errors returned by 'diagnostic.getSource()'
-    */  
-   public String getFirstError() {
+   
+   public String getMessage() {   
       return errorInfo.get(0);
    }
 
@@ -64,21 +57,22 @@ public class Compile {
     * @param sourceDir  the directory that contains java files
     */
    public void compile(String projectPath, String classDir, String sourceDir) {
+      success = false;
+      errorInfo = new ArrayList<>();
       if (jdkPath == null) {
          setJdkPath();
          if (jdkPath == null) {
-            errorInfo = new ArrayList<>();
-            errorInfo.add("The JDK was not found");
-            cp.appendText("ERROR: the JDK was not foud."
-                  + " Try compilation again and set the filepath of the JDK");
+            errorInfo.add("The filepath of the JDK is not defined");
+            cp.appendText("ERROR:\nThe file path of the JDK is not defined"
+                 + " in'settings.properties'.");
             return;
          }
       }
 
       String targetDir = targetDir(projectPath, classDir);
-
+      boolean isCompiled;
       try {
-         String[] compileOptions = new String[] { "-d", targetDir } ;
+         String[] compileOptions = new String[] {"-d", targetDir} ;
          Iterable<String> compilationOptions = Arrays.asList(compileOptions);      
          JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
          DiagnosticCollector<JavaFileObject> diagnostics
@@ -92,15 +86,13 @@ public class Compile {
               units = fileManager.getJavaFileObjects(fileArr);
               CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
                       compilationOptions, null, units);
-              isCompiled = task.call();
-          }
+              success = task.call();
+         }
 
-         if (isCompiled) {
-            cp.appendText("<<compilation successful>>");
+         if (success) {
+            cp.appendText("Compilation successful");
          }
          else {
-            
-            errorInfo = new ArrayList<>();
             for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
                cp.appendText(diagnostic.getKind().toString() + ":\n");
                cp.appendText(diagnostic.getCode().toString() + ": ");
@@ -109,13 +101,14 @@ public class Compile {
                cp.appendText("at column: " + diagnostic.getColumnNumber() + "\n");
                if (diagnostic.getSource() != null) { // can be null!
                   cp.appendText(diagnostic.getSource().toString() + "\n");
-                  String fileStr = new File(diagnostic.getSource().toString()).getName();
-                  fileStr = fileStr.substring(0, fileStr.length() - 1);
-                  errorInfo.add("First occurence in " + fileStr + ", line " 
+                  String file = new File(diagnostic.getSource().toString()).getName();
+                  file = file.substring(0, file.length() - 1);
+                  errorInfo.add("First listed error in " + file + ", line " 
                         + diagnostic.getLineNumber());
                }
                else {
-                  errorInfo.add("");
+                  errorInfo.add("Unreported error");
+                  cp.appendText("Unreported error");
                }
                cp.appendText("----------------------------------------------------------"
                      + "--------------------------------------------------------------\n");
@@ -123,7 +116,7 @@ public class Compile {
          }
       }
       catch (IOException e) {
-         e.printStackTrace();
+         System.out.println(e.getMessage());
       }
    }
 
@@ -148,14 +141,14 @@ public class Compile {
     * found in Settings.properties
     */
    private void setJdkPath() {
-      prefs.readSettings();
-      jdkPath = prefs.prop.getProperty("LocationOfJDK");
+      PREFS.readSettings();
+      jdkPath = PREFS.prop.getProperty("LocationOfJDK");
       if (!new File(jdkPath).exists()) {
          String notFound = "The JDK was not found."
                + " Enter or correct the filepath of the JDK.";
          jdkPath = JOptions.dialogRes(notFound, "Location of JDK", jdkPath);
          if (jdkPath != null) { // if ok clicked
-            prefs.storeSettings(jdkPath);
+            PREFS.storeSettings(jdkPath);
             setJdkPath();
          }
       }

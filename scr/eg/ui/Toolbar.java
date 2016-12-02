@@ -63,7 +63,7 @@ public class Toolbar {
    
    private void initToolbar() { 
       toolbar.setOpaque(false);
-      toolbar.setBorder(/*eg.Constants.LOW_ETCHED*/ null);
+      toolbar.setBorder(null);
       toolbar.setFloatable(false);
       
       enableProjBts(false, false);
@@ -88,7 +88,6 @@ public class Toolbar {
          bts[i].setBorder(new EmptyBorder(5, 5, 5, 5));
          bts[i].setToolTipText(toolTips[i]);
          bts[i].setFocusable(false);
-         bts[i].setBorderPainted(false);
          bts[i].setFocusPainted(false);
       }
    }

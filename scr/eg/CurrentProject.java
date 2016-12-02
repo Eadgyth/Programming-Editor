@@ -1,9 +1,9 @@
 package eg;
 
-import java.io.File;
-
 import java.util.List;
 import java.util.ArrayList;
+
+import java.awt.EventQueue;
 
 //--Eadgyth--//
 import eg.ui.MainWin;
@@ -14,6 +14,7 @@ import eg.ui.menu.Menu;
 
 import eg.projects.ProjectActions;
 import eg.projects.ProjectFactory;
+
 import eg.document.TextDocument;
 
 import eg.utils.FileUtils;
@@ -40,9 +41,10 @@ public class CurrentProject {
    private final Menu menu;
    private final Toolbar tBar;
    private final Preferences prefs = new Preferences();
+   
+   private final List<ProjectActions> recent = new ArrayList<>();
 
    private ProjectActions proj;
-   private List<ProjectActions> recent = new ArrayList<>();
    private TextDocument txtDoc;
 
    public CurrentProject(ProjectFactory projFact, MainWin mw,
@@ -82,7 +84,6 @@ public class CurrentProject {
          ProjectActions prPrevious
                = projFact.getProjAct(FileUtils.extension(txtDoc.filepath()));
          if (prPrevious != null) {
-            System.out.println(prPrevious.findPreviousProjectRoot(txtDoc.dir()));     
             if (prPrevious.findPreviousProjectRoot(txtDoc.dir())) {        
                prPrevious.addOkAction(e -> configureProject(prPrevious));
                recent.add(prPrevious);
@@ -162,7 +163,11 @@ public class CurrentProject {
     * compiles this project
     */
    public void compile() {
+      mw.setCursor(MainWin.BUSY_CURSOR);         
       proj.compile();
+      EventQueue.invokeLater(() -> {
+         mw.setCursor(MainWin.DEF_CURSOR);
+      });
    }
 
    /**
@@ -173,14 +178,14 @@ public class CurrentProject {
    }
 
    /**
-    * creates a build
+    * creates a build of this project
     */
-   public void buildProj() {
+   public void buildProj() {      
       proj.build();
    }
    
    /**
-    * Stores the settings of the current project to prefs
+    * Stores the settings of this project to prefs
     */
    public void storeConfig() {
       if (isProjectSet()) {

@@ -83,7 +83,7 @@ public class ConsolePanel {
    /**
     * Sets the specified text in this text area    
     */
-   public void setText(String text) {
+   public void setText(String text) {    
       area.setText(text);
    }
 

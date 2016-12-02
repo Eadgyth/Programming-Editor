@@ -42,7 +42,7 @@ public class SettingsWin {
    private final JButton      cancelBt     = new JButton("Cancel");
 
    /**
-    * Defines which inputs are asked for.
+    * Creates a SettingsWin and defines which inputs are asked for.
     * <p>
     * @param fileKind  a description for the kind of file which a project is
     * configured for. Is not null.
@@ -75,7 +75,7 @@ public class SettingsWin {
    }
    
    /**
-    * @return the input in the text field for the name of the
+    * @return  the input in the text field for the name of the
     * file which a project is configured for
     */
    String projectFileIn() {
@@ -83,7 +83,7 @@ public class SettingsWin {
    }
 
    /**
-    * @return  the input in the text field for the module / subdirectory
+    * @return  the input in the text field for the module / package
     */
    String moduleIn() {
       return moduleTf.getText();
@@ -128,7 +128,8 @@ public class SettingsWin {
    }
 
    /**
-    * Shows in the text field the directory of the module
+    * Shows in the text field the directory of the
+    * module / package
     */
    public void displayModule(String in) {
       moduleTf.setText(in);
@@ -136,7 +137,7 @@ public class SettingsWin {
 
    /**
     * Shows in the text field the name of the directory that
-    * containins source files
+    * contains source files / packages
     */
    public void displaySourcesDir(String in) {
       sourcesDirTf.setText(in);
@@ -144,7 +145,7 @@ public class SettingsWin {
 
    /**
     * Shows in the text field the name of the directory
-    * containin executable files
+    * that contains executable files / packages
     */
    public void displayExecDir(String in) {
       execDirTf.setText(in);

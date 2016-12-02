@@ -1,11 +1,14 @@
 package eg.ui;
 
+import java.awt.Cursor;
+
 //--Eadgyth--//
 import eg.Constants;
 import eg.Preferences;
 
 import eg.ui.EditArea;
-import eg.ui.menu.Menu;
+import eg.ui.menu.FormatMenu;
+import eg.ui.menu.ViewMenu;
 
 /**
  * Controls the display of the main window
@@ -13,7 +16,8 @@ import eg.ui.menu.Menu;
 public class ViewSettings {
 
    private final MainWin mw;
-   private final Menu menu;
+   private final FormatMenu fMenu;
+   private final ViewMenu vMenu;
    private final ViewSettingsWin viewSetWin = new ViewSettingsWin();
    private final Preferences prefs = new Preferences();
    
@@ -25,9 +29,10 @@ public class ViewSettings {
    private boolean isShowStatusbar;
    private int selectedLafInd;
    
-   public ViewSettings(MainWin mw, Menu menu) {
+   public ViewSettings(MainWin mw, ViewMenu vMenu, FormatMenu fMenu) {
       this.mw = mw;
-      this.menu = menu;
+      this.vMenu = vMenu;
+      this.fMenu = fMenu;
       
       prefs.readPrefs();
 
@@ -45,7 +50,7 @@ public class ViewSettings {
    
    public void setEditAreaIndex(int index) {
       editAreaIndex = index;
-      menu.getFormatMenu().selectWordWrap(editArea[index].isWordWrap());
+      fMenu.selectWordWrap(editArea[index].isWordWrap());
    }
    
    public void makeViewSetWinVisible() {
@@ -66,7 +71,7 @@ public class ViewSettings {
          }
       }
       if (isWordWrapDisabled) {
-         menu.getFormatMenu().selectWordWrap(false);
+         fMenu.selectWordWrap(false);
       }
       if (!isShowLineNumbers) {
          prefs.storePrefs("lineNumbers", Constants.HIDE);
@@ -80,7 +85,7 @@ public class ViewSettings {
       boolean isLineNumbers =
          Constants.SHOW.equals(prefs.prop.getProperty("lineNumbers"));
     
-      if (menu.getFormatMenu().isWordWrapSelected()) {
+      if (fMenu.isWordWrapSelected()) {
          editArea[editAreaIndex].enableWordWrap();
          prefs.storePrefs("wordWrap", "enabled");
       }
@@ -95,8 +100,27 @@ public class ViewSettings {
       }   
    }
    
-   public void showHideConsole() {
-      if (menu.getViewMenu().isConsoleSelected()) {
+   public boolean isConsoleSelected() {
+      return vMenu.isConsoleSelected();
+   }
+   
+   public void setShowConsoleState(boolean show) {
+      showConsole(show);
+      vMenu.selectShowConsole(show);
+   }
+   
+   public void setShowFileViewState(boolean show) {
+      showFileView(show);
+      vMenu.selectShowFileView(show);
+   }
+   
+   public void setShowFunctionState(boolean show) {
+      showFunction(show);
+      vMenu.selectShowFunction(show);
+   }
+   
+   public void showConsole(boolean show) {
+      if (show) {
          mw.showConsole();
       }
       else {
@@ -104,8 +128,8 @@ public class ViewSettings {
       }
    }
 
-   public void showHideFileView() {
-      if (menu.getViewMenu().isFileViewSelected()) {
+   public void showFileView(boolean show) {
+      if (show) {
          mw.showFileView();
       }
       else {
@@ -113,8 +137,8 @@ public class ViewSettings {
       }
    }
 
-   public void showHideFunctionPnl() {
-      if (menu.getViewMenu().isFunctionPnlSelected()) {
+   public void showFunction(boolean show) {
+      if (show) {
          mw.showFunctionPnl();
       }
       else {

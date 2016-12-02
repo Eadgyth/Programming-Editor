@@ -1,7 +1,5 @@
 package eg;
 
-import java.io.IOException;
-
 import java.util.Locale;
 
 import javax.swing.UIManager;
@@ -16,7 +14,6 @@ import java.awt.Insets;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.ActionEvent;
 
 //--Eadgyth--//
 import eg.ui.MainWin;
@@ -45,17 +42,18 @@ public class Eadgyth {
       Locale.setDefault(Locale.US);
       setLaf();
       
-      ConsolePanel   cw        = new ConsolePanel();
-      ProcessStarter proc      = new ProcessStarter(cw);
+      ConsolePanel   cw        = new ConsolePanel();   
       FileTree       fileTree  = new FileTree();
       Menu           menu      = new Menu();
       Toolbar        tBar      = new Toolbar();
       TabbedPane     tabPane   = new TabbedPane();
-      MainWin        mw        = new MainWin(menu, tBar.toolbar(), tabPane.tabbedPane(),
+      MainWin        mw        = new MainWin(menu.menubar(), tBar.toolbar(), tabPane.tabbedPane(),
                                      fileTree.fileTreePnl(), cw.consolePnl());
-      ProjectFactory projFact  = new ProjectFactory(mw, proc, cw);
+      ViewSettings   viewSet   = new ViewSettings(mw, menu.getViewMenu(), menu.getFormatMenu());
+
+      ProcessStarter proc      = new ProcessStarter(cw);
+      ProjectFactory projFact  = new ProjectFactory(viewSet, proc, cw);
       CurrentProject currProj  = new CurrentProject(projFact, mw, fileTree, menu, tBar);
-      ViewSettings   viewSet   = new ViewSettings(mw, menu);
       Edit           edit      = new Edit();
       PluginStarter  plugStart = new PluginStarter(mw);
       DocumentUpdate docUpdate = new DocumentUpdate(viewSet, edit, plugStart);
@@ -64,6 +62,7 @@ public class Eadgyth {
       
       // register handlers
       WindowListener winListener = new WindowAdapter() {
+         @Override
          public void windowClosing(WindowEvent we) {
             tabFiles.tryExit();
          }
@@ -77,8 +76,9 @@ public class Eadgyth {
       menu.getEditMenu().registerAct(edit);
       menu.getFormatMenu().registerAct(fontSet, viewSet);
       menu.getViewMenu().registerAct(viewSet);
-      cw.closeAct(e -> mw.hideConsole());
-      fileTree.closeAct(e -> mw.hideFileView());   
+      cw.closeAct(e -> viewSet.setShowConsoleState(false));
+      fileTree.closeAct(e -> viewSet.setShowFileViewState(false));
+      mw.closeFunctAct(e -> viewSet.setShowFunctionState(false)); 
       fileTree.addObserver(tabFiles);
       menu.getPluginMenu().startPlugin(plugStart, mw, menu.getViewMenu()); 
       

@@ -22,7 +22,7 @@ public interface Configurable {
    public void makeSetWinVisible(boolean enable);
    
    /**
-    * Returns whether a project was successfully configured based on
+    * If a project was successfully configured based on
     * entries in the window of this {@code SettingsWin} object
     * @param dir  the directory of project's main file
     * @param suffix  the extension of the project's main file
@@ -30,7 +30,7 @@ public interface Configurable {
    public boolean configFromSetWin(String dir, String suffix);
    
   /**
-    * Returns if a previously used project could be assigned to this class
+    * If a previously used project can be assigned to this class
     * @param dir  the directory that may include the root directory of a
     * previous project 
     * @return  if a prvious project could be assigned to this class
@@ -49,15 +49,15 @@ public interface Configurable {
     public String getProjectRoot();
    
    /**
-    * Determines if the specified directory includes the project's
-    * root directory
+    * If the specified directory includes the project's root
+    * directory
     * @return  if the specified directory includes the project's root
     * directory
     */
    public boolean isInProjectPath(String dir);
    
    /**
-    * Stores current configuration to 'prefs'
+    * Stores the current configuration to 'prefs'
     */
    public void storeConfig();
 }

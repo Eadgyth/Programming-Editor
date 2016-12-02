@@ -3,7 +3,6 @@ package eg.document;
 import java.awt.EventQueue;
 
 import javax.swing.JTextPane;
-import javax.swing.JPanel;
 
 import javax.swing.text.Document;
 import javax.swing.text.DefaultStyledDocument;
@@ -16,7 +15,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 //--Eadgyth--//
-import eg.Constants;
 import eg.Preferences;
 import eg.Languages;
 
@@ -58,7 +56,7 @@ public class TextDocument {
    }
 
    /**
-    * Returns this full filepath
+    * Returns the filepath of this file
     * @return  the String that represents the filepath of this file
     */
    public String filepath() {
@@ -74,15 +72,18 @@ public class TextDocument {
    }
 
    /**
-    * @param filepath  the existing file whose content is shown in
-    * this text area
+    * Assigns to this the specified file and displays the file
+    * content
+    * @param file  the file whose content is displayed in this text
+    * text area
     */
-   public void openFile(File filepath) {
+   public void openFile(File file) {
       if (this.filepath().length() != 0) {
-         throw new IllegalStateException("Illegal attempt to assign a file"
-               + " to a TextDocument which a file was assigned to before");
+         throw new IllegalStateException(
+                 "Illegal attempt to assign a file to a "
+               + " TextDocument which a file was assigned to before");
       }
-      assignFileStrings(filepath);
+      assignFileStrings(file);
       EventQueue.invokeLater(() -> {
          displayFileContent();
          openSettings();
@@ -90,11 +91,10 @@ public class TextDocument {
    }
 
    /**
-    * Saves the current text content to the file specified by this
-    * filepath
+    * Saves the current content to this file
     */
    public void saveToFile() {
-      content();
+      setContent();
       try (FileWriter writer = new FileWriter(filepath)) {
          writer.write(content);        
       }
@@ -104,24 +104,26 @@ public class TextDocument {
    }
 
    /**
-    * @param filepath  the non-existing file that is saved
+    * Assigns to this the specified file and saves the content of
+    * this text area to the specified file.
+    * @param file  the file which the current content is saved to
     */
-   public void saveFileAs(File filepath) {        
-      assignFileStrings(filepath);
-      content();
+   public void saveFileAs(File file) {        
+      assignFileStrings(file);
       saveToFile();
       openSettings();
    }
 
    /**
-    * @return  if the content of the text area equals the content 
+    * @return  if the content of this text area equals the content 
     * since the last saving point
     */ 
    public boolean isContentSaved() {
-      return content.equals(textArea.getText());
+      return content.equals(type.getDocText());
    }
    
    /**
+    * If this language is a computer language, i.e. not plain text
     * @return  if this language is a computer language, i.e. not
     * set to plain text
     */
@@ -130,6 +132,7 @@ public class TextDocument {
    }
 
    /**
+    * Returns the content of this document
     * @return  the content of this document
     */
    public String getDocText() {
@@ -137,34 +140,41 @@ public class TextDocument {
    }
    
    /**
-    * @return  the length of text shown in this text area
+    * Returns the current length of the text of this document
+    * @return  the current length of text of this document
     */
    public int textLength() {
       return type.getDocText().length();
    }
 
    /**
-    * Selects the entire text
+    * Selects the entire text of this text area
     */
    public void selectAll() {
       textArea.selectAll();
    }
 
    /**
-    * Selects text
+    * Selects text between the specified start end end positions
+    * in this text area
+    * @param start  the start of the selection
+    * @param end  the end position of the selection
     */
    public void select(int start, int end) {
       textArea.select(start, end);
    }
 
    /**
-    * @return  the selected text of this text area
+    * Returns the selected text in this text area
+    * @return  the selected text in this text area. Null if no text
+    * is selected
     */
    public String selectedText() {
       return textArea.getSelectedText();
    }
 
    /**
+    * Returns the selection start
     * @return the start position of selected text
     */
    public int selectionStart() {
@@ -172,6 +182,7 @@ public class TextDocument {
    }
 
    /**
+    * Returns the selection end
     * @return the end position of selected text
     */
    public int selectionEnd() {
@@ -181,15 +192,15 @@ public class TextDocument {
    /**
     * @return the caret position of this text area
     */
-   public int caretPosition() {
+   public int getCaretPos() {
       return textArea.getCaretPosition();
    }
 
    /**
-    * Sets the caret in this text area at the sepecified
-    * position
+    * Sets the caret at the sepecified position of
+    * this text area
     */
-   public void setCaret(int pos) {
+   public void setCaretPos(int pos) {
       textArea.setCaretPosition(pos);
    }
 
@@ -212,10 +223,15 @@ public class TextDocument {
     * white spaces
     */
    public void changeIndentUnit(String indentUnit) {
+      if (indentUnit == null || !indentUnit.matches("[\\s]+")) {
+         throw new IllegalArgumentException(
+               "Argument 'indentUnit' is incorrect");
+      }  
       type.changeIndentUnit(indentUnit);
    }
 
    /**
+    * Enables/Disables syntax coloring and auto-indentation
     * @param isEnabled  true to enable syntax coloring and
     * auto-indentation
     */
@@ -233,12 +249,10 @@ public class TextDocument {
    }
 
    /**
-    * Colors keyword/syntax of the entire text in this text area
-    * @param enableTextModify   true to enable the coloring
-    * during typing after the entire text has been scanned
+    * Colors keyword/syntax of the entire text in this document.
     */
-   public void colorAll(boolean enableTextModify) {
-      type.colorAll(enableTextModify);
+   public void recolorAll() {
+      type.recolorAll();
    }
 
    /**
@@ -256,7 +270,9 @@ public class TextDocument {
    }
 
    /**
-    * Inserts a String at the specified position with normal attribute set
+    * Inserts text in this document
+    * @param pos  the position where new text is inserted
+    * @param toInsert  the String that contains the text to insert
     */
    public void insertStr(int pos, String toInsert) {
       try {
@@ -268,7 +284,9 @@ public class TextDocument {
    }
 
    /**
-    * Removes text of the specified length starting at the specified position 
+    * Removes text from this document
+    * @param start  the position where text to be removed starts
+    * @param length  the length of the text to be removed
     */   
    public void removeStr(int start, int length) {
       try {
@@ -282,6 +300,8 @@ public class TextDocument {
    /**
     * Changes this language if no file has been assigned
     * and saves language to 'prefs'
+    * @param language  the language which has one of the constant values
+    * in {@link eg.Languages}
     */
    public void changeLanguage(Languages language) {
       if (language == Languages.JAVA & filename.length() == 0) {
@@ -322,7 +342,7 @@ public class TextDocument {
       }
       type.configColoring(searchTerms, "", "", "", false, false, constrainWord);
       type.enableIndent(false);
-      colorAll(true);
+      recolorAll();
    }         
    
    //
@@ -347,24 +367,21 @@ public class TextDocument {
                   "<!--", "-->", true, true, false);
             type.enableIndent(true);
             break;
-         /*
-          * just to reset the indentation, textModify is switched off anyway */
          case PLAIN_TEXT:
-            type.configColoring(null, "", "", "", false, false, false);
             type.enableIndent(false);
             break;
       }
    }
 
-   private void content() {
-      content = textArea.getText();
+   private void setContent() {
+      content = type.getDocText();
    }
 
    private void displayFileContent() {
       type.enableDocListen(false);
       type.enableTextModify(false);
-
-      // set text attributes later to speed up placing larger pieces of text
+      /*
+       * set text attributes later to speed up placing larger pieces of text */
       Document blank = new DefaultStyledDocument();
       textArea.setDocument(blank);
 
@@ -387,11 +404,12 @@ public class TextDocument {
    private void assignFileStrings(File filepath) {
       filename = filepath.getName();
       this.filepath = filepath.toString();
-      dir = filepath.getParent().toString();
+      dir = filepath.getParent();
    }
 
    private void openSettings() {
-      updateRowNumber();
+      setContent();
+      type.updateRowNumber(content);
       if (filename.endsWith(".java")
             || (filename.length() == 0
             & Languages.JAVA.toString().equals(language))) {
@@ -409,13 +427,13 @@ public class TextDocument {
 
    private void changeToJava() {
       configColoring(Languages.JAVA);
-      colorAll(true);
+      type.colorAll();
       language = Languages.JAVA.toString();
    }
    
    private void changeToHtml() {
       configColoring(Languages.HTML);
-      colorAll(true);
+      type.colorAll();
       language = Languages.HTML.toString();
    }
 
@@ -424,10 +442,5 @@ public class TextDocument {
       backInBlack(getDocText().length(), 0);
       enableTextModify(false);
       language = Languages.PLAIN_TEXT.toString();
-   }
-
-   private void updateRowNumber() {
-      content();
-      type.updateRowNumber(content);
    }
 }

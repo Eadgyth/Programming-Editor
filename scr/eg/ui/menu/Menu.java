@@ -33,7 +33,7 @@ public class Menu {
       assembleMenu();
    }
 
-   public JMenuBar getMenuBar() {
+   public JMenuBar menubar() {
       return menuMain;
    }
    

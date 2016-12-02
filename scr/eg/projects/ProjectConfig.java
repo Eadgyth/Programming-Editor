@@ -18,7 +18,7 @@ import eg.utils.JOptions;
  * It depends on the parameters passed to the contructor of
  * {@link SettingsWin} which other properties are asked for. For example,
  * the project root of a Java project may be the parent of the path
- * [sources Dir.]/[package Dir.]/[main java file]. <br>
+ * {sources Directory}/{package}/{main java file}. <br>
  * The project may be configured by the entries in the settings window
  * or by reading in entries in the 'prefs' file
  */
@@ -101,10 +101,9 @@ public abstract class ProjectConfig implements Configurable {
    }
 
    /**
-    * Returns the name of the directory that represents a module
-    * @return  the directory of a module. The module is a subdirectory
-    * of the project root (if asked for) a subdirectory of the
-    * 'sources' directory.
+    * Returns the name of the directory of a module
+    * @return  the name directory of a module. In the case of a Java
+    * project module would be a package
     */ 
    protected String getModuleDir() {
       return moduleDir;
@@ -147,13 +146,10 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    /**
-    * Returns if the main exectubale file exists.
+    * If the main executable file exists
     * <p>
-    * The filepath consists in the project's root directory, the executables'
-    * directory, the module's directory and the project's main file.
     * @param suffix  the extension of the project's main file
-    * @return  true if the filepath specified by this project configuration
-    * exists.
+    * @return  true if the main executable file exists
     */
    protected boolean mainProgramFileExists(String suffix) { 
       File target = new File(projectPath + F_SEP + execDir + F_SEP + moduleDir

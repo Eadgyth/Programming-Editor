@@ -16,7 +16,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyAdapter;
 
-
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 
@@ -46,7 +45,6 @@ public class ProcessStarter {
    private int apparentExitVal = 0;
    private boolean isActive = false;
    private Process process;
-   private Thread runProcess;
    private Thread runInput;
    private Runnable kill;
 
@@ -86,66 +84,60 @@ public class ProcessStarter {
       if (!isProcessEnded()) {
          return;
       }
+      List<String> cmdList = Arrays.asList(cmd.split(" "));
+      display = "<<Run: " + cmd + ">>\n";
+      cw.setText(display);
+      caretPos = display.length();
+      cw.setActive(true);
+      isActive = true;
+      cw.enableRunBt(false);
+      cw.focus();
+      EventQueue.invokeLater(() -> {
+         try {
+            ProcessBuilder pb
+               = new ProcessBuilder(cmdList).redirectErrorStream(true);
+            pb.directory(new File(workingDir));
+            process = pb.start();
+            PrintWriter processOutput
+                  = new PrintWriter(process.getOutputStream());
+            captureInput();
 
-      runProcess = new Thread() {
-         @Override
-         public void run() {  
-            List<String> cmdList = Arrays.asList(cmd.split(" "));
-            display = "<<Run: " + cmd + ">>\n";
-            cw.setText(display);
-            caretPos = display.length();
-            cw.setActive(true);
-            isActive = true;
-            cw.enableRunBt(false);
-            cw.focus();
-         
-            try {
-               ProcessBuilder pb
-                  = new ProcessBuilder(cmdList).redirectErrorStream(true);
-               pb.directory(new File(workingDir));
-               process = pb.start();
-               PrintWriter processOutput
-                     = new PrintWriter(process.getOutputStream());
-               captureInput();
-
-               KeyListener keyListener = new KeyAdapter() {             
-                  @Override
-                  public void keyPressed(KeyEvent e) { 
-                     int key = e.getKeyCode();
-                     if (key == KeyEvent.VK_ENTER) {
-                        String output = cw.getText().substring(caretPos);
-                        processOutput.println(output);
-                        processOutput.flush();
-                     }
+            KeyListener keyListener = new KeyAdapter() {             
+               @Override
+               public void keyPressed(KeyEvent e) { 
+                  int key = e.getKeyCode();
+                  if (key == KeyEvent.VK_ENTER) {
+                     String output = cw.getText().substring(caretPos);
+                     processOutput.println(output);
+                     processOutput.flush();
                   }
-                  public void keyReleased(KeyEvent e) {
-                     if (cw.getText().length() < caretPos) {
-                        cw.setText(display);
-                     }
+               }
+               public void keyReleased(KeyEvent e) {
+                  if (cw.getText().length() < caretPos) {
+                     cw.setText(display);
                   }
-               };
-               cw.addKeyListen(keyListener);
+               }
+            };
+            cw.addKeyListen(keyListener);
 
-               CaretListener caretListener = (CaretEvent e) -> {
-                   if (!isActive) {
-                       return;
-                   }
-                   if (e.getDot() < caretPos) {
-                       EventQueue.invokeLater(() -> {
-                           cw.setCaret(cw.getText().length()); // cannot be caretPos
-                       });
-                   }
-               };
-               cw.addCaretListen(caretListener);
-            }
-            catch(IOException ioe) {
-               cw.appendText("<<Error: cannot run " + cmd 
-                  + " in the directory " + workingDir + ">>\n");
-               System.out.println(ioe.getMessage());  
-            }
+            CaretListener caretListener = (CaretEvent e) -> {
+                if (!isActive) {
+                    return;
+                }
+                if (e.getDot() < caretPos) {
+                    EventQueue.invokeLater(() -> {
+                        cw.setCaret(cw.getText().length()); // cannot be caretPos
+                    });
+                }
+            };
+            cw.addCaretListen(caretListener);
          }
-      };
-      runProcess.start();
+         catch(IOException ioe) {
+            cw.appendText("<<Error: cannot run " + cmd 
+               + " in the directory " + workingDir + ">>\n");
+            System.out.println(ioe.getMessage());  
+         }
+      });
    }
 
    /**
@@ -182,12 +174,11 @@ public class ProcessStarter {
     * The output of the process
     */
    private void captureInput() {
-      //System.out.println("Number of active threads: " + Thread.activeCount());
       runInput = new Thread() {
          InputStream is = process.getInputStream();
          InputStreamReader isr = new InputStreamReader(is);
          Reader read = new BufferedReader(isr);
-
+         
          @Override
          public void run() {
             try {

@@ -21,10 +21,12 @@ import javax.swing.event.ChangeListener;
 import eg.Constants;
 
 /**
- * Defines a JTabbedPane with a button in the tabs. <p>
- * A button indended for closing tabs is passed in to the method 
- * {@link #addNewTab(String, Component, JButton, int)}. To detect
- * which tab is selected for closing the mothod {@link #iTabMouseOver()}
+ * Defines a JTabbedPane with a button in the tabs.
+ * <p>
+ * A button indended for closing tabs is passed in the method 
+ * {@link #addNewTab(String, Component, JButton, int)}. The button
+ * is expected to have an ActionListener added ti it. To detect
+ * which tab is selected for closing the method {@link #iTabMouseOver()}
  * is called.
  */
 public class TabbedPane { 

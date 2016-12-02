@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.awt.event.ActionListener;
 
 //--Eadgyth--//
+import eg.console.ProcessStarter;
 import eg.utils.JOptions;
 
 /**
@@ -13,11 +14,13 @@ import eg.utils.JOptions;
  */
 public class HtmlActions extends ProjectConfig implements ProjectActions {
 
+   private final ProcessStarter proc;
    private File htmlFile;
    
-   public HtmlActions() {
+   public HtmlActions(ProcessStarter proc) {
       super(new SettingsWin("HTML file", "Subdirectory",
            false, false, null));
+      this.proc = proc;
    }
    
    @Override
@@ -55,6 +58,7 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    
    @Override
    public String getProjectRoot() {
+      proc.addWorkingDir(super.getProjectRoot());
       return super.getProjectRoot();
    }
    
@@ -72,7 +76,7 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
     * Not used
     */
    @Override
-   public void compile() {  
+   public void compile() {
    }
    
    /**
@@ -86,7 +90,8 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
          }
       }
       catch (IOException e) {
-         JOptions.warnMessage("No defautl browser could be launched");
+         System.out.println(e.getMessage());
+         JOptions.warnMessage("No browser could be launched");
       }
    }
    
