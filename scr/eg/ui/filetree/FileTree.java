@@ -116,26 +116,6 @@ public class FileTree extends Observable {
    }
    
    /**
-    * Adds a node to the tree that is initialized with the
-    * specified file
-    * @param fileToAdd  the file that the new node is initialized
-    * with
-    * Maybe a file or directory 
-    */
-   public void addFile(String fileToAdd) {
-      File f = new File(fileToAdd);
-      String parent = f.getParent();   
-      DefaultMutableTreeNode searchNode = searchNode(parent);
-      System.out.println(searchNode == null);
-      if (searchNode != null) {
-         getFiles(searchNode, f);
-         getExpandedNodes();
-         model.reload((TreeNode) searchNode);
-         setExpanded();
-      }
-   }
-   
-   /**
     * Creates a new tree at the currently shown root
     */
    public void updateTree() {

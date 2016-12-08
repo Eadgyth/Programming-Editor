@@ -170,7 +170,7 @@ public class CurrentProject {
     */
    public void addFileToTree(String dir, String file) {
       if (isProjectSet() && proj.isInProjectPath(dir)) {
-         fileTree.addFile(file);
+         fileTree.updateTree();
       }
    }
 

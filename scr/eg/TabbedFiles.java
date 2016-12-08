@@ -37,8 +37,8 @@ import eg.projects.ProjectFactory;
  */
 public class TabbedFiles implements Observer{
 
-   private final TextDocument[] txtDoc = new TextDocument[20];
-   private final EditArea[] editArea = new EditArea[20];
+   private final TextDocument[] txtDoc = new TextDocument[10];
+   private final EditArea[] editArea = new EditArea[10];
    private final FileChooserOpen fo = new FileChooserOpen();
    private final FileChooserSave fs = new FileChooserSave();
    private final Preferences prefs = new Preferences();   
@@ -131,9 +131,9 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Saves text content of the {@code TextDocument} in the selected tab
-    * if a file has been assigned to it or saves the content as a new file
-    * that is specified in the file chooser.
+    * Saves the text content of the {@code TextDocument} in the selected
+    * tab if a file has been assigned to it or saves the content as a new
+    * file that is specified in the file chooser.
     * <p>
     * 'Save-as-mode' also applies if a file has been assigned to the
     * currently selected {@link TextDocument} but the file no longer
@@ -177,7 +177,7 @@ public class TabbedFiles implements Observer{
          txtDoc[iTab].saveFileAs(f);
          currProj.retrieveProject();
          currProj.addFileToTree(txtDoc[iTab].dir(),
-                 txtDoc[iTab].filepath());
+               txtDoc[iTab].filepath());
          tabPane.changeTabTitle(iTab, txtDoc[iTab].filename());
          mw.displayFrameTitle(txtDoc[iTab].filepath());
          prefs.storePrefs("recentPath", txtDoc[iTab].dir());
@@ -273,35 +273,32 @@ public class TabbedFiles implements Observer{
    //
 
    private void open(File file) {
+      if (tabPane.tabCount() == txtDoc.length) {
+         JOptions.warnMessage("The maximum number of tabs is reached.");
+         return;
+      }
       if (isFileOpen(file.toString())) {
          JOptions.warnMessage(file.getName() + " is open");
+         return;
+      }
+      
+      int openIndex = 0;
+      boolean isUnnamedBlank = txtDoc[openIndex].filename().length() == 0
+            && txtDoc[openIndex].textLength() == 0;
+      if (isUnnamedBlank && tabPane.tabCount() == 1) { 
+         txtDoc[openIndex].openFile(file);
       }
       else {
-         int openIndex = 0;
-         boolean isUnnamedBlank = txtDoc[openIndex].filename().length() == 0
-               && txtDoc[openIndex].textLength() == 0;
-         if (isUnnamedBlank && tabPane.tabCount() == 1) { 
-            txtDoc[openIndex].openFile(file);
-         }
-         else {
-            openIndex = tabPane.tabCount();
-            if (openIndex < txtDoc.length) {
-               editArea[openIndex] = new EditArea();
-               txtDoc[openIndex] = new TextDocument(editArea[openIndex]);
-               txtDoc[openIndex].openFile(file);
-            }
-            else {
-               JOptions.warnMessage("Could not open " + file.getName()
-                  + ". The maximum number of tabs is reached.");
-               return;
-            }
-         }
-         addNewTab(txtDoc[openIndex].filename(),
-               editArea[openIndex].scrolledArea(), openIndex);
-         mw.displayFrameTitle(txtDoc[openIndex].filepath());         
-         currProj.retrieveProject();      
-         prefs.storePrefs("recentPath", txtDoc[openIndex].dir());
+         openIndex = tabPane.tabCount();       
+         editArea[openIndex] = new EditArea();
+         txtDoc[openIndex] = new TextDocument(editArea[openIndex]);
+         txtDoc[openIndex].openFile(file);
       }
+      addNewTab(txtDoc[openIndex].filename(),
+      editArea[openIndex].scrolledArea(), openIndex);
+      mw.displayFrameTitle(txtDoc[openIndex].filepath());         
+      currProj.retrieveProject();      
+      prefs.storePrefs("recentPath", txtDoc[openIndex].dir());
    }
 
    private boolean isFileOpen(String fileToOpen) {
@@ -356,21 +353,6 @@ public class TabbedFiles implements Observer{
       else { 
          newEmptyTab();
       }     
-   }
-   
-   private void selectTabByName(String searchedName) {
-      int count;
-      for (count = 0; count < tabPane.tabCount(); count++) { 
-         if (txtDoc[count].filename().equals(searchedName)) {
-            break;
-         }
-      }
-      if (count < tabPane.tabCount()) {
-         tabPane.selectTab(count);
-      }
-      else {
-         JOptions.warnMessage(searchedName + " is not open");
-      }
    }
    
    private void changeTabEvent(ChangeEvent changeEvent) {
