@@ -281,7 +281,7 @@ public class CurrentProject {
       switch (ext) {
          case ".java":
             enableActions(true, true, true);
-            
+            menu.getProjectMenu().setBuildKind("Create jar");
             break;
          case ".html":
             enableActions(false, true, false);

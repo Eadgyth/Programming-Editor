@@ -49,6 +49,10 @@ public class ProjectMenu {
       run.setEnabled(isRun);
       build.setEnabled(isBuild);
    }
+   
+   public void setBuildKind(String kind) {
+      build.setText(kind);
+   }
 
    private void assembleMenu() {
       menu.add(compile);
