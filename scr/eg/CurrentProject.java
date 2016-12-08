@@ -9,6 +9,8 @@ import javax.swing.SwingWorker;
 
 import java.awt.EventQueue;
 
+import java.lang.reflect.InvocationTargetException;
+
 //--Eadgyth--//
 import eg.ui.MainWin;
 import eg.ui.Toolbar;
@@ -48,12 +50,8 @@ public class CurrentProject {
    private final Toolbar tBar;
    
    private final List<ProjectActions> recent = new ArrayList<>();
-
    private ProjectActions proj;
    private TextDocument txtDoc;
-   private String root = "";
-   private String execDir = "";
-   Thread updateTreeView;
 
    public CurrentProject(ProjectFactory projFact, MainWin mw,
          FileTree fileTree, Menu menu, Toolbar tBar) {
@@ -87,12 +85,12 @@ public class CurrentProject {
     * during the lifetime of the program and (ii) the currently set
     * {@link TextDocument} is part of last project
     */
-   public void retrieveProject() {
+   public void retrieveLastProject() {
       if (!isProjectSet()) {
          ProjectActions prPrevious
                = projFact.getProjAct(FileUtils.extension(txtDoc.filepath()));
          if (prPrevious != null) {
-            if (prPrevious.findPreviousProjectRoot(txtDoc.dir())) {        
+            if (prPrevious.retrieveLastProject(txtDoc.dir())) {        
                prPrevious.addOkAction(e -> configureProject(prPrevious));
                recent.add(prPrevious);
                proj = prPrevious;
@@ -103,7 +101,7 @@ public class CurrentProject {
    }
 
    /**
-    * Opens the window of the {@code SettingsWin} object a project.
+    * Opens the window of the {@code SettingsWin} object of a project.
     * <p>
     * Depending on the currently set {@link TextDocument} the opened window
     * belongs to the current project, to one of this listed projects that were
@@ -167,8 +165,11 @@ public class CurrentProject {
    /**
     * Adds a file to the file tree if the file belongs
     * to this current project
+    * @param dir  the directory that include the project's
+    * directory
+    * 
     */
-   public void addFileToTree(String dir, String file) {
+   public void updateFileTree(String dir) {
       if (isProjectSet() && proj.isInProjectPath(dir)) {
          fileTree.updateTree();
       }
@@ -181,10 +182,9 @@ public class CurrentProject {
       try {
          mw.setCursor(MainWin.BUSY_CURSOR);
          proj.compile();
-      }           
+      }   
       finally {
          EventQueue.invokeLater(() -> {
-            fileTree.updateTree();
             mw.setCursor(MainWin.DEF_CURSOR);
          });
       }
@@ -198,11 +198,10 @@ public class CurrentProject {
    }
 
    /**
-    * creates a build of this project
+    * Creates a build of this project
     */
-   public void buildProj() {     
+   public void buildProj() {
       proj.build();
-      EventQueue.invokeLater(() -> fileTree.updateTree());
    }
    
    /**
@@ -273,21 +272,16 @@ public class CurrentProject {
 
    private void updateProjectSetting(ProjectActions projToSet) {
       mw.showProjectInfo(projToSet.getProjectName());
-      root = projToSet.applyProjectRoot();
-      fileTree.setProjectTree(root);
-      
-      execDir = root + File.separator 
-            + projToSet.getExecutableDir();            
-      fileTree.setDeletableDir(projToSet.getExecutableDir());
-      
+      projToSet.applyProject();
       enableActions();
    }
    
    private void enableActions() {
       String ext = FileUtils.extension(txtDoc.filepath());
       switch (ext) {
-          case ".java":
+         case ".java":
             enableActions(true, true, true);
+            
             break;
          case ".html":
             enableActions(false, true, false);

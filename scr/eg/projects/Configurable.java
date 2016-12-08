@@ -5,14 +5,15 @@ import java.awt.event.ActionListener;
 /**
  * The interface to configure a project.
  * <p>
- * 'Configuration' firstly means the finding of the project's root
- * directory based on a given known directory structure of a project.
+ * 'Configuration' means to define the directory structure of project
+ * and the finding of the project's root directory based om this
+ * structure.
  * For example, the project root of a Java project could be the parent
  * of the path {sources Directory}/{package}/{main java file}. It
  * could as well be just the parent of the main file if subdirectories
  * are not specified.
  * <p>
- * Implementing class must have a reference to an object of type
+ * The implementing class must have a reference to an object of type
  * {@link SettingsWin}.
  * <p>
  * The project may be configured by the entries in the settings window
@@ -36,31 +37,32 @@ public interface Configurable {
    public void makeSetWinVisible(boolean enable);
    
    /**
-    * If a project was successfully configured based on
-    * entries in the window of this {@code SettingsWin}
-    * @param dir  the directory of any file that is part of
-    * the project
+    * If a project can be successfully configured based on entries in
+    * the window of this {@code SettingsWin}
+    * @param dir  the directory of any file that is part of the project
     * @param suffix  the extension of the file
     */
    public boolean configFromSetWin(String dir, String suffix);
    
    /**
-    * If a previously used project can be assigned to this class
-    * @param dir  the directory that may include the root directory of a
-    * previous project 
-    * @return  if a prvious project could be assigned to this class
+    * If a project that was active when the program was closed the
+    * last time can be retrieved.
+    * @param dir  the directory that may include the root directory of 
+    * the last project 
+    * @return  if a project that was active when the program was closed the
+    * last time can be retrieved
     */
-   public boolean findPreviousProjectRoot(String dir);
+   public boolean retrieveLastProject(String dir);
    
    /**
-    * Returns this project's root directory
-    * @return  the project's root directory
+    * Passes to other classes, specifically {@code ProcessStarter} and
+    * {@code FileTree}, the project's root directory or other directories
+    * defined for the project, as needed
     */
-    public String applyProjectRoot();
+    public void applyProject();
    
    /**
-    * If the specified directory includes the project's root
-    * directory
+    * If the specified directory includes the project's root directory
     * @param dir  the directory that may include the project's root
     * directory
     * @return  if the specified directory includes the project's root
@@ -69,17 +71,10 @@ public interface Configurable {
    public boolean isInProjectPath(String dir);
    
    /**
-     * Returns the project's name
-     * @return   the name of the project which is the parent directory
-     * of the project's files or subdirecties containg the files
+     * Returns the name of the project's root directory
+     * @return  the name of the project's root directory
      */
    public String getProjectName();
-   
-   /**
-    * Returns the directory that contains executable files or
-    * the empty String if such directory does not exist
-    */
-   public String getExecutableDir();
    
    /**
     * Stores the current configuration to 'prefs'

@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 //--Eadgyth--//
 import eg.console.ProcessStarter;
 
+import eg.ui.filetree.FileTree;
+
 /**
  * Represents a project using text files although the class does not
  * perform any actions
@@ -12,11 +14,13 @@ import eg.console.ProcessStarter;
 public class TxtActions extends ProjectConfig implements ProjectActions {
 
    private final ProcessStarter proc;
+   private final FileTree fileTree;
 
-   public TxtActions(ProcessStarter proc) {
+   public TxtActions(ProcessStarter proc, FileTree fileTree) {
       super(new SettingsWin("Name of a text file in the project", "Subdirectory",
            false, false, null));
       this.proc = proc;
+      this.fileTree = fileTree;
    }
    
    @Override
@@ -35,14 +39,18 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   public boolean findPreviousProjectRoot(String dir) {
-      return super.findPreviousProjectRoot(dir);
+   public boolean retrieveLastProject(String dir) {
+      return super.retrieveLastProject(dir);
    }
    
+   /**
+    * Passes the project's root to this {@code ProcessStarter}
+    * and this {@code FileTree} 
+    */
    @Override
-   public String applyProjectRoot() {
-      proc.addWorkingDir(super.getProjectRoot());
-      return super.getProjectRoot();
+   public void applyProject() {
+      proc.addWorkingDir(getProjectRoot());
+      fileTree.setProjectTree(getProjectRoot());
    }
    
    @Override
@@ -53,11 +61,6 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
    @Override
    public String getProjectName() {
       return super.getProjectName();
-   }
-   
-    @Override
-   public String getExecutableDir() {
-      return super.getExecutableDir();
    }
    
    @Override

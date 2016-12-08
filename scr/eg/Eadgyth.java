@@ -52,7 +52,7 @@ public class Eadgyth {
       ViewSettings   viewSet   = new ViewSettings(mw, menu.getViewMenu(), menu.getFormatMenu());
 
       ProcessStarter proc      = new ProcessStarter(cw);
-      ProjectFactory projFact  = new ProjectFactory(viewSet, proc, cw);
+      ProjectFactory projFact  = new ProjectFactory(viewSet, proc, cw, fileTree);
       CurrentProject currProj  = new CurrentProject(projFact, mw, fileTree, menu, tBar);
       Edit           edit      = new Edit();
       PluginStarter  plugStart = new PluginStarter(mw);

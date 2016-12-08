@@ -7,7 +7,10 @@ import java.awt.event.ActionListener;
 
 //--Eadgyth--//
 import eg.console.ProcessStarter;
+
 import eg.utils.JOptions;
+
+import eg.ui.filetree.FileTree;
 
 /**
  * Represents a project to write a webpage in HTML
@@ -15,12 +18,15 @@ import eg.utils.JOptions;
 public class HtmlActions extends ProjectConfig implements ProjectActions {
 
    private final ProcessStarter proc;
+   private final FileTree fileTree;
+   
    private File htmlFile;
    
-   public HtmlActions(ProcessStarter proc) {
+   public HtmlActions(ProcessStarter proc, FileTree fileTree) {
       super(new SettingsWin("HTML file", "Subdirectory",
            false, false, null));
       this.proc = proc;
+      this.fileTree = fileTree;
    }
    
    @Override
@@ -43,18 +49,22 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   public boolean findPreviousProjectRoot(String dir) {
-      boolean success = super.findPreviousProjectRoot(dir);
+   public boolean retrieveLastProject(String dir) {
+      boolean success = super.retrieveLastProject(dir);
       if (success) {
          setHtmlFile();
       }
       return success;
    }
    
+   /**
+    * Passes the project's root to this {@code ProcessStarter}
+    * and this {@code FileTree} 
+    */
    @Override
-   public String applyProjectRoot() {
-      proc.addWorkingDir(super.getProjectRoot());
-      return super.getProjectRoot();
+   public void applyProject() {
+      proc.addWorkingDir(getProjectRoot());
+      fileTree.setProjectTree(getProjectRoot());
    }
    
    @Override
@@ -65,11 +75,6 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    @Override
    public String getProjectName() {
       return super.getProjectName();
-   }
-   
-   @Override
-   public String getExecutableDir() {
-      return super.getExecutableDir();
    }
    
    @Override
@@ -108,7 +113,7 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    private void setHtmlFile() {
-      htmlFile = new File(applyProjectRoot() + File.separator
-            + getModuleDir() + File.separator + getMainFile() + ".html");
+      htmlFile = new File(getProjectRoot() + File.separator
+            + getModuleName() + File.separator + getMainFile() + ".html");
    }
 }

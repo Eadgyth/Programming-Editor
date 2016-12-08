@@ -58,8 +58,8 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    @Override
-   public boolean findPreviousProjectRoot(String dir) {
-      configurePreviousProject(dir);
+   public boolean retrieveLastProject(String dir) {
+      configureLastProject(dir);
       return projectPath.length() > 0;
    }
    
@@ -73,11 +73,6 @@ public abstract class ProjectConfig implements Configurable {
       File f = new File(projectPath);
       return f.getName();
    }
-   
-   @Override
-   public String getExecutableDir() {
-      return execDir;
-   }
 
    @Override
    public void storeConfig() {
@@ -85,14 +80,14 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    /**
-    * Returns the project's root direcory
+    * Returns the project's root directory
     */
    protected String getProjectRoot() {
       return projectPath;
    }
    
    /**
-    * Returns the project's main file
+    * Returns the the name of the project's main file
     * @return  the name of project's main file
     */ 
    protected String getMainFile() {
@@ -100,11 +95,13 @@ public abstract class ProjectConfig implements Configurable {
    }
 
    /**
-    * Returns the name of the directory of a module
-    * @return  the name directory of a module. In the case of a Java
-    * project module would be a package
+    * Returns the name of the directory of a module.
+    * <p>
+    * It is not specified what a 'module' is. In the case of a Java
+    * project a module would be a package
+    * @return  the name of the directory of a module.
     */ 
-   protected String getModuleDir() {
+   protected String getModuleName() {
       return moduleDir;
    }
    
@@ -114,8 +111,18 @@ public abstract class ProjectConfig implements Configurable {
     * @return  the name of the directoy where source files are
     * saved
     */ 
-   protected String getSourceDir() {
+   protected String getSourceDirName() {
       return sourceDir;
+   }
+   
+   /**
+    * Returns the name of the directoy where executable files are
+    * saved
+    * @return  the name of the directoy where executable files are
+    * saved
+    */
+   protected String getExecDirName() {
+      return execDir;
    }
 
    /**
@@ -150,7 +157,7 @@ public abstract class ProjectConfig implements Configurable {
    //--private--
    //
 
-   private void configurePreviousProject(String dir) {
+   private void configureLastProject(String dir) {
       String previousProjectRoot = previousProjectRoot(dir);
          
       if (previousProjectRoot != null) {

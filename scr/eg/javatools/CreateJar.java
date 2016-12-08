@@ -10,8 +10,6 @@ import java.io.OutputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 
-import java.awt.EventQueue;
-
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,29 +70,15 @@ public class CreateJar {
       File manifest = new File(root + SEP + classDir + SEP + "manifest.txt");
       createManifest(manifest, main, packageName);
 
-      EventQueue.invokeLater(() -> {
-         ProcessBuilder pb = new ProcessBuilder(commandForJar(root, jarFin, classDir));
-         pb.directory(new File(root + SEP + classDir));
-         Process p = null;
-         try {
-            p = pb.start();
-         }
-         catch(IOException e) {
-            System.out.println(e.getMessage());
-         }
-         InputStream is = p.getInputStream();
-         InputStreamReader isr = new InputStreamReader(is);
-         try (BufferedReader br = new BufferedReader(isr)) {
-            String line;
-            while ((line = br.readLine()) != null) {
-               console.appendText(line + "\n");
-            }
-            copyJarToProjectDir(classDir, root, jarFin);
-         }
-         catch(IOException e) {
-            System.out.println(e.getMessage());
-         }
-      });
+      ProcessBuilder pb = new ProcessBuilder(commandForJar(root, jarFin, classDir));
+      pb.directory(new File(root + SEP + classDir));
+      Process p = null;
+      try {
+         p = pb.start();
+      }
+      catch(IOException e) {
+         System.out.println(e.getMessage());
+      }     
    }
 
    private List<String> commandForJar(String path, String jarName, String classDir) {
@@ -138,25 +122,5 @@ public class CreateJar {
          relativePath.add(new File(filePath.substring(path.length() + 1)));
       }
       return relativePath;
-   }
-
-   private void copyJarToProjectDir(String classDir, String projectPath, String jarName)
-         throws IOException {
-      if (classDir.length() > 0) {
-         File source = new File(projectPath + SEP + classDir + SEP + jarName + ".jar");
-         File destination = new File(projectPath  + SEP + jarName + ".jar");
-
-         OutputStream out;
-         try (InputStream in = new FileInputStream(source)) {
-            out = new FileOutputStream(destination);
-            byte[] buf = new byte[1024];
-            int length;
-            while ((length = in.read(buf)) > 0) {
-                out.write(buf, 0, length);
-            }
-         }
-         out.close();
-      }
-      JOptions.infoMessage("Saved jar file named " + jarName);
    }
 }
