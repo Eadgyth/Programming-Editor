@@ -40,15 +40,8 @@ class TypingEdit {
    private final AutoIndent autoInd;
    private final RowNumbers rowNum;
 
-   /*
-    * true to call modifying methods from this update methods */
    private boolean isDocListen = true; 
-   /*
-    * true to call text coloring and indentation from this
-    * update methods */
    private boolean isTextModify = false;
-   /*
-    * Controls separately if auto-indentation is used */
    private boolean isIndent = false;
 
    TypingEdit(EditArea editArea) {
@@ -133,7 +126,7 @@ class TypingEdit {
       enableTextModify(true);
    }
 
-    public void undo() {
+   void undo() {
        undomanager.undo();
    }
 
@@ -190,24 +183,23 @@ class TypingEdit {
          autoInd.openBracketIndent(in, pos);
       }
       EventQueue.invokeLater(() -> {
-         col.color(in, pos);
          if (isIndent) {
             autoInd.closeBracketIndent(in, pos); // must be invoked later
          }
+         col.color(in, pos);        
       });
    }
 
    private void removeTextModify(DocumentEvent de, String in, int pos) {
       EventQueue.invokeLater( () -> {
+         col.color(in, pos);
          if (col.isBlockCmnt()) {
             col.uncommentBlock(in, pos);
          }
-         col.color(in, pos);
       });
     }
    
    class DocUndoManager extends UndoManager implements UndoableEditListener {
-      
       @Override
       public void undoableEditHappened (UndoableEditEvent e) {
          if (!isDocListen) {
@@ -220,7 +212,6 @@ class TypingEdit {
          if (event.getType().equals(DocumentEvent.EventType.CHANGE)) {
             return;
          }
-         //addEdit(e.getEdit());
          undomanager.addEdit(e.getEdit());
       }
    

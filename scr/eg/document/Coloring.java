@@ -223,7 +223,7 @@ class Coloring {
             blockCmntEnd);
 
       if (indBlockStart != -1 && indBlockEnd == -1) {
-         String toUncomment = in.substring(indBlockStart, pos);
+         String toUncomment = in.substring(indBlockStart, pos + 1);
          enableSingleLines(false);
          color(toUncomment, indBlockStart);
          enableSingleLines(true);

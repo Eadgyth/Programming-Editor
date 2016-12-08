@@ -281,6 +281,7 @@ public class MainWin {
       splitVert = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true,
            splitHor, null);
       splitVert.setDividerSize(0);
+      splitVert.setResizeWeight(1);
       splitVert.setBorder(null);
       splitHorAll = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
             splitVert, null);

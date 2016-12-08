@@ -25,8 +25,20 @@ class PopupMenu {
       }
       else if (opt == FOLDER_OPT) {
          popMenu.add(newFolderItm);
+         popMenu.add(deleteItm);
       }
    }
+   
+   void enableDelete(boolean isEnabled) {
+      if (isEnabled) {
+         deleteItm.setText("Delete");
+      }
+      else {
+         deleteItm.setText("Deletable if empty");
+      }
+      deleteItm.setEnabled(isEnabled);
+   }
+      
 
    void showMenu(Component c, int x, int y) {
       popMenu.show(c, x, y);

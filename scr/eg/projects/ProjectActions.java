@@ -6,7 +6,7 @@ package eg.projects;
 public interface ProjectActions extends Configurable {
    
    /**
-    * Tries to compile source files
+    * Compiles source filel
     */
    public void compile();
    

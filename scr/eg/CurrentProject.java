@@ -1,7 +1,11 @@
 package eg;
 
+import java.io.File;
+
 import java.util.List;
 import java.util.ArrayList;
+
+import javax.swing.SwingWorker;
 
 import java.awt.EventQueue;
 
@@ -19,6 +23,8 @@ import eg.document.TextDocument;
 
 import eg.utils.FileUtils;
 import eg.utils.JOptions;
+
+import eg.javatools.SearchFiles;
 
 /**
  * The current project that is configured for the file of a
@@ -40,12 +46,14 @@ public class CurrentProject {
    private final FileTree fileTree;
    private final Menu menu;
    private final Toolbar tBar;
-   private final Preferences prefs = new Preferences();
    
    private final List<ProjectActions> recent = new ArrayList<>();
 
    private ProjectActions proj;
    private TextDocument txtDoc;
+   private String root = "";
+   private String execDir = "";
+   Thread updateTreeView;
 
    public CurrentProject(ProjectFactory projFact, MainWin mw,
          FileTree fileTree, Menu menu, Toolbar tBar) {
@@ -72,12 +80,12 @@ public class CurrentProject {
    }
 
    /**
-    * Tries to assign to this the project that was active when the program was
-    * closed the last time.
+    * Tries to assign to this the project that was active when the program
+    * was closed the last time.
     * <p>
-    * Retrieving a previous project requires that (i) no other project has
-    * been assigned and (ii) the current {@link TextDocument} is part of the
-    * the previous project (which is saved in 'prefs').
+    * Method requires that (i) no other project has been assigned before
+    * during the lifetime of the program and (ii) the currently set
+    * {@link TextDocument} is part of last project
     */
    public void retrieveProject() {
       if (!isProjectSet()) {
@@ -95,8 +103,11 @@ public class CurrentProject {
    }
 
    /**
-    * Opens the window of the {@code SettingsWin} object of a 
-    * previously or a newly created project
+    * Opens the window of the {@code SettingsWin} object a project.
+    * <p>
+    * Depending on the currently set {@link TextDocument} the opened window
+    * belongs to the current project, to one of this listed projects that were
+    * set before or to a newly created project.
     */
    public void openSettingsWindow() {
       if (!isProjectSet()) {
@@ -129,15 +140,19 @@ public class CurrentProject {
    }
    
    /**
-    * Changes this current project if the the current
-    * {@code TextDocument} does not belong to the current but to
-    * a project saved in the list of already created projects
+    * Assigns to this current project a project that was previously
+    * set during the program's liftime.
+    * <p>
+    * If the currently set {@code TextDocument} bolongs to a previous
+    * project this project is set active.
+    * If it does not belong to a project set before the settings window
+    * is opened (same effect as {@link #openSettingsWindow()}
     */
    public void changeProject() {
       ProjectActions recent = searchRecent(txtDoc.dir());
       if (recent == proj) {
          JOptions.infoMessage("The selected file belongs to the"
-               + " current project '" + proj.getProjectName() + "'.");
+               + " currently active project");
       }
       else {
          if (recent != null) {
@@ -154,7 +169,7 @@ public class CurrentProject {
     * to this current project
     */
    public void addFileToTree(String dir, String file) {
-      if (isProjectSet() & proj.isInProjectPath(dir)) {
+      if (isProjectSet() && proj.isInProjectPath(dir)) {
          fileTree.addFile(file);
       }
    }
@@ -163,11 +178,16 @@ public class CurrentProject {
     * compiles this project
     */
    public void compile() {
-      mw.setCursor(MainWin.BUSY_CURSOR);         
-      proj.compile();
-      EventQueue.invokeLater(() -> {
-         mw.setCursor(MainWin.DEF_CURSOR);
-      });
+      try {
+         mw.setCursor(MainWin.BUSY_CURSOR);
+         proj.compile();
+      }           
+      finally {
+         EventQueue.invokeLater(() -> {
+            fileTree.updateTree();
+            mw.setCursor(MainWin.DEF_CURSOR);
+         });
+      }
    }
 
    /**
@@ -180,8 +200,9 @@ public class CurrentProject {
    /**
     * creates a build of this project
     */
-   public void buildProj() {      
+   public void buildProj() {     
       proj.build();
+      EventQueue.invokeLater(() -> fileTree.updateTree());
    }
    
    /**
@@ -227,7 +248,7 @@ public class CurrentProject {
       }
    }
    
-   private boolean changeProject(ProjectActions recent) {
+   private boolean changeProject(ProjectActions recent) {     
       int result = JOptions.confirmYesNo("Change to project '"
             + recent.getProjectName() + "' ?");
       if (result == 0) {
@@ -252,14 +273,13 @@ public class CurrentProject {
 
    private void updateProjectSetting(ProjectActions projToSet) {
       mw.showProjectInfo(projToSet.getProjectName());
-      String root = projToSet.getProjectRoot();
+      root = projToSet.applyProjectRoot();
       fileTree.setProjectTree(root);
-      if (recent.size() == 1) {
-         menu.getViewMenu().enableFileView();
-      }
-      if (recent.size() == 2) {
-         menu.getProjectMenu().enableChangeProjItm();
-      }
+      
+      execDir = root + File.separator 
+            + projToSet.getExecutableDir();            
+      fileTree.setDeletableDir(projToSet.getExecutableDir());
+      
       enableActions();
    }
    
@@ -279,6 +299,12 @@ public class CurrentProject {
    }
    
    private void enableActions(boolean isCompile, boolean isRun, boolean isBuild) {
+      if (recent.size() == 1) {
+         menu.getViewMenu().enableFileView();
+      }
+      if (recent.size() == 2) {
+         menu.getProjectMenu().enableChangeProjItm();
+      }
       menu.getProjectMenu().enableProjItms(isCompile, isRun, isBuild);
       tBar.enableProjBts(isCompile, isRun);
    }

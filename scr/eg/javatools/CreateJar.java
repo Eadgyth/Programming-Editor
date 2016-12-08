@@ -32,15 +32,15 @@ public class CreateJar {
 
    private final static String SEP = File.separator;
 
-   private final ConsolePanel cw;
+   private final ConsolePanel console;
    private String usedJarName = "";   
    
    /**
-    * @param cw  the reference to {@link ConsolePanel} in whose
+    * @param console  the reference to {@link ConsolePanel} in whose
     * text area messages are displeayed
     */
-   public CreateJar(ConsolePanel cw) {
-      this.cw = cw;
+   public CreateJar(ConsolePanel console) {
+      this.console = console;
    }
 
    /**
@@ -69,41 +69,30 @@ public class CreateJar {
       }
       usedJarName = jarName;
       final String jarFin = jarName;
-
       File manifest = new File(root + SEP + classDir + SEP + "manifest.txt");
       createManifest(manifest, main, packageName);
 
       EventQueue.invokeLater(() -> {
          ProcessBuilder pb = new ProcessBuilder(commandForJar(root, jarFin, classDir));
          pb.directory(new File(root + SEP + classDir));
-         
-         BufferedReader br = null;
-         InputStreamReader isr;
-         InputStream is;
-   
+         Process p = null;
          try {
-            Process p = pb.start();
-            is  = p.getInputStream();
-            isr = new InputStreamReader(is);
-            br  = new BufferedReader(isr);
+            p = pb.start();
+         }
+         catch(IOException e) {
+            System.out.println(e.getMessage());
+         }
+         InputStream is = p.getInputStream();
+         InputStreamReader isr = new InputStreamReader(is);
+         try (BufferedReader br = new BufferedReader(isr)) {
             String line;
-            while (( line = br.readLine()) != null ) {
-               cw.appendText(line + "\n");
+            while ((line = br.readLine()) != null) {
+               console.appendText(line + "\n");
             }
             copyJarToProjectDir(classDir, root, jarFin);
          }
          catch(IOException e) {
             System.out.println(e.getMessage());
-         }
-         finally {
-            try {
-               if (br != null) {
-                  br.close();
-               }
-            }
-            catch (IOException e) {
-               System.out.println(e.getMessage());
-            }
          }
       });
    }
@@ -115,7 +104,6 @@ public class CreateJar {
          m: include manifest info ) */ 
       Collections.addAll(commandForJar, "jar", "-cvfm", jarName + ".jar",
             "manifest.txt" );
-
       List<File> classesPath
            = new SearchFiles().filteredFiles(path + SEP + classDir, ".class" );
       List<File> classesRelativePath

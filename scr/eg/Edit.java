@@ -242,8 +242,8 @@ public class Edit {
       try {
          inClipboard = (String) content.getTransferData(DataFlavor.stringFlavor);
       }
-      catch (UnsupportedFlavorException | IOException ufe) {
-         System.out.println(ufe.getMessage());
+      catch (UnsupportedFlavorException | IOException e) {
+         e.printStackTrace();
       }
       if (inClipboard == null) {
          JOptions.infoMessage("No contents loaded from the cliboard");

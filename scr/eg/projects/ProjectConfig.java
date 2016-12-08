@@ -11,16 +11,8 @@ import eg.utils.JOptions;
 
 /**
  * Represents the configuration of a project.
- * <p>
- * 'Configuration' firstly means the finding of the project root
- * which in the simplest case would be the parent of the main project
- * file (or of a specifiable subdirectory where the file is saved). <br>
- * It depends on the parameters passed to the contructor of
- * {@link SettingsWin} which other properties are asked for. For example,
- * the project root of a Java project may be the parent of the path
- * {sources Directory}/{package}/{main java file}. <br>
- * The project may be configured by the entries in the settings window
- * or by reading in entries in the 'prefs' file
+ * Class implements methods in {@link Configurable} except
+ * {@link Configurable #applyProjectPath()}
  */
 public abstract class ProjectConfig implements Configurable {
 
@@ -72,8 +64,8 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    @Override
-   public String getProjectRoot() {
-      return projectPath;
+   public boolean isInProjectPath(String dir) {
+      return previousProjectRoot(dir) != null;
    }
    
    @Override
@@ -83,13 +75,20 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    @Override
-   public boolean isInProjectPath(String dir) {
-      return previousProjectRoot(dir) != null;
+   public String getExecutableDir() {
+      return execDir;
    }
-   
+
    @Override
    public void storeConfig() {
       storeInputs();
+   }
+   
+   /**
+    * Returns the project's root direcory
+    */
+   protected String getProjectRoot() {
+      return projectPath;
    }
    
    /**
@@ -107,16 +106,6 @@ public abstract class ProjectConfig implements Configurable {
     */ 
    protected String getModuleDir() {
       return moduleDir;
-   }
-   
-   /**
-    * Returns the name of the directory where executable files are
-    * saved
-    * @return  the name of the directory where executable files are
-    * saved
-    */ 
-   protected String getExecutableDir() {
-      return execDir;
    }
    
    /**

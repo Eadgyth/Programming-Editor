@@ -9,39 +9,54 @@ public class SearchFiles {
 
    private final List<File> resultList = new ArrayList<>();
    
-   public List<File> filteredFiles(String path, String suffix) {
-      testPath(path);
-      getFiles(path, suffix);
+   /**
+    * @param dir  the directory that contains the files to
+    * collect
+    * @param suffix  the extension of the files to collect. Has
+    * the form '.java', for example.
+    * @return  a List of the files in the specified directory
+    * with the specified file extension
+    */
+   public List<File> filteredFiles(String dir, String suffix) {
+      if (!testPath(dir)) {
+         return null;
+      }
+      getFilteredFiles(dir, suffix);
       return resultList;
    }
    
-   public File[] filteredFilesToArr(String path, String suffix) {
-      if (!testPath(path)) {
+   /**
+    * @param dir  the directory that contains the files to
+    * collect
+    * @param suffix  the extension of the files to collect. Has
+    * the form '.java', for example.
+    * @return  an array of the files in the specified directory
+    * with the specified file extension
+    */
+   public File[] filteredFilesToArr(String dir, String suffix) {
+      if (!testPath(dir)) {
          return null;
       }
-      getFiles(path, suffix);
+      getFilteredFiles(dir, suffix);
       File[] f = resultList.toArray(new File[resultList.size()]);
       return f;
    }
 
-   private void getFiles(String path, String suffix) {
+   private void getFilteredFiles(String dir, String suffix) {
       FilenameFilter filter = new FilenameFilter() {
          @Override
          public boolean accept(File direct, String name) {
             return name.endsWith(suffix);
          }
       };
-
-      File[] filesInPath = new File(path).listFiles();
-      File[] targets     = new File(path).listFiles(filter);
-      
+      File[] filesInPath = new File(dir).listFiles();
+      File[] targets     = new File(dir).listFiles(filter);      
       for (File f : targets) {
          resultList.add(f);
       }
-
       for (int i = 0; i < filesInPath.length; i++) {
-         if ( filesInPath[i].isDirectory() ) {    
-            getFiles(filesInPath[i].toString(), suffix);
+         if (filesInPath[i].isDirectory()) {    
+            getFilteredFiles(filesInPath[i].toString(), suffix);
          }
       }
    }

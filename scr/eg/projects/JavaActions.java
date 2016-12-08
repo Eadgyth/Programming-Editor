@@ -23,7 +23,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    private final ConsolePanel cw;
 
    private String startCommand = "";
-   private Thread compileThread;
 
    public JavaActions(ViewSettings viewSet, ProcessStarter proc, ConsolePanel cw) {
       super(new SettingsWin("Name of main class", "Package containing the main class",
@@ -63,15 +62,21 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       }
       return success;
    }
+
+   /**
+    * Returns the projects path and passes the path to this
+    * {@code ProcessStarter}
+    * @return  the project's root dirrectory
+    */
+   @Override
+   public String applyProjectRoot() {
+      proc.addWorkingDir(super.getProjectRoot());
+      return super.getProjectRoot();
+   }
    
    @Override
    public boolean isInProjectPath(String dir) {
       return super.isInProjectPath(dir);
-   }
-   
-   @Override
-   public void storeConfig() {
-      super.storeConfig();
    }
    
    @Override
@@ -80,18 +85,22 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   public String getProjectRoot() {
-      proc.addWorkingDir(super.getProjectRoot());
-      return super.getProjectRoot();
+   public String getExecutableDir() {
+      return super.getExecutableDir();
+   }
+
+   @Override
+   public void storeConfig() {
+      super.storeConfig();
    }
    
    @Override                                                                          
    public void compile() {      
-      cw.setText("");     
+      cw.setText("");
       EventQueue.invokeLater(() -> {
          if (proc.isProcessEnded()) {    
-            comp.compile(getProjectRoot(), getExecutableDir(),
-                         getSourceDir());                     
+            comp.compile(applyProjectRoot(), getExecutableDir(),
+                         getSourceDir());            
          }
          cw.setCaret(0);
          if (!viewSet.isConsoleSelected()) {
@@ -127,7 +136,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
          return;
       }
       cw.setText("");
-      jar.createJar(getProjectRoot(), getMainFile(),
+      jar.createJar(applyProjectRoot(), getMainFile(),
             getModuleDir(), getExecutableDir(), getBuildName());
    }
 
@@ -160,13 +169,4 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
                + "." + main;
       }
    }
-   
-   private Runnable startCompile = new Runnable() {
-      public void run() {
-         if (proc.isProcessEnded()) {               
-            
-            
-         }     
-      }
-   };
 }

@@ -40,12 +40,7 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   public String getProjectName() {
-      return super.getProjectName();
-   }
-   
-   @Override
-   public String getProjectRoot() {
+   public String applyProjectRoot() {
       proc.addWorkingDir(super.getProjectRoot());
       return super.getProjectRoot();
    }
@@ -53,6 +48,16 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
    @Override
    public boolean isInProjectPath(String dir) {
       return super.isInProjectPath(dir);
+   }
+   
+   @Override
+   public String getProjectName() {
+      return super.getProjectName();
+   }
+   
+    @Override
+   public String getExecutableDir() {
+      return super.getExecutableDir();
    }
    
    @Override

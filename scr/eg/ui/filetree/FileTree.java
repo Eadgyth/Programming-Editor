@@ -18,13 +18,17 @@ import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
+import javax.swing.event.TreeModelEvent;
+
 import javax.swing.border.LineBorder;
+
+import javax.swing.filechooser.FileSystemView;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-
-import javax.swing.filechooser.FileSystemView;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import java.io.File;
 
@@ -34,14 +38,19 @@ import java.util.Enumeration;
 import java.util.Observable;
 
 //--Eadyth--//
-import eg.utils.JOptions;
 import eg.Constants;
+import eg.Preferences;
 import eg.ui.IconFiles;
 
+import eg.utils.JOptions;
+import eg.utils.FileUtils;
+
 /**
- * The display of the file tree of a project
+ * The display the project's file system in a {@code JTree}
  */
 public class FileTree extends Observable {
+   
+   private static final String F_SEP = File.separator;
 
    /*
     * The panel that contains the tree and the toobar */
@@ -66,12 +75,12 @@ public class FileTree extends Observable {
    private DefaultTreeModel model;
    private DefaultMutableTreeNode root;
    private MouseListener ml;
-   private String pathHelper = "";
-   private String projRoot = "";
 
-   /**
-    * The display of a project's file tree
-    */
+   private String projRoot = "";
+   private String pathHelper = "";
+   private List<TreePath> expanded = null;
+   private String deletableDir = "";
+
    public FileTree() {
       ml = mouseListener;
       toolbar = createToolbar();
@@ -81,6 +90,8 @@ public class FileTree extends Observable {
    /**
     * Returns the reference to this panel that shows the file tree
     * and the toolbar
+    * @return  the {@code JPanel} that shows the file tree and the
+    * the toolbar
     */
    public JPanel fileTreePnl() {
       return fileTreePnl;
@@ -96,24 +107,48 @@ public class FileTree extends Observable {
    }
    
    /**
-    * Adds a file to the file tree
+    * Sets the filepath of the folder that can be deleted
+    * @param dir  the directory that can be deleted although it is
+    * not empty
+    */
+   public void setDeletableDir(String dir) {
+      deletableDir = dir;
+   }
+   
+   /**
+    * Adds a node to the tree that is initialized with the
+    * specified file
+    * @param fileToAdd  the file that the new node is initialized
+    * with
+    * Maybe a file or directory 
     */
    public void addFile(String fileToAdd) {
       File f = new File(fileToAdd);
-      String parent = f.getParent();
+      String parent = f.getParent();   
       DefaultMutableTreeNode searchNode = searchNode(parent);
-      /*
-       * may be null if a folder further down from the project root
-       * is the root of the current tree */
+      System.out.println(searchNode == null);
       if (searchNode != null) {
-         model.insertNodeInto(new DefaultMutableTreeNode(f),
-                  searchNode, searchNode.getChildCount());
+         getFiles(searchNode, f);
+         getExpandedNodes();
+         model.reload((TreeNode) searchNode);
+         setExpanded();
       }
    }
    
    /**
-    * Registers an event handler at the close button of the file
-    * tree panel
+    * Creates a new tree at the currently shown root
+    */
+   public void updateTree() {
+      getExpandedNodes();
+      setNewTree(pathHelper);
+      setExpanded();
+      fileTreePnl.repaint();
+      fileTreePnl.revalidate();
+   }
+   
+   /**
+    * Adds an {@code ActionListener} to this close button
+    * @param al  the {@code ActionListener}
     */
    public void closeAct(ActionListener al) {
       closeBt.addActionListener(al);
@@ -140,7 +175,7 @@ public class FileTree extends Observable {
       root = new DefaultMutableTreeNode("root", true);
       model = new DefaultTreeModel(root);
       getFiles(root, new File(path));
-      initTree(); // includes creating a new tree obsect
+      initTree(); // includes creating a new tree object
       holdTreePnl.add(tree);
       fileTreePnl.repaint();
       fileTreePnl.revalidate();
@@ -208,10 +243,6 @@ public class FileTree extends Observable {
       upBt.setEnabled(true);
    }
    
-   private void renewTree() {
-      setNewTree(pathHelper);
-   }
-   
    private void showMenu(Component c, int x, int y) {
       int row = tree.getRowForLocation(x, y);
       tree.setSelectionRow(row);
@@ -219,14 +250,26 @@ public class FileTree extends Observable {
          popupFile.showMenu(c, x, y);
       }
       if (!tree.isSelectionEmpty() && getSelectedFile().isDirectory()) {
+         enableDelete();
          popupDir.showMenu(c, x, y);
+      }
+   }
+   
+   private void enableDelete() {
+      File f = getSelectedFile();
+      if (isInDeletableDir(f)
+             || FileUtils.isFolderEmpty(f)) {
+          popupDir.enableDelete(true);
+      }
+      else {
+         popupDir.enableDelete(false);
       }
    }
    
    private void deleteFile() {
       DefaultMutableTreeNode selectedNode = getSelectedNode();
       File f = getSelectedFile();
-      int res = JOptions.confirmYesNo("Delete " + f.getName() + " ?");
+      int res = JOptions.confirmYesNo(deleteMessage(f));
       if (res == JOptionPane.YES_OPTION) {
          boolean success = f.delete();
          if (success) {
@@ -237,7 +280,40 @@ public class FileTree extends Observable {
          }
       }
    }
+
+   private void deleteFolder() {
+      DefaultMutableTreeNode selectedNode = getSelectedNode();
+      File f = getSelectedFile();  
+      int res = JOptions.confirmYesNo(deleteMessage(f));
+      if (res == JOptionPane.YES_OPTION) {
+         boolean success;
+         if (isInDeletableDir(f)) {         
+            success = FileUtils.deleteFolder(f);
+         }
+         else {
+            success = FileUtils.deleteEmptyFolder(f);
+         }
+         if (success) {
+            model.removeNodeFromParent(selectedNode);
+         }
+         else {
+            JOptions.warnMessage("Deleting " + f.getName() + "failed.");
+         }
+      }
+   }
    
+   private boolean isInDeletableDir(File file) {
+      return file.toString().endsWith(F_SEP + deletableDir)
+            || file.toString().contains(F_SEP + deletableDir + F_SEP);
+   }      
+   
+   private String deleteMessage(File f) {
+      String message
+            = "'" + f.getName() + "' will be permanently deleted!\n"
+            + "Continue ?";
+      return message;
+   }
+
    private void newFolder() {
       DefaultMutableTreeNode parent = getSelectedNode();
       File f = getSelectedFile();
@@ -298,6 +374,25 @@ public class FileTree extends Observable {
       return null;
    }
    
+   private void getExpandedNodes() {
+      expanded = new ArrayList<>();
+      for (int i = 0; i < tree.getRowCount(); i++) {
+         if (tree.isExpanded(i)) {
+            expanded.add(tree.getPathForRow(i));
+         }
+      }      
+   }
+   
+   private void setExpanded() {
+      for (TreePath tp : expanded) {
+         for (int i = 0; i < tree.getRowCount(); i++) { 
+            if (tp.toString().equals(tree.getPathForRow(i).toString())) {             
+               tree.expandRow(i);
+            }
+         }
+      }
+   }
+   
    private void initTreePanel() {
       holdTreePnl.setLayout(new BorderLayout());
       scroll.setBorder(null);
@@ -307,10 +402,11 @@ public class FileTree extends Observable {
       fileTreePnl.add(scroll, BorderLayout.CENTER);
       fileTreePnl.setBorder(Constants.LOW_ETCHED);
       upBt.addActionListener(e -> folderUp());
-      renewBt.addActionListener(e -> renewTree());
+      renewBt.addActionListener(e -> updateTree());
       upBt.setEnabled(false);
       popupFile.deleteAct(e -> deleteFile());
       popupDir.newFolderAct(e -> newFolder());
+      popupDir.deleteAct(e -> deleteFolder());
    }
 
    private JToolBar createToolbar() {
@@ -319,7 +415,7 @@ public class FileTree extends Observable {
       };  
       String[] tooltips = new String[] {
          "Folder up",
-         "Renew tree",
+         "Update tree",
          "Close the project explorer",
       };
       return eg.utils.UiComponents.toolbarLastBtRight(bts, tooltips);

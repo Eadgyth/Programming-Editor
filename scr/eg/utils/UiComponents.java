@@ -13,7 +13,10 @@ public class UiComponents {
 
    /**
     * Creates a toolbar with the last button (intended for a close button)
-    * at the right.
+    * aligned at the right
+    * @param bts  the array of JButtons added to the toolbar
+    * @param tooltips  the array of tooltips for the buttons
+    * @return  a new {@code JToolBar}
     */
    public static JToolBar toolbarLastBtRight(JButton[] bts, String[] tooltips) {
       JToolBar tb = new JToolBar(JToolBar.HORIZONTAL);

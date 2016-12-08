@@ -70,23 +70,22 @@ public class Compile {
       }
 
       String targetDir = targetDir(projectPath, classDir);
-      boolean isCompiled;
       try {
          String[] compileOptions = new String[] {"-d", targetDir} ;
          Iterable<String> compilationOptions = Arrays.asList(compileOptions);      
          JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
          DiagnosticCollector<JavaFileObject> diagnostics
                = new DiagnosticCollector<>();
-          try (StandardJavaFileManager fileManager
+         try (StandardJavaFileManager fileManager
                   = compiler.getStandardFileManager(null, null, null)) {
-              Iterable<? extends JavaFileObject> units;
-              List<File> classes = new SearchFiles().filteredFiles(projectPath
-                      + SEP + sourceDir, ".java");
-              File[] fileArr = classes.toArray(new File[classes.size()]);
-              units = fileManager.getJavaFileObjects(fileArr);
-              CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
-                      compilationOptions, null, units);
-              success = task.call();
+            Iterable<? extends JavaFileObject> units;
+            List<File> classes = new SearchFiles().filteredFiles(projectPath
+                    + SEP + sourceDir, ".java");
+            File[] fileArr = classes.toArray(new File[classes.size()]);
+            units = fileManager.getJavaFileObjects(fileArr);
+            CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
+                    compilationOptions, null, units);
+            success = task.call();
          }
 
          if (success) {
@@ -116,6 +115,7 @@ public class Compile {
          }
       }
       catch (IOException e) {
+         errorInfo.add(e.getMessage());
          System.out.println(e.getMessage());
       }
    }

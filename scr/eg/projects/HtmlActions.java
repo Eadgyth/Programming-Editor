@@ -52,12 +52,7 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   public String getProjectName() {
-      return super.getProjectName();
-   }
-   
-   @Override
-   public String getProjectRoot() {
+   public String applyProjectRoot() {
       proc.addWorkingDir(super.getProjectRoot());
       return super.getProjectRoot();
    }
@@ -65,6 +60,16 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    @Override
    public boolean isInProjectPath(String dir) {
       return super.isInProjectPath(dir);
+   }
+   
+   @Override
+   public String getProjectName() {
+      return super.getProjectName();
+   }
+   
+   @Override
+   public String getExecutableDir() {
+      return super.getExecutableDir();
    }
    
    @Override
@@ -103,7 +108,7 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    private void setHtmlFile() {
-      htmlFile = new File(getProjectRoot() + File.separator
+      htmlFile = new File(applyProjectRoot() + File.separator
             + getModuleDir() + File.separator + getMainFile() + ".html");
    }
 }

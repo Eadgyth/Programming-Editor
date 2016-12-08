@@ -80,7 +80,7 @@ public class Eadgyth {
       fileTree.closeAct(e -> viewSet.setShowFileViewState(false));
       mw.closeFunctAct(e -> viewSet.setShowFunctionState(false)); 
       fileTree.addObserver(tabFiles);
-      menu.getPluginMenu().startPlugin(plugStart, mw, menu.getViewMenu()); 
+      menu.getPluginMenu().startPlugin(plugStart, viewSet); 
       
       EventQueue.invokeLater(() -> {
          mw.makeVisible();

@@ -11,10 +11,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 
 //--Eadgyth--//
-import eg.ui.MainWin;
-
+import eg.ui.ViewSettings;
 import eg.javatools.SearchFiles;
-
 import eg.plugin.PluginStarter;
 
 public class PluginMenu {
@@ -23,8 +21,7 @@ public class PluginMenu {
    private final JMenu allPlugsMenu  = new JMenu("Add in function panel");
    private JMenuItem[] selectPlugItm = null;
    
-   PluginMenu() {
-      
+   PluginMenu() {    
       menu.add(allPlugsMenu);
       File[] plugJars = null;
       plugJars = new SearchFiles().filteredFilesToArr("./Plugins", ".jar");
@@ -41,14 +38,11 @@ public class PluginMenu {
       return menu;
    }
    
-   public void startPlugin(PluginStarter plugStart, MainWin mw,
-          ViewMenu viewMenu) {
-       selectPlugAct((ActionEvent e) -> {
+   public void startPlugin(PluginStarter plugStart, ViewSettings viewSet) {
+      selectPlugAct((ActionEvent e) -> {
          try {
             plugStart.startPlugin(getPluginIndex(e));
-            if (!viewMenu.isFunctionPnlSelected()) {
-               mw.showFunctionPnl();
-            }
+            viewSet.setShowFunctionState(true);
          }
          catch (IOException ioe) {
             System.out.println(ioe.getMessage());  

@@ -69,7 +69,7 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Returns the array of type {@code TextDocument}
+    * Returns this array of type {@code TextDocument}
     * @return  this array of type {@link TextDocument}
     */
    public TextDocument[] getTextDocument() {
@@ -77,7 +77,7 @@ public class TabbedFiles implements Observer{
    }
    
    /**
-    * Returns the array of type {@code EditArea}
+    * Returns this array of type {@code EditArea}
     * @return  this array of type {@link EditArea}
     */
    public EditArea[] getEditArea() {
@@ -89,7 +89,7 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Opens a new Tab to which no file is assigned
+    * Opens a new 'unnamed' Tab to which no file is assigned
     */
    public void newEmptyTab() {
       editArea[tabPane.tabCount()] = new EditArea();
@@ -99,7 +99,7 @@ public class TabbedFiles implements Observer{
    }
    
    /**
-    * Opens a file selected in {@code FileTree}
+    * Opens a file selected in {@code FileTree} in a new tab
     */
    @Override
    public void update(Observable o, Object arg) {
@@ -108,7 +108,14 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Opens a file that is selected in the file chooser
+    * Opens a file that is selected in the file chooser.
+    * <p>
+    * The file is opened in a new tab unless the only opened tab 
+    * is unnamed and has an empty text area.
+    * <p>
+    * If a project is not yet defined and a {@link ProjectActions}
+    * exists for the file type it is tried to set the project that 
+    * was active when the program was closed the last time. 
     */
    public void openFileByChooser() {
       File f = fo.chosenFile();     
@@ -124,11 +131,17 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Saves text area's content of the selected tab or calls
-    * {@link #saveAs()} if the tab is unnamed
+    * Saves text content of the {@code TextDocument} in the selected tab
+    * if a file has been assigned to it or saves the content as a new file
+    * that is specified in the file chooser.
+    * <p>
+    * 'Save-as-mode' also applies if a file has been assigned to the
+    * currently selected {@link TextDocument} but the file no longer
+    * exists on the hard drive
     */
    public void saveOrSaveAs() {  
-      if (txtDoc[iTab].filename().length() == 0) {
+      if (txtDoc[iTab].filename().length() == 0 
+            || !new File(txtDoc[iTab].filepath()).exists()) {
          saveAs();
       }
       else {
@@ -137,19 +150,20 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Saves the content of all tabs
+    * Saves the text content of the {@code TextDocument} objects
+    * in all tabs
     */
    public void saveAll() {
       for (int count = 0; count < tabPane.tabCount(); count++) {
          if (txtDoc[count].filename().length() > 0) {
             txtDoc[count].saveToFile();
-         }
+         } 
       }
    }
 
    /**
-    * Saves the content of a selected tab as a new file specified
-    * in file chooser
+    * Saves the text content of the {@code TextDocument} in the selected tab
+    * as a new file that is specified in the file chooser
     */
    public void saveAs() {
       File f = fs.fileToSave();
@@ -171,7 +185,7 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Closes a tab if the content of the text document is saved
+    * Closes a tab if the text content of its {@code TextDocument} is saved
     * or asks if closing shall happen with or without saving
     */
    public void tryClose() {
@@ -181,7 +195,8 @@ public class TabbedFiles implements Observer{
       else {                 
          int res = saveOrCloseOption(iTab);
          if (res == JOptionPane.YES_OPTION) {
-            if (txtDoc[iTab].filename().length() == 0) {
+            if (txtDoc[iTab].filename().length() == 0
+                  || !new File(txtDoc[iTab].filepath()).exists()) {
                saveAs();
             }
             else {
@@ -196,7 +211,7 @@ public class TabbedFiles implements Observer{
    }
    
    /**
-    * Closes all tabs or selects the first tab which is found
+    * Closes all tabs or selects the first tab whose text content is found
     * unsaved
     */
    public void tryCloseAll() {
@@ -222,7 +237,7 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Exits the program or selects the first tab which is found
+    * Exits the program or selects the first tab whose text content is found
     * unsaved
     */
    public void tryExit() {

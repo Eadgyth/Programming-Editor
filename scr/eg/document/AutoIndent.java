@@ -6,6 +6,8 @@ import javax.swing.text.StyledDocument;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 
+import java.awt.EventQueue;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyAdapter;
@@ -19,7 +21,6 @@ import eg.Preferences;
  * The indention of a previous line is added to a new line, is increased
  * upon typing an opening curly brackets and reduced upon typing a closing
  * curly bracked. <p>
- * The indentation is so far very simple
  */
 class AutoIndent {
    
@@ -70,20 +71,21 @@ class AutoIndent {
     */
    void openBracketIndent(String in, int pos) {
       String indent = currentIndent(in, pos);
-      String atPrevPos = in.substring(pos - 1, pos);      
+      int lastBracketPos = in.indexOf("{", pos);
+      String atPrevPos = in.substring(pos - 1, pos);
       if (atPrevPos.equals("{")) {
          indent += indentUnit;
-      } 
+      }
       this.indent = indent;
    }
 
    /**
-    * Reduces indentation by one indentation unit if close bracket was
-    * typed and at least one indent unit is detected before the bracket 
+    * Reduces indentation by one indentation unit if a close bracket
+    * was typed and at least one indent unit is detected before the
+    * bracket 
     */
    void closeBracketIndent(String in, int pos) {
       int lastReturn = 0;
-
       if (pos > 0) {
          String atPos = in.substring(pos, pos + 1);
          if ("}".equals(atPos)) {
@@ -99,10 +101,9 @@ class AutoIndent {
     */
    private String currentIndent(String in, int pos) {
       String currentIndent = "";
-   
-      /* -1 to skip the new return after pressing enter */
+      /*
+       * -1 to skip the new return after pressing enter */
       int lastReturn = in.lastIndexOf("\n", pos - 1);
-
       if (lastReturn != -1) {
          char[] line = in.substring(lastReturn + 1, pos).toCharArray();
          for (int i = 0; i < line.length; i++) {
@@ -128,7 +129,7 @@ class AutoIndent {
    
    KeyListener listener = new KeyAdapter() {
       boolean isEnter = false;
-      
+
       @Override
       public void keyPressed(KeyEvent e) {
          int key = e.getKeyCode();
@@ -143,7 +144,7 @@ class AutoIndent {
          int key = e.getKeyCode();
          try {       
             if (isEnter && key == KeyEvent.VK_ENTER) {
-               doc.insertString(pos, indent, normalSet);
+               doc.insertString(pos, indent, normalSet);            
             }
          }
          catch (BadLocationException ble) {
