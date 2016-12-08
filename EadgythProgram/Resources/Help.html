@@ -3,109 +3,162 @@
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
       <title>Eadgyth help</title>
-   </head>
-   <body>
       <style>
-       *{
-         font-family: sans-serif;
-       }
+         *{
+             font-family: sans-serif;
+          }
       </style>
-      
-      <h2>Eadgyth help (still in progress)</h2>
-      <h4>Requirements</h4>
-      <p>The Java runtime environment must be version JRE 8 to run Eadgyth.</p>
-      <p>For a Java project it is required that a Java development kit (JDK)
-         is installed and the computer is set up to use the JDK. For the JDK
-         of Oracle, see:      
-         <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html">
-         Oracle JDK</a>. Also, the filepath of the JDK must be saved in the
-         &lsquo;settings.properties&rsquo; file in the program folder. If this is not
-         done in the file itself already, the program asks to enter the filepath in a
-         dialog the first time it is tried to compile source files or if a new version
-         of the JDK was installed.</p>
-      <h4>Configuring and testing a Java project</h4>
-      <h5>Project settings</h5>
-      <p>The setting of a project always starts from an existing file that is opened
-         (or newly saved) and is in the selected tab. The file is found in a directory
-         that is supposed to be the project's root or in sub-directories of this root,
-         i.e. a separate directory for sources and/or a package.</p>    
-      <ol>
-         <li>Open a java source file or save an unnamed tab as a java source file.</li>
-         <li>Open the settings window using &lsquo;Project settings&rsquo; in the menu
-             &lsquo;Project&rsquo;.</li>
-         <li>Enter the name of the source file that contains the main method in the text
-             field &lsquo;Name of main program file&rsquo; (without extension). The main
-             file does not have to be the opened file.</li>
-         <li>If the main file is part of a package enter the package name in the text field
-             &lsquo;Package with main class&rsquo;. If it is located in a sub-package
-             enter the path with normal file separators (slash in Windows).</li>
-         <li>If the directory that contains source files (or packages) is not supposed
-             to be the project's root but a separate sources directory the name of this
-             directory is entered in text field &lsquo;Sources directory&rsquo;.</li>
-         <li>A separate destination directory for compiled class files maybe entered in the
-             text field &lsquo;Executables directory&rsquo; (the folder will be created
-             during compilation).</li>
-         <li>Click ok. If entries are correct the project can be viewed in the &lsquo;Project
-             explorer&rsquo; that is opened in the &lsquo;View&rsquo; menu.</li>
-      </ol>    
-      <h5>Compiling and running a project</h5>
-      <ol>
-         <li>Compile the source file(s) using &lsquo;Save all and compile&rsquo; in the
-             &lsquo;Project&rsquo; menu. If errors occur you will be asked to open the
-             console to view messages.</li>
-         <li>If the compilation was successful the new program can be run for testing by
-             using &lsquo;Run&rsquo; in the &lsquo;Project&rsquo; menu (this will also open the
-             console panel). The tested program can be forcibly quit using the &lsquo;stop&rsquo;
-             button of the console panel.</li>
-         <li>Arguments for a start script may be entered in the text field &lsquo;Arguments&rsquo;
-             (separated by single spaces) in the Settings window</li>
-         <li>A jar file may be created by using &lsquo;Build&rsquo; in the &lsquo;Project&rsquo;
-             menu.</li>
-      </ol>
-      <h5>Other projects than Java?</h5>
+   </head>
+   <body>    
+
+      <h2>Eadgyth help (under work)</h2>
+
       <ul>
-         <li>A project maybe also defined for a txt file (which only allows viewing files in the
-             project explorer) or for a file that contains HTML code. The latter can be viewd in
-             a web browser (the default browser) by using &lsquo;Run&rsquo; in the
-             &lsquo;Project&rsquo; menu. The keyword coloring for html code is so far very
-             rudimentary though.</li>
-      </ul>  
-      <h5>Changing between projects</h5>
-      <ul>
-         <li>Different projects may set. A new project is set by opening a file that is not part
-             of the currently active project and then opening the settings window
-             (&lsquo;Project&rsquo; > &lsquo;Project settings&rsquo;). The new file must be found
-             in the selected tab.
-         <li>Changing between already set projects is done by selecting a file that is part of
-             the project to be set active and using &lsquo;Project&rsquo; > &lsquo;Change
-             project&rsquo;.      
-      </ul>
-      <h4>Using the console</h4>
-      <p>The console area shall show messages after compilation of a project and the output of a
-      program that is tested. Interactive programs can be run too, at least Java programs.</p>
-      <p>In addition, self-chosen system commands entered in a dialog can be run in the current
-      working directory (a project's root directory if a project is set). For example, a created
-      jar file may be tested by the command  java -jar SomeProgram.jar. A run process can be
-      forcibly quit using the &lsquo;stop&rsquo; button.</p>
-      <p> Note that the console does not work as the terminal of the operating system. However,
-      it is possible (or rather not prohibited) to run the system's terminal in the console by
-      running the command that starts the terminal (e.g., cmd.exe in Windows). It is only important
-      to note that a tested program thereupon started from this terminal cannot be forcibly quit
-      using the &lsquo;stop&rsquo; button.</p>
-      <h5>To run a system command...</h5>
-      <ol>
-         <li>Open the console panel in the menu &lsquo;View&rsquo;.</li>
-         <li>Press the button &lsquo;Cmd...&rsquo; and enter a command in the shown dialog window.
-              Click ok in the dialog window to run the command.</li>
-         <li>To run a previous command press the &lsquo;>&rsquo; button; to change a command open
-             the command dialog again by pressing the &lsquo;Cmd...&rsquo; button.
-      </ol>
-      <h5>Further options</h5>
-      <ul>
-         <li>A new instance of Eadgyth can be run from the console by pressing the button with
-             the Eadgyth icon. One reason to do this would be to view the output when a new plugin
-             is tested.</li>
-      </ul>
+         <li><h3>Content</h3>
+            <ul>
+               <li><a href="#Requirements">Requirements</a><br></li>
+               <li><a href="#RunProject">Running a Java project</a>
+                  <ul>
+                     <li><a href="#ProjectSettings">Project settings</a></li>
+                     <li><a href="#Compiling">Compiling and testing a project</a></li>
+                     <li><a href="#OtherProjects">Other projects than Java?</a></li>
+                     <li><a href="#ChangeProjects">Changing between projects</a></li>
+                  </ul></li>
+               <li><a href="#Console">Using the console</a></li>
+               <li><a href="#Explorer">Using the project explorer</a></li>
+            </ul></li>
+     
+
+      <!--Requirements-->
+     
+         <li><h3 id="Requirements">Requirements</h3>
+         <p>The Java runtime environment must be version JRE 8 to run Eadgyth.</p>
+         <p>For a programming project in Java it is required that a Java development
+            kit (JDK) is installed and the computer is set up to use the JDK. For the JDK
+            of Oracle, see:      
+            <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html">
+            Oracle JDK</a>. Also, the filepath of the JDK must be saved in the
+            &lsquo;settings.properties&rsquo; file in the program folder. If this is not
+            done in the file itself, the program asks to enter the filepath in a dialog
+            the first time it is tried to compile source files or if a new version
+            of the JDK was installed.</p>
+   
+         <!--Run and test project-->
+         <li><h3 id="RunProject">Running a Java project</h3>
+         <h4 id="ProjectSettings">Project settings</h4>
+         <p>The setting of a project always starts from an existing file that is opened
+            (or newly saved) and is in the selected tab. The file is found in a directory
+            that is supposed to be the project's root or in sub-directories of this root,
+            i.e. a separate directory for sources and/or a package.</p>
+         <ol>
+            <li>Open a java source file or save an unnamed tab as a java source file.</li>
+            <li>Open the settings window using &lsquo;Project settings&rsquo; in the menu
+                &lsquo;Project&rsquo;.</li>
+            <li>Enter the name of the source file that contains the main method in the text
+                field &lsquo;Name of main program file&rsquo; (without extension). The main
+                file does not have to be the opened file.</li>
+            <li>If the main file is part of a package enter the package name in the text field
+                &lsquo;Package with main class&rsquo;. If it is located in a sub-package
+                enter the path with normal file separators (slash in Windows).</li>
+            <li>If the directory that contains source files (or packages) is not supposed
+                to be the project's root but a separate sources directory the name of this
+                directory is entered in text field &lsquo;Sources directory&rsquo;.</li>
+            <li>A separate destination directory for compiled class files maybe entered in the
+                text field &lsquo;Executables directory&rsquo; (the folder will be created
+                during compilation).</li>
+            <li>Click ok. If entries are correct the project can be viewed in the &lsquo;Project
+                explorer&rsquo; that is opened in the &lsquo;View&rsquo; menu.</li>
+         </ol>
+   
+         <h4 id="Compiling">Compiling and testing a project</h4>
+         <ol>
+            <li>Compile the source file(s) using &lsquo;Save all and compile&rsquo; in the
+                &lsquo;Project&rsquo; menu. If errors occur you will be asked to open the
+                console to view messages.</li>
+            <li>If the compilation was successful the new program can be run for testing by
+                using &lsquo;Run&rsquo; in the &lsquo;Project&rsquo; menu (this will also open the
+                console panel). The tested program can be forcibly quit by clicking the
+                &lsquo;stop&rsquo; symbol in the toolbar of the console panel.</li>
+            <li>Arguments for a start script may be entered in the text field &lsquo;Arguments&rsquo;
+                (separated by single spaces) in the Settings window</li>
+            <li>A jar file may be created by using &lsquo;Build&rsquo; in the &lsquo;Project&rsquo;
+                menu.</li>
+         </ol>
+   
+         <h4 id="OtherProjects">Other projects than Java?</h4>
+         <ul>
+            <li>A project directory maybe set for the txt file type. This would be done just
+                to view files in the project explorer but there are no actions associated with
+                such project.</li>
+            <li>A project maybe also set for the html file type. HTML code can be viewed
+                in the default browser by selecting &lsquo;Project&rsquo; > &lsquo;Run&rsquo;.
+                The name of the file that is viewed is entered in the text field
+                &lsquo;HTML file&rsquo; in the settings window. The keyword coloring for html
+                code is rudimentary though.</li>
+         </ul>
+         
+         <h4 id="ChangeProjects">Changing between projects</h4>
+         <ul>
+            <li>Different projects may set during a session. A new project is set by opening a file
+                that is not part of the currently active project and then opening the settings window
+                (&lsquo;Project&rsquo; > &lsquo;Project settings&rsquo;). The file must be found
+                in the selected tab.
+            <li>Changing between already set projects is done by selecting a file that is part of
+                the project to be set active and using &lsquo;Project&rsquo; > &lsquo;Change
+                project&rsquo;.      
+         </ul>
+   
+         <!--Console-->
+         <li><h3 id="Console">Using the console</h3>
+         <p>The console area shall show messages after compilation of a project and the output of
+            a program that is tested. Interactive programs can be run too, at least Java programs.</p>
+         <p>In addition, self-chosen system commands entered in a dialog can be run in the current
+            working directory (a project's root directory). A run process can be forcibly quit by
+            clicking the &lsquo;stop&rsquo; symbol.</p>
+         <p>Note that the console does not work as the terminal of the operating system. However,
+            it is possible (or rather not prohibited) to run the system's terminal in the console by
+            running the command that starts the terminal (e.g., cmd.exe in Windows). It is important
+            to note that a tested program thereupon started from this terminal CANNOT be forcibly
+            quit by clicking the &lsquo;stop&rsquo; symbol.</p>
+   
+         <h4>To run a system command...</h4>
+         <ol>
+            <li>Open the console panel in the menu &lsquo;View&rsquo;.</li>
+            <li>Press the button &lsquo;Cmd...&rsquo; and enter a command in the shown dialog window.
+                 Click ok in the dialog window to run the command.</li>
+            <li>To run a previous command press the &lsquo;>&rsquo; button; to change a command open
+                the command dialog again by clicking &lsquo;Cmd...&rsquo;.</li>
+         </ol>
+   
+         <h4>Further options</h4>
+         <ul>
+            <li>A new instance of Eadgyth can be run from the console by pressing the button with
+                the Eadgyth icon. One reason to do this would be to view the output when a new plugin
+                is tested.</li>
+         </ul>
+   
+         <!--File explorer-->
+         <li><h3 id="Explorer">Using the project explorer</h3>
+         <p>The project explorer can be opened by selecting
+            (&lsquo;View&rsquo; > &lsquo;Project explorer&rsquo;) once a project is defined.<br>
+            The explorer always shows the project that is currently set active. A few operations
+            are supported:</p>
+         <ul>
+            <li>A double left click on a folder shows a new tree with the clicked folder as root.
+                To move back the &lsquo;Folder up&rsquo; symbol is clicked. The upmost level
+                is the project's root directory, however.</li>
+            <li>A double left click on a file opens the clicked file in a new tab.</li>
+            <li>A file may be deleted after a right click on a file.</li>
+            <li>A folder may be as well deleted after a right click on a folder but a folder
+                is protected from deletion if it is not empty. The exception is, if present,
+                the separate folder for executable files or its subfolders. This may be deleted
+                for a renewed compilation</li>
+            <li>A new folder may be created after a right click on a folder.</li>
+            <li>Changes to the project's file structure made from within the program should be
+                updated in the file view (no guarantee). Changes made from outside the program
+                can be updated &lsquo;manually&rsquo; by clicking the &lsquo;refresh&rsquo;
+                symbol.</li>
+          </ul></li>
+       </ul>
    </body>
 </html>
-      
