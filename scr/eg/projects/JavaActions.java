@@ -128,21 +128,21 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       EventQueue.invokeLater(() -> {
          if (proc.isProcessEnded()) {    
             comp.compile(getProjectRoot(), getExecDirName(),
-                         getSourceDirName());            
-         }
-         cw.setCaret(0);
-         fileTree.updateTree();
-         if (!viewSet.isConsoleSelected()) {
-            if (!comp.success()) {
-               int result = JOptions.confirmYesNo("Compilation failed\n"
-                     + comp.getMessage()
-                     + "\nOpen console window to view messages?");
-               if (result == 0) {
-                  viewSet.setShowConsoleState(true);
+                  getSourceDirName());            
+            cw.setCaret(0);
+            fileTree.updateTree();
+            if (!viewSet.isConsoleSelected()) {
+               if (!comp.success()) {
+                  int result = JOptions.confirmYesNo("Compilation failed\n"
+                        + comp.getMessage()
+                        + "\nOpen console window to view messages?");
+                  if (result == 0) {
+                     viewSet.setShowConsoleState(true);
+                  }
                }
-            }
-            else {
-               JOptions.infoMessage("Compilation successful");
+               else {
+                  JOptions.infoMessage("Compilation successful");
+               }
             }
          }
       });
