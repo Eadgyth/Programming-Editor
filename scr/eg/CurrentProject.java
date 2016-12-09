@@ -82,8 +82,8 @@ public class CurrentProject {
     * project
     * @param dir  the directory that may include the project's root
     * directory 
-    * @return if the currently set {@TextDocument} is part of the current
-    * project. False if no project has been assigned
+    * @return if the currently set {@link TextDocument} is part of the
+    * current project. False if no project has been assigned
     */
    public boolean isInProjectPath(String dir) {
       return isProjectSet() && proj.isInProjectPath(dir);
@@ -175,9 +175,9 @@ public class CurrentProject {
    } 
 
    /**
-    * Adds a file to the file tree if the file belongs
-    * to this current project
-    * @param dir  the directory that include the project's
+    * Updates the file tree of {@code FileTree} if the specified
+    * directory includes the project's root directory
+    * @param dir  the directory that include the project's root
     * directory
     * 
     */
