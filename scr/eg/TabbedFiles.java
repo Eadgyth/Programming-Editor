@@ -260,11 +260,19 @@ public class TabbedFiles implements Observer{
    }
    
    /**
-    * Saves all open files and compiles the current project
+    * Saves the selected file and compiles the current project if
+    * the file in the selected tab belongs to the currently active
+    * project
     */
    public void saveAndCompile() {
-      saveAll();
-      currProj.compile();
+      if (currProj.isInProjectPath(txtDoc[iTab].dir())) {
+         txtDoc[iTab].saveToFile();
+         currProj.compile();
+      }
+      else {
+         JOptions.warnMessage("To compile, a file that belongs to"
+               + " the current project must be selected");
+      }
    }
 
    //
@@ -272,12 +280,12 @@ public class TabbedFiles implements Observer{
    //
 
    private void open(File file) {
-      if (tabPane.tabCount() == txtDoc.length) {
-         JOptions.warnMessage("The maximum number of tabs is reached.");
-         return;
-      }
       if (isFileOpen(file.toString())) {
          JOptions.warnMessage(file.getName() + " is open");
+         return;
+      }
+      if (tabPane.tabCount() == txtDoc.length) {
+         JOptions.warnMessage("The maximum number of tabs is reached.");
          return;
       }
       

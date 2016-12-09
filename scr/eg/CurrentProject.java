@@ -76,6 +76,18 @@ public class CurrentProject {
    public boolean isProjectSet() {
       return proj != null;
    }
+   
+   /**
+    * If the currently set {@code TextDocument} is part of the current
+    * project
+    * @param dir  the directory that may include the project's root
+    * directory 
+    * @return if the currently set {@TextDocument} is part of the current
+    * project. False if no project has been assigned
+    */
+   public boolean isInProjectPath(String dir) {
+      return isProjectSet() && proj.isInProjectPath(dir);
+   }
 
    /**
     * Tries to assign to this the project that was active when the program
@@ -170,7 +182,7 @@ public class CurrentProject {
     * 
     */
    public void updateFileTree(String dir) {
-      if (isProjectSet() && proj.isInProjectPath(dir)) {
+      if (isInProjectPath(dir)) {
          fileTree.updateTree();
       }
    }

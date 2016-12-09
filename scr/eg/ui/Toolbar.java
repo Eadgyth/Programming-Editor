@@ -77,7 +77,7 @@ public class Toolbar {
          "Open file", "Save selected file",
          "Undo", "Redo", "Indent selection more",
          "Indent selection less",
-         "Save all open files and compile project", "Run project"
+         "Save selected file and compile project", "Run project"
       };
       
       for (int i = 0; i < bts.length; i++) {
