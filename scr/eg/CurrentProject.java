@@ -101,32 +101,40 @@ public class CurrentProject {
 
    /**
     * Tries to assign to this current project a project which a configuration
-    * exists for in a local 'config' file or in the general 'prefs' file.
+    * exists for in a local 'config' file or in the program's 'prefs' file.
     * <p>
-    * Assignment of the project to this current project (i.e. setting the
-    * project active) happens only if no other project was assigned before.
+    * Assignment of the project to this current project (setting the project
+    * active) will happen only if no other project was assigned before.
     * However, if a local 'config' is found the project is always added to
     * this list of configured projects.
     */
    public void retrieveLastProject() {
-      if (!isProjectSet()
-            || (isProjectSet() & !proj.isInProjectPath(docSel.dir()))) {
-         ProjectActions prPrevious
-               = projFact.getProjAct(FileUtils.extension(docSel.filepath()));
-         if (prPrevious != null) {
-            if (prPrevious.retrieveLastProject(docSel.dir())) {
+      if (isProjectSet() && proj.isInProjectPath(docSel.dir())) {
+         return;
+      }
+
+      ProjectActions prPrevious
+            = projFact.getProjAct(FileUtils.extension(docSel.filepath()));
+      boolean isFound = prPrevious != null
+            && prPrevious.retrieveLastProject(docSel.dir());
+      if (isFound) {
+         if (!isProjectSet()) {          
+            proj = prPrevious;
+            proj.addOkAction(e -> configureProject(prPrevious));
+            recent.add(proj); 
+            updateProjectSetting(proj);
+         }
+         else {
+            ProjectActions inList = searchRecent(docSel.dir());
+            if (inList == null) {
                prPrevious.addOkAction(e -> configureProject(prPrevious));
                recent.add(prPrevious);
-               if (!isProjectSet()) {          
-                  proj = prPrevious;    
-                  updateProjectSetting(proj);
-               }
-               if (recent.size() == 2) {
-                  menu.getProjectMenu().enableChangeProjItm();
-               }
             }
          }
-      }            
+         if (recent.size() == 2) {
+            menu.getProjectMenu().enableChangeProjItm();
+         }
+      }
    }
 
    /**
@@ -139,7 +147,8 @@ public class CurrentProject {
    public void openSettingsWindow() {
       if (!isProjectSet()) {
          if (docSel.filename().length() == 0) {
-            JOptions.titledInfoMessage("A project can be set after a file was"
+            JOptions.titledInfoMessage(
+                    "A project can be set after a file was"
                   + " opened or a new file was saved", "Note");
          }
          else {
@@ -167,12 +176,12 @@ public class CurrentProject {
    }
    
    /**
-    * Assigns to this current project a project from this {@code List} of
+    * Assigns to this current project the project from this {@code List} of
     * configured projects which the currently selected {@code TextDocument}
     * belongs to.
     * <p>
     * If the currently set {@code TextDocument} does not belong to a listed
-    * project it is asked to set a new project
+    * project it is asked to set up a new project.
     */
    public void changeProject() {
       ProjectActions recent = searchRecent(docSel.dir());
@@ -193,10 +202,10 @@ public class CurrentProject {
 
    /**
     * Updates the file tree of {@code FileTree} if the specified
-    * directory includes the project's root directory
+    * directory includes the project's root directory.
     * @param dir  the directory that includes the project's root
     * directory
-    * 
+    * See {@link FileTree #updateTree()
     */
    public void updateFileTree(String dir) {
       if (isInProjectPath(dir)) {
