@@ -5,8 +5,6 @@ import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 
-import javax.swing.SwingWorker;
-
 import java.awt.EventQueue;
 
 import java.lang.reflect.InvocationTargetException;
