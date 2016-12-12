@@ -51,7 +51,7 @@ public class FormatMenu {
 
       menu.add(font);
       menu.add(wordWrap);
-      if ("enabled".equals(prefs.prop.getProperty("wordWrap"))) {
+      if ("enabled".equals(prefs.getProperty("wordWrap"))) {
          wordWrap.setState(true);
       }
    }

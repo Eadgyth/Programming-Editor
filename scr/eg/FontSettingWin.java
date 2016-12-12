@@ -88,12 +88,12 @@ class FontSettingWin {
    }
 
    private JPanel fontPnl() {
-      selectFont.setSelectedItem(prefs.prop.getProperty("font"));
+      selectFont.setSelectedItem(prefs.getProperty("font"));
       return comboBoxPnl(selectFont, "Font:   ");     
    }
 
    private JPanel sizePnl() {
-      selectSize.setSelectedItem(prefs.prop.getProperty("fontSize"));
+      selectSize.setSelectedItem(prefs.getProperty("fontSize"));
       return comboBoxPnl(selectSize, "Size:   ");     
    }
 

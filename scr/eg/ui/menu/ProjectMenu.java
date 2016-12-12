@@ -16,7 +16,7 @@ import eg.ui.IconFiles;
 public class ProjectMenu {
    
    private final JMenu     menu       = new JMenu("Project");
-   private final JMenuItem compile    = new JMenuItem("Save selected file and compile",
+   private final JMenuItem compile    = new JMenuItem("Save all and compile",
                                         IconFiles.compileIcon);
    private final JMenuItem run        = new JMenuItem("Run", IconFiles.runIcon);
    private final JMenuItem build      = new JMenuItem("Build");

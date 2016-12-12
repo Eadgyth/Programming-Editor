@@ -59,6 +59,7 @@ public class TabbedFiles implements Observer{
       this.docUpdate = docUpdate;
       this.currProj = currProj;
 
+      currProj.setDocumentArr(txtDoc);
       docUpdate.setDocumentArrays(txtDoc, editArea);
       changeListener = (ChangeEvent changeEvent) -> {
          changeTabEvent(changeEvent);
@@ -265,14 +266,7 @@ public class TabbedFiles implements Observer{
     * project
     */
    public void saveAndCompile() {
-      if (currProj.isInProjectPath(txtDoc[iTab].dir())) {
-         txtDoc[iTab].saveToFile();
-         currProj.compile();
-      }
-      else {
-         JOptions.warnMessage("To compile, a file that belongs to"
-               + " the current project must be selected");
-      }
+      currProj.compile();
    }
 
    //
@@ -354,8 +348,10 @@ public class TabbedFiles implements Observer{
          editArea[i] = editArea[i+1];
       }
       if (tabPane.tabCount() > 0) {
+         txtDoc[tabPane.tabCount()] = null;
+         editArea[tabPane.tabCount()] = null;
          int index = tabPane.selectedIndex();
-          mw.displayFrameTitle(txtDoc[index].filepath());
+         mw.displayFrameTitle(txtDoc[index].filepath());
       }
       else { 
          newEmptyTab();
@@ -367,7 +363,7 @@ public class TabbedFiles implements Observer{
       iTab = sourceTb.getSelectedIndex();
       if (iTab > -1) {
          docUpdate.updateDocument(iTab);
-         currProj.setTextDocument(txtDoc[iTab]);
+         currProj.setDocumentIndex(iTab);
          mw.displayFrameTitle(txtDoc[iTab].filepath());
       }
    }

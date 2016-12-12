@@ -43,7 +43,7 @@ public class TextDocument {
       this.textArea = editArea.textArea();
       type = new TypingEdit(editArea);
       PREFS.readPrefs();
-      language = PREFS.prop.getProperty("language");
+      language = PREFS.getProperty("language");
       openSettings();
    }
 

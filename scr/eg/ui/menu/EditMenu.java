@@ -96,7 +96,7 @@ public class EditMenu {
       menu.addSeparator();
       for (int i = 0; i < selectLanguage.length; i++) {
          selectLanguage[i] = new JCheckBoxMenuItem(LANGUAGES[i]);
-         if (prefs.prop.getProperty("language").equals(
+         if (prefs.getProperty("language").equals(
                eg.Languages.values()[i].toString())) {
             selectLanguage[i].setState(true);
          }

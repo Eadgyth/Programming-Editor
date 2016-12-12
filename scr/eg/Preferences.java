@@ -1,62 +1,155 @@
 package eg;
 
 import java.util.Properties;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.Writer;
+import java.io.FileWriter;
 
 public class Preferences {
+   
+   private final static String[] PREFS_KEYS = { 
+      "recentProject",
+      "recentMain",
+      "recentModule",
+      "recentSourceDir",
+      "recentExecDir",
+      "recentPath",
+      "font",
+      "fontSize",
+      "indentUnit",
+      "LaF",
+      "toolbar",
+      "lineNumbers",
+      "statusbar",
+      "language",
+      "wordWrap"
+   };
+   
+   private final static String[] CONFIG_KEYS = {
+      "recentMain",
+      "recentModule",
+      "recentSourceDir",
+      "recentExecDir",
+   };
 
-   public Properties prop = null; 
+   private Properties prop = null;
+   
+   public String getProperty(String search) {
+      return prop.getProperty(search);
+   }
+   
+   public void readSettings() {
+      readProps("settings.properties");
+   }
 
-   public void readSettings() { 
-      InputStream reader = null;
-  
-      try {      
-        reader = new FileInputStream("settings.properties");
-        prop = new Properties();
-        prop.load( reader );
-      }
-      catch ( IOException e ) {
-        e.printStackTrace();
-      }
-      finally {
-        try {
-           if (reader != null){
-              reader.close();
-           }
-        }
-        catch (IOException e) { }
-      }
+   public void readPrefs() {
+      readProps("prefs.properties");
+   }
+   
+   public void readConfig(String dir) {
+      readProps(dir + File.separator + "config.properties");
    }
    
    public void storeSettings(String newSetting) {
       readSettings();
-      
-      Writer writer = null;
+      String[] allKeys = {
+         "LocationOfJDK"
+      };
+      String[] allValues = {
+         prop.getProperty("LocationOfJDK")
+      };
+      allValues[0] = newSetting;
+      store("settings.properties", allKeys, allValues);
+   }
 
+   public void storePrefs(String propToUpdate, String newProperty) {
+      readPrefs();
+
+      String[] allValues = {
+         prop.getProperty("recentProject"),
+         prop.getProperty("recentMain"),
+         prop.getProperty("recentModule"),
+         prop.getProperty("recentSourceDir"),
+         prop.getProperty("recentExecDir"),
+         prop.getProperty("recentPath"),
+         prop.getProperty("font"),
+         prop.getProperty("fontSize"),
+         prop.getProperty("indentUnit"),
+         prop.getProperty("LaF"),
+         prop.getProperty("toolbar"),
+         prop.getProperty("lineNumbers"),
+         prop.getProperty("statusbar"),
+         prop.getProperty("language"),
+         prop.getProperty("wordWrap"),
+      };
+      int i;
+      for (i = 0; i < PREFS_KEYS.length; i++) {
+         if (PREFS_KEYS[i].equals(propToUpdate)) {
+            allValues[i] = newProperty;
+            break;
+         }
+      }
+
+      store("prefs.properties", PREFS_KEYS, allValues);
+   }
+
+   public void storeConfig(String propToUpdate, String newProperty,
+         String dir) {
+      
+      String configFile = dir + File.separator + "config.properties";
+      if (!new File(configFile).exists()) {
+         createFile(configFile, CONFIG_KEYS);
+      }
+      readConfig(dir);
+
+      String[] allValues = {
+         prop.getProperty("recentMain"),
+         prop.getProperty("recentModule"),
+         prop.getProperty("recentSourceDir"),
+         prop.getProperty("recentExecDir"),
+      };
+
+      int i;
+      for (i = 0; i < CONFIG_KEYS.length; i++) {
+         if (CONFIG_KEYS[i].equals(propToUpdate)) {
+            allValues[i] = newProperty;
+            break;
+         }
+      }
+
+      store(configFile, CONFIG_KEYS, allValues);
+   }
+   
+   private void createFile(String file, String[] allKeys) {
+      Writer writer = null;
+      prop = new Properties();
       try {
-         writer = new FileWriter("settings.properties");
-         prop.setProperty("LocationOfJDK", newSetting);        
+         writer = new FileWriter(file);
+         for (int j = 0; j < allKeys.length; j++) {
+            prop.setProperty(allKeys[j], "");
+         }         
          prop.store(writer, null);
       }
-      catch ( IOException e ){
+      catch (IOException e){
         e.printStackTrace();
       }
       finally {
          try {
-            if (writer != null) {
-               writer.close();
-            }
-         } catch (IOException e) {
+            writer.close();
+         } catch ( Exception e ) {
             e.printStackTrace();
          }
       }
    }
-
-   public void readPrefs() { 
+   
+   private void readProps(String file) { 
       InputStream reader = null;
     
       try {      
-        reader = new FileInputStream("prefs.properties");
+        reader = new FileInputStream(file);
         prop = new Properties();
         prop.load(reader); 
       }
@@ -73,62 +166,17 @@ public class Preferences {
          }
       }
    }
-
-   public void storePrefs(String propToUpdate, String newProperty) {
-      readPrefs();
-
-      String[] allKeys = { 
-            "font",
-            "fontSize",
-            "recentPath",
-            "recentProject",
-            "recentModule",
-            "recentSourceDir",
-            "recentExecDir",
-            "recentMain",
-            "indentUnit",
-            "LaF",
-            "toolbar",
-            "lineNumbers",
-            "statusbar",
-            "language",
-            "wordWrap"
-       };
- 
-      //search property to update
-      int i;
-      for (i = 0; i < allKeys.length
-            && !allKeys[i].equals(propToUpdate); i++);
-
-      String[] allValues = {
-            prop.getProperty("font" ),
-            prop.getProperty("fontSize"),
-            prop.getProperty("recentPath"),
-            prop.getProperty("recentProject"),
-            prop.getProperty("recentModule" ),
-            prop.getProperty("recentSourceDir" ),
-            prop.getProperty("recentExecDir"),
-            prop.getProperty("recentMain" ),
-            prop.getProperty("indentUnit" ),
-            prop.getProperty("LaF" ),
-            prop.getProperty("toolbar" ),
-            prop.getProperty("lineNumbers" ),
-            prop.getProperty("statusbar"),
-            prop.getProperty("language"),
-            prop.getProperty("wordWrap")
-      };
-      allValues[i] = newProperty;
-
+   
+   private void store(String file, String[] allKeys, String[] allValues) {
       Writer writer = null;
-
       try {
-         writer = new FileWriter("prefs.properties");
-         for ( int j = 0; j < allKeys.length; j++ ) {
-            prop.setProperty( allKeys[j], allValues[j] );
+         writer = new FileWriter(file);
+         for (int j = 0; j < allKeys.length; j++) {
+            prop.setProperty(allKeys[j], allValues[j]);
          }         
-         prop.store( writer, null );
+         prop.store(writer, null);
       }
-      catch ( IOException e ){
+      catch (IOException e){
         e.printStackTrace();
       }
       finally {

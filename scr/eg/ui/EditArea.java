@@ -63,8 +63,8 @@ public class EditArea {
       initScrollSimpleArea();
       intitScrollWrapArea();
       boolean isLineNumbers =
-            Constants.SHOW.equals(PREFS.prop.getProperty("lineNumbers"));
-      if ("enabled".equals(PREFS.prop.getProperty("wordWrap"))) {
+            Constants.SHOW.equals(PREFS.getProperty("lineNumbers"));
+      if ("enabled".equals(PREFS.getProperty("wordWrap"))) {
          enableWordWrap();
       }
       else {
@@ -180,8 +180,8 @@ public class EditArea {
    //--private methods
    //
    private void initFont() {
-      font = PREFS.prop.getProperty("font");
-      fontSize = Integer.parseInt(PREFS.prop.getProperty("fontSize"));
+      font = PREFS.getProperty("font");
+      fontSize = Integer.parseInt(PREFS.getProperty("fontSize"));
       Font newFont = new Font(font, Font.PLAIN, fontSize);
       textArea.setFont(newFont);
       lineArea.setFont(newFont);

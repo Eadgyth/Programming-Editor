@@ -83,7 +83,7 @@ public class ViewSettings {
    
    public void enableWordWrap() {
       boolean isLineNumbers =
-         Constants.SHOW.equals(prefs.prop.getProperty("lineNumbers"));
+         Constants.SHOW.equals(prefs.getProperty("lineNumbers"));
     
       if (fMenu.isWordWrapSelected()) {
          editArea[editAreaIndex].enableWordWrap();

@@ -38,7 +38,7 @@ class ViewSettingsWin {
    
    public ViewSettingsWin() {
       prefs.readPrefs();
-      selectLaf.setSelectedItem(prefs.prop.getProperty("LaF"));
+      selectLaf.setSelectedItem(prefs.getProperty("LaF"));
       initFrame();
    }
    
@@ -91,7 +91,7 @@ class ViewSettingsWin {
    }
    
    private JPanel setToolbarPanel() {      
-      if (Constants.SHOW.equals(prefs.prop.getProperty("toolbar"))) {
+      if (Constants.SHOW.equals(prefs.getProperty("toolbar"))) {
          checkToolbar.setSelected(true);
       }
       else {
@@ -101,7 +101,7 @@ class ViewSettingsWin {
    }
    
    private JPanel setLineNumberPanel() {      
-      if (Constants.SHOW.equals(prefs.prop.getProperty("lineNumbers"))) {
+      if (Constants.SHOW.equals(prefs.getProperty("lineNumbers"))) {
          checkLineNumbers.setSelected(true);
       }
       else {
@@ -111,7 +111,7 @@ class ViewSettingsWin {
    }
    
    private JPanel setStatusBarPanel() {      
-      if (Constants.SHOW.equals(prefs.prop.getProperty("statusbar"))) {
+      if (Constants.SHOW.equals(prefs.getProperty("statusbar"))) {
          checkStatusbar.setSelected(true);
       }
       else {

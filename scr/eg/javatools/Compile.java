@@ -142,7 +142,7 @@ public class Compile {
     */
    private void setJdkPath() {
       PREFS.readSettings();
-      jdkPath = PREFS.prop.getProperty("LocationOfJDK");
+      jdkPath = PREFS.getProperty("LocationOfJDK");
       if (!new File(jdkPath).exists()) {
          String notFound = "The JDK was not found."
                + " Enter or correct the filepath of the JDK.";

@@ -2,6 +2,7 @@ package eg.projects;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -21,6 +22,7 @@ import java.awt.event.ActionListener;
 
 //--Eadgyth--//
 import eg.ui.IconFiles;
+import eg.Constants;
 
 /**
  * The window for the configuration of a project
@@ -40,6 +42,7 @@ public class SettingsWin {
    private final JTextField   buildTf      = new JTextField();
    private final JButton      okBt         = new JButton("   OK   ");
    private final JButton      cancelBt     = new JButton("Cancel");
+   private final JCheckBox    saveConfig   = new JCheckBox();
 
    /**
     * Creates a SettingsWin and defines which inputs are asked for.
@@ -146,13 +149,31 @@ public class SettingsWin {
    /**
     * Shows in the text field the name of the directory
     * that contains executable files / packages
+    * @param in  the name of the directory that contains
+    * executable files / packages
     */
    public void displayExecDir(String in) {
       execDirTf.setText(in);
    }
+   
+   /**
+    * @return if the checkbox to save the text field inputs
+    * it saved to local prefs file
+    */
+   public boolean isSaveConfig() {
+      return saveConfig.isSelected();
+   }
+   
+   /**
+    * @param isSelected  true to mark the checkbox for saving text
+    * field inputs to a local prefs file selected
+    */
+   public void setSaveConfigSelected(boolean isSelected) {
+      saveConfig.setSelected(isSelected);
+   }
 
    private JPanel projectPanel(String fileKind, String moduleKind, boolean useScrExec) {
-      GridLayout grid = new GridLayout(1, 0);
+      GridLayout grid = new GridLayout(2, 0);
       JPanel projPnl = new JPanel(grid);
 
       // file panel
@@ -161,19 +182,21 @@ public class SettingsWin {
 
       // module/subdir panel
       if (moduleKind != null) {
-         grid.setRows(2);
+         grid.setRows(3);
          JLabel moduleLb = new JLabel(moduleKind + ":");
          projPnl.add(holdLbAndTf(moduleLb, moduleTf));
       }
 
       // scources/executables panel
       if (useScrExec) {
-         grid.setRows(4);        
+         grid.setRows(5);        
          JLabel sourcesDirLb = new JLabel("Sources directory:");
          projPnl.add(holdLbAndTf(sourcesDirLb, sourcesDirTf));
          JLabel execDirLb = new JLabel("Executables directory:");
          projPnl.add(holdLbAndTf(execDirLb, execDirTf));
       }
+
+      projPnl.add(checkBxPnl(saveConfig, "Save settings in project folder"));
 
       projPnl.setBorder(titledBorder("Project"));  
       return projPnl;
@@ -221,6 +244,20 @@ public class SettingsWin {
             (new LineBorder(Color.BLACK, 1), title);
       tBorder.setTitleFont(eg.Constants.VERDANA_PLAIN_11);
       return tBorder;
+   }
+   
+   private JPanel checkBxPnl(JCheckBox checkBox, String title) {
+      JLabel label = new JLabel(title);
+      label.setFont(Constants.SANSSERIF_BOLD_12);
+      
+      JPanel checkBxPnl = new JPanel(); 
+      checkBxPnl.setLayout(new BoxLayout(checkBxPnl, BoxLayout.LINE_AXIS));
+      checkBox.setHorizontalTextPosition(JCheckBox.LEFT);
+      checkBxPnl.add(Box.createHorizontalGlue());   
+      checkBxPnl.add(label);
+      checkBxPnl.add(checkBox);
+      checkBxPnl.add(Box.createRigidArea(new Dimension(30, 0)));
+      return checkBxPnl;
    }
    
    private JPanel combineAll(String fileKind, String moduleKind, boolean useScrExec,

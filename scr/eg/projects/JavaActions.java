@@ -124,7 +124,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    
    @Override                                                                          
    public void compile() {      
-      cw.setText("");
+      cw.setText("<<Compile " + getProjectName() + ">>\n");
       EventQueue.invokeLater(() -> {
          if (proc.isProcessEnded()) {    
             comp.compile(getProjectRoot(), getExecDirName(),
@@ -133,15 +133,17 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
             fileTree.updateTree();
             if (!viewSet.isConsoleSelected()) {
                if (!comp.success()) {
-                  int result = JOptions.confirmYesNo("Compilation failed\n"
-                        + comp.getMessage()
+                  int result = JOptions.confirmYesNo("Compilation of '"
+                        +  getProjectName() + "' failed.\n"
+                        + comp.getMessage() + "."
                         + "\nOpen console window to view messages?");
                   if (result == 0) {
                      viewSet.setShowConsoleState(true);
                   }
                }
                else {
-                  JOptions.infoMessage("Compilation successful");
+                  JOptions.infoMessage("Successfully compiled '" + getProjectName()
+                        + "'.");
                }
             }
          }
@@ -171,7 +173,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       SearchFiles sf = new SearchFiles();
       boolean existed
          = sf.filteredFilesToArr(execDir, ".jar").length == 1;
-      cw.setText("<<Create jar file>>");
       jar.createJar(getProjectRoot(), getMainFile(),
             getModuleName(), getExecDirName(), getBuildName());
       if (!existed) {
@@ -195,7 +196,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    private boolean mainClassFileExists() {
       boolean exists = mainProgramFileExists(".class");
       if (!exists) {
-         JOptions.warnMessage("Main class file could not be found");
+         JOptions.warnMessage("A compiled main class file could not be found");
          exists = false;
       }
       return exists;

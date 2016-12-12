@@ -17,8 +17,10 @@ import eg.utils.JOptions;
 public abstract class ProjectConfig implements Configurable {
 
    private final static String F_SEP = File.separator;
+   private final static String CONFIG_FILE = "config.properties";
    
    private final static Preferences PREFS = new Preferences();
+   private final static Preferences PREFS_LOC = new Preferences();
    private final SettingsWin setWin;
 
    private String projectPath = "";
@@ -35,7 +37,6 @@ public abstract class ProjectConfig implements Configurable {
     */
    public ProjectConfig(SettingsWin setWin) {
       this.setWin = setWin;
-      PREFS.readPrefs();
    }
 
    @Override
@@ -65,7 +66,7 @@ public abstract class ProjectConfig implements Configurable {
    
    @Override
    public boolean isInProjectPath(String dir) {
-      return previousProjectRoot(dir) != null;
+      return findRootInPath(dir, PREFS) != null;
    }
    
    @Override
@@ -158,34 +159,72 @@ public abstract class ProjectConfig implements Configurable {
    //
 
    private void configureLastProject(String dir) {
-      String previousProjectRoot = previousProjectRoot(dir);
-         
+      String previousProjectRoot = null;
+      Preferences prefs = null;
+      previousProjectRoot = findConfigFileInPath(dir);
       if (previousProjectRoot != null) {
+         prefs = PREFS_LOC;
+         PREFS_LOC.readConfig(previousProjectRoot);
+         setWin.setSaveConfigSelected(true);
+      }
+      else {
+         prefs = PREFS;
+         PREFS.readPrefs();
+         setWin.setSaveConfigSelected(false);
+         previousProjectRoot = findRootInPath(dir, prefs);
+      }
          
-         mainFile = PREFS.prop.getProperty("recentMain");
-         setWin.displayFile(mainFile);
-         
-         moduleDir = PREFS.prop.getProperty("recentModule");
-         setWin.displayModule(moduleDir);
-         
-         sourceDir = PREFS.prop.getProperty("recentSourceDir");
-         setWin.displaySourcesDir(sourceDir);
-         
-         execDir = PREFS.prop.getProperty("recentExecDir");
-         setWin.displayExecDir(execDir);
-         
-         projectPath = previousProjectRoot;
+      if (previousProjectRoot != null) {        
+         configProjectFromPrefs(previousProjectRoot, prefs);
+      }
+   }
+   
+   private void configProjectFromPrefs(String previousRoot, Preferences prefs) {
+      mainFile = prefs.getProperty("recentMain");
+      setWin.displayFile(mainFile);
+      
+      moduleDir = prefs.getProperty("recentModule");
+      setWin.displayModule(moduleDir);
+      
+      sourceDir = prefs.getProperty("recentSourceDir");
+      setWin.displaySourcesDir(sourceDir);
+      
+      execDir = prefs.getProperty("recentExecDir");
+      setWin.displayExecDir(execDir);
+      
+      projectPath = previousRoot;
+   }
+   
+   private String findConfigFileInPath(String dir) {
+      File newFile = new File(dir);
+      String searched = F_SEP + CONFIG_FILE;
+      String newFileStr = dir + searched;
+      boolean exists = new File(newFileStr).exists();
+      while(!exists) {
+         if (newFile.getParentFile() == null) {
+            newFile = null;
+            break;
+         }
+         newFile    = new File(newFile.getParent());
+         newFileStr = newFile.getAbsolutePath() + searched;
+         exists = new File(newFileStr).exists();
+      }
+      if (newFile == null) {
+         return null;
+      }
+      else {
+         return newFile.toString();
       }
    }
 
-   private String previousProjectRoot(String dir) { 
+   private String findRootInPath(String dir, Preferences prefs) { 
       File newFile = new File(dir);
       File project;
       if (projectPath.length() > 0) {
          project = new File(projectPath);
       }
       else {  
-         project = new File(PREFS.prop.getProperty("recentProject"));
+         project = new File(prefs.getProperty("recentProject"));
       }
       String newFileStr = newFile.getPath();
       String projStr = project.getPath();
@@ -257,5 +296,25 @@ public abstract class ProjectConfig implements Configurable {
       PREFS.storePrefs("recentModule", moduleDir);
       PREFS.storePrefs("recentSourceDir", sourceDir);
       PREFS.storePrefs("recentExecDir", execDir);
+      
+      if (setWin.isSaveConfig()) {
+         PREFS_LOC.storeConfig("recentMain", mainFile, projectPath);
+         PREFS_LOC.storeConfig("recentModule", moduleDir, projectPath);
+         PREFS_LOC.storeConfig("recentSourceDir", sourceDir, projectPath);
+         PREFS_LOC.storeConfig("recentExecDir", execDir, projectPath);
+      }
+      else {
+         File configFile = new File(projectPath + F_SEP + CONFIG_FILE);
+         if (configFile.exists()) {
+            int res = JOptions.confirmYesNo("'Save settings in project folder' is disabled."
+                  + " Remove the configuration file?");
+            if (res == 0) {
+               boolean success = configFile.delete();
+               if (!success) {
+                  JOptions.warnMessage("Deleting the configuration file failed");
+               }
+            }
+         }
+      }
    }
 }

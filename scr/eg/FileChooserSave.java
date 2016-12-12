@@ -25,7 +25,7 @@ public class FileChooserSave {
    FileChooserSave() {
       setLaf();
       prefs.readPrefs();
-      File recent = new File(prefs.prop.getProperty("recentPath"));  
+      File recent = new File(prefs.getProperty("recentPath"));  
       chooser.setCurrentDirectory(recent);
       chooser.setAcceptAllFileFilterUsed(true); 
    }

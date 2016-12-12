@@ -263,11 +263,11 @@ public class MainWin {
 
    private void initAllComponents() {
       prefs.readPrefs();
-      if (Constants.SHOW.equals(prefs.prop.getProperty("toolbar"))) {
+      if (Constants.SHOW.equals(prefs.getProperty("toolbar"))) {
          allComponents.add(toolbar, BorderLayout.NORTH);
       }
       allComponents.add(splitHorAll, BorderLayout.CENTER);
-      if (Constants.SHOW.equals(prefs.prop.getProperty("statusbar"))) {
+      if (Constants.SHOW.equals(prefs.getProperty("statusbar"))) {
          allComponents.add(statusBar, BorderLayout.SOUTH);
       }
       frame.setJMenuBar(menubar);

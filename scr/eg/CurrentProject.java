@@ -29,17 +29,15 @@ import eg.utils.JOptions;
 import eg.javatools.SearchFiles;
 
 /**
- * The current project that is configured for the file of a
- * {@code TextDocument}.
+ * The managing of projects.
  * <p>
- * A project is represented by an object of type {@link ProjectActions}.
+ * A project is represented by an object of type {@link ProjectActions}
+ * and is configured and/or set active depending on the {@link TextDocument}
+ * that is set as selected at the time.
  * <p>
- * A successfully configured project is assigned to this current
- * project and also added to this list of projects. By this any of
- * the listed projects are re-assigned to the current project if the
- * currently set {@link TextDocument} belongs to it.
- * <p>
- * See also {@link eg.projects.ProjectConfig}
+ * Several configured projects are stored in a {@code List} of projects.
+ * Any of these can be (re-) activated depending on the currently set
+ * {@link TextDocument}
  */
 public class CurrentProject {
 
@@ -51,7 +49,9 @@ public class CurrentProject {
    
    private final List<ProjectActions> recent = new ArrayList<>();
    private ProjectActions proj;
-   private TextDocument txtDoc;
+   private TextDocument[] txtDoc;
+   private TextDocument docSel;
+   private String extension;
 
    public CurrentProject(ProjectFactory projFact, MainWin mw,
          FileTree fileTree, Menu menu, Toolbar tBar) {
@@ -63,11 +63,21 @@ public class CurrentProject {
    }
 
    /**
-    * Sets in this the TextDocument which a project is configured for
-    * @param txtDoc  an object of {@link TextDocument}
+    * Sets in this the array of {@code TextDocument}
+    * @param txtDoc  the array of {@link TextDocument}
     */
-   public void setTextDocument(TextDocument txtDoc) {
+   public void setDocumentArr(TextDocument[] txtDoc) {
       this.txtDoc = txtDoc;
+   }
+   
+   /**
+    * Selects the object of this array of {@code TextDocument}
+    * that is used to configure and/or set active a project
+    * @param docIndex  the index of the element in this array
+    * of {@link TextDocument}
+    */
+   public void setDocumentIndex(int docIndex) {
+      docSel = txtDoc[docIndex];
    }
 
    /**
@@ -90,26 +100,33 @@ public class CurrentProject {
    }
 
    /**
-    * Tries to assign to this the project that was active when the program
-    * was closed the last time.
+    * Tries to assign to this current project a project which a configuration
+    * exists for in a local 'config' file or in the general 'prefs' file.
     * <p>
-    * Method requires that (i) no other project has been assigned before
-    * during the lifetime of the program and (ii) the currently set
-    * {@link TextDocument} is part of last project
+    * Assignment of the project to this current project (i.e. setting the
+    * project active) happens only if no other project was assigned before.
+    * However, if a local 'config' is found the project is always added to
+    * this list of configured projects.
     */
    public void retrieveLastProject() {
-      if (!isProjectSet()) {
+      if (!isProjectSet()
+            || (isProjectSet() & !proj.isInProjectPath(docSel.dir()))) {
          ProjectActions prPrevious
-               = projFact.getProjAct(FileUtils.extension(txtDoc.filepath()));
+               = projFact.getProjAct(FileUtils.extension(docSel.filepath()));
          if (prPrevious != null) {
-            if (prPrevious.retrieveLastProject(txtDoc.dir())) {        
+            if (prPrevious.retrieveLastProject(docSel.dir())) {
                prPrevious.addOkAction(e -> configureProject(prPrevious));
                recent.add(prPrevious);
-               proj = prPrevious;
-               updateProjectSetting(proj);
+               if (!isProjectSet()) {          
+                  proj = prPrevious;    
+                  updateProjectSetting(proj);
+               }
+               if (recent.size() == 2) {
+                  menu.getProjectMenu().enableChangeProjItm();
+               }
             }
          }
-      }
+      }            
    }
 
    /**
@@ -121,7 +138,7 @@ public class CurrentProject {
     */
    public void openSettingsWindow() {
       if (!isProjectSet()) {
-         if (txtDoc.filename().length() == 0) {
+         if (docSel.filename().length() == 0) {
             JOptions.titledInfoMessage("A project can be set after a file was"
                   + " opened or a new file was saved", "Note");
          }
@@ -130,13 +147,13 @@ public class CurrentProject {
          }
       }
       else {  
-         if (txtDoc.filename().length() == 0
-               || proj.isInProjectPath(txtDoc.dir())) {
+         if (docSel.filename().length() == 0
+               || proj.isInProjectPath(docSel.dir())) {
             proj.makeSetWinVisible(true);
          }      
-         else if (txtDoc.filename().length() > 0
-               & !proj.isInProjectPath(txtDoc.dir())) {
-            ProjectActions recent = searchRecent(txtDoc.dir());
+         else if (docSel.filename().length() > 0
+               & !proj.isInProjectPath(docSel.dir())) {
+            ProjectActions recent = searchRecent(docSel.dir());
             if (recent != null) {
                if (changeProject(recent)) {
                   proj.makeSetWinVisible(true);
@@ -150,26 +167,26 @@ public class CurrentProject {
    }
    
    /**
-    * Assigns to this current project a project that was previously
-    * set during the program's liftime.
+    * Assigns to this current project a project from this {@code List} of
+    * configured projects which the currently selected {@code TextDocument}
+    * belongs to.
     * <p>
-    * If the currently set {@code TextDocument} bolongs to a previous
-    * project this project is set active.
-    * If it does not belong to a project set before the settings window
-    * is opened (same effect as {@link #openSettingsWindow()}
+    * If the currently set {@code TextDocument} does not belong to a listed
+    * project it is asked to set a new project
     */
    public void changeProject() {
-      ProjectActions recent = searchRecent(txtDoc.dir());
+      ProjectActions recent = searchRecent(docSel.dir());
       if (recent == proj) {
-         JOptions.infoMessage("The selected file belongs to the"
-               + " currently active project");
+         JOptions.infoMessage(
+                "The selected file belongs to the"
+              + " currently active project");
       }
       else {
          if (recent != null) {
             changeProject(recent);
          }
          else {
-            openSettingsWindow();
+            newProject();
          }   
       }
    } 
@@ -177,7 +194,7 @@ public class CurrentProject {
    /**
     * Updates the file tree of {@code FileTree} if the specified
     * directory includes the project's root directory
-    * @param dir  the directory that include the project's root
+    * @param dir  the directory that includes the project's root
     * directory
     * 
     */
@@ -188,12 +205,27 @@ public class CurrentProject {
    }
 
    /**
-    * compiles this project
+    * Compiles this current project
     */
-   public void compile() {
+   public void compile() {         
+      mw.setCursor(MainWin.BUSY_CURSOR);
+      int i = 0;
       try {
-         mw.setCursor(MainWin.BUSY_CURSOR);
-         proj.compile();
+          for (i = 0; i < txtDoc.length; i++) {
+            if (txtDoc[i] != null && proj.isInProjectPath(txtDoc[i].dir())) {
+               boolean noProblem = !txtDoc[i].filename().endsWith(extension);
+               if (noProblem && !new File(txtDoc[i].filepath()).exists()) {
+                  break;
+               }
+               txtDoc[i].saveToFile();
+            }
+         }  
+         if (i == txtDoc.length) {
+            proj.compile();
+         }
+         else {
+            JOptions.warnMessage(txtDoc[i].filename() + " does not exists anymore");
+         }
       }   
       finally {
          EventQueue.invokeLater(() -> {
@@ -231,7 +263,7 @@ public class CurrentProject {
    
    private void newProject() {
       ProjectActions projNew 
-            = projFact.getProjAct(FileUtils.extension(txtDoc.filepath()));
+            = projFact.getProjAct(FileUtils.extension(docSel.filepath()));
       if (projNew == null) {
          JOptions.titledInfoMessage(
                "A project cannot be set for this file type", "Note");
@@ -249,8 +281,8 @@ public class CurrentProject {
    }
 
    private void configureProject(ProjectActions projToConf) {
-      if (projToConf.configFromSetWin(txtDoc.dir(),
-            FileUtils.extension(txtDoc.filename()))) {
+      if (projToConf.configFromSetWin(docSel.dir(),
+            FileUtils.extension(docSel.filename()))) {
          if (proj != projToConf) {
             proj = projToConf;
             recent.add(proj);
@@ -259,11 +291,11 @@ public class CurrentProject {
       }
    }
    
-   private boolean changeProject(ProjectActions recent) {     
+   private boolean changeProject(ProjectActions toChangeTo) {     
       int result = JOptions.confirmYesNo("Change to project '"
-            + recent.getProjectName() + "' ?");
+                     + toChangeTo.getProjectName() + "'");
       if (result == 0) {
-         proj = recent;
+         proj = toChangeTo;
          updateProjectSetting(proj);
          return true;
       }
@@ -289,11 +321,12 @@ public class CurrentProject {
    }
    
    private void enableActions() {
-      String ext = FileUtils.extension(txtDoc.filepath());
+      String ext = FileUtils.extension(docSel.filepath());
       switch (ext) {
          case ".java":
             enableActions(true, true, true);
             menu.getProjectMenu().setBuildKind("Create jar");
+            extension = ".java";
             break;
          case ".html":
             enableActions(false, true, false);

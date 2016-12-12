@@ -31,6 +31,8 @@ public class DocumentUpdate {
    /**
     * Assigns to this the array of {@code TextDocument} objects and to this
     * object of {@code ViewSettings} the array of {@code EditArea} objects
+    * @param txtDoc  the array of {@link TextDocument}
+    * @param editArea  the array of {@link EditArea}
     */
    public void setDocumentArrays(TextDocument[] txtDoc, EditArea[] editArea) {
       this.txtDoc = txtDoc;
@@ -38,11 +40,8 @@ public class DocumentUpdate {
    }
 
    /**
-    * Passes the {@code TextDocument} object at the specified array index
-    * to this objects of {@code Edit} and {@code PluginStarter} and only
-    * the index to this object of {@code ViewSettings}
-    * @param index  the index of this array of {@link TextDocument} and
-    * {@link EditArea}
+    * @param index  the index of the element in the arrays of
+    * {@link TextDocument} and {@link EditArea}
     */
    public void updateDocument(int index) {
       txtDoc[index].requestFocus();
