@@ -9,8 +9,7 @@
           }
       </style>
    </head>
-   <body>    
-
+   <body>
       <h2>Eadgyth help (under work)</h2>
 
       <ul>
@@ -27,10 +26,8 @@
                <li><a href="#Console">Using the console</a></li>
                <li><a href="#Explorer">Using the project explorer</a></li>
             </ul></li>
-     
 
-      <!--Requirements-->
-     
+         <!--Requirements--> 
          <li><h3 id="Requirements">Requirements</h3>
          <p>The Java runtime environment must be version JRE 8 to run Eadgyth.</p>
          <p>For a programming project in Java it is required that a Java development
@@ -43,7 +40,7 @@
             the first time it is tried to compile source files or if a new version
             of the JDK was installed.</p>
    
-         <!--Run and test project-->
+         <!--Run project-->
          <li><h3 id="RunProject">Running a Java project</h3>
          <h4 id="ProjectSettings">Project settings</h4>
          <p>The setting of a project always starts from an existing file that is opened
@@ -81,8 +78,10 @@
                 &lsquo;stop&rsquo; symbol in the toolbar of the console panel.</li>
             <li>Arguments for a start script may be entered in the text field &lsquo;Arguments&rsquo;
                 (separated by single spaces) in the Settings window</li>
-            <li>A jar file may be created by using &lsquo;Build&rsquo; in the &lsquo;Project&rsquo;
-                menu.</li>
+            <li>A jar file may be created by selecting &lsquo;Project&rsquo; > &lsquo;Create jar&rsquo;
+                The jar file is saved in the executable's folder or, if no such folder is
+                defined, in the project's root folder.
+                </li>
          </ol>
    
          <h4 id="OtherProjects">Other projects than Java?</h4>
@@ -90,7 +89,7 @@
             <li>A project directory maybe set for the txt file type. This would be done just
                 to view files in the project explorer but there are no actions associated with
                 such project.</li>
-            <li>A project maybe also set for the html file type. HTML code can be viewed
+            <li>A project maybe also set for the html file type. HTML code can then be viewed
                 in the default browser by selecting &lsquo;Project&rsquo; > &lsquo;Run&rsquo;.
                 The name of the file that is viewed is entered in the text field
                 &lsquo;HTML file&rsquo; in the settings window. The keyword coloring for html
@@ -101,11 +100,18 @@
          <ul>
             <li>Different projects may set during a session. A new project is set by opening a file
                 that is not part of the currently active project and then opening the settings window
-                (&lsquo;Project&rsquo; > &lsquo;Project settings&rsquo;). The file must be found
-                in the selected tab.
+                (&lsquo;Project&rsquo; > &lsquo;Project settings&rsquo;). to define the project's
+                directories. The file must be found in the selected tab.
             <li>Changing between already set projects is done by selecting a file that is part of
                 the project to be set active and using &lsquo;Project&rsquo; > &lsquo;Change
-                project&rsquo;.      
+                project&rsquo;.
+            <li>The option &lsquo;Save settings in project folder&rsquo; in the settings window
+                is checked to save the specified directories in an extra &lsquo;config&rsquo;
+                file. This file turns the folder into &lsquo;<i>a project</i>&rsquo; which can be
+                changed to directly by selecting &lsquo;Change project&rsquo; if a file of this
+                project is in the selected tab. The project would also be set active directly
+                if no other project is active already. Unchecking removes the &lsquo;config&rsquo;
+                file.</li>
          </ul>
    
          <!--Console-->
@@ -140,25 +146,28 @@
          <!--File explorer-->
          <li><h3 id="Explorer">Using the project explorer</h3>
          <p>The project explorer can be opened by selecting
-            (&lsquo;View&rsquo; > &lsquo;Project explorer&rsquo;) once a project is defined.<br>
+            &lsquo;View&rsquo; > &lsquo;Project explorer&rsquo; once a project is defined.<br>
             The explorer always shows the project that is currently set active. A few operations
             are supported:</p>
          <ul>
             <li>The project's file system is shown as a tree in which folders are expanded or
                 shrunk by clicking the (+), (-) handles, as usual. However, a double left
-                click on a folder does not expand/shrink the folder but displays a new tree
-                rooted at the clicked folder. To move back the &lsquo;Folder up&rsquo; symbol
-                is clicked. The topmost level is the project's root directory.</li>
+                click on a folder symbol does not expand/shrink the folder but displays a new
+                tree rooted at the clicked folder. To move back the &lsquo;Folder up&rsquo; symbol
+                is clicked. The topmost level is always the project's root directory.</li>
             <li>A double left click on a file opens the clicked file in a new tab.</li>
-            <li>A file may be deleted after a right click on a file.</li>
-            <li>A folder may be as well deleted after a right click on a folder but a folder
-                is protected from deletion if it is not empty. The exception is, if present,
-                the separate folder for executable files or its subfolders. This may be deleted
-                for a completely renewed compilation</li>
-            <li>A new folder may be created after a right click on a folder.</li>
+            <li>A file may be deleted after a right click on a file symbol and selecting
+                &lsquo;delete&rsquo;. If the deleted file is in an open tab, the tab is
+                is not closed but goes into &lsquo;Save as&rsquo; mode.</li>
+            <li>A folder may be as well deleted after a right click on a folder symbol but
+                a folder is protected from deletion if it is not empty. The exception is, if
+                present, the separate folder for executable files or its subfolders. This may
+                be deleted for a completely renewed compilation</li>
+            <li>A new folder may be created after a right click on a folder symbol and selecting
+                &lsquo;Create new folder&rsquo;.</li>
             <li>Changes to the project's file structure made from within the program should be
                 updated in the file view (no guarantee). Changes made from outside the program
-                can be updated &lsquo;manually&rsquo; by clicking the &lsquo;refresh&rsquo;
+                would be updated &lsquo;manually&rsquo; by clicking the &lsquo;refresh&rsquo;
                 symbol.</li>
           </ul></li>
        </ul>
