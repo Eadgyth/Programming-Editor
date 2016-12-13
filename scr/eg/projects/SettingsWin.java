@@ -196,7 +196,7 @@ public class SettingsWin {
          projPnl.add(holdLbAndTf(execDirLb, execDirTf));
       }
 
-      projPnl.add(checkBxPnl(saveConfig, "Save settings in project folder"));
+      projPnl.add(checkBxPnl(saveConfig, "Save settings in a 'config' file"));
 
       projPnl.setBorder(titledBorder("Project"));  
       return projPnl;

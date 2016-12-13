@@ -24,7 +24,9 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    
    public HtmlActions(ProcessStarter proc, FileTree fileTree) {
       super(new SettingsWin("HTML file", "Subdirectory",
-           false, false, null));
+           false, false, null),
+           ".html"
+      );
       this.proc = proc;
       this.fileTree = fileTree;
    }
@@ -40,8 +42,8 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   public boolean configFromSetWin(String dir, String suffix) {
-      boolean success = super.configFromSetWin(dir, suffix);
+   public boolean configureProject(String dir) {
+      boolean success = super.configureProject(dir);
       if (success) {
          setHtmlFile();
       }
@@ -49,8 +51,8 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   public boolean retrieveLastProject(String dir) {
-      boolean success = super.retrieveLastProject(dir);
+   public boolean retrieveProject(String dir) {
+      boolean success = super.retrieveProject(dir);
       if (success) {
          setHtmlFile();
       }
@@ -75,11 +77,6 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    @Override
    public String getProjectName() {
       return super.getProjectName();
-   }
-   
-   @Override
-   public void storeConfig() {
-      super.storeConfig();
    }
    
    /**

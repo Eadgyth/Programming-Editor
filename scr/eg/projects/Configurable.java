@@ -17,7 +17,7 @@ import java.awt.event.ActionListener;
  * {@link SettingsWin}.
  * <p>
  * The project may be configured by the entries in the settings window
- * or by reading in entries in a 'prefs' file
+ * or by reading in a file which the directories are saved in
  */
 public interface Configurable {
    
@@ -39,20 +39,16 @@ public interface Configurable {
    /**
     * If a project can be successfully configured based on entries in
     * the window of this {@code SettingsWin}
-    * @param dir  the directory of any file that is part of the project
-    * @param suffix  the extension of the file
+    * @param dir  the directory of a file that maybe part of the project
     */
-   public boolean configFromSetWin(String dir, String suffix);
+   public boolean configureProject(String dir);
    
    /**
-    * If a project that was active when the program was closed the
-    * last time can be retrieved.
-    * @param dir  the directory that may include the root directory of 
-    * the last project 
-    * @return  if a project that was active when the program was closed the
-    * last time can be retrieved
+    * If a project configuration saved to a file can be retrieved
+    * @param dir  the directory of a file that maybe part of the project 
+    * @return  if a project configuration saved to a file can be retrieved
     */
-   public boolean retrieveLastProject(String dir);
+   public boolean retrieveProject(String dir);
    
    /**
     * Passes to other classes, specifically {@code ProcessStarter} and
@@ -75,9 +71,4 @@ public interface Configurable {
      * @return  the name of the project's root directory
      */
    public String getProjectName();
-   
-   /**
-    * Stores the current configuration to 'prefs'
-    */
-   public void storeConfig();
 }

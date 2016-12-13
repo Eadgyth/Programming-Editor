@@ -10,18 +10,19 @@ import eg.Preferences;
 import eg.utils.JOptions;
 
 /**
- * Represents the configuration of a project.
+ * Represents the configuration of a project. <br>
  * Class implements methods in {@link Configurable} except
  * {@link Configurable #applyProjectPath()}
  */
 public abstract class ProjectConfig implements Configurable {
 
    private final static String F_SEP = File.separator;
-   private final static String CONFIG_FILE = "config.properties";
-   
+   private final static String CONFIG_FILE = "config.properties";   
    private final static Preferences PREFS = new Preferences();
-   private final static Preferences PREFS_LOC = new Preferences();
+   private final static Preferences CONFIG = new Preferences();
+
    private final SettingsWin setWin;
+   private final String suffix;
 
    private String projectPath = "";
    private String mainFile = "";
@@ -35,8 +36,9 @@ public abstract class ProjectConfig implements Configurable {
     * @param setWin  the reference to an object of {@link SettingsWin}
     * which is set up to ask for the desired inputs
     */
-   public ProjectConfig(SettingsWin setWin) {
+   public ProjectConfig(SettingsWin setWin, String suffix) {
       this.setWin = setWin;
+      this.suffix = suffix;
    }
 
    @Override
@@ -50,34 +52,37 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    @Override
-   public boolean configFromSetWin(String dir, String suffix) {
-      boolean success = configureProject(dir, suffix);
+   public boolean configureProject(String dir) {    
+      projectPath = findRootByFile(dir, pathRelToRoot());
+      boolean success = storeInputs();
       if (success) {
          setWin.makeVisible(false);
       }
       return success;
    }
    
+   /**
+    * If a project configuration stored in 'config' or 'prefs' can be
+    * retrieved
+    * @param dir  the directory of a file that maybe part of the project 
+    * @return  If a project configuration stored in 'config' or 'prefs'
+    * can be retrieved
+    */
    @Override
-   public boolean retrieveLastProject(String dir) {
-      configureLastProject(dir);
+   public boolean retrieveProject(String dir) {
+      findSavedProject(dir);
       return projectPath.length() > 0;
    }
    
    @Override
    public boolean isInProjectPath(String dir) {
-      return findRootInPath(dir, PREFS) != null;
+      return findRootInPath(dir, PREFS).length() > 0;
    }
    
    @Override
    public String getProjectName() {
       File f = new File(projectPath);
       return f.getName();
-   }
-
-   @Override
-   public void storeConfig() {
-      storeInputs();
    }
    
    /**
@@ -158,46 +163,34 @@ public abstract class ProjectConfig implements Configurable {
    //--private--
    //
 
-   private void configureLastProject(String dir) {
-      String previousProjectRoot = null;
-      Preferences prefs = null;
-      previousProjectRoot = findConfigFileInPath(dir);
-      if (previousProjectRoot != null) {
-         prefs = PREFS_LOC;
-         PREFS_LOC.readConfig(previousProjectRoot);
+   private void findSavedProject(String dir) {
+      String previousProjectRoot = "";
+      Preferences props = null;
+      //
+      // firstly see if there is a config file
+      previousProjectRoot = findRootByFile(dir, CONFIG_FILE);
+      if (previousProjectRoot.length() > 0) {
+         props = CONFIG;
+         props.readConfig(previousProjectRoot);
          setWin.setSaveConfigSelected(true);
       }
+      //
+      // then see if the dir includes the project root in prefs
       else {
-         prefs = PREFS;
-         PREFS.readPrefs();
+         props = PREFS;
+         props.readPrefs();
          setWin.setSaveConfigSelected(false);
-         previousProjectRoot = findRootInPath(dir, prefs);
+         previousProjectRoot = findRootInPath(dir, props);
       }
          
-      if (previousProjectRoot != null) {        
-         configProjectFromPrefs(previousProjectRoot, prefs);
+      if (previousProjectRoot.length() > 0) {        
+         configProjectFromFile(previousProjectRoot, props);
       }
    }
    
-   private void configProjectFromPrefs(String previousRoot, Preferences prefs) {
-      mainFile = prefs.getProperty("recentMain");
-      setWin.displayFile(mainFile);
-      
-      moduleDir = prefs.getProperty("recentModule");
-      setWin.displayModule(moduleDir);
-      
-      sourceDir = prefs.getProperty("recentSourceDir");
-      setWin.displaySourcesDir(sourceDir);
-      
-      execDir = prefs.getProperty("recentExecDir");
-      setWin.displayExecDir(execDir);
-      
-      projectPath = previousRoot;
-   }
-   
-   private String findConfigFileInPath(String dir) {
+   private String findRootByFile(String dir, String file) {
       File newFile = new File(dir);
-      String searched = F_SEP + CONFIG_FILE;
+      String searched = F_SEP + file;
       String newFileStr = dir + searched;
       boolean exists = new File(newFileStr).exists();
       while(!exists) {
@@ -210,21 +203,22 @@ public abstract class ProjectConfig implements Configurable {
          exists = new File(newFileStr).exists();
       }
       if (newFile == null) {
-         return null;
+         return "";
       }
       else {
+         System.out.println(newFile.toString());
          return newFile.toString();
       }
    }
 
-   private String findRootInPath(String dir, Preferences prefs) { 
+   private String findRootInPath(String dir, Preferences props) { 
       File newFile = new File(dir);
       File project;
       if (projectPath.length() > 0) {
          project = new File(projectPath);
       }
       else {  
-         project = new File(prefs.getProperty("recentProject"));
+         project = new File(props.getProperty("recentProject"));
       }
       String newFileStr = newFile.getPath();
       String projStr = project.getPath();
@@ -232,17 +226,37 @@ public abstract class ProjectConfig implements Configurable {
       boolean isEqual = projStr.equals(newFileStr);
       while(!isEqual) {
          if (newFile.getParentFile() == null) {
-            newFileStr = null;
+            newFileStr = "";
             break;
          }       
          newFile    = new File(newFile.getParent());
          newFileStr = newFile.getAbsolutePath();
          isEqual    = projStr.equals(newFileStr);
       }
-      return newFileStr;         
+      return newFileStr;     
    }
-
-   private boolean configureProject(String dir, String suffix) {
+   
+   private void configProjectFromFile(String previousRoot, Preferences props) {
+      mainFile = props.getProperty("recentMain");
+      setWin.displayFile(mainFile);
+      
+      moduleDir = props.getProperty("recentModule");
+      setWin.displayModule(moduleDir);
+      
+      sourceDir = props.getProperty("recentSourceDir");
+      setWin.displaySourcesDir(sourceDir);
+      
+      execDir = props.getProperty("recentExecDir");
+      setWin.displayExecDir(execDir);
+      
+      projectPath = previousRoot;
+      if (props == CONFIG) {
+         System.out.println("props is CONFIG");
+         storeToPrefs();
+      }
+   }
+   
+   private String pathRelToRoot() {
       getTextFieldsInput();
 
       String dirRelToRoot = "";
@@ -256,30 +270,8 @@ public abstract class ProjectConfig implements Configurable {
          dirRelToRoot += sourceDir + F_SEP + moduleDir;
       }
       
-      String filePathRelToRoot = dirRelToRoot + F_SEP
-            + mainFile + suffix;
-      
-      String parent = "";
-      if (dirRelToRoot.length() > 0) {
-         int start = dir.indexOf(dirRelToRoot);
-         if (start != -1) {
-            parent = dir.substring(0, start - 1);
-         }
-      }
-      else {
-         parent = dir;
-      }
-      boolean isSet = new File(parent + F_SEP + filePathRelToRoot).exists();
-      if (!isSet) {
-         JOptions.warnMessageToFront("A valid filepath could not be found");
-      }
-      else {
-         projectPath = parent;
-         storeInputs();
-      }
-         
-      return isSet;
-   }
+      return dirRelToRoot + F_SEP + mainFile + suffix;
+   }      
    
    private void getTextFieldsInput() {
       mainFile = setWin.projectFileIn();
@@ -290,31 +282,47 @@ public abstract class ProjectConfig implements Configurable {
       buildName = setWin.buildNameIn();
    }
    
-   private void storeInputs() {
+   private boolean storeInputs() {
+      boolean canStore = true;
+      if (projectPath.length() == 0) {
+         JOptions.warnMessageToFront(
+               "An entry in the 'Project' panel is incorrect");
+         
+         canStore = false;
+      }
+      else {
+         storeToPrefs();
+         
+         if (setWin.isSaveConfig()) {
+            CONFIG.storeConfig("recentMain", mainFile, projectPath);
+            CONFIG.storeConfig("recentModule", moduleDir, projectPath);
+            CONFIG.storeConfig("recentSourceDir", sourceDir, projectPath);
+            CONFIG.storeConfig("recentExecDir", execDir, projectPath);
+         }
+         else {
+            File configFile = new File(projectPath + F_SEP + CONFIG_FILE);
+            if (configFile.exists()) {
+               int res = JOptions.confirmYesNo(
+                       "'Save settings in project folder' is disabled."
+                     + " Remove the 'config' file?");
+               if (res == 0) {
+                  boolean success = configFile.delete();
+                  if (!success) {
+                     JOptions.warnMessage(
+                           "Deleting the 'config' file failed");
+                  }
+               }
+            }
+         }
+      }
+      return canStore;
+   }
+   
+   private void storeToPrefs() {
       PREFS.storePrefs("recentProject", projectPath);
       PREFS.storePrefs("recentMain", mainFile);
       PREFS.storePrefs("recentModule", moduleDir);
       PREFS.storePrefs("recentSourceDir", sourceDir);
       PREFS.storePrefs("recentExecDir", execDir);
-      
-      if (setWin.isSaveConfig()) {
-         PREFS_LOC.storeConfig("recentMain", mainFile, projectPath);
-         PREFS_LOC.storeConfig("recentModule", moduleDir, projectPath);
-         PREFS_LOC.storeConfig("recentSourceDir", sourceDir, projectPath);
-         PREFS_LOC.storeConfig("recentExecDir", execDir, projectPath);
-      }
-      else {
-         File configFile = new File(projectPath + F_SEP + CONFIG_FILE);
-         if (configFile.exists()) {
-            int res = JOptions.confirmYesNo("'Save settings in project folder' is disabled."
-                  + " Remove the configuration file?");
-            if (res == 0) {
-               boolean success = configFile.delete();
-               if (!success) {
-                  JOptions.warnMessage("Deleting the configuration file failed");
-               }
-            }
-         }
-      }
    }
 }

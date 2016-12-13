@@ -176,7 +176,7 @@ public class TabbedFiles implements Observer{
       }
       else {      
          txtDoc[iTab].saveFileAs(f);
-         currProj.retrieveLastProject();
+         currProj.retrieveProject();
          currProj.updateFileTree(txtDoc[iTab].dir());
          tabPane.changeTabTitle(iTab, txtDoc[iTab].filename());
          mw.displayFrameTitle(txtDoc[iTab].filepath());
@@ -242,8 +242,7 @@ public class TabbedFiles implements Observer{
     */
    public void tryExit() {
       int count = unsavedTab();
-      if (count == tabPane.tabCount()) {
-         currProj.storeConfig();   
+      if (count == tabPane.tabCount()) { 
          System.exit(0);
       }
       else {
@@ -298,7 +297,7 @@ public class TabbedFiles implements Observer{
       addNewTab(txtDoc[openIndex].filename(),
       editArea[openIndex].scrolledArea(), openIndex);
       mw.displayFrameTitle(txtDoc[openIndex].filepath());         
-      currProj.retrieveLastProject();      
+      currProj.retrieveProject();      
       prefs.storePrefs("recentPath", txtDoc[openIndex].dir());
    }
 

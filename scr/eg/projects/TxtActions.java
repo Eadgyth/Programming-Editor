@@ -18,7 +18,9 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
 
    public TxtActions(ProcessStarter proc, FileTree fileTree) {
       super(new SettingsWin("Name of a text file in the project", "Subdirectory",
-           false, false, null));
+           false, false, null),
+           ".txt"
+      );
       this.proc = proc;
       this.fileTree = fileTree;
    }
@@ -34,13 +36,13 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   public boolean configFromSetWin(String dir, String suffix) {
-       return super.configFromSetWin(dir, suffix);
+   public boolean configureProject(String dir) {
+       return super.configureProject(dir);
    }
    
    @Override
-   public boolean retrieveLastProject(String dir) {
-      return super.retrieveLastProject(dir);
+   public boolean retrieveProject(String dir) {
+      return super.retrieveProject(dir);
    }
    
    /**
@@ -61,11 +63,6 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
    @Override
    public String getProjectName() {
       return super.getProjectName();
-   }
-   
-   @Override
-   public void storeConfig() {
-      super.storeConfig();
    }
    
    /**

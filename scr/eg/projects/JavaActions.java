@@ -28,12 +28,19 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    private final FileTree fileTree;
 
    private String startCommand = "";
-   String execDir = "";
 
    public JavaActions(ViewSettings viewSet, ProcessStarter proc, ConsolePanel cw,
          FileTree fileTree) {
-      super(new SettingsWin("Name of main class", "Package containing the main class",
-           true, true, "jar file"));
+
+      super(new SettingsWin(
+               "Name of main class",
+               "Package containing the main class",
+               true,
+               true, 
+               "jar file"
+            ),
+            ".java"
+      );
       this.viewSet = viewSet;
       this.proc = proc;
       this.cw = cw;
@@ -59,31 +66,30 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
     * <p>
     * In the case of success the start command to run the Java project
     * is build.
-    * @param dir  the directory of any file that is part of the project
-    * @param suffix  the extension of the file
+    * @param dir  the directory of a file that maybe part of the project
     */
    @Override
-   public boolean configFromSetWin(String dir, String suffix) {
-      boolean success = super.configFromSetWin(dir, suffix);
+   public boolean configureProject(String dir) {
+      boolean success = super.configureProject(dir);
       if (success) {
          setStartCommand();
       }
       return success;
    }
-   
+
    /**
-    * If a project that was active when the program was closed the
-    * last time can be retrieved.
+    * If a project configuration stored in 'config' or 'prefs' can be
+    * retrieved
     * <p>
     * In the case of success the start command to run the Java project
     * is build.
-    * @param dir  the directory that may include the root directory of 
-    * the last project 
-    * @return  if a project that was active when the program was closed the
+    * @param dir  the directory of a file that maybe part of the project
+    * @return  If a project configuration stored in 'config' or 'prefs'
+    * can be retrieved
     */
    @Override
-   public boolean retrieveLastProject(String dir) {
-      boolean success = super.retrieveLastProject(dir);
+   public boolean retrieveProject(String dir) {
+      boolean success = super.retrieveProject(dir);
       if (success) {
          setStartCommand();
       }
@@ -115,11 +121,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    @Override
    public String getExecDirName() {
       return super.getExecDirName();
-   }
-
-   @Override
-   public void storeConfig() {
-      super.storeConfig();
    }
    
    @Override                                                                          

@@ -5,11 +5,7 @@ import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 
-import javax.swing.SwingWorker;
-
 import java.awt.EventQueue;
-
-import java.lang.reflect.InvocationTargetException;
 
 //--Eadgyth--//
 import eg.ui.MainWin;
@@ -46,8 +42,8 @@ public class CurrentProject {
    private final FileTree fileTree;
    private final Menu menu;
    private final Toolbar tBar;
-   
    private final List<ProjectActions> recent = new ArrayList<>();
+
    private ProjectActions proj;
    private TextDocument[] txtDoc;
    private TextDocument docSel;
@@ -108,7 +104,7 @@ public class CurrentProject {
     * However, if a local 'config' is found the project is always added to
     * this list of configured projects.
     */
-   public void retrieveLastProject() {
+   public void retrieveProject() {
       if (isProjectSet() && proj.isInProjectPath(docSel.dir())) {
          return;
       }
@@ -116,7 +112,7 @@ public class CurrentProject {
       ProjectActions prPrevious
             = projFact.getProjAct(FileUtils.extension(docSel.filepath()));
       boolean isFound = prPrevious != null
-            && prPrevious.retrieveLastProject(docSel.dir());
+            && prPrevious.retrieveProject(docSel.dir());
       if (isFound) {
          if (!isProjectSet()) {          
             proj = prPrevious;
@@ -205,7 +201,7 @@ public class CurrentProject {
     * directory includes the project's root directory.
     * @param dir  the directory that includes the project's root
     * directory
-    * See {@link FileTree #updateTree()
+    * See {@link FileTree #updateTree()}
     */
    public void updateFileTree(String dir) {
       if (isInProjectPath(dir)) {
@@ -256,15 +252,6 @@ public class CurrentProject {
    public void buildProj() {
       proj.build();
    }
-   
-   /**
-    * Stores the settings of this project to prefs
-    */
-   public void storeConfig() {
-      if (isProjectSet()) {
-         proj.storeConfig();
-      }
-   }
 
    //
    //--private methods
@@ -290,8 +277,7 @@ public class CurrentProject {
    }
 
    private void configureProject(ProjectActions projToConf) {
-      if (projToConf.configFromSetWin(docSel.dir(),
-            FileUtils.extension(docSel.filename()))) {
+      if (projToConf.configureProject(docSel.dir())) {
          if (proj != projToConf) {
             proj = projToConf;
             recent.add(proj);
