@@ -6,11 +6,12 @@ import java.util.ArrayList;
  * Static methods to search for elements in text
  */
 public class Finder {
-   
+
    private final static String NUM_REGEX    = "[0-9]+";
    private final static String LETTER_REGEX = "[a-zA-Z]+";
-   
+
    /**
+    * @param in  the array of lines of a text
     * @return  an array of start positions of the lines of a passed in
     * text whose lines are splitted into an array 
     */
@@ -24,7 +25,7 @@ public class Finder {
       }   
       return startOfLines;
    }
-   
+
    /**
     * @param in  the String in which a line is searched
     * @param pos  the position that is found in the searched line
@@ -33,7 +34,7 @@ public class Finder {
    public static String currLine(String in, int pos) {
       int indLastReturn = in.lastIndexOf("\n", pos);
       int indNextReturn = in.indexOf("\n", pos);
-      
+
       if (indLastReturn != -1 && indNextReturn != -1) {
          return in.substring(indLastReturn + 1, indNextReturn + 1);
       }
@@ -49,7 +50,10 @@ public class Finder {
    }
 
    /**
-    * @return  true if the characters before and/or after the 'query' String
+    * @param in  the text that a word is searched in
+    * @param query  the String that may be a word
+    * @param pos  the position where the query is located
+    * @return  if the character before and/or after the 'query' String
     * is not a letter or a number
     */
    public static boolean isWord(String in, String query, int pos) {
@@ -68,7 +72,7 @@ public class Finder {
       boolean endMatches   = end.matches(NUM_REGEX) || end.matches(LETTER_REGEX);
       return !startMatches && !endMatches;
    }
-   
+
    /**
     * @return  the index of the block comment start before the specifies position.
     * returns -1 if a block end is found behind a block start
@@ -77,7 +81,7 @@ public class Finder {
          String blockEnd) {
       int index = in.lastIndexOf(blockStart, pos);
       int indLastEnd = in.lastIndexOf(blockEnd, pos);
-       
+
       while (index != -1 && isInQuotes(in, index)) {
          index = in.lastIndexOf(blockStart, index - 1);
       }
@@ -98,7 +102,7 @@ public class Finder {
          String blockEnd) {
       int index = in.indexOf(blockEnd, pos);
       int indNextStart = in.indexOf(blockStart, pos);
-      
+
       while (index != -1 && isInQuotes(in, index)) {
          index = in.indexOf(blockEnd, index + 1);
       }
@@ -115,14 +119,13 @@ public class Finder {
     * @return  true if the symbol right before 'pos' is a quotes symbol
     */   
    public static boolean isInQuotes(String in, int pos) {
-      boolean isInQuotes = false;
-     
-      if (pos > 0) {      
+      boolean isInQuotes = false; 
+      if (pos > 0) {
          isInQuotes = in.substring(pos - 1, pos).equals("\"");
       }
       return isInQuotes;
    }
-   
+
    public static int countMotive(String in, String query) {
       int count = 0;
       int index = 0;

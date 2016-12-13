@@ -32,12 +32,12 @@ public class ProjectMenu {
       return menu;
    }
    
-   public void registerAct(CurrentProject currProj, TabbedFiles tf) {
+   public void registerAct(CurrentProject currProj) {
       changeProj.addActionListener(e -> currProj.changeProject());
       run.addActionListener(e -> currProj.runProj());
       setProject.addActionListener(e -> currProj.openSettingsWindow());
       build.addActionListener(e -> currProj.buildProj());
-      compile.addActionListener(e -> tf.saveAndCompile());
+      compile.addActionListener(e -> currProj.compile());
    }
    
    public void enableChangeProjItm() {

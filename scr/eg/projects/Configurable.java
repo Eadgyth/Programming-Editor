@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
  * could as well be just the parent of the main file if subdirectories
  * are not specified.
  * <p>
- * The implementing class must have a reference to an object of type
+ * The implementing class must have a reference to an object of
  * {@link SettingsWin}.
  * <p>
  * The project may be configured by the entries in the settings window
@@ -51,9 +51,8 @@ public interface Configurable {
    public boolean retrieveProject(String dir);
    
    /**
-    * Passes to other classes, specifically {@code ProcessStarter} and
-    * {@code FileTree}, the project's root directory or other directories
-    * defined for the project, as needed
+    * Passes to other classes the project's root directory or other
+    * directories that are defined for the project, as needed
     */
     public void applyProject();
    
@@ -71,4 +70,9 @@ public interface Configurable {
      * @return  the name of the project's root directory
      */
    public String getProjectName();
+   
+   /**
+    * Saves the current configuration to the preferences file
+    */
+   public void storeInPrefs();
 }

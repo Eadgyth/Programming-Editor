@@ -31,20 +31,38 @@ public class Toolbar {
       initToolbar();
    }
    
+   /**
+    * @return  this {@code JToolBar}
+    */
    public JToolBar toolbar() {
       return toolbar;
    }
    
+   /**
+    * Adds ActionsListeners to the buttons for file actions
+    * @param tf  the reference to the {@link TabbedFiles} object
+    * that handles the file actions
+    */
    public void registerFileActions(TabbedFiles tf) {
       openBt.addActionListener(e -> tf.openFileByChooser());
       saveBt.addActionListener(e -> tf.saveOrSaveAs());      
-      compileBt.addActionListener(e -> tf.saveAndCompile());
    }
    
+   /**
+    * Adds ActionsListeners to the buttons for project actions
+    * @param currProj  the reference to the {@link CurrentProject}
+    * object that handles the project actions
+    */
    public void registerProjectActions(CurrentProject currProj) {
       runBt.addActionListener(e -> currProj.runProj());
+      compileBt.addActionListener(e -> currProj.compile());
    }
    
+   /**
+    * Adds ActionsListeners to the buttons for edit actions
+    * @param edit  the reference to the {@link Edit}
+    * object that handles the edit actions
+    */
    public void registerEdit(Edit edit) {
       undoBt.addActionListener(e -> edit.undo());
       redoBt.addActionListener(e -> edit.redo());
@@ -52,6 +70,11 @@ public class Toolbar {
       outdentBt.addActionListener(e -> edit.outdentSelection());
    }
    
+   /**
+    * Enabled/disabled buttons for project actions
+    * @param isCompile  if compiling a project is enabled
+    * @param isRun  if running a project is enabled
+    */
    public void enableProjBts(boolean isCompile, boolean isRun) {
       compileBt.setEnabled(isCompile);
       runBt.setEnabled(isRun);

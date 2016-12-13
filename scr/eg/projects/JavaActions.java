@@ -119,6 +119,11 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
+   public void storeInPrefs() {
+      super.storeInPrefs();
+   }
+   
+   @Override
    public String getExecDirName() {
       return super.getExecDirName();
    }

@@ -132,10 +132,11 @@ public class ProcessStarter {
             };
             cw.addCaretListen(caretListener);
          }
-         catch(IOException ioe) {
-            cw.appendText("<<Error: cannot run " + cmd 
-               + " in the directory " + workingDir + ">>\n");
-            System.out.println(ioe.getMessage());  
+         catch(IOException e) {
+            cw.appendText(
+                    "<<Error: cannot run " + cmd 
+                  + " in the directory " + workingDir + ">>\n");
+            System.out.println(e.getMessage());  
          }
       });
    }

@@ -283,6 +283,7 @@ public class CurrentProject {
                      + toChangeTo.getProjectName() + "'");
       if (result == 0) {
          proj = toChangeTo;
+         proj.storeInPrefs();
          updateProjectSetting(proj);
          return true;
       }

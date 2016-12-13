@@ -79,6 +79,11 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
       return super.getProjectName();
    }
    
+   @Override
+   public void storeInPrefs() {
+      super.storeInPrefs();
+   }
+   
    /**
     * Not used
     */

@@ -63,6 +63,9 @@ public class JOptions {
    }
 
    /**
+    * @param message  the message for the dialog
+    * @param title  the title for the dialog
+    * @param init  the text that is initially shown in the text field
     * @return  the string entered in the text field or null if cancel was
     * clicked or the window closed
     */

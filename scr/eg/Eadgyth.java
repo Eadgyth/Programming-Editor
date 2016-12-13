@@ -72,7 +72,7 @@ public class Eadgyth {
       tBar.registerProjectActions(currProj);
       tBar.registerEdit(edit);
       menu.getFileMenu().registerAct(tabFiles);
-      menu.getProjectMenu().registerAct(currProj, tabFiles);
+      menu.getProjectMenu().registerAct(currProj);
       menu.getEditMenu().registerAct(edit);
       menu.getFormatMenu().registerAct(fontSet, viewSet);
       menu.getViewMenu().registerAct(viewSet);

@@ -242,7 +242,7 @@ public class TabbedFiles implements Observer{
     */
    public void tryExit() {
       int count = unsavedTab();
-      if (count == tabPane.tabCount()) { 
+      if (count == tabPane.tabCount()) {
          System.exit(0);
       }
       else {
@@ -257,15 +257,6 @@ public class TabbedFiles implements Observer{
             tryExit();
          }
       }
-   }
-   
-   /**
-    * Saves the selected file and compiles the current project if
-    * the file in the selected tab belongs to the currently active
-    * project
-    */
-   public void saveAndCompile() {
-      currProj.compile();
    }
 
    //

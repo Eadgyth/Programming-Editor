@@ -85,6 +85,15 @@ public abstract class ProjectConfig implements Configurable {
       return f.getName();
    }
    
+   @Override
+   public void storeInPrefs() {
+      PREFS.storePrefs("recentProject", projectPath);
+      PREFS.storePrefs("recentMain", mainFile);
+      PREFS.storePrefs("recentModule", moduleDir);
+      PREFS.storePrefs("recentSourceDir", sourceDir);
+      PREFS.storePrefs("recentExecDir", execDir);
+   }
+   
    /**
     * Returns the path of the project's root directory
     */
@@ -154,7 +163,8 @@ public abstract class ProjectConfig implements Configurable {
     * @return  true if the main executable file exists
     */
    protected boolean mainProgramFileExists(String suffix) { 
-      File target = new File(projectPath + F_SEP + execDir + F_SEP + moduleDir
+      File target
+            = new File(projectPath + F_SEP + execDir + F_SEP + moduleDir
             + F_SEP + mainFile + suffix);
       return target.exists();
    }
@@ -175,7 +185,7 @@ public abstract class ProjectConfig implements Configurable {
          setWin.setSaveConfigSelected(true);
       }
       //
-      // then see if the dir includes the project root in prefs
+      // if not successful see if the dir includes the project root in prefs
       else {
          props = PREFS;
          props.readPrefs();
@@ -206,7 +216,6 @@ public abstract class ProjectConfig implements Configurable {
          return "";
       }
       else {
-         System.out.println(newFile.toString());
          return newFile.toString();
       }
    }
@@ -251,8 +260,7 @@ public abstract class ProjectConfig implements Configurable {
       
       projectPath = previousRoot;
       if (props == CONFIG) {
-         System.out.println("props is CONFIG");
-         storeToPrefs();
+         storeInPrefs();
       }
    }
    
@@ -291,7 +299,7 @@ public abstract class ProjectConfig implements Configurable {
          canStore = false;
       }
       else {
-         storeToPrefs();
+         storeInPrefs();
          
          if (setWin.isSaveConfig()) {
             CONFIG.storeConfig("recentMain", mainFile, projectPath);
@@ -316,13 +324,5 @@ public abstract class ProjectConfig implements Configurable {
          }
       }
       return canStore;
-   }
-   
-   private void storeToPrefs() {
-      PREFS.storePrefs("recentProject", projectPath);
-      PREFS.storePrefs("recentMain", mainFile);
-      PREFS.storePrefs("recentModule", moduleDir);
-      PREFS.storePrefs("recentSourceDir", sourceDir);
-      PREFS.storePrefs("recentExecDir", execDir);
    }
 }

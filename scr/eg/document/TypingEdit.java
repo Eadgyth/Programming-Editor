@@ -222,8 +222,8 @@ class TypingEdit {
                super.undo();
             }
          }
-         catch (CannotUndoException cue) {
-            System.out.println(cue.getMessage());
+         catch (CannotUndoException e) {
+            System.out.println(e.getMessage());
          }
       }
    

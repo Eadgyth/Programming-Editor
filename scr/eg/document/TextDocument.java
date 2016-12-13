@@ -198,7 +198,8 @@ public class TextDocument {
 
    /**
     * Sets the caret at the sepecified position of
-    * this text area
+    * this text document
+    * @param pos  the position where the caret is set
     */
    public void setCaretPos(int pos) {
       textArea.setCaretPosition(pos);
@@ -241,7 +242,10 @@ public class TextDocument {
 
    /**
     * (Re-)colors the text starting at the specified position
-    * and spanning the specified length in black
+    * and spanning the specified length in the default color
+    * @param length  the length of text that is colored in the
+    * default color
+    * @param pos  the position where the text to color starts
     */
    public void backInBlack(int length, int pos) {
       type.doc().setCharacterAttributes(pos, length,
