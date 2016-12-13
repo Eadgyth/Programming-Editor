@@ -97,22 +97,24 @@ public class CurrentProject {
          return;
       }
 
-      ProjectActions prPrevious
+      ProjectActions prToFind
             = projFact.getProjAct(FileUtils.extension(docSel.filepath()));
-      boolean isFound = prPrevious != null
-            && prPrevious.retrieveProject(docSel.dir());
+
+      boolean isFound
+            = prToFind != null
+            && prToFind.retrieveProject(docSel.dir());
+
       if (isFound) {
          if (!isProjectSet()) {          
-            proj = prPrevious;
-            proj.addOkAction(e -> configureProject(prPrevious));
+            proj = prToFind;
+            proj.addOkAction(e -> configureProject(proj));
             recent.add(proj); 
             updateProjectSetting(proj);
          }
          else {
-            ProjectActions inList = searchRecent(docSel.dir());
-            if (inList == null) {
-               prPrevious.addOkAction(e -> configureProject(prPrevious));
-               recent.add(prPrevious);
+            if (searchRecent(docSel.dir()) == null) {
+               prToFind.addOkAction(e -> configureProject(prToFind));
+               recent.add(prToFind);
             }
          }
          if (recent.size() == 2) {
@@ -139,16 +141,18 @@ public class CurrentProject {
             newProject();
          }
       }
-      else {  
-         if (docSel.filename().length() == 0
-               || proj.isProjectInPath(docSel.dir())) {
+      else {
+         boolean openCurrent
+               = docSel.filename().length() == 0
+              || proj.isProjectInPath(docSel.dir());
+
+         if (openCurrent) {
             proj.makeSetWinVisible(true);
          }      
-         else if (docSel.filename().length() > 0
-               & !proj.isProjectInPath(docSel.dir())) {
-            ProjectActions recent = searchRecent(docSel.dir());
-            if (recent != null) {
-               if (changeProject(recent)) {
+         else {
+            ProjectActions inList = searchRecent(docSel.dir());
+            if (inList != null) {
+               if (changeProject(inList)) {
                   proj.makeSetWinVisible(true);
                }
             }
@@ -168,15 +172,15 @@ public class CurrentProject {
     * project it is asked to set up a new project.
     */
    public void changeProject() {
-      ProjectActions recent = searchRecent(docSel.dir());
-      if (recent == proj) {
+      ProjectActions inList = searchRecent(docSel.dir());
+      if (inList == proj) {
          JOptions.infoMessage(
                 "The selected file belongs to the"
               + " currently active project");
       }
       else {
          if (recent != null) {
-            changeProject(recent);
+            changeProject(inList);
          }
          else {
             newProject();
