@@ -82,18 +82,6 @@ public class CurrentProject {
    public boolean isProjectSet() {
       return proj != null;
    }
-   
-   /**
-    * If the currently set {@code TextDocument} is part of the current
-    * project
-    * @param dir  the directory that may include the project's root
-    * directory 
-    * @return if the currently set {@link TextDocument} is part of the
-    * current project. False if no project has been assigned
-    */
-   public boolean isInProjectPath(String dir) {
-      return isProjectSet() && proj.isInProjectPath(dir);
-   }
 
    /**
     * Tries to assign to this current project a project which a configuration
@@ -105,7 +93,7 @@ public class CurrentProject {
     * this list of configured projects.
     */
    public void retrieveProject() {
-      if (isProjectSet() && proj.isInProjectPath(docSel.dir())) {
+      if (isProjectSet() && proj.isProjectInPath(docSel.dir())) {
          return;
       }
 
@@ -153,11 +141,11 @@ public class CurrentProject {
       }
       else {  
          if (docSel.filename().length() == 0
-               || proj.isInProjectPath(docSel.dir())) {
+               || proj.isProjectInPath(docSel.dir())) {
             proj.makeSetWinVisible(true);
          }      
          else if (docSel.filename().length() > 0
-               & !proj.isInProjectPath(docSel.dir())) {
+               & !proj.isProjectInPath(docSel.dir())) {
             ProjectActions recent = searchRecent(docSel.dir());
             if (recent != null) {
                if (changeProject(recent)) {
@@ -199,12 +187,12 @@ public class CurrentProject {
    /**
     * Updates the file tree of {@code FileTree} if the specified
     * directory includes the project's root directory.
-    * @param dir  the directory that includes the project's root
+    * @param path  the directory that includes the project's root
     * directory
     * See {@link FileTree #updateTree()}
     */
-   public void updateFileTree(String dir) {
-      if (isInProjectPath(dir)) {
+   public void updateFileTree(String path) {
+      if (isProjectSet() && proj.isProjectInPath(path)) {
          fileTree.updateTree();
       }
    }
@@ -217,7 +205,7 @@ public class CurrentProject {
       int i = 0;
       try {
           for (i = 0; i < txtDoc.length; i++) {
-            if (txtDoc[i] != null && proj.isInProjectPath(txtDoc[i].dir())) {
+            if (txtDoc[i] != null && proj.isProjectInPath(txtDoc[i].dir())) {
                boolean noProblem = !txtDoc[i].filename().endsWith(extension);
                if (noProblem && !new File(txtDoc[i].filepath()).exists()) {
                   break;
@@ -302,7 +290,7 @@ public class CurrentProject {
    private ProjectActions searchRecent(String dir) {
       ProjectActions old = null;
       for (ProjectActions p : recent) {
-         if (p.isInProjectPath(dir)) {
+         if (p.isProjectInPath(dir)) {
             old = p;
          }
       }

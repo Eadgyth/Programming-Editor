@@ -75,8 +75,8 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    @Override
-   public boolean isInProjectPath(String dir) {
-      return findRootInPath(dir, PREFS).length() > 0;
+   public boolean isProjectInPath(String path) {
+      return findRootInPath(path, PREFS).length() > 0;
    }
    
    @Override
@@ -86,9 +86,9 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    /**
-    * Returns the project's root directory
+    * Returns the path of the project's root directory
     */
-   protected String getProjectRoot() {
+   protected String getProjectPath() {
       return projectPath;
    }
    
@@ -163,15 +163,15 @@ public abstract class ProjectConfig implements Configurable {
    //--private--
    //
 
-   private void findSavedProject(String dir) {
-      String previousProjectRoot = "";
+   private void findSavedProject(String path) {
+      String root = "";
       Preferences props = null;
       //
       // firstly see if there is a config file
-      previousProjectRoot = findRootByFile(dir, CONFIG_FILE);
-      if (previousProjectRoot.length() > 0) {
+      root = findRootByFile(path, CONFIG_FILE);
+      if (root.length() > 0) {
          props = CONFIG;
-         props.readConfig(previousProjectRoot);
+         props.readConfig(root);
          setWin.setSaveConfigSelected(true);
       }
       //
@@ -180,18 +180,18 @@ public abstract class ProjectConfig implements Configurable {
          props = PREFS;
          props.readPrefs();
          setWin.setSaveConfigSelected(false);
-         previousProjectRoot = findRootInPath(dir, props);
+         root = findRootInPath(path, props);
       }
          
-      if (previousProjectRoot.length() > 0) {        
-         configProjectFromFile(previousProjectRoot, props);
+      if (root.length() > 0) {        
+         configProjectFromFile(root, props);
       }
    }
    
-   private String findRootByFile(String dir, String file) {
-      File newFile = new File(dir);
+   private String findRootByFile(String path, String file) {
+      File newFile = new File(path);
       String searched = F_SEP + file;
-      String newFileStr = dir + searched;
+      String newFileStr = path + searched;
       boolean exists = new File(newFileStr).exists();
       while(!exists) {
          if (newFile.getParentFile() == null) {
@@ -211,8 +211,8 @@ public abstract class ProjectConfig implements Configurable {
       }
    }
 
-   private String findRootInPath(String dir, Preferences props) { 
-      File newFile = new File(dir);
+   private String findRootInPath(String path, Preferences props) { 
+      File newFile = new File(path);
       File project;
       if (projectPath.length() > 0) {
          project = new File(projectPath);

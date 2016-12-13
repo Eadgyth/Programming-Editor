@@ -59,12 +59,12 @@ public interface Configurable {
    
    /**
     * If the specified directory includes the project's root directory
-    * @param dir  the directory that may include the project's root
+    * @param path  the filepath that may include the project's root
     * directory
     * @return  if the specified directory includes the project's root
     * directory
     */
-   public boolean isInProjectPath(String dir);
+   public boolean isProjectInPath(String path);
    
    /**
      * Returns the name of the project's root directory

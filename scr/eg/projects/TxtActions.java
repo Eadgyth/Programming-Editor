@@ -51,13 +51,13 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void applyProject() {
-      proc.addWorkingDir(getProjectRoot());
-      fileTree.setProjectTree(getProjectRoot());
+      proc.addWorkingDir(getProjectPath());
+      fileTree.setProjectTree(getProjectPath());
    }
    
    @Override
-   public boolean isInProjectPath(String dir) {
-      return super.isInProjectPath(dir);
+   public boolean isProjectInPath(String path) {
+      return super.isProjectInPath(path);
    }
    
    @Override

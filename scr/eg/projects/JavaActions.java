@@ -103,14 +103,14 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void applyProject() {
-      proc.addWorkingDir(getProjectRoot());
-      fileTree.setProjectTree(getProjectRoot());
+      proc.addWorkingDir(getProjectPath());
+      fileTree.setProjectTree(getProjectPath());
       fileTree.setDeletableDir(getExecDirName());
    }
    
    @Override
-   public boolean isInProjectPath(String dir) {
-      return super.isInProjectPath(dir);
+   public boolean isProjectInPath(String path) {
+      return super.isProjectInPath(path);
    }
    
    @Override
@@ -128,14 +128,15 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       cw.setText("<<Compile " + getProjectName() + ">>\n");
       EventQueue.invokeLater(() -> {
          if (proc.isProcessEnded()) {    
-            comp.compile(getProjectRoot(), getExecDirName(),
+            comp.compile(getProjectPath(), getExecDirName(),
                   getSourceDirName());            
             cw.setCaret(0);
             fileTree.updateTree();
             if (!viewSet.isConsoleSelected()) {
                if (!comp.success()) {
-                  int result = JOptions.confirmYesNo("Compilation of '"
-                        +  getProjectName() + "' failed.\n"
+                  int result = JOptions.confirmYesNo(
+                         "Compilation of '"
+                        + getProjectName() + "' failed.\n"
                         + comp.getMessage() + "."
                         + "\nOpen console window to view messages?");
                   if (result == 0) {
@@ -143,8 +144,9 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
                   }
                }
                else {
-                  JOptions.infoMessage("Successfully compiled '" + getProjectName()
-                        + "'.");
+                  JOptions.infoMessage(
+                          "Successfully compiled '"
+                        + getProjectName() + "'.");
                }
             }
          }
@@ -170,11 +172,11 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       if (!mainClassFileExists()) {
          return;
       }
-      String execDir = getProjectRoot() + File.separator + getExecDirName();
+      String execDir = getProjectPath() + File.separator + getExecDirName();
       SearchFiles sf = new SearchFiles();
       boolean existed
          = sf.filteredFilesToArr(execDir, ".jar").length == 1;
-      jar.createJar(getProjectRoot(), getMainFile(),
+      jar.createJar(getProjectPath(), getMainFile(),
             getModuleName(), getExecDirName(), getBuildName());
       if (!existed) {
          boolean exists = false;
@@ -198,7 +200,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       boolean exists = mainProgramFileExists(".class");
       if (!exists) {
          JOptions.warnMessage("A compiled main class file could not be found");
-         exists = false;
       }
       return exists;
    }
