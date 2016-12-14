@@ -36,6 +36,17 @@ import eg.javatools.SearchFiles;
  * {@link TextDocument}
  */
 public class CurrentProject {
+   
+   private final static String NO_FILE_IN_TAB_MESSAGE
+         = "A project can be set after an opened file or"
+         + " a newly saved file is in the selected tab";
+   
+   private final static String IS_IN_PROJ_MESSAGE 
+         = "The selected file belongs to the"
+         + " currently active project";
+         
+   private final static String WRONG_TYPE_MESSAGE
+         = "A project cannot be created for this file type";
 
    private final ProjectFactory projFact;
    private final MainWin mw;
@@ -46,8 +57,9 @@ public class CurrentProject {
 
    private ProjectActions proj;
    private TextDocument[] txtDoc;
-   private TextDocument docSel;
-   private String extension;
+   private TextDocument currDoc;
+   private String sourceExt;
+   private String currExt;
 
    public CurrentProject(ProjectFactory projFact, MainWin mw,
          FileTree fileTree, Menu menu, Toolbar tBar) {
@@ -73,7 +85,8 @@ public class CurrentProject {
     * of {@link TextDocument}
     */
    public void setDocumentIndex(int docIndex) {
-      docSel = txtDoc[docIndex];
+      currDoc = txtDoc[docIndex];
+      currExt = FileUtils.extension(currDoc.filepath());
    }
 
    /**
@@ -93,17 +106,13 @@ public class CurrentProject {
     * this list of configured projects.
     */
    public void retrieveProject() {
-      if (isProjectSet() && proj.isProjectInPath(docSel.dir())) {
+      if (isProjectSet() && proj.isProjectInPath(currDoc.dir())) {
          return;
       }
-
-      ProjectActions prToFind
-            = projFact.getProjAct(FileUtils.extension(docSel.filepath()));
-
+      ProjectActions prToFind = projFact.getProjAct(currExt);
       boolean isFound
-            = prToFind != null
-            && prToFind.retrieveProject(docSel.dir());
-
+            =  prToFind != null
+            && prToFind.retrieveProject(currDoc.dir());
       if (isFound) {
          if (!isProjectSet()) {          
             proj = prToFind;
@@ -112,7 +121,7 @@ public class CurrentProject {
             updateProjectSetting(proj);
          }
          else {
-            if (searchRecent(docSel.dir()) == null) {
+            if (searchRecent(currDoc.dir()) == null) {
                prToFind.addOkAction(e -> configureProject(prToFind));
                recent.add(prToFind);
             }
@@ -132,10 +141,8 @@ public class CurrentProject {
     */
    public void openSettingsWindow() {
       if (!isProjectSet()) {
-         if (docSel.filename().length() == 0) {
-            JOptions.titledInfoMessage(
-                    "A project can be set after a file was"
-                  + " opened or a new file was saved", "Note");
+         if (currDoc.filename().length() == 0) {
+            JOptions.titledInfoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          }
          else {
             newProject();
@@ -143,14 +150,13 @@ public class CurrentProject {
       }
       else {
          boolean openCurrent
-               = docSel.filename().length() == 0
-              || proj.isProjectInPath(docSel.dir());
-
+              =  currDoc.filename().length() == 0
+              || proj.isProjectInPath(currDoc.dir());
          if (openCurrent) {
             proj.makeSetWinVisible(true);
          }      
          else {
-            ProjectActions inList = searchRecent(docSel.dir());
+            ProjectActions inList = searchRecent(currDoc.dir());
             if (inList != null) {
                if (changeProject(inList)) {
                   proj.makeSetWinVisible(true);
@@ -172,14 +178,12 @@ public class CurrentProject {
     * project it is asked to set up a new project.
     */
    public void changeProject() {
-      ProjectActions inList = searchRecent(docSel.dir());
+      ProjectActions inList = searchRecent(currDoc.dir());
       if (inList == proj) {
-         JOptions.infoMessage(
-                "The selected file belongs to the"
-              + " currently active project");
+         JOptions.infoMessage(IS_IN_PROJ_MESSAGE);
       }
       else {
-         if (recent != null) {
+         if (inList != null) {
             changeProject(inList);
          }
          else {
@@ -210,7 +214,7 @@ public class CurrentProject {
       try {
           for (i = 0; i < txtDoc.length; i++) {
             if (txtDoc[i] != null && proj.isProjectInPath(txtDoc[i].dir())) {
-               boolean noProblem = !txtDoc[i].filename().endsWith(extension);
+               boolean noProblem = !txtDoc[i].filename().endsWith(sourceExt);
                if (noProblem && !new File(txtDoc[i].filepath()).exists()) {
                   break;
                }
@@ -221,7 +225,9 @@ public class CurrentProject {
             proj.compile();
          }
          else {
-            JOptions.warnMessage(txtDoc[i].filename() + " does not exists anymore");
+            JOptions.warnMessage(
+                    txtDoc[i].filename()
+                  + " does not exists anymore");
          }
       }   
       finally {
@@ -250,11 +256,9 @@ public class CurrentProject {
    //
    
    private void newProject() {
-      ProjectActions projNew 
-            = projFact.getProjAct(FileUtils.extension(docSel.filepath()));
+      ProjectActions projNew = projFact.getProjAct(currExt);
       if (projNew == null) {
-         JOptions.titledInfoMessage(
-               "A project cannot be set for this file type", "Note");
+         JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
       }
       else {         
          int result = 0;
@@ -267,20 +271,10 @@ public class CurrentProject {
          }
       }
    }
-
-   private void configureProject(ProjectActions projToConf) {
-      if (projToConf.configureProject(docSel.dir())) {
-         if (proj != projToConf) {
-            proj = projToConf;
-            recent.add(proj);
-         }
-         updateProjectSetting(proj);
-      }
-   }
    
    private boolean changeProject(ProjectActions toChangeTo) {     
       int result = JOptions.confirmYesNo("Change to project '"
-                     + toChangeTo.getProjectName() + "'");
+                 + toChangeTo.getProjectName() + "'");
       if (result == 0) {
          proj = toChangeTo;
          proj.storeInPrefs();
@@ -301,6 +295,16 @@ public class CurrentProject {
       }
       return old;
    }
+   
+   private void configureProject(ProjectActions projToConf) {
+      if (projToConf.configureProject(currDoc.dir())) {
+         if (proj != projToConf) {
+            proj = projToConf;
+            recent.add(proj);
+         }
+         updateProjectSetting(proj);
+      }
+   }
 
    private void updateProjectSetting(ProjectActions projToSet) {
       mw.showProjectInfo(projToSet.getProjectName());
@@ -309,12 +313,11 @@ public class CurrentProject {
    }
    
    private void enableActions() {
-      String ext = FileUtils.extension(docSel.filepath());
-      switch (ext) {
+      switch (currExt) {
          case ".java":
             enableActions(true, true, true);
             menu.getProjectMenu().setBuildKind("Create jar");
-            extension = ".java";
+            sourceExt = ".java";
             break;
          case ".html":
             enableActions(false, true, false);
