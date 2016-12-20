@@ -1,9 +1,9 @@
 # Java-Programming-Editor / Eadgyth
 A text editor written in Java that helps coding (in Java, Perl, HTML) and that is extensible
-by plugins which may be developed to do different types of work with text files.
+by plugins which may be developed to perform specialized tasks with text files.
 <p>
-One goal of the program is a very simple but flexible setting of a project and
-usage of already configured projects.
+A further goal is a very simple but flexible setting of a project and usage of already
+configured projects.
 <p>
 REQUIREMENTS FOR TESTING <br>
 Running the program requires JAVA 8 (JRE 8). I did not have the opportunity to test
