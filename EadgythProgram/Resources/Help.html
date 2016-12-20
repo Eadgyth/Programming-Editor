@@ -11,17 +11,19 @@
    </head>
    <body>
       <h2>Eadgyth help (under work)</h2>
+      <p>If really somebody gave the program a try a message about malfunctions 
+         is welcome at <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a>.</p>
 
       <ul>
          <li><h3>Content</h3>
             <ul>
                <li><a href="#Requirements">Requirements</a><br></li>
-               <li><a href="#RunProject">Running a Java project</a>
+               <li><a href="#RunProject">Running a project</a>
                   <ul>
-                     <li><a href="#ProjectSettings">Project settings</a></li>
-                     <li><a href="#Compiling">Compiling and testing a project</a></li>
-                     <li><a href="#OtherProjects">Other projects than Java?</a></li>
+                     <li><a href="#ProjectTypes">Types of projects</a>
+                     <li><a href="#Config">Configuring a project</a>
                      <li><a href="#ChangeProjects">Changing between projects</a></li>
+                     <li><a href="#Retrieve">Retrieving projects</a>
                   </ul></li>
                <li><a href="#Console">Using the console</a></li>
                <li><a href="#Explorer">Using the project explorer</a></li>
@@ -30,102 +32,134 @@
          <!--Requirements--> 
          <li><h3 id="Requirements">Requirements</h3>
          <p>The Java runtime environment must be version JRE 8 to run Eadgyth.</p>
-         <p>For a programming project in Java it is required that a Java development
-            kit (JDK) is installed and the computer is set up to use the JDK. For the JDK
-            of Oracle, see:      
-            <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html">
-            Oracle JDK</a>. Also, the filepath of the JDK must be saved in the
-            &lsquo;settings.properties&rsquo; file in the program folder. If this is not
-            done in the file itself, the program asks to enter the filepath in a dialog
-            the first time it is tried to compile source files or if a new version
-            of the JDK was installed.</p>
+         <p>For a programming project the computer is simply set up in the same way
+            as if any text editor is used for coding. Presently, programming projects
+            can be set for Java and Perl.
    
          <!--Run project-->
-         <li><h3 id="RunProject">Running a Java project</h3>
-         <h4 id="ProjectSettings">Project settings</h4>
+         <li><h3 id="RunProject">Running a project</h3>
+
+         <h4 id="ProjectTypes">Types of projects</h4>
+         <p>The following types of projects may be defined:</p> 
+         <ol>
+            <li><a href="#JavaProject">Java</a> (file extension is .java) 
+            <li><a href="#PerlProject">Perl</a> (file extension is .pl, syntax recognized also for .pm)
+            <li><a href="#HtmlProject">HTML</a> (file extension is .html)
+            <li><a href="#TxtProject">Plain text</a> (file extension is .txt, no specific actions)
+         </ol>
+
+         <h4 id="Config">Configuring a project</h4>
          <p>The setting of a project always starts from an existing file that is opened
             (or newly saved) and is in the selected tab. The file is found in a directory
             that is supposed to be the project's root or in sub-directories of this root,
-            i.e. a separate directory for sources and/or a package.</p>
+            e.g. a separate directory for source file(s).</p>
          <ol>
-            <li>Open a java source file or save an unnamed tab as a java source file.</li>
-            <li>Open the settings window using &lsquo;Project settings&rsquo; in the menu
-                &lsquo;Project&rsquo;.</li>
-            <li>Enter the name of the source file that contains the main method in the text
-                field &lsquo;Name of main program file&rsquo; (without extension). The main
-                file does not have to be the opened file.</li>
-            <li>If the main file is part of a package enter the package name in the text field
-                &lsquo;Package with main class&rsquo;. If it is located in a sub-package
-                enter the path with normal file separators (slash in Windows).</li>
+            <li>Open a file or save a new file that is of one of the file types mentioned above.</li>
+            <li>Open the settings window by selecting &lsquo;Project&rsquo; > 
+                &lsquo;Project settings&rsquo;.</li>     
+            <li>Enter the name of the main source file without extension. The main file does
+                not have to be the opened file.</li>
+            <li>If the main file is part of a package (applies only to Java)
+                enter the package name in the text field &lsquo;Package with main class&rsquo;.
+                If it is located in a sub-package enter the path with normal file separators
+                (slash in Windows).</li>
             <li>If the directory that contains source files (or packages) is not supposed
-                to be the project's root but a separate sources directory the name of this
-                directory is entered in text field &lsquo;Sources directory&rsquo;.</li>
-            <li>A separate destination directory for compiled class files maybe entered in the
-                text field &lsquo;Executables directory&rsquo; (the folder will be created
-                during compilation).</li>
+                to be the project's root but a separate source directory the name of this
+                directory is entered in text field &lsquo;Source directory&rsquo;.</li>
+            <li>A separate destination directory for compiled files (applies only to Java) maybe
+                entered in the text field &lsquo;Executable directory&rsquo; (the folder will be
+                created during compilation).</li>
             <li>Click ok. If entries are correct the project can be viewed in the &lsquo;Project
                 explorer&rsquo; that is opened in the &lsquo;View&rsquo; menu.</li>
          </ol>
-   
-         <h4 id="Compiling">Compiling and testing a project</h4>
-         <ol>
-            <li>Compile the source file(s) using &lsquo;Save all and compile&rsquo; in the
-                &lsquo;Project&rsquo; menu. If errors occur you will be asked to open the
-                console to view messages.</li>
-            <li>If the compilation was successful the new program can be run for testing by
-                using &lsquo;Run&rsquo; in the &lsquo;Project&rsquo; menu (this will also open the
-                console panel). The tested program can be forcibly quit by clicking the
-                &lsquo;stop&rsquo; symbol in the toolbar of the console panel.</li>
-            <li>Arguments for a start script may be entered in the text field &lsquo;Arguments&rsquo;
-                (separated by single spaces) in the Settings window</li>
-            <li>A jar file may be created by selecting &lsquo;Project&rsquo; > &lsquo;Create jar&rsquo;
-                The jar file is saved in the executable's folder or, if no such folder is
-                defined, in the project's root folder.
-                </li>
-         </ol>
-   
-         <h4 id="OtherProjects">Other projects than Java?</h4>
-         <ul>
-            <li>A project directory maybe set for the txt file type. This would be done just
-                to view files in the project explorer but there are no actions associated with
-                such project.</li>
-            <li>A project maybe also set for the html file type. HTML code can then be viewed
-                in the default browser by selecting &lsquo;Project&rsquo; > &lsquo;Run&rsquo;.
-                The name of the file that is viewed is entered in the text field
-                &lsquo;HTML file&rsquo; in the settings window. The keyword coloring for html
-                code is rudimentary though.</li>
-         </ul>
          
          <h4 id="ChangeProjects">Changing between projects</h4>
          <ul>
             <li>Different projects may set during a session. A new project is set by opening a file
                 that is not part of the currently active project and then opening the settings window
-                (&lsquo;Project&rsquo; > &lsquo;Project settings&rsquo;). to define the project's
-                directories. The file must be found in the selected tab.
+                (&lsquo;Project&rsquo; > &lsquo;Project settings&rsquo;) to define the project's
+                directories. The file must be found in the selected tab.</li>
             <li>Changing between already set projects is done by selecting a file that is part of
-                the project to be set active and using &lsquo;Project&rsquo; > &lsquo;Change
-                project&rsquo;.
-            <li>The option &lsquo;Save settings in project folder&rsquo; in the settings window
-                is checked to save the specified directories in an extra &lsquo;config&rsquo;
-                file. This file turns the folder into &lsquo;<i>a project</i>&rsquo; which can be
-                changed to directly by selecting &lsquo;Change project&rsquo; if a file of this
-                project is in the selected tab. The project would also be set active directly
-                if no other project is active already. Unchecking removes the &lsquo;config&rsquo;
-                file.</li>
+                the project to be set active and then selecting &lsquo;Project&rsquo; > &lsquo;Change
+                project&rsquo; or, to view or modify settings, &lsquo;Project&rsquo; > &lsquo;Project
+                settings&rsquo;.</li>
          </ul>
+         
+         <h4 id="Retrieve">Retrieving projects</h4>
+         <ul>
+            <li>When the first file is opened after starting the program and the file is part
+                of the project that was active when the program was quit the last time this
+                project is directly set active. The settings can be viewed in the settings
+                window (&lsquo;Project&rsquo; >  &lsquo;Project settings&rsquo;).</li>
+            <li>If &lsquo;Save settings in a config file&rsquo; is selected in the settings
+                window the configuration of the project is stored in the project folder. What
+                does that do? 1) If a file of a project marked in this way is opened (or one
+                is saved to that project) the settings are loaded and the option
+                &lsquo;Project&rsquo; > &lsquo;Change project&rsquo; can be used to change
+                to that project. 2) A marked project is directly set active if a file
+                of that project is opened and no other project is active already.</li>
+         </ul>
+
+         <h4 id="JavaProject">Testing Java code and packing a jar file</h4>
+         <ol>
+            <li>Compile the source file(s) using &lsquo;Save all and compile&rsquo; in the
+                &lsquo;Project&rsquo; menu. If errors occur you will be asked to open the
+                console to view messages.</li>
+            <li>If the compilation was successful the new program can be run for testing by
+                using &lsquo;Run&rsquo; in the &lsquo;Project&rsquo; menu. Any output and error
+                messages from the tested program are displayed in the console panel. The tested
+                program can be forcibly quit by clicking the &lsquo;stop&rsquo; symbol in the
+                toolbar of the console panel.</li>
+            <li>Arguments for a start script may be entered in the text field &lsquo;Arguments&rsquo;
+                (separated by single spaces) in the Settings window</li>
+            <li>A jar file may be created by selecting &lsquo;Project&rsquo; > &lsquo;Create
+                jar&rsquo;. The jar file is saved in the executable's folder or, if no such folder
+                is defined, in the project's root folder. A name for the jar file can be
+                specified in the settings window. If no name is given the jar name is the same
+                as that for the main class. Note that presently only class files can be bundled
+                in a jar.</li>
+         </ol>
+         
+         <h4 id="PerlProject">Testing a Perl script</h4>
+         <ol>
+            <li>A perl script can be run in the console panel for testing by selecting
+                &lsquo;Project&rsquo; > &lsquo;Run&rsquo;. There is a limitation when the script
+                asks for input through a command prompt: messages from the perl program are not
+                displayed in the expected order. However, it does work as expected when the
+                autoflushing of Perl's STDOUT is turned on in the script. The other possibilty is,
+                of course, to start an external command prompt to test the script (see <a
+                href="#Console">Using the console</a>).
+            <li>The syntax coloring for Perl is presently very basic.</li>
+         </ol>
+            
+         <h4 id="HtmlProject">Viewing HTML code in a web browser</h4>
+         <ol>
+            <li>Save changes to the file and select &lsquo;Run&rsquo; in the &lsquo;Project&rsquo;
+                menu to view the html file in the default web browser.</li>
+            <li>As for Perl code, the syntax coloring is presently rudimentary.</li>
+         </ol>
+     
+         <h4 id="TxtProject">Set a project for plain text files</h4>
+         <ol>
+            <li>The only purpose of a text project is to view a file structure in the
+                 project explorer.</li>
+         </ol>
    
          <!--Console-->
          <li><h3 id="Console">Using the console</h3>
          <p>The console area shall show messages after compilation of a project and the output of
-            a program that is tested. Interactive programs can be run too, at least Java programs.</p>
+            a program that is tested.</p>
          <p>In addition, self-chosen system commands entered in a dialog can be run in the current
             working directory (a project's root directory). A run process can be forcibly quit by
             clicking the &lsquo;stop&rsquo; symbol.</p>
-         <p>Note that the console does not work as the terminal of the operating system. However,
-            it is possible (or rather not prohibited) to run the system's terminal in the console by
-            running the command that starts the terminal (e.g., cmd.exe in Windows). It is important
-            to note that a tested program thereupon started from this terminal CANNOT be forcibly
-            quit by clicking the &lsquo;stop&rsquo; symbol.</p>
+         <p>The console does not emulate the terminal of the operating system though. However,
+            it is possible (or rather not prohibited) to run the system's terminal in the console
+            by running the command that starts the terminal (e.g., cmd.exe in Windows). It is
+            important to note that a tested program thereupon started from this terminal CANNOT be
+            forcibly quit by clicking the &lsquo;stop&rsquo; symbol.</p>
+         <p>Hint: using the command to run an external command prompt (in Windows this would
+            be cmd.exe /c start) presets the working directory for the prompt to the project's
+            root directory.
    
          <h4>To run a system command...</h4>
          <ol>
