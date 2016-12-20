@@ -2,7 +2,7 @@
 A text editor written in Java that helps coding (in Java, Perl, HTML) and that is extensible
 by plugins which may be developed to do different types of work with text files.
 <p>
-One goal of the program is a very simple but flexible setting of a 'project' and
+One goal of the program is a very simple but flexible setting of a project and
 usage of already configured projects.
 <p>
 REQUIREMENTS FOR TESTING <br>
@@ -18,12 +18,12 @@ A guide how to configure a project and some other info is found in the Resources
 folder (Help.html) and is adressable from the '?' menu. 
 <p>
 IDEA FOR FURTHER DEVELOPEMENT<br>
-1) More types of projects may be added. A type of project is defined by an Interface
-'ProjectActions'.<br>
-2) Develop plugins to make specialized types of work with text files. Presently, a
-plugin would implement the interface Pluggable which cane be implemented to have
-access to the text document that is in the selected tab and that can have a graphical
-view in the main window.
+1) More types of projects may be added. A type of project is defined by the interface
+'ProjectActions' in the 'projects' package.<br>
+2) To develop plugins that can do specialized work with text files. Presently, a
+plugin would implement the interface 'Pluggable' in the 'plugins' package. This can be
+implemented to have access to the text document that is in the selected tab and that can
+have a graphical view in the main window.
 <p>
 DOCUMENTATION <br>
 The javadoc of the program is found in this repository (Docs/Ead-JavaDoc).
