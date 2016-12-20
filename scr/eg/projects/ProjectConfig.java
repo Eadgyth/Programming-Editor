@@ -18,7 +18,7 @@ import eg.utils.JOptions;
 public abstract class ProjectConfig implements Configurable {
 
    private final static String F_SEP = File.separator;
-   private final static String CONFIG_FILE = "config.properties";   
+   private final static String CONFIG_FILE = "eadconfig.properties";   
    private final static Preferences PREFS = new Preferences();
    private final static Preferences CONFIG = new Preferences();
 

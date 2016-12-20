@@ -50,7 +50,7 @@ public class Preferences {
    }
    
    public void readConfig(String dir) {
-      readProps(dir + File.separator + "config.properties");
+      readProps(dir + File.separator + "eadconfig.properties");
    }
    
    public void storeSettings(String newSetting) {
@@ -99,7 +99,7 @@ public class Preferences {
    public void storeConfig(String propToUpdate, String newProperty,
          String dir) {
       
-      String configFile = dir + File.separator + "config.properties";
+      String configFile = dir + File.separator + "eadconfig.properties";
       if (!new File(configFile).exists()) {
          createFile(configFile, CONFIG_KEYS);
       }
