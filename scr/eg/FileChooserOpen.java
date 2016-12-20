@@ -30,7 +30,7 @@ public class FileChooserOpen {
       chooser.setApproveButtonText("Open");
       chooser.addChoosableFileFilter(new FileNameExtensionFilter(
             "",
-            "txt", "java", "properties", "html", "htm"));
+            "txt", "java", "pl", "pm", "properties", "html", "htm"));
       chooser.setDialogTitle("Eadgyth - Open");
       chooser.setFileSelectionMode(JFileChooser.FILES_ONLY); 
    }

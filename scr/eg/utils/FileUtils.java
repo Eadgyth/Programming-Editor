@@ -7,6 +7,11 @@ public class FileUtils {
    
    private static final String F_SEP = File.separator;
    
+   /**
+    * @param fileStr  the String that represents a file
+    * @return  the extension of a file in the form of, e.g., [.txt]
+    * or the empty String if an extension can not be safely determined
+    */
    public static String extension(String fileStr) {
       int indDot = fileStr.lastIndexOf(".");
       int indFileSep = fileStr.lastIndexOf(F_SEP);
@@ -14,7 +19,7 @@ public class FileUtils {
          return fileStr.substring(indDot);
       }
       else {
-         return null;
+         return "";
       }
    }
    

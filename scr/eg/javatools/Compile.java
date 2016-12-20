@@ -42,10 +42,18 @@ public class Compile {
       this.cp = cp;
    }
    
+   /**
+    * @return  true if all java files compiled without
+    * errors; false otherwise
+    */
    public boolean success() {
       return success;
    }
    
+   /**
+    * @return  the first of all listed error messages that contain
+    * the info about the line number an the source file
+    */
    public String getMessage() {   
       return errorInfo.get(0);
    }
@@ -62,61 +70,62 @@ public class Compile {
       if (jdkPath == null) {
          setJdkPath();
          if (jdkPath == null) {
-            errorInfo.add("The filepath of the JDK is not defined");
-            cp.appendText("ERROR:\nThe file path of the JDK is not defined"
-                 + " in'settings.properties'.");
+            errorInfo.add(
+                  "The filepath of the JDK is not defined");
+            cp.appendText(
+                  "ERROR:\nThe file path of the JDK is not defined"
+                  + " in'settings.properties'.");
             return;
          }
       }
-
       String targetDir = targetDir(projectPath, classDir);
+      String[] compileOptions = new String[] {"-d", targetDir} ;
+      Iterable<String> compilationOptions = Arrays.asList(compileOptions);      
+      JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+      DiagnosticCollector<JavaFileObject> diagnostics
+            = new DiagnosticCollector<>();
+      StandardJavaFileManager fileManager
+            = compiler.getStandardFileManager(null, null, null);
+      Iterable<? extends JavaFileObject> units;
+      List<File> classes = new SearchFiles().filteredFiles(projectPath
+            + SEP + sourceDir, ".java");
+      File[] fileArr = classes.toArray(new File[classes.size()]);
+      units = fileManager.getJavaFileObjects(fileArr);
+      CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
+              compilationOptions, null, units);
+      success = task.call();       
+      output(diagnostics);
       try {
-         String[] compileOptions = new String[] {"-d", targetDir} ;
-         Iterable<String> compilationOptions = Arrays.asList(compileOptions);      
-         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-         DiagnosticCollector<JavaFileObject> diagnostics
-               = new DiagnosticCollector<>();
-         try (StandardJavaFileManager fileManager
-                  = compiler.getStandardFileManager(null, null, null)) {
-            Iterable<? extends JavaFileObject> units;
-            List<File> classes = new SearchFiles().filteredFiles(projectPath
-                    + SEP + sourceDir, ".java");
-            File[] fileArr = classes.toArray(new File[classes.size()]);
-            units = fileManager.getJavaFileObjects(fileArr);
-            CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
-                    compilationOptions, null, units);
-            success = task.call();
-         }
-
-         if (success) {
-            cp.appendText("Compilation successful");
-         }
-         else {
-            for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
-               cp.appendText(diagnostic.getKind().toString() + ":\n");
-               cp.appendText(diagnostic.getCode().toString() + ": ");
-               cp.appendText(diagnostic.getMessage( null ).toString() + "\n");
-               cp.appendText("at line: " + diagnostic.getLineNumber() + "\n");
-               cp.appendText("at column: " + diagnostic.getColumnNumber() + "\n");
-               if (diagnostic.getSource() != null) { // can be null!
-                  cp.appendText(diagnostic.getSource().toString() + "\n");
-                  String file = new File(diagnostic.getSource().toString()).getName();
-                  file = file.substring(0, file.length() - 1);
-                  errorInfo.add("First listed error in " + file + ", line " 
-                        + diagnostic.getLineNumber());
-               }
-               else {
-                  errorInfo.add("Unreported error");
-                  cp.appendText("Unreported error");
-               }
-               cp.appendText("----------------------------------------------------------"
-                     + "--------------------------------------------------------------\n");
-            }
-         }
-      }
-      catch (IOException e) {
-         errorInfo.add(e.getMessage());
+         fileManager.close();
+      } catch (IOException e) {
          System.out.println(e.getMessage());
+      }
+   }
+   
+   private void output(DiagnosticCollector<JavaFileObject> diagnostics) {
+      if (success) {
+         cp.appendText("Compilation successful");
+      }
+      else {
+         for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
+            cp.appendText(diagnostic.getKind().toString() + ":\n");
+            cp.appendText(diagnostic.getCode() + ": ");
+            cp.appendText(diagnostic.getMessage( null ) + "\n");
+            cp.appendText("at line: " + diagnostic.getLineNumber() + "\n");
+            cp.appendText("at column: " + diagnostic.getColumnNumber() + "\n");
+            if (diagnostic.getSource() != null) { // can be null!
+               cp.appendText(diagnostic.getSource().toString() + "\n");
+               String file = new File(diagnostic.getSource().toString()).getName();
+               file = file.substring(0, file.length() - 1);
+               errorInfo.add("First listed error in " + file + ", line " 
+                     + diagnostic.getLineNumber());
+            }
+            String devider = "_";
+            for (int i = 0; i <= 90; i++) {
+               cp.appendText(devider);
+            }
+            cp.appendText("\n");
+         }
       }
    }
 

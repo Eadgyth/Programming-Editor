@@ -77,7 +77,7 @@ public class Edit {
       }
 
       if (txtDoc.isComputerLanguage()) {
-         txtDoc.recolorAll();
+         txtDoc.colorAll();
       }
    }
 
@@ -244,9 +244,6 @@ public class Edit {
       }
       catch (UnsupportedFlavorException | IOException e) {
          e.printStackTrace();
-      }
-      if (inClipboard == null) {
-         JOptions.infoMessage("No contents loaded from the cliboard");
       }
       return inClipboard;
    }

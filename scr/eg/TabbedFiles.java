@@ -13,12 +13,8 @@ import javax.swing.event.ChangeListener;
 
 import java.io.File;
 
-import java.util.List;
-import java.util.ArrayList;
-
 //--Eadgyth--//
 import eg.utils.JOptions;
-import eg.utils.FileUtils;
 
 import eg.document.TextDocument;
 
@@ -26,10 +22,8 @@ import eg.ui.MainWin;
 import eg.ui.TabbedPane;
 import eg.ui.EditArea;
 
-import eg.ui.filetree.FileTree;
 
 import eg.projects.ProjectActions;
-import eg.projects.ProjectFactory;
 
 /**
  * Controls file operations that require knowledge of the opened tabs and 
@@ -92,7 +86,7 @@ public class TabbedFiles implements Observer{
    /**
     * Opens a new 'unnamed' Tab to which no file is assigned
     */
-   public void newEmptyTab() {
+   public final void newEmptyTab() {
       editArea[tabPane.tabCount()] = new EditArea();
       txtDoc[tabPane.tabCount()] = new TextDocument(editArea[tabPane.tabCount()]);
       addNewTab("unnamed", editArea[tabPane.tabCount()].scrolledArea(),

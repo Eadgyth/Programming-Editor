@@ -24,7 +24,7 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    
    public HtmlActions(ProcessStarter proc, FileTree fileTree) {
       super(new SettingsWin("HTML file", "Subdirectory",
-           false, false, null),
+           false, false, false, null),
            ".html"
       );
       this.proc = proc;

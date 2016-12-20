@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 public interface ProjectActions extends Configurable {
    
    /**
-    * Compiles source filel
+    * Compiles source files
     */
    public void compile();
    
@@ -18,7 +18,8 @@ public interface ProjectActions extends Configurable {
    public void runProject();
    
    /**
-    * Creates a build of a project
+    * Creates a build of a project, where it is not specified
+    * what this means
     */
    public void build();
 }

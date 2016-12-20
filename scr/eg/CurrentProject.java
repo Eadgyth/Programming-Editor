@@ -22,8 +22,6 @@ import eg.document.TextDocument;
 import eg.utils.FileUtils;
 import eg.utils.JOptions;
 
-import eg.javatools.SearchFiles;
-
 /**
  * The managing of projects.
  * <p>
@@ -91,6 +89,7 @@ public class CurrentProject {
 
    /**
     * If at least one project has been created
+    * @return  if at least one project has been created
     */
    public boolean isProjectSet() {
       return proj != null;
@@ -114,7 +113,7 @@ public class CurrentProject {
             =  prToFind != null
             && prToFind.retrieveProject(currDoc.dir());
       if (isFound) {
-         if (!isProjectSet()) {          
+         if (!isProjectSet()) {   
             proj = prToFind;
             proj.addOkAction(e -> configureProject(proj));
             recent.add(proj); 
@@ -124,10 +123,10 @@ public class CurrentProject {
             if (searchRecent(currDoc.dir()) == null) {
                prToFind.addOkAction(e -> configureProject(prToFind));
                recent.add(prToFind);
+               if (recent.size() == 2) {
+                  menu.getProjectMenu().enableChangeProjItm();
+               }
             }
-         }
-         if (recent.size() == 2) {
-            menu.getProjectMenu().enableChangeProjItm();
          }
       }
    }
@@ -195,9 +194,9 @@ public class CurrentProject {
    /**
     * Updates the file tree of {@code FileTree} if the specified
     * directory includes the project's root directory.
-    * @param path  the directory that includes the project's root
+    * @param path  the directory that may include the project's root
     * directory
-    * See {@link FileTree #updateTree()}
+    * See {@link FileTree#updateTree()}
     */
    public void updateFileTree(String path) {
       if (isProjectSet() && proj.isProjectInPath(path)) {
@@ -210,24 +209,28 @@ public class CurrentProject {
     */
    public void compile() {         
       mw.setCursor(MainWin.BUSY_CURSOR);
-      int i = 0;
+      int missingIndex = 0;
       try {
-          for (i = 0; i < txtDoc.length; i++) {
-            if (txtDoc[i] != null && proj.isProjectInPath(txtDoc[i].dir())) {
-               boolean noProblem = !txtDoc[i].filename().endsWith(sourceExt);
-               if (noProblem && !new File(txtDoc[i].filepath()).exists()) {
-                  break;
+         for (int i = 0; i < txtDoc.length; i++) {
+            boolean approved
+                  = txtDoc[i] != null
+                  && txtDoc[i].filename().endsWith(sourceExt)
+                  && proj.isProjectInPath(txtDoc[i].dir());
+            if (approved) {
+               boolean exists = new File(txtDoc[i].filepath()).exists();
+               if (!exists) {
+                  missingIndex = i;
                }
                txtDoc[i].saveToFile();
             }
          }  
-         if (i == txtDoc.length) {
+         if (missingIndex == 0) {
             proj.compile();
          }
          else {
             JOptions.warnMessage(
-                    txtDoc[i].filename()
-                  + " does not exists anymore");
+                    txtDoc[missingIndex].filename()
+                  + " cannot be not found anymore");
          }
       }   
       finally {
@@ -320,6 +323,9 @@ public class CurrentProject {
             sourceExt = ".java";
             break;
          case ".html":
+            enableActions(false, true, false);
+            break;
+         case ".pl": case ".pm":
             enableActions(false, true, false);
             break;
          case ".txt":

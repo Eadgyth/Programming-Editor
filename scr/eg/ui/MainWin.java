@@ -2,15 +2,12 @@ package eg.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
 
 import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
-
-import javax.swing.border.Border;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -24,13 +21,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 //--Eadgyth--//
 import eg.Constants;
 import eg.Preferences;
 
-import eg.ui.menu.Menu;
 
 /**
  * The main window

@@ -18,7 +18,7 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
 
    public TxtActions(ProcessStarter proc, FileTree fileTree) {
       super(new SettingsWin("Name of a text file in the project", "Subdirectory",
-           false, false, null),
+           false, false, false, null),
            ".txt"
       );
       this.proc = proc;

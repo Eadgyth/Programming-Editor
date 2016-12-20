@@ -128,9 +128,9 @@ public class Preferences {
       prop = new Properties();
       try {
          writer = new FileWriter(file);
-         for (int j = 0; j < allKeys.length; j++) {
-            prop.setProperty(allKeys[j], "");
-         }         
+          for (String allKey : allKeys) {
+              prop.setProperty(allKey, "");
+          }         
          prop.store(writer, null);
       }
       catch (IOException e){

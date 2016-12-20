@@ -1,15 +1,13 @@
 package eg.document;
 
-import javax.swing.JTextPane;
-
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants;
-import javax.swing.text.Element;
 
 import java.awt.Color;
 
 //--Eadgyth--
+import eg.Languages;
 import eg.utils.Finder;
 
 /*
@@ -19,6 +17,7 @@ class Coloring {
    
    private final SimpleAttributeSet comSet    = new SimpleAttributeSet();
    private final SimpleAttributeSet keySet    = new SimpleAttributeSet();
+   private final SimpleAttributeSet flagSet   = new SimpleAttributeSet();
    private final SimpleAttributeSet brSet     = new SimpleAttributeSet();
    private final SimpleAttributeSet strLitSet = new SimpleAttributeSet();
    
@@ -26,14 +25,20 @@ class Coloring {
    private final SimpleAttributeSet normalSet;
    
    private String[] keywords;
-   private String lineCmnt;
+   private boolean isWord = false;
+   private String[] operators;
+   private boolean isOperators;
+   private String[] flagged;  // with certain start signal
+   private boolean isFlagged;
+   private String[] flags;    // with start signal but unknown length
+   private boolean isFlags;
+   private String lineCmnt = "";
    private boolean isLineCmnt = false;
-   private String blockCmntStart;
-   private String blockCmntEnd;
+   private String blockCmntStart = "";
+   private String blockCmntEnd = "";
    private boolean isBlockCmnt = false;
    private boolean isStringLit = false;
    private boolean isBrackets = false;
-   private boolean isWord = false;
    private boolean isSingleLines = false;
    
    Coloring(StyledDocument doc, SimpleAttributeSet normalSet) {
@@ -50,50 +55,101 @@ class Coloring {
       return isBlockCmnt;
    }
    
-   void configColoring(String[] keywords, String lineCmnt, String blockCmntStart,
-            String blockCmntEnd, boolean isStringLit, boolean isBrackets,
-            boolean isWord) {
+   void configColoring(Languages language) {
+      switch(language) {
+         case JAVA:
+            keywords = Syntax.JAVA_KEYWORDS;
+            isWord = true;
+            flagged = Syntax.JAVA_ANNOTATIONS;
+            isFlagged = true;
+            isFlags = false;
+            isOperators = false;
+            lineCmnt = "//";
+            isLineCmnt = true;
+            blockCmntStart = "/*";
+            blockCmntEnd = "*/";
+            isBlockCmnt = true;
+            isStringLit = true;
+            isBrackets = true;
+            break;
+        case HTML:
+            keywords = Syntax.HTML_KEYWORDS;
+            isWord = false;
+            isFlagged = false;
+            isFlags = false;
+            isOperators = false;
+            isLineCmnt = false;
+            blockCmntStart = "<!--";
+            blockCmntEnd = "-->";
+            isBlockCmnt = true;
+            isStringLit = true;
+            isBrackets = true;
+            break;
+        case PERL:
+            keywords = Syntax.PERL_KEYWORDS;
+            isWord = true;
+            isFlagged = false; // variables with $ not added so far
+            operators = Syntax.PERL_OP;
+            isOperators = true;
+            flags = Syntax.PERL_FLAGS;
+            isFlags = true;
+            lineCmnt = "#";
+            isBlockCmnt = false;
+            isStringLit = true;
+            isBrackets = true;
+            break;
+      }
+   }
+   
+   void setKeywords(String[] keywords, boolean constrainWord) {
       this.keywords = keywords;
-      this.lineCmnt = lineCmnt;
-      isLineCmnt = lineCmnt.length() > 0;
-      this.blockCmntStart = blockCmntStart;
-      this.blockCmntEnd = blockCmntEnd;
-      isBlockCmnt = blockCmntStart.length() > 0;
-      this.isStringLit = isStringLit;
-      this.isBrackets = isBrackets;
-      this.isWord = isWord;
+      isWord = constrainWord;
+      isFlagged = false;
+      isFlags = false;
+      isOperators = false;
+      isLineCmnt = false;
+      isBlockCmnt = false;
+      isStringLit = false;
+      isBrackets = false;
    }
    
    /**
-    * Colors synthax / search terms
+    * Colors syntax / search terms
     */
    void color(String in, int pos) {    
       String chunk;
       if (isSingleLines) {
          chunk = Finder.currLine(in, pos);
-         pos = in.lastIndexOf("\n", pos) + 1;
+         pos = Finder.lastReturn(in, pos) + 1;
       }
       else {
          chunk = in;
       }
-      /*
-       * positions of previous block comment start and next block comment end */
-      int indBlockStart = Finder.indLastBlockStart(in, pos, blockCmntStart,
-            blockCmntEnd);
-      int indBlockEnd   = Finder.indNextBlockEnd(in, pos, blockCmntStart,
-            blockCmntEnd);
-      /*
-       * if cursor is not inside a block comment or using block comments 
-       * is disabled */
-      if ((indBlockStart == -1 || indBlockEnd == -1) || !isBlockCmnt) {
+     
+      if (!isBlockCmnt || !isInBlock(in, pos)) {
          doc.setCharacterAttributes(pos, chunk.length(), normalSet, false);
-         for (int i = 0; i < keywords.length; i++) {
-            keys(chunk, keywords[i], keySet, pos);
+         if (isFlags) {
+             for (String flag : flags) {
+                 withFlag(chunk, flag, flagSet, pos);
+             }
+         }
+         if (isFlagged) {
+             for (String flagged1 : flagged) {
+                 keys(chunk, flagged1, flagSet, pos);
+             }
+         }
+          for (String keyword : keywords) {
+              keys(chunk, keyword, keySet, pos);
+          }
+         if (isOperators) {
+             for (String operator : operators) {
+                 operators(chunk, operator, keySet, pos);
+             }
          }
          if (isBrackets) {
-            for (int i = 0; i < Keywords.BRACKETS.length; i++) {
-               brackets(chunk, Keywords.BRACKETS[i], pos);
-            }
+             for (String BRACKETS : Syntax.BRACKETS) {
+                 operators(chunk, BRACKETS, brSet, pos);
+             }
          }
          if (isStringLit) {
             if (!isSingleLines) {
@@ -124,7 +180,7 @@ class Coloring {
       while (index != -1) {
          index = in.indexOf(query, index + nextPos);
          if (index != -1) {
-            boolean ok = !isWord || Finder.isWord(in, query, index);
+            boolean ok = !isWord || Syntax.isWord(in, query, index);
             if (ok) {
                doc.setCharacterAttributes(index + pos, query.length(),
                      set, false);
@@ -133,17 +189,31 @@ class Coloring {
          nextPos = 1; 
       }
    }
-
-   private void brackets(String in, String query, int pos) {
+   
+   private void operators(String in, String query, SimpleAttributeSet set, int pos) {
       int index = 0;
       int nextPos = 0;
-
       while (index != -1) {
          index = in.indexOf(query, index + nextPos);
          if (index != -1) {
-            doc.setCharacterAttributes(index + pos, 1, brSet, false);
-         }
-         nextPos = 1;
+            doc.setCharacterAttributes(index + pos, query.length(), set, false);
+         }  
+         nextPos = 1; 
+      }
+   }
+   
+   private void withFlag(String in, String query, SimpleAttributeSet set, int pos) {
+      int index = 0;
+      int nextPos = 0;
+      while (index != -1) {
+         index = in.indexOf(query, index + nextPos);
+         if (index != -1) {
+            if (Syntax.isWordStart(in, index)) {
+               int length = Syntax.wordLength(in.substring(index));
+               doc.setCharacterAttributes(index + pos, length, set, false);
+            }
+         }  
+         nextPos = 1; 
       }
    }
 
@@ -170,7 +240,7 @@ class Coloring {
       int nextPos = 0;
       while (lineComInd != -1) {
          lineComInd = in.indexOf(lineCmnt, lineComInd + nextPos );
-         if (lineComInd != -1 && !Finder.isInQuotes( in, lineComInd)) {
+         if (lineComInd != -1 && !Syntax.isInQuotes( in, lineComInd)) {
             int lineEndInd = in.indexOf("\n", lineComInd + 1);
             int length;
             if (lineEndInd != -1) {
@@ -185,16 +255,24 @@ class Coloring {
          nextPos = 1;
       }
    }
-
+   
+   private boolean isInBlock(String in, int pos) {
+      int indBlockStart = Syntax.indLastBlockStart(in, pos, blockCmntStart,
+            blockCmntEnd);
+      int indBlockEnd   = Syntax.indNextBlockEnd(in, pos, blockCmntStart,
+            blockCmntEnd);
+      return indBlockStart != -1 & indBlockEnd != -1;
+   }
+    
    private void blockComments(String in) {
       int indStart = 0;
       int nextPos = 0;
 
       while (indStart != -1) {
          indStart = in.indexOf(blockCmntStart, indStart + nextPos);
-         if (indStart != -1 && !Finder.isInQuotes(in, indStart)) {       
+         if (indStart != -1 && !Syntax.isInQuotes(in, indStart)) {       
             int indEnd = in.indexOf(blockCmntEnd, indStart + 1);
-            if (indEnd != -1 && !Finder.isInQuotes(in, indEnd)) {
+            if (indEnd != -1 && !Syntax.isInQuotes(in, indEnd)) {
                int indNextStart = in.substring
                      (indStart + 1, indEnd).indexOf(blockCmntStart, 0);
 
@@ -215,11 +293,11 @@ class Coloring {
    }
 
    void uncommentBlock(String in, int pos) {
-
-      // positions of previous block comment start and next block comment end
-      int indBlockStart = Finder.indLastBlockStart(in, pos, blockCmntStart,
+      /*
+       * positions of previous block comment start and next block comment end */
+      int indBlockStart = Syntax.indLastBlockStart(in, pos, blockCmntStart,
             blockCmntEnd);
-      int indBlockEnd   = Finder.indNextBlockEnd(in, pos, blockCmntStart,
+      int indBlockEnd   = Syntax.indNextBlockEnd(in, pos, blockCmntStart,
             blockCmntEnd);
 
       if (indBlockStart != -1 && indBlockEnd == -1) {
@@ -244,6 +322,10 @@ class Coloring {
       Color keyPink = new Color(230, 0, 110);
       StyleConstants.setForeground(keySet, keyPink);
       StyleConstants.setBold(keySet, false);
+      
+      Color flagBlue = new Color(60, 60, 250);
+      StyleConstants.setForeground(flagSet, flagBlue);
+      StyleConstants.setBold(flagSet, false);
 
       Color bracketBlue = new Color(70, 0, 220);
       StyleConstants.setForeground(brSet, bracketBlue);

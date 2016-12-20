@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
 
 import javax.swing.border.EmptyBorder;
 

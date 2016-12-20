@@ -6,14 +6,14 @@ import java.awt.event.ActionListener;
  * The interface to configure a project.
  * <p>
  * 'Configuration' means to define the directory structure of project
- * and the finding of the project's root directory based om this
+ * and the finding of the project's root directory based on this
  * structure.
  * For example, the project root of a Java project could be the parent
  * of the path {sources Directory}/{package}/{main java file}. It
  * could as well be just the parent of the main file if subdirectories
  * are not specified.
  * <p>
- * The implementing class must have a reference to an object of
+ * The implementing class must receive a reference to an object of
  * {@link SettingsWin}.
  * <p>
  * The project may be configured by the entries in the settings window
@@ -44,7 +44,7 @@ public interface Configurable {
    public boolean configureProject(String dir);
    
    /**
-    * If a project configuration saved to a file can be retrieved
+    * If a project configuration saved to file can be retrieved
     * @param dir  the directory of a file that maybe part of the project 
     * @return  if a project configuration saved to a file can be retrieved
     */

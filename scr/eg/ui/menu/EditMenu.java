@@ -21,7 +21,7 @@ import eg.ui.IconFiles;
 public class EditMenu {
 
    private final static String[] LANGUAGES = {
-      "Plain text", "Java", "HTML"
+      "Plain text", "Java", "HTML", "Perl"
    };
 
    private final Preferences prefs = new Preferences();

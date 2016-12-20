@@ -51,19 +51,22 @@ public class SettingsWin {
     * configured for. Is not null.
     * @param moduleKind  a description for the kind of module (e.g. package/
     * directory relative to the project root). Null to skip asking for a module
-    * @param useScrExec  true to ask for the directories that contain source
-    * files and executables, respectively
+    * @param useScr  true to ask for the directory that contain source
+    * files.
+    * @param useExec  true to ask for the directory that contain executable
+    * files
     * @param useArgs  true to ask for additional arguments of a start script
     * @param buildKind  the name for the kind of build. Null to skip asking
     * for a build
     */
-   public SettingsWin(String fileKind, String moduleKind, boolean useScrExec,
-         boolean useArgs, String buildKind) {
-      setWindow(fileKind, moduleKind, useScrExec, useArgs, buildKind);
+   public SettingsWin(String fileKind, String moduleKind, boolean useScr,
+         boolean useExec, boolean useArgs, String buildKind) {
+      setWindow(fileKind, moduleKind, useScr, useExec, useArgs, buildKind);
    }
 
    /**
     * Makes this frame visible
+    * @param isVisible  true to make this frame visible
     */
    public void makeVisible(boolean isVisible) {
       fileTf.requestFocus();
@@ -71,7 +74,8 @@ public class SettingsWin {
    }      
 
    /**
-    * Adds an action event handler to this ok button
+    * Adds an {@code ActionListener} to this ok button
+    * @param al  the {@code ActionListener};
     */
    public void okAct(ActionListener al) {
       okBt.addActionListener(al);
@@ -172,8 +176,10 @@ public class SettingsWin {
       saveConfig.setSelected(isSelected);
    }
 
-   private JPanel projectPanel(String fileKind, String moduleKind, boolean useScrExec) {
-      GridLayout grid = new GridLayout(2, 0);
+   private JPanel projectPanel(String fileKind, String moduleKind, boolean useScr,
+         boolean useExec) {
+      int gridSize = 2;
+      GridLayout grid = new GridLayout(gridSize, 0);
       JPanel projPnl = new JPanel(grid);
 
       // file panel
@@ -182,17 +188,25 @@ public class SettingsWin {
 
       // module/subdir panel
       if (moduleKind != null) {
-         grid.setRows(3);
+         gridSize++;
+         grid.setRows(gridSize);
          JLabel moduleLb = new JLabel(moduleKind + ":");
          projPnl.add(holdLbAndTf(moduleLb, moduleTf));
       }
-
-      // scources/executables panel
-      if (useScrExec) {
-         grid.setRows(5);        
-         JLabel sourcesDirLb = new JLabel("Sources directory:");
+      //
+      // scources panel
+      if (useScr) {
+         gridSize++;
+         grid.setRows(gridSize);        
+         JLabel sourcesDirLb = new JLabel("Source directory:");
          projPnl.add(holdLbAndTf(sourcesDirLb, sourcesDirTf));
-         JLabel execDirLb = new JLabel("Executables directory:");
+      }
+      //
+      // executabled panel
+      if (useExec) {
+         gridSize++;
+         grid.setRows(gridSize);
+         JLabel execDirLb = new JLabel("Executable directory:");
          projPnl.add(holdLbAndTf(execDirLb, execDirTf));
       }
 
@@ -260,12 +274,12 @@ public class SettingsWin {
       return checkBxPnl;
    }
    
-   private JPanel combineAll(String fileKind, String moduleKind, boolean useScrExec,
-         boolean useArgs, String buildKind) {
+   private JPanel combineAll(String fileKind, String moduleKind, boolean useScr,
+         boolean useExec, boolean useArgs, String buildKind) {
       JPanel combineAll = new JPanel();
       combineAll.setLayout(new BoxLayout(combineAll, BoxLayout.Y_AXIS));
       combineAll.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-      combineAll.add(projectPanel(fileKind, moduleKind, useScrExec));
+      combineAll.add(projectPanel(fileKind, moduleKind, useScr, useExec));
       if (useArgs) {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
          combineAll.add(argsPanel());
@@ -279,13 +293,13 @@ public class SettingsWin {
       return combineAll;
    }
 
-   private void setWindow(String fileKind, String moduleKind, boolean useScrExec,
-         boolean useArgs, String buildKind) {
+   private void setWindow(String fileKind, String moduleKind, boolean useScr,
+         boolean useExec, boolean useArgs, String buildKind) {
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       frame.setResizable(false);
       frame.setLocation(550, 100);
-      frame.setContentPane(combineAll(fileKind, moduleKind, useScrExec, 
-            useArgs, buildKind));
+      frame.setContentPane(combineAll(fileKind, moduleKind, useScr, 
+            useExec, useArgs, buildKind));
       frame.pack();
       frame.setVisible(false);
       frame.setAlwaysOnTop(true);

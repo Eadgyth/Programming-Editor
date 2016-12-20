@@ -21,17 +21,18 @@ import java.awt.Color;
 
 
 //--Eadgyth--//
+import eg.Languages;
 import eg.ui.EditArea;
 
 /** 
- * Responsible for the edits the display in the {@code EditArea} that shall
- * happen during typing. <p>
- * The changes include the line numbering, the syntax / keyword coloring;
+ * Responsible for the edits in the {@code EditArea} that shall happen 
+ * during typing. <p>
+ * The changes include the line numbering, the syntax coloring,
  * auto-indentation and undo/redo editing
  */
 class TypingEdit {
 
-   private final DocUndoManager undomanager = new DocUndoManager();
+   private final UndoManager undomanager = new DocUndoManager();
    private final StyledDocument doc;  
    private final Element el;
    private final SimpleAttributeSet normalSet = new SimpleAttributeSet(); 
@@ -50,7 +51,7 @@ class TypingEdit {
       setStyles();
 
       doc.addDocumentListener(docListen);
-      doc.addUndoableEditListener(new DocUndoManager());
+      doc.addUndoableEditListener(undomanager);
       undomanager.setLimit(1000);
 
       col = new Coloring(doc, normalSet);
@@ -74,11 +75,12 @@ class TypingEdit {
       }
    }
    
-   void configColoring(String[] keywords, String lineCmnt, String blockCmntStart,
-         String blockCmntEnd, boolean isStringLit, boolean isBrackets,
-         boolean constrainWord) {
-      col.configColoring(keywords, lineCmnt, blockCmntStart,
-            blockCmntEnd, isStringLit, isBrackets, constrainWord);
+   void configColoring(Languages language) {
+      col.configColoring(language);
+   }
+   
+   void setKeywords(String[] keywords, boolean constrainWord) {
+      col.setKeywords(keywords, constrainWord);
    }
 
    StyledDocument doc() {
@@ -111,13 +113,8 @@ class TypingEdit {
    void updateRowNumber(String content) {
       rowNum.updateRowNumber(content);
    }
-   
-   void colorAll() {
-      col.color(getDocText(), 0);
-      enableTextModify(true);
-   }
 
-   void recolorAll() {
+   void colorAll() {
       enableTextModify(false);
       String all = getDocText();
       doc.setCharacterAttributes(0, all.length(),
@@ -127,13 +124,27 @@ class TypingEdit {
    }
 
    void undo() {
-       undomanager.undo();
+      try {
+         if (undomanager.canUndo()) {
+            undomanager.undo();
+         }
+      }
+      catch (CannotUndoException e) {
+         System.out.println(e.getMessage());
+      }
    }
 
    void redo() {
-      undomanager.redo();
-      if (isTextModify) {
-          recolorAll();
+      try {
+         if (undomanager.canRedo()) {
+            undomanager.redo();
+            if (isTextModify) {
+               colorAll();
+            }
+         }
+      }
+      catch (CannotRedoException e) {
+         System.out.println(e.getMessage());
       }
    }
 
@@ -212,31 +223,7 @@ class TypingEdit {
          if (event.getType().equals(DocumentEvent.EventType.CHANGE)) {
             return;
          }
-         undomanager.addEdit(e.getEdit());
-      }
-   
-      @Override
-      public void undo() {
-         try {
-            if (super.canUndo()) {
-               super.undo();
-            }
-         }
-         catch (CannotUndoException e) {
-            System.out.println(e.getMessage());
-         }
-      }
-   
-      @Override
-      public void redo() {
-         try {
-            if (super.canRedo()) {
-               super.redo();
-            }
-         }
-         catch (CannotRedoException cre) {
-            System.out.println(cre.getMessage());
-         }
+         addEdit(e.getEdit());
       }
    }
 }

@@ -9,7 +9,7 @@ import javax.swing.JCheckBoxMenuItem;
 
 //--Eadgyth--//
 import eg.Preferences;
-import eg.FontSetting;
+import eg.FontSetter;
 
 import eg.ui.ViewSettings;
 
@@ -26,7 +26,7 @@ public class FormatMenu {
       assembleMenu();
    }
    
-   public void registerAct(FontSetting fontSet, ViewSettings viewSet) {
+   public void registerAct(FontSetter fontSet, ViewSettings viewSet) {
       font.addActionListener(e -> fontSet.makeFontSetWinVisible(true));
       wordWrap.addActionListener(e -> viewSet.enableWordWrap());
    }

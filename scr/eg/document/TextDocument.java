@@ -255,8 +255,8 @@ public class TextDocument {
    /**
     * Colors keyword/syntax of the entire text in this document.
     */
-   public void recolorAll() {
-      type.recolorAll();
+   public void colorAll() {
+      type.colorAll();
    }
 
    /**
@@ -308,19 +308,25 @@ public class TextDocument {
     * in {@link eg.Languages}
     */
    public void changeLanguage(Languages language) {
-      if (language == Languages.JAVA & filename.length() == 0) {
+      if (filename.length() > 0) {
+         return;
+      }
+      else if (language == Languages.JAVA) {
          changeToJava();
       }
-      if (language == Languages.HTML & filename.length() == 0) {
+      else if (language == Languages.HTML) {
          changeToHtml();
       }
-      else if (language == Languages.PLAIN_TEXT & filename.length() == 0) {
+      else if (language == Languages.PERL) {
+         changeToPerl();
+      }
+      else if (language == Languages.PLAIN_TEXT) {
          changeToPlain();
       }
-      PREFS.storePrefs("language", language.toString());
+      PREFS.storePrefs("language", language.toString()); 
    }
    
-   /**
+    /**
     * Colors text elements specified by an array of search terms in the
     * keyword color if this language is plain text.
     * @param searchTerms  the array of Strings that contain search terms
@@ -331,23 +337,26 @@ public class TextDocument {
     */
    public void colorSearchedText(String[] searchTerms, boolean constrainWord) {
       if (searchTerms == null) {
-         throw new IllegalArgumentException("Argument 'searchTerms' is null");
+         throw new IllegalArgumentException(
+               "Argument 'searchTerms' is null");
       }
       for (String searchTerm : searchTerms) {
          if (searchTerm.length() == 0) {
-            throw new IllegalArgumentException("'searchTerms' contains an"
+            throw new IllegalArgumentException(
+                  "'searchTerms' contains an"
                   + " empty element");
           }
       }
       if (isComputerLanguage()) {
-         JOptions.infoMessage("The coloring of text requires"
-            + " that the language is plain txt");
+         JOptions.infoMessage(
+               "The coloring of text requires"
+               + " that the language is plain txt");
          return;
       }
-      type.configColoring(searchTerms, "", "", "", false, false, constrainWord);
+      type.setKeywords(searchTerms, constrainWord);
       type.enableIndent(false);
-      recolorAll();
-   }         
+      colorAll();
+   }
    
    //
    //----private methods-----//
@@ -362,13 +371,15 @@ public class TextDocument {
    private void configColoring(Languages language) {
       switch(language) {
          case JAVA:
-            type.configColoring(Keywords.JAVA_KEYWORDS, "//",
-                  "/*", "*/", true, true, true);
+            type.configColoring(language);
             type.enableIndent(true);
             break;
          case HTML:
-            type.configColoring(Keywords.HTML_KEYWORDS, "",
-                  "<!--", "-->", true, true, false);
+            type.configColoring(language);
+            type.enableIndent(true);
+            break;
+         case PERL:
+            type.configColoring(language);
             type.enableIndent(true);
             break;
          case PLAIN_TEXT:
@@ -424,6 +435,11 @@ public class TextDocument {
             & Languages.HTML.toString().equals(language))) {
          changeToHtml();
       }
+      else if (filename.endsWith(".pl") || filename.endsWith(".pm")
+            || (filename.length() == 0
+            & Languages.PERL.toString().equals(language))) {
+         changeToPerl();
+      }
       else {
          changeToPlain();
       }
@@ -439,6 +455,12 @@ public class TextDocument {
       configColoring(Languages.HTML);
       type.colorAll();
       language = Languages.HTML.toString();
+   }
+   
+   private void changeToPerl() {
+      configColoring(Languages.PERL);
+      type.colorAll();
+      language = Languages.PERL.toString();
    }
 
    private void changeToPlain() {

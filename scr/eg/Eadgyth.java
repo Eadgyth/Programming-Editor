@@ -17,11 +17,12 @@ import java.awt.event.WindowEvent;
 
 //--Eadgyth--//
 import eg.ui.MainWin;
-import eg.ui.menu.Menu;
 import eg.ui.Toolbar;
 import eg.ui.filetree.FileTree;
 import eg.ui.ViewSettings;
 import eg.ui.TabbedPane;
+
+import eg.ui.menu.Menu;
 
 import eg.console.*;
 
@@ -38,7 +39,6 @@ import eg.plugin.PluginStarter;
 public class Eadgyth {
 
    public static void main(String[] arg) {
-
       Locale.setDefault(Locale.US);
       setLaf();
       
@@ -47,9 +47,11 @@ public class Eadgyth {
       Menu           menu      = new Menu();
       Toolbar        tBar      = new Toolbar();
       TabbedPane     tabPane   = new TabbedPane();
-      MainWin        mw        = new MainWin(menu.menubar(), tBar.toolbar(), tabPane.tabbedPane(),
-                                     fileTree.fileTreePnl(), cw.consolePnl());
-      ViewSettings   viewSet   = new ViewSettings(mw, menu.getViewMenu(), menu.getFormatMenu());
+      MainWin        mw        = new MainWin(menu.menubar(), tBar.toolbar(),
+                                     tabPane.tabbedPane(), fileTree.fileTreePnl(),
+                                     cw.consolePnl());
+      ViewSettings   viewSet   = new ViewSettings(mw, menu.getViewMenu(),
+                                     menu.getFormatMenu());
 
       ProcessStarter proc      = new ProcessStarter(cw);
       ProjectFactory projFact  = new ProjectFactory(viewSet, proc, cw, fileTree);
@@ -58,7 +60,7 @@ public class Eadgyth {
       PluginStarter  plugStart = new PluginStarter(mw);
       DocumentUpdate docUpdate = new DocumentUpdate(viewSet, edit, plugStart);
       TabbedFiles    tabFiles  = new TabbedFiles(tabPane, mw, currProj, docUpdate);
-      FontSetting    fontSet   = new FontSetting(tabFiles.getEditArea());
+      FontSetter     fontSet   = new FontSetter(tabFiles.getEditArea());
       
       // register handlers
       WindowListener winListener = new WindowAdapter() {

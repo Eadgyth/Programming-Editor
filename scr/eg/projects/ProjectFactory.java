@@ -41,6 +41,9 @@ public class ProjectFactory {
          case ".html":
             newProj = new HtmlActions(proc, fileTree);
             break;
+         case ".pl": case ".pm":
+            newProj = new PerlActions(viewSet, proc, cw, fileTree);
+            break;
          case ".txt":
             newProj = new TxtActions(proc, fileTree);
             break;

@@ -19,8 +19,6 @@ import java.awt.event.KeyAdapter;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 
-import java.io.Reader;
-
 //--Eadgyth--//
 import eg.utils.JOptions;
 
@@ -35,12 +33,7 @@ public class ProcessStarter {
    private String workingDirTemp = workingDir;
    private String workingDirName = new File(workingDir).getName();
    private String previousCmd = "";
-   /*
-    * The caret position at the end of text after reading input from
-    * the process */ 
    private int caretPos = 0;
-   /*
-    * The text after reading input from the process */
    private String display = "";
    private int apparentExitVal = 0;
    private boolean isActive = false;
@@ -95,46 +88,23 @@ public class ProcessStarter {
       EventQueue.invokeLater(() -> {
          try {
             ProcessBuilder pb
-               = new ProcessBuilder(cmdList).redirectErrorStream(true);
+                  = new ProcessBuilder(cmdList).redirectErrorStream(true);
             pb.directory(new File(workingDir));
-            process = pb.start();
-            PrintWriter processOutput
-                  = new PrintWriter(process.getOutputStream());
-            captureInput();
-
-            KeyListener keyListener = new KeyAdapter() {             
+            process = pb.start();            
+            PrintWriter out = new PrintWriter(process.getOutputStream());
+            runInput = new Thread() {
                @Override
-               public void keyPressed(KeyEvent e) { 
-                  int key = e.getKeyCode();
-                  if (key == KeyEvent.VK_ENTER) {
-                     String output = cw.getText().substring(caretPos);
-                     processOutput.println(output);
-                     processOutput.flush();
-                  }
-               }
-               public void keyReleased(KeyEvent e) {
-                  if (cw.getText().length() < caretPos) {
-                     cw.setText(display);
-                  }
+               public void run() {
+                  captureInput(out);
                }
             };
-            cw.addKeyListen(keyListener);
-
-            CaretListener caretListener = (CaretEvent e) -> {
-                if (!isActive) {
-                    return;
-                }
-                if (e.getDot() < caretPos) {
-                    EventQueue.invokeLater(() -> {
-                        cw.setCaret(cw.getText().length()); // cannot be caretPos
-                    });
-                }
-            };
-            cw.addCaretListen(caretListener);
+            runInput.start();
+            sendOutput(out);
+            correctCaret();
          }
          catch(IOException e) {
             cw.appendText(
-                    "<<Error: cannot run " + cmd 
+                    "<<Error: cannot find " + cmd 
                   + " in the directory " + workingDir + ">>\n");
             System.out.println(e.getMessage());  
          }
@@ -144,97 +114,117 @@ public class ProcessStarter {
    /**
     * Returns true if no process is currently running. A warning is shown if
     * a process is running
-    * @return  if a process has terminated
+    * @return  if the process has been terminated
     */
    public boolean isProcessEnded() {
       boolean isEnded = process == null;
       if (!isEnded) {
-         JOptions.warnMessage("A currently running process must be quit first");
+         JOptions.warnMessage(
+               "A currently running process must be quit first");
       }
       return isEnded;
-   }
-
-   /**
-    * Destroys the current process
-    */
-   public void endProcess() {
-      if (process != null) {
-         kill = () -> {
-             process.destroy();
-             apparentExitVal = -1;
-         };
-         new Thread(kill).start();
-      }
    }
 
    //
    //--private methods--//
    //
 
-   /**
-    * The output of the process
-    */
-   private void captureInput() {
-      runInput = new Thread() {
-         InputStream is = process.getInputStream();
-         InputStreamReader isr = new InputStreamReader(is);
-         Reader read = new BufferedReader(isr);
-         
+   private void sendOutput(PrintWriter out) {
+      KeyListener keyListener = new KeyAdapter() {             
          @Override
-         public void run() {
-            try {
-               int cInt = - 1;
-               char c;    
-               while ((cInt = read.read()) != -1) {
-                  c = (char) cInt;
-                  cw.appendText(String.valueOf(c));
-                  display = cw.getText();
-                  caretPos = display.length();
-                  cw.setCaret(caretPos);
-               }
-               int exitVal = -1;    
-               exitVal = process.waitFor();
-               if (exitVal == 0) {
-                  cw.appendText("<<Process ended normally (exit value = "
-                        + exitVal + ") >>\n");
-               }
-               else {
-                  if (apparentExitVal == -1) {
-                     cw.appendText("\n<<Process aborted>>\n");
-                  }
-                  else {
-                     cw.appendText("\n<<Process ended with error (exit value = "
-                           + exitVal + ")>>\n");
-                  }
-               }
+         public void keyPressed(KeyEvent e) {
+            int key = e.getKeyCode();
+            if (key == KeyEvent.VK_ENTER) {
+               String output = cw.getText().substring(caretPos);
+               out.println(output);
+               out.flush();                
             }
-            catch (IOException | InterruptedException ioe) {
-               cw.appendText("<<" + ioe.getMessage() + ">>\n");
-               ioe.printStackTrace();
-            }
-            finally {
-               cw.setCaret(cw.getText().length());
-               process = null;
-               if (previousCmd.length() > 0) {
-                  cw.enableRunBt(true);
-               }
-               cw.setActive(false);
-               isActive = false;
-               /*
-                * In this version Eadgyth may have been started */
-               if (!workingDirTemp.equals(workingDir)) {
-                  workingDir = workingDirTemp;
-               }
-               try {
-                  read.close();
-               }
-               catch (IOException ioe) {
-                  ioe.printStackTrace();
-               }
+         }
+         @Override
+         public void keyReleased(KeyEvent e) {
+            if (cw.getText().length() < caretPos) {
+               cw.setText(display);
             }
          }
       };
-      runInput.start();
+      cw.addKeyListen(keyListener);
+   }
+
+   private void correctCaret() {
+      CaretListener caretListener = (CaretEvent e) -> {
+         if (!isActive) {
+             return;
+         }
+         if (e.getDot() < caretPos) {
+            EventQueue.invokeLater(() -> {
+               cw.setCaret(cw.getText().length()); // cannot be caretPos
+            });
+         }
+      };
+      cw.addCaretListen(caretListener);
+   }
+
+   /**
+    * The output of the process
+    */
+   private void captureInput(PrintWriter out) {
+      InputStream is = process.getInputStream();
+      InputStreamReader isr = new InputStreamReader(is);
+      BufferedReader reader = new BufferedReader(isr);
+      try {
+         int cInt = - 1;
+         char c;  
+         while ((cInt = reader.read()) != -1) {
+            c = (char) cInt;
+            cw.appendText(String.valueOf(c));
+            display = cw.getText();
+            caretPos = display.length();
+            cw.setCaret(caretPos);
+         }
+         int exitVal = -1;    
+         exitVal = process.waitFor();
+         if (exitVal == 0) {
+            cw.appendText(
+                  "\n<<Process ended normally (exit value = "
+                  + exitVal + ")>>\n");
+         }
+         else {
+            if (apparentExitVal == -1) {
+               cw.appendText(
+                     "\n<<Process aborted>>\n");
+            }
+            else {
+               cw.appendText(
+                     "\n<<Process ended with error (exit value = "
+                     + exitVal + ")>>\n"); 
+            }
+         }
+      }
+      catch (IOException | InterruptedException e) {
+         cw.appendText("<<" + e.getMessage() + ">>\n");
+         e.printStackTrace();
+      }
+      finally {
+         cw.setCaret(cw.getText().length());
+         process = null;
+         if (previousCmd.length() > 0) {
+            cw.enableRunBt(true);
+         }
+         cw.setActive(false);
+         isActive = false;
+         /*
+          * dir may have been changed to run an Eadgyth */
+         if (!workingDirTemp.equals(workingDir)) {
+            workingDir = workingDirTemp;
+         }
+         out.close();
+         try {
+            reader.close();
+         }
+         catch (IOException e) {
+            e.printStackTrace();
+         }
+      }
    }
 
    /**
@@ -259,11 +249,21 @@ public class ProcessStarter {
    private void startPreviousCmd() {
       startProcess(previousCmd);
    }
-   
+
    private void runEadgyth() {
       workingDirTemp = workingDir;
       workingDir = System.getProperty("user.dir");
       System.out.println("Temporary working dir: " + workingDir);
       startProcess("java -jar Eadgyth.jar");
-   }     
+   }
+
+   private void endProcess() {
+      if (process != null) {
+         kill = () -> {
+             process.destroy();
+             apparentExitVal = -1;
+         };
+         new Thread(kill).start();
+      }
+   }    
 }

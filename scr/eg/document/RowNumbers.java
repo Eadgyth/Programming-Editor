@@ -36,7 +36,7 @@ class RowNumbers {
     * Updates row numbers based on the number of newlines
     */
    void updateRowNumber(String in) {
-      int rowNumber = Finder.countMotive(in, "\n");
+      int rowNumber = Finder.countMotif(in, "\n");
       if (rowNumber != rowNumberHelper) {
          insertAllRowNumbers(rowNumber + 1);
          revalidateArea(rowNumber + 1);

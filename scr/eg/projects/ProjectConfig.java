@@ -10,9 +10,10 @@ import eg.Preferences;
 import eg.utils.JOptions;
 
 /**
- * Represents the configuration of a project. <br>
+ * Represents the configuration of a project.
+ * <p>
  * Class implements methods in {@link Configurable} except
- * {@link Configurable #applyProjectPath()}
+ * {@link Configurable#applyProject()}
  */
 public abstract class ProjectConfig implements Configurable {
 
@@ -35,6 +36,7 @@ public abstract class ProjectConfig implements Configurable {
    /**
     * @param setWin  the reference to an object of {@link SettingsWin}
     * which is set up to ask for the desired inputs
+    * @param suffix  the extension of the project's main file
     */
    public ProjectConfig(SettingsWin setWin, String suffix) {
       this.setWin = setWin;
@@ -64,13 +66,13 @@ public abstract class ProjectConfig implements Configurable {
    /**
     * If a project configuration stored in 'config' or 'prefs' can be
     * retrieved
-    * @param dir  the directory of a file that maybe part of the project 
+    * @param path  the directory of a file that maybe part of the project 
     * @return  If a project configuration stored in 'config' or 'prefs'
     * can be retrieved
     */
    @Override
-   public boolean retrieveProject(String dir) {
-      findSavedProject(dir);
+   public boolean retrieveProject(String path) {
+      findSavedProject(path);
       return projectPath.length() > 0;
    }
    
@@ -158,7 +160,6 @@ public abstract class ProjectConfig implements Configurable {
    
    /**
     * If the main executable file exists
-    * <p>
     * @param suffix  the extension of the project's main file
     * @return  true if the main executable file exists
     */
@@ -174,7 +175,7 @@ public abstract class ProjectConfig implements Configurable {
    //
 
    private void findSavedProject(String path) {
-      String root = "";
+      String root;
       Preferences props = null;
       //
       // firstly see if there is a config file
@@ -198,30 +199,35 @@ public abstract class ProjectConfig implements Configurable {
       }
    }
    
+   /**
+    * Tries to find the project root in the specifies path by
+    * looking for an existing file that is a child of this root.
+    * The param file may be a file or itself a path
+    */
    private String findRootByFile(String path, String file) {
-      File newFile = new File(path);
-      String searched = F_SEP + file;
-      String newFileStr = path + searched;
-      boolean exists = new File(newFileStr).exists();
+      File searched = new File(path);
+      String relToRootStr = F_SEP + file;
+      String existingPath = path + relToRootStr;
+      boolean exists = new File(existingPath).exists();
       while(!exists) {
-         if (newFile.getParentFile() == null) {
-            newFile = null;
+         if (searched.getParentFile() == null) {
+            searched = null;
             break;
          }
-         newFile    = new File(newFile.getParent());
-         newFileStr = newFile.getAbsolutePath() + searched;
-         exists = new File(newFileStr).exists();
+         searched     = new File(searched.getParent());
+         existingPath = searched.getPath() + relToRootStr;
+         exists       = new File(existingPath).exists();
       }
-      if (newFile == null) {
+      if (searched == null) {
          return "";
       }
       else {
-         return newFile.toString();
+         return searched.getPath();
       }
    }
 
    private String findRootInPath(String path, Preferences props) { 
-      File newFile = new File(path);
+      File searched = new File(path);
       File project;
       if (projectPath.length() > 0) {
          project = new File(projectPath);
@@ -229,20 +235,19 @@ public abstract class ProjectConfig implements Configurable {
       else {  
          project = new File(props.getProperty("recentProject"));
       }
-      String newFileStr = newFile.getPath();
+      String searchedStr = searched.getPath();
       String projStr = project.getPath();
-
-      boolean isEqual = projStr.equals(newFileStr);
+      boolean isEqual = projStr.equals(searchedStr);
       while(!isEqual) {
-         if (newFile.getParentFile() == null) {
-            newFileStr = "";
+         if (searched.getParentFile() == null) {
+            searchedStr = "";
             break;
          }       
-         newFile    = new File(newFile.getParent());
-         newFileStr = newFile.getAbsolutePath();
-         isEqual    = projStr.equals(newFileStr);
+         searched    = new File(searched.getParent());
+         searchedStr = searched.getPath();
+         isEqual     = projStr.equals(searchedStr);
       }
-      return newFileStr;     
+      return searchedStr;     
    }
    
    private void configProjectFromFile(String previousRoot, Preferences props) {

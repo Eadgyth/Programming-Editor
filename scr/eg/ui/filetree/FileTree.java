@@ -18,8 +18,6 @@ import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
-import javax.swing.event.TreeModelEvent;
-
 import javax.swing.border.LineBorder;
 
 import javax.swing.filechooser.FileSystemView;
@@ -27,7 +25,6 @@ import javax.swing.filechooser.FileSystemView;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import java.io.File;
@@ -39,7 +36,6 @@ import java.util.Observable;
 
 //--Eadyth--//
 import eg.Constants;
-import eg.Preferences;
 import eg.ui.IconFiles;
 
 import eg.utils.JOptions;
@@ -172,9 +168,9 @@ public class FileTree extends Observable {
           File fList[] = f.listFiles();
           if (fList != null) {
              File fListSort[] = sortFoldersAndFiles(fList);
-             for(int i = 0; i < fListSort.length; i++) {
-                getFiles(child, fListSort[i]);
-             }
+              for (File fListSort1 : fListSort) {
+                  getFiles(child, fListSort1);
+              }
           }
       }
    }
@@ -300,7 +296,7 @@ public class FileTree extends Observable {
       String newFolder = JOptions.dialogRes("Enter name of new folder",
             "New folder", "");
       if (newFolder != null) {
-         File newDir = new File(f.toString() + File.separator + newFolder);
+         File newDir = new File(f.getPath(), newFolder);
          boolean succes = newDir.mkdirs();
          if (succes) {
             model.insertNodeInto(new DefaultMutableTreeNode(newDir),
@@ -317,7 +313,9 @@ public class FileTree extends Observable {
              = fileStr.endsWith(".java")
             || fileStr.endsWith(".txt")
             || fileStr.endsWith(".properties")
-            || fileStr.endsWith(".html");
+            || fileStr.endsWith(".html")
+            || fileStr.endsWith(".pl")
+            || fileStr.endsWith(".pm");
       if (isAllowedFile) {
          setChanged();
          notifyObservers(fileStr);
@@ -426,7 +424,7 @@ public class FileTree extends Observable {
    };
 
    private class TreeRenderer extends DefaultTreeCellRenderer {
-      private FileSystemView fsv = FileSystemView.getFileSystemView();
+      private final FileSystemView fsv = FileSystemView.getFileSystemView();
 
       @Override
       public Component getTreeCellRendererComponent(JTree tree, Object value,

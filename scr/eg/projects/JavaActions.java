@@ -5,8 +5,6 @@ import java.io.File;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
 
-import java.lang.reflect.InvocationTargetException;
-
 //--Eadgyth--//
 import eg.utils.JOptions;
 import eg.console.*;
@@ -36,7 +34,8 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
                "Name of main class",
                "Package containing the main class",
                true,
-               true, 
+               true,
+               true,
                "jar file"
             ),
             ".java"
@@ -60,14 +59,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       super.makeSetWinVisible(isVisible);
    }
    
-   /**
-    * If a project can be successfully configured based on entries in
-    * the window of this {@code SettingsWin}.
-    * <p>
-    * In the case of success the start command to run the Java project
-    * is build.
-    * @param dir  the directory of a file that maybe part of the project
-    */
    @Override
    public boolean configureProject(String dir) {
       boolean success = super.configureProject(dir);
@@ -77,16 +68,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       return success;
    }
 
-   /**
-    * If a project configuration stored in 'config' or 'prefs' can be
-    * retrieved
-    * <p>
-    * In the case of success the start command to run the Java project
-    * is build.
-    * @param dir  the directory of a file that maybe part of the project
-    * @return  If a project configuration stored in 'config' or 'prefs'
-    * can be retrieved
-    */
    @Override
    public boolean retrieveProject(String dir) {
       boolean success = super.retrieveProject(dir);
@@ -158,6 +139,9 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       });
    }
 
+   /**
+    * Runs the Java program in the console panel
+    */
    @Override
    public void runProject() {
       if (!mainClassFileExists()) {
@@ -170,7 +154,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    }
 
    /**
-    * Creates a jar file and updates the project explorer
+    * Creates a jar file
     */
    @Override
    public void build() {
