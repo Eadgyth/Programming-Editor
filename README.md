@@ -44,8 +44,8 @@ PROBLEMS <br>
 4) The rendering of the GUI has gone wrong after the computer was in sleep mode when
 the system look and feel was selected.
 <br>
-5)There can be problems with the syntax coloring and with undo/rodo although it is not
-clear if these happen in the most recent commit.
+5) There may be problems with the syntax coloring and with undo/rodo (program hanged under
+some condition).
 <br>
 <p>
 CONTACT<br>
