@@ -16,6 +16,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyAdapter;
 
+import javax.swing.SwingWorker;
+
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 
@@ -38,7 +40,6 @@ public class ProcessStarter {
    private int apparentExitVal = 0;
    private boolean isActive = false;
    private Process process;
-   private Thread runInput;
    private Runnable kill;
 
    /**
@@ -73,6 +74,7 @@ public class ProcessStarter {
     * by single spaces
     */
    public void startProcess(String cmd) {
+      //System.out.println("Number of active threads: " + Thread.activeCount());
       apparentExitVal = 0;
       if (!isProcessEnded()) {
          return;
@@ -92,13 +94,7 @@ public class ProcessStarter {
             pb.directory(new File(workingDir));
             process = pb.start();            
             PrintWriter out = new PrintWriter(process.getOutputStream());
-            runInput = new Thread() {
-               @Override
-               public void run() {
-                  captureInput(out);
-               }
-            };
-            runInput.start();
+            new CaptureInput(out).execute();
             sendOutput(out);
             correctCaret();
          }
@@ -126,7 +122,7 @@ public class ProcessStarter {
    }
 
    //
-   //--private methods--//
+   //--private--//
    //
 
    private void sendOutput(PrintWriter out) {
@@ -162,69 +158,6 @@ public class ProcessStarter {
          }
       };
       cw.addCaretListen(caretListener);
-   }
-
-   /**
-    * The output of the process
-    */
-   private void captureInput(PrintWriter out) {
-      InputStream is = process.getInputStream();
-      InputStreamReader isr = new InputStreamReader(is);
-      BufferedReader reader = new BufferedReader(isr);
-      try {
-         int cInt = - 1;
-         char c;  
-         while ((cInt = reader.read()) != -1) {
-            c = (char) cInt;
-            cw.appendText(String.valueOf(c));
-            display = cw.getText();
-            caretPos = display.length();
-            cw.setCaret(caretPos);
-         }
-         int exitVal = -1;    
-         exitVal = process.waitFor();
-         if (exitVal == 0) {
-            cw.appendText(
-                  "\n<<Process ended normally (exit value = "
-                  + exitVal + ")>>\n");
-         }
-         else {
-            if (apparentExitVal == -1) {
-               cw.appendText(
-                     "\n<<Process aborted>>\n");
-            }
-            else {
-               cw.appendText(
-                     "\n<<Process ended with error (exit value = "
-                     + exitVal + ")>>\n"); 
-            }
-         }
-      }
-      catch (IOException | InterruptedException e) {
-         cw.appendText("<<" + e.getMessage() + ">>\n");
-         e.printStackTrace();
-      }
-      finally {
-         cw.setCaret(cw.getText().length());
-         process = null;
-         if (previousCmd.length() > 0) {
-            cw.enableRunBt(true);
-         }
-         cw.setActive(false);
-         isActive = false;
-         /*
-          * dir may have been changed to run an Eadgyth */
-         if (!workingDirTemp.equals(workingDir)) {
-            workingDir = workingDirTemp;
-         }
-         out.close();
-         try {
-            reader.close();
-         }
-         catch (IOException e) {
-            e.printStackTrace();
-         }
-      }
    }
 
    /**
@@ -265,5 +198,75 @@ public class ProcessStarter {
          };
          new Thread(kill).start();
       }
-   }    
+   }
+   
+   private class CaptureInput extends SwingWorker<Void, String> { // why String?
+      PrintWriter out; // to close after program exited
+      InputStream is = process.getInputStream();
+      InputStreamReader isr = new InputStreamReader(is);
+      BufferedReader reader = new BufferedReader(isr);
+      
+      CaptureInput(PrintWriter out) {
+         this.out = out;
+      }
+
+      @Override
+      protected Void doInBackground() throws Exception {
+         try {
+            int cInt = - 1;
+            char c;  
+            while ((cInt = reader.read()) != -1) {
+                c = (char) cInt;
+                cw.appendText(String.valueOf(c));
+                display = cw.getText();
+                caretPos = display.length();
+                cw.setCaret(caretPos);
+            }
+            int exitVal = -1;    
+            exitVal = process.waitFor();
+            if (exitVal == 0) {
+               cw.appendText(
+                     "\n<<Process ended normally (exit value = "
+                     + exitVal + ")>>\n");
+            }
+            else {
+               if (apparentExitVal == -1) {
+                  cw.appendText(
+                        "\n<<Process aborted>>\n");
+               }
+               else {
+                  cw.appendText(
+                        "\n<<Process ended with error (exit value = "
+                        + exitVal + ")>>\n"); 
+               }
+            }
+         }
+         catch (IOException | InterruptedException e) {
+            cw.appendText("<<" + e.getMessage() + ">>\n");
+            e.printStackTrace();
+         }
+         finally {
+            cw.setCaret(cw.getText().length());
+            process = null;
+            if (previousCmd.length() > 0) {
+               cw.enableRunBt(true);
+            }
+            cw.setActive(false);
+            isActive = false;
+            /*
+             * dir may have been changed to run an Eadgyth */
+            if (!workingDirTemp.equals(workingDir)) {
+               workingDir = workingDirTemp;
+            }
+            out.close();
+            try {
+               reader.close();
+            }
+            catch (IOException e) {
+               e.printStackTrace();
+            }
+         }
+         return null;
+      }
+   }
 }
