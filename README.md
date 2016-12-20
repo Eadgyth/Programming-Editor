@@ -30,7 +30,7 @@ The javadoc of the program is found in this repository (Docs/Ead-JavaDoc).
 <p>
 LIMITATIONS <br>
 1) The Undo/redo is a place holder for a real undo/redo as it simply undoes/redoes single
-characters.
+characters (pasted/deleted text is undone/redone as a whole though).
 <br>
 2) The console has a function to run system commands (defined the class 'ProcessStarter'
 in the package 'eg.console'). Interactive programs that then require reading from and
@@ -45,8 +45,8 @@ PROBLEMS <br>
 4) The rendering of the GUI has gone wrong after the computer was in sleep mode when
 the system look and feel was selected.
 <br>
-5) Removing/replacing chunks of text leads under some condition to the coloring of text 
-right above block comments in the block comment color (class eg.document.Coloring).
+5)There can be problems with the syntax coloring and with undo/rodo although it is not
+clear if these happen in the most recent commit.
 <br>
 <p>
 CONTACT<br>
