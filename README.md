@@ -2,6 +2,9 @@
 A text editor written in Java that helps coding (in Java, Perl, HTML) and that is extensible
 by plugins which may be developed to do different types of work with text files.
 <p>
+One goal of the program is a very simple but flexible setting of a 'project' and
+usage of already configured projects.
+<p>
 REQUIREMENTS FOR TESTING <br>
 Running the program requires JAVA 8 (JRE 8). I did not have the opportunity to test
 the program on operating systems other than windows Vista, 7 and 10.<p>
@@ -14,9 +17,9 @@ includes the ".properties" files and the 'Resources' folder.<p>
 A guide how to configure a project and some other info is found in the Resources
 folder (Help.html) and is adressable from the '?' menu. 
 <p>
-IDEA FOR FURTHER DEVELOPEMENT
+IDEA FOR FURTHER DEVELOPEMENT<br>
 1) More types of projects may be added. A type of project is defined by an Interface
-'ProjectActions'.
+'ProjectActions'.<br>
 2) Develop plugins to make specialized types of work with text files. Presently, a
 plugin would implement the interface Pluggable which cane be implemented to have
 access to the text document that is in the selected tab and that can have a graphical
