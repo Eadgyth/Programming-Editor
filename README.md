@@ -32,11 +32,10 @@ LIMITATIONS <br>
 1) The Undo/redo is a place holder for a real undo/redo as it simply undoes/redoes single
 characters (pasted/deleted text is undone/redone as a whole though).
 <br>
-2) The console has a function to run system commands (defined the class 'ProcessStarter'
-in the package 'eg.console'). Interactive programs that then require reading from and
-writing to the started process by typing in the console are not guaranteed to work.
-Interactive programs in Java seem to work fine but a Perl script does not unless the
-autoflushing of STDOUT is enabled in the script, for example.
+2) Running interactive programs that then require reading from and writing to the started process
+in the console panel are not guaranteed to work. Interactive programs in Java seem to
+work fine but, for example, a Perl script does not unless the autoflushing of STDOUT is enabled
+in the script.
 <br>
 3) The built in packing of a jar file bundles only .class files.
 <br>
