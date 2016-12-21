@@ -32,11 +32,9 @@ import eg.Preferences;
  */
 public class MainWin {
 
-   /** The busy cursor */
-   public final static Cursor BUSY_CURSOR
+   private final static Cursor BUSY_CURSOR
          = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR );
-   /**  The default cursor */
-   public final static Cursor DEF_CURSOR = Cursor.getDefaultCursor();
+   private final static Cursor DEF_CURSOR = Cursor.getDefaultCursor();
 
    private final JFrame frame = new JFrame();
    private final JPanel allComponents = new JPanel(new BorderLayout());
@@ -89,15 +87,25 @@ public class MainWin {
 
    /**
     * Sets a busy or default cursor
-    * @param cursor  the cursor that has the value {@link #BUSY_CURSOR}
-    * or {@link #DEF_CURSOR}
+    * @param isBusy  true to set the wait cursor, false to set
+    * the default cursor
     */
-   public void setCursor(Cursor cursor) {
-      frame.setCursor(cursor);
+   public void setBusyCursor(boolean isBusy) {
+      if (isBusy) {
+         Component glassPane = frame.getGlassPane();        
+         glassPane.setVisible(true);
+         glassPane.setCursor(BUSY_CURSOR);
+      }
+      else {
+         Component glassPane = frame.getGlassPane(); 
+         glassPane.setVisible(false);
+         glassPane.setCursor(DEF_CURSOR);
+      }
    }
 
    /**
     * Displays text in this frame title (i.e., the file)
+    * @param title  the text is displayed in the title bar of this frame
     */
    public void displayFrameTitle(String title) {
       frame.setTitle(title);
@@ -105,15 +113,17 @@ public class MainWin {
    
    /**
     * Shows the name of a project in the status bar
+    * @param projectName  the name of the project
     */
-   public void showProjectInfo(String project) {
-      showProjectLb.setText("Project: " + project);
+   public void showProjectInfo(String projectName) {
+      showProjectLb.setText("Project: " + projectName);
    }
    
    /**
     * Adds a component to this 'function panel' which is added to
     * the right of this split area.
-    * <p> The 'function panel' has a border layout in whose center the
+    * <p>
+    * The 'function panel' has a border layout in whose center the
     * specified component is added. The specified title is shown in a panel
     * at the north.
     * @param c  the Component that is added to the right of this plit window

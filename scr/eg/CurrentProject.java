@@ -208,7 +208,7 @@ public class CurrentProject {
     * Compiles this current project
     */
    public void compile() {         
-      mw.setCursor(MainWin.BUSY_CURSOR);
+      mw.setBusyCursor(true);
       int missingIndex = 0;
       try {
          for (int i = 0; i < txtDoc.length; i++) {
@@ -235,7 +235,7 @@ public class CurrentProject {
       }   
       finally {
          EventQueue.invokeLater(() -> {
-            mw.setCursor(MainWin.DEF_CURSOR);
+            mw.setBusyCursor(false);
          });
       }
    }
@@ -251,7 +251,13 @@ public class CurrentProject {
     * Creates a build of this project
     */
    public void buildProj() {
-      proj.build();
+      try {
+         mw.setBusyCursor(true);
+         proj.build();
+      }
+      finally {
+         mw.setBusyCursor(false);
+      }
    }
 
    //
