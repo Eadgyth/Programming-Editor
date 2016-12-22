@@ -26,6 +26,7 @@ import eg.ui.EditArea;
  */
 public class TextDocument {
 
+   private final static String SYS_LINE_SEP = System.lineSeparator();
    private final static Preferences PREFS = new Preferences();
 
    private final JTextPane textArea;
@@ -95,8 +96,11 @@ public class TextDocument {
     */
    public void saveToFile() {
       setContent();
+      String[] lines = content.split("\n"); 
       try (FileWriter writer = new FileWriter(filepath)) {
-         writer.write(content);        
+         for (String s : lines) {
+            writer.write(s + SYS_LINE_SEP);
+         }
       }
       catch(IOException e) {
          e.printStackTrace();
@@ -302,28 +306,29 @@ public class TextDocument {
    }
 
    /**
-    * Changes this language if no file has been assigned
-    * and saves language to 'prefs'
+    * Changes this language if no file has been assigned to this
     * @param language  the language which has one of the constant values
     * in {@link eg.Languages}
     */
    public void changeLanguage(Languages language) {
+      PREFS.storePrefs("language", language.toString()); 
       if (filename.length() > 0) {
          return;
       }
-      else if (language == Languages.JAVA) {
-         changeToJava();
+      switch (language) {
+         case JAVA:
+            changeToJava();
+            break;
+         case PERL:
+            changeToPerl();
+            break;
+         case HTML:
+            changeToHtml();
+            break;
+         case PLAIN_TEXT:
+            changeToPlain();
+            break;
       }
-      else if (language == Languages.HTML) {
-         changeToHtml();
-      }
-      else if (language == Languages.PERL) {
-         changeToPerl();
-      }
-      else if (language == Languages.PLAIN_TEXT) {
-         changeToPlain();
-      }
-      PREFS.storePrefs("language", language.toString()); 
    }
    
     /**
@@ -388,10 +393,6 @@ public class TextDocument {
       }
    }
 
-   private void setContent() {
-      content = type.getDocText();
-   }
-
    private void displayFileContent() {
       type.enableDocListen(false);
       type.enableTextModify(false);
@@ -414,6 +415,10 @@ public class TextDocument {
          removeStr(type.doc().getLength() - 1, 1);
       }
       type.enableDocListen(true);
+   }
+   
+   private void setContent() {
+      content = type.getDocText();
    }
 
    private void assignFileStrings(File filepath) {
