@@ -116,39 +116,39 @@ class Coloring {
    /**
     * Colors syntax / search terms
     */
-   void color(String in, int pos) {    
+   void color(String in, int pos) {   
       String chunk;
+      int posStart = pos;
       if (isSingleLines) {
          chunk = Finder.currLine(in, pos);
-         pos = Finder.lastReturn(in, pos) + 1;
+         posStart = Finder.lastReturn(in, pos) + 1;
       }
       else {
          chunk = in;
       }
-     
       if (!isBlockCmnt || !isInBlock(in, pos)) {
-         doc.setCharacterAttributes(pos, chunk.length(), normalSet, false);
+         doc.setCharacterAttributes(posStart, chunk.length(), normalSet, false);
          if (isFlags) {
              for (String flag : flags) {
-                 withFlag(chunk, flag, flagSet, pos);
+                 withFlag(chunk, flag, flagSet, posStart);
              }
          }
          if (isFlagged) {
              for (String flagged1 : flagged) {
-                 keys(chunk, flagged1, flagSet, pos);
+                 keys(chunk, flagged1, flagSet, posStart);
              }
          }
-          for (String keyword : keywords) {
-              keys(chunk, keyword, keySet, pos);
-          }
+         for (String keyword : keywords) {
+              keys(chunk, keyword, keySet, posStart);
+         }
          if (isOperators) {
              for (String operator : operators) {
-                 operators(chunk, operator, keySet, pos);
+                 operators(chunk, operator, keySet, posStart);
              }
          }
          if (isBrackets) {
              for (String BRACKETS : Syntax.BRACKETS) {
-                 operators(chunk, BRACKETS, brSet, pos);
+                 operators(chunk, BRACKETS, brSet, posStart);
              }
          }
          if (isStringLit) {
@@ -157,16 +157,16 @@ class Coloring {
                   String[] chunkArr = chunk.split("\n");
                   int[] startOfLines = Finder.startOfLines(chunkArr);
                   for (int i = 0; i < chunkArr.length; i++) {
-                     stringLiterals(chunkArr[i], startOfLines[i] + pos);
+                     stringLiterals(chunkArr[i], startOfLines[i] + posStart);
                   }
                }
             }
             else {
-               stringLiterals(chunk, pos);
+               stringLiterals(chunk, posStart);
             }
          }
          if (isLineCmnt) {
-            lineComments(chunk, pos);
+            lineComments(chunk, posStart);
          }
       }
       if (isBlockCmnt) {               
@@ -301,7 +301,7 @@ class Coloring {
             blockCmntEnd);
 
       if (indBlockStart != -1 && indBlockEnd == -1) {
-         String toUncomment = in.substring(indBlockStart, pos + 1);
+         String toUncomment = in.substring(indBlockStart, pos);
          enableSingleLines(false);
          color(toUncomment, indBlockStart);
          enableSingleLines(true);
