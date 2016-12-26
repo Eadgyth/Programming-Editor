@@ -32,16 +32,6 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   public void addOkAction(ActionListener al) {
-      super.addOkAction(al);
-   }
-   
-   @Override
-   public void makeSetWinVisible(boolean enable) {
-       super.makeSetWinVisible(enable);
-   }
-   
-   @Override
    public boolean configureProject(String dir) {
       boolean success = super.configureProject(dir);
       if (success) {
@@ -67,21 +57,6 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    public void applyProject() {
       proc.addWorkingDir(getProjectPath());
       fileTree.setProjectTree(getProjectPath());
-   }
-   
-   @Override
-   public boolean isProjectInPath(String path) {
-      return super.isProjectInPath(path);
-   }
-   
-   @Override
-   public String getProjectName() {
-      return super.getProjectName();
-   }
-   
-   @Override
-   public void storeInPrefs() {
-      super.storeInPrefs();
    }
    
    /**

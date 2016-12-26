@@ -25,26 +25,6 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
       this.fileTree = fileTree;
    }
    
-   @Override
-   public void addOkAction(ActionListener al) {
-      super.addOkAction(al);
-   }
-   
-   @Override
-   public void makeSetWinVisible(boolean enable) {
-      super.makeSetWinVisible(enable);
-   }
-   
-   @Override
-   public boolean configureProject(String dir) {
-       return super.configureProject(dir);
-   }
-   
-   @Override
-   public boolean retrieveProject(String dir) {
-      return super.retrieveProject(dir);
-   }
-   
    /**
     * Passes the project's root to this {@code ProcessStarter}
     * and this {@code FileTree} 
@@ -53,21 +33,6 @@ public class TxtActions extends ProjectConfig implements ProjectActions {
    public void applyProject() {
       proc.addWorkingDir(getProjectPath());
       fileTree.setProjectTree(getProjectPath());
-   }
-   
-   @Override
-   public boolean isProjectInPath(String path) {
-      return super.isProjectInPath(path);
-   }
-   
-   @Override
-   public String getProjectName() {
-      return super.getProjectName();
-   }
-   
-   @Override
-   public void storeInPrefs() {
-      super.storeInPrefs();
    }
    
    /**

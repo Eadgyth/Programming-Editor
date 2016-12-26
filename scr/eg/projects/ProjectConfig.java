@@ -12,8 +12,7 @@ import eg.utils.JOptions;
 /**
  * Represents the configuration of a project.
  * <p>
- * Class implements methods in {@link Configurable} except
- * {@link Configurable#applyProject()}
+ * Class implements methods in {@link Configurable}
  */
 public abstract class ProjectConfig implements Configurable {
 
@@ -98,6 +97,7 @@ public abstract class ProjectConfig implements Configurable {
    
    /**
     * Returns the path of the project's root directory
+    * @return  the the path of the project's root directory
     */
    protected String getProjectPath() {
       return projectPath;

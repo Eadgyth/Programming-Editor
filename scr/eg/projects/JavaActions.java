@@ -50,16 +50,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   public void addOkAction(ActionListener al) {
-      super.addOkAction(al);
-   }
-   
-   @Override
-   public void makeSetWinVisible(boolean isVisible) {
-      super.makeSetWinVisible(isVisible);
-   }
-   
-   @Override
    public boolean configureProject(String dir) {
       boolean success = super.configureProject(dir);
       if (success) {
@@ -76,10 +66,10 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       }
       return success;
    }
-
+   
    /**
-    * Passes the project's root to this {@code ProcessStarter}
-    * and this {@code FileTree} and also passes the name of the
+    * Passes the project's root directory to this {@link ProcessStarter}
+    * and this {@link FileTree} and also passes the name of the
     * the directory that contain executables to this {@code FileTree}
     */
    @Override
@@ -87,26 +77,6 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       proc.addWorkingDir(getProjectPath());
       fileTree.setProjectTree(getProjectPath());
       fileTree.setDeletableDir(getExecDirName());
-   }
-   
-   @Override
-   public boolean isProjectInPath(String path) {
-      return super.isProjectInPath(path);
-   }
-   
-   @Override
-   public String getProjectName() {
-      return super.getProjectName();
-   }
-   
-   @Override
-   public void storeInPrefs() {
-      super.storeInPrefs();
-   }
-   
-   @Override
-   public String getExecDirName() {
-      return super.getExecDirName();
    }
    
    @Override                                                                          
@@ -180,9 +150,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
          }      
          fileTree.updateTree();
       }
-      EventQueue.invokeLater(() -> {
-         JOptions.infoMessage("Saved jar file named " + jar.getUsedJarName());
-      });
+      JOptions.infoMessage("Saved jar file named " + jar.getUsedJarName());
    }
 
    private boolean mainClassFileExists() {

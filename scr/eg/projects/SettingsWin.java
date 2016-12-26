@@ -127,34 +127,36 @@ public class SettingsWin {
    }
 
    /**
-    * Shows in the text field the name of the file which a project
-    * is set for
+    * Shows in the related text field the name of the main file which of
+    * a project
+    * @param fileName  te name of the main file of a project
     */
-   public void displayFile(String in) {
-      fileTf.setText(in);
+   public void displayFile(String fileName) {
+      fileTf.setText(fileName);
    }
 
    /**
-    * Shows in the text field the directory of the
-    * module / package
+    * Shows in the related text field the name of a module/package/
+    * namespace
+    * @param moduleName  the name of a module/package/namespace
     */
-   public void displayModule(String in) {
-      moduleTf.setText(in);
+   public void displayModule(String moduleName) {
+      moduleTf.setText(moduleName);
    }
 
    /**
-    * Shows in the text field the name of the directory that
-    * contains source files / packages
+    * Shows in the related text field the name of the directory that
+    * contains source files
+    * @param dirName  the name of the directory for source files
     */
-   public void displaySourcesDir(String in) {
-      sourcesDirTf.setText(in);
+   public void displaySourcesDir(String dirName) {
+      sourcesDirTf.setText(dirName);
    }
 
    /**
-    * Shows in the text field the name of the directory
+    * Shows in the related text field the name of the directory
     * that contains executable files / packages
-    * @param in  the name of the directory that contains
-    * executable files / packages
+    * @param in  the name of the directory for executable files
     */
    public void displayExecDir(String in) {
       execDirTf.setText(in);
@@ -210,7 +212,7 @@ public class SettingsWin {
          projPnl.add(holdLbAndTf(execDirLb, execDirTf));
       }
 
-      projPnl.add(checkBxPnl(saveConfig, "Save settings in a 'config' file"));
+      projPnl.add(checkBxPnl(saveConfig, "Save settings in 'eadconfig' file"));
 
       projPnl.setBorder(titledBorder("Project"));  
       return projPnl;

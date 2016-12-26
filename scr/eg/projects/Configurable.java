@@ -29,7 +29,7 @@ public interface Configurable {
    public void addOkAction(ActionListener al);
    
    /**
-    * Makes the window of this {@code SettingsWin} object 
+    * Makes the window of this {@link SettingsWin} object 
     * visible/invisible
     * @param enable  true to make the window for project settings
     * visible, false to make it invisible
@@ -38,8 +38,10 @@ public interface Configurable {
    
    /**
     * If a project can be successfully configured based on entries in
-    * the window of this {@code SettingsWin}
+    * the text fields of this {@link SettingsWin}
     * @param dir  the directory of a file that maybe part of the project
+    * @return  if a project can be successfully configured based on entries in
+    * the window of this {@link SettingsWin}
     */
    public boolean configureProject(String dir);
    
@@ -49,12 +51,6 @@ public interface Configurable {
     * @return  if a project configuration saved to a file can be retrieved
     */
    public boolean retrieveProject(String dir);
-   
-   /**
-    * Passes to other classes the project's root directory or other
-    * directories that are defined for the project, as needed
-    */
-    public void applyProject();
    
    /**
     * If the specified directory includes the project's root directory
@@ -72,7 +68,7 @@ public interface Configurable {
    public String getProjectName();
    
    /**
-    * Saves the current configuration to the preferences file
+    * Saves the current configuration to a preferences file
     */
    public void storeInPrefs();
 }

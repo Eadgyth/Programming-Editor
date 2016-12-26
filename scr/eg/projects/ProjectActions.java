@@ -1,11 +1,15 @@
 package eg.projects;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * The interface to configure and run a project
  */
 public interface ProjectActions extends Configurable {
+   
+   /**
+    * Passes to interested objects the project's root directory or
+    * any other directories
+    */
+   public void applyProject();
    
    /**
     * Compiles source files
