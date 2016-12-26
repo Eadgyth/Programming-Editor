@@ -170,6 +170,7 @@ public class TabbedFiles implements Observer{
       }
       else {      
          txtDoc[iTab].saveFileAs(f);
+         currProj.setDocumentIndex(iTab);
          currProj.retrieveProject();
          currProj.updateFileTree(txtDoc[iTab].dir());
          tabPane.changeTabTitle(iTab, txtDoc[iTab].filename());
