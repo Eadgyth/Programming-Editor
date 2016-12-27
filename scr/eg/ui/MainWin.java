@@ -243,13 +243,19 @@ public class MainWin {
    //
 
    /**
-    * Adds a window listener to this JFrame
+    * Adds a {@code WindowListener} to this JFrame
+    * @param wl  the {@code WindowListener}
     */
    public void winListen(WindowListener wl) {
       frame.addWindowListener(wl);
    }
    
-   public void closeFunctAct(ActionListener al) {
+   /**
+    * Add an {@code ActionListener} to the close button for
+    * this function panel
+    * @param al  the {@code ActionListener}
+    */
+   public void closeFunctPnlAct(ActionListener al) {
       closeFunctBt.addActionListener(al);
    }
    
