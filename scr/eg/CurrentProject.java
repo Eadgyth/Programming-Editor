@@ -15,7 +15,7 @@ import eg.ui.filetree.FileTree;
 import eg.ui.menu.Menu;
 
 import eg.projects.ProjectActions;
-import eg.projects.ProjectFactory;
+import eg.projects.SelectedProject;
 
 import eg.document.TextDocument;
 
@@ -46,7 +46,7 @@ public class CurrentProject {
    private final static String WRONG_TYPE_MESSAGE
          = "A project cannot be created for this file type";
 
-   private final ProjectFactory projFact;
+   private final SelectedProject selProj;
    private final MainWin mw;
    private final FileTree fileTree;
    private final Menu menu;
@@ -59,9 +59,9 @@ public class CurrentProject {
    private String sourceExt;
    private String currExt;
 
-   public CurrentProject(ProjectFactory projFact, MainWin mw,
+   public CurrentProject(SelectedProject selProj, MainWin mw,
          FileTree fileTree, Menu menu, Toolbar tBar) {
-      this.projFact = projFact;
+      this.selProj = selProj;
       this.mw = mw;
       this.fileTree = fileTree;
       this.menu = menu;
@@ -108,7 +108,7 @@ public class CurrentProject {
       if (isProjectSet() && proj.isProjectInPath(currDoc.dir())) {
          return;
       }
-      ProjectActions prToFind = projFact.getProjAct(currExt);
+      ProjectActions prToFind = selProj.getProject(currExt);
       boolean isFound
             =  prToFind != null
             && prToFind.retrieveProject(currDoc.dir());
@@ -248,7 +248,7 @@ public class CurrentProject {
    }
 
    /**
-    * Creates a build of this project
+    * Creates a build of this current project
     */
    public void buildProj() {
       try {
@@ -265,7 +265,8 @@ public class CurrentProject {
    //
    
    private void newProject() {
-      ProjectActions projNew = projFact.getProjAct(currExt);
+      
+      ProjectActions projNew = selProj.getProject(currExt);
       if (projNew == null) {
          JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
       }
