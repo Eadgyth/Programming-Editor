@@ -16,17 +16,18 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 //--Eadgyth--//
+import eg.console.*;
+
 import eg.ui.MainWin;
 import eg.ui.Toolbar;
-import eg.ui.filetree.FileTree;
 import eg.ui.ViewSettings;
 import eg.ui.TabbedPane;
 
 import eg.ui.menu.Menu;
 
-import eg.console.*;
+import eg.ui.filetree.FileTree;
 
-import eg.projects.ProjectFactory;
+import eg.projects.SelectedProject;
 
 import eg.plugin.PluginStarter;
 
@@ -42,25 +43,25 @@ public class Eadgyth {
       Locale.setDefault(Locale.US);
       setLaf();
       
-      ConsolePanel   cw        = new ConsolePanel();   
-      FileTree       fileTree  = new FileTree();
-      Menu           menu      = new Menu();
-      Toolbar        tBar      = new Toolbar();
-      TabbedPane     tabPane   = new TabbedPane();
-      MainWin        mw        = new MainWin(menu.menubar(), tBar.toolbar(),
+      ConsolePanel    cw        = new ConsolePanel();   
+      FileTree        fileTree  = new FileTree();
+      Menu            menu      = new Menu();
+      Toolbar         tBar      = new Toolbar();
+      TabbedPane      tabPane   = new TabbedPane();
+      MainWin         mw        = new MainWin(menu.menubar(), tBar.toolbar(),
                                      tabPane.tabbedPane(), fileTree.fileTreePnl(),
                                      cw.consolePnl());
-      ViewSettings   viewSet   = new ViewSettings(mw, menu.getViewMenu(),
+      ViewSettings    viewSet   = new ViewSettings(mw, menu.getViewMenu(),
                                      menu.getFormatMenu());
 
-      ProcessStarter proc      = new ProcessStarter(cw);
-      ProjectFactory projFact  = new ProjectFactory(viewSet, proc, cw, fileTree);
-      CurrentProject currProj  = new CurrentProject(projFact, mw, fileTree, menu, tBar);
-      Edit           edit      = new Edit();
-      PluginStarter  plugStart = new PluginStarter(mw);
-      DocumentUpdate docUpdate = new DocumentUpdate(viewSet, edit, plugStart);
-      TabbedFiles    tabFiles  = new TabbedFiles(tabPane, mw, currProj, docUpdate);
-      FontSetter     fontSet   = new FontSetter(tabFiles.getEditArea());
+      ProcessStarter  proc      = new ProcessStarter(cw);
+      SelectedProject selProj   = new SelectedProject(viewSet, proc, cw, fileTree);
+      CurrentProject  currProj  = new CurrentProject(selProj, mw, fileTree, menu, tBar);
+      Edit            edit      = new Edit();
+      PluginStarter   plugStart = new PluginStarter(mw);
+      DocumentUpdate  docUpdate = new DocumentUpdate(viewSet, edit, plugStart);
+      TabbedFiles     tabFiles  = new TabbedFiles(tabPane, mw, currProj, docUpdate);
+      FontSetter      fontSet   = new FontSetter(tabFiles.getEditArea());
       
       // register handlers
       WindowListener winListener = new WindowAdapter() {
@@ -80,7 +81,7 @@ public class Eadgyth {
       menu.getViewMenu().registerAct(viewSet);
       cw.closeAct(e -> viewSet.setShowConsoleState(false));
       fileTree.closeAct(e -> viewSet.setShowFileViewState(false));
-      mw.closeFunctAct(e -> viewSet.setShowFunctionState(false)); 
+      mw.closeFunctPnlAct(e -> viewSet.setShowFunctionState(false)); 
       fileTree.addObserver(tabFiles);
       menu.getPluginMenu().startPlugin(plugStart, viewSet); 
       
