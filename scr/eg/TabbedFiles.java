@@ -15,9 +15,7 @@ import java.io.File;
 
 //--Eadgyth--//
 import eg.utils.JOptions;
-
 import eg.document.TextDocument;
-
 import eg.ui.MainWin;
 import eg.ui.TabbedPane;
 import eg.ui.EditArea;
@@ -105,12 +103,8 @@ public class TabbedFiles implements Observer{
    /**
     * Opens a file that is selected in the file chooser.
     * <p>
-    * The file is opened in a new tab unless the only opened tab 
-    * is unnamed and has an empty text area.
-    * <p>
     * If a project is not yet defined and a {@link ProjectActions}
-    * exists for the file type it is tried to set the project that 
-    * was active when the program was closed the last time. 
+    * exists for the file type it is tried to set active a project 
     */
    public void openFileByChooser() {
       File f = fo.chosenFile();     

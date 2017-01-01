@@ -1,5 +1,7 @@
 package eg;
 
+import java.io.File;
+
 import java.awt.Font;
 import java.awt.Color;
 
@@ -27,6 +29,8 @@ public class Constants {
     public final static String CURR_LAF_STR = CURR_LAF.getName();
 
     // strings
+    public final static String F_SEP = File.separator;
+    public final static String SYS_LINE_SEP = System.lineSeparator();
     public final static String SHOW = "show";
     public final static String HIDE = "hide";
 }

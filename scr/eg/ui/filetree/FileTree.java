@@ -96,6 +96,7 @@ public class FileTree extends Observable {
    /**
     * Sets the project's root directory and displays the file system at
     * this root
+    * @param projRoot  the project's root directory
     */
    public void setProjectTree(String projRoot) {
       this.projRoot = projRoot;
@@ -104,11 +105,11 @@ public class FileTree extends Observable {
    
    /**
     * Sets the filepath of the folder that can be deleted
-    * @param dir  the directory that can be deleted although it is
+    * @param dirName  the directory that can be deleted although it is
     * not empty
     */
-   public void setDeletableDir(String dir) {
-      deletableDir = dir;
+   public void setDeletableDirName(String dirName) {
+      deletableDir = dirName;
    }
    
    /**
@@ -178,7 +179,6 @@ public class FileTree extends Observable {
    private File[] sortFoldersAndFiles(File[] fList) {
       List<File> allFiles = new ArrayList<>();
       List<File> files    = new ArrayList<>();
-      
       for (int i = 0; i < fList.length; i++ ) {
          if (fList[i].isDirectory()) {
             allFiles.add(fList[i]);
@@ -309,14 +309,7 @@ public class FileTree extends Observable {
    }
    
    private void openFile(String fileStr) {
-      boolean isAllowedFile
-             = fileStr.endsWith(".java")
-            || fileStr.endsWith(".txt")
-            || fileStr.endsWith(".properties")
-            || fileStr.endsWith(".html")
-            || fileStr.endsWith(".pl")
-            || fileStr.endsWith(".pm");
-      if (isAllowedFile) {
+      if (isAllowedFile(fileStr)) {
          setChanged();
          notifyObservers(fileStr);
       }
@@ -324,6 +317,17 @@ public class FileTree extends Observable {
          JOptions.warnMessageToFront(
                 "No function is associated with this file type");
       }
+   }
+   
+   private boolean isAllowedFile(String fileStr) {
+      boolean allowed = false;
+      String[] suffixes = {".java", ".txt", ".properties", ".html", ".pl", ".pm"};
+      for (String s : suffixes) {
+         if (fileStr.endsWith(s)) {
+            allowed = true;
+         }
+      }
+      return allowed;            
    }
    
    private File getSelectedFile() {
@@ -411,7 +415,7 @@ public class FileTree extends Observable {
                   if (f.isFile()) {
                      openFile(fStr); 
                   }
-                  else { // is directory
+                  else {
                      folderDown(fStr);
                   }
                }

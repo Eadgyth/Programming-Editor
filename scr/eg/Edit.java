@@ -13,6 +13,7 @@ import java.io.IOException;
 //--Eadgyth--//
 import eg.utils.JOptions;
 import eg.utils.Finder;
+import eg.utils.FileUtils;
 import eg.document.TextDocument;
 
 /**
@@ -243,7 +244,7 @@ public class Edit {
          inClipboard = (String) content.getTransferData(DataFlavor.stringFlavor);
       }
       catch (UnsupportedFlavorException | IOException e) {
-         e.printStackTrace();
+         FileUtils.log(e);
       }
       return inClipboard;
    }

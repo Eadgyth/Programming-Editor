@@ -332,7 +332,8 @@ public class CurrentProject {
          case ".html":
             enableActions(false, true, false);
             break;
-         case ".pl": case ".pm":
+         case ".pl":
+         case ".pm":
             enableActions(false, true, false);
             break;
          case ".txt":

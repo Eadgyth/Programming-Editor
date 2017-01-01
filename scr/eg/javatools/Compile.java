@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 //--Eadgyth--//
 import eg.Preferences;
+import eg.Constants;
 import eg.utils.JOptions;
 import eg.console.ConsolePanel;
 
@@ -25,7 +26,7 @@ import eg.console.ConsolePanel;
  */
 public class Compile {
 
-   private final static String SEP = File.separator;
+   private static Constants c;
    private final static Preferences PREFS = new Preferences();
    private static String jdkPath = null;
    
@@ -88,7 +89,7 @@ public class Compile {
             = compiler.getStandardFileManager(null, null, null);
       Iterable<? extends JavaFileObject> units;
       List<File> classes = new SearchFiles().filteredFiles(projectPath
-            + SEP + sourceDir, ".java");
+            + c.F_SEP + sourceDir, ".java");
       File[] fileArr = classes.toArray(new File[classes.size()]);
       units = fileManager.getJavaFileObjects(fileArr);
       CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
@@ -135,9 +136,9 @@ public class Compile {
    private String targetDir(String projectPath, String classDir) {
       String targetDir;
       if (classDir.length() > 0) {
-         File target = new File(projectPath + SEP + classDir);
+         File target = new File(projectPath + c.F_SEP + classDir);
          target.mkdirs();
-         targetDir = projectPath + SEP + classDir;
+         targetDir = projectPath + c.F_SEP + classDir;
       }
       else {
          targetDir = projectPath;

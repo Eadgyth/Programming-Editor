@@ -102,6 +102,7 @@ public class EditArea {
    
    /**
     * If wordwrap is enabled
+    * @return  if wordwrap is enabled
     */
    public boolean isWordWrap() {
       return isWordWrap;
@@ -109,6 +110,7 @@ public class EditArea {
    
    /**
     * Sets the font size and stores the new size in prefs
+    * @param fontSize  the font size
     */
    public void setFontSize(int fontSize) {
       this.fontSize = fontSize;
@@ -120,6 +122,7 @@ public class EditArea {
 
    /**
     * Sets the font and stores the new font in prefs
+    * @param font  the String name of the new font
     */
    public void setFont(String font) {
       this.font = font;

@@ -163,6 +163,14 @@ public class SettingsWin {
    }
    
    /**
+    * Shows in the related text field the name of a build
+    * @param in  the name of a build
+    */
+   public void displayBuildName(String in) {
+      buildTf.setText(in);
+   }
+   
+   /**
     * @return if the checkbox to save the text field inputs
     * it saved to local prefs file
     */

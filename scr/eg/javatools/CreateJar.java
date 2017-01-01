@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //--Eadgyth--//
+import eg.Constants;
 import eg.console.ConsolePanel;
 
 /**
@@ -21,10 +22,8 @@ import eg.console.ConsolePanel;
  */
 public class CreateJar {
 
-   private final static String SEP = File.separator;
-
+   private static Constants c;
    private final ConsolePanel console;
-   private String usedJarName = "";   
    
    /**
     * @param console  the reference to {@link ConsolePanel} in whose
@@ -32,13 +31,6 @@ public class CreateJar {
     */
    public CreateJar(ConsolePanel console) {
       this.console = console;
-   }
-
-   /**
-    * @return  the name of the jar file actually used
-    */
-   public String getUsedJarName() {
-      return usedJarName;
    }
 
    /**
@@ -55,16 +47,12 @@ public class CreateJar {
     */
    public void createJar(String root, String main, String packageName,
          String classDir, String jarName) {      
-      if (jarName.length() == 0) {
-         jarName = main;
-      }
-      usedJarName = jarName;
-      final String jarFin = jarName;
-      File manifest = new File(root + SEP + classDir + SEP + "manifest.txt");
+      File manifest = new File(root + c.F_SEP + classDir
+            + c.F_SEP + "manifest.txt");
       createManifest(manifest, main, packageName);
 
-      ProcessBuilder pb = new ProcessBuilder(commandForJar(root, jarFin, classDir));
-      pb.directory(new File(root + SEP + classDir));
+      ProcessBuilder pb = new ProcessBuilder(commandForJar(root, jarName, classDir));
+      pb.directory(new File(root + c.F_SEP + classDir));
       Process p = null;
       try {
          p = pb.start();
@@ -82,9 +70,9 @@ public class CreateJar {
       Collections.addAll(commandForJar, "jar", "-cvfm", jarName + ".jar",
             "manifest.txt" );
       List<File> classesPath
-           = new SearchFiles().filteredFiles(path + SEP + classDir, ".class" );
+           = new SearchFiles().filteredFiles(path + c.F_SEP + classDir, ".class" );
       List<File> classesRelativePath
-           = relativePath(path + SEP + classDir, classesPath );
+           = relativePath(path + c.F_SEP + classDir, classesPath );
       for (File i : classesRelativePath) {
          commandForJar.add( i.toString());
       }
@@ -106,7 +94,7 @@ public class CreateJar {
    }
 
    private List<File> relativePath(String path, List<File> listOfFiles) {
-      if (path.endsWith(SEP)) {
+      if (path.endsWith(c.F_SEP)) {
          path = path.substring(0, path.length() - 1);
       }
       List<File> relativePath = new ArrayList<>();

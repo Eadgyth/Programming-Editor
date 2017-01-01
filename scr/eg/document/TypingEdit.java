@@ -19,10 +19,10 @@ import javax.swing.undo.CannotRedoException;
 import java.awt.EventQueue;
 import java.awt.Color;
 
-
 //--Eadgyth--//
 import eg.Languages;
 import eg.ui.EditArea;
+import eg.utils.FileUtils;
 
 /** 
  * Responsible for the edits in the {@code EditArea} that shall happen 
@@ -97,7 +97,7 @@ class TypingEdit {
          in = doc.getText(0, doc.getLength());
       }
       catch (BadLocationException e) {
-         System.out.println(e.getMessage());
+         FileUtils.log(e);
       }
       return in;
    }
@@ -117,8 +117,7 @@ class TypingEdit {
    void colorAll() {
       enableTextModify(false);
       String all = getDocText();
-      doc.setCharacterAttributes(0, all.length(),
-            normalSet(), false);
+      doc.setCharacterAttributes(0, all.length(), normalSet(), false);
       col.color(all, 0);
       enableTextModify(true);
    }
@@ -130,7 +129,7 @@ class TypingEdit {
          }
       }
       catch (CannotUndoException e) {
-         System.out.println(e.getMessage());
+         FileUtils.log(e);
       }
    }
 
@@ -144,7 +143,7 @@ class TypingEdit {
          }
       }
       catch (CannotRedoException e) {
-         System.out.println(e.getMessage());
+         FileUtils.log(e);
       }
    }
 
@@ -212,7 +211,7 @@ class TypingEdit {
    
    class DocUndoManager extends UndoManager implements UndoableEditListener {
       @Override
-      public void undoableEditHappened (UndoableEditEvent e) {
+      public void undoableEditHappened(UndoableEditEvent e) {
          if (!isDocListen) {
             return;
          }

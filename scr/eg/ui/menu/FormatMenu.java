@@ -30,10 +30,7 @@ public class FormatMenu {
       font.addActionListener(e -> fontSet.makeFontSetWinVisible(true));
       wordWrap.addActionListener(e -> viewSet.enableWordWrap());
    }
-   
-   /**
-    * If the wordwrap menu item is selected
-    */
+
    public boolean isWordWrapSelected() {
       return wordWrap.getState();
    }

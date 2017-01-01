@@ -22,14 +22,6 @@ public class Finder {
       }   
       return startOfLines;
    }
-   
-   public static int lastReturn(String in, int pos) {
-       int indLastReturn = in.lastIndexOf("\n", pos);
-       if (indLastReturn == pos) {
-         indLastReturn = in.lastIndexOf("\n", pos - 1);
-      }
-      return indLastReturn;
-   }
 
    public static String currLine(String in, int pos) {
       int indLastReturn = Finder.lastReturn(in, pos);
@@ -47,6 +39,14 @@ public class Finder {
       else {
          return in;
       }
+   }
+   
+   public static int lastReturn(String in, int pos) {
+       int indLastReturn = in.lastIndexOf("\n", pos);
+       if (indLastReturn == pos) {
+         indLastReturn = in.lastIndexOf("\n", pos - 1);
+      }
+      return indLastReturn;
    }
 
    public static int countMotif(String in, String motif) {

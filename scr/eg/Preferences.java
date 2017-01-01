@@ -16,6 +16,7 @@ public class Preferences {
       "recentModule",
       "recentSourceDir",
       "recentExecDir",
+      "recentBuildName",
       "recentPath",
       "font",
       "fontSize",
@@ -33,6 +34,7 @@ public class Preferences {
       "recentModule",
       "recentSourceDir",
       "recentExecDir",
+      "recentBuildName",
    };
 
    private Properties prop = null;
@@ -74,6 +76,7 @@ public class Preferences {
          prop.getProperty("recentModule"),
          prop.getProperty("recentSourceDir"),
          prop.getProperty("recentExecDir"),
+         prop.getProperty("recentBuildName"),
          prop.getProperty("recentPath"),
          prop.getProperty("font"),
          prop.getProperty("fontSize"),
@@ -110,6 +113,7 @@ public class Preferences {
          prop.getProperty("recentModule"),
          prop.getProperty("recentSourceDir"),
          prop.getProperty("recentExecDir"),
+         prop.getProperty("recentBuildName")
       };
 
       int i;

@@ -17,6 +17,7 @@ import java.io.IOException;
 //--Eadgyth--//
 import eg.Preferences;
 import eg.Languages;
+import eg.Constants;
 
 import eg.utils.JOptions;
 import eg.ui.EditArea;
@@ -25,8 +26,6 @@ import eg.ui.EditArea;
  * Class represents the text document
  */
 public class TextDocument {
-
-   private final static String SYS_LINE_SEP = System.lineSeparator();
    private final static Preferences PREFS = new Preferences();
 
    private final JTextPane textArea;
@@ -99,7 +98,7 @@ public class TextDocument {
       String[] lines = content.split("\n"); 
       try (FileWriter writer = new FileWriter(filepath)) {
          for (String s : lines) {
-            writer.write(s + SYS_LINE_SEP);
+            writer.write(s + Constants.SYS_LINE_SEP);
          }
       }
       catch(IOException e) {

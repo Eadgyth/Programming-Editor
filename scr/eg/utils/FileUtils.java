@@ -1,11 +1,12 @@
 package eg.utils;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.FileNotFoundException;
 
 public class FileUtils {
-   
-   private static final String F_SEP = File.separator;
    
    /**
     * @param fileStr  the String that represents a file
@@ -14,7 +15,7 @@ public class FileUtils {
     */
    public static String extension(String fileStr) {
       int indDot = fileStr.lastIndexOf(".");
-      int indFileSep = fileStr.lastIndexOf(F_SEP);
+      int indFileSep = fileStr.lastIndexOf(eg.Constants.F_SEP);
       if (indDot > indFileSep) {
          return fileStr.substring(indDot);
       }
@@ -56,4 +57,28 @@ public class FileUtils {
       File[] content = path.listFiles();
       return content.length == 0;
    }
+   
+   /**
+    * Appends to the file 'log.txt' the class name and message of
+    * an exception
+    * @param e  an {@code Exception}
+    */
+   public static void log(Exception e) { 
+      try (FileWriter writer = new FileWriter("log.txt", true)) {
+         writer.write(e.getClass().getName() + ": " + e.getMessage()
+               + eg.Constants.SYS_LINE_SEP);
+      }
+      catch(IOException ioe) {
+         FileUtils.log(ioe);
+      }
+   }
+   
+   public static void emptyLog() { 
+      try (FileWriter writer = new FileWriter("log.txt", false)) {
+         writer.write("");
+      }
+      catch(IOException ioe) {
+         FileUtils.log(ioe);
+      }
+   }   
 }

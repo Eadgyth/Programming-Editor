@@ -22,13 +22,10 @@ import eg.ui.MainWin;
 import eg.ui.Toolbar;
 import eg.ui.ViewSettings;
 import eg.ui.TabbedPane;
-
 import eg.ui.menu.Menu;
-
 import eg.ui.filetree.FileTree;
-
+import eg.utils.FileUtils;
 import eg.projects.SelectedProject;
-
 import eg.plugin.PluginStarter;
 
 /**
@@ -42,6 +39,7 @@ public class Eadgyth {
    public static void main(String[] arg) {
       Locale.setDefault(Locale.US);
       setLaf();
+      FileUtils.emptyLog();
       
       ConsolePanel    cw        = new ConsolePanel();   
       FileTree        fileTree  = new FileTree();
@@ -49,10 +47,10 @@ public class Eadgyth {
       Toolbar         tBar      = new Toolbar();
       TabbedPane      tabPane   = new TabbedPane();
       MainWin         mw        = new MainWin(menu.menubar(), tBar.toolbar(),
-                                     tabPane.tabbedPane(), fileTree.fileTreePnl(),
-                                     cw.consolePnl());
+                                      tabPane.tabbedPane(), fileTree.fileTreePnl(),
+                                      cw.consolePnl());
       ViewSettings    viewSet   = new ViewSettings(mw, menu.getViewMenu(),
-                                     menu.getFormatMenu());
+                                      menu.getFormatMenu());
 
       ProcessStarter  proc      = new ProcessStarter(cw);
       SelectedProject selProj   = new SelectedProject(viewSet, proc, cw, fileTree);
@@ -102,7 +100,7 @@ public class Eadgyth {
               | IllegalAccessException 
               | InstantiationException 
               | UnsupportedLookAndFeelException e) {
-            System.out.println(e.getMessage());
+            FileUtils.log(e);
          }
       }
       int topTabInset = 0;

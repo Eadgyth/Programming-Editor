@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionListener;
 
 //--Eadgyth--//
+import eg.Constants;
 import eg.utils.JOptions;
 import eg.console.*;
 import eg.javatools.*;
@@ -17,6 +18,8 @@ import eg.ui.filetree.FileTree;
  * Represents a programming project in Java
  */
 public class JavaActions extends ProjectConfig implements ProjectActions {
+
+   private static Constants c;
 
    private final ViewSettings viewSet;
    private final Compile comp;
@@ -76,7 +79,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    public void applyProject() {
       proc.addWorkingDir(getProjectPath());
       fileTree.setProjectTree(getProjectPath());
-      fileTree.setDeletableDir(getExecDirName());
+      fileTree.setDeletableDirName(getExecDirName());
    }
    
    @Override                                                                          
@@ -91,7 +94,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
             if (!viewSet.isConsoleSelected()) {
                if (!comp.success()) {
                   int result = JOptions.confirmYesNo(
-                         "Compilation of '"
+                        "Compilation of '"
                         + getProjectName() + "' failed.\n"
                         + comp.getMessage() + "."
                         + "\nOpen console window to view messages?");
@@ -101,7 +104,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
                }
                else {
                   JOptions.infoMessage(
-                          "Successfully compiled '"
+                        "Successfully compiled '"
                         + getProjectName() + "'.");
                }
             }
@@ -131,12 +134,14 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       if (!mainClassFileExists()) {
          return;
       }
-      String execDir = getProjectPath() + File.separator + getExecDirName();
-      SearchFiles sf = new SearchFiles();
-      boolean existed
-         = sf.filteredFilesToArr(execDir, ".jar").length == 1;
+      String jarName = getBuildName();
+      if (jarName.length() == 0) {
+         jarName = getMainFile();
+      }
+         
       jar.createJar(getProjectPath(), getMainFile(),
-            getModuleName(), getExecDirName(), getBuildName());
+            getModuleName(), getExecDirName(), jarName);
+      boolean existed = jarFileExists(jarName);
       if (!existed) {
          boolean exists = false;
          while (!exists) {
@@ -145,12 +150,11 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
             }
             catch (InterruptedException e) {
             }
-            exists
-               = sf.filteredFilesToArr(execDir, ".jar").length == 1;
+            exists = jarFileExists(jarName);
          }      
          fileTree.updateTree();
       }
-      JOptions.infoMessage("Saved jar file named " + jar.getUsedJarName());
+      JOptions.infoMessage("Saved jar file named " + jarName);
    }
 
    private boolean mainClassFileExists() {
@@ -160,13 +164,17 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       }
       return exists;
    }
+
+   private boolean jarFileExists(String jarName) {
+      String execDir = getProjectPath() + c.F_SEP + getExecDirName();
+      return  new File(execDir + c.F_SEP + jarName + ".jar").exists();
+   }
    
    private void setStartCommand() {
       String main = getMainFile();
       if (getArgs().length() > 0) {
          main += " " + getArgs();
       }
-
       if (getExecDirName().length() == 0 && getModuleName().length() == 0 ) {
          startCommand = "java " + main;
       }

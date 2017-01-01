@@ -23,6 +23,8 @@ import javax.swing.event.CaretEvent;
 
 //--Eadgyth--//
 import eg.utils.JOptions;
+import eg.utils.FileUtils;
+
 
 /**
  *  The starting of an external process
@@ -102,7 +104,7 @@ public class ProcessStarter {
             cw.appendText(
                     "<<Error: cannot find " + cmd 
                   + " in the directory " + workingDir + ">>\n");
-            System.out.println(e.getMessage());  
+            FileUtils.log(e);
          }
       });
    }

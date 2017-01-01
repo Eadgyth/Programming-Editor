@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 //--Eadgyth--//
 import eg.Preferences;
-
+import eg.Constants;
 import eg.utils.JOptions;
 
 /**
@@ -16,10 +16,11 @@ import eg.utils.JOptions;
  */
 public abstract class ProjectConfig implements Configurable {
 
-   private final static String F_SEP = File.separator;
    private final static String CONFIG_FILE = "eadconfig.properties";   
    private final static Preferences PREFS = new Preferences();
    private final static Preferences CONFIG = new Preferences();
+   
+   private static Constants c;
 
    private final SettingsWin setWin;
    private final String suffix;
@@ -93,6 +94,7 @@ public abstract class ProjectConfig implements Configurable {
       PREFS.storePrefs("recentModule", moduleDir);
       PREFS.storePrefs("recentSourceDir", sourceDir);
       PREFS.storePrefs("recentExecDir", execDir);
+      PREFS.storePrefs("recentBuildName", buildName);
    }
    
    /**
@@ -165,8 +167,8 @@ public abstract class ProjectConfig implements Configurable {
     */
    protected boolean mainProgramFileExists(String suffix) { 
       File target
-            = new File(projectPath + F_SEP + execDir + F_SEP + moduleDir
-            + F_SEP + mainFile + suffix);
+            = new File(projectPath + c.F_SEP + execDir + c.F_SEP + moduleDir
+            + c.F_SEP + mainFile + suffix);
       return target.exists();
    }
    
@@ -206,7 +208,7 @@ public abstract class ProjectConfig implements Configurable {
     */
    private String findRootByFile(String path, String file) {
       File searched = new File(path);
-      String relToRootStr = F_SEP + file;
+      String relToRootStr = c.F_SEP + file;
       String existingPath = path + relToRootStr;
       boolean exists = new File(existingPath).exists();
       while(!exists) {
@@ -262,6 +264,9 @@ public abstract class ProjectConfig implements Configurable {
       
       execDir = props.getProperty("recentExecDir");
       setWin.displayExecDir(execDir);
+
+      buildName = props.getProperty("recentBuildName");
+      setWin.displayBuildName(buildName);
       
       projectPath = previousRoot;
       if (props == CONFIG) {
@@ -271,7 +276,6 @@ public abstract class ProjectConfig implements Configurable {
    
    private String pathRelToRoot() {
       getTextFieldsInput();
-
       String dirRelToRoot = "";
       if (sourceDir.length() > 0 & moduleDir.length() == 0) {
          dirRelToRoot += sourceDir;
@@ -280,10 +284,9 @@ public abstract class ProjectConfig implements Configurable {
          dirRelToRoot += moduleDir;
       }
       else if (sourceDir.length() > 0 & moduleDir.length() > 0) {
-         dirRelToRoot += sourceDir + F_SEP + moduleDir;
-      }
-      
-      return dirRelToRoot + F_SEP + mainFile + suffix;
+         dirRelToRoot += sourceDir + c.F_SEP + moduleDir;
+      }     
+      return dirRelToRoot + c.F_SEP + mainFile + suffix;
    }      
    
    private void getTextFieldsInput() {
@@ -311,9 +314,10 @@ public abstract class ProjectConfig implements Configurable {
             CONFIG.storeConfig("recentModule", moduleDir, projectPath);
             CONFIG.storeConfig("recentSourceDir", sourceDir, projectPath);
             CONFIG.storeConfig("recentExecDir", execDir, projectPath);
+            CONFIG.storeConfig("recentBuildName", buildName, projectPath);
          }
          else {
-            File configFile = new File(projectPath + F_SEP + CONFIG_FILE);
+            File configFile = new File(projectPath + c.F_SEP + CONFIG_FILE);
             if (configFile.exists()) {
                int res = JOptions.confirmYesNo(
                        "'Save settings in project folder' is disabled."
