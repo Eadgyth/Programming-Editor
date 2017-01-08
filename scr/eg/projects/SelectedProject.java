@@ -45,9 +45,6 @@ public class SelectedProject {
          case ".pm":
             newProj = new PerlActions(viewSet, proc, cw, fileTree);
             break;
-         case ".txt":
-            newProj = new TxtActions(proc, fileTree);
-            break;
       }
       return newProj;
    }

@@ -336,9 +336,6 @@ public class CurrentProject {
          case ".pm":
             enableActions(false, true, false);
             break;
-         case ".txt":
-            enableActions(false, false, false);
-            break;
       }
    }
    
