@@ -109,6 +109,10 @@ class TypingEdit {
    void changeIndentUnit(String indentUnit) {
       autoInd.changeIndentUnit(indentUnit);
    }
+   
+   void addAllRowNumbers(String in) {
+      rowNum.addAllRowNumbers(in);
+   }
 
    void updateRowNumber(String content) {
       rowNum.updateRowNumber(content);

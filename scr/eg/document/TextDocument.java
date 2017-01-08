@@ -363,34 +363,8 @@ public class TextDocument {
    }
    
    //
-   //----private methods-----//
+   //----private methods----//
    //
-   
-   /**
-    * Controls which text modification are done upon typing depending on
-    * the language.
-    * This method has to be modified if other languages are implemented in
-    * Eadgyth.
-    */
-   private void configColoring(Languages language) {
-      switch(language) {
-         case JAVA:
-            type.configColoring(language);
-            type.enableIndent(true);
-            break;
-         case HTML:
-            type.configColoring(language);
-            type.enableIndent(true);
-            break;
-         case PERL:
-            type.configColoring(language);
-            type.enableIndent(true);
-            break;
-         case PLAIN_TEXT:
-            type.enableIndent(false);
-            break;
-      }
-   }
 
    private void displayFileContent() {
       type.enableDocListen(false);
@@ -428,7 +402,7 @@ public class TextDocument {
 
    private void openSettings() {
       setContent();
-      type.updateRowNumber(content);
+      type.addAllRowNumbers(content);
       if (filename.endsWith(".java")
             || (filename.length() == 0
             & Languages.JAVA.toString().equals(language))) {
@@ -472,5 +446,31 @@ public class TextDocument {
       backInBlack(getDocText().length(), 0);
       enableTextModify(false);
       language = Languages.PLAIN_TEXT.toString();
+   }
+   
+    /**
+    * Controls which text modification are done upon typing depending on
+    * the language.
+    * This method has to be modified if other languages are implemented in
+    * Eadgyth.
+    */
+   private void configColoring(Languages language) {
+      switch(language) {
+         case JAVA:
+            type.configColoring(language);
+            type.enableIndent(true);
+            break;
+         case HTML:
+            type.configColoring(language);
+            type.enableIndent(true);
+            break;
+         case PERL:
+            type.configColoring(language);
+            type.enableIndent(true);
+            break;
+         case PLAIN_TEXT:
+            type.enableIndent(false);
+            break;
+      }
    }
 }

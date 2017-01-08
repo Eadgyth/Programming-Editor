@@ -10,7 +10,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.JPanel;
 import java.awt.Color;
 
+//--Eadgyth--//
 import eg.utils.Finder;
+import eg.utils.FileUtils;
 
 /**
  * The row numbering of the scrolled text area
@@ -21,62 +23,79 @@ class RowNumbers {
 
    private final SimpleAttributeSet lineSet = new SimpleAttributeSet();
    private final StyledDocument lineDoc;
-   private final JPanel scrolledArea; // to revalidate when width of lineDoc changes
-   
-   private int rowNumberHelper;
+   private final JPanel scrolledArea;
+
+   private int nRowsCurr = 0;
 
    RowNumbers(JTextPane lineArea, JPanel scrolledArea) {
       this.lineDoc = lineArea.getStyledDocument();
       this.scrolledArea = scrolledArea;
       setStyle();
-      addRowNumber(0);
    }
-   
+
    /**
     * Updates row numbers based on the number of newlines
     */
    void updateRowNumber(String in) {
-      int rowNumber = Finder.countMotif(in, "\n");
-      if (rowNumber != rowNumberHelper) {
-         insertAllRowNumbers(rowNumber + 1);
-         revalidateArea(rowNumber + 1);
+      int nRows = Finder.countMotif(in, "\n");
+      if (nRows != nRowsCurr) {
+         if (nRows > nRowsCurr) {
+            addRowNumbers(nRowsCurr + 1, nRows);
+         }
+         else if (nRows < nRowsCurr) {
+            removeRowNumbers();
+            addAllRowNumbers(in);
+         }
+         revalidateArea(nRows);
       }
-      rowNumberHelper = rowNumber;
-      //System.out.println("row number: " + rowNumber);
+      nRowsCurr = nRows;
    }
 
-   void insertAllRowNumbers(int rowNumber) {
+   /**
+    * Adds all row numbers for a text at once
+    */
+   void addAllRowNumbers(String in) {
+      int nRows = Finder.countMotif(in, "\n");
+      nRowsCurr = nRows;
       removeRowNumbers();
-      for (int i = 0; i < rowNumber; i++) {
-         addRowNumber(i);
+      addRowNumbers(0, nRows);
+   }
+
+   //
+   //----private methods----//
+   //
+   
+   private void addRowNumbers(int previousRows, int nRows) {
+      for (int i = previousRows; i <= nRows; i++) {
+         appendRowNumber(i + 1);
       }
    }
 
-   private void addRowNumber(int rowNumber) {
+   private void appendRowNumber(int nRows) {
       try {
          lineDoc.insertString(lineDoc.getLength(),
-               Integer.toString(rowNumber + 1) + "\n", lineSet);
+               Integer.toString(nRows) + "\n", lineSet);
       }
-      catch( BadLocationException ble ) {
-         ble.printStackTrace();
+      catch(BadLocationException e) {
+         FileUtils.log(e);
       }
-      revalidateArea(rowNumber);
+      revalidateArea(nRows);
    }
 
    private void removeRowNumbers() {
       try {
          lineDoc.remove(0, lineDoc.getLength());
       }
-      catch (BadLocationException ble) {
-         ble.printStackTrace();
+      catch (BadLocationException e) {
+         FileUtils.log(e);
       }
    }
 
    /**
     * Adapts the width of lineNumber pane as #digits of line numbers change
     */
-   private void revalidateArea(int rowNumber) {
-      if ((rowNumber + 1) % 10 == 0 || rowNumber == 0) {
+   private void revalidateArea(int nRows) {
+      if ((nRows + 1) % 10 == 0 || nRows == 0) {
          scrolledArea.revalidate();
       }
    }
@@ -84,7 +103,7 @@ class RowNumbers {
    private void setStyle() {
       StyleConstants.setForeground(lineSet, NUM_GRAY);
       StyleConstants.setAlignment(lineSet, StyleConstants.ALIGN_RIGHT);     
-      StyleConstants.setLineSpacing(lineSet, 0.2f); // as for JtextPane 'input'
+      StyleConstants.setLineSpacing(lineSet, 0.2f);
       Element el = lineDoc.getParagraphElement(0);
       lineDoc.setParagraphAttributes(0, el.getEndOffset(), lineSet, false);
    }
