@@ -4,206 +4,215 @@
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
       <title>Eadgyth help</title>
       <style>
-         *{
-             font-family: sans-serif;
-          }
+            *{
+                font-family: sans-serif;
+             }
+         div {
+             border: 30px white;
+             margin-top: 50px;
+             margin-bottom: 50px;
+             margin-right: 50px;
+             margin-left: 30px;
+         }      
       </style>
    </head>
    <body>
-      <h2>Eadgyth help (under work)</h2>
-      <p>If really somebody gave the program a try a message about malfunctions 
+   <div>
+      <h2>Eadgyth help</h2>
+      <p>If really somebody gave the program a try a message about problems 
          is welcome at <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a>.</p>
-
-      <ul>
-         <li><h3>Content</h3>
-            <ul>
-               <li><a href="#Requirements">Requirements</a><br></li>
-               <li><a href="#RunProject">Running a project</a>
-                  <ul>
-                     <li><a href="#ProjectTypes">Types of projects</a>
-                     <li><a href="#Config">Configuring a project</a>
-                     <li><a href="#ChangeProjects">Changing between projects</a></li>
-                     <li><a href="#Retrieve">Retrieving projects</a>
-                  </ul></li>
-               <li><a href="#Console">Using the console</a></li>
-               <li><a href="#Explorer">Using the project explorer</a></li>
-            </ul></li>
-
-         <!--Requirements--> 
-         <li><h3 id="Requirements">Requirements</h3>
-         <p>The Java runtime environment must be version JRE 8 to run Eadgyth.</p>
-         <p>For a programming project the computer is simply set up in the same way
-            as if any text editor is used for coding. Presently, programming projects
-            can be set for Java and Perl.
-   
-         <!--Run project-->
-         <li><h3 id="RunProject">Running a project</h3>
-
-         <h4 id="ProjectTypes">Types of projects</h4>
-         <p>The following types of projects may be defined:</p> 
-         <ol>
-            <li><a href="#JavaProject">Java</a> (file extension is .java) 
-            <li><a href="#PerlProject">Perl</a> (file extension is .pl, syntax recognized also for .pm)
-            <li><a href="#HtmlProject">HTML</a> (file extension is .html)
-            <li><a href="#TxtProject">Plain text</a> (file extension is .txt, no specific actions)
-         </ol>
-
-         <h4 id="Config">Configuring a project</h4>
-         <p>The setting of a project always starts from an existing file that is opened
-            (or newly saved) and is in the selected tab. The file is found in a directory
-            that is supposed to be the project's root or in sub-directories of this root,
-            e.g. a separate directory for source file(s).</p>
-         <ol>
-            <li>Open a file or save a new file that is of one of the file types mentioned above.</li>
-            <li>Open the settings window by selecting &lsquo;Project&rsquo; > 
-                &lsquo;Project settings&rsquo;.</li>     
-            <li>Enter the name of the main source file without extension. The main file does
-                not have to be the opened file.</li>
-            <li>If the main file is part of a package (applies only to Java)
-                enter the package name in the text field &lsquo;Package with main class&rsquo;.
-                If it is located in a sub-package enter the path with normal file separators
-                (slash in Windows).</li>
-            <li>If the directory that contains source files (or packages) is not supposed
-                to be the project's root but a separate source directory the name of this
-                directory is entered in text field &lsquo;Source directory&rsquo;.</li>
-            <li>A separate destination directory for compiled files (applies only to Java) maybe
-                entered in the text field &lsquo;Executable directory&rsquo; (the folder will be
-                created during compilation).</li>
-            <li>Click ok. If entries are correct the project can be viewed in the &lsquo;Project
-                explorer&rsquo; that is opened in the &lsquo;View&rsquo; menu.</li>
-         </ol>
-         
-         <h4 id="ChangeProjects">Changing between projects</h4>
-         <ul>
-            <li>Different projects may set during a session. A new project is set by opening a file
-                that is not part of the currently active project and then opening the settings window
-                (&lsquo;Project&rsquo; > &lsquo;Project settings&rsquo;) to define the project's
-                directories. The file must be found in the selected tab.</li>
-            <li>Changing between already set projects is done by selecting a file that is part of
-                the project to be set active and then selecting &lsquo;Project&rsquo; > &lsquo;Change
-                project&rsquo; or, to view or modify settings, &lsquo;Project&rsquo; > &lsquo;Project
-                settings&rsquo;.</li>
-         </ul>
-         
-         <h4 id="Retrieve">Retrieving projects</h4>
-         <ul>
-            <li>When the first file is opened after starting the program and the file is part
-                of the project that was active when the program was quit the last time this
-                project is directly set active. The settings can be viewed in the settings
-                window (&lsquo;Project&rsquo; >  &lsquo;Project settings&rsquo;).</li>
-            <li>If &lsquo;Save settings in a config file&rsquo; is selected in the settings
-                window the configuration of the project is stored in the project folder. What
-                does that do? 1) If a file of a project marked in this way is opened (or one
-                is saved to that project) the settings are loaded and the option
-                &lsquo;Project&rsquo; > &lsquo;Change project&rsquo; can be used to change
-                to that project. 2) A marked project is directly set active if a file
-                of that project is opened and no other project is active already.</li>
-         </ul>
-
-         <h4 id="JavaProject">Testing Java code and packing a jar file</h4>
-         <ol>
-            <li>Compile the source file(s) using &lsquo;Save all and compile&rsquo; in the
-                &lsquo;Project&rsquo; menu. If errors occur you will be asked to open the
-                console to view messages.</li>
-            <li>If the compilation was successful the new program can be run for testing by
-                using &lsquo;Run&rsquo; in the &lsquo;Project&rsquo; menu. Any output and error
-                messages from the tested program are displayed in the console panel. The tested
-                program can be forcibly quit by clicking the &lsquo;stop&rsquo; symbol in the
-                toolbar of the console panel.</li>
-            <li>Arguments for a start script may be entered in the text field &lsquo;Arguments&rsquo;
-                (separated by single spaces) in the Settings window</li>
-            <li>A jar file may be created by selecting &lsquo;Project&rsquo; > &lsquo;Create
-                jar&rsquo;. The jar file is saved in the executable's folder or, if no such folder
-                is defined, in the project's root folder. A name for the jar file can be
-                specified in the settings window. If no name is given the jar name is the same
-                as that for the main class. Note that presently only class files can be bundled
-                in a jar.</li>
-         </ol>
-         
-         <h4 id="PerlProject">Testing a Perl script</h4>
-         <ol>
-            <li>A perl script can be run in the console panel for testing by selecting
-                &lsquo;Project&rsquo; > &lsquo;Run&rsquo;. There is a limitation when the script
-                asks for input through a command prompt: messages from the perl program are not
-                displayed in the expected order. However, it does work as expected when the
-                autoflushing of Perl's STDOUT is turned on in the script. The other possibilty is,
-                of course, to start an external command prompt to test the script (see <a
-                href="#Console">Using the console</a>).
-            <li>The syntax coloring for Perl is presently very basic.</li>
-         </ol>
-            
-         <h4 id="HtmlProject">Viewing HTML code in a web browser</h4>
-         <ol>
-            <li>Save changes to the file and select &lsquo;Run&rsquo; in the &lsquo;Project&rsquo;
-                menu to view the html file in the default web browser.</li>
-            <li>As for Perl code, the syntax coloring is presently rudimentary.</li>
-         </ol>
      
-         <h4 id="TxtProject">Set a project for plain text files</h4>
-         <ol>
-            <li>The only purpose of a text project is to view a file structure in the
-                 project explorer.</li>
-         </ol>
+      <h3>Content</h3>
+      <ul>
+         <li><a href="#Requirements">Requirements</a><br></li>
+         <li><a href="#RunProject">Running a project</a>
+            <ul>
+               <li><a href="#ProjectTypes">Types of projects</a>
+               <li><a href="#Config">Configuring a project</a>
+               <li><a href="#ChangeProjects">Changing between projects</a></li>
+               <li><a href="#Retrieve">Retrieving projects</a>
+            </ul></li>
+         <li><a href="#Console">Using the console</a></li>
+         <li><a href="#Explorer">Using the project explorer</a></li>
+      </ul>
+      
+      <hr>
+
+      <!--Requirements--> 
+      <h3 id="Requirements">Requirements</h3>
+      <p>The Java runtime environment must be version JRE 8 to run Eadgyth.</p>
+      <p>For a programming project the computer is simply set up in the same way
+         as if any text editor is used for coding. Presently, programming projects
+         can be set for Java and Perl.</p>
+         
+      <hr>
    
-         <!--Console-->
-         <li><h3 id="Console">Using the console</h3>
-         <p>The console area shall show messages after compilation of a project and the output of
-            a program that is tested.</p>
-         <p>In addition, self-chosen system commands entered in a dialog can be run in the current
-            working directory (a project's root directory). A run process can be forcibly quit by
-            clicking the &lsquo;stop&rsquo; symbol.</p>
-         <p>The console does not emulate the terminal of the operating system though. However,
-            it is possible (or rather not prohibited) to run the system's terminal in the console
-            by running the command that starts the terminal (e.g., cmd.exe in Windows). It is
-            important to note that a tested program thereupon started from this terminal CANNOT be
-            forcibly quit by clicking the &lsquo;stop&rsquo; symbol.</p>
-         <p>Hint: using the command to run an external command prompt (in Windows this would
-            be cmd.exe /c start) presets the working directory for the prompt to the project's
-            root directory.
+      <!--Run project-->
+      <h3 id="RunProject">Running a project</h3>
+
+      <h4 id="ProjectTypes">Types of projects</h4>
+      <p>The following types of projects may be defined:</p> 
+      <ol>
+         <li><a href="#JavaProject">Java</a> (file extension is .java) 
+         <li><a href="#PerlProject">Perl</a> (file extension is .pl, .pm)
+         <li><a href="#HtmlProject">HTML</a> (file extension is .html)
+      </ol>
+
+      <h4 id="Config">Configuring a project</h4>
+      <p>The setting of a project always starts from an existing file that is opened
+         (or newly saved) and is in the selected tab. The file is found in a directory
+         that is supposed to be the project's root or in sub-directories of this root,
+         e.g. a separate directory for source files.</p>
+      <ol>
+         <li>Open a file or save a new file that is of one of the file types mentioned above.</li>
+         <li>Open the settings window by selecting &lsquo;Project&rsquo; > 
+             &lsquo;Project settings&rsquo;.</li>     
+         <li>Enter the name of the main source file without extension. The main file does
+             not have to be the opened file.</li>
+         <li>If the main file is part of a package (applies only to Java)
+             enter the package name in the text field &lsquo;Package with main class&rsquo;.
+             If it is located in a sub-package enter the path with normal file separators
+             (slash in Windows).</li>
+         <li>If the directory that contains source files (or packages) is not supposed
+             to be the project's root but a separate source directory the name of this
+             directory is entered in text field &lsquo;Source directory&rsquo;.</li>
+         <li>A separate destination directory for compiled files (applies only to Java) maybe
+             entered in the text field &lsquo;Executable directory&rsquo; (the folder will be
+             created during compilation).</li>
+         <li>Click ok. If entries are correct the project can be viewed in the &lsquo;Project
+             explorer&rsquo; that is opened in the &lsquo;View&rsquo; menu.</li>
+      </ol>
+      
+      <h4 id="ChangeProjects">Changing between projects</h4>
+      <ul>
+         <li>Different projects may set during a session. A new project is set by opening a file
+             that is not part of the currently active project and then opening the settings window
+             (&lsquo;Project&rsquo; > &lsquo;Project settings&rsquo;) to define the project's
+             directories. The file must be found in the selected tab.</li>
+         <li>Changing between already set projects is done by selecting a file that is part of
+             the project to be set active and then selecting &lsquo;Project&rsquo; > &lsquo;Change
+             project&rsquo; or, to view or modify settings, &lsquo;Project&rsquo; > &lsquo;Project
+             settings&rsquo;.</li>
+      </ul>
+      
+      <h4 id="Retrieve">Retrieving projects</h4>
+      <ul>
+         <li>When a file is opened that is part of the project that was active when
+             the program was quit the last time this project is directly set active
+             if no other project is active already. The settings can be viewed in the 
+             settings window (&lsquo;Project&rsquo; >  &lsquo;Project settings&rsquo;).</li>
+         <li>If &lsquo;Save settings in 'eadconfig' file&rsquo; is selected the configuration
+             of the project is stored in the project folder. What does that do? <br>
+             1) If a file of a project marked in this way is opened (or one
+             is saved to that project) the settings are loaded and the option
+             &lsquo;Project&rsquo; > &lsquo;Change project&rsquo; can be used to change
+             to that project.<br>
+             2) A marked project is directly set active if a file of that project is
+             opened and no other project is active already.</li>
+      </ul>
+
+      <h4 id="JavaProject">Testing Java code and packing a jar file</h4>
+      <ol>
+         <li>Compile the source file(s) using &lsquo;Save all and compile&rsquo; in the
+             &lsquo;Project&rsquo; menu. If errors occur you will be asked to open the
+             console to view messages.</li>
+         <li>If the compilation was successful the new program can be run for testing by
+             using &lsquo;Run&rsquo; in the &lsquo;Project&rsquo; menu. Any output and error
+             messages from the tested program are displayed in the console panel. The tested
+             program can be forcibly quit by clicking the &lsquo;stop&rsquo; symbol in the
+             toolbar of the console panel.</li>
+         <li>Arguments for a start script may be entered in the text field &lsquo;Arguments&rsquo;
+             (separated by single spaces) in the Settings window</li>
+         <li>A jar file may be created by selecting &lsquo;Project&rsquo; > &lsquo;Create
+             jar&rsquo;. The jar file is saved in the executable's folder or, if no such folder
+             is defined, in the project's root folder. A name for the jar file can be
+             specified in the settings window. If no name is given the jar name is the same
+             as that for the main class. Note that presently only class files can be bundled
+             in a jar.</li>
+      </ol>
+      
+      <h4 id="PerlProject">Testing a Perl script</h4>
+      <ol>
+         <li>A perl script can be run in the console panel for testing by selecting
+             &lsquo;Project&rsquo; > &lsquo;Run&rsquo;. There is a limitation when the script
+             asks for input through a command prompt: messages from the perl program are not
+             displayed in the expected order. However, it does work as expected when the
+             autoflushing of Perl's STDOUT is turned on in the script. The other possibilty is,
+             of course, to start an external command prompt to test the script (see <a
+             href="#Console">Using the console</a>).
+         <li>The syntax coloring for Perl is presently very basic.</li>
+      </ol>
+         
+      <h4 id="HtmlProject">Viewing HTML code in a web browser</h4>
+      <ol>
+         <li>Save changes to the file and select &lsquo;Run&rsquo; in the &lsquo;Project&rsquo;
+             menu to view the html file in the default web browser.</li>
+         <li>As for Perl code, the syntax coloring is presently rudimentary.</li>
+      </ol>
+      
+      <hr>
    
-         <h4>To run a system command...</h4>
-         <ol>
-            <li>Open the console panel in the menu &lsquo;View&rsquo;.</li>
-            <li>Press the button &lsquo;Cmd...&rsquo; and enter a command in the shown dialog window.
-                 Click ok in the dialog window to run the command.</li>
-            <li>To run a previous command press the &lsquo;>&rsquo; button; to change a command open
-                the command dialog again by clicking &lsquo;Cmd...&rsquo;.</li>
-         </ol>
+      <!--Console-->
+      <h3 id="Console">Using the console</h3>
+      <p>The console area shall show messages after compilation of a project and the output of
+         a program that is tested.</p>
+      <p>In addition, self-chosen system commands entered in a dialog can be run in the current
+         working directory (the project's root directory). A run process can be forcibly quit by
+         clicking the &lsquo;stop&rsquo; symbol.</p>
+      <p>The console does not emulate the terminal of the operating system though. However,
+         it is possible (or rather not prohibited) to run the system's terminal in the console
+         by running the command that starts the terminal (e.g., cmd.exe in Windows). It is
+         important to note that a tested program thereupon started from this terminal CANNOT be
+         forcibly quit by clicking the &lsquo;stop&rsquo; symbol.</p>
+      <p>Hint: using the command to start &lsquo;THE&rsquo; terminal (in Windows this would be
+         cmd.exe /c start) presets the working directory for the terminal to the project's root
+         directory.
+
+      <h4>To run a system command...</h4>
+      <ol>
+         <li>Open the console panel in the menu &lsquo;View&rsquo;.</li>
+         <li>Press the button &lsquo;Cmd...&rsquo; and enter a command in the shown dialog window.
+              Click ok in the dialog window to run the command.</li>
+         <li>To run a previous command press the &lsquo;>&rsquo; button; to change a command open
+             the command dialog again by clicking &lsquo;Cmd...&rsquo;.</li>
+      </ol>
+
+      <h4>Further options</h4>
+      <ul>
+         <li>A new instance of Eadgyth can be run from the console by pressing the button with
+             the Eadgyth icon. One reason to do this would be to view the output when a new plugin
+             is tested.</li>
+      </ul>
+      
+      <hr>
    
-         <h4>Further options</h4>
-         <ul>
-            <li>A new instance of Eadgyth can be run from the console by pressing the button with
-                the Eadgyth icon. One reason to do this would be to view the output when a new plugin
-                is tested.</li>
-         </ul>
-   
-         <!--File explorer-->
-         <li><h3 id="Explorer">Using the project explorer</h3>
-         <p>The project explorer can be opened by selecting
-            &lsquo;View&rsquo; > &lsquo;Project explorer&rsquo; once a project is defined.<br>
-            The explorer always shows the project that is currently set active. A few operations
-            are supported:</p>
-         <ul>
-            <li>The project's file system is shown as a tree in which folders are expanded or
-                shrunk by clicking the (+), (-) handles, as usual. However, a double left
-                click on a folder symbol does not expand/shrink the folder but displays a new
-                tree rooted at the clicked folder. To move back the &lsquo;Folder up&rsquo; symbol
-                is clicked. The topmost level is always the project's root directory.</li>
-            <li>A double left click on a file opens the clicked file in a new tab.</li>
-            <li>A file may be deleted after a right click on a file symbol and selecting
-                &lsquo;delete&rsquo;. If the deleted file is in an open tab, the tab is
-                is not closed but goes into &lsquo;Save as&rsquo; mode.</li>
-            <li>A folder may be as well deleted after a right click on a folder symbol but
-                a folder is protected from deletion if it is not empty. The exception is, if
-                present, the separate folder for executable files or its subfolders. This may
-                be deleted for a completely renewed compilation</li>
-            <li>A new folder may be created after a right click on a folder symbol and selecting
-                &lsquo;Create new folder&rsquo;.</li>
-            <li>Changes to the project's file structure made from within the program should be
-                updated in the file view (no guarantee). Changes made from outside the program
-                would be updated &lsquo;manually&rsquo; by clicking the &lsquo;refresh&rsquo;
-                symbol.</li>
-          </ul></li>
+      <!--File explorer-->
+      <h3 id="Explorer">Using the project explorer</h3>
+      <p>The project explorer can be opened by selecting
+         &lsquo;View&rsquo; > &lsquo;Project explorer&rsquo; once a project is defined.<br>
+         The explorer always shows the project that is currently set active. A few operations
+         are supported:</p>
+      <ul>
+         <li>The project's file system is shown as a tree in which folders are expanded or
+             shrunk by clicking the (+), (-) handles, as usual. However, a double left
+             click on a folder symbol does not expand/shrink the folder but displays a new
+             tree rooted at the clicked folder. To move back the &lsquo;Folder up&rsquo; symbol
+             is clicked. The topmost level is always the project's root directory.</li>
+         <li>A double left click on a file opens the clicked file in a new tab.</li>
+         <li>A file may be deleted after a right click on a file symbol and selecting
+             &lsquo;delete&rsquo;. If the deleted file is in an open tab, the tab is
+             is not closed but goes into &lsquo;Save as&rsquo; mode.</li>
+         <li>A folder may be as well deleted after a right click on a folder symbol but
+             a folder is protected from deletion if it is not empty. The exception is, if
+             present, the separate folder for executable files or its subfolders. This may
+             be deleted for a completely renewed compilation</li>
+         <li>A new folder may be created after a right click on a folder symbol and selecting
+             &lsquo;Create new folder&rsquo;.</li>
+         <li>Changes to the project's file structure made from within the program should be
+             updated in the file view (no guarantee). Changes made from outside the program
+             would be updated &lsquo;manually&rsquo; by clicking the &lsquo;refresh&rsquo;
+             symbol.</li>
        </ul>
+   </div>
    </body>
 </html>
