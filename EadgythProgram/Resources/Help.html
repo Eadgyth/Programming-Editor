@@ -97,18 +97,19 @@
       
       <h4 id="Retrieve">Retrieving projects</h4>
       <ul>
-         <li>When a file is opened that is part of the project that was active when
-             the program was quit the last time this project is directly set active
-             if no other project is active already. The settings can be viewed in the 
-             settings window (&lsquo;Project&rsquo; >  &lsquo;Project settings&rsquo;).</li>
-         <li>If &lsquo;Save settings in 'eadconfig' file&rsquo; is selected the configuration
-             of the project is stored in the project folder. What does that do? <br>
+         <li>When a file of a type of supported project types is opened or newly saved it is tried
+             to find and set active the project that was active when the program was closed the last
+             time. Retrieving a previous project happens if no other project is active already and
+             if the opened or saved file is part of that project.</li>
+         <li>If &lsquo;Save settings in 'eadconfig' file&rsquo; is selected in the settings window
+             the configuration of the project is stored in the project folder. What does that do? <br>
              1) If a file of a project marked in this way is opened (or one
              is saved to that project) the settings are loaded and the option
              &lsquo;Project&rsquo; > &lsquo;Change project&rsquo; can be used to change
              to that project.<br>
              2) A marked project is directly set active if a file of that project is
-             opened and no other project is active already.</li>
+             opened and no other project is active even though it is not necessarily the last active
+             project when the program was closed.</li>
       </ul>
 
       <h4 id="JavaProject">Testing Java code and packing a jar file</h4>
