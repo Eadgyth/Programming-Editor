@@ -31,13 +31,13 @@ public class EditMenu {
    private final JMenuItem undo         = new JMenuItem("Undo", IconFiles.undoIcon);
    private final JMenuItem redo         = new JMenuItem("Redo", IconFiles.redoIcon);
    private final JMenuItem selectAll    = new JMenuItem("Select all");
-   private final JMenuItem cut          = new JMenuItem("Cut");
-   private final JMenuItem copy         = new JMenuItem("Copy");
-   private final JMenuItem paste        = new JMenuItem("Paste");
-   private final JMenuItem indent       = new JMenuItem("Indent selection more ",
-                                          IconFiles.indentIcon);
-   private final JMenuItem outdent      = new JMenuItem("Indent selection less",
-                                          IconFiles.outdentIcon);
+   private final JMenuItem cut          = new JMenuItem("Cut", IconFiles.cutIcon);
+   private final JMenuItem copy         = new JMenuItem("Copy", IconFiles.copyIcon);
+   private final JMenuItem paste        = new JMenuItem("Paste", IconFiles.pasteIcon);
+   private final JMenuItem indent
+          = new JMenuItem("Indent selection more ",IconFiles.indentIcon);
+   private final JMenuItem outdent
+         = new JMenuItem("Indent selection less", IconFiles.outdentIcon);
    private final JMenuItem changeIndent = new JMenuItem("Indent/outdent length");
    private final JMenuItem clearSpaces  = new JMenuItem("Clear spaces");
    private final JMenu     language     = new JMenu("Language in unnamed tabs");
@@ -82,8 +82,6 @@ public class EditMenu {
    }
 
    private void assembleMenu() {
-      prefs.readPrefs();
-
       menu.add(undo);
       menu.add(redo);
       menu.addSeparator();
@@ -97,6 +95,7 @@ public class EditMenu {
       menu.add(changeIndent);
       menu.add(clearSpaces);
       menu.addSeparator();
+      prefs.readPrefs();
       for (int i = 0; i < selectLanguage.length; i++) {
          selectLanguage[i] = new JCheckBoxMenuItem(LANGUAGES[i]);
          if (prefs.getProperty("language").equals(

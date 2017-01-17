@@ -29,9 +29,15 @@ public class IconFiles {
    public final static ImageIcon closeIcon
          = new ImageIcon(TANGO_DIR + "document-close.png");
    public final static ImageIcon undoIcon
-         = new ImageIcon(TANGO_DIR + "edit-undo.png" );
+         = new ImageIcon(TANGO_DIR + "edit-undo.png");
    public final static ImageIcon redoIcon
-         = new ImageIcon(TANGO_DIR + "edit-redo.png" );
+         = new ImageIcon(TANGO_DIR + "edit-redo.png");
+   public final static ImageIcon cutIcon
+         = new ImageIcon(TANGO_DIR + "edit-cut.png");
+   public final static ImageIcon copyIcon
+         = new ImageIcon(TANGO_DIR + "edit-copy.png");
+   public final static ImageIcon pasteIcon
+         = new ImageIcon(TANGO_DIR + "edit-paste.png");
    public final static ImageIcon indentIcon
          = new ImageIcon(TANGO_DIR + "format-indent-more.png");
    public final static ImageIcon outdentIcon

@@ -22,6 +22,9 @@ public class Toolbar {
    private final JButton saveBt    = new JButton(IconFiles.saveIcon);
    private final JButton undoBt    = new JButton(IconFiles.undoIcon);
    private final JButton redoBt    = new JButton(IconFiles.redoIcon);
+   private final JButton cutBt     = new JButton(IconFiles.cutIcon);
+   private final JButton copyBt    = new JButton(IconFiles.copyIcon);
+   private final JButton pasteBt   = new JButton(IconFiles.pasteIcon);
    private final JButton indentBt  = new JButton(IconFiles.indentIcon);
    private final JButton outdentBt = new JButton(IconFiles.outdentIcon); 
    private final JButton compileBt = new JButton(IconFiles.compileIcon);
@@ -66,6 +69,9 @@ public class Toolbar {
    public void registerEdit(Edit edit) {
       undoBt.addActionListener(e -> edit.undo());
       redoBt.addActionListener(e -> edit.redo());
+      cutBt.addActionListener(e -> edit.cut());
+      copyBt.addActionListener(e -> edit.setClipboard());
+      pasteBt.addActionListener(e -> edit.pasteText());
       indentBt.addActionListener(e -> edit.indentSelection());   
       outdentBt.addActionListener(e -> edit.outdentSelection());
    }
@@ -88,24 +94,25 @@ public class Toolbar {
       toolbar.setOpaque(false);
       toolbar.setBorder(null);
       toolbar.setFloatable(false);
-      
       enableProjBts(false, false);
-
       JButton[] bts = new JButton[] {
-         openBt, saveBt, undoBt, redoBt, indentBt,
-         outdentBt, compileBt, runBt
+         openBt, saveBt,
+         undoBt, redoBt, cutBt, copyBt, pasteBt,
+         indentBt, outdentBt,
+         compileBt, runBt
       };
                           
       String[] toolTips = new String[] {
          "Open file", "Save selected file",
-         "Undo", "Redo", "Indent selection more",
-         "Indent selection less",
-         "Save selected file and compile project", "Run project"
+         "Undo", "Redo", "Cut selection", "Copy selection",
+         "Paste",
+         "Indent selection more", "Indent selection less",
+         "Save open files and compile project", "Run project"
       };
       
       for (int i = 0; i < bts.length; i++) {
          toolbar.add(bts[i]);
-         if (i == 5) {
+         if (i == 1 || i == 8) {
             toolbar.addSeparator();
          }
          bts[i].setBorder(new EmptyBorder(5, 5, 5, 5));
