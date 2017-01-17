@@ -31,7 +31,7 @@ import eg.utils.FileUtils;
  */
 public class ProcessStarter {
 
-   private final ConsolePanel cw;
+   private final ConsolePanel consPnl;
 
    private String workingDir = System.getProperty("user.home");
    private String workingDirTemp = workingDir;
@@ -45,16 +45,14 @@ public class ProcessStarter {
    private Runnable kill;
 
    /**
-    * @param cw  the reference to the ConsolePanel Object in whose
-    * text area a prosess writes to or reads from and which provides
-    * buttons to which actions events are added
+    * @param consPnl  the reference to the {@link ConsolePanel}
     */
-   public ProcessStarter(ConsolePanel cw) {
-      this.cw = cw;
-      cw.setCmdAct(e -> startNewCmd());
-      cw.runAct(e -> startPreviousCmd());
-      cw.runEadAct(e -> runEadgyth());
-      cw.stopAct(e -> endProcess());
+   public ProcessStarter(ConsolePanel consPnl) {
+      this.consPnl = consPnl;
+      consPnl.setCmdAct(e -> startNewCmd());
+      consPnl.runAct(e -> startPreviousCmd());
+      consPnl.runEadAct(e -> runEadgyth());
+      consPnl.stopAct(e -> endProcess());
    }
 
    /**
@@ -83,12 +81,12 @@ public class ProcessStarter {
       }
       List<String> cmdList = Arrays.asList(cmd.split(" "));
       display = "<<Run: " + cmd + ">>\n";
-      cw.setText(display);
+      consPnl.setText(display);
       caretPos = display.length();
-      cw.setActive(true);
+      consPnl.setActive(true);
       isActive = true;
-      cw.enableRunBt(false);
-      cw.focus();
+      consPnl.enableRunBt(false);
+      consPnl.focus();
       EventQueue.invokeLater(() -> {
          try {
             ProcessBuilder pb
@@ -101,10 +99,9 @@ public class ProcessStarter {
             correctCaret();
          }
          catch(IOException e) {
-            cw.appendText(
+            consPnl.appendText(
                     "<<Error: cannot find " + cmd 
                   + " in the directory " + workingDir + ">>\n");
-            FileUtils.log(e);
          }
       });
    }
@@ -133,19 +130,19 @@ public class ProcessStarter {
          public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
             if (key == KeyEvent.VK_ENTER) {
-               String output = cw.getText().substring(caretPos);
+               String output = consPnl.getText().substring(caretPos);
                out.println(output);
                out.flush();                
             }
          }
          @Override
          public void keyReleased(KeyEvent e) {
-            if (cw.getText().length() < caretPos) {
-               cw.setText(display);
+            if (consPnl.getText().length() < caretPos) {
+               consPnl.setText(display);
             }
          }
       };
-      cw.addKeyListen(keyListener);
+      consPnl.addKeyListen(keyListener);
    }
 
    private void correctCaret() {
@@ -155,11 +152,11 @@ public class ProcessStarter {
          }
          if (e.getDot() < caretPos) {
             EventQueue.invokeLater(() -> {
-               cw.setCaret(cw.getText().length()); // cannot be caretPos
+               consPnl.setCaret(consPnl.getText().length()); // cannot be caretPos
             });
          }
       };
-      cw.addCaretListen(caretListener);
+      consPnl.addCaretListen(caretListener);
    }
 
    /**
@@ -174,10 +171,10 @@ public class ProcessStarter {
       if (cmd != null && cmd.length() > 0) {
          startProcess(cmd);
          previousCmd = cmd;
-         cw.enableRunBt(false);
+         consPnl.enableRunBt(false);
       }
       else {
-         cw.enableRunBt(false);
+         consPnl.enableRunBt(false);
       }
    }
 
@@ -219,44 +216,44 @@ public class ProcessStarter {
             char c;  
             while ((cInt = reader.read()) != -1) {
                 c = (char) cInt;
-                cw.appendText(String.valueOf(c));
-                display = cw.getText();
+                consPnl.appendText(String.valueOf(c));
+                display = consPnl.getText();
                 caretPos = display.length();
-                cw.setCaret(caretPos);
+                consPnl.setCaret(caretPos);
             }
             int exitVal = -1;    
             exitVal = process.waitFor();
             if (exitVal == 0) {
-               cw.appendText(
+               consPnl.appendText(
                      "\n<<Process ended normally (exit value = "
                      + exitVal + ")>>\n");
             }
             else {
                if (apparentExitVal == -1) {
-                  cw.appendText(
+                  consPnl.appendText(
                         "\n<<Process aborted>>\n");
                }
                else {
-                  cw.appendText(
+                  consPnl.appendText(
                         "\n<<Process ended with error (exit value = "
                         + exitVal + ")>>\n"); 
                }
             }
          }
          catch (IOException | InterruptedException e) {
-            cw.appendText("<<" + e.getMessage() + ">>\n");
-            e.printStackTrace();
+            consPnl.appendText("<<" + e.getMessage() + ">>\n");
+            FileUtils.logStack(e);
          }
          finally {
-            cw.setCaret(cw.getText().length());
+            consPnl.setCaret(consPnl.getText().length());
             process = null;
             if (previousCmd.length() > 0) {
-               cw.enableRunBt(true);
+               consPnl.enableRunBt(true);
             }
-            cw.setActive(false);
+            consPnl.setActive(false);
             isActive = false;
             /*
-             * dir may have been changed to run an Eadgyth */
+             * dir may have been changed to run Eadgyth */
             if (!workingDirTemp.equals(workingDir)) {
                workingDir = workingDirTemp;
             }
@@ -265,7 +262,7 @@ public class ProcessStarter {
                reader.close();
             }
             catch (IOException e) {
-               e.printStackTrace();
+               FileUtils.logStack(e);
             }
          }
          return null;

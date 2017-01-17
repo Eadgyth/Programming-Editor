@@ -15,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
 //--Eadgyth--//
+import eg.Constants;
 import eg.ui.IconFiles;
 
 /**
@@ -30,6 +31,8 @@ class FontSettingWin {
    private final static String[] FONT_SIZES = {
       "10", "11", "12", "13", "14", "15", "16"
    };
+   
+   private static Constants c;
 
    private final JFrame frame         = new JFrame("Font");
    private final JComboBox<String> selectFont
@@ -88,12 +91,12 @@ class FontSettingWin {
    }
 
    private JPanel fontPnl() {
-      selectFont.setSelectedItem(prefs.getProperty("font"));
+      selectFont.setSelectedItem(prefs.getProperty(c.FONT_PREFS));
       return comboBoxPnl(selectFont, "Font:   ");     
    }
 
    private JPanel sizePnl() {
-      selectSize.setSelectedItem(prefs.getProperty("fontSize"));
+      selectSize.setSelectedItem(prefs.getProperty(c.FONT_SIZE_PREFS));
       return comboBoxPnl(selectSize, "Size:   ");     
    }
 

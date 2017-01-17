@@ -24,13 +24,12 @@ public class Constants {
     public final static Font SANSSERIF_BOLD_12  = new Font("SansSerif", Font.BOLD, 12);
     public final static Font VERDANA_PLAIN_11 = new Font("Verdana", Font.PLAIN, 11);
 
-    // look and feel
-    public final static LookAndFeel CURR_LAF = UIManager.getLookAndFeel();
-    public final static String CURR_LAF_STR = CURR_LAF.getName();
-
     // strings
     public final static String F_SEP = File.separator;
     public final static String SYS_LINE_SEP = System.lineSeparator();
     public final static String SHOW = "show";
     public final static String HIDE = "hide";
+    public final static String LINE_NUM_PREFS = "lineNumbers";
+    public final static String FONT_PREFS = "font";
+    public final static String FONT_SIZE_PREFS = "fontSize";
 }

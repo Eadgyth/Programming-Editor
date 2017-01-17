@@ -101,7 +101,7 @@ class ViewSettingsWin {
    }
    
    private JPanel setLineNumberPanel() {      
-      if (Constants.SHOW.equals(prefs.getProperty("lineNumbers"))) {
+      if (Constants.SHOW.equals(prefs.getProperty(Constants.LINE_NUM_PREFS))) {
          checkLineNumbers.setSelected(true);
       }
       else {

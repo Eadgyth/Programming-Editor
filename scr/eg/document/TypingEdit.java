@@ -52,7 +52,7 @@ class TypingEdit {
 
       doc.addDocumentListener(docListen);
       doc.addUndoableEditListener(undomanager);
-      undomanager.setLimit(1000);
+      //undomanager.setLimit(1000);
 
       col = new Coloring(doc, normalSet);
       rowNum = new RowNumbers(editArea.lineArea(), editArea.scrolledArea());
@@ -97,7 +97,7 @@ class TypingEdit {
          in = doc.getText(0, doc.getLength());
       }
       catch (BadLocationException e) {
-         FileUtils.log(e);
+         FileUtils.logStack(e);
       }
       return in;
    }
@@ -133,7 +133,7 @@ class TypingEdit {
          }
       }
       catch (CannotUndoException e) {
-         FileUtils.log(e);
+         FileUtils.logStack(e);
       }
    }
 
@@ -147,7 +147,7 @@ class TypingEdit {
          }
       }
       catch (CannotRedoException e) {
-         FileUtils.log(e);
+         FileUtils.logStack(e);
       }
    }
 

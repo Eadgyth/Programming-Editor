@@ -173,14 +173,14 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    //
-   //--private--
+   //--private--//
    //
 
    private void findSavedProject(String path) {
       String root;
       Preferences props = null;
       //
-      // firstly see if there is a config file
+      // firstly look if there is a eadconfig file...
       root = findRootByFile(path, CONFIG_FILE);
       if (root.length() > 0) {
          props = CONFIG;
@@ -188,7 +188,8 @@ public abstract class ProjectConfig implements Configurable {
          setWin.setSaveConfigSelected(true);
       }
       //
-      // if not successful see if the dir includes the project root in prefs
+      // ... if not successful look if the dir includes the project root
+      // stored in prefs
       else {
          props = PREFS;
          props.readPrefs();
@@ -197,14 +198,14 @@ public abstract class ProjectConfig implements Configurable {
       }
          
       if (root.length() > 0) {        
-         configProjectFromFile(root, props);
+         configProjectByProps(root, props);
       }
    }
    
    /**
-    * Tries to find the project root in the specifies path by
+    * Tries to find the project root in the specified path by
     * looking for an existing file that is a child of this root.
-    * The param file may be a file or itself a path
+    * 'file' may be a file or itself a (relative) path
     */
    private String findRootByFile(String path, String file) {
       File searched = new File(path);
@@ -252,7 +253,7 @@ public abstract class ProjectConfig implements Configurable {
       return searchedStr;     
    }
    
-   private void configProjectFromFile(String previousRoot, Preferences props) {
+   private void configProjectByProps(String previousRoot, Preferences props) {
       mainFile = props.getProperty("recentMain");
       setWin.displayFile(mainFile);
       

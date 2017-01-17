@@ -42,11 +42,9 @@ import eg.utils.JOptions;
 import eg.utils.FileUtils;
 
 /**
- * The display the project's file system in a {@code JTree}
+ * The display of a project's file system in a {@code JTree}. 
  */
 public class FileTree extends Observable {
-   
-   private static final String F_SEP = File.separator;
 
    /*
     * The panel that contains the tree and the toobar */
@@ -67,6 +65,8 @@ public class FileTree extends Observable {
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
    private final PopupMenu popupDir  = new PopupMenu(PopupMenu.FOLDER_OPT);
    
+   private static Constants c;
+   
    private JTree tree = null;
    private DefaultTreeModel model;
    private DefaultMutableTreeNode root;
@@ -85,7 +85,7 @@ public class FileTree extends Observable {
    
    /**
     * Returns the reference to this panel that shows the file tree
-    * and the toolbar
+    * and this toolbar
     * @return  the {@code JPanel} that shows the file tree and the
     * the toolbar
     */
@@ -152,7 +152,7 @@ public class FileTree extends Observable {
       root = new DefaultMutableTreeNode("root", true);
       model = new DefaultTreeModel(root);
       getFiles(root, new File(path));
-      initTree(); // includes creating a new tree object
+      initTree(); // includes creating a new JTree object
       holdTreePnl.add(tree);
       fileTreePnl.repaint();
       fileTreePnl.revalidate();
@@ -279,8 +279,8 @@ public class FileTree extends Observable {
    }
    
    private boolean isInDeletableDir(File file) {
-      return file.toString().endsWith(F_SEP + deletableDir)
-            || file.toString().contains(F_SEP + deletableDir + F_SEP);
+      return file.toString().endsWith(c.F_SEP + deletableDir)
+            || file.toString().contains(c.F_SEP + deletableDir + c.F_SEP);
    }      
    
    private String deleteMessage(File f) {

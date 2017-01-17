@@ -10,7 +10,6 @@ import java.awt.EventQueue;
 //--Eadgyth--//
 import eg.ui.MainWin;
 import eg.ui.Toolbar;
-
 import eg.ui.filetree.FileTree;
 import eg.ui.menu.Menu;
 
@@ -36,16 +35,17 @@ import eg.utils.JOptions;
 public class CurrentProject {
    
    private final static String NO_FILE_IN_TAB_MESSAGE
-         = "A project can be set after an opened file or"
-         + " a newly saved file is in the selected tab";
+         = "A project can be set after opening a file or"
+         + " saving a new file";
    
    private final static String IS_IN_PROJ_MESSAGE 
          = "The selected file belongs to the"
          + " currently active project";
          
    private final static String WRONG_TYPE_MESSAGE
-         = "A project cannot be created for this file type";
+         = "A project is not defined for this file type";
 
+   private final Preferences prefs = new Preferences();
    private final SelectedProject selProj;
    private final MainWin mw;
    private final FileTree fileTree;
@@ -97,7 +97,7 @@ public class CurrentProject {
 
    /**
     * Tries to assign to this current project a project which a configuration
-    * exists for in a local 'config' file or in the program's 'prefs' file.
+    * exists for in a local 'eadconfig' file or in the program's 'prefs' file.
     * <p>
     * Assignment of the project to this current project (setting the project
     * active) will happen only if no other project was assigned before.
@@ -108,7 +108,7 @@ public class CurrentProject {
       if (isProjectSet() && proj.isProjectInPath(currDoc.dir())) {
          return;
       }
-      ProjectActions prToFind = selProj.getProject(currExt);
+      ProjectActions prToFind = selProj.createProject(currExt);
       boolean isFound
             =  prToFind != null
             && prToFind.retrieveProject(currDoc.dir());
@@ -120,7 +120,7 @@ public class CurrentProject {
             updateProjectSetting(proj);
          }
          else {
-            if (searchRecent(currDoc.dir()) == null) {
+            if (searchRecent() == null) {
                prToFind.addOkAction(e -> configureProject(prToFind));
                recent.add(prToFind);
                if (recent.size() == 2) {
@@ -155,7 +155,7 @@ public class CurrentProject {
             proj.makeSetWinVisible(true);
          }      
          else {
-            ProjectActions inList = searchRecent(currDoc.dir());
+            ProjectActions inList = searchRecent();
             if (inList != null) {
                if (changeProject(inList)) {
                   proj.makeSetWinVisible(true);
@@ -177,7 +177,7 @@ public class CurrentProject {
     * project it is asked to set up a new project.
     */
    public void changeProject() {
-      ProjectActions inList = searchRecent(currDoc.dir());
+      ProjectActions inList = searchRecent();
       if (inList == proj) {
          JOptions.infoMessage(IS_IN_PROJ_MESSAGE);
       }
@@ -265,12 +265,11 @@ public class CurrentProject {
    //
    
    private void newProject() {
-      
-      ProjectActions projNew = selProj.getProject(currExt);
+      ProjectActions projNew = selProj.createProject(currExt);
       if (projNew == null) {
          JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
       }
-      else {         
+      else {    
          int result = 0;
          if (isProjectSet()) {
             result = JOptions.confirmYesNo("Set new project ?");
@@ -296,10 +295,10 @@ public class CurrentProject {
       }
    }
 
-   private ProjectActions searchRecent(String dir) {
+   private ProjectActions searchRecent() {
       ProjectActions old = null;
       for (ProjectActions p : recent) {
-         if (p.isProjectInPath(dir)) {
+         if (p.isProjectInPath(currDoc.dir())) {
             old = p;
          }
       }
@@ -319,21 +318,20 @@ public class CurrentProject {
    private void updateProjectSetting(ProjectActions projToSet) {
       mw.showProjectInfo(projToSet.getProjectName());
       projToSet.applyProject();
-      enableActions();
+      enableActions(projToSet.getClass().getSimpleName());
    }
    
-   private void enableActions() {
-      switch (currExt) {
-         case ".java":
+   private void enableActions(String className) {
+      switch (className) {
+         case "JavaActions":
             enableActions(true, true, true);
             menu.getProjectMenu().setBuildKind("Create jar");
             sourceExt = ".java";
             break;
-         case ".html":
+         case "HtmlActions":
             enableActions(false, true, false);
             break;
-         case ".pl":
-         case ".pm":
+         case "PerlActions":
             enableActions(false, true, false);
             break;
       }

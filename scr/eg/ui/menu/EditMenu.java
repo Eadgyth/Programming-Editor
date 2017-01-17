@@ -31,6 +31,7 @@ public class EditMenu {
    private final JMenuItem undo         = new JMenuItem("Undo", IconFiles.undoIcon);
    private final JMenuItem redo         = new JMenuItem("Redo", IconFiles.redoIcon);
    private final JMenuItem selectAll    = new JMenuItem("Select all");
+   private final JMenuItem cut          = new JMenuItem("Cut");
    private final JMenuItem copy         = new JMenuItem("Copy");
    private final JMenuItem paste        = new JMenuItem("Paste");
    private final JMenuItem indent       = new JMenuItem("Indent selection more ",
@@ -39,7 +40,7 @@ public class EditMenu {
                                           IconFiles.outdentIcon);
    private final JMenuItem changeIndent = new JMenuItem("Indent/outdent length");
    private final JMenuItem clearSpaces  = new JMenuItem("Clear spaces");
-   private final JMenu     language     = new JMenu("Language in new tabs");
+   private final JMenu     language     = new JMenu("Language in unnamed tabs");
    private final JCheckBoxMenuItem[] selectLanguage
                                         = new JCheckBoxMenuItem[LANGUAGES.length];
 
@@ -56,6 +57,7 @@ public class EditMenu {
       undo.addActionListener(e -> edit.undo());
       redo.addActionListener(e -> edit.redo());
       selectAll.addActionListener(e -> edit.selectAll());
+      cut.addActionListener(e -> edit.cut());
       copy.addActionListener(e -> edit.setClipboard());  
       paste.addActionListener(e -> edit.pasteText());   
       indent.addActionListener(e -> edit.indentSelection());
@@ -85,9 +87,10 @@ public class EditMenu {
       menu.add(undo);
       menu.add(redo);
       menu.addSeparator();
-      menu.add(selectAll);
+      menu.add(cut);
       menu.add(copy);
       menu.add(paste );
+      menu.add(selectAll);
       menu.addSeparator();
       menu.add(indent);
       menu.add(outdent);
@@ -108,6 +111,8 @@ public class EditMenu {
    }
 
    private void shortCuts() {
+      cut.setAccelerator(KeyStroke.getKeyStroke('X',
+            Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
       copy.setAccelerator(KeyStroke.getKeyStroke('C',
             Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
       paste.setAccelerator(KeyStroke.getKeyStroke('V',

@@ -77,7 +77,7 @@ class RowNumbers {
                Integer.toString(nRows) + "\n", lineSet);
       }
       catch(BadLocationException e) {
-         FileUtils.log(e);
+         FileUtils.logStack(e);
       }
       revalidateArea(nRows);
    }
@@ -87,7 +87,7 @@ class RowNumbers {
          lineDoc.remove(0, lineDoc.getLength());
       }
       catch (BadLocationException e) {
-         FileUtils.log(e);
+         FileUtils.logStack(e);
       }
    }
 

@@ -30,17 +30,17 @@ public class Compile {
    private final static Preferences PREFS = new Preferences();
    private static String jdkPath = null;
    
-   private final ConsolePanel cp;
+   private final ConsolePanel consPnl;
    
    private boolean success = false;
    private ArrayList<String> errorInfo;
    
    /**
-    * @param cp  the reference to {@link ConsolePanel} in whose
-    * text area messages are displeayed
+    * @param consPnl  the reference to {@link ConsolePanel} in whose
+    * text area messages are displayed
     */
-   public Compile(ConsolePanel cp) {
-      this.cp = cp;
+   public Compile(ConsolePanel consPnl) {
+      this.consPnl = consPnl;
    }
    
    /**
@@ -73,7 +73,7 @@ public class Compile {
          if (jdkPath == null) {
             errorInfo.add(
                   "The filepath of the JDK is not defined");
-            cp.appendText(
+            consPnl.appendText(
                   "ERROR:\nThe file path of the JDK is not defined"
                   + " in'settings.properties'.");
             return;
@@ -105,17 +105,17 @@ public class Compile {
    
    private void output(DiagnosticCollector<JavaFileObject> diagnostics) {
       if (success) {
-         cp.appendText("Compilation successful");
+         consPnl.appendText("Compilation successful");
       }
       else {
          for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
-            cp.appendText(diagnostic.getKind().toString() + ":\n");
-            cp.appendText(diagnostic.getCode() + ": ");
-            cp.appendText(diagnostic.getMessage( null ) + "\n");
-            cp.appendText("at line: " + diagnostic.getLineNumber() + "\n");
-            cp.appendText("at column: " + diagnostic.getColumnNumber() + "\n");
+            consPnl.appendText(diagnostic.getKind().toString() + ":\n");
+            consPnl.appendText(diagnostic.getCode() + ": ");
+            consPnl.appendText(diagnostic.getMessage( null ) + "\n");
+            consPnl.appendText("at line: " + diagnostic.getLineNumber() + "\n");
+            consPnl.appendText("at column: " + diagnostic.getColumnNumber() + "\n");
             if (diagnostic.getSource() != null) { // can be null!
-               cp.appendText(diagnostic.getSource().toString() + "\n");
+               consPnl.appendText(diagnostic.getSource().toString() + "\n");
                String file = new File(diagnostic.getSource().toString()).getName();
                file = file.substring(0, file.length() - 1);
                errorInfo.add("First listed error in " + file + ", line " 
@@ -123,9 +123,9 @@ public class Compile {
             }
             String devider = "_";
             for (int i = 0; i <= 90; i++) {
-               cp.appendText(devider);
+               consPnl.appendText(devider);
             }
-            cp.appendText("\n");
+            consPnl.appendText("\n");
          }
       }
    }

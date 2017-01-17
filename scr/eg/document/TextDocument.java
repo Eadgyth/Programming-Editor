@@ -20,6 +20,7 @@ import eg.Languages;
 import eg.Constants;
 
 import eg.utils.JOptions;
+import eg.utils.FileUtils;
 import eg.ui.EditArea;
 
 /**
@@ -29,7 +30,6 @@ public class TextDocument {
    private final static Preferences PREFS = new Preferences();
 
    private final JTextPane textArea;
-   private final EditArea editArea;
    private final TypingEdit type;
 
    private String filename = "";
@@ -38,8 +38,11 @@ public class TextDocument {
    private String language;
    private String content;
 
+   /**
+    * Creates a TextDocument
+    * @param editArea  the reference to the {@link EditArea}
+    */
    public TextDocument(EditArea editArea) {
-      this.editArea = editArea;
       this.textArea = editArea.textArea();
       type = new TypingEdit(editArea);
       PREFS.readPrefs();
@@ -102,7 +105,7 @@ public class TextDocument {
          }
       }
       catch(IOException e) {
-         e.printStackTrace();
+         FileUtils.logStack(e);
       }
    }
 
@@ -126,12 +129,12 @@ public class TextDocument {
    }
    
    /**
-    * If this language is a computer language, i.e. not plain text
+    * If this language is a computer language
     * @return  if this language is a computer language, i.e. not
     * set to plain text
     */
    public boolean isComputerLanguage() {
-      return !Languages.PLAIN_TEXT.toString().equals(language);
+      return !"Plain text".equals(language);
    }
 
    /**
@@ -373,7 +376,6 @@ public class TextDocument {
        * set text attributes later to speed up placing larger pieces of text */
       Document blank = new DefaultStyledDocument();
       textArea.setDocument(blank);
-
       try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
          String line;
          while ((line = br.readLine()) != null) {
@@ -383,7 +385,7 @@ public class TextDocument {
       catch (IOException e) {
          e.printStackTrace();
       }   
-      editArea.textArea().setDocument(type.doc()); // doc is the StyledDocument
+      textArea.setDocument(type.doc()); // doc is the StyledDocument
       if (textArea.getText().endsWith("\n")) {
          removeStr(type.doc().getLength() - 1, 1);
       }

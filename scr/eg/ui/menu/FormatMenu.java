@@ -27,12 +27,10 @@ public class FormatMenu {
    }
    
    public void registerAct(FontSetter fontSet, ViewSettings viewSet) {
-      font.addActionListener(e -> fontSet.makeFontSetWinVisible(true));
-      wordWrap.addActionListener(e -> viewSet.enableWordWrap());
-   }
-
-   public boolean isWordWrapSelected() {
-      return wordWrap.getState();
+      font.addActionListener(e ->
+            fontSet.makeFontSetWinVisible(true));
+      wordWrap.addActionListener(e ->
+            viewSet.changeWordWrap(wordWrap.getState()));
    }
    
    public void selectWordWrap(boolean select) {
@@ -45,7 +43,6 @@ public class FormatMenu {
    
    private void assembleMenu() {
       prefs.readPrefs();
-
       menu.add(font);
       menu.add(wordWrap);
       if ("enabled".equals(prefs.getProperty("wordWrap"))) {

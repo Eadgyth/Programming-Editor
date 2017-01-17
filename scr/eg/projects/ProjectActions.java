@@ -7,7 +7,7 @@ public interface ProjectActions extends Configurable {
    
    /**
     * Passes to interested objects the project's root directory or
-    * any other directories
+    * any other directories that are relevaant to the project
     */
    public void applyProject();
    
@@ -23,7 +23,7 @@ public interface ProjectActions extends Configurable {
    
    /**
     * Creates a build of a project, where it is not specified
-    * what this means
+    * what 'build' refers to
     */
    public void build();
 }

@@ -43,6 +43,16 @@ public class Edit {
    public void selectAll() {
       txtDoc.selectAll();
    }
+   
+   /**
+    * Cuts selected text
+    */
+   public void cut() {
+      int start = txtDoc.selectionStart();
+      int end = txtDoc.selectionEnd();
+      setClipboard();
+      txtDoc.removeStr(start, end - start);
+   }
 
    /**
     * Copies selected text to the system's clipboard
@@ -244,7 +254,7 @@ public class Edit {
          inClipboard = (String) content.getTransferData(DataFlavor.stringFlavor);
       }
       catch (UnsupportedFlavorException | IOException e) {
-         FileUtils.log(e);
+         FileUtils.logMessage(e);
       }
       return inClipboard;
    }

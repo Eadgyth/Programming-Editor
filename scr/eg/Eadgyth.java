@@ -100,11 +100,11 @@ public class Eadgyth {
               | IllegalAccessException 
               | InstantiationException 
               | UnsupportedLookAndFeelException e) {
-            FileUtils.log(e);
+            FileUtils.logMessage(e);
          }
       }
       int topTabInset = 0;
-      if ("Windows".equals(Constants.CURR_LAF_STR)) {
+      if ("Windows".equals(UIManager.getLookAndFeel().getName())) {
          topTabInset = -2;
       }
       uiManagerSettings(topTabInset);
@@ -118,7 +118,7 @@ public class Eadgyth {
       UIManager.put("SplitPaneDivider.border", new EmptyBorder(0, 0, 0, 0));
       UIManager.getDefaults().put("TabbedPane.contentBorderInsets",
                new Insets(topTabInset, 0, 0, 0));
-      if ("Metal".equals(Constants.CURR_LAF_STR)) {
+      if ("Metal".equals(UIManager.getLookAndFeel().getName())) {
          UIManager.put("TabbedPane.selected", 
                new javax.swing.plaf.ColorUIResource(Color.WHITE));
          UIManager.put("TabbedPane.contentAreaColor",

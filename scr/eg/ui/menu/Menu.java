@@ -11,6 +11,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.Box;
+import javax.swing.UIManager;
 
 /**
  * The main menu
@@ -63,7 +64,7 @@ public class Menu {
 
    private void assembleMenu() {
       int strutSize = 0;
-      if ("Windows".equals(eg.Constants.CURR_LAF_STR)) {
+      if ("Windows".equals(UIManager.getLookAndFeel().getName())) {
          strutSize = 5;
       }
       menuMain.add(fileMenu.getMenu());

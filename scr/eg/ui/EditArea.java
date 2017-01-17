@@ -22,19 +22,26 @@ import eg.Constants;
 
 /**
  * The scolled text area which consist in the text area to edit
- * text, the area that displays the line numbers and the font
+ * text, the area that displays line numbers and the font.
+ * <p>
+ * This class can change its font and the font size, can show or hide
+ * the area that shows line numbers and can enable/disable wordwrap.
+ * <p>
+ * The default usage of the copy/paste keys is disabled.
  */
 public class EditArea {
 
    private final static Preferences PREFS = new Preferences();
-   private final JPanel scrolledArea = new JPanel(new BorderLayout());
+   private static Constants c;
 
+   private final JPanel scrolledArea = new JPanel(new BorderLayout());
    private final JTextPane textArea = new JTextPane();
    private final JTextPane lineArea = new JTextPane();
 
    private final JPanel disabledWordwrapArea
          = new JPanel(new BorderLayout());
-   private final JPanel enabledWordwrapArea = new JPanel();
+   private final JPanel enabledWordwrapArea
+         = new JPanel();
 
    private final JScrollPane scrollWrapArea = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -55,7 +62,7 @@ public class EditArea {
 
    public EditArea() {
       PREFS.readPrefs(); 
-      scrolledArea.setBorder(Constants.LOW_ETCHED);
+      scrolledArea.setBorder(c.LOW_ETCHED);
       initTextArea();
       initLineNumbersArea();
       initFont();
@@ -63,7 +70,7 @@ public class EditArea {
       initScrollSimpleArea();
       intitScrollWrapArea();
       boolean isLineNumbers =
-            Constants.SHOW.equals(PREFS.getProperty("lineNumbers"));
+            c.SHOW.equals(PREFS.getProperty(c.LINE_NUM_PREFS));
       if ("enabled".equals(PREFS.getProperty("wordWrap"))) {
          enableWordWrap();
       }
@@ -117,7 +124,7 @@ public class EditArea {
       Font fontNew = new Font(font, Font.PLAIN, fontSize);
       lineArea.setFont(fontNew);
       textArea.setFont(fontNew );
-      PREFS.storePrefs("fontSize", String.valueOf(fontSize));
+      PREFS.storePrefs(c.FONT_SIZE_PREFS, String.valueOf(fontSize));
    }
 
    /**
@@ -129,7 +136,7 @@ public class EditArea {
       Font fontNew = new Font(font, Font.PLAIN, fontSize);
       lineArea.setFont(fontNew);
       textArea.setFont(fontNew);
-      PREFS.storePrefs("font", font);
+      PREFS.storePrefs(c.FONT_PREFS, font);
    }
    
    /**
@@ -150,6 +157,7 @@ public class EditArea {
    
    /**
     * Hides the area that displays line numbers
+    * <p> Invoking this mathod also annules wordwrap
     */
    public void hideLineNumbers() {
       scrolledArea.remove(scrollLines);
@@ -165,7 +173,8 @@ public class EditArea {
    
    /**
     * Enables wordwrap.
-    * <p> Invoking this method also hides the area that displays
+    * <p>
+    * Invoking this method also hides the area that displays
     * line numbers
     */
    public void enableWordWrap() {
@@ -220,7 +229,7 @@ public class EditArea {
       scrollRowArea.setBorder(null);
       scrollRowArea.setViewportView(disabledWordwrapArea);
       scrollLines.setViewportView(lineArea);
-      scrollLines.setBorder(new MatteBorder(0, 0, 0, 1, Constants.BORDER_GRAY));
+      scrollLines.setBorder(new MatteBorder(0, 0, 0, 1, c.BORDER_GRAY));
       /*
        * link row number area scolling to text area scrolling */
       scrollLines.getVerticalScrollBar().setModel
@@ -235,8 +244,9 @@ public class EditArea {
       }
    }
 
-   /* Remove keys by binding the strokes to an invalid action name */
    private void removeCopyPasteKeys() {
+      KeyStroke ksCut = KeyStroke.getKeyStroke("control pressed X");
+      textArea.getInputMap().put(ksCut, "dummy");
       KeyStroke ksCopy = KeyStroke.getKeyStroke("control pressed C");
       textArea.getInputMap().put(ksCopy, "dummy");
       KeyStroke ksPaste = KeyStroke.getKeyStroke("control pressed V");

@@ -50,11 +50,12 @@ public class FileChooserOpen {
 
    private void setLaf() {
 
-      // disable new folder. Works when this object is created before FileSave 
+      // disable to create a new folder. Works when this object is created
+      // before FileChooserSave 
       UIManager.put("FileChooser.readOnly", Boolean.TRUE);
       chooser = new JFileChooser();
-      if ("Metal".equals(Constants.CURR_LAF_STR)) {       
-         chooser.setFileView(new FileView(){
+      if ("Metal".equals(UIManager.getLookAndFeel().getName())) {       
+         chooser.setFileView(new FileView() {
             @Override
             public Icon getIcon(File f) {
                return FileSystemView.getFileSystemView().getSystemIcon(f);

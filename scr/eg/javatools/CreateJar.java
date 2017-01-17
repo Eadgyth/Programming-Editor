@@ -3,6 +3,8 @@ package eg.javatools;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 
 import java.util.Collections;
 import java.util.ArrayList;
@@ -23,14 +25,14 @@ import eg.console.ConsolePanel;
 public class CreateJar {
 
    private static Constants c;
-   private final ConsolePanel console;
+   private final ConsolePanel consPnl;
    
    /**
-    * @param console  the reference to {@link ConsolePanel} in whose
+    * @param consPnl  the reference to {@link ConsolePanel} in whose
     * text area messages are displeayed
     */
-   public CreateJar(ConsolePanel console) {
-      this.console = console;
+   public CreateJar(ConsolePanel consPnl) {
+      this.consPnl = consPnl;
    }
 
    /**
@@ -44,22 +46,26 @@ public class CreateJar {
     * files. Can be the empty String but is not null
     * @param jarName  the name for the jar. If jarName is the empty
     * String the name of the main class is used
+    * @throws IOException  if not input can be read in
     */
    public void createJar(String root, String main, String packageName,
-         String classDir, String jarName) {      
+         String classDir, String jarName) throws IOException {      
       File manifest = new File(root + c.F_SEP + classDir
             + c.F_SEP + "manifest.txt");
       createManifest(manifest, main, packageName);
 
       ProcessBuilder pb = new ProcessBuilder(commandForJar(root, jarName, classDir));
       pb.directory(new File(root + c.F_SEP + classDir));
+      pb.redirectErrorStream(true);
       Process p = null;
-      try {
-         p = pb.start();
+      p = pb.start();
+      try (BufferedReader br = new BufferedReader(
+            new InputStreamReader(p.getInputStream()))) {
+         String ch;
+         while((ch = br.readLine()) != null) {
+            consPnl.appendText(ch + "\n");
+         }
       }
-      catch(IOException e) {
-         System.out.println(e.getMessage());
-      }     
    }
 
    private List<String> commandForJar(String path, String jarName, String classDir) {

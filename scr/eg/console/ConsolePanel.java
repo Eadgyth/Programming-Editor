@@ -65,7 +65,7 @@ public class ConsolePanel {
    }
 
    /**
-    * @return  this console panel that includes the scrolled text area
+    * @return  this JPanel that includes the scrolled text area
     * and the toolbar
     */
    public JPanel consolePnl() {
@@ -89,9 +89,9 @@ public class ConsolePanel {
    }
 
    /**
-    * Adds the specifies text to the text displayed in this text area
+    * Adds the specified text to the text displayed in this text area
     * @param text  the text that is added to the text in this text
-    * ara
+    * area
     */
    public void appendText(String text) {
       area.append(text);

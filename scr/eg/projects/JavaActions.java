@@ -1,6 +1,7 @@
 package eg.projects;
 
 import java.io.File;
+import java.io.IOException;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
@@ -8,6 +9,7 @@ import java.awt.event.ActionListener;
 //--Eadgyth--//
 import eg.Constants;
 import eg.utils.JOptions;
+import eg.utils.FileUtils;
 import eg.console.*;
 import eg.javatools.*;
 
@@ -138,23 +140,29 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       if (jarName.length() == 0) {
          jarName = getMainFile();
       }
-         
-      jar.createJar(getProjectPath(), getMainFile(),
-            getModuleName(), getExecDirName(), jarName);
       boolean existed = jarFileExists(jarName);
-      if (!existed) {
-         boolean exists = false;
-         while (!exists) {
-            try {
-               Thread.sleep(200);
+      try {
+         cw.setText("");
+         jar.createJar(getProjectPath(), getMainFile(),
+               getModuleName(), getExecDirName(), jarName);
+         if (!existed) {
+            boolean exists = false;
+            while (!exists) {
+               try {
+                  Thread.sleep(200);
+               }
+               catch (InterruptedException e) {
+               }
+               exists = jarFileExists(jarName);
             }
-            catch (InterruptedException e) {
-            }
-            exists = jarFileExists(jarName);
-         }      
-         fileTree.updateTree();
+            fileTree.updateTree();
+         }
+         cw.appendText("<<Saved jar file named " + jarName + ">>\n");
+         JOptions.infoMessage("Saved jar file named " + jarName);
       }
-      JOptions.infoMessage("Saved jar file named " + jarName);
+      catch (IOException e) {
+         FileUtils.logMessage(e);
+      }        
    }
 
    private boolean mainClassFileExists() {
