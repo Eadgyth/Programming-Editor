@@ -2,7 +2,7 @@
 A text editor written in Java that helps coding (in Java, Perl, HTML) and that is extensible
 by plugins which may be developed to perform specialized tasks with text files.
 <p>
-A further goal is a very simple but flexible setting of a project and usage of already
+A particular goal is a very simple but flexible setting of a project and usage of already
 configured projects.
 <p>
 REQUIREMENTS FOR TESTING <br>
@@ -28,24 +28,23 @@ have a graphical view in the main window.
 DOCUMENTATION <br>
 The javadoc of the program is found in this repository (Docs/Ead-JavaDoc).
 <p>
-LIMITATIONS <br>
-1) The Undo/redo is a place holder for a real undo/redo as it simply undoes/redoes single
-characters (pasted/deleted text is undone/redone as a whole though).
-<br>
-2) Running interactive programs that then require reading from and writing to the started process
+LIMITATIONS <br> 
+1) Running interactive programs that then require reading from and writing to the started process
 in the console panel are not guaranteed to work. Interactive programs in Java seem to
 work fine but, for example, a Perl script does not unless the autoflushing of STDOUT is enabled
-in the script.
+in the script itself.
 <br>
-3) The built in packing of a jar file bundles only .class files.
+2) The built in packing of a jar file bundles only .class files.
 <br>
 <p>
 PROBLEMS <br>
-4) The rendering of the GUI has gone wrong after the computer was in sleep mode when
-the system look and feel was selected.
+1) The undo/redo is under work. Some condition causes the prgram to hang when undo or redo is
+invoked.
 <br>
-5) There may be problems with the syntax coloring and with undo/rodo (program hanged under
-some condition).
+2) The rendering of the GUI has gone wrong after the computer was in sleep mode or inactive
+when the system look and feel was selected.
+<br>
+3) There may be problems with the syntax coloring
 <br>
 <p>
 CONTACT<br>
