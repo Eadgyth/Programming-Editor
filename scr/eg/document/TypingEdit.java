@@ -133,6 +133,11 @@ class TypingEdit {
       try {
          if (undomanager.canUndo()) {
             undomanager.undo();
+            if (isTextModify) {
+               EventQueue.invokeLater(() -> {
+                  colorAll();
+               });
+            }
          }
       }
       catch (CannotUndoException e) {
@@ -145,7 +150,9 @@ class TypingEdit {
          if (undomanager.canRedo()) {
             undomanager.redo();
             if (isTextModify) {
-               colorAll();
+               EventQueue.invokeLater(() -> {
+                  colorAll();
+               });
             }
          }
       }
@@ -247,13 +254,13 @@ class TypingEdit {
       
       @Override
       public boolean canRedo() {
-         commitCompound();
+         //commitCompound();
          return super.canRedo();
       }
 
       @Override
       public boolean canUndo() {
-         commitCompound();
+         //commitCompound();
          return super.canUndo();
       }
 
