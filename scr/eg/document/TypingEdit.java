@@ -13,6 +13,8 @@ import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 
 import javax.swing.undo.UndoManager;
+import javax.swing.undo.CompoundEdit;
+import javax.swing.undo.UndoableEdit;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.CannotRedoException;
 
@@ -44,6 +46,7 @@ class TypingEdit {
    private boolean isDocListen = true; 
    private boolean isTextModify = false;
    private boolean isIndent = false;
+   private String typed = "";
 
    TypingEdit(EditArea editArea) {
       doc = editArea.textArea().getStyledDocument();
@@ -52,7 +55,7 @@ class TypingEdit {
 
       doc.addDocumentListener(docListen);
       doc.addUndoableEditListener(undomanager);
-      //undomanager.setLimit(1000);
+      undomanager.setLimit(1000);
 
       col = new Coloring(doc, normalSet);
       rowNum = new RowNumbers(editArea.lineArea(), editArea.scrolledArea());
@@ -171,9 +174,10 @@ class TypingEdit {
       public void insertUpdate(DocumentEvent de) {
          if (isDocListen) {
             String in = getDocText();
+            int pos = de.getOffset();
+            typed = in.substring(pos, pos + 1);
             updateRowNumber(in);
             if (isTextModify) {
-               int pos = de.getOffset();
                insertTextModify(de, in, pos);
             }
          }
@@ -213,20 +217,77 @@ class TypingEdit {
       });
     }
    
+   
+   /**
+    * This class uses the code in the CompoundUndoManager of JSyntaxPane by
+    * Ayman Al-Sairafi.
+    * (https://github.com/aymanhs/jsyntaxpane/blob/master/src/main/java/
+    * jsyntaxpane/CompoundUndoManager.java).
+    * Using a time interval to separate merged edits is replaced by different
+    * characters (space, new line, brackets).
+    */
    class DocUndoManager extends UndoManager implements UndoableEditListener {
+     
+      CompoundEdit comp = null;
+
       @Override
       public void undoableEditHappened(UndoableEditEvent e) {
          if (!isDocListen) {
             return;
          }
-         /*
-          * Exclude changes of the style */
+         //
+         // Exclude changes of the style
          AbstractDocument.DefaultDocumentEvent event =
                (AbstractDocument.DefaultDocumentEvent) e.getEdit();
          if (event.getType().equals(DocumentEvent.EventType.CHANGE)) {
             return;
          }
-         addEdit(e.getEdit());
+         addAnEdit(e.getEdit());
+      }
+      
+      @Override
+      public boolean canRedo() {
+         commitCompound();
+         return super.canRedo();
+      }
+
+      @Override
+      public boolean canUndo() {
+         commitCompound();
+         return super.canUndo();
+      }
+
+      @Override
+      public void undo() {
+         commitCompound();
+         super.undo();
+      }
+
+      @Override
+      public void redo() {
+         commitCompound();
+         super.redo();
+      }
+      
+      private boolean addAnEdit(UndoableEdit anEdit) {
+         if (comp == null) {
+             comp = new CompoundEdit();
+         }
+         comp.addEdit(anEdit);
+         if (typed.matches("[\\s\\n({}]+")) {
+             comp.end();
+             super.addEdit(comp);
+             comp = null;
+         }
+         return true;
+      }
+      
+      private void commitCompound() {
+         if (comp != null) {
+            comp.end();
+            super.addEdit(comp);
+            comp = null;
+         }
       }
    }
 }
