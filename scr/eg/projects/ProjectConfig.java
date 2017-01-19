@@ -95,6 +95,7 @@ public abstract class ProjectConfig implements Configurable {
       PREFS.storePrefs("recentSourceDir", sourceDir);
       PREFS.storePrefs("recentExecDir", execDir);
       PREFS.storePrefs("recentBuildName", buildName);
+      PREFS.storePrefs("recentSuffix", suffix);
    }
    
    /**
@@ -177,11 +178,10 @@ public abstract class ProjectConfig implements Configurable {
    //
 
    private void findSavedProject(String path) {
-      String root;
       Preferences props = null;
       //
       // firstly look if there is a eadconfig file...
-      root = findRootByFile(path, CONFIG_FILE);
+      String root = findRootByFile(path, CONFIG_FILE);
       if (root.length() > 0) {
          props = CONFIG;
          props.readConfig(root);
@@ -196,8 +196,13 @@ public abstract class ProjectConfig implements Configurable {
          setWin.setSaveConfigSelected(false);
          root = findRootInPath(path, props);
       }
-         
-      if (root.length() > 0) {        
+      //
+      // if the project type conforms to the type in props file    
+      boolean isTypeCorrect
+            = suffix.equals(props.getProperty("recentSuffix"));
+      //
+      // read in props and set text fields in this SettingsWin  
+      if (isTypeCorrect && root.length() > 0) {        
          configProjectByProps(root, props);
       }
    }
@@ -316,6 +321,7 @@ public abstract class ProjectConfig implements Configurable {
             CONFIG.storeConfig("recentSourceDir", sourceDir, projectPath);
             CONFIG.storeConfig("recentExecDir", execDir, projectPath);
             CONFIG.storeConfig("recentBuildName", buildName, projectPath);
+            CONFIG.storeConfig("recentSuffix", suffix, projectPath);
          }
          else {
             File configFile = new File(projectPath + c.F_SEP + CONFIG_FILE);

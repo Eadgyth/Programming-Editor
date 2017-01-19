@@ -34,10 +34,9 @@ import java.util.List;
 import java.util.Enumeration;
 import java.util.Observable;
 
-//--Eadyth--//
+//--Eadgyth--//
 import eg.Constants;
 import eg.ui.IconFiles;
-
 import eg.utils.JOptions;
 import eg.utils.FileUtils;
 

@@ -31,6 +31,7 @@
                <li><a href="#Config">Configuring a project</a>
                <li><a href="#ChangeProjects">Changing between projects</a></li>
                <li><a href="#Retrieve">Retrieving projects</a>
+               <li><a href="#Language">Setting the language</a>
             </ul></li>
          <li><a href="#Console">Using the console</a></li>
          <li><a href="#Explorer">Using the project explorer</a></li>
@@ -40,10 +41,9 @@
 
       <!--Requirements--> 
       <h3 id="Requirements">Requirements</h3>
-      <p>The Java runtime environment must be version JRE 8 to run Eadgyth.</p>
       <p>For a programming project the computer is simply set up in the same way
          as if any text editor is used for coding. Presently, programming projects
-         can be set for Java and Perl.</p>
+         can be defined for Java and Perl.</p>
          
       <hr>
    
@@ -97,25 +97,42 @@
       
       <h4 id="Retrieve">Retrieving projects</h4>
       <ul>
-         <li>When a file of a type of supported project types is opened or newly saved it is tried
-             to find and set active the project that was active when the program was closed the last
-             time. Retrieving a previous project happens if no other project is active already and
-             if the opened or saved file is part of that project.</li>
-         <li>If &lsquo;Save settings in 'eadconfig' file&rsquo; is selected in the settings window
-             the configuration of the project is stored in the project folder. What does that do? <br>
-             1) If a file of a project marked in this way is opened (or one
-             is saved to that project) the settings are loaded and the option
-             &lsquo;Project&rsquo; > &lsquo;Change project&rsquo; can be used to change
-             to that project.<br>
-             2) A marked project is directly set active if a file of that project is
-             opened and no other project is active even though it is not necessarily the last active
-             project when the program was closed.</li>
+         <li>The project that was active when the program was closed the last time is retrieved
+             and set active when a file of that project is opened (or one is newly saved to
+             that project) and no other project is active. The extension of the file must
+             correspond with type of project (See <a href="#ProjectTypes">Types of projects</a>).
+             The extension may be different if and only if the language is set correspondingly
+             under &lsquo;Edit&rsquo; > &lsquo;Language&rsquo; before opening the file.</li>
+         <li>If &lsquo;Save settings in eadconfig file&rsquo; is selected in the settings window
+             the configuration of the project is stored in this config file. It is saved in the
+             project folder but can be deleted at any time ("by hand" or by unchecking the option
+             to save this file). A project is, so to say, "marked" as one by the presence of the
+             eadconfig file which has two effects:<br>
+             <ol>
+             <li>If a file of a marked project is opened (or one is saved to that project) the
+             settings are loaded even if another project is active. Selecting &lsquo;Project&rsquo; >
+             &lsquo;Change project&rsquo; can be used to change to that project or 
+             &lsquo;Project&rsquo; > &lsquo;Project settings&rsquo; to additionally view or modify
+             the configuration.</li>
+             <li>A marked project is directly set active if a file of that project is opened and
+             no other project is active even though it was not necessarily the active project
+             when the program was closed the last time.</li></li>
+             </ol>           
+      </ul>
+      
+      <h4 id="Language">Setting the language</h4>
+      <ul>
+         <li>The language defines the syntax coloring and is internally set by the extension of the
+             file that is opened or newly saved (for the file types .java, .pl, .pm, and .html).</li>
+         <li>Setting the language by selecting &lsquo;Edit&rsquo;' > &lsquo;Language&rsquo;
+             takes effect only in unnamed tabs.</li>
+             
       </ul>
 
       <h4 id="JavaProject">Testing Java code and packing a jar file</h4>
       <ol>
-         <li>Compile the source file(s) using &lsquo;Save all and compile&rsquo; in the
-             &lsquo;Project&rsquo; menu. If errors occur you will be asked to open the
+         <li>Compile the source file(s) using &lsquo;Save open files and compile&rsquo; in
+             the &lsquo;Project&rsquo; menu. If errors occur it will be asked to open the
              console to view messages.</li>
          <li>If the compilation was successful the new program can be run for testing by
              using &lsquo;Run&rsquo; in the &lsquo;Project&rsquo; menu. Any output and error
@@ -123,7 +140,8 @@
              program can be forcibly quit by clicking the &lsquo;stop&rsquo; symbol in the
              toolbar of the console panel.</li>
          <li>Arguments for a start script may be entered in the text field &lsquo;Arguments&rsquo;
-             (separated by single spaces) in the Settings window</li>
+             (separated by single spaces) in the settings window (&lsquo;Project&rsquo; > &lsquo;
+             Project settings&rsquo;).</li>
          <li>A jar file may be created by selecting &lsquo;Project&rsquo; > &lsquo;Create
              jar&rsquo;. The jar file is saved in the executable's folder or, if no such folder
              is defined, in the project's root folder. A name for the jar file can be
@@ -134,13 +152,14 @@
       
       <h4 id="PerlProject">Testing a Perl script</h4>
       <ol>
-         <li>A perl script can be run in the console panel for testing by selecting
-             &lsquo;Project&rsquo; > &lsquo;Run&rsquo;. There is a limitation when the script
-             asks for input through a command prompt: messages from the perl program are not
-             displayed in the expected order. However, it does work as expected when the
-             autoflushing of Perl's STDOUT is turned on in the script. The other possibilty is,
-             of course, to start an external command prompt to test the script (see <a
-             href="#Console">Using the console</a>).
+         <li>Save changes to the script and select &lsquo;Run&rsquo; in the &lsquo;Project&rsquo;
+             menu.</li>
+         <li>Any output (error) is shown in the console panel. There is a limitation when the
+             script asks for input through a command line: output from the perl program that
+             normally would be send to SDOUT is not displayed immedeately (like "enter your name").
+             This can be circumvented by turning on the autoflushing of Perl's STDOUT in the script
+             itself during test phase. The other possibilty is, of course, to start THE command
+             line of the OS to test the script (see <a href="#Console">Using the console</a>).
          <li>The syntax coloring for Perl is presently very basic.</li>
       </ol>
          
@@ -181,8 +200,8 @@
       <h4>Further options</h4>
       <ul>
          <li>A new instance of Eadgyth can be run from the console by pressing the button with
-             the Eadgyth icon. One reason to do this would be to view the output when a new plugin
-             is tested.</li>
+             the Eadgyth icon in the toolbar of the console panel. One reason to do this would
+             be to view the output when a new plugin is tested.</li>
       </ul>
       
       <hr>
@@ -202,7 +221,7 @@
          <li>A double left click on a file opens the clicked file in a new tab.</li>
          <li>A file may be deleted after a right click on a file symbol and selecting
              &lsquo;delete&rsquo;. If the deleted file is in an open tab, the tab is
-             is not closed but goes into &lsquo;Save as&rsquo; mode.</li>
+             not closed but goes into &lsquo;Save as&rsquo; mode.</li>
          <li>A folder may be as well deleted after a right click on a folder symbol but
              a folder is protected from deletion if it is not empty. The exception is, if
              present, the separate folder for executable files or its subfolders. This may
@@ -211,8 +230,7 @@
              &lsquo;Create new folder&rsquo;.</li>
          <li>Changes to the project's file structure made from within the program should be
              updated in the file view (no guarantee). Changes made from outside the program
-             would be updated &lsquo;manually&rsquo; by clicking the &lsquo;refresh&rsquo;
-             symbol.</li>
+             would be updated"manually" by clicking the &lsquo;refresh&rsquo; symbol.</li>
        </ul>
    </div>
    </body>

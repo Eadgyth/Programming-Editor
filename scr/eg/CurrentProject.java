@@ -34,18 +34,17 @@ import eg.utils.JOptions;
  */
 public class CurrentProject {
    
-   private final static String NO_FILE_IN_TAB_MESSAGE
+   private final String NO_FILE_IN_TAB_MESSAGE
          = "A project can be set after opening a file or"
          + " saving a new file";
    
-   private final static String IS_IN_PROJ_MESSAGE 
+   private final String IS_IN_PROJ_MESSAGE 
          = "The selected file belongs to the"
          + " currently active project";
          
-   private final static String WRONG_TYPE_MESSAGE
-         = "A project is not defined for this file type";
+   private final String WRONG_TYPE_MESSAGE
+         = "No project can be defined for this file type";
 
-   private final Preferences prefs = new Preferences();
    private final SelectedProject selProj;
    private final MainWin mw;
    private final FileTree fileTree;
@@ -108,14 +107,14 @@ public class CurrentProject {
       if (isProjectSet() && proj.isProjectInPath(currDoc.dir())) {
          return;
       }
-      ProjectActions prToFind = selProj.createProject(currExt);
+      ProjectActions prToFind = selProj.createProject(currExt, true);
       boolean isFound
             =  prToFind != null
             && prToFind.retrieveProject(currDoc.dir());
       if (isFound) {
          if (!isProjectSet()) {   
             proj = prToFind;
-            proj.addOkAction(e -> configureProject(proj));
+            proj.addOkAction(e -> configureProject(proj)); 
             recent.add(proj); 
             updateProjectSetting(proj);
          }
@@ -132,7 +131,8 @@ public class CurrentProject {
    }
 
    /**
-    * Opens the window of the {@code SettingsWin} object of a project.
+    * Opens the window of the {@code SettingsWin} object that blongs to
+    * a project.
     * <p>
     * Depending on the currently set {@link TextDocument} the opened window
     * belongs to the current project, to one of this listed projects that were
@@ -265,7 +265,7 @@ public class CurrentProject {
    //
    
    private void newProject() {
-      ProjectActions projNew = selProj.createProject(currExt);
+      ProjectActions projNew = selProj.createProject(currExt, false);
       if (projNew == null) {
          JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
       }

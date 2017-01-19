@@ -5,8 +5,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.Element;
 import javax.swing.text.BadLocationException;
-
 import javax.swing.text.AbstractDocument;
+
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.UndoableEditEvent;
@@ -33,6 +33,8 @@ import eg.utils.FileUtils;
  * auto-indentation and undo/redo editing
  */
 class TypingEdit {
+   
+   private final static char[] EDIT_SEP = {' ', '\n', '(', ')', '{', '}'};
 
    private final UndoManager undomanager = new DocUndoManager();
    private final StyledDocument doc;  
@@ -46,7 +48,7 @@ class TypingEdit {
    private boolean isDocListen = true; 
    private boolean isTextModify = false;
    private boolean isIndent = false;
-   private String typed = "";
+   private char typed = '\0';
 
    TypingEdit(EditArea editArea) {
       doc = editArea.textArea().getStyledDocument();
@@ -182,7 +184,8 @@ class TypingEdit {
          if (isDocListen) {
             String in = getDocText();
             int pos = de.getOffset();
-            typed = in.substring(pos, pos + 1);
+            //typed = in.substring(pos, pos + 1);
+            typed = in.charAt(pos);
             updateRowNumber(in);
             if (isTextModify) {
                insertTextModify(de, in, pos);
@@ -231,7 +234,9 @@ class TypingEdit {
     * (https://github.com/aymanhs/jsyntaxpane/blob/master/src/main/java/
     * jsyntaxpane/CompoundUndoManager.java).
     * Using a time interval to separate merged edits is replaced by different
-    * characters (space, new line, brackets).
+    * characters (space, new line, ...needs to be tried). The character that is
+    * analyied is assigned to an object variable 'typed' in insertUpdate() of
+    * the DocumentListener
     */
    class DocUndoManager extends UndoManager implements UndoableEditListener {
      
@@ -254,13 +259,13 @@ class TypingEdit {
       
       @Override
       public boolean canRedo() {
-         //commitCompound();
+         commitCompound();
          return super.canRedo();
       }
 
       @Override
       public boolean canUndo() {
-         //commitCompound();
+         commitCompound();
          return super.canUndo();
       }
 
@@ -281,7 +286,7 @@ class TypingEdit {
              comp = new CompoundEdit();
          }
          comp.addEdit(anEdit);
-         if (typed.matches("[\\s\\n({}]+")) {
+         if (isEditSep()) {
              comp.end();
              super.addEdit(comp);
              comp = null;
@@ -295,6 +300,16 @@ class TypingEdit {
             super.addEdit(comp);
             comp = null;
          }
+      }
+      
+      private boolean isEditSep() {
+         int i = 0;
+         for (i = 0; i < EDIT_SEP.length; i++) {
+            if (EDIT_SEP[i] == typed) {
+               break;
+            }
+         }
+         return i != EDIT_SEP.length;
       }
    }
 }

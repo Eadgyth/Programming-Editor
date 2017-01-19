@@ -18,6 +18,7 @@ public class Preferences {
       "recentExecDir",
       "recentBuildName",
       "recentPath",
+      "recentSuffix",
       "font",
       "fontSize",
       "indentUnit",
@@ -35,6 +36,7 @@ public class Preferences {
       "recentSourceDir",
       "recentExecDir",
       "recentBuildName",
+      "recentSuffix"
    };
 
    private Properties prop = null;
@@ -78,6 +80,7 @@ public class Preferences {
          prop.getProperty("recentExecDir"),
          prop.getProperty("recentBuildName"),
          prop.getProperty("recentPath"),
+         prop.getProperty("recentSuffix"),
          prop.getProperty("font"),
          prop.getProperty("fontSize"),
          prop.getProperty("indentUnit"),
@@ -113,7 +116,8 @@ public class Preferences {
          prop.getProperty("recentModule"),
          prop.getProperty("recentSourceDir"),
          prop.getProperty("recentExecDir"),
-         prop.getProperty("recentBuildName")
+         prop.getProperty("recentBuildName"),
+         prop.getProperty("recentSuffix")
       };
 
       int i;

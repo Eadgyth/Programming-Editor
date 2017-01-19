@@ -40,7 +40,7 @@ public class EditMenu {
          = new JMenuItem("Indent selection less", IconFiles.outdentIcon);
    private final JMenuItem changeIndent = new JMenuItem("Indent/outdent length");
    private final JMenuItem clearSpaces  = new JMenuItem("Clear spaces");
-   private final JMenu     language     = new JMenu("Language in unnamed tabs");
+   private final JMenu     language     = new JMenu("Language");
    private final JCheckBoxMenuItem[] selectLanguage
                                         = new JCheckBoxMenuItem[LANGUAGES.length];
 
