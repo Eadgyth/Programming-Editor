@@ -184,7 +184,6 @@ class TypingEdit {
          if (isDocListen) {
             String in = getDocText();
             int pos = de.getOffset();
-            //typed = in.substring(pos, pos + 1);
             typed = in.charAt(pos);
             updateRowNumber(in);
             if (isTextModify) {
@@ -227,20 +226,10 @@ class TypingEdit {
       });
     }
    
-   
-   /**
-    * This class uses the code in the CompoundUndoManager of JSyntaxPane by
-    * Ayman Al-Sairafi.
-    * (https://github.com/aymanhs/jsyntaxpane/blob/master/src/main/java/
-    * jsyntaxpane/CompoundUndoManager.java).
-    * Using a time interval to separate merged edits is replaced by different
-    * characters (space, new line, ...needs to be tried). The character that is
-    * analyied is assigned to an object variable 'typed' in insertUpdate() of
-    * the DocumentListener
-    */
+
    class DocUndoManager extends UndoManager implements UndoableEditListener {
      
-      CompoundEdit comp = null;
+      //CompoundEdit comp = null;
 
       @Override
       public void undoableEditHappened(UndoableEditEvent e) {
@@ -254,10 +243,10 @@ class TypingEdit {
          if (event.getType().equals(DocumentEvent.EventType.CHANGE)) {
             return;
          }
-         addAnEdit(e.getEdit());
+         addEdit(e.getEdit());
       }
       
-      @Override
+      /*@Override
       public boolean canRedo() {
          commitCompound();
          return super.canRedo();
@@ -310,6 +299,6 @@ class TypingEdit {
             }
          }
          return i != EDIT_SEP.length;
-      }
+      }*/
    }
 }
