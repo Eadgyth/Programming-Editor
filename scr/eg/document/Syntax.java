@@ -1,12 +1,20 @@
 package eg.document;
 
 /**
- * Static String arrays containing keywords
+ * Static String arrays containing keywords and methods to search for
+ * syntax features
  */
-class Syntax {
+public class Syntax {
+   
+   public static boolean isWord(String in, String word, int pos) {
+      boolean startMatches = isWordStart(in, pos);
+      boolean endMatches   = isWordEnd(in, word, pos);
+      return startMatches && endMatches;
+   }
    
    final static String[] JAVA_KEYWORDS = {
-     "abstract", "assert", "break", "boolean", "Boolean", "byte",
+     "abstract", "assert", 
+     "break", "boolean", "Boolean", "byte",
      "catch", "case","const","continue", "class", "char",
      "default", "do", "double",
      "else", "enum", "extends",
@@ -28,7 +36,7 @@ class Syntax {
    };
    
    final static String[] HTML_KEYWORDS = {
-      "<a>", "</a>",
+      "<a>", "<a", "</a>",
       "<b>", "</b>", "<br>", "</br>",
       "<body>", "</body>",
       "<div>", "</div>",
@@ -84,14 +92,8 @@ class Syntax {
    final static String[] BRACKETS = {
       "(",")"
    };
-
-   static boolean isWord(String in, String word, int pos) {
-      boolean startMatches = isWordStart(in, pos);
-      boolean endMatches   = isWordEnd(in, word, pos);
-      return startMatches && endMatches;
-   }
    
-   public static boolean isWordStart(String in, int pos) {
+   static boolean isWordStart(String in, int pos) {
       String start = "";
       if (pos > 0) {
          start = in.substring(pos - 1, pos);
