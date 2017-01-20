@@ -1,3 +1,9 @@
+/**
+ * This inner class {@code DocUndoManager} is based on and uses
+ * methods of CompoundUndoManager class from JSyntaxPane at
+ * https://github.com/aymanhs/jsyntaxpane
+ * Copyright 2008 Ayman Al-Sairafi
+ */
 package eg.document;
 
 import javax.swing.text.StyledDocument;
@@ -28,19 +34,20 @@ import eg.utils.FileUtils;
 
 /** 
  * Responsible for the edits in the {@code EditArea} that shall happen 
- * during typing. <p>
+ * during typing.
+ * <p>
  * The changes include the line numbering, the syntax coloring,
- * auto-indentation and undo/redo editing
+ * auto-indentation and undo/redo editing.
  */
 class TypingEdit {
-   
+
    private final static char[] EDIT_SEP = {' ', '\n', '(', ')', '{', '}'};
 
-   private final UndoManager undomanager = new DocUndoManager();
    private final StyledDocument doc;  
    private final Element el;
    private final SimpleAttributeSet normalSet = new SimpleAttributeSet(); 
 
+   private final UndoManager undomanager = new DocUndoManager();
    private final Coloring col;
    private final AutoIndent autoInd;
    private final RowNumbers rowNum;
@@ -63,7 +70,7 @@ class TypingEdit {
       rowNum = new RowNumbers(editArea.lineArea(), editArea.scrolledArea());
       autoInd = new AutoIndent(editArea.textArea(), doc, normalSet);
    }
-   
+
    void enableDocListen(boolean isDocListen) {
       this.isDocListen = isDocListen;
    }
@@ -72,18 +79,18 @@ class TypingEdit {
       this.isTextModify = isTextModify;
       col.enableSingleLines(isTextModify);
    }
-   
+
    void enableIndent(boolean isEnabled) {
       isIndent = isEnabled;
       if (!isEnabled) {
          autoInd.resetIndent();
       }
    }
-   
+
    void configColoring(Languages language) {
       col.configColoring(language);
    }
-   
+
    void setKeywords(String[] keywords, boolean constrainWord) {
       col.setKeywords(keywords, constrainWord);
    }
@@ -95,7 +102,7 @@ class TypingEdit {
    SimpleAttributeSet normalSet() {
       return normalSet;
    }
-   
+
    String getDocText() {
       String in = null;
       try {
@@ -110,11 +117,11 @@ class TypingEdit {
    String getIndentUnit() {
       return autoInd.getIndentUnit();
    }
-   
+
    void changeIndentUnit(String indentUnit) {
       autoInd.changeIndentUnit(indentUnit);
    }
-   
+
    void addAllRowNumbers(String in) {
       rowNum.addAllRowNumbers(in);
    }
@@ -173,7 +180,7 @@ class TypingEdit {
       StyleConstants.setBold(normalSet, false);
       doc.setParagraphAttributes(0, el.getEndOffset(), normalSet, false);
    }
-   
+
    private final DocumentListener docListen = new DocumentListener() {
       @Override
       public void changedUpdate(DocumentEvent documentEvent) {
@@ -197,6 +204,7 @@ class TypingEdit {
          if (isDocListen) {
             String in = getDocText();
             updateRowNumber(in);
+            typed = '\0';
             if (isTextModify) {
                int pos = de.getOffset();
                removeTextModify(de, in, pos);
@@ -204,7 +212,7 @@ class TypingEdit {
          }
       }
    };
-   
+
    private void insertTextModify(DocumentEvent de, String in, int pos) {
       if (pos > 0 && isIndent) {
          autoInd.openBracketIndent(in, pos);
@@ -224,12 +232,11 @@ class TypingEdit {
             col.uncommentBlock(in, pos);
          }
       });
-    }
-   
+   }
 
    class DocUndoManager extends UndoManager implements UndoableEditListener {
-     
-      //CompoundEdit comp = null;
+
+      CompoundEdit comp = null;
 
       @Override
       public void undoableEditHappened(UndoableEditEvent e) {
@@ -243,19 +250,19 @@ class TypingEdit {
          if (event.getType().equals(DocumentEvent.EventType.CHANGE)) {
             return;
          }
-         addEdit(e.getEdit());
-      }
-      
-      /*@Override
-      public boolean canRedo() {
-         commitCompound();
-         return super.canRedo();
+         addAnEdit(e.getEdit());
       }
 
       @Override
       public boolean canUndo() {
          commitCompound();
          return super.canUndo();
+      }
+
+      @Override
+      public boolean canRedo() {
+         commitCompound();
+         return super.canRedo();
       }
 
       @Override
@@ -269,20 +276,28 @@ class TypingEdit {
          commitCompound();
          super.redo();
       }
-      
+
       private boolean addAnEdit(UndoableEdit anEdit) {
          if (comp == null) {
              comp = new CompoundEdit();
          }
-         comp.addEdit(anEdit);
-         if (isEditSep()) {
-             comp.end();
-             super.addEdit(comp);
-             comp = null;
+         if (typed != '\0') {
+            comp.addEdit(anEdit);
          }
+         else {
+            comp.end();
+            super.addEdit(comp);
+            comp = null;
+            super.addEdit(anEdit);
+         }
+         if (isEditSep()) {
+            comp.end();
+            super.addEdit(comp);
+            comp = null;
+         }            
          return true;
       }
-      
+
       private void commitCompound() {
          if (comp != null) {
             comp.end();
@@ -290,7 +305,7 @@ class TypingEdit {
             comp = null;
          }
       }
-      
+
       private boolean isEditSep() {
          int i = 0;
          for (i = 0; i < EDIT_SEP.length; i++) {
@@ -299,6 +314,6 @@ class TypingEdit {
             }
          }
          return i != EDIT_SEP.length;
-      }*/
+      }
    }
 }

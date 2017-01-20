@@ -1,14 +1,27 @@
 package eg.document;
 
 /**
- * Static String arrays containing keywords and methods to search for
- * syntax features
+ * Static String arrays containing keywords and other syntax features
+ * and static methods (only one public) to search for syntax features
  */
 public class Syntax {
    
-   public static boolean isWord(String in, String word, int pos) {
-      boolean startMatches = isWordStart(in, pos);
-      boolean endMatches   = isWordEnd(in, word, pos);
+   private Syntax() {}
+   
+   /**
+    * Returns if the specified word is a word.
+    * <p>
+    * A word is considered as such if it does not adjoin to
+    * a letter or a digit at the left or right or both ends.
+    * @param text  the text which the word is part of
+    * @param word  the word that may be a word
+    * @param pos  the position which the word starts at within the
+    * text
+    * @return  if the word does not adjoin to a letter or a digit
+    */
+   public static boolean isWord(String text, String word, int pos) {
+      boolean startMatches = isWordStart(text, pos);
+      boolean endMatches   = isWordEnd(text, word, pos);
       return startMatches && endMatches;
    }
    
@@ -94,11 +107,9 @@ public class Syntax {
    };
    
    static boolean isWordStart(String in, int pos) {
-      String start = "";
       if (pos > 0) {
-         start = in.substring(pos - 1, pos);
-         char c = start.charAt(0);
-         return !Character.isLetter(c) && !Character.isDigit(c);
+         char c = in.charAt(pos - 1);
+         return !isLetterOrDigit(c);
       }
       else {
          return true;
@@ -110,9 +121,8 @@ public class Syntax {
       int endPos = pos + length;
       String end = "";   
       if (in.length() > endPos) {
-         end = in.substring(endPos, endPos + 1);
-         char c = end.charAt(0);
-         return !Character.isLetter(c) && !Character.isDigit(c);
+         char c = in.charAt(endPos);
+         return !isLetterOrDigit(c);
       }
       else {
          return true;
@@ -120,11 +130,11 @@ public class Syntax {
    }
 
    static int wordLength(String in) {      
-      char[] chars = in.toCharArray();
+      char[] c = in.toCharArray();
       int i = 1;
-      if (chars.length > 1) {
-         for (i = 1; i < chars.length; i++ ) {
-            if (!Character.isLetter(chars[i]) && !Character.isDigit(chars[i])) {
+      if (c.length > 1) {
+         for (i = 1; i < c.length; i++ ) {
+            if (!isLetterOrDigit(c[i])) {
                break;
             }
          }
@@ -172,5 +182,9 @@ public class Syntax {
          isInQuotes = in.substring(pos - 1, pos).equals("\"");
       }
       return isInQuotes;
+   }
+   
+   private static boolean isLetterOrDigit(char c) {
+      return Character.isLetter(c) || Character.isDigit(c);
    }
 }
