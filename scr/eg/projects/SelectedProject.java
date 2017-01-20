@@ -2,24 +2,23 @@ package eg.projects;
 
 import eg.console.*;
 import eg.Preferences;
-import eg.ui.ViewSettings;
+import eg.DisplaySetter;
 import eg.ui.filetree.FileTree;
 
 /**
- * The creation of an object of type {@code ProjectActions} that is selected
- * based on the extension of the file which a project is defined for
+ * The creation of an object of type {@code ProjectActions}
  */
 public class SelectedProject {
 
    private final Preferences prefs = new Preferences();
-   private final ViewSettings viewSet;
+   private final DisplaySetter displSet;
    private final ProcessStarter proc;
    private final ConsolePanel consPnl;
    private final FileTree fileTree;
 
-   public SelectedProject(ViewSettings viewSet, ProcessStarter proc,
+   public SelectedProject(DisplaySetter displSet, ProcessStarter proc,
          ConsolePanel consPnl, FileTree fileTree) {
-      this.viewSet = viewSet;
+      this.displSet = displSet;
       this.proc = proc;
       this.consPnl = consPnl;
       this.fileTree = fileTree;
@@ -30,7 +29,8 @@ public class SelectedProject {
     * @param fileExt  the extension of the file which a project
     * is to be defined for (has the form ".java", for example)
     * @param isSearchByLang  true to create a {@link ProjectActions}
-    * based on the currently set language
+    * based on the currently set language. True has still no effect if
+    * {@code fileExt} specifies the type of {@code ProjectActions}
     * @return  an object of type {@link ProjectActions} or null if no
     * class exists that implements ProjectActions for the given file
     * extension.
@@ -39,13 +39,13 @@ public class SelectedProject {
       ProjectActions newProj = null;
       switch (fileExt) {
          case ".java":
-            newProj = new JavaActions(viewSet, proc, consPnl, fileTree);
+            newProj = new JavaActions(displSet, proc, consPnl, fileTree);
             break;
          case ".html":
             newProj = new HtmlActions(proc, fileTree);
             break;
          case ".pl": case ".pm":
-            newProj = new PerlActions(viewSet, proc, consPnl, fileTree);
+            newProj = new PerlActions(displSet, proc, consPnl, fileTree);
             break;
          default:
             if (isSearchByLang) {
@@ -61,13 +61,13 @@ public class SelectedProject {
       String language = prefs.getProperty("language");
       switch (language) {
          case "JAVA":
-            newProj = new JavaActions(viewSet, proc, consPnl, fileTree);
+            newProj = new JavaActions(displSet, proc, consPnl, fileTree);
             break;
          case "HTML":
             newProj = new HtmlActions(proc, fileTree);
             break;
          case "PERL":
-            newProj = new PerlActions(viewSet, proc, consPnl, fileTree);
+            newProj = new PerlActions(displSet, proc, consPnl, fileTree);
             break;
       }
       return newProj;

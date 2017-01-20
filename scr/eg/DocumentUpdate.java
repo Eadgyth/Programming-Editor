@@ -5,7 +5,7 @@ import java.io.File;
 //--Eadgyth--//
 import eg.plugin.PluginStarter;
 import eg.document.TextDocument;
-import eg.ui.ViewSettings;
+import eg.DisplaySetter;
 import eg.ui.EditArea;
 
 /**
@@ -14,16 +14,16 @@ import eg.ui.EditArea;
  */
 public class DocumentUpdate {
 
-   private final ViewSettings viewSet;
+   private final DisplaySetter displSet;
    private final Edit edit;
    private final PluginStarter plugStart;
    
    private TextDocument[] txtDoc;
  
-   public DocumentUpdate(ViewSettings viewSet, Edit edit,
+   public DocumentUpdate(DisplaySetter displSet, Edit edit,
          PluginStarter plugStart) {
 
-      this.viewSet = viewSet;
+      this.displSet = displSet;
       this.edit = edit;         
       this.plugStart = plugStart;
    }
@@ -36,7 +36,7 @@ public class DocumentUpdate {
     */
    public void setDocumentArrays(TextDocument[] txtDoc, EditArea[] editArea) {
       this.txtDoc = txtDoc;
-      viewSet.setEditAreaArr(editArea);
+      displSet.setEditAreaArr(editArea);
    }
 
    /**
@@ -47,6 +47,6 @@ public class DocumentUpdate {
       txtDoc[index].requestFocus();
       edit.setTextObject(txtDoc[index]);
       plugStart.setTextDocument(txtDoc[index]);
-      viewSet.setEditAreaIndex(index);
+      displSet.setEditAreaIndex(index);
    }
 }

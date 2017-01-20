@@ -8,12 +8,11 @@ import java.awt.event.ActionListener;
 
 //--Eadgyth--//
 import eg.Constants;
-import eg.utils.JOptions;
-import eg.utils.FileUtils;
+import eg.DisplaySetter;
 import eg.console.*;
 import eg.javatools.*;
-
-import eg.ui.ViewSettings;
+import eg.utils.JOptions;
+import eg.utils.FileUtils;
 import eg.ui.filetree.FileTree;
 
 /**
@@ -23,17 +22,17 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
 
    private static Constants c;
 
-   private final ViewSettings viewSet;
+   private final DisplaySetter displSet;
    private final Compile comp;
    private final CreateJar jar;
    private final ProcessStarter proc;
-   private final ConsolePanel cw;
+   private final ConsolePanel consPnl;
    private final FileTree fileTree;
 
    private String startCommand = "";
 
-   public JavaActions(ViewSettings viewSet, ProcessStarter proc, ConsolePanel cw,
-         FileTree fileTree) {
+   public JavaActions(DisplaySetter displSet, ProcessStarter proc,
+         ConsolePanel consPnl, FileTree fileTree) {
 
       super(new SettingsWin(
                "Name of main class",
@@ -45,13 +44,13 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
             ),
             ".java"
       );
-      this.viewSet = viewSet;
+      this.displSet = displSet;
       this.proc = proc;
-      this.cw = cw;
+      this.consPnl = consPnl;
       this.fileTree = fileTree;
  
-      comp = new Compile(cw);
-      jar = new CreateJar(cw);
+      comp = new Compile(consPnl);
+      jar = new CreateJar(consPnl);
    }
    
    @Override
@@ -86,14 +85,14 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    
    @Override                                                                          
    public void compile() {      
-      cw.setText("<<Compile " + getProjectName() + ">>\n");
+      consPnl.setText("<<Compile " + getProjectName() + ">>\n");
       EventQueue.invokeLater(() -> {
          if (proc.isProcessEnded()) {    
             comp.compile(getProjectPath(), getExecDirName(),
                   getSourceDirName());            
-            cw.setCaret(0);
+            consPnl.setCaret(0);
             fileTree.updateTree();
-            if (!viewSet.isConsoleSelected()) {
+            if (!displSet.isConsoleSelected()) {
                if (!comp.success()) {
                   int result = JOptions.confirmYesNo(
                         "Compilation of '"
@@ -101,7 +100,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
                         + comp.getMessage() + "."
                         + "\nOpen console window to view messages?");
                   if (result == 0) {
-                     viewSet.setShowConsoleState(true);
+                     displSet.setShowConsoleState(true);
                   }
                }
                else {
@@ -122,8 +121,8 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       if (!mainClassFileExists()) {
          return;
       }
-      if (!viewSet.isConsoleSelected()) {
-         viewSet.setShowConsoleState(true);
+      if (!displSet.isConsoleSelected()) {
+         displSet.setShowConsoleState(true);
       }
       proc.startProcess(startCommand);
    }
@@ -142,7 +141,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       }
       boolean existed = jarFileExists(jarName);
       try {
-         cw.setText("");
+         consPnl.setText("");
          jar.createJar(getProjectPath(), getMainFile(),
                getModuleName(), getExecDirName(), jarName);
          if (!existed) {
@@ -157,7 +156,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
             }
             fileTree.updateTree();
          }
-         cw.appendText("<<Saved jar file named " + jarName + ">>\n");
+         consPnl.appendText("<<Saved jar file named " + jarName + ">>\n");
          JOptions.infoMessage("Saved jar file named " + jarName);
       }
       catch (IOException e) {

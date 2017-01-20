@@ -308,13 +308,11 @@ public abstract class ProjectConfig implements Configurable {
       boolean canStore = true;
       if (projectPath.length() == 0) {
          JOptions.warnMessageToFront(
-               "An entry in the 'Project' panel is incorrect");
-         
+               "An entry in the 'Project' panel is incorrect");      
          canStore = false;
       }
       else {
-         storeInPrefs();
-         
+         storeInPrefs();   
          if (setWin.isSaveConfig()) {
             CONFIG.storeConfig("recentMain", mainFile, projectPath);
             CONFIG.storeConfig("recentModule", moduleDir, projectPath);

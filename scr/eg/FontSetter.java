@@ -2,6 +2,7 @@ package eg;
 
 //--Eadgyth--//
 import eg.ui.EditArea;
+import eg.ui.FontSettingWin;
 
 /**
  * The setting of the font and font size
@@ -23,12 +24,12 @@ public class FontSetter {
    private void setFont() {
       String currentFont = fontSetWin.fontComboBxRes();
       int currentFontSize = fontSetWin.sizeComboBxRes();
-       for (EditArea ea : editArea) {
-           if (ea != null) {
-               ea.setFont(currentFont);
-               ea.setFontSize(currentFontSize);
-           }
-       }
+      for (EditArea ea : editArea) {
+         if (ea != null) {
+             ea.setFont(currentFont);
+             ea.setFontSize(currentFontSize);
+         }
+      }
       fontSetWin.makeVisible(false);
    }
 }

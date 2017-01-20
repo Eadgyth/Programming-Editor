@@ -1,3 +1,8 @@
+/**
+ * The Java(TM) Compiler is invoked in the method compile() essentially as
+ * shown in the docu for the javax.tools.JavaCompiler interface(
+ * https://docs.oracle.com/javase/7/docs/api/javax/tools/JavaCompiler.html).
+ */ 
 package eg.javatools;
 
 import javax.tools.Diagnostic;
@@ -22,7 +27,8 @@ import eg.utils.JOptions;
 import eg.console.ConsolePanel;
 
 /**
- * Compiles java files in a given working directory using the JavaCompiler API
+ * Compiles java files in a given working directory using the
+ * JavaCompiler API.
  */
 public class Compile {
 

@@ -4,10 +4,9 @@ import java.io.File;
 import java.awt.event.ActionListener;
 
 //--Eadgyth--//
+import eg.DisplaySetter;
 import eg.utils.JOptions;
 import eg.console.*;
-
-import eg.ui.ViewSettings;
 import eg.ui.filetree.FileTree;
 
 /**
@@ -15,14 +14,14 @@ import eg.ui.filetree.FileTree;
  */
 public class PerlActions extends ProjectConfig implements ProjectActions {
    
-   private final ViewSettings viewSet;
+   private final DisplaySetter displSet;
    private final ProcessStarter proc;
    private final ConsolePanel cw;
    private final FileTree fileTree;
    
    private String startCommand = "";
    
-   public PerlActions(ViewSettings viewSet, ProcessStarter proc,
+   public PerlActions(DisplaySetter displSet, ProcessStarter proc,
          ConsolePanel cw, FileTree fileTree) {
       super(new SettingsWin(
                "Name of perl script",
@@ -34,7 +33,7 @@ public class PerlActions extends ProjectConfig implements ProjectActions {
             ),
             ".pl"
       );
-      this.viewSet = viewSet;
+      this.displSet = displSet;
       this.proc = proc;
       this.cw = cw;
       this.fileTree = fileTree;
@@ -87,8 +86,8 @@ public class PerlActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void runProject() {
-      if (!viewSet.isConsoleSelected()) {
-         viewSet.setShowConsoleState(true);
+      if (!displSet.isConsoleSelected()) {
+         displSet.setShowConsoleState(true);
       }
       proc.startProcess(startCommand);
    }

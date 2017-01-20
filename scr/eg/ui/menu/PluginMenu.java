@@ -11,7 +11,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 
 //--Eadgyth--//
-import eg.ui.ViewSettings;
+import eg.DisplaySetter;
 import eg.javatools.SearchFiles;
 import eg.plugin.PluginStarter;
 
@@ -38,11 +38,11 @@ public class PluginMenu {
       return menu;
    }
    
-   public void startPlugin(PluginStarter plugStart, ViewSettings viewSet) {
+   public void startPlugin(PluginStarter plugStart, DisplaySetter diplSet) {
       selectPlugAct((ActionEvent e) -> {
          try {
             plugStart.startPlugin(getPluginIndex(e));
-            viewSet.setShowFunctionState(true);
+            diplSet.setShowFunctionState(true);
          }
          catch (IOException ioe) {
             System.out.println(ioe.getMessage());  

@@ -8,11 +8,8 @@ import java.util.ArrayList;
 import java.awt.EventQueue;
 
 //--Eadgyth--//
-import eg.ui.MainWin;
-import eg.ui.Toolbar;
+import eg.console.*;
 import eg.ui.filetree.FileTree;
-import eg.ui.menu.Menu;
-
 import eg.projects.ProjectActions;
 import eg.projects.SelectedProject;
 
@@ -46,10 +43,8 @@ public class CurrentProject {
          = "No project can be defined for this file type";
 
    private final SelectedProject selProj;
-   private final MainWin mw;
+   private final DisplaySetter displSet;
    private final FileTree fileTree;
-   private final Menu menu;
-   private final Toolbar tBar;
    private final List<ProjectActions> recent = new ArrayList<>();
 
    private ProjectActions proj;
@@ -58,13 +53,12 @@ public class CurrentProject {
    private String sourceExt;
    private String currExt;
 
-   public CurrentProject(SelectedProject selProj, MainWin mw,
-         FileTree fileTree, Menu menu, Toolbar tBar) {
-      this.selProj = selProj;
-      this.mw = mw;
+   public CurrentProject(DisplaySetter displSet, ProcessStarter proc,
+         ConsolePanel consPnl, FileTree fileTree) {
+          
+      this.displSet = displSet;
       this.fileTree = fileTree;
-      this.menu = menu;
-      this.tBar = tBar;
+      selProj = new SelectedProject(displSet, proc, consPnl, fileTree);
    }
 
    /**
@@ -123,7 +117,7 @@ public class CurrentProject {
                prToFind.addOkAction(e -> configureProject(prToFind));
                recent.add(prToFind);
                if (recent.size() == 2) {
-                  menu.getProjectMenu().enableChangeProjItm();
+                  displSet.enableChangeProjItm();
                }
             }
          }
@@ -208,7 +202,7 @@ public class CurrentProject {
     * Compiles this current project
     */
    public void compile() {         
-      mw.setBusyCursor(true);
+      displSet.setBusyCursor(true);
       int missingIndex = 0;
       try {
          for (int i = 0; i < txtDoc.length; i++) {
@@ -235,7 +229,7 @@ public class CurrentProject {
       }   
       finally {
          EventQueue.invokeLater(() -> {
-            mw.setBusyCursor(false);
+            displSet.setBusyCursor(false);
          });
       }
    }
@@ -252,11 +246,11 @@ public class CurrentProject {
     */
    public void buildProj() {
       try {
-         mw.setBusyCursor(true);
+         displSet.setBusyCursor(true);
          proj.build();
       }
       finally {
-         mw.setBusyCursor(false);
+         displSet.setBusyCursor(false);
       }
    }
 
@@ -316,35 +310,25 @@ public class CurrentProject {
    }
 
    private void updateProjectSetting(ProjectActions projToSet) {
-      mw.showProjectInfo(projToSet.getProjectName());
+      displSet.showProjectInfo(projToSet.getProjectName());
       projToSet.applyProject();
       enableActions(projToSet.getClass().getSimpleName());
    }
    
    private void enableActions(String className) {
+      int projCount = recent.size();
       switch (className) {
          case "JavaActions":
-            enableActions(true, true, true);
-            menu.getProjectMenu().setBuildKind("Create jar");
+            displSet.enableProjActions(true, true, true, projCount);
+            displSet.setBuildMenuItmText("Create jar");
             sourceExt = ".java";
             break;
          case "HtmlActions":
-            enableActions(false, true, false);
+            displSet.enableProjActions(false, true, false, projCount);
             break;
          case "PerlActions":
-            enableActions(false, true, false);
+            displSet.enableProjActions(false, true, false, projCount);
             break;
       }
-   }
-   
-   private void enableActions(boolean isCompile, boolean isRun, boolean isBuild) {
-      if (recent.size() == 1) {
-         menu.getViewMenu().enableFileView();
-      }
-      if (recent.size() == 2) {
-         menu.getProjectMenu().enableChangeProjItm();
-      }
-      menu.getProjectMenu().enableProjItms(isCompile, isRun, isBuild);
-      tBar.enableProjBts(isCompile, isRun);
    }
 }

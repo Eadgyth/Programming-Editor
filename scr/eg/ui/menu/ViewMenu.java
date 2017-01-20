@@ -8,7 +8,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 
 //--Eadgyth--//
-import eg.ui.ViewSettings;
+import eg.DisplaySetter;
 
 public class ViewMenu {
    
@@ -31,11 +31,15 @@ public class ViewMenu {
       return menu;
    }
    
-   public void registerAct(ViewSettings viewSet) {
-      showConsole.addActionListener(e -> viewSet.showConsole(isConsoleSelected()));
-      showFileView.addActionListener(e -> viewSet.showFileView(isFileViewSelected()));
-      showFunction.addActionListener(e -> viewSet.showFunction(isFunctionPnlSelected()));
-      openViewSettings.addActionListener(e -> viewSet.makeViewSetWinVisible());
+   public void registerAct(DisplaySetter displSet) {
+      showConsole.addActionListener(e ->
+            displSet.showConsole(isConsoleSelected()));
+      showFileView.addActionListener(e ->
+            displSet.showFileView(isFileViewSelected()));
+      showFunction.addActionListener(e ->
+            displSet.showFunction(isFunctionPnlSelected()));
+      openViewSettings.addActionListener(e ->
+            displSet.makeViewSetWinVisible());
    }
    
    /**

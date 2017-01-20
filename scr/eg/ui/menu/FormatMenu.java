@@ -10,8 +10,7 @@ import javax.swing.JCheckBoxMenuItem;
 //--Eadgyth--//
 import eg.Preferences;
 import eg.FontSetter;
-
-import eg.ui.ViewSettings;
+import eg.DisplaySetter;
 
 public class FormatMenu {
    
@@ -26,14 +25,14 @@ public class FormatMenu {
       assembleMenu();
    }
    
-   public void registerAct(FontSetter fontSet, ViewSettings viewSet) {
+   public void registerAct(FontSetter fontSet, DisplaySetter displSet) {
       font.addActionListener(e ->
             fontSet.makeFontSetWinVisible(true));
       wordWrap.addActionListener(e ->
-            viewSet.changeWordWrap(wordWrap.getState()));
+            displSet.changeWordWrap(wordWrap.getState()));
    }
    
-   public void selectWordWrap(boolean select) {
+   public void selectWordWrapItm(boolean select) {
       wordWrap.setState(select);
    }
    

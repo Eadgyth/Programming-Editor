@@ -27,7 +27,7 @@ import eg.Constants;
  * This class can change its font and the font size, can show or hide
  * the area that shows line numbers and can enable/disable wordwrap.
  * <p>
- * The default usage of the copy/paste keys is disabled.
+ * The usage of the copy, cut, paste keys is disabled.
  */
 public class EditArea {
 
@@ -40,8 +40,7 @@ public class EditArea {
 
    private final JPanel disabledWordwrapArea
          = new JPanel(new BorderLayout());
-   private final JPanel enabledWordwrapArea
-         = new JPanel();
+   private final JPanel enabledWordwrapArea = new JPanel();
 
    private final JScrollPane scrollWrapArea = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -82,7 +81,7 @@ public class EditArea {
             hideLineNumbers();
          }
       }
-      removeCopyPasteKeys();
+      removeKeyActions();
    }
    
    /**
@@ -100,8 +99,8 @@ public class EditArea {
    }
    
    /**
-    * @return  the JPanel that contains the area to edit text and,
-    * if selected, the area showing line numbers in a scroll pane
+    * @return  the JPanel that holds the area to edit text and 
+    * the area showing line numbers in a scroll pane
     */
    public JPanel scrolledArea() {
       return scrolledArea;
@@ -141,7 +140,8 @@ public class EditArea {
    
    /**
     * Shows the area that displays line numbers.
-    * <p> Invoking this mathod also annules wordwrap
+    * <p>
+    * Invoking this mathod also annules wordwrap
     */
    public void showLineNumbers() {
       removeCenterComponent();
@@ -156,8 +156,9 @@ public class EditArea {
    }
    
    /**
-    * Hides the area that displays line numbers
-    * <p> Invoking this mathod also annules wordwrap
+    * Hides the area that displays line numbers.
+    * <p>
+    * Invoking this mathod also annules wordwrap
     */
    public void hideLineNumbers() {
       scrolledArea.remove(scrollLines);
@@ -191,6 +192,7 @@ public class EditArea {
    //
    //--private methods
    //
+
    private void initFont() {
       font = PREFS.getProperty("font");
       fontSize = Integer.parseInt(PREFS.getProperty("fontSize"));
@@ -230,8 +232,8 @@ public class EditArea {
       scrollRowArea.setViewportView(disabledWordwrapArea);
       scrollLines.setViewportView(lineArea);
       scrollLines.setBorder(new MatteBorder(0, 0, 0, 1, c.BORDER_GRAY));
-      /*
-       * link row number area scolling to text area scrolling */
+      //
+      // link scrolling of row number area to text area
       scrollLines.getVerticalScrollBar().setModel
             (scrollRowArea.getVerticalScrollBar().getModel());
    }
@@ -244,7 +246,7 @@ public class EditArea {
       }
    }
 
-   private void removeCopyPasteKeys() {
+   private void removeKeyActions() {
       KeyStroke ksCut = KeyStroke.getKeyStroke("control pressed X");
       textArea.getInputMap().put(ksCut, "dummy");
       KeyStroke ksCopy = KeyStroke.getKeyStroke("control pressed C");
