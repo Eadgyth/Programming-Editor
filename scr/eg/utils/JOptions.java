@@ -1,13 +1,8 @@
 package eg.utils;
 
-import java.awt.Dimension;
-
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerListModel;
-import javax.swing.UIManager;
 
 /**
  * Different static methods to show messages or prompts using

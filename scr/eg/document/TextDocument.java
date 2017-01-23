@@ -101,7 +101,7 @@ public class TextDocument {
       String[] lines = content.split("\n"); 
       try (FileWriter writer = new FileWriter(filepath)) {
          for (String s : lines) {
-            writer.write(s + Constants.SYS_LINE_SEP);
+            writer.write(s + Constants.LINE_SEP);
          }
       }
       catch(IOException e) {

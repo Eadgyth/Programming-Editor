@@ -145,17 +145,16 @@ public class Syntax {
    static int indLastBlockStart(String in, int pos, String blockStart,
          String blockEnd) {
       int index = in.lastIndexOf(blockStart, pos);
-      int indLastEnd = in.lastIndexOf(blockEnd, pos);
-
+      int indLastEnd = in.lastIndexOf(blockEnd, pos - 1);
       while (index != -1 && isInQuotes(in, index)) {
          index = in.lastIndexOf(blockStart, index - 1);
       }
       while (indLastEnd != -1 && isInQuotes(in, indLastEnd)) {
          indLastEnd = in.lastIndexOf(blockEnd, indLastEnd - 1);
-      } 
+      }
       if (index < indLastEnd) {
          index = -1;
-      } 
+      }
       return index;
    }
 

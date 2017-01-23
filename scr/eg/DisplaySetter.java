@@ -1,7 +1,5 @@
 package eg;
 
-import java.awt.Cursor;
-
 //--Eadgyth--//
 import eg.ui.MainWin;
 import eg.ui.EditArea;
@@ -13,7 +11,7 @@ import eg.ui.menu.ProjectMenu;
 import eg.ui.DisplaySettingWin;
 
 /**
- * Controls the display of the main window
+ * The setting of the display and behavior of the main window
  */
 public class DisplaySetter {
 
@@ -86,11 +84,11 @@ public class DisplaySetter {
       prefs.readPrefs();
       if (isWordWrap) {
          editArea[editAreaIndex].enableWordWrap();
-         prefs.storePrefs("wordWrap", "enabled");
+         prefs.storePrefs("wordWrap", Constants.ENABLED);
       }
       else {
          boolean isLineNumbers
-               = c.SHOW.equals(prefs.getProperty(c.LINE_NUM_PREFS));
+               = Constants.SHOW.equals(prefs.getProperty(Constants.LINE_NUMBERS));
          if (isLineNumbers) {
             editArea[editAreaIndex].showLineNumbers();
          }
@@ -139,6 +137,10 @@ public class DisplaySetter {
       vMenu.selectShowFunction(show);
    }
 
+   /**
+    * Shows/hides the console panel
+    * @param show  true to show the console panel
+    */
    public void showConsole(boolean show) {
       if (show) {
          mw.showConsole();
@@ -148,6 +150,10 @@ public class DisplaySetter {
       }
    }
 
+   /**
+    * Shows/hides the fileview panel
+    * @param show  true to show the fileview panel
+    */
    public void showFileView(boolean show) {
       if (show) {
          mw.showFileView();
@@ -157,6 +163,10 @@ public class DisplaySetter {
       }
    }
 
+   /**
+    * Shows/hides the function panel
+    * @param show  true to show the function panel
+    */
    public void showFunction(boolean show) {
       if (show) {
          mw.showFunctionPnl();
@@ -166,10 +176,25 @@ public class DisplaySetter {
       }
    }
    
+   /**
+    * Sets the text displayed by the menu item for creating a build
+    * @param buildKind  the name that descibes the kind of build
+    */
    public void setBuildMenuItmText(String buildKind) {
       prMenu.setBuildKind(buildKind);
    }
    
+   /**
+    * Enables/disables menu items and toolbar buttons for to project
+    * actions
+    * @param isCompile  true/false to enable/disable the compilation
+    * action
+    * @param isRun  true/false to enable/disable the run action
+    * @param isBuild  true/false to enable/disable the build action
+    * @param projCount  the number of loaded projects. If 1 the action
+    * to show the fileview is enabled, if 2 the action to change between
+    * projects is enabled
+    */
    public void enableProjActions(boolean isCompile, boolean isRun,
          boolean isBuild, int projCount) {
       if (projCount == 1) {
@@ -182,14 +207,26 @@ public class DisplaySetter {
       tBar.enableProjBts(isCompile, isRun);
    }
    
+   /**
+    * Enabled the menu item to change between projects
+    */
    public void enableChangeProjItm() {
       prMenu.enableChangeProjItm();
    }
    
+   /**
+    * Sets busy or default curser
+    * @param isBusy  true to set a busy curor, false to set the default
+    * cursor
+    */
    public void setBusyCursor(boolean isBusy) {
       mw.setBusyCursor(isBusy);
    }
    
+   /**
+    * Displays the project name in the status bar
+    * @param name  the name of the project
+    */
    public void showProjectInfo(String name) {
       mw.showProjectInfo(name);
    }
@@ -199,21 +236,21 @@ public class DisplaySetter {
    //
 
    private void applyChanges() {
-      boolean isShowToolbar = displSetWin.isShowToolbar();
-      if (this.isShowToolbar != isShowToolbar) {
+      boolean isToolbar = displSetWin.isShowToolbar();
+      if (this.isShowToolbar != isToolbar) {
          mw.showToolbar(isShowToolbar);
-         this.isShowToolbar = isShowToolbar;
+         this.isShowToolbar = isToolbar;
       }
 
-      boolean isShowStatusbar = displSetWin.isShowStatusbar();
-      if (this.isShowStatusbar != isShowStatusbar) {
+      boolean isStatusbar = displSetWin.isShowStatusbar();
+      if (this.isShowStatusbar != isStatusbar) {
          mw.showStatusbar(isShowStatusbar);
-         this.isShowStatusbar = isShowStatusbar;
+         this.isShowStatusbar = isStatusbar;
       }
 
-      boolean isShowLineNumbers = displSetWin.isShowLineNumbers();
-      if (this.isShowLineNumbers != isShowLineNumbers) {
-         this.isShowLineNumbers = isShowLineNumbers;
+      boolean isLineNumbers = displSetWin.isShowLineNumbers();
+      if (this.isShowLineNumbers != isLineNumbers) {
+         this.isShowLineNumbers = isLineNumbers;
          this.showHideLineNumbers();
       }
 
@@ -228,25 +265,24 @@ public class DisplaySetter {
 
    private void showHideLineNumbers() {
       boolean isWordWrapDisabled = false;
-      for (int i = 0; i < editArea.length; i++) {
-         if (editArea[i] != null && !editArea[i].isWordWrap()) {
-            isWordWrapDisabled = true;
-            if (!isShowLineNumbers) {
-               editArea[i].hideLineNumbers();
-            }
-            else {
-               editArea[i].showLineNumbers();
-            }
-         }
-      }
+       for (EditArea editArea1 : editArea) {
+           if (editArea1 != null && !editArea1.isWordWrap()) {
+               isWordWrapDisabled = true;
+               if (!isShowLineNumbers) {
+                   editArea1.hideLineNumbers();
+               } else {
+                   editArea1.showLineNumbers();
+               }
+           }
+       }
       if (isWordWrapDisabled) {
          fMenu.selectWordWrapItm(false);
       }
       if (!isShowLineNumbers) {
-         prefs.storePrefs(c.LINE_NUM_PREFS, c.HIDE);
+         prefs.storePrefs("lineNumbers", c.HIDE);
       }
       else {
-         prefs.storePrefs(c.LINE_NUM_PREFS, c.SHOW);
+         prefs.storePrefs("lineNumbers", c.SHOW);
       }
    }
 }

@@ -6,7 +6,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 
-import javax.swing.border.MatteBorder;
 import javax.swing.border.LineBorder;
 
 import javax.swing.event.CaretListener;

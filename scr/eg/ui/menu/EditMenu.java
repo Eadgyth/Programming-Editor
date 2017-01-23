@@ -3,7 +3,6 @@ package eg.ui.menu;
 import java.awt.Toolkit;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -64,10 +63,10 @@ public class EditMenu {
       outdent.addActionListener(e -> edit.outdentSelection());
       clearSpaces.addActionListener(e -> edit.clearSpaces());
       changeIndent.addActionListener(e -> edit.setNewIndentUnit());
-      for (int i = 0; i < selectLanguage.length; i++) {
-         selectLanguage[i].addActionListener(e ->
-               edit.changeLanguage(getNewLanguage(e)));
-      }
+       for (JCheckBoxMenuItem selectLanguage1 : selectLanguage) {
+           selectLanguage1.addActionListener(e ->
+                   edit.changeLanguage(getNewLanguage(e)));
+       }
    }
 
    private Languages getNewLanguage(ActionEvent e) {
@@ -104,9 +103,9 @@ public class EditMenu {
          }
       }
       menu.add(language);
-      for (int i = 0; i < selectLanguage.length; i++) {
-         language.add(selectLanguage[i]);
-      }
+       for (JCheckBoxMenuItem itm : selectLanguage) {
+           language.add(itm);
+       }
    }
 
    private void shortCuts() {

@@ -8,17 +8,25 @@ import java.io.IOException;
 import java.io.Writer;
 import java.io.FileWriter;
 
+import eg.utils.FileUtils;
+
+/**
+ * The preferences/settings stored in and read from .properties files
+ */
 public class Preferences {
    
-   private final static String[] PREFS_KEYS = { 
+   /**
+    * The name of the config file that is stored in a project folder.
+    * The value is eadconfig.properties.
+    */
+   public final static String CONFIG_FILE = "eadconfig.properties";
+
+   private final static String PREFS_FILE = "prefs.properties";
+   private final static String SETTINGS_FILE = "settings.properties"; 
+   
+   private final static String[] PREFS_KEYS = {
       "recentProject",
-      "recentMain",
-      "recentModule",
-      "recentSourceDir",
-      "recentExecDir",
-      "recentBuildName",
       "recentPath",
-      "recentSuffix",
       "font",
       "fontSize",
       "indentUnit",
@@ -41,95 +49,113 @@ public class Preferences {
 
    private Properties prop = null;
    
-   public String getProperty(String search) {
-      return prop.getProperty(search);
+   /**
+    * Returns the saved value for the specified property.
+    * <p>
+    * One of the read methods must be used before: {@link #readSettings()},
+    * {@link #readPrefs()}, {@link #readConfig(String)}
+    * @param property  the property whoch a value is searched for
+    * @return  the value for the specified property
+    */
+   public String getProperty(String property) {
+      if (prop == null) {
+         throw new IllegalStateException("No properties were read in");
+      }
+      return prop.getProperty(property);
    }
    
+   /**
+    * Reads in the properties stored in the settings.properties file
+    */
    public void readSettings() {
-      readProps("settings.properties");
+      readProps(SETTINGS_FILE);
    }
 
+   /**
+    * Reads in the properties stored in the prefs.properties file
+    */
    public void readPrefs() {
-      readProps("prefs.properties");
+      readProps(PREFS_FILE);
    }
    
+   /**
+    * Reads in the properties stored in the config.properties file
+    * @param dir  the directory where the config file is found
+    */
    public void readConfig(String dir) {
-      readProps(dir + File.separator + "eadconfig.properties");
+      readProps(dir + Constants.F_SEP + CONFIG_FILE);
    }
    
-   public void storeSettings(String newSetting) {
+   /** 
+    * Stores a new value for the single property in the
+    * settings.proprties file
+    * @param newValue  the new value for the property in the
+    * settings.properties file
+    */
+   public void storeSettings(String newValue) {
       readSettings();
-      String[] allKeys = {
-         "LocationOfJDK"
-      };
-      String[] allValues = {
-         prop.getProperty("LocationOfJDK")
-      };
-      allValues[0] = newSetting;
-      store("settings.properties", allKeys, allValues);
+      String[] allKeys = {"LocationOfJDK"};
+      String[] allValues = { newValue };
+      store(SETTINGS_FILE, allKeys, allValues);
    }
 
-   public void storePrefs(String propToUpdate, String newProperty) {
+   /**
+    * Stores a new value for the specified property in the prefs.properties
+    * file
+    * @param propToUpdate  the property which a new value is assigned to
+    * @param newValue  the new value for the property to update
+    */
+   public void storePrefs(String propToUpdate, String newValue) {
       readPrefs();
-
-      String[] allValues = {
-         prop.getProperty("recentProject"),
-         prop.getProperty("recentMain"),
-         prop.getProperty("recentModule"),
-         prop.getProperty("recentSourceDir"),
-         prop.getProperty("recentExecDir"),
-         prop.getProperty("recentBuildName"),
-         prop.getProperty("recentPath"),
-         prop.getProperty("recentSuffix"),
-         prop.getProperty("font"),
-         prop.getProperty("fontSize"),
-         prop.getProperty("indentUnit"),
-         prop.getProperty("LaF"),
-         prop.getProperty("toolbar"),
-         prop.getProperty("lineNumbers"),
-         prop.getProperty("statusbar"),
-         prop.getProperty("language"),
-         prop.getProperty("wordWrap"),
-      };
-      int i;
-      for (i = 0; i < PREFS_KEYS.length; i++) {
+      String[] allValues = new String[CONFIG_KEYS.length + PREFS_KEYS.length];
+      for (int i = 0; i < PREFS_KEYS.length; i++) {
+         allValues[i] = prop.getProperty(PREFS_KEYS[i]);
+      }
+      for (int i = PREFS_KEYS.length; i < allValues.length; i++) {
+         allValues[i] = prop.getProperty(CONFIG_KEYS[i - PREFS_KEYS.length]);
+      }
+      for (int i = 0; i < PREFS_KEYS.length; i++) {
          if (PREFS_KEYS[i].equals(propToUpdate)) {
-            allValues[i] = newProperty;
+            allValues[i] = newValue;
             break;
          }
       }
-
-      store("prefs.properties", PREFS_KEYS, allValues);
+      store(PREFS_FILE, PREFS_KEYS, allValues);
    }
 
-   public void storeConfig(String propToUpdate, String newProperty,
+   /**
+    * Stores a new value for the specified property in the config.properties
+    * file and creates the file if it does not exist
+    * @param propToUpdate  the property which a new value is assigned to
+    * @param newValue  the new value for the property to update
+    * @param dir  the directory where the eadconfig.properties file is
+    * found
+    */
+   public void storeConfig(String propToUpdate, String newValue,
          String dir) {
       
-      String configFile = dir + File.separator + "eadconfig.properties";
+      String configFile = dir + Constants.F_SEP + CONFIG_FILE;
       if (!new File(configFile).exists()) {
          createFile(configFile, CONFIG_KEYS);
       }
       readConfig(dir);
-
-      String[] allValues = {
-         prop.getProperty("recentMain"),
-         prop.getProperty("recentModule"),
-         prop.getProperty("recentSourceDir"),
-         prop.getProperty("recentExecDir"),
-         prop.getProperty("recentBuildName"),
-         prop.getProperty("recentSuffix")
-      };
-
-      int i;
-      for (i = 0; i < CONFIG_KEYS.length; i++) {
+      
+      String[] allValues = new String[CONFIG_KEYS.length];
+      for (int i = 0; i < allValues.length; i++) {
+         allValues[i] = prop.getProperty(CONFIG_KEYS[i]);
+      }
+      for (int i = 0; i < CONFIG_KEYS.length; i++) {
          if (CONFIG_KEYS[i].equals(propToUpdate)) {
-            allValues[i] = newProperty;
+            allValues[i] = newValue;
             break;
          }
       }
-
       store(configFile, CONFIG_KEYS, allValues);
    }
+   
+   //
+   //--private methods
+   //
    
    private void createFile(String file, String[] allKeys) {
       Writer writer = null;
@@ -142,13 +168,15 @@ public class Preferences {
          prop.store(writer, null);
       }
       catch (IOException e){
-        e.printStackTrace();
+         FileUtils.logStack(e);
       }
       finally {
          try {
-            writer.close();
-         } catch ( Exception e ) {
-            e.printStackTrace();
+            if (writer != null) {
+               writer.close();
+            }
+         } catch (IOException e) {
+            FileUtils.logStack(e);
          }
       }
    }
@@ -161,8 +189,8 @@ public class Preferences {
         prop = new Properties();
         prop.load(reader); 
       }
-      catch ( IOException e ){
-        e.printStackTrace();
+      catch (IOException e){
+        FileUtils.logStack(e);
       }
       finally {
          try {
@@ -170,7 +198,7 @@ public class Preferences {
                reader.close();
             }
          } catch (IOException e) {
-            e.printStackTrace();
+            FileUtils.logStack(e);
          }
       }
    }
@@ -185,13 +213,15 @@ public class Preferences {
          prop.store(writer, null);
       }
       catch (IOException e){
-        e.printStackTrace();
+        FileUtils.logStack(e);
       }
       finally {
          try {
-            writer.close();
-         } catch ( Exception e ) {
-            e.printStackTrace();
+            if (writer != null) {
+               writer.close();
+            }
+         } catch (IOException e) {
+            FileUtils.logStack(e);
          }
       }
    }

@@ -45,7 +45,7 @@ public class Edit {
    }
    
    /**
-    * Cuts selected text
+    * Cuts selected text and stores it to the system's clipboard
     */
    public void cut() {
       int start = txtDoc.selectionStart();

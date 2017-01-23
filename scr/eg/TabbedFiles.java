@@ -20,7 +20,6 @@ import eg.ui.MainWin;
 import eg.ui.TabbedPane;
 import eg.ui.EditArea;
 
-
 import eg.projects.ProjectActions;
 
 /**

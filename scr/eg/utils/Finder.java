@@ -1,7 +1,5 @@
 package eg.utils;
 
-import java.util.ArrayList;
-
 /**
  * Static methods to search for elements in text
  */

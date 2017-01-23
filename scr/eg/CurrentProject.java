@@ -15,7 +15,6 @@ import eg.projects.SelectedProject;
 
 import eg.document.TextDocument;
 
-import eg.utils.FileUtils;
 import eg.utils.JOptions;
 
 /**
@@ -77,7 +76,7 @@ public class CurrentProject {
     */
    public void setDocumentIndex(int docIndex) {
       currDoc = txtDoc[docIndex];
-      currExt = FileUtils.extension(currDoc.filepath());
+      currExt = extension(currDoc.filepath());
    }
 
    /**
@@ -224,7 +223,7 @@ public class CurrentProject {
          else {
             JOptions.warnMessage(
                     txtDoc[missingIndex].filename()
-                  + " cannot be not found anymore");
+                  + " cannot be found anymore");
          }
       }   
       finally {
@@ -313,6 +312,17 @@ public class CurrentProject {
       displSet.showProjectInfo(projToSet.getProjectName());
       projToSet.applyProject();
       enableActions(projToSet.getClass().getSimpleName());
+   }
+   
+   private String extension(String fileStr) {
+      int indDot = fileStr.lastIndexOf(".");
+      int indFileSep = fileStr.lastIndexOf(eg.Constants.F_SEP);
+      if (indDot > indFileSep) {
+         return fileStr.substring(indDot);
+      }
+      else {
+         return "";
+      }
    }
    
    private void enableActions(String className) {

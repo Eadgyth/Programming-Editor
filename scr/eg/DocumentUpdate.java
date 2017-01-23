@@ -1,11 +1,8 @@
 package eg;
 
-import java.io.File;
-
 //--Eadgyth--//
 import eg.plugin.PluginStarter;
 import eg.document.TextDocument;
-import eg.DisplaySetter;
 import eg.ui.EditArea;
 
 /**

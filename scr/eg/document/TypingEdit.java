@@ -32,7 +32,7 @@ import eg.Languages;
 import eg.ui.EditArea;
 import eg.utils.FileUtils;
 
-/** 
+/**
  * Responsible for the edits in the {@code EditArea} that shall happen 
  * during typing.
  * <p>
@@ -219,18 +219,15 @@ class TypingEdit {
       }
       EventQueue.invokeLater(() -> {
          if (isIndent) {
-            autoInd.closeBracketIndent(in, pos); // must be invoked later
+            autoInd.closeBracketIndent(in, pos);
          }
-         col.color(in, pos);        
+         col.color(in, pos);
       });
    }
 
    private void removeTextModify(DocumentEvent de, String in, int pos) {
       EventQueue.invokeLater( () -> {
          col.color(in, pos);
-         if (col.isBlockCmnt()) {
-            col.uncommentBlock(in, pos);
-         }
       });
    }
 

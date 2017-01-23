@@ -17,7 +17,6 @@ import javax.swing.JButton;
 //--Eadgyth--//
 import eg.Constants;
 import eg.Preferences;
-import eg.ui.IconFiles;
 
 /**
  * A frame that contains combo boxes to select font and font size
@@ -32,8 +31,6 @@ public class FontSettingWin {
    private final static String[] FONT_SIZES = {
       "10", "11", "12", "13", "14", "15", "16"
    };
-   
-   private static Constants c;
 
    private final JFrame frame = new JFrame("Font");
    private final JComboBox<String> selectFont
@@ -92,12 +89,12 @@ public class FontSettingWin {
    }
 
    private JPanel fontPnl() {
-      selectFont.setSelectedItem(prefs.getProperty(c.FONT_PREFS));
+      selectFont.setSelectedItem(prefs.getProperty(Constants.FONT));
       return comboBoxPnl(selectFont, "Font:   ");     
    }
 
    private JPanel sizePnl() {
-      selectSize.setSelectedItem(prefs.getProperty(c.FONT_SIZE_PREFS));
+      selectSize.setSelectedItem(prefs.getProperty(Constants.FONT_SIZE));
       return comboBoxPnl(selectSize, "Size:   ");     
    }
 

@@ -11,8 +11,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 
-//--Eadgyth--//
-import eg.Constants;
 
 /**
  * A frame that shows info about Eadgyth

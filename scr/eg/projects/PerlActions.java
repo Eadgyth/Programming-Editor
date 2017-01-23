@@ -1,11 +1,9 @@
 package eg.projects;
 
 import java.io.File;
-import java.awt.event.ActionListener;
 
 //--Eadgyth--//
 import eg.DisplaySetter;
-import eg.utils.JOptions;
 import eg.console.*;
 import eg.ui.filetree.FileTree;
 

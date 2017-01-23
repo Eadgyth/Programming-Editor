@@ -102,13 +102,14 @@ public class DisplaySettingWin {
    }
    
    private JPanel setLineNumberPanel() {      
-      if (Constants.SHOW.equals(prefs.getProperty(Constants.LINE_NUM_PREFS))) {
+      if (Constants.SHOW.equals(prefs.getProperty(Constants.LINE_NUMBERS))) {
          checkLineNumbers.setSelected(true);
       }
       else {
          checkLineNumbers.setSelected(false);
       }
-      return checkBxPnl(checkLineNumbers, "Show line numbers when wordwrap is disabled:");
+      return checkBxPnl(checkLineNumbers,
+            "Show line numbers when wordwrap is disabled:");
    }
    
    private JPanel setStatusBarPanel() {      

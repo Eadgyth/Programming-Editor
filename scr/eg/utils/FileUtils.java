@@ -6,23 +6,10 @@ import java.io.FileWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * Static methods to work with files
+ */
 public class FileUtils {
-   
-   /**
-    * @param fileStr  the String that represents a file
-    * @return  the extension of a file in the form of, e.g., [.txt]
-    * or the empty String if an extension can not be safely determined
-    */
-   public static String extension(String fileStr) {
-      int indDot = fileStr.lastIndexOf(".");
-      int indFileSep = fileStr.lastIndexOf(eg.Constants.F_SEP);
-      if (indDot > indFileSep) {
-         return fileStr.substring(indDot);
-      }
-      else {
-         return "";
-      }
-   }
    
    /**
     * Deletes a folder that contains data
@@ -54,7 +41,7 @@ public class FileUtils {
    }
    
    /**
-    * If the folder given by the specified directory is empts
+    * If the folder given by the specified directory is empty
     * @param dir  the directory
     * @return  if the folder specifies by the directory is empty
     */
@@ -73,14 +60,14 @@ public class FileUtils {
    public static void logMessage(Exception e) { 
       try (FileWriter writer = new FileWriter("log.txt", true)) {
          writer.write(e.getClass().getName() + ": " + e.getMessage()
-               + eg.Constants.SYS_LINE_SEP);
+               + eg.Constants.LINE_SEP);
       }
       catch(IOException ioe) {
          throw new RuntimeException("Could not write exception message to file", ioe);
       }
    }
    
-    public static void logStack(Exception e) { 
+   public static void logStack(Exception e) { 
       File logFile = new File("log.txt");
       try (PrintWriter pw = new PrintWriter(new FileOutputStream(logFile, true))) {
          e.printStackTrace(pw);

@@ -24,7 +24,6 @@ import eg.console.ConsolePanel;
  */
 public class CreateJar {
 
-   private static Constants c;
    private final ConsolePanel consPnl;
    
    /**
@@ -50,12 +49,12 @@ public class CreateJar {
     */
    public void createJar(String root, String main, String packageName,
          String classDir, String jarName) throws IOException {      
-      File manifest = new File(root + c.F_SEP + classDir
-            + c.F_SEP + "manifest.txt");
+      File manifest = new File(root + Constants.F_SEP + classDir
+            + Constants.F_SEP + "manifest.txt");
       createManifest(manifest, main, packageName);
 
       ProcessBuilder pb = new ProcessBuilder(commandForJar(root, jarName, classDir));
-      pb.directory(new File(root + c.F_SEP + classDir));
+      pb.directory(new File(root + Constants.F_SEP + classDir));
       pb.redirectErrorStream(true);
       Process p = null;
       p = pb.start();
@@ -76,9 +75,10 @@ public class CreateJar {
       Collections.addAll(commandForJar, "jar", "-cvfm", jarName + ".jar",
             "manifest.txt" );
       List<File> classesPath
-           = new SearchFiles().filteredFiles(path + c.F_SEP + classDir, ".class" );
+           = new SearchFiles().filteredFiles(path + Constants.F_SEP
+                   + classDir, ".class" );
       List<File> classesRelativePath
-           = relativePath(path + c.F_SEP + classDir, classesPath );
+           = relativePath(path + Constants.F_SEP + classDir, classesPath );
       for (File i : classesRelativePath) {
          commandForJar.add( i.toString());
       }
@@ -100,7 +100,7 @@ public class CreateJar {
    }
 
    private List<File> relativePath(String path, List<File> listOfFiles) {
-      if (path.endsWith(c.F_SEP)) {
+      if (path.endsWith(Constants.F_SEP)) {
          path = path.substring(0, path.length() - 1);
       }
       List<File> relativePath = new ArrayList<>();

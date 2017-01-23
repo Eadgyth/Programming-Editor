@@ -23,7 +23,6 @@ import eg.ui.TabbedPane;
 import eg.ui.menu.Menu;
 import eg.ui.filetree.FileTree;
 import eg.utils.FileUtils;
-import eg.projects.SelectedProject;
 import eg.plugin.PluginStarter;
 
 /**

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import java.awt.EventQueue;
-import java.awt.event.ActionListener;
 
 //--Eadgyth--//
 import eg.Constants;
@@ -19,8 +18,6 @@ import eg.ui.filetree.FileTree;
  * Represents a programming project in Java
  */
 public class JavaActions extends ProjectConfig implements ProjectActions {
-
-   private static Constants c;
 
    private final DisplaySetter displSet;
    private final Compile comp;
@@ -173,8 +170,8 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    }
 
    private boolean jarFileExists(String jarName) {
-      String execDir = getProjectPath() + c.F_SEP + getExecDirName();
-      return  new File(execDir + c.F_SEP + jarName + ".jar").exists();
+      String execDir = getProjectPath() + Constants.F_SEP + getExecDirName();
+      return new File(execDir + Constants.F_SEP + jarName + ".jar").exists();
    }
    
    private void setStartCommand() {

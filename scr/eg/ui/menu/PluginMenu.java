@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JCheckBoxMenuItem;
 
 //--Eadgyth--//
 import eg.DisplaySetter;
@@ -52,9 +51,9 @@ public class PluginMenu {
    
    private void selectPlugAct(ActionListener al) {
       if (selectPlugItm != null) {
-         for (int i = 0; i < selectPlugItm.length; i++) {
-            selectPlugItm[i].addActionListener(al);
-         }
+          for (JMenuItem itm : selectPlugItm) {
+              itm.addActionListener(al);
+          }
       }
    }
    

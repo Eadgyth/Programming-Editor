@@ -63,9 +63,7 @@ public class FileTree extends Observable {
    private final JButton   closeBt   = new JButton(IconFiles.closeIcon);
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
    private final PopupMenu popupDir  = new PopupMenu(PopupMenu.FOLDER_OPT);
-   
-   private static Constants c;
-   
+      
    private JTree tree = null;
    private DefaultTreeModel model;
    private DefaultMutableTreeNode root;
@@ -178,14 +176,13 @@ public class FileTree extends Observable {
    private File[] sortFoldersAndFiles(File[] fList) {
       List<File> allFiles = new ArrayList<>();
       List<File> files    = new ArrayList<>();
-      for (int i = 0; i < fList.length; i++ ) {
-         if (fList[i].isDirectory()) {
-            allFiles.add(fList[i]);
-         }
-         else {
-            files.add(fList[i]);
-         }
-      }
+      for (File f : fList) {
+           if (f.isDirectory()) {
+               allFiles.add(f);
+           } else {
+               files.add(f);
+           }
+       }
       allFiles.addAll(files);
       File[] sortedList = allFiles.toArray(new File[fList.length]);
       return sortedList;
@@ -278,8 +275,9 @@ public class FileTree extends Observable {
    }
    
    private boolean isInDeletableDir(File file) {
-      return file.toString().endsWith(c.F_SEP + deletableDir)
-            || file.toString().contains(c.F_SEP + deletableDir + c.F_SEP);
+      return file.toString().endsWith(Constants.F_SEP + deletableDir)
+            || file.toString().contains(Constants.F_SEP
+                  + deletableDir + Constants.F_SEP);
    }      
    
    private String deleteMessage(File f) {

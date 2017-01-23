@@ -3,7 +3,6 @@ package eg.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Font;
 
 import javax.swing.JTextPane;
@@ -29,10 +28,9 @@ import eg.Constants;
  * <p>
  * The usage of the copy, cut, paste keys is disabled.
  */
-public class EditArea {
+public final class EditArea {
 
    private final static Preferences PREFS = new Preferences();
-   private static Constants c;
 
    private final JPanel scrolledArea = new JPanel(new BorderLayout());
    private final JTextPane textArea = new JTextPane();
@@ -61,7 +59,7 @@ public class EditArea {
 
    public EditArea() {
       PREFS.readPrefs(); 
-      scrolledArea.setBorder(c.LOW_ETCHED);
+      scrolledArea.setBorder(Constants.LOW_ETCHED);
       initTextArea();
       initLineNumbersArea();
       initFont();
@@ -69,8 +67,8 @@ public class EditArea {
       initScrollSimpleArea();
       intitScrollWrapArea();
       boolean isLineNumbers =
-            c.SHOW.equals(PREFS.getProperty(c.LINE_NUM_PREFS));
-      if ("enabled".equals(PREFS.getProperty("wordWrap"))) {
+            Constants.SHOW.equals(PREFS.getProperty(Constants.LINE_NUMBERS));
+      if (Constants.ENABLED.equals(PREFS.getProperty("wordWrap"))) {
          enableWordWrap();
       }
       else {
@@ -123,7 +121,7 @@ public class EditArea {
       Font fontNew = new Font(font, Font.PLAIN, fontSize);
       lineArea.setFont(fontNew);
       textArea.setFont(fontNew );
-      PREFS.storePrefs(c.FONT_SIZE_PREFS, String.valueOf(fontSize));
+      PREFS.storePrefs(Constants.FONT_SIZE, String.valueOf(fontSize));
    }
 
    /**
@@ -135,7 +133,7 @@ public class EditArea {
       Font fontNew = new Font(font, Font.PLAIN, fontSize);
       lineArea.setFont(fontNew);
       textArea.setFont(fontNew);
-      PREFS.storePrefs(c.FONT_PREFS, font);
+      PREFS.storePrefs(Constants.FONT, font);
    }
    
    /**
@@ -231,7 +229,7 @@ public class EditArea {
       scrollRowArea.setBorder(null);
       scrollRowArea.setViewportView(disabledWordwrapArea);
       scrollLines.setViewportView(lineArea);
-      scrollLines.setBorder(new MatteBorder(0, 0, 0, 1, c.BORDER_GRAY));
+      scrollLines.setBorder(new MatteBorder(0, 0, 0, 1, Constants.BORDER_GRAY));
       //
       // link scrolling of row number area to text area
       scrollLines.getVerticalScrollBar().setModel

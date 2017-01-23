@@ -126,7 +126,8 @@ class Coloring {
       else {
          chunk = in;
       }
-      if (!isBlockCmnt || !isInBlock(in, pos)) {
+      boolean isInBlock = isInBlock(in, pos);
+      if (!isBlockCmnt || !isInBlock) {
          doc.setCharacterAttributes(posStart, chunk.length(), normalSet, false);
          if (isFlags) {
              for (String f : flags) {
@@ -169,9 +170,9 @@ class Coloring {
             lineComments(chunk, posStart);
          }
       }
-      if (isBlockCmnt) {               
-         blockComments(in);       
-      }       
+      if (isBlockCmnt) {            
+         blockComments(in);
+      }     
    }
 
    private void keys(String in, String query, SimpleAttributeSet set, int pos) {
@@ -203,7 +204,8 @@ class Coloring {
    }
    
    /* A word that follows a flag (like $) but whose length is unknown */
-   private void withFlag(String in, String query, SimpleAttributeSet set, int pos) {
+   private void withFlag(String in, String query,
+         SimpleAttributeSet set, int pos) {
       int index = 0;
       int nextPos = 0;
       while (index != -1) {
@@ -256,18 +258,12 @@ class Coloring {
          nextPos = 1;
       }
    }
-   
-   private boolean isInBlock(String in, int pos) {
-      int indBlockStart = Syntax.indLastBlockStart(in, pos, blockCmntStart,
-            blockCmntEnd);
-      int indBlockEnd   = Syntax.indNextBlockEnd(in, pos, blockCmntStart,
-            blockCmntEnd);
-      return indBlockStart != -1 & indBlockEnd != -1;
-   }
     
    private void blockComments(String in) {
       int indStart = 0;
       int nextPos = 0;
+      int indFirstStart = in.indexOf(blockCmntStart, indStart);
+      int indFirstEnd = in.indexOf(blockCmntEnd, indStart);
       while (indStart != -1) {
          indStart = in.indexOf(blockCmntStart, indStart + nextPos);
          if (indStart != -1 && !Syntax.isInQuotes(in, indStart)) {       
@@ -275,19 +271,19 @@ class Coloring {
             if (indEnd != -1 && !Syntax.isInQuotes(in, indEnd)) {
                int indNextStart = in.substring
                      (indStart + 1, indEnd).indexOf(blockCmntStart, 0);
-
                if (indNextStart == -1) {
                   int length = indEnd - indStart + blockCmntEnd.length();
                   doc.setCharacterAttributes(indStart, length, comSet, false);
-                  //
-                  // maybe part of an existing block is outcommented
                   if (isSingleLines) {
                      uncommentBlock(in, indEnd + 2);
                      uncommentBlock(in, indStart - 2);
+                     if (indFirstStart > indFirstEnd) {
+                        uncommentBlock(in, 0);
+                     }
                   }
                }
             }
-         }         
+         }                     
          nextPos = 1;
       }
    }
@@ -299,9 +295,8 @@ class Coloring {
             blockCmntEnd);
       int indBlockEnd   = Syntax.indNextBlockEnd(in, pos, blockCmntStart,
             blockCmntEnd);
-
       if (indBlockStart != -1 && indBlockEnd == -1) {
-         String toUncomment = in.substring(indBlockStart, pos);
+         String toUncomment = in.substring(indBlockStart, pos + 2);
          enableSingleLines(false);
          color(toUncomment, indBlockStart);
          enableSingleLines(true);
@@ -312,6 +307,14 @@ class Coloring {
          color(toUncomment, pos);
          enableSingleLines(true);
       }
+   }
+   
+   private boolean isInBlock(String in, int pos) {
+      int indBlockStart = Syntax.indLastBlockStart(in, pos, blockCmntStart,
+            blockCmntEnd);
+      int indBlockEnd   = Syntax.indNextBlockEnd(in, pos, blockCmntStart,
+            blockCmntEnd);
+      return indBlockStart != -1 & indBlockEnd != -1;
    }
    
    private void setStyles() {
