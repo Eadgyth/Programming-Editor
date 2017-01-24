@@ -19,6 +19,8 @@ import eg.ui.filetree.FileTree;
  */
 public class JavaActions extends ProjectConfig implements ProjectActions {
 
+   private final static String F_SEP = Constants.F_SEP;
+
    private final DisplaySetter displSet;
    private final Compile comp;
    private final CreateJar jar;
@@ -28,19 +30,17 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
 
    private String startCommand = "";
 
-   public JavaActions(DisplaySetter displSet, ProcessStarter proc,
+   JavaActions(DisplaySetter displSet, ProcessStarter proc,
          ConsolePanel consPnl, FileTree fileTree) {
 
       super(new SettingsWin(
-               "Name of main class",
-               "Package containing the main class",
-               true,
-               true,
-               true,
-               "jar file"
-            ),
-            ".java"
-      );
+                  "Name of main class",
+                  "Package containing the main class",
+                  true,
+                  true,
+                  true,
+                  "jar file"),
+            Constants.JAVA_EXT);
       this.displSet = displSet;
       this.proc = proc;
       this.consPnl = consPnl;
@@ -157,7 +157,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
          JOptions.infoMessage("Saved jar file named " + jarName);
       }
       catch (IOException e) {
-         FileUtils.logMessage(e);
+         FileUtils.logStack(e);
       }        
    }
 
@@ -170,8 +170,8 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    }
 
    private boolean jarFileExists(String jarName) {
-      String execDir = getProjectPath() + Constants.F_SEP + getExecDirName();
-      return new File(execDir + Constants.F_SEP + jarName + ".jar").exists();
+      String execDir = getProjectPath() + F_SEP + getExecDirName();
+      return new File(execDir + F_SEP + jarName + ".jar").exists();
    }
    
    private void setStartCommand() {

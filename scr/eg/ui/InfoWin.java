@@ -50,7 +50,7 @@ public class InfoWin {
       infoWin.setLocation(650, 100);
       infoWin.setSize(300,200);
       infoWin.setContentPane(combine);
-      infoWin.setIconImage(IconFiles.eadgythIcon.getImage());
+      infoWin.setIconImage(IconFiles.EADGYTH_ICON.getImage());
       infoWin.setVisible(true);
 
       closeInfo.addActionListener(e -> infoWin.setVisible(false));  

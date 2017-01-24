@@ -288,8 +288,8 @@ public class TextDocument {
       try {
          type.doc().insertString(pos, toInsert, type.normalSet());
       }
-      catch (BadLocationException ble) {
-         ble.printStackTrace();
+      catch (BadLocationException e) {
+         FileUtils.logStack(e);
       }
    }
 
@@ -302,8 +302,8 @@ public class TextDocument {
       try {
          type.doc().remove(start, length);
       }
-      catch (BadLocationException ble) {
-         ble.printStackTrace();
+      catch (BadLocationException e) {
+         FileUtils.logStack(e);;
       }
    }
 
@@ -405,17 +405,18 @@ public class TextDocument {
    private void openSettings() {
       setContent();
       type.addAllRowNumbers(content);
-      if (filename.endsWith(".java")
+      if (filename.endsWith(Constants.JAVA_EXT)
             || (filename.length() == 0
             & Languages.JAVA.toString().equals(language))) {
          changeToJava();
       }
-      else if (filename.endsWith(".html")
+      else if (filename.endsWith(Constants.HTML_EXT)
             || (filename.length() == 0
             & Languages.HTML.toString().equals(language))) {
          changeToHtml();
       }
-      else if (filename.endsWith(".pl") || filename.endsWith(".pm")
+      else if (filename.endsWith(Constants.PERL_PL_EXT)
+            || filename.endsWith(Constants.PERL_PM_EXT)
             || (filename.length() == 0
             & Languages.PERL.toString().equals(language))) {
          changeToPerl();

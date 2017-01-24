@@ -18,12 +18,10 @@ public abstract class ProjectConfig implements Configurable {
    
    private final static Preferences PREFS = new Preferences();
    private final static Preferences CONFIG = new Preferences();
-   
-   private static Constants c;
+   private final static String F_SEP = Constants.F_SEP;
 
-   private final SettingsWin setWin;
-   private final String suffix;
-
+   private SettingsWin setWin = null;
+   private String suffix;
    private String projectPath = "";
    private String mainFile = "";
    private String moduleDir = "";
@@ -32,11 +30,6 @@ public abstract class ProjectConfig implements Configurable {
    private String args = "";
    private String buildName = "";
    
-   /**
-    * @param setWin  the reference to an object of {@link SettingsWin}
-    * which is set up to ask for the desired inputs
-    * @param suffix  the extension of the project's main file
-    */
    public ProjectConfig(SettingsWin setWin, String suffix) {
       this.setWin = setWin;
       this.suffix = suffix;
@@ -167,9 +160,8 @@ public abstract class ProjectConfig implements Configurable {
     */
    protected boolean mainProgramFileExists(String suffix) { 
       File target
-            = new File(projectPath + Constants.F_SEP + execDir
-                    + Constants.F_SEP + moduleDir
-                    + Constants.F_SEP + mainFile + suffix);
+            = new File(projectPath + F_SEP + execDir + F_SEP + moduleDir
+            + F_SEP + mainFile + suffix);
       return target.exists();
    }
    
@@ -214,7 +206,7 @@ public abstract class ProjectConfig implements Configurable {
     */
    private String findRootByFile(String path, String file) {
       File searched = new File(path);
-      String relToRootStr = Constants.F_SEP + file;
+      String relToRootStr = F_SEP + file;
       String existingPath = path + relToRootStr;
       boolean exists = new File(existingPath).exists();
       while(!exists) {
@@ -290,9 +282,9 @@ public abstract class ProjectConfig implements Configurable {
          dirRelToRoot += moduleDir;
       }
       else if (sourceDir.length() > 0 & moduleDir.length() > 0) {
-         dirRelToRoot += sourceDir + Constants.F_SEP + moduleDir;
+         dirRelToRoot += sourceDir + F_SEP + moduleDir;
       }     
-      return dirRelToRoot + Constants.F_SEP + mainFile + suffix;
+      return dirRelToRoot + F_SEP + mainFile + suffix;
    }      
    
    private void getTextFieldsInput() {
@@ -323,7 +315,7 @@ public abstract class ProjectConfig implements Configurable {
          }
          else {
             File configFile;
-            configFile = new File(projectPath + Constants.F_SEP
+            configFile = new File(projectPath + F_SEP
                      + Preferences.CONFIG_FILE);
             if (configFile.exists()) {
                int res = JOptions.confirmYesNo(

@@ -41,8 +41,7 @@ public class DocumentUpdate {
     * {@link TextDocument} and {@link EditArea}
     */
    public void updateDocument(int index) {
-      txtDoc[index].requestFocus();
-      edit.setTextObject(txtDoc[index]);
+      edit.setTextDocument(txtDoc[index]);
       plugStart.setTextDocument(txtDoc[index]);
       displSet.setEditAreaIndex(index);
    }

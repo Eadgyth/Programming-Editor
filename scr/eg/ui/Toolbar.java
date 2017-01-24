@@ -16,17 +16,17 @@ public class Toolbar {
 
    private final JToolBar toolbar = new JToolBar(JToolBar.HORIZONTAL);
 
-   private final JButton openBt    = new JButton(IconFiles.openIcon);
-   private final JButton saveBt    = new JButton(IconFiles.saveIcon);
-   private final JButton undoBt    = new JButton(IconFiles.undoIcon);
-   private final JButton redoBt    = new JButton(IconFiles.redoIcon);
-   private final JButton cutBt     = new JButton(IconFiles.cutIcon);
-   private final JButton copyBt    = new JButton(IconFiles.copyIcon);
-   private final JButton pasteBt   = new JButton(IconFiles.pasteIcon);
-   private final JButton indentBt  = new JButton(IconFiles.indentIcon);
-   private final JButton outdentBt = new JButton(IconFiles.outdentIcon); 
-   private final JButton compileBt = new JButton(IconFiles.compileIcon);
-   private final JButton runBt     = new JButton(IconFiles.runIcon);
+   private final JButton openBt    = new JButton(IconFiles.OPEN_ICON);
+   private final JButton saveBt    = new JButton(IconFiles.SAVE_ICON);
+   private final JButton undoBt    = new JButton(IconFiles.UNDO_ICON);
+   private final JButton redoBt    = new JButton(IconFiles.REDO_ICON);
+   private final JButton cutBt     = new JButton(IconFiles.CUT_ICON);
+   private final JButton copyBt    = new JButton(IconFiles.COPY_ICON);
+   private final JButton pasteBt   = new JButton(IconFiles.PASTE_ICON);
+   private final JButton indentBt  = new JButton(IconFiles.INDENT_ICON);
+   private final JButton outdentBt = new JButton(IconFiles.OUTDENT_ICON); 
+   private final JButton compileBt = new JButton(IconFiles.COMPILE_ICON);
+   private final JButton runBt     = new JButton(IconFiles.RUN_ICON);
    
    public Toolbar() {
       initToolbar();

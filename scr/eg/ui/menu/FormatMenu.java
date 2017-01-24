@@ -13,9 +13,9 @@ public class FormatMenu {
    
    private final Preferences prefs = new Preferences();
    
-   private final JMenu     menu   = new JMenu("Format");
-   private final JMenuItem font   = new JMenuItem("Font ...");
-   private final JCheckBoxMenuItem wordWrap
+   private final JMenu     menu     = new JMenu("Format");
+   private final JMenuItem fontItm   = new JMenuItem("Font ...");
+   private final JCheckBoxMenuItem wordWrapItm
                                   = new JCheckBoxMenuItem("Wordwrap");
                              
    FormatMenu() {
@@ -23,14 +23,14 @@ public class FormatMenu {
    }
    
    public void registerAct(FontSetter fontSet, DisplaySetter displSet) {
-      font.addActionListener(e ->
+      fontItm.addActionListener(e ->
             fontSet.makeFontSetWinVisible(true));
-      wordWrap.addActionListener(e ->
-            displSet.changeWordWrap(wordWrap.getState()));
+      wordWrapItm.addActionListener(e ->
+            displSet.changeWordWrap(wordWrapItm.getState()));
    }
    
    public void selectWordWrapItm(boolean select) {
-      wordWrap.setState(select);
+      wordWrapItm.setState(select);
    }
    
    JMenu getMenu() {
@@ -39,10 +39,10 @@ public class FormatMenu {
    
    private void assembleMenu() {
       prefs.readPrefs();
-      menu.add(font);
-      menu.add(wordWrap);
+      menu.add(fontItm);
+      menu.add(wordWrapItm);
       if ("enabled".equals(prefs.getProperty("wordWrap"))) {
-         wordWrap.setState(true);
+         wordWrapItm.setState(true);
       }
    }
 }

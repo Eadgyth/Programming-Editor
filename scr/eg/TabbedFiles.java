@@ -29,11 +29,11 @@ import eg.projects.ProjectActions;
 public class TabbedFiles implements Observer{
 
    private final TextDocument[] txtDoc = new TextDocument[10];
-   private final EditArea[] editArea = new EditArea[10];
+   private final EditArea[] edArea = new EditArea[10];
    private final FileChooserOpen fo = new FileChooserOpen();
    private final FileChooserSave fs = new FileChooserSave();
    private final Preferences prefs = new Preferences();   
-   private final TabbedPane tabPane;
+   private final TabbedPane tp;
    private final MainWin mw;
    private final DocumentUpdate docUpdate;
    private final ChangeListener changeListener;
@@ -42,20 +42,20 @@ public class TabbedFiles implements Observer{
    /* The index of the selected tab */
    private int iTab = 0;
    
-   public TabbedFiles(TabbedPane tabPane, MainWin mw, CurrentProject currProj,
+   public TabbedFiles(TabbedPane tp, MainWin mw, CurrentProject currProj,
          DocumentUpdate docUpdate) {
 
-      this.tabPane = tabPane;
+      this.tp = tp;
       this.mw = mw;
       this.docUpdate = docUpdate;
       this.currProj = currProj;
 
       currProj.setDocumentArr(txtDoc);
-      docUpdate.setDocumentArrays(txtDoc, editArea);
+      docUpdate.setDocumentArrays(txtDoc, edArea);
       changeListener = (ChangeEvent changeEvent) -> {
          changeTabEvent(changeEvent);
       };
-      tabPane.changeListen(changeListener);
+      tp.changeListen(changeListener);
       prefs.readPrefs();  
       newEmptyTab();
    }
@@ -73,7 +73,7 @@ public class TabbedFiles implements Observer{
     * @return  this array of type {@link EditArea}
     */
    public EditArea[] getEditArea() {
-      return editArea;
+      return edArea;
    }
 
    public void focusInSelectedTab() { 
@@ -84,10 +84,10 @@ public class TabbedFiles implements Observer{
     * Opens a new 'unnamed' Tab to which no file is assigned
     */
    public final void newEmptyTab() {
-      editArea[tabPane.tabCount()] = new EditArea();
-      txtDoc[tabPane.tabCount()] = new TextDocument(editArea[tabPane.tabCount()]);
-      addNewTab("unnamed", editArea[tabPane.tabCount()].scrolledArea(),
-            tabPane.tabCount());       
+      edArea[tp.nTabs()] = new EditArea();
+      txtDoc[tp.nTabs()] = new TextDocument(edArea[tp.nTabs()]);
+      addNewTab("unnamed", edArea[tp.nTabs()].scrolledArea(),
+            tp.nTabs());       
    }
    
    /**
@@ -142,7 +142,7 @@ public class TabbedFiles implements Observer{
     * in all tabs
     */
    public void saveAll() {
-      for (int count = 0; count < tabPane.tabCount(); count++) {
+      for (int count = 0; count < tp.nTabs(); count++) {
          if (txtDoc[count].filename().length() > 0) {
             txtDoc[count].saveToFile();
          } 
@@ -166,7 +166,7 @@ public class TabbedFiles implements Observer{
          currProj.setDocumentIndex(iTab);
          currProj.retrieveProject();
          currProj.updateFileTree(txtDoc[iTab].dir());
-         tabPane.changeTabTitle(iTab, txtDoc[iTab].filename());
+         tp.changeTabTitle(iTab, txtDoc[iTab].filename());
          mw.displayFrameTitle(txtDoc[iTab].filepath());
          prefs.storePrefs("recentPath", txtDoc[iTab].dir());
       }
@@ -204,14 +204,14 @@ public class TabbedFiles implements Observer{
     */
    public void tryCloseAll() {
       int count = unsavedTab();
-      if (count == tabPane.tabCount()) {     
-         while(tabPane.tabCount() > 0) {
-            tabPane.removeTab(iTab);
+      if (count == tp.nTabs()) {     
+         while(tp.nTabs() > 0) {
+            tp.removeTab(iTab);
          }
          newEmptyTab();
       }
       else {
-         tabPane.selectTab(count);                 
+         tp.selectTab(count);                 
          int res = saveOrCloseOption(count);
          if (res == JOptionPane.YES_OPTION) {
             saveOrSaveAs();
@@ -230,11 +230,11 @@ public class TabbedFiles implements Observer{
     */
    public void tryExit() {
       int count = unsavedTab();
-      if (count == tabPane.tabCount()) {
+      if (count == tp.nTabs()) {
          System.exit(0);
       }
       else {
-         tabPane.selectTab(count);                 
+         tp.selectTab(count);                 
          int res = saveOrCloseOption(count);
          if (res == JOptionPane.YES_OPTION) {
             saveOrSaveAs();
@@ -256,7 +256,7 @@ public class TabbedFiles implements Observer{
          JOptions.warnMessage(file.getName() + " is open");
          return;
       }
-      if (tabPane.tabCount() == txtDoc.length) {
+      if (tp.nTabs() == txtDoc.length) {
          JOptions.warnMessage("The maximum number of tabs is reached.");
          return;
       }
@@ -264,17 +264,17 @@ public class TabbedFiles implements Observer{
       int openIndex = 0;
       boolean isUnnamedBlank = txtDoc[openIndex].filename().length() == 0
             && txtDoc[openIndex].textLength() == 0;
-      if (isUnnamedBlank && tabPane.tabCount() == 1) { 
+      if (isUnnamedBlank && tp.nTabs() == 1) { 
          txtDoc[openIndex].openFile(file);
       }
       else {
-         openIndex = tabPane.tabCount();       
-         editArea[openIndex] = new EditArea();
-         txtDoc[openIndex] = new TextDocument(editArea[openIndex]);
+         openIndex = tp.nTabs();       
+         edArea[openIndex] = new EditArea();
+         txtDoc[openIndex] = new TextDocument(edArea[openIndex]);
          txtDoc[openIndex].openFile(file);
       }
       addNewTab(txtDoc[openIndex].filename(),
-      editArea[openIndex].scrolledArea(), openIndex);
+      edArea[openIndex].scrolledArea(), openIndex);
       mw.displayFrameTitle(txtDoc[openIndex].filepath());         
       currProj.retrieveProject();      
       prefs.storePrefs("recentPath", txtDoc[openIndex].dir());
@@ -282,7 +282,7 @@ public class TabbedFiles implements Observer{
 
    private boolean isFileOpen(String fileToOpen) {
       boolean isFileOpen = false;
-      for (int i = 0; i < tabPane.tabCount(); i++) {
+      for (int i = 0; i < tp.nTabs(); i++) {
          if (txtDoc[i].filepath().equals(fileToOpen)) {
            isFileOpen = true;
          }
@@ -292,9 +292,9 @@ public class TabbedFiles implements Observer{
    
    private void addNewTab(String filename, JPanel pnl, int index) {
       JButton closeBt = new JButton();
-      tabPane.addNewTab(filename, pnl, closeBt, index);
+      tp.addNewTab(filename, pnl, closeBt, index);
       closeBt.addActionListener(e -> {
-         iTab = tabPane.iTabMouseOver();
+         iTab = tp.iTabMouseOver();
          tryClose();
       });
    }
@@ -310,7 +310,7 @@ public class TabbedFiles implements Observer{
    
    private int unsavedTab() {
       int count;
-      for (count = 0; count < tabPane.tabCount(); count++) { 
+      for (count = 0; count < tp.nTabs(); count++) { 
          if (!txtDoc[count].isContentSaved()) {
             break;
          }
@@ -320,15 +320,15 @@ public class TabbedFiles implements Observer{
 
    private void close() {
       int count = iTab; // remember the index of the tab that will be removed
-      tabPane.removeTab(iTab);
-      for (int i = count; i < tabPane.tabCount(); i++) {
+      tp.removeTab(iTab);
+      for (int i = count; i < tp.nTabs(); i++) {
          txtDoc[i] = txtDoc[i + 1];
-         editArea[i] = editArea[i+1];
+         edArea[i] = edArea[i+1];
       }
-      if (tabPane.tabCount() > 0) {
-         txtDoc[tabPane.tabCount()] = null;
-         editArea[tabPane.tabCount()] = null;
-         int index = tabPane.selectedIndex();
+      if (tp.nTabs() > 0) {
+         txtDoc[tp.nTabs()] = null;
+         edArea[tp.nTabs()] = null;
+         int index = tp.selectedIndex();
          mw.displayFrameTitle(txtDoc[index].filepath());
       }
       else { 
@@ -340,6 +340,7 @@ public class TabbedFiles implements Observer{
       JTabbedPane sourceTb = (JTabbedPane) changeEvent.getSource();
       iTab = sourceTb.getSelectedIndex();
       if (iTab > -1) {
+         txtDoc[iTab].requestFocus();
          docUpdate.updateDocument(iTab);
          currProj.setDocumentIndex(iTab);
          mw.displayFrameTitle(txtDoc[iTab].filepath());

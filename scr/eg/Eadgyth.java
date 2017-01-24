@@ -93,7 +93,7 @@ public class Eadgyth {
               | IllegalAccessException 
               | InstantiationException 
               | UnsupportedLookAndFeelException e) {
-            FileUtils.logMessage(e);
+            FileUtils.logStack(e);
          }
       }
       int topTabInset = 0;

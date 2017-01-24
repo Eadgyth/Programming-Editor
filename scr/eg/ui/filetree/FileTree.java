@@ -59,8 +59,8 @@ public class FileTree extends Observable {
    private final JToolBar toolbar;
    private final JButton upBt        = new JButton(UIManager.getIcon(
                                        "FileChooser.upFolderIcon"));
-   private final JButton   renewBt   = new JButton(IconFiles.refreshIcon);
-   private final JButton   closeBt   = new JButton(IconFiles.closeIcon);
+   private final JButton   renewBt   = new JButton(IconFiles.REFRESH_ICON);
+   private final JButton   closeBt   = new JButton(IconFiles.CLOSE_ICON);
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
    private final PopupMenu popupDir  = new PopupMenu(PopupMenu.FOLDER_OPT);
       

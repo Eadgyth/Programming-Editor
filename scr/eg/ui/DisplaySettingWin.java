@@ -75,7 +75,7 @@ public class DisplaySettingWin {
       frame.pack();
       frame.setVisible(false);
       frame.setAlwaysOnTop(true);
-      frame.setIconImage(IconFiles.eadgythIcon.getImage());
+      frame.setIconImage(IconFiles.EADGYTH_ICON.getImage());
    }
    
    private JPanel allPanels() {

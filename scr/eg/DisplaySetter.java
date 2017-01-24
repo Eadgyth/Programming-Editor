@@ -104,7 +104,7 @@ public class DisplaySetter {
     * @return  true if the console panel is shown
     */
    public boolean isConsoleSelected() {
-      return vMenu.isConsoleSelected();
+      return vMenu.isConsoleItmSelected();
    }
 
    /**
@@ -114,7 +114,7 @@ public class DisplaySetter {
     */
    public void setShowConsoleState(boolean show) {
       showConsole(show);
-      vMenu.selectShowConsole(show);
+      vMenu.selectConsoleItm(show);
    }
 
    /**
@@ -124,7 +124,7 @@ public class DisplaySetter {
     */
    public void setShowFileViewState(boolean show) {
       showFileView(show);
-      vMenu.selectShowFileView(show);
+      vMenu.selectFileViewItm(show);
    }
 
    /**
@@ -134,7 +134,7 @@ public class DisplaySetter {
     */
    public void setShowFunctionState(boolean show) {
       showFunction(show);
-      vMenu.selectShowFunction(show);
+      vMenu.selectFunctionItm(show);
    }
 
    /**
@@ -238,13 +238,14 @@ public class DisplaySetter {
    private void applyChanges() {
       boolean isToolbar = displSetWin.isShowToolbar();
       if (this.isShowToolbar != isToolbar) {
-         mw.showToolbar(isShowToolbar);
+         mw.showToolbar(isToolbar);
          this.isShowToolbar = isToolbar;
       }
 
       boolean isStatusbar = displSetWin.isShowStatusbar();
+      System.out.println("statusbar");
       if (this.isShowStatusbar != isStatusbar) {
-         mw.showStatusbar(isShowStatusbar);
+         mw.showStatusbar(isStatusbar);
          this.isShowStatusbar = isStatusbar;
       }
 

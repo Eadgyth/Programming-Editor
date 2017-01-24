@@ -33,11 +33,11 @@ public class ConsolePanel {
    private final JToolBar  toolbar;
 
    private final JButton   setCmdBt   = new JButton("Cmd...");
-   private final JButton   runBt      = new JButton(IconFiles.runConsIcon);
-   private final JButton   runEadBt   = new JButton(IconFiles.eadgythIcon);
-   private final JButton   stopBt     = new JButton(IconFiles.stopProcessIcon);
-   private final JButton   clearBt    = new JButton(IconFiles.clearIcon);
-   private final JButton   closeBt    = new JButton(IconFiles.closeIcon);
+   private final JButton   runBt      = new JButton(IconFiles.RUN_CMD_ICON);
+   private final JButton   runEadBt   = new JButton(IconFiles.EADGYTH_ICON);
+   private final JButton   stopBt     = new JButton(IconFiles.STOP_PROCESS_ICON);
+   private final JButton   clearBt    = new JButton(IconFiles.CLEAR_ICON);
+   private final JButton   closeBt    = new JButton(IconFiles.CLOSE_ICON);
 
    private final JScrollPane scroll   = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,

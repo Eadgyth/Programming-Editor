@@ -27,16 +27,16 @@ public class EditMenu {
 
     /* Edit */
    private final JMenu     menu         = new JMenu("Edit");
-   private final JMenuItem undo         = new JMenuItem("Undo", IconFiles.undoIcon);
-   private final JMenuItem redo         = new JMenuItem("Redo", IconFiles.redoIcon);
+   private final JMenuItem undo         = new JMenuItem("Undo", IconFiles.UNDO_ICON);
+   private final JMenuItem redo         = new JMenuItem("Redo", IconFiles.REDO_ICON);
    private final JMenuItem selectAll    = new JMenuItem("Select all");
-   private final JMenuItem cut          = new JMenuItem("Cut", IconFiles.cutIcon);
-   private final JMenuItem copy         = new JMenuItem("Copy", IconFiles.copyIcon);
-   private final JMenuItem paste        = new JMenuItem("Paste", IconFiles.pasteIcon);
-   private final JMenuItem indent
-          = new JMenuItem("Indent selection more ",IconFiles.indentIcon);
-   private final JMenuItem outdent
-         = new JMenuItem("Indent selection less", IconFiles.outdentIcon);
+   private final JMenuItem cut          = new JMenuItem("Cut", IconFiles.CUT_ICON);
+   private final JMenuItem copy         = new JMenuItem("Copy", IconFiles.COPY_ICON);
+   private final JMenuItem paste        = new JMenuItem("Paste", IconFiles.PASTE_ICON);
+   private final JMenuItem indent       = new JMenuItem("Indent selection more ",
+                                          IconFiles.INDENT_ICON);
+   private final JMenuItem outdent      = new JMenuItem("Indent selection less",
+                                          IconFiles.OUTDENT_ICON);
    private final JMenuItem changeIndent = new JMenuItem("Indent/outdent length");
    private final JMenuItem clearSpaces  = new JMenuItem("Clear spaces");
    private final JMenu     language     = new JMenu("Language");

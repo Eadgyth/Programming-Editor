@@ -3,6 +3,7 @@ package eg.projects;
 import java.io.File;
 
 //--Eadgyth--//
+import eg.Constants;
 import eg.DisplaySetter;
 import eg.console.*;
 import eg.ui.filetree.FileTree;
@@ -19,17 +20,18 @@ public class PerlActions extends ProjectConfig implements ProjectActions {
    
    private String startCommand = "";
    
-   public PerlActions(DisplaySetter displSet, ProcessStarter proc,
+   PerlActions(DisplaySetter displSet, ProcessStarter proc,
          ConsolePanel cw, FileTree fileTree) {
+
       super(new SettingsWin(
-               "Name of perl script",
-               null,
-               true,
-               false,
-               true,
-               null
-            ),
-            ".pl"
+            "Name of perl script",
+            null,
+            true,
+            false,
+            true,
+            null
+         ),
+         Constants.PERL_PL_EXT
       );
       this.displSet = displSet;
       this.proc = proc;

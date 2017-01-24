@@ -23,6 +23,7 @@ public class Preferences {
 
    private final static String PREFS_FILE = "prefs.properties";
    private final static String SETTINGS_FILE = "settings.properties"; 
+   private final static String F_SEP = Constants.F_SEP;
    
    private final static String[] PREFS_KEYS = {
       "recentProject",
@@ -83,7 +84,7 @@ public class Preferences {
     * @param dir  the directory where the config file is found
     */
    public void readConfig(String dir) {
-      readProps(dir + Constants.F_SEP + CONFIG_FILE);
+      readProps(dir + F_SEP + CONFIG_FILE);
    }
    
    /** 
@@ -134,7 +135,7 @@ public class Preferences {
    public void storeConfig(String propToUpdate, String newValue,
          String dir) {
       
-      String configFile = dir + Constants.F_SEP + CONFIG_FILE;
+      String configFile = dir + F_SEP + CONFIG_FILE;
       if (!new File(configFile).exists()) {
          createFile(configFile, CONFIG_KEYS);
       }

@@ -12,7 +12,7 @@ import java.io.IOException;
 public class FileUtils {
    
    /**
-    * Deletes a folder that contains data
+    * Deletes a folder
     * @param dir  the directory to be deleted
     * @return  true if the directory has been deleted
     */
@@ -51,29 +51,21 @@ public class FileUtils {
    }
    
    /**
-    * Appends to the file 'log.txt' the class name and message of
-    * an exception.
+    * Appends to the file 'log.txt' the stack trace of
+    * an exception and shows a warning in a dialog window.
     * <p>
     * The "log" file is saved in the program's directory.
     * @param e  an {@code Exception}
     */
-   public static void logMessage(Exception e) { 
-      try (FileWriter writer = new FileWriter("log.txt", true)) {
-         writer.write(e.getClass().getName() + ": " + e.getMessage()
-               + eg.Constants.LINE_SEP);
-      }
-      catch(IOException ioe) {
-         throw new RuntimeException("Could not write exception message to file", ioe);
-      }
-   }
-   
    public static void logStack(Exception e) { 
       File logFile = new File("log.txt");
       try (PrintWriter pw = new PrintWriter(new FileOutputStream(logFile, true))) {
          e.printStackTrace(pw);
+         JOptions.warnMessage(e.getMessage() + "\nSee log.txt file");
       }
       catch(IOException ioe) {
-         throw new RuntimeException("Could not write stack trace to file", ioe);
+         throw new RuntimeException(
+               "Could not write stack trace to the log file", ioe);
       }
    }
    
@@ -87,5 +79,5 @@ public class FileUtils {
       catch(IOException ioe) {
           throw new RuntimeException("Could not empty the log file", ioe);
       }
-   }   
+   }
 }

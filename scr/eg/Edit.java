@@ -34,7 +34,7 @@ public class Edit {
     * its current indentation unit
     * @param txtDoc  the {@link TextDocument} object
     */
-   public void setTextObject(TextDocument txtDoc) {
+   public void setTextDocument(TextDocument txtDoc) {
       this.txtDoc  = txtDoc;
       indentUnit   = txtDoc.getIndentUnit();
       indentLength = indentUnit.length();
@@ -254,7 +254,7 @@ public class Edit {
          inClipboard = (String) content.getTransferData(DataFlavor.stringFlavor);
       }
       catch (UnsupportedFlavorException | IOException e) {
-         FileUtils.logMessage(e);
+         FileUtils.logStack(e);
       }
       return inClipboard;
    }

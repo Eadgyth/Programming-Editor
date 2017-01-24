@@ -34,15 +34,15 @@ public class SettingsWin {
 
    private final JFrame frame = new JFrame("Eadgyth - Project settings");
 
-   private final JTextField   fileTf       = new JTextField();
-   private final JTextField   moduleTf     = new JTextField("");
-   private final JTextField   sourcesDirTf = new JTextField();      
-   private final JTextField   execDirTf    = new JTextField();
-   private final JTextField   argsTf       = new JTextField("");
-   private final JTextField   buildTf      = new JTextField();
-   private final JButton      okBt         = new JButton("   OK   ");
-   private final JButton      cancelBt     = new JButton("Cancel");
-   private final JCheckBox    saveConfig   = new JCheckBox();
+   private final JTextField fileTf       = new JTextField();
+   private final JTextField moduleTf     = new JTextField("");
+   private final JTextField sourcesDirTf = new JTextField();      
+   private final JTextField execDirTf    = new JTextField();
+   private final JTextField argsTf       = new JTextField("");
+   private final JTextField buildTf      = new JTextField();
+   private final JButton    okBt         = new JButton("   OK   ");
+   private final JButton    cancelBt     = new JButton("Cancel");
+   private final JCheckBox  saveConfig   = new JCheckBox();
 
    /**
     * Creates a SettingsWin and defines which inputs are asked for.
@@ -64,125 +64,64 @@ public class SettingsWin {
       setWindow(fileKind, moduleKind, useScr, useExec, useArgs, buildKind);
    }
 
-   /**
-    * Makes this frame visible
-    * @param isVisible  true to make this frame visible
-    */
-   public void makeVisible(boolean isVisible) {
+   void makeVisible(boolean isVisible) {
       fileTf.requestFocus();
       frame.setVisible(isVisible);
    }      
 
-   /**
-    * Adds an {@code ActionListener} to this ok button
-    * @param al  the {@code ActionListener};
-    */
-   public void okAct(ActionListener al) {
+   void okAct(ActionListener al) {
       okBt.addActionListener(al);
    }
    
-   /**
-    * @return  the input in the text field for the name of the
-    * file which a project is configured for
-    */
    String projectFileIn() {
       return fileTf.getText();
    }
 
-   /**
-    * @return  the input in the text field for the module / package
-    */
    String moduleIn() {
       return moduleTf.getText();
    }
 
-   /**
-    * @return  the input in the text field for the directory of source
-    * files
-    */
-   public String sourcesDirIn() {
+   String sourcesDirIn() {
       return sourcesDirTf.getText();
    }
 
-   /**
-    * @return  the input in the text field for the directory of
-    * executables
-    */
-   public String execDirIn() {
+   String execDirIn() {
       return execDirTf.getText();
    }
 
-   /**
-    * @return  the input in the text field for arguments
-    */
-   public String argsIn() {
+   String argsIn() {
       return argsTf.getText();
    }
 
-   /**
-    * @return  the input in the text field for a name of a build
-    */
-   public String buildNameIn() {
+   String buildNameIn() {
       return buildTf.getText();
    }
 
-   /**
-    * Shows in the related text field the name of the main file which of
-    * a project
-    * @param fileName  te name of the main file of a project
-    */
-   public void displayFile(String fileName) {
+   void displayFile(String fileName) {
       fileTf.setText(fileName);
    }
 
-   /**
-    * Shows in the related text field the name of a module/package/
-    * namespace
-    * @param moduleName  the name of a module/package/namespace
-    */
-   public void displayModule(String moduleName) {
+   void displayModule(String moduleName) {
       moduleTf.setText(moduleName);
    }
 
-   /**
-    * Shows in the related text field the name of the directory that
-    * contains source files
-    * @param dirName  the name of the directory for source files
-    */
-   public void displaySourcesDir(String dirName) {
+   void displaySourcesDir(String dirName) {
       sourcesDirTf.setText(dirName);
    }
 
-   /**
-    * Shows in the related text field the name of the directory
-    * that contains executable files / packages
-    * @param in  the name of the directory for executable files
-    */
-   public void displayExecDir(String in) {
+   void displayExecDir(String in) {
       execDirTf.setText(in);
    }
    
-   /**
-    * Shows in the related text field the name of a build
-    * @param in  the name of a build
-    */
-   public void displayBuildName(String in) {
+   void displayBuildName(String in) {
       buildTf.setText(in);
    }
    
-   /**
-    * @return if the checkbox to save the text field inputs
-    * it saved to local prefs file
-    */
-   public boolean isSaveConfig() {
+   boolean isSaveConfig() {
       return saveConfig.isSelected();
    }
    
-   /**
-    * @param isSelected  true to mark the checkbox for saving text
-    * field inputs to a local prefs file selected
-    */
-   public void setSaveConfigSelected(boolean isSelected) {
+   void setSaveConfigSelected(boolean isSelected) {
       saveConfig.setSelected(isSelected);
    }
 
@@ -313,6 +252,6 @@ public class SettingsWin {
       frame.pack();
       frame.setVisible(false);
       frame.setAlwaysOnTop(true);
-      frame.setIconImage(IconFiles.eadgythIcon.getImage());
+      frame.setIconImage(IconFiles.EADGYTH_ICON.getImage());
    }
 }

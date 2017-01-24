@@ -11,13 +11,13 @@ public class ViewMenu {
    
    private final JMenu menu = new JMenu("View");
 
-   private final JCheckBoxMenuItem showConsole
+   private final JCheckBoxMenuItem consoleItm
          = new JCheckBoxMenuItem("Console");
-   private final JCheckBoxMenuItem showFileView
+   private final JCheckBoxMenuItem fileViewItm
          = new JCheckBoxMenuItem("Project explorer");
-   private final JCheckBoxMenuItem showFunction
+   private final JCheckBoxMenuItem functionItm
          = new JCheckBoxMenuItem("Function panel");
-   private final JMenuItem openViewSettings
+   private final JMenuItem openSettingsItm
          = new JMenuItem("Other...");
 
    ViewMenu() {
@@ -29,13 +29,13 @@ public class ViewMenu {
    }
    
    public void registerAct(DisplaySetter displSet) {
-      showConsole.addActionListener(e ->
-            displSet.showConsole(isConsoleSelected()));
-      showFileView.addActionListener(e ->
-            displSet.showFileView(isFileViewSelected()));
-      showFunction.addActionListener(e ->
-            displSet.showFunction(isFunctionPnlSelected()));
-      openViewSettings.addActionListener(e ->
+      consoleItm.addActionListener(e ->
+            displSet.showConsole(isConsoleItmSelected()));
+      fileViewItm.addActionListener(e ->
+            displSet.showFileView(isFileViewItmSelected()));
+      functionItm.addActionListener(e ->
+            displSet.showFunction(isFunctionItmSelected()));
+      openSettingsItm.addActionListener(e ->
             displSet.makeViewSetWinVisible());
    }
    
@@ -43,51 +43,51 @@ public class ViewMenu {
     * @return  true if this checkbox menu item for showing the console
     * is selected
     */
-   public boolean isConsoleSelected() {
-      return showConsole.getState();
+   public boolean isConsoleItmSelected() {
+      return consoleItm.getState();
    }
 
    /**
     * @return  true if this checkbox menu item for showing the file explorer
     * is selected
     */
-   public boolean isFileViewSelected() {
-      return showFileView.getState();
+   public boolean isFileViewItmSelected() {
+      return fileViewItm.getState();
    }
 
    /**
     * @return  if this checkbox menu item for showing the function panel
     * is selected
     */
-   public boolean isFunctionPnlSelected() {
-      return showFunction.getState();
+   public boolean isFunctionItmSelected() {
+      return functionItm.getState();
    }
    
-   public void selectShowConsole(boolean select) {
-      showConsole.setState(select);
+   public void selectConsoleItm(boolean select) {
+      consoleItm.setState(select);
    }
 
-   public void selectShowFileView(boolean select) {
-      showFileView.setState(select);
+   public void selectFileViewItm(boolean select) {
+      fileViewItm.setState(select);
    }
 
-   public void selectShowFunction(boolean select) {
-      showFunction.setState(select);
+   public void selectFunctionItm(boolean select) {
+      functionItm.setState(select);
    }
    
    /**
-    * Enables to open the file explorer
+    * Enables the file view menu item
     */
    public void enableFileView() {
-      showFileView.setEnabled(true);
+      fileViewItm.setEnabled(true);
    }
    
    private void assembleMenu() {
-      menu.add(showConsole);
-      menu.add(showFileView);
-      showFileView.setEnabled(false);
-      menu.add(showFunction);
+      menu.add(consoleItm);
+      menu.add(fileViewItm);
+      fileViewItm.setEnabled(false);
+      menu.add(functionItm);
       menu.addSeparator();
-      menu.add(openViewSettings);
+      menu.add(openSettingsItm);
    }
 }

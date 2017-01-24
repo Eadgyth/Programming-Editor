@@ -44,7 +44,7 @@ public class MainWin {
    private final JPanel functionPnl = new JPanel(new BorderLayout());
    private final JPanel functTitlePnl = new JPanel();
    private final JLabel functTitleLb = new JLabel(" No function selected");
-   private final JButton closeFunctBt = new JButton(IconFiles.closeIcon);
+   private final JButton closeFunctBt = new JButton(IconFiles.CLOSE_ICON);
    
    private final JMenuBar menubar;
    private final JToolBar toolbar;
@@ -269,7 +269,7 @@ public class MainWin {
       frame.setLocation(175, 25);
       frame.pack();
       frame.setSize(900, 650);
-      frame.setIconImage(IconFiles.eadgythIcon.getImage());
+      frame.setIconImage(IconFiles.EADGYTH_ICON.getImage());
    }
 
    private void initAllComponents() {

@@ -19,8 +19,7 @@ class Coloring {
    private final SimpleAttributeSet keySet    = new SimpleAttributeSet();
    private final SimpleAttributeSet flagSet   = new SimpleAttributeSet();
    private final SimpleAttributeSet brSet     = new SimpleAttributeSet();
-   private final SimpleAttributeSet strLitSet = new SimpleAttributeSet();
-   
+   private final SimpleAttributeSet strLitSet = new SimpleAttributeSet();   
    private final StyledDocument doc;
    private final SimpleAttributeSet normalSet;
    
@@ -88,7 +87,7 @@ class Coloring {
         case PERL:
             keywords = Syntax.PERL_KEYWORDS;
             isWord = true;
-            isFlagged = false; // variables with $ not added so far
+            isFlagged = false;
             operators = Syntax.PERL_OP;
             isOperators = true;
             flags = Syntax.PERL_FLAGS;
@@ -172,7 +171,7 @@ class Coloring {
       }
       if (isBlockCmnt) {            
          blockComments(in);
-      }     
+      } 
    }
 
    private void keys(String in, String query, SimpleAttributeSet set, int pos) {
@@ -262,8 +261,6 @@ class Coloring {
    private void blockComments(String in) {
       int indStart = 0;
       int nextPos = 0;
-      int indFirstStart = in.indexOf(blockCmntStart, indStart);
-      int indFirstEnd = in.indexOf(blockCmntEnd, indStart);
       while (indStart != -1) {
          indStart = in.indexOf(blockCmntStart, indStart + nextPos);
          if (indStart != -1 && !Syntax.isInQuotes(in, indStart)) {       
@@ -277,14 +274,18 @@ class Coloring {
                   if (isSingleLines) {
                      uncommentBlock(in, indEnd + 2);
                      uncommentBlock(in, indStart - 2);
-                     if (indFirstStart > indFirstEnd) {
-                        uncommentBlock(in, 0);
-                     }
                   }
                }
             }
-         }                     
+         }
          nextPos = 1;
+      }
+      if (isSingleLines) {
+         int indFirstStart = in.indexOf(blockCmntStart, indStart);
+         int indFirstEnd = in.indexOf(blockCmntEnd, indStart);
+         if (indFirstStart > indFirstEnd) {
+            uncommentBlock(in, 0);
+         }
       }
    }
 

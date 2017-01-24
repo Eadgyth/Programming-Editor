@@ -13,8 +13,8 @@ public class ProjectMenu {
    
    private final JMenu     menu       = new JMenu("Project");
    private final JMenuItem compile    = new JMenuItem("Save open files and compile",
-                                        IconFiles.compileIcon);
-   private final JMenuItem run        = new JMenuItem("Run", IconFiles.runIcon);
+                                        IconFiles.COMPILE_ICON);
+   private final JMenuItem run        = new JMenuItem("Run", IconFiles.RUN_ICON);
    private final JMenuItem build      = new JMenuItem("Build");
    private final JMenuItem setProject = new JMenuItem("Project settings");
    private final JMenuItem changeProj = new JMenuItem("Change project");

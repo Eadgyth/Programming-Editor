@@ -4,10 +4,9 @@ import java.io.File;
 import java.io.IOException;
 
 //--Eadgyth--//
+import eg.Constants;
 import eg.console.ProcessStarter;
-
 import eg.utils.JOptions;
-
 import eg.ui.filetree.FileTree;
 
 /**
@@ -15,16 +14,21 @@ import eg.ui.filetree.FileTree;
  */
 public class HtmlActions extends ProjectConfig implements ProjectActions {
 
+   private final static String F_SEP = Constants.F_SEP;
    private final ProcessStarter proc;
    private final FileTree fileTree;
    
    private File htmlFile;
    
-   public HtmlActions(ProcessStarter proc, FileTree fileTree) {
-      super(new SettingsWin("HTML file", "Subdirectory",
-           false, false, false, null),
-           ".html"
-      );
+   HtmlActions(ProcessStarter proc, FileTree fileTree) {
+      super(new SettingsWin(
+                  "HTML file",
+                  "Subdirectory",
+                  false,
+                  false,
+                  false,
+                  null),
+            Constants.HTML_EXT);
       this.proc = proc;
       this.fileTree = fileTree;
    }
@@ -88,7 +92,7 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    private void setHtmlFile() {
-      htmlFile = new File(getProjectPath() + File.separator
-            + getModuleName() + File.separator + getMainFile() + ".html");
+      htmlFile = new File(getProjectPath() + F_SEP
+            + getModuleName() + F_SEP + getMainFile() + ".html");
    }
 }

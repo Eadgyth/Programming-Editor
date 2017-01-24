@@ -20,12 +20,12 @@ import javax.swing.event.ChangeListener;
 import eg.Constants;
 
 /**
- * Defines a JTabbedPane with a button in the tabs.
+ * Defines a JTabbedPane with a (close) button in the tabs.
  * <p>
  * A button indended for closing tabs is passed in the method 
  * {@link #addNewTab(String, Component, JButton, int)}. The button
- * is expected to have an ActionListener added ti it. To detect
- * which tab is selected for closing the method {@link #iTabMouseOver()}
+ * is expected to have an ActionListener added to it. To detect which
+ * tab is selected for closing the method {@link #iTabMouseOver()}
  * is called.
  */
 public class TabbedPane { 
@@ -57,7 +57,7 @@ public class TabbedPane {
       tabPnl.setOpaque(false);
       JLabel titleLb = new JLabel(title);
       titleLb.setFont(Constants.VERDANA_PLAIN_11);
-      closeBt.setIcon(IconFiles.closeIcon);
+      closeBt.setIcon(IconFiles.CLOSE_ICON);
       closeBt.setBorder(new EmptyBorder(0, 0, 0, 0));
       closeBt.setBorderPainted(false);
       closeBt.setContentAreaFilled(false);
@@ -73,7 +73,11 @@ public class TabbedPane {
       lb.setText(filename);
    }
    
-   public int tabCount() {
+   /**
+    * Returns the number of open tabs
+    * @return  the number of open tabs
+    */
+   public int nTabs() {
       return tabbedPane.getTabCount();
    }
    
@@ -85,6 +89,10 @@ public class TabbedPane {
       tabbedPane.setSelectedIndex(index);
    }
    
+   /**
+    * Returns the index of the tab where the mouse was moved over
+    * @return  the index of the tab where the mouse was moved over
+    */
    public int iTabMouseOver() {
       return iTabMouseOver;
    }
@@ -111,13 +119,7 @@ public class TabbedPane {
       public void mouseMoved(MouseEvent e) {
          JTabbedPane sourceTb = (JTabbedPane) e.getSource();
          int x = sourceTb.indexAtLocation(e.getX(), e.getY());
-         if (x == -1) {
-            return;
-         }
-         else if (x == iTabMouseOver) {
-            return;
-         }
-         else {
+         if (x != -1 & x != iTabMouseOver) {
             iTabMouseOver = x;
          }
       }

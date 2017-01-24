@@ -14,12 +14,12 @@ public class FileMenu {
    private final JMenu     menu     = new JMenu("File");
    private final JMenuItem newFile  = new JMenuItem("New" );
    private final JMenuItem open     = new JMenuItem("Open",
-                                      IconFiles.openIcon);
+                                      IconFiles.OPEN_ICON);
    private final JMenuItem close    = new JMenuItem("Close",
-                                      IconFiles.closeIcon);
+                                      IconFiles.CLOSE_ICON);
    private final JMenuItem closeAll = new JMenuItem("Close all");
    private final JMenuItem save     = new JMenuItem("Save",
-                                      IconFiles.saveIcon);
+                                      IconFiles.SAVE_ICON);
    private final JMenuItem saveAll  = new JMenuItem("Save all");
    private final JMenuItem saveAs   = new JMenuItem("Save as ...");
    private final JMenuItem exit     = new JMenuItem("Exit");
