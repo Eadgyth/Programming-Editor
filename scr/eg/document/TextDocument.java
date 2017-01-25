@@ -17,7 +17,6 @@ import java.io.IOException;
 //--Eadgyth--//
 import eg.Preferences;
 import eg.Languages;
-import eg.Constants;
 
 import eg.utils.JOptions;
 import eg.utils.FileUtils;
@@ -27,6 +26,8 @@ import eg.ui.EditArea;
  * Class represents the text document
  */
 public class TextDocument {
+
+   private final static String LINE_SEP = System.lineSeparator();
    private final static Preferences PREFS = new Preferences();
 
    private final JTextPane textArea;
@@ -101,7 +102,7 @@ public class TextDocument {
       String[] lines = content.split("\n"); 
       try (FileWriter writer = new FileWriter(filepath)) {
          for (String s : lines) {
-            writer.write(s + Constants.LINE_SEP);
+            writer.write(s + LINE_SEP);
          }
       }
       catch(IOException e) {
@@ -303,7 +304,7 @@ public class TextDocument {
          type.doc().remove(start, length);
       }
       catch (BadLocationException e) {
-         FileUtils.logStack(e);;
+         FileUtils.logStack(e);
       }
    }
 
@@ -383,7 +384,7 @@ public class TextDocument {
          }
       }
       catch (IOException e) {
-         e.printStackTrace();
+         FileUtils.logStack(e);
       }   
       textArea.setDocument(type.doc()); // doc is the StyledDocument
       if (textArea.getText().endsWith("\n")) {
@@ -405,18 +406,18 @@ public class TextDocument {
    private void openSettings() {
       setContent();
       type.addAllRowNumbers(content);
-      if (filename.endsWith(Constants.JAVA_EXT)
+      if (filename.endsWith(".java")
             || (filename.length() == 0
             & Languages.JAVA.toString().equals(language))) {
          changeToJava();
       }
-      else if (filename.endsWith(Constants.HTML_EXT)
+      else if (filename.endsWith(".html")
             || (filename.length() == 0
             & Languages.HTML.toString().equals(language))) {
          changeToHtml();
       }
-      else if (filename.endsWith(Constants.PERL_PL_EXT)
-            || filename.endsWith(Constants.PERL_PM_EXT)
+      else if (filename.endsWith(".pl")
+            || filename.endsWith(".pm")
             || (filename.length() == 0
             & Languages.PERL.toString().equals(language))) {
          changeToPerl();

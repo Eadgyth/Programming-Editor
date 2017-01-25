@@ -1,23 +1,25 @@
 package eg.console;
 
+import java.awt.Color;
+import java.awt.BorderLayout;
+
+import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
+
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 
-import javax.swing.border.LineBorder;
-
 import javax.swing.event.CaretListener;
 
-import java.awt.*;
-import java.awt.event.*;
-
-import java.awt.event.KeyListener;
+import javax.swing.border.LineBorder;
 
 //--Eadgyth--//
-import eg.ui.IconFiles;
 import eg.Constants;
+import eg.ui.IconFiles;
 import eg.utils.UiComponents;
 
 /**
@@ -58,7 +60,7 @@ public class ConsolePanel {
       toolbar = createToolbar();
       clearAct();
 
-      consolePnl.setBorder(Constants.LOW_ETCHED);
+      consolePnl.setBorder(Constants.BORDER);
       consolePnl.add(toolbar, BorderLayout.NORTH);
       consolePnl.add(scroll, BorderLayout.CENTER);
    }
@@ -120,10 +122,8 @@ public class ConsolePanel {
       area.requestFocusInWindow();
    }
 
-   /**
+   /*
     * Allows writing in this text area
-    * @param isActive  true to allow writing in this text area and to
-    * inactivate the clear and stop buttons
     */ 
    void setActive(boolean isActive) {
       area.setEditable(isActive);
@@ -131,55 +131,31 @@ public class ConsolePanel {
       clearBt.setEnabled(!isActive);
       stopBt.setEnabled(isActive);
    }
-   
-   /**
-    * Enables the run button
-    */
+
    void enableRunBt(boolean isEnabled) {
       runBt.setEnabled(isEnabled);
    }
-   
-   /**
-    * Adds a key listener to this text area
-    */
+
    void addKeyListen(KeyListener keyListener) {
       area.addKeyListener(keyListener);
    }
-   
-   /**
-    * Adds a caret listener to this text area
-    */
+
    void addCaretListen(CaretListener caretListener) {
       area.addCaretListener(caretListener);
    }
 
-   /**
-    * Adds an action listener to the button designated to enter a
-    * a command
-    */
    void setCmdAct(ActionListener al) {
       setCmdBt.addActionListener(al);
    }
 
-   /**
-    * Adds an action listener to the button designated to run a
-    * a command
-    */
    void runAct(ActionListener al) {
       runBt.addActionListener(al);
    }
-   
-   /**
-    * Adds an action listener to the button designated to run Eadgyth
-    */
+
    void runEadAct(ActionListener al) {
       runEadBt.addActionListener(al);
    }
 
-   /**
-    * Adds an action listener to the button designated to stop a
-    * a command
-    */
    void stopAct(ActionListener al) {
       stopBt.addActionListener(al);
    }

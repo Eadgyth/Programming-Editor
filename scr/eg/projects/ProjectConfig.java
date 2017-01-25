@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 
 //--Eadgyth--//
 import eg.Preferences;
-import eg.Constants;
 import eg.utils.JOptions;
 
 /**
@@ -18,10 +17,11 @@ public abstract class ProjectConfig implements Configurable {
    
    private final static Preferences PREFS = new Preferences();
    private final static Preferences CONFIG = new Preferences();
-   private final static String F_SEP = Constants.F_SEP;
+   private final static String F_SEP = File.separator;
 
+   private final String suffix;
+   
    private SettingsWin setWin = null;
-   private String suffix;
    private String projectPath = "";
    private String mainFile = "";
    private String moduleDir = "";
@@ -232,8 +232,9 @@ public abstract class ProjectConfig implements Configurable {
       if (projectPath.length() > 0) {
          project = new File(projectPath);
       }
-      else {  
+      else {
          project = new File(props.getProperty("recentProject"));
+         System.out.println(project);
       }
       String searchedStr = searched.getPath();
       String projStr = project.getPath();

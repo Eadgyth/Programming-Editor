@@ -1,6 +1,5 @@
 package eg.projects;
 
-import eg.Constants;
 import eg.console.*;
 import eg.Preferences;
 import eg.DisplaySetter;
@@ -39,13 +38,13 @@ public class SelectedProject {
    public ProjectActions createProject(String fileExt, boolean isSearchByLang) {
       ProjectActions newProj = null;
       switch (fileExt) {
-         case Constants.JAVA_EXT:
+         case ".java":
             newProj = new JavaActions(displSet, proc, consPnl, fileTree);
             break;
-         case Constants.HTML_EXT:
+         case ".html":
             newProj = new HtmlActions(proc, fileTree);
             break;
-         case Constants.PERL_PL_EXT: case Constants.PERL_PM_EXT:
+         case ".pl": case ".pm":
             newProj = new PerlActions(displSet, proc, consPnl, fileTree);
             break;
          default:

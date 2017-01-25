@@ -44,6 +44,8 @@ import eg.utils.FileUtils;
  * The display of a project's file system in a {@code JTree}. 
  */
 public class FileTree extends Observable {
+   
+   private final static String F_SEP = File.separator;
 
    /*
     * The panel that contains the tree and the toobar */
@@ -275,9 +277,9 @@ public class FileTree extends Observable {
    }
    
    private boolean isInDeletableDir(File file) {
-      return file.toString().endsWith(Constants.F_SEP + deletableDir)
-            || file.toString().contains(Constants.F_SEP
-                  + deletableDir + Constants.F_SEP);
+      return file.toString().endsWith(F_SEP + deletableDir)
+            || file.toString().contains(F_SEP
+                  + deletableDir + F_SEP);
    }      
    
    private String deleteMessage(File f) {
@@ -379,7 +381,7 @@ public class FileTree extends Observable {
       scroll.getVerticalScrollBar().setUnitIncrement(10);
       fileTreePnl.add(toolbar, BorderLayout.NORTH);
       fileTreePnl.add(scroll, BorderLayout.CENTER);
-      fileTreePnl.setBorder(Constants.LOW_ETCHED);
+      fileTreePnl.setBorder(Constants.BORDER);
       upBt.addActionListener(e -> folderUp());
       renewBt.addActionListener(e -> updateTree());
       upBt.setEnabled(false);

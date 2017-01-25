@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 //--Eadgyth--//
 import eg.Preferences;
-import eg.Constants;
 import eg.utils.JOptions;
 import eg.console.ConsolePanel;
 
@@ -33,7 +32,8 @@ import eg.console.ConsolePanel;
 public class Compile {
 
    private final static Preferences PREFS = new Preferences();
-   private final static String F_SEP = Constants.F_SEP;
+   private final static String F_SEP = File.separator;
+
    private static String jdkPath = null;
    
    private final ConsolePanel consPnl;

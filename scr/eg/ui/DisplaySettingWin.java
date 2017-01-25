@@ -92,7 +92,7 @@ public class DisplaySettingWin {
    }
    
    private JPanel setToolbarPanel() {      
-      if (Constants.SHOW.equals(prefs.getProperty("toolbar"))) {
+      if ("show".equals(prefs.getProperty("toolbar"))) {
          checkToolbar.setSelected(true);
       }
       else {
@@ -102,7 +102,7 @@ public class DisplaySettingWin {
    }
    
    private JPanel setLineNumberPanel() {      
-      if (Constants.SHOW.equals(prefs.getProperty(Constants.LINE_NUMBERS))) {
+      if ("show".equals(prefs.getProperty("lineNumbers"))) {
          checkLineNumbers.setSelected(true);
       }
       else {
@@ -113,7 +113,7 @@ public class DisplaySettingWin {
    }
    
    private JPanel setStatusBarPanel() {      
-      if (Constants.SHOW.equals(prefs.getProperty("statusbar"))) {
+      if ("show".equals(prefs.getProperty("statusbar"))) {
          checkStatusbar.setSelected(true);
       }
       else {

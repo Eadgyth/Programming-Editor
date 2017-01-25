@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.awt.EventQueue;
 
 //--Eadgyth--//
-import eg.Constants;
 import eg.DisplaySetter;
 import eg.console.*;
 import eg.javatools.*;
@@ -19,7 +18,7 @@ import eg.ui.filetree.FileTree;
  */
 public class JavaActions extends ProjectConfig implements ProjectActions {
 
-   private final static String F_SEP = Constants.F_SEP;
+   private final static String F_SEP = File.separator;
 
    private final DisplaySetter displSet;
    private final Compile comp;
@@ -40,7 +39,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
                   true,
                   true,
                   "jar file"),
-            Constants.JAVA_EXT);
+            ".java");
       this.displSet = displSet;
       this.proc = proc;
       this.consPnl = consPnl;

@@ -150,11 +150,11 @@ public class MainWin {
    public void showToolbar(boolean isShowToolbar) {
       if (isShowToolbar) {
          allComponents.add(toolbar, BorderLayout.NORTH);
-         prefs.storePrefs("toolbar", Constants.SHOW);
+         prefs.storePrefs("toolbar", "show");
       }
       else {
          allComponents.remove(toolbar);
-         prefs.storePrefs("toolbar", Constants.HIDE);
+         prefs.storePrefs("toolbar", "hide");
       }
       allComponents.revalidate();
    }
@@ -166,11 +166,11 @@ public class MainWin {
    public void showStatusbar(boolean isShowStatusbar) {
       if (isShowStatusbar) {
          allComponents.add(statusBar, BorderLayout.SOUTH);
-         prefs.storePrefs("statusbar", Constants.SHOW);
+         prefs.storePrefs("statusbar", "show");
       }
       else {
          allComponents.remove(statusBar);
-         prefs.storePrefs("statusbar", Constants.HIDE);
+         prefs.storePrefs("statusbar", "hide");
       }
       allComponents.revalidate();
    }
@@ -203,7 +203,7 @@ public class MainWin {
       splitHor.setDividerSize(6);
       splitHor.setLeftComponent(fileViewPnl);
       if (dividerLocHor == 0) {
-         dividerLocHor = (int)(frame.getWidth() * 0.2);
+         dividerLocHor = (int)(frame.getWidth() * 0.25);
       }
       splitHor.setDividerLocation(dividerLocHor);
    }
@@ -274,11 +274,11 @@ public class MainWin {
 
    private void initAllComponents() {
       prefs.readPrefs();
-      if (Constants.SHOW.equals(prefs.getProperty("toolbar"))) {
+      if ("show".equals(prefs.getProperty("toolbar"))) {
          allComponents.add(toolbar, BorderLayout.NORTH);
       }
       allComponents.add(splitHorAll, BorderLayout.CENTER);
-      if (Constants.SHOW.equals(prefs.getProperty("statusbar"))) {
+      if ("show".equals(prefs.getProperty("statusbar"))) {
          allComponents.add(statusBar, BorderLayout.SOUTH);
       }
       frame.setJMenuBar(menubar);
@@ -312,7 +312,7 @@ public class MainWin {
       functTitlePnl.setLayout(new BoxLayout(functTitlePnl, BoxLayout.LINE_AXIS));
       functTitlePnl.add(functTitleLb);
       functTitleLb.setFont(Constants.SANSSERIF_PLAIN_12);
-      functionPnl.setBorder(Constants.LOW_ETCHED);
+      functionPnl.setBorder(Constants.BORDER);
       closeFunctBt.setBorder(new EmptyBorder(3, 5, 3, 5));
       closeFunctBt.setContentAreaFilled(false);
       closeFunctBt.setToolTipText("Close function area");

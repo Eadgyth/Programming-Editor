@@ -30,6 +30,8 @@ import eg.utils.JOptions;
  */
 public class CurrentProject {
    
+   private final static String F_SEP = File.separator;
+   
    private final String NO_FILE_IN_TAB_MESSAGE
          = "A project can be set after opening a file or"
          + " saving a new file";
@@ -44,9 +46,9 @@ public class CurrentProject {
    private final SelectedProject selProj;
    private final DisplaySetter displSet;
    private final FileTree fileTree;
-   private final List<ProjectActions> recent = new ArrayList<>();
+   private final List<ProjectActions> projList = new ArrayList<>();
 
-   private ProjectActions proj;
+   private ProjectActions current;
    private TextDocument[] txtDoc;
    private TextDocument currDoc;
    private String sourceExt;
@@ -84,7 +86,7 @@ public class CurrentProject {
     * @return  if at least one project has been created
     */
    public boolean isProjectSet() {
-      return proj != null;
+      return current != null;
    }
 
    /**
@@ -97,7 +99,7 @@ public class CurrentProject {
     * this list of configured projects.
     */
    public void retrieveProject() {
-      if (isProjectSet() && proj.isProjectInPath(currDoc.dir())) {
+      if (isProjectSet() && current.isProjectInPath(currDoc.dir())) {
          return;
       }
       ProjectActions prToFind = selProj.createProject(currExt, true);
@@ -106,16 +108,16 @@ public class CurrentProject {
             && prToFind.retrieveProject(currDoc.dir());
       if (isFound) {
          if (!isProjectSet()) {   
-            proj = prToFind;
-            proj.addOkAction(e -> configureProject(proj)); 
-            recent.add(proj); 
-            updateProjectSetting(proj);
+            current = prToFind;
+            current.addOkAction(e -> configureProject(current)); 
+            projList.add(current); 
+            updateProjectSetting(current);
          }
          else {
-            if (searchRecent() == null) {
+            if (inList() == null) {
                prToFind.addOkAction(e -> configureProject(prToFind));
-               recent.add(prToFind);
-               if (recent.size() == 2) {
+               projList.add(prToFind);
+               if (projList.size() == 2) {
                   displSet.enableChangeProjItm();
                }
             }
@@ -143,15 +145,15 @@ public class CurrentProject {
       else {
          boolean openCurrent
               =  currDoc.filename().length() == 0
-              || proj.isProjectInPath(currDoc.dir());
+              || current.isProjectInPath(currDoc.dir());
          if (openCurrent) {
-            proj.makeSetWinVisible(true);
+            current.makeSetWinVisible(true);
          }      
          else {
-            ProjectActions inList = searchRecent();
+            ProjectActions inList = inList();
             if (inList != null) {
                if (changeProject(inList)) {
-                  proj.makeSetWinVisible(true);
+                   current.makeSetWinVisible(true);
                }
             }
             else {
@@ -170,8 +172,8 @@ public class CurrentProject {
     * project it is asked to set up a new project.
     */
    public void changeProject() {
-      ProjectActions inList = searchRecent();
-      if (inList == proj) {
+      ProjectActions inList = inList();
+      if (inList == current) {
          JOptions.infoMessage(IS_IN_PROJ_MESSAGE);
       }
       else {
@@ -192,7 +194,7 @@ public class CurrentProject {
     * See {@link FileTree#updateTree()}
     */
    public void updateFileTree(String path) {
-      if (isProjectSet() && proj.isProjectInPath(path)) {
+      if (isProjectSet() && current.isProjectInPath(path)) {
          fileTree.updateTree();
       }
    }
@@ -208,7 +210,7 @@ public class CurrentProject {
             boolean approved
                   = txtDoc[i] != null
                   && txtDoc[i].filename().endsWith(sourceExt)
-                  && proj.isProjectInPath(txtDoc[i].dir());
+                  && current.isProjectInPath(txtDoc[i].dir());
             if (approved) {
                boolean exists = new File(txtDoc[i].filepath()).exists();
                if (!exists) {
@@ -218,7 +220,7 @@ public class CurrentProject {
             }
          }  
          if (missingIndex == 0) {
-            proj.compile();
+            current.compile();
          }
          else {
             JOptions.warnMessage(
@@ -237,7 +239,7 @@ public class CurrentProject {
     * Runs this project
     */
    public void runProj() {
-      proj.runProject();
+      current.runProject();
    }
 
    /**
@@ -246,7 +248,7 @@ public class CurrentProject {
    public void buildProj() {
       try {
          displSet.setBusyCursor(true);
-         proj.build();
+         current.build();
       }
       finally {
          displSet.setBusyCursor(false);
@@ -278,9 +280,9 @@ public class CurrentProject {
       int result = JOptions.confirmYesNo("Change to project '"
                  + toChangeTo.getProjectName() + "'");
       if (result == 0) {
-         proj = toChangeTo;
-         proj.storeInPrefs();
-         updateProjectSetting(proj);
+         current = toChangeTo;
+         current.storeInPrefs();
+         updateProjectSetting(current);
          return true;
       }
       else {
@@ -288,23 +290,23 @@ public class CurrentProject {
       }
    }
 
-   private ProjectActions searchRecent() {
-      ProjectActions old = null;
-      for (ProjectActions p : recent) {
+   private ProjectActions inList() {
+      ProjectActions inList = null;
+      for (ProjectActions p : projList) {
          if (p.isProjectInPath(currDoc.dir())) {
-            old = p;
+            inList = p;
          }
       }
-      return old;
+      return inList;
    }
    
    private void configureProject(ProjectActions projToConf) {
       if (projToConf.configureProject(currDoc.dir())) {
-         if (proj != projToConf) {
-            proj = projToConf;
-            recent.add(proj);
+         if (current != projToConf) {
+            current = projToConf;
+            projList.add(current);
          }
-         updateProjectSetting(proj);
+         updateProjectSetting(current);
       }
    }
 
@@ -316,7 +318,7 @@ public class CurrentProject {
    
    private String extension(String fileStr) {
       int indDot = fileStr.lastIndexOf(".");
-      int indFileSep = fileStr.lastIndexOf(eg.Constants.F_SEP);
+      int indFileSep = fileStr.lastIndexOf(F_SEP);
       if (indDot > indFileSep) {
          return fileStr.substring(indDot);
       }
@@ -326,7 +328,7 @@ public class CurrentProject {
    }
    
    private void enableActions(String className) {
-      int projCount = recent.size();
+      int projCount = projList.size();
       switch (className) {
          case "JavaActions":
             displSet.enableProjActions(true, true, true, projCount);

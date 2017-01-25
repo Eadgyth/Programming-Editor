@@ -23,7 +23,7 @@ public class Preferences {
 
    private final static String PREFS_FILE = "prefs.properties";
    private final static String SETTINGS_FILE = "settings.properties"; 
-   private final static String F_SEP = Constants.F_SEP;
+   private final static String F_SEP = File.separator;
    
    private final static String[] PREFS_KEYS = {
       "recentProject",
@@ -36,7 +36,13 @@ public class Preferences {
       "lineNumbers",
       "statusbar",
       "language",
-      "wordWrap"
+      "wordWrap",
+      "recentMain",
+      "recentModule",
+      "recentSourceDir",
+      "recentExecDir",
+      "recentBuildName",
+      "recentSuffix"
    };
    
    private final static String[] CONFIG_KEYS = {
@@ -111,9 +117,6 @@ public class Preferences {
       String[] allValues = new String[CONFIG_KEYS.length + PREFS_KEYS.length];
       for (int i = 0; i < PREFS_KEYS.length; i++) {
          allValues[i] = prop.getProperty(PREFS_KEYS[i]);
-      }
-      for (int i = PREFS_KEYS.length; i < allValues.length; i++) {
-         allValues[i] = prop.getProperty(CONFIG_KEYS[i - PREFS_KEYS.length]);
       }
       for (int i = 0; i < PREFS_KEYS.length; i++) {
          if (PREFS_KEYS[i].equals(propToUpdate)) {

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 //--Eadgyth--//
-import eg.Constants;
 import eg.console.ConsolePanel;
 
 /**
@@ -24,7 +23,7 @@ import eg.console.ConsolePanel;
  */
 public class CreateJar {
 
-   private final static String F_SEP = Constants.F_SEP;
+   private final static String F_SEP = File.separator;
    private final ConsolePanel consPnl;
    
    /**
@@ -81,7 +80,7 @@ public class CreateJar {
       List<File> classesRelativePath
            = relativePath(path + F_SEP + classDir, classesPath );
       for (File i : classesRelativePath) {
-         commandForJar.add( i.toString());
+         commandForJar.add(i.toString());
       }
       return commandForJar;
    }
@@ -96,7 +95,7 @@ public class CreateJar {
          }
       }
       catch(IOException e) {
-         e.printStackTrace();
+         eg.utils.FileUtils.logStack(e);
       }
    }
 

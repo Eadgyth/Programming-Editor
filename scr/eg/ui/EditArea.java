@@ -59,7 +59,7 @@ public final class EditArea {
 
    public EditArea() {
       PREFS.readPrefs(); 
-      scrolledArea.setBorder(Constants.LOW_ETCHED);
+      scrolledArea.setBorder(Constants.BORDER);
       initTextArea();
       initLineNumbersArea();
       initFont();
@@ -67,8 +67,8 @@ public final class EditArea {
       initScrollSimpleArea();
       intitScrollWrapArea();
       boolean isLineNumbers =
-            Constants.SHOW.equals(PREFS.getProperty(Constants.LINE_NUMBERS));
-      if (Constants.ENABLED.equals(PREFS.getProperty("wordWrap"))) {
+            "show".equals(PREFS.getProperty("lineNumbers"));
+      if ("enabled".equals(PREFS.getProperty("wordWrap"))) {
          enableWordWrap();
       }
       else {
@@ -121,7 +121,7 @@ public final class EditArea {
       Font fontNew = new Font(font, Font.PLAIN, fontSize);
       lineArea.setFont(fontNew);
       textArea.setFont(fontNew );
-      PREFS.storePrefs(Constants.FONT_SIZE, String.valueOf(fontSize));
+      PREFS.storePrefs("fontSize", String.valueOf(fontSize));
    }
 
    /**
@@ -133,7 +133,7 @@ public final class EditArea {
       Font fontNew = new Font(font, Font.PLAIN, fontSize);
       lineArea.setFont(fontNew);
       textArea.setFont(fontNew);
-      PREFS.storePrefs(Constants.FONT, font);
+      PREFS.storePrefs("font", font);
    }
    
    /**

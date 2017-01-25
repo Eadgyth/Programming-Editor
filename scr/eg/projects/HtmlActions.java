@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 //--Eadgyth--//
-import eg.Constants;
 import eg.console.ProcessStarter;
 import eg.utils.JOptions;
 import eg.ui.filetree.FileTree;
@@ -14,7 +13,7 @@ import eg.ui.filetree.FileTree;
  */
 public class HtmlActions extends ProjectConfig implements ProjectActions {
 
-   private final static String F_SEP = Constants.F_SEP;
+   private final static String F_SEP = File.separator;
    private final ProcessStarter proc;
    private final FileTree fileTree;
    
@@ -28,7 +27,7 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
                   false,
                   false,
                   null),
-            Constants.HTML_EXT);
+            ".html");
       this.proc = proc;
       this.fileTree = fileTree;
    }

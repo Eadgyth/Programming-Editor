@@ -3,8 +3,6 @@ package eg.ui;
 import java.io.File;
 import javax.swing.ImageIcon;
 
-import eg.Constants;
-
 /**
  * Static ImageIcons for buttons etc.
  * <p>
@@ -14,7 +12,7 @@ import eg.Constants;
  */
 public class IconFiles {
 
-   private final static String F_SEP = Constants.F_SEP;
+   private final static String F_SEP = File.separator;
     
    private final static String PROGRAM_DIR
          = System.getProperty("user.dir");

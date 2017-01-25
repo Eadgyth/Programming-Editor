@@ -144,12 +144,13 @@ public class Syntax {
 
    static int indLastBlockStart(String in, int pos, String blockStart,
          String blockEnd) {
+
       int index = in.lastIndexOf(blockStart, pos);
       int indLastEnd = in.lastIndexOf(blockEnd, pos - 1);
-      while (index != -1 && isInQuotes(in, index)) {
+      while (index != -1 && isInQuotes(in, index, blockStart.length())) {
          index = in.lastIndexOf(blockStart, index - 1);
       }
-      while (indLastEnd != -1 && isInQuotes(in, indLastEnd)) {
+      while (indLastEnd != -1 && isInQuotes(in, indLastEnd, blockEnd.length())) {
          indLastEnd = in.lastIndexOf(blockEnd, indLastEnd - 1);
       }
       if (index < indLastEnd) {
@@ -158,15 +159,15 @@ public class Syntax {
       return index;
    }
 
-   static int indNextBlockEnd(String in, int pos,  String blockStart,
+   static int indNextBlockEnd(String in, int pos, String blockStart,
          String blockEnd) {
       int index = in.indexOf(blockEnd, pos);
       int indNextStart = in.indexOf(blockStart, pos);
 
-      while (index != -1 && isInQuotes(in, index)) {
+      while (index != -1 && isInQuotes(in, index, blockEnd.length())) {
          index = in.indexOf(blockEnd, index + 1);
       }
-      while (indNextStart != -1 && isInQuotes(in, indNextStart)) {
+      while (indNextStart != -1 && isInQuotes(in, indNextStart, blockStart.length())) {
          indNextStart = in.indexOf(blockStart, indNextStart + 1);
       }
       if (index > indNextStart & indNextStart != -1) {
@@ -175,10 +176,12 @@ public class Syntax {
       return index;
    }
 
-   static boolean isInQuotes(String in, int pos) {
-      boolean isInQuotes = false; 
-      if (pos > 0) {
-         isInQuotes = in.substring(pos - 1, pos).equals("\"");
+   static boolean isInQuotes(String in, int pos, int length) {
+      boolean isInQuotes = false;
+      int endPos = pos + length;
+      if (pos > 0 & in.length() > endPos) {
+         isInQuotes = in.substring(pos - 1, pos).equals("\"")
+                    & in.substring(endPos, endPos + 1).equals("\"");
       }
       return isInQuotes;
    }

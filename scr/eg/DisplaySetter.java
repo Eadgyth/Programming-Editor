@@ -15,8 +15,6 @@ import eg.ui.DisplaySettingWin;
  */
 public class DisplaySetter {
 
-   private static Constants c;
-
    private final MainWin mw;
    private final FormatMenu fMenu;
    private final ViewMenu vMenu;
@@ -84,11 +82,11 @@ public class DisplaySetter {
       prefs.readPrefs();
       if (isWordWrap) {
          editArea[editAreaIndex].enableWordWrap();
-         prefs.storePrefs("wordWrap", Constants.ENABLED);
+         prefs.storePrefs("wordWrap", "enabled");
       }
       else {
          boolean isLineNumbers
-               = Constants.SHOW.equals(prefs.getProperty(Constants.LINE_NUMBERS));
+               = "show".equals(prefs.getProperty("lineNumbers"));
          if (isLineNumbers) {
             editArea[editAreaIndex].showLineNumbers();
          }
@@ -255,11 +253,11 @@ public class DisplaySetter {
          this.showHideLineNumbers();
       }
 
-      int selectedLafInd = displSetWin.selectedLaf();
-      if (this.selectedLafInd != selectedLafInd) {
+      int selectedLaf = displSetWin.selectedLaf();
+      if (this.selectedLafInd != selectedLaf) {
          prefs.storePrefs("LaF",
-               DisplaySettingWin.LAF_OPT[selectedLafInd]);
-         this.selectedLafInd = selectedLafInd;
+               DisplaySettingWin.LAF_OPT[selectedLaf]);
+         this.selectedLafInd = selectedLaf;
       }    
       displSetWin.makeViewSetWinVisible(false);
    }
@@ -280,10 +278,10 @@ public class DisplaySetter {
          fMenu.selectWordWrapItm(false);
       }
       if (!isShowLineNumbers) {
-         prefs.storePrefs("lineNumbers", c.HIDE);
+         prefs.storePrefs("lineNumbers", "hide");
       }
       else {
-         prefs.storePrefs("lineNumbers", c.SHOW);
+         prefs.storePrefs("lineNumbers", "show");
       }
    }
 }

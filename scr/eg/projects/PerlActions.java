@@ -3,7 +3,6 @@ package eg.projects;
 import java.io.File;
 
 //--Eadgyth--//
-import eg.Constants;
 import eg.DisplaySetter;
 import eg.console.*;
 import eg.ui.filetree.FileTree;
@@ -31,7 +30,7 @@ public class PerlActions extends ProjectConfig implements ProjectActions {
             true,
             null
          ),
-         Constants.PERL_PL_EXT
+         ".pl"
       );
       this.displSet = displSet;
       this.proc = proc;

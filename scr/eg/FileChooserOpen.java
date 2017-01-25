@@ -49,8 +49,8 @@ public class FileChooserOpen {
    }
 
    private void setLaf() {
-
-      // disable to create a new folder. Works when this object is created
+      //
+      // disable to create a new folder. Makes sense if this is created
       // before FileChooserSave 
       UIManager.put("FileChooser.readOnly", Boolean.TRUE);
       chooser = new JFileChooser();
