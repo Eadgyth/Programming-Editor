@@ -18,10 +18,10 @@ public abstract class ProjectConfig implements Configurable {
    private final static Preferences PREFS = new Preferences();
    private final static Preferences CONFIG = new Preferences();
    private final static String F_SEP = File.separator;
-
+   
    private final String suffix;
    
-   private SettingsWin setWin = null;
+   private SettingsWin setWin;  
    private String projectPath = "";
    private String mainFile = "";
    private String moduleDir = "";
@@ -30,9 +30,17 @@ public abstract class ProjectConfig implements Configurable {
    private String args = "";
    private String buildName = "";
    
-   public ProjectConfig(SettingsWin setWin, String suffix) {
-      this.setWin = setWin;
+   /**
+    * @param suffix  the file extension that represents
+    * the type of project
+    */
+   protected ProjectConfig(String suffix) {
       this.suffix = suffix;
+   }
+   
+   @Override
+   public void createSettingsWin() {
+      setWin = createSetWin();
    }
 
    @Override
@@ -58,16 +66,16 @@ public abstract class ProjectConfig implements Configurable {
    /**
     * If a project configuration stored in 'config' or 'prefs' can be
     * retrieved
-    * @param path  the directory of a file that maybe part of the project 
+    * @param dir  the directory of a file that maybe part of the project 
     * @return  If a project configuration stored in 'config' or 'prefs'
     * can be retrieved
     */
    @Override
-   public boolean retrieveProject(String path) {
-      findSavedProject(path);
+   public boolean retrieveProject(String dir) {
+      findSavedProject(dir);
       return projectPath.length() > 0;
    }
-   
+
    @Override
    public boolean isProjectInPath(String path) {
       return findRootInPath(path, PREFS).length() > 0;
@@ -89,6 +97,12 @@ public abstract class ProjectConfig implements Configurable {
       PREFS.storePrefs("recentBuildName", buildName);
       PREFS.storePrefs("recentSuffix", suffix);
    }
+   
+   /**
+    * Creates a {@code SettingsWin} object
+    * @return  a new {@link SettingsWin}
+    */
+   protected abstract SettingsWin createSetWin();
    
    /**
     * Returns the path of the project's root directory
@@ -155,13 +169,13 @@ public abstract class ProjectConfig implements Configurable {
    
    /**
     * If the main executable file exists
-    * @param suffix  the extension of the project's main file
-    * @return  true if the main executable file exists
+    * @param execSuffix  the extension of the project's executable file(s)
+    * @return  if the main executable file exists
     */
-   protected boolean mainProgramFileExists(String suffix) { 
+   protected boolean mainProgramFileExists(String execSuffix) { 
       File target
             = new File(projectPath + F_SEP + execDir + F_SEP + moduleDir
-            + F_SEP + mainFile + suffix);
+            + F_SEP + mainFile + execSuffix);
       return target.exists();
    }
    

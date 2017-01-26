@@ -1,28 +1,20 @@
 package eg.document;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyAdapter;
+
 import javax.swing.JComponent;
 import javax.swing.JTextPane;
-import javax.swing.KeyStroke;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 
 import javax.swing.text.StyledDocument;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 
-import java.awt.event.ActionEvent;
-
 //--Eadgyth--//
 import eg.Preferences;
 import eg.utils.FileUtils;
 
-/**
- * The auto indentation.
- * <p>
- * The indention of a previous line is added to a new line, is increased
- * upon typing an opening curly brackets and reduced upon typing a closing
- * curly bracked.
- */
 class AutoIndent {
 
    private final static Preferences PREFS = new Preferences();
@@ -30,6 +22,7 @@ class AutoIndent {
    private final StyledDocument doc;
    private final SimpleAttributeSet normalSet;
 
+   private boolean isEnterPressed = false;
    private String indentUnit;
    private int indentLength;  
    private String indent = "";
@@ -44,9 +37,7 @@ class AutoIndent {
       PREFS.readPrefs();
       indentUnit = PREFS.getProperty("indentUnit");
       indentLength = indentUnit.length();
-      IndentAction indAct = new IndentAction();
-      KeyStroke ksEnter = KeyStroke.getKeyStroke("released ENTER");
-      textArea.getInputMap(JComponent.WHEN_FOCUSED).put(ksEnter, indAct);
+      textArea.addKeyListener(listener);
    }
 
    String getIndentUnit() {
@@ -57,21 +48,12 @@ class AutoIndent {
       indent = "";
    }
 
-   /**
-    * Assigns to this the indentation unit and the indentation
-    * length. Saves the indentation unit to preferences.
-    */
    void changeIndentUnit(String indentUnit) {
       this.indentUnit = indentUnit;
       indentLength = indentUnit.length();    
       PREFS.storePrefs("indentUnit", indentUnit);
    }  
 
-   /**
-    * Assigns to this indent the indentation unit at the current line
-    * and adds another unit if the symbol before the current position 
-    * is and open bracket.
-    */
    void openBracketIndent(String in, int pos) {
       String currIndent = currentIndent(in, pos);
       String atPrevPos = in.substring(pos - 1, pos);
@@ -81,11 +63,6 @@ class AutoIndent {
       this.indent = currIndent;
    }
 
-   /**
-    * Reduces indentation by one indentation unit if a close bracket
-    * was typed and at least one indent unit is detected before the
-    * bracket 
-    */
    void closeBracketIndent(String in, int pos) {
       int lastReturn = 0;
       if (pos > 0) {
@@ -98,9 +75,6 @@ class AutoIndent {
       }
    }
 
-   /*
-    * Returns the indentation at the current line
-    */
    private String currentIndent(String in, int pos) {
       String currIndent = "";
       //
@@ -124,17 +98,34 @@ class AutoIndent {
       }
    }
    
-   private class IndentAction extends AbstractAction {
-      
+   KeyListener listener = new KeyAdapter() {
+      //
+      // looks awful but detecting enter pressed makes sure that
+      // that pressing enter in another window does inactivate
+      // the insertString method in keyReleased
+      boolean isEnter = false;
+
       @Override
-      public void actionPerformed(ActionEvent e) {
-         int pos = textArea.getCaretPosition();
-         try {
-            doc.insertString(pos, indent, normalSet);            
-         }
-         catch (BadLocationException ble) {
-            FileUtils.logStack(ble);
+      public void keyPressed(KeyEvent e) {
+         int key = e.getKeyCode();
+         if (key == KeyEvent.VK_ENTER) {
+            isEnter = true;
          }
       }
-   }
+
+      @Override
+      public void keyReleased(KeyEvent e) {
+         int pos = textArea.getCaretPosition();
+         int key = e.getKeyCode();
+         try {       
+            if (isEnter && key == KeyEvent.VK_ENTER) {
+               doc.insertString(pos, indent, normalSet);            
+            }
+         }
+         catch (BadLocationException ble) {
+            ble.printStackTrace();
+         }
+         isEnter = false;
+      }
+   };
 }

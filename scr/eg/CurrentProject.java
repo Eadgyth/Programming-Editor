@@ -27,7 +27,7 @@ import eg.utils.JOptions;
  * Several configured projects are stored in a {@code List} of projects.
  * Any of these can be (re-) activated depending on the currently set
  * {@link TextDocument}
- */
+ */ 
 public class CurrentProject {
    
    private final static String F_SEP = File.separator;

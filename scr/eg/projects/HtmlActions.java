@@ -11,7 +11,7 @@ import eg.ui.filetree.FileTree;
 /**
  * Represents a project to write a webpage in HTML
  */
-public class HtmlActions extends ProjectConfig implements ProjectActions {
+public final class HtmlActions extends ProjectConfig implements ProjectActions {
 
    private final static String F_SEP = File.separator;
    private final ProcessStarter proc;
@@ -20,14 +20,7 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
    private File htmlFile;
    
    HtmlActions(ProcessStarter proc, FileTree fileTree) {
-      super(new SettingsWin(
-                  "HTML file",
-                  "Subdirectory",
-                  false,
-                  false,
-                  false,
-                  null),
-            ".html");
+      super(".html");
       this.proc = proc;
       this.fileTree = fileTree;
    }
@@ -88,6 +81,18 @@ public class HtmlActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void build() {     
+   }
+   
+   @Override
+   protected SettingsWin createSetWin() {
+      SettingsWin setWin = new SettingsWin(
+            "HTML file",
+            "Subdirectory containing the source file(s)",
+            false,
+            false,
+            false,
+            null);
+      return setWin;
    }
    
    private void setHtmlFile() {

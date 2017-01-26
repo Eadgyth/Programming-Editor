@@ -10,9 +10,6 @@ import java.awt.Color;
 import eg.Languages;
 import eg.utils.Finder;
 
-/*
- * The coloring of syntax / search words
- */
 class Coloring {
    
    private final SimpleAttributeSet comSet    = new SimpleAttributeSet();
@@ -111,10 +108,7 @@ class Coloring {
       isStringLit = false;
       isBrackets = false;
    }
-   
-   /**
-    * Colors syntax / search terms
-    */
+
    void color(String in, int pos) {   
       String chunk;
       int posStart = pos;
@@ -129,27 +123,27 @@ class Coloring {
       if (!isBlockCmnt || !isInBlock) {
          doc.setCharacterAttributes(posStart, chunk.length(), normalSet, false);
          if (isFlags) {
-             for (String f : flags) {
-                 withFlag(chunk, f, flagSet, posStart);
-             }
+            for (String f : flags) {
+               withFlag(chunk, f, flagSet, posStart);
+            }
          }
          if (isFlagged) {
-             for (String f : flagged) {
-                 keys(chunk, f, flagSet, posStart);
-             }
+            for (String f : flagged) {
+               keys(chunk, f, flagSet, posStart);
+            }
          }
          for (String k : keywords) {
-              keys(chunk, k, keySet, posStart);
+            keys(chunk, k, keySet, posStart);
          }
          if (isOperators) {
-             for (String o : operators) {
-                 operators(chunk, o, keySet, posStart);
-             }
+            for (String o : operators) {
+               operators(chunk, o, keySet, posStart);
+            }
          }
          if (isBrackets) {
-             for (String b : Syntax.BRACKETS) {
-                 operators(chunk, b, brSet, posStart);
-             }
+            for (String b : Syntax.BRACKETS) {
+               operators(chunk, b, brSet, posStart);
+            }
          }
          if (isStringLit) {
             if (!isSingleLines) {
@@ -255,15 +249,16 @@ class Coloring {
       }
    }
    
-   /** colors block comments and recolors when uncommented */
+   /* colors block comments but also recolors when uncommented */
    private void blockComments(String in) {
       int start = 0;
       int jump = 0;
       while (start != -1) {
          start = in.indexOf(blockCmntStart, start + jump);
          if (start != -1 && !Syntax.isInQuotes(in, start, blockCmntStart.length())) {
-            int end = in.indexOf(blockCmntEnd, start + 1);
-            if (end != -1 && !Syntax.isInQuotes(in, end, blockCmntEnd.length())) {
+            int end = Syntax.indNextBlockEnd(in, start + 1, blockCmntStart,
+                  blockCmntEnd);
+            if (end != -1) {
                int length = end - start + blockCmntEnd.length();
                doc.setCharacterAttributes(start, length, comSet, false);
                if (isSingleLines) {
@@ -272,8 +267,10 @@ class Coloring {
                }
             }
             else {
-              colSectionExBlock(in.substring(start), start);
-           } 
+               if (isSingleLines) {
+                  colSectionExBlock(in.substring(start), start);
+               } 
+            }
          }
          jump = 1;
       }
@@ -303,6 +300,7 @@ class Coloring {
       }
    }
    
+   /* Colors the specifies String but skips block comments */
    private void colSectionExBlock(String section, int pos) {
       enableSingleLines(false);
       isBlockCmnt = false;

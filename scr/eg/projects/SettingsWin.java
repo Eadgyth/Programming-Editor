@@ -55,10 +55,10 @@ public class SettingsWin {
     * files.
     * @param useExec  true to ask for the directory that contain executable
     * files
-    * @param useArgs  true to ask for additional arguments of a start script
+    * @param useArgs  true to ask for arguments in a start script
     * @param buildKind  the name for the kind of build. Null to skip asking
     * for a build
-    */
+    */   
    public SettingsWin(String fileKind, String moduleKind, boolean useScr,
          boolean useExec, boolean useArgs, String buildKind) {
       setWindow(fileKind, moduleKind, useScr, useExec, useArgs, buildKind);
@@ -143,7 +143,7 @@ public class SettingsWin {
          projPnl.add(holdLbAndTf(moduleLb, moduleTf));
       }
       //
-      // scources panel
+      // sources panel
       if (useScr) {
          gridSize++;
          grid.setRows(gridSize);        

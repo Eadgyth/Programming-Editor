@@ -10,7 +10,7 @@ import eg.ui.filetree.FileTree;
 /**
  * Represents a programming project in Perl
  */
-public class PerlActions extends ProjectConfig implements ProjectActions {
+public final class PerlActions extends ProjectConfig implements ProjectActions {
    
    private final DisplaySetter displSet;
    private final ProcessStarter proc;
@@ -22,16 +22,7 @@ public class PerlActions extends ProjectConfig implements ProjectActions {
    PerlActions(DisplaySetter displSet, ProcessStarter proc,
          ConsolePanel cw, FileTree fileTree) {
 
-      super(new SettingsWin(
-            "Name of perl script",
-            null,
-            true,
-            false,
-            true,
-            null
-         ),
-         ".pl"
-      );
+      super(".pl");
       this.displSet = displSet;
       this.proc = proc;
       this.cw = cw;
@@ -96,6 +87,18 @@ public class PerlActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void build() {
+   }
+
+   @Override
+   protected SettingsWin createSetWin() {
+      SettingsWin setWin = new SettingsWin(
+            "Name of perl script",
+            null,
+            true,
+            false,
+            true,
+            null);
+      return setWin;
    }
    
    private void setStartCommand() {

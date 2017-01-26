@@ -14,9 +14,10 @@ import eg.utils.FileUtils;
 import eg.ui.filetree.FileTree;
 
 /**
- * Represents a programming project in Java
+ * Represents a programming project in Java.
  */
-public class JavaActions extends ProjectConfig implements ProjectActions {
+public final class JavaActions extends ProjectConfig
+      implements ProjectActions {
 
    private final static String F_SEP = File.separator;
 
@@ -32,14 +33,7 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
    JavaActions(DisplaySetter displSet, ProcessStarter proc,
          ConsolePanel consPnl, FileTree fileTree) {
 
-      super(new SettingsWin(
-                  "Name of main class",
-                  "Package containing the main class",
-                  true,
-                  true,
-                  true,
-                  "jar file"),
-            ".java");
+      super(".java");
       this.displSet = displSet;
       this.proc = proc;
       this.consPnl = consPnl;
@@ -158,6 +152,18 @@ public class JavaActions extends ProjectConfig implements ProjectActions {
       catch (IOException e) {
          FileUtils.logStack(e);
       }        
+   }
+   
+   @Override
+   protected SettingsWin createSetWin() {
+      SettingsWin setWin = new SettingsWin(
+            "Name of main class",
+            "Package containing the main class",
+            true,
+            true,
+            true,
+            "jar file");
+      return setWin;
    }
 
    private boolean mainClassFileExists() {

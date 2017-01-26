@@ -50,8 +50,11 @@ public class SelectedProject {
          default:
             if (isSearchByLang) {
                newProj = createProjByLang();
-            }                 
-      }    
+            }       
+      }
+      if (newProj != null) {
+         newProj.createSettingsWin();
+      }
       return newProj;
    }
    
