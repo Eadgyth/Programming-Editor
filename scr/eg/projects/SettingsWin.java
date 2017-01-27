@@ -45,22 +45,23 @@ public class SettingsWin {
    private final JCheckBox  saveConfig   = new JCheckBox();
 
    /**
-    * Creates a SettingsWin and defines which inputs are asked for.
+    * Defines which input options are shown in this frame.
     * <p>
     * @param fileKind  a description for the kind of file which a project is
     * configured for. Is not null.
-    * @param moduleKind  a description for the kind of module (e.g. package/
-    * directory relative to the project root). Null to skip asking for a module
-    * @param useScr  true to ask for the directory that contain source
+    * @param moduleKind  a description for the kind of module (e.g.
+    * package/subdirectory). Null to skip asking for a module
+    * @param useScr  true to ask for the directory that contains source
     * files.
-    * @param useExec  true to ask for the directory that contain executable
+    * @param useExec  true to ask for the directory that contains executable
     * files
     * @param useArgs  true to ask for arguments in a start script
     * @param buildKind  the name for the kind of build. Null to skip asking
-    * for a build
+    * for a kind of build
     */   
-   public SettingsWin(String fileKind, String moduleKind, boolean useScr,
-         boolean useExec, boolean useArgs, String buildKind) {
+   public void configWindow(String fileKind, String moduleKind,
+          boolean useScr, boolean useExec, boolean useArgs, String buildKind) {
+      
       setWindow(fileKind, moduleKind, useScr, useExec, useArgs, buildKind);
    }
 

@@ -19,8 +19,9 @@
    <body>
    <div>
       <h2>Eadgyth help</h2>
-      <p>If really somebody gave the program a try a message about problems 
-         is welcome at <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a>.</p>
+      <p>Please help: if really somebody gave the program a try a message about
+         problems is welcome at <a href="mailto:m.bussiek@web.de">m.bussiek@web.de
+         </a>.</p>
      
       <h3>Content</h3>
       <ul>
@@ -79,43 +80,43 @@
          <li>A separate destination directory for compiled files (applies only to Java) maybe
              entered in the text field &lsquo;Executable directory&rsquo; (the folder will be
              created during compilation).</li>
-         <li>Click ok. If entries are correct, that is the path to the main class exists, the
-             project can be viewed in the &lsquo;Project explorer&rsquo; that is opened in the
-             &lsquo;View&rsquo; menu.</li>
+         <li>Click ok. If entries are correct, that is the path to the main source file exists,
+             the project can be viewed in the &lsquo;Project explorer&rsquo; that is opened in
+             the &lsquo;View&rsquo; menu.</li>
       </ol>
       
       <h4 id="ChangeProjects">Changing between projects</h4>
       <ul>
-         <li>Different projects may set during a session. A new project is set by opening a file
-             that is not part of the currently active project and then opening the settings window
-             (&lsquo;Project&rsquo; > &lsquo;Project settings&rsquo;) to configure the new project.
-             The file must be found in the selected tab.</li>
+         <li>Different projects may set during a session. A new project can be set if a file
+             that is not part of the currently active project is the selected tab. Selecting
+             (&lsquo;Project&rsquo; > &lsquo;Project settings&rsquo;) opens a new settings
+             window.</li>
          <li>Changing between already set projects is done by selecting a file that is part of
              the project to be set active and then selecting &lsquo;Project&rsquo; > &lsquo;Change
-             project&rsquo; or, to view or modify settings, &lsquo;Project&rsquo; > &lsquo;Project
-             settings&rsquo;.</li>
+             project&rsquo; or, to switch project and view the configuration, &lsquo;Project&rsquo;
+             > &lsquo;Project settings&rsquo;.</li>
       </ul>
       
       <h4 id="Retrieve">Retrieving projects</h4>
       <ul>
          <li>The project that was active when the program was closed the last time is retrieved
              and set active when a file of that project is opened (or one is newly saved to
-             that project) and no other project is active. The extension of the file must
+             that project) and no other project is already active. The extension of the file must
              correspond with the type of project (See <a href="#ProjectTypes">Types of projects</a>).
              The extension may be different if and only if the language is set correspondingly
              under &lsquo;Edit&rsquo; > &lsquo;Language&rsquo; before opening the file.</li>
          <li>If &lsquo;Save settings in eadconfig file&rsquo; is selected in the settings window
              the configuration of the project is stored in such config file. This is saved in the
-             project folder but can be deleted at any time ("by hand" or by unselecting the option
-             to save this file in the settings window). A project is, so to say, "marked" as one by
-             the presence of the eadconfig file which only means two things:<br>
+             project folder but can be deleted at any time by unselecting the option to save i).
+             A project is, in a way, "marked" as one by the presence of the eadconfig file which
+             merely means two things:<br>
              <p>
              <ol>
              <li>If a file of a marked project is opened (or one is saved to that project) the
              settings are loaded even if another project is active. Selecting &lsquo;Project&rsquo; >
              &lsquo;Change project&rsquo; can be used to change to that project or 
              &lsquo;Project&rsquo; > &lsquo;Project settings&rsquo; to additionally view or modify
-             the configuration.</li>
+             the settings.</li>
              <li>A marked project is directly set active if a file of that project is opened and
              no other project is active even though it was not necessarily the active project
              when the program was closed the last time.</li></li>
@@ -138,9 +139,10 @@
              console panel to view messages.</li>
          <li>If the compilation was successful the new program can be run for testing by
              using &lsquo;Run&rsquo; in the &lsquo;Project&rsquo; menu. Any output and error
-             messages from the tested program are displayed in the console panel. The tested
-             program can be forcibly quit by clicking the &lsquo;stop&rsquo; symbol in the
-             toolbar of the console panel.</li>
+             messages from the tested program are displayed in the console panel. In the case
+             that the program asks for input through a command line the console area is set
+             writable. The tested program can be forcibly quit by clicking the
+             &lsquo;stop&rsquo; symbol in the toolbar of the console panel.</li>
          <li>Arguments for a start script may be entered in the text field &lsquo;Arguments&rsquo;
              (separated by single spaces) in the settings window (&lsquo;Project&rsquo; > &lsquo;
              Project settings&rsquo;).</li>
@@ -156,12 +158,16 @@
       <ol>
          <li>Save changes to the script and select &lsquo;Run&rsquo; in the &lsquo;Project&rsquo;
              menu.</li>
-         <li>Any output (error) is shown in the console panel. There is a limitation when the
-             script asks for input through a command line: output from the perl program that
-             normally would be send to SDOUT is not displayed immedeately (like "enter your name").
-             This can be circumvented by turning on the autoflushing of Perl's STDOUT in the script
-             itself during test phase. The other possibilty is, of course, to start THE command
-             line of the OS to test the script (see <a href="#Console">Using the console</a>).
+         <li>Any output (error) is shown in the console panel. NOTE: there is a limitation when the
+             script asks for input through a command line. In that case any output from script
+             expected before user input is asked for (like "Enter your name:") is not printed (more
+             precisely it's printed only after inputs were made). The output would be shown as
+             expected (as far as tested) if the autoflushing of Perl's STDOUT is turned on in the
+             script itself. The other possibilty is, of course, to start the command line/terminal
+             of the OS to test the script (see <a href="#Console">Using the console</a>).
+         <li>Arguments for a start script may be entered in the text field &lsquo;Arguments&rsquo;
+             (separated by single spaces) in the settings window (&lsquo;Project&rsquo; > &lsquo;
+             Project settings&rsquo;).</li>
          <li>The syntax coloring for Perl is presently very basic.</li>
       </ol>
          

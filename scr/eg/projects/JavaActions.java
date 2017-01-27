@@ -155,15 +155,14 @@ public final class JavaActions extends ProjectConfig
    }
    
    @Override
-   protected SettingsWin createSetWin() {
-      SettingsWin setWin = new SettingsWin(
+   protected void configSettingsWin(SettingsWin setWin) {
+      setWin.configWindow(
             "Name of main class",
             "Package containing the main class",
             true,
             true,
             true,
             "jar file");
-      return setWin;
    }
 
    private boolean mainClassFileExists() {

@@ -90,15 +90,14 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
    }
 
    @Override
-   protected SettingsWin createSetWin() {
-      SettingsWin setWin = new SettingsWin(
+   protected void configSettingsWin(SettingsWin setWin) {
+      setWin.configWindow(
             "Name of perl script",
             null,
             true,
             false,
             true,
             null);
-      return setWin;
    }
    
    private void setStartCommand() {

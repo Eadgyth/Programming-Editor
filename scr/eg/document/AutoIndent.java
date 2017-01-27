@@ -100,8 +100,8 @@ class AutoIndent {
    
    KeyListener listener = new KeyAdapter() {
       //
-      // looks awful but detecting enter pressed makes sure that
-      // that pressing enter in another window does inactivate
+      // Detecting enter pressed makes sure that that
+      // pressing enter in another window does inactivate
       // the insertString method in keyReleased
       boolean isEnter = false;
 

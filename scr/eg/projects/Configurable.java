@@ -17,7 +17,8 @@ import java.awt.event.ActionListener;
 public interface Configurable {
    
    /**
-    * Creates a new {@code SettingsWin}
+    * Creates and sets a new {@link SettingsWin} and configures the window
+    * to display the input options needed for a given project
     */
    public void createSettingsWin();
    
@@ -36,8 +37,8 @@ public interface Configurable {
    public void makeSetWinVisible(boolean enable);
    
    /**
-    * If a project can be successfully configured based on entries in
-    * the text fields of this {@code SettingsWin}
+    * If a project can be successfully configured based on the entries in
+    * the ui of this {@code SettingsWin}
     * @param dir  the directory of a file that maybe part of the project
     * @return  if a project can be successfully configured based on entries
     * in the window of this SettingsWin
@@ -45,10 +46,11 @@ public interface Configurable {
    public boolean configureProject(String dir);
    
    /**
-    * If a project configuration stored in any file can be retrieved
-    * @param dir  the directory of a file that maybe part of the project 
-    * @return  if a project configuration stored in a file can be
-    * retrieved
+    * If a project stored in some preferences file(s) can be retrieved
+    * @param dir  the directory of a file that maybe part of a stored
+    * project 
+    * @return  if the specified directory is part of a project whose 
+    * configuration is stored a some preferences file(s)
     */
    public boolean retrieveProject(String dir);
    

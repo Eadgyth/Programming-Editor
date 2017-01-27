@@ -6,6 +6,7 @@ import java.io.IOException;
 //--Eadgyth--//
 import eg.console.ProcessStarter;
 import eg.utils.JOptions;
+import eg.utils.FileUtils;
 import eg.ui.filetree.FileTree;
 
 /**
@@ -71,8 +72,7 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
          }
       }
       catch (IOException e) {
-         System.out.println(e.getMessage());
-         JOptions.warnMessage("No browser could be launched");
+         FileUtils.logStack(e);
       }
    }
    
@@ -84,15 +84,14 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    @Override
-   protected SettingsWin createSetWin() {
-      SettingsWin setWin = new SettingsWin(
+   protected void configSettingsWin(SettingsWin setWin) {
+      setWin.configWindow(
             "HTML file",
             "Subdirectory containing the source file(s)",
             false,
             false,
             false,
             null);
-      return setWin;
    }
    
    private void setHtmlFile() {

@@ -40,7 +40,8 @@ public abstract class ProjectConfig implements Configurable {
    
    @Override
    public void createSettingsWin() {
-      setWin = createSetWin();
+      setWin = new SettingsWin();
+      configSettingsWin(setWin);
    }
 
    @Override
@@ -99,10 +100,10 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    /**
-    * Creates a {@code SettingsWin} object
-    * @return  a new {@link SettingsWin}
+    * Configures the {@code SettingsWin}
+    * @param setWin  the {@link SettingsWin}
     */
-   protected abstract SettingsWin createSetWin();
+   protected abstract void configSettingsWin(SettingsWin setWin);
    
    /**
     * Returns the path of the project's root directory
@@ -248,7 +249,6 @@ public abstract class ProjectConfig implements Configurable {
       }
       else {
          project = new File(props.getProperty("recentProject"));
-         System.out.println(project);
       }
       String searchedStr = searched.getPath();
       String projStr = project.getPath();
@@ -342,6 +342,9 @@ public abstract class ProjectConfig implements Configurable {
                      JOptions.warnMessage(
                            "Deleting the 'config' file failed");
                   }
+               }
+               else {
+                  setWin.setSaveConfigSelected(true);
                }
             }
          }
