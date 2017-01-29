@@ -31,6 +31,11 @@ public class DisplaySetter {
    private boolean isShowStatusbar;
    private int selectedLafInd;
 
+   /**
+    * @param mw  the reference to {@link MainWin}
+    * @param menu  the reference to {@link Menu}
+    * @param tBar  the reference to {@link Toolbar}
+    */
    public DisplaySetter(MainWin mw, Menu menu, Toolbar tBar) {
       this.mw = mw;
       this.vMenu = menu.getViewMenu();
@@ -42,7 +47,7 @@ public class DisplaySetter {
       isShowToolbar = displSetWin.isShowToolbar();
       isShowLineNumbers = displSetWin.isShowLineNumbers();
       selectedLafInd = displSetWin.selectedLaf();
-      displSetWin.okAct(e -> applyChanges());
+      displSetWin.okAct(e -> applySetWinOk());
    }
 
    /**
@@ -53,10 +58,12 @@ public class DisplaySetter {
       this.editArea = editArea;
    }
 
-   /**
+  /**
     * Sets the index of the {@code EditArea} array whose display is
-    * to be changed and also selects/unselects the wordwrap menu
-    * item depending on te state of the {@code EditArea}
+    * to be changed.
+    * <p> The method also selects/unselects the wordwrap menu
+    * item depending on te state of the {@code EditArea} at the given
+    * index
     * @param index  the index of the array of {@link EditArea} objects
     */
    public void setEditAreaIndex(int index) {
@@ -65,7 +72,7 @@ public class DisplaySetter {
    }
 
    /**
-    * Makes the window in which view settings are changed visible
+    * Makes the frame of this {@link DisplaySettingWin} visible
     */
    public void makeViewSetWinVisible() {
       displSetWin.makeViewSetWinVisible(true);
@@ -73,21 +80,19 @@ public class DisplaySetter {
 
    /**
     * Enables/disables wordwrap in the {@code EditArea} whose
-    * index is currently set
+    * index is currently set.
     * <p>
     * @param isWordWrap  true to enable wordwrap, if false line
-    * numbers are shown depending on the entry in prefs
+    * numbers are shown depending on whether showing line numbers
+    * is selected in the view settings win
     */
    public void changeWordWrap(boolean isWordWrap) {
-      prefs.readPrefs();
       if (isWordWrap) {
          editArea[editAreaIndex].enableWordWrap();
          prefs.storePrefs("wordWrap", "enabled");
       }
       else {
-         boolean isLineNumbers
-               = "show".equals(prefs.getProperty("lineNumbers"));
-         if (isLineNumbers) {
+         if (isShowLineNumbers) {
             editArea[editAreaIndex].showLineNumbers();
          }
          else {
@@ -107,7 +112,7 @@ public class DisplaySetter {
 
    /**
     * Shows/hides the console panel and selects/deselects
-    * the console menu item
+    * the checked menu item for the consel panel
     * @param show  true to show the console panel
     */
    public void setShowConsoleState(boolean show) {
@@ -117,7 +122,7 @@ public class DisplaySetter {
 
    /**
     * Shows/hides the file view panel and selects/deselects
-    * the file view menu item
+    * the checked menu item for showing the file view
     * @param show  true to show the file view panel
     */
    public void setShowFileViewState(boolean show) {
@@ -127,7 +132,7 @@ public class DisplaySetter {
 
    /**
     * Shows/hides the function panel and selects/deselects
-    * the function menu item
+    * the checked menu item for showing the function panel
     * @param show  true to show the function panel
     */
    public void setShowFunctionState(boolean show) {
@@ -183,12 +188,11 @@ public class DisplaySetter {
    }
    
    /**
-    * Enables/disables menu items and toolbar buttons for to project
+    * Enables/disables menu items and toolbar buttons for project
     * actions
-    * @param isCompile  true/false to enable/disable the compilation
-    * action
-    * @param isRun  true/false to enable/disable the run action
-    * @param isBuild  true/false to enable/disable the build action
+    * @param isCompile  true to enable the compilation action
+    * @param isRun  true to enable the run action
+    * @param isBuild  true to enable the build action
     * @param projCount  the number of loaded projects. If 1 the action
     * to show the fileview is enabled, if 2 the action to change between
     * projects is enabled
@@ -206,7 +210,7 @@ public class DisplaySetter {
    }
    
    /**
-    * Enabled the menu item to change between projects
+    * Enables the menu item to change between projects
     */
    public void enableChangeProjItm() {
       prMenu.enableChangeProjItm();
@@ -233,55 +237,47 @@ public class DisplaySetter {
    // private methods
    //
 
-   private void applyChanges() {
-      boolean isToolbar = displSetWin.isShowToolbar();
-      if (this.isShowToolbar != isToolbar) {
-         mw.showToolbar(isToolbar);
-         this.isShowToolbar = isToolbar;
+   private void applySetWinOk() {
+      boolean show = false;
+
+      show = displSetWin.isShowToolbar();
+      if (isShowToolbar != show) {
+         mw.showToolbar(show);
+         isShowToolbar = show;
       }
 
-      boolean isStatusbar = displSetWin.isShowStatusbar();
-      System.out.println("statusbar");
-      if (this.isShowStatusbar != isStatusbar) {
-         mw.showStatusbar(isStatusbar);
-         this.isShowStatusbar = isStatusbar;
+      show = displSetWin.isShowStatusbar();
+      if (isShowStatusbar != show) {
+         mw.showStatusbar(show);
+         isShowStatusbar = show;
       }
 
-      boolean isLineNumbers = displSetWin.isShowLineNumbers();
-      if (this.isShowLineNumbers != isLineNumbers) {
-         this.isShowLineNumbers = isLineNumbers;
-         this.showHideLineNumbers();
+      show = displSetWin.isShowLineNumbers();
+      if (isShowLineNumbers != show) {
+         isShowLineNumbers = show;
+         showHideLineNumbers();
       }
 
-      int selectedLaf = displSetWin.selectedLaf();
-      if (this.selectedLafInd != selectedLaf) {
+      int index = displSetWin.selectedLaf();
+      if (selectedLafInd != index) {
          prefs.storePrefs("LaF",
-               DisplaySettingWin.LAF_OPT[selectedLaf]);
-         this.selectedLafInd = selectedLaf;
+               DisplaySettingWin.LAF_OPT[index]);
+         selectedLafInd = index;
       }    
       displSetWin.makeViewSetWinVisible(false);
    }
 
    private void showHideLineNumbers() {
-      boolean isWordWrapDisabled = false;
-       for (EditArea editArea1 : editArea) {
-           if (editArea1 != null && !editArea1.isWordWrap()) {
-               isWordWrapDisabled = true;
-               if (!isShowLineNumbers) {
-                   editArea1.hideLineNumbers();
-               } else {
-                   editArea1.showLineNumbers();
-               }
-           }
-       }
-      if (isWordWrapDisabled) {
-         fMenu.selectWordWrapItm(false);
-      }
-      if (!isShowLineNumbers) {
-         prefs.storePrefs("lineNumbers", "hide");
-      }
-      else {
-         prefs.storePrefs("lineNumbers", "show");
+      for (EditArea ea : editArea) {
+         if (ea != null && !ea.isWordWrap()) {
+            if (!isShowLineNumbers) {
+               ea.hideLineNumbers();
+               prefs.storePrefs("lineNumbers", "hide");
+            } else {
+               ea.showLineNumbers();
+               prefs.storePrefs("lineNumbers", "show");
+            }
+         }
       }
    }
 }
