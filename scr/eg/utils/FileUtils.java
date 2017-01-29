@@ -33,17 +33,16 @@ public class FileUtils {
     */ 
    public static boolean deleteEmptyFolder(File dir) {
       boolean ret = false;
-      File[] content = dir.listFiles();
-      if (content.length == 0) {
+      if (isFolderEmpty(dir)) {
          ret = dir.delete();
       }
       return ret;
    }
    
    /**
-    * If the folder given by the specified directory is empty
+    * If the specified directory is empty
     * @param dir  the directory
-    * @return  if the folder specifies by the directory is empty
+    * @return  if dir is empty
     */
    public static boolean isFolderEmpty(File dir) {
       File[] content = dir.listFiles();
