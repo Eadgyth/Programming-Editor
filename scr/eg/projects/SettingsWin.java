@@ -43,91 +43,208 @@ public class SettingsWin {
    private final JButton    okBt         = new JButton("   OK   ");
    private final JButton    cancelBt     = new JButton("Cancel");
    private final JCheckBox  saveConfig   = new JCheckBox();
+   
+   private String fileKind = null;
+   private String moduleKind = null;
+   private boolean useScr = false;
+   private boolean useExec = false;
+   private boolean useArgs = false;
+   private String buildKind = null;
+   
+   /**
+    * Sets the text that describes what kind of project file and module
+    * is asked for
+    * @param fileKind  the text that describes the kind of project file
+    * (e.g. name of HTML file). Is not null.
+    * @param moduleKind  the desciption kind of module (e.g.
+    * package/subdirectory). Null to not show the related label and text
+    * field
+    * @return  this
+    */
+   public SettingsWin setProjectFile(String fileKind, String moduleKind) {
+      this.fileKind = fileKind;
+      this.moduleKind = moduleKind;
+      return this;
+   }
+   
+   /**
+    * Turns on asking for the name of a directory for source files.
+    * The related text field and label is not shown if this method is
+    * not called
+    * @return  this
+    */
+   public SettingsWin useSourceDir() {
+      this.useScr = true;
+      return this;
+   }
+   
+   /**
+    * Turns on asking for the name of a directory for executable files.
+    * The related text field and label is not shown if this method is
+    * not called
+    * @return  this
+    */
+   public SettingsWin useExecDir() {
+      useExec = true;
+      return this;
+   }
+   
+   /**
+    * Turns on asking for arguments in a start script. The related text
+    * field and label is not shown if this method is not called.
+    * @return  this
+    */
+   public SettingsWin useArgs() {
+      this.useArgs = true;
+      return this;
+   }
+   
+   /**
+    * Sets the text that describes what kind of build is asked for. The
+    * related text field is not shown if this method not called.
+    * @param  buildKind  he text that describes what kind of build is
+    * asked for (e.g. name of jar file).
+    * @return  this
+    */
+   public SettingsWin setBuildKind(String buildKind) {
+      this.buildKind = buildKind;
+      return this;
+   }
+   
+   /**
+    * Sets up this frame
+    * @throws IllegalArgumentException if no description for the kind of
+    * project file was set using {@link #setProjectFile(String, String)}
+    */
+   public void setupWindow() {
+      if (fileKind == null) {
+         throw new IllegalStateException("The settings window cannot be build");
+      }
+      setWindow();
+   }
+      
 
    /**
-    * Defines which input options are shown in this frame.
-    * <p>
-    * @param fileKind  a description for the kind of file which a project is
-    * configured for. Is not null.
-    * @param moduleKind  a description for the kind of module (e.g.
-    * package/subdirectory). Null to skip asking for a module
-    * @param useScr  true to ask for the directory that contains source
-    * files.
-    * @param useExec  true to ask for the directory that contains executable
-    * files
-    * @param useArgs  true to ask for arguments in a start script
-    * @param buildKind  the name for the kind of build. Null to skip asking
-    * for a kind of build
-    */   
-   public void configWindow(String fileKind, String moduleKind,
-          boolean useScr, boolean useExec, boolean useArgs, String buildKind) {
-      
-      setWindow(fileKind, moduleKind, useScr, useExec, useArgs, buildKind);
-   }
-
-   void makeVisible(boolean isVisible) {
+    * Makes this frame visible
+    * @param isVisible  true to make this frame visible
+    */
+   public void makeVisible(boolean isVisible) {
       fileTf.requestFocus();
       frame.setVisible(isVisible);
    }      
 
-   void okAct(ActionListener al) {
+   /**
+    * Adds an {@code ActionListener} to this ok button
+    * @param al  the {@code ActionListener};
+    */
+   public void okAct(ActionListener al) {
       okBt.addActionListener(al);
    }
    
+   /**
+    * @return  the input in the text field for the name of the project
+    * file
+    */
    String projectFileIn() {
       return fileTf.getText();
    }
 
+   /**
+    * @return  the input in the text field for the module/package
+    */
    String moduleIn() {
       return moduleTf.getText();
    }
 
-   String sourcesDirIn() {
+   /**
+    * @return  the input in the text field for the directory of source
+    * files
+    */
+   public String sourcesDirIn() {
       return sourcesDirTf.getText();
    }
 
-   String execDirIn() {
+   /**
+    * @return  the input in the text field for the directory of
+    * executables
+    */
+   public String execDirIn() {
       return execDirTf.getText();
    }
 
-   String argsIn() {
+   /**
+    * @return  the input in the text field for arguments
+    */
+   public String argsIn() {
       return argsTf.getText();
    }
 
-   String buildNameIn() {
+   /**
+    * @return  the input in the text field for a name of a build
+    */
+   public String buildNameIn() {
       return buildTf.getText();
    }
 
-   void displayFile(String fileName) {
+   /**
+    * Shows in the related text field the name of the project file
+    * @param fileName  te name of the main file of a project
+    */
+   public void displayFile(String fileName) {
       fileTf.setText(fileName);
    }
 
-   void displayModule(String moduleName) {
+   /**
+    * Shows in the related text field the name of a module/package
+    * @param moduleName  the name of a module/package/namespace
+    */
+   public void displayModule(String moduleName) {
       moduleTf.setText(moduleName);
    }
 
-   void displaySourcesDir(String dirName) {
+   /**
+    * Shows in the related text field the name of the directory that
+    * contains source files
+    * @param dirName  the name of the directory for source files
+    */
+   public void displaySourcesDir(String dirName) {
       sourcesDirTf.setText(dirName);
    }
 
-   void displayExecDir(String in) {
+   /**
+    * Shows in the related text field the name of the directory
+    * where executables are saved
+    * @param in  the name of the directory for executable files
+    */
+   public void displayExecDir(String in) {
       execDirTf.setText(in);
    }
    
-   void displayBuildName(String in) {
+   /**
+    * Shows in the related text field the name of a build
+    * @param in  the name of a build
+    */
+   public void displayBuildName(String in) {
       buildTf.setText(in);
    }
    
-   boolean isSaveConfig() {
+   /**
+    * @return  if the checkbox to save the text field inputs to a
+    * local config file is selected
+    */
+   public boolean isSaveConfig() {
       return saveConfig.isSelected();
    }
    
-   void setSaveConfigSelected(boolean isSelected) {
+   /**
+    * @param isSelected  true select the checkbox for saving text
+    * field inputs to a local config file
+    */
+   public void setSaveConfigSelected(boolean isSelected) {
       saveConfig.setSelected(isSelected);
    }
 
-   private JPanel projectPanel(String fileKind, String moduleKind, boolean useScr,
-         boolean useExec) {
+   private JPanel projectPanel() {
       int gridSize = 2;
       GridLayout grid = new GridLayout(gridSize, 0);
       JPanel projPnl = new JPanel(grid);
@@ -224,12 +341,11 @@ public class SettingsWin {
       return checkBxPnl;
    }
    
-   private JPanel combineAll(String fileKind, String moduleKind, boolean useScr,
-         boolean useExec, boolean useArgs, String buildKind) {
+   private JPanel combineAll() {
       JPanel combineAll = new JPanel();
       combineAll.setLayout(new BoxLayout(combineAll, BoxLayout.Y_AXIS));
       combineAll.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-      combineAll.add(projectPanel(fileKind, moduleKind, useScr, useExec));
+      combineAll.add(projectPanel());
       if (useArgs) {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
          combineAll.add(argsPanel());
@@ -243,13 +359,11 @@ public class SettingsWin {
       return combineAll;
    }
 
-   private void setWindow(String fileKind, String moduleKind, boolean useScr,
-         boolean useExec, boolean useArgs, String buildKind) {
+   private void setWindow() {
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       frame.setResizable(false);
       frame.setLocation(550, 100);
-      frame.setContentPane(combineAll(fileKind, moduleKind, useScr, 
-            useExec, useArgs, buildKind));
+      frame.setContentPane(combineAll());
       frame.pack();
       frame.setVisible(false);
       frame.setAlwaysOnTop(true);

@@ -30,7 +30,7 @@ public class SelectedProject {
     * is to be defined for (has the form ".java", for example)
     * @param isSearchByLang  true to create a {@link ProjectActions}
     * based on the currently set language. True has still no effect if
-    * {@code fileExt} specifies the type of {@code ProjectActions}
+    * {@code fileExt} already specifies the kind of {@code ProjectActions}
     * @return  an object of type {@link ProjectActions} or null if no
     * class exists that implements ProjectActions for the given file
     * extension.

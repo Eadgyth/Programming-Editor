@@ -85,13 +85,9 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    
    @Override
    protected void configSettingsWin(SettingsWin setWin) {
-      setWin.configWindow(
-            "HTML file",
-            "Subdirectory containing the source file(s)",
-            false,
-            false,
-            false,
-            null);
+      setWin.setProjectFile("HTML file",
+             "Subdirectory containing the source file(s)")
+            .setupWindow();
    }
    
    private void setHtmlFile() {
