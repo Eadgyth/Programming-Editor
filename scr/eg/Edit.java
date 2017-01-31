@@ -71,7 +71,7 @@ public class Edit {
     * text
     */
    public void pasteText() {
-      txtDoc.enableTextModify(false);
+      txtDoc.enableTypeEdit(false);
 
       String clipboard = getClipboard();
       String selection = txtDoc.selectedText();
@@ -113,24 +113,23 @@ public class Edit {
     * Indents all lines of selected text by one indentation unit
     */
    public void indentSelection()  {
-      if (txtDoc.selectedText() == null) {
+      String sel = txtDoc.selectedText();
+      if (sel == null) {
          return;
       }
-
-      txtDoc.enableTextModify(false);
-      String sel = txtDoc.selectedText();
-      String[] selection = sel.replaceAll("\\r", "").split("\\n");
+      txtDoc.enableTypeEdit(false);
+      String[] selSplit = sel.replaceAll("\\r", "").split("\\n");
       int start = txtDoc.selectionStart();
-      int[] startOfLines = Finder.startOfLines(selection);
+      int[] startOfLines = Finder.startOfLines(selSplit);
 
-      for (int i = 0; i < selection.length; i++) {
+      for (int i = 0; i < selSplit.length; i++) {
          txtDoc.insertStr(start + startOfLines[i]
                + i * (indentLength), indentUnit);
       }
       txtDoc.select(start, (sel.length()
-            + selection.length * indentLength) + start);
+            + selSplit.length * indentLength) + start);
       if (txtDoc.isComputerLanguage()) {
-         txtDoc.enableTextModify(true);
+         txtDoc.enableTypeEdit(true);
       }
    }
 
@@ -138,44 +137,43 @@ public class Edit {
     * Reduces the indentation of selected text by one indentation unit
     */
    public void outdentSelection() {
-      if (txtDoc.selectedText() == null) {
-         return;
-      }
-      
       String sel = txtDoc.selectedText();
+      if (sel == null) {
+         return;
+      }      
       int start = txtDoc.selectionStart();
       String startingLine = Finder.currLine(txtDoc.getDocText(), start);
       if (!startingLine.startsWith(indentUnit)) {
          return;
       }
-      txtDoc.enableTextModify(false);
-      String[] selection = sel.split("\n");
+      txtDoc.enableTypeEdit(false);
+      String[] selSplit = sel.split("\n");
       /*
        * count spaces at the beginning of selection */
       int countSpaces = 0;       
-      for (int i = 0; i < selection[0].length(); i++) {
-         if (selection[0].substring(i, i + 1).equals(" ")) {
+      for (int i = 0; i < selSplit[0].length(); i++) {
+         if (selSplit[0].substring(i, i + 1).equals(" ")) {
             countSpaces++;
          }
          else {
             break;
          }
       }
-      int[] startOfLines = Finder.startOfLines(selection);
+      int[] startOfLines = Finder.startOfLines(selSplit);
       /*
        * add an indent unit to empty lines or lines with too few spaces */
-      for (int i = 0; i < selection.length; i++) {         
-         if (selection[i].length() == 0) {
+      for (int i = 0; i < selSplit.length; i++) {         
+         if (selSplit[i].length() == 0) {
             txtDoc.insertStr(start + startOfLines[i], indentUnit);
-            for (int j = i + 1; j < selection.length; j++) {
+            for (int j = i + 1; j < selSplit.length; j++) {
                startOfLines[j] += indentLength;
             }
          }
-         if (selection[i].matches("[\\s]+")) {
-            int length = selection[i].length();
+         if (selSplit[i].matches("[\\s]+")) {
+            int length = selSplit[i].length();
             if (length < indentLength) {
                txtDoc.insertStr(start + startOfLines[i], indentUnit);
-               for (int j = i + 1; j < selection.length; j++) {
+               for (int j = i + 1; j < selSplit.length; j++) {
                   startOfLines[j] += indentLength;
                }
             }
@@ -188,16 +186,16 @@ public class Edit {
       if (countSpaces != indentLength && startUpdate > startOfFirstLine) {
          txtDoc.select(startUpdate, txtDoc.selectionEnd());
          sel = txtDoc.selectedText();
-         selection = sel.split("\\n");
+         selSplit = sel.split("\\n");
          start = txtDoc.selectionStart();
       }           
-      startOfLines = Finder.startOfLines(selection);
-      for (int i = 0; i < selection.length; i++) {
+      startOfLines = Finder.startOfLines(selSplit);
+      for (int i = 0; i < selSplit.length; i++) {
          txtDoc.removeStr(start + startOfLines[i] - i * indentLength,
                indentLength);
       }
       if (txtDoc.isComputerLanguage()) {
-         txtDoc.enableTextModify(true);
+         txtDoc.enableTypeEdit(true);
       }
    }
 
@@ -205,7 +203,7 @@ public class Edit {
     * Clears residual spaces in otherwise empty lines
     */
    public void clearSpaces() {
-      txtDoc.enableTextModify(false);
+      txtDoc.enableTypeEdit(false);
       String allTxt = txtDoc.getDocText();
       String[] allTxtArr = allTxt.split("\n");
       int[] startOfLines = Finder.startOfLines(allTxtArr);
@@ -218,7 +216,7 @@ public class Edit {
          }
       }
       if (txtDoc.isComputerLanguage()) {
-         txtDoc.enableTextModify(true);
+         txtDoc.enableTypeEdit(true);
       }
    }
 

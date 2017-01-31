@@ -73,7 +73,7 @@ public final class JavaActions extends ProjectConfig
       fileTree.setDeletableDirName(getExecDirName());
    }
    
-   @Override                                                                          
+   @Override                                                                        
    public void compile() {      
       consPnl.setText("<<Compile " + getProjectName() + ">>\n");
       EventQueue.invokeLater(() -> {
@@ -81,7 +81,6 @@ public final class JavaActions extends ProjectConfig
             comp.compile(getProjectPath(), getExecDirName(),
                   getSourceDirName());            
             consPnl.setCaret(0);
-            fileTree.updateTree();
             if (!displSet.isConsoleSelected()) {
                if (!comp.success()) {
                   int result = JOptions.confirmYesNo(
@@ -166,7 +165,7 @@ public final class JavaActions extends ProjectConfig
    }
 
    private boolean mainClassFileExists() {
-      boolean exists = mainProgramFileExists(".class");
+      boolean exists = mainExecFileExists(".class");
       if (!exists) {
          JOptions.warnMessage("A compiled main class file could not be found");
       }

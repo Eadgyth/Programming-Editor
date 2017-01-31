@@ -6,7 +6,7 @@ import javax.swing.text.StyleConstants;
 
 import java.awt.Color;
 
-//--Eadgyth--
+//--Eadgyth--//
 import eg.Languages;
 import eg.utils.Finder;
 
@@ -16,9 +16,9 @@ class Coloring {
    private final SimpleAttributeSet keySet    = new SimpleAttributeSet();
    private final SimpleAttributeSet flagSet   = new SimpleAttributeSet();
    private final SimpleAttributeSet brSet     = new SimpleAttributeSet();
-   private final SimpleAttributeSet strLitSet = new SimpleAttributeSet();   
+   private final SimpleAttributeSet strLitSet = new SimpleAttributeSet();
+   private final SimpleAttributeSet normalSet;  
    private final StyledDocument doc;
-   private final SimpleAttributeSet normalSet;
    
    private String[] keywords;
    private boolean contrainWord = false;

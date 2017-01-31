@@ -1,15 +1,9 @@
 package eg.projects;
 
 /**
- * The interface to configure and run a project
+ * The interface to perform actions in a project
  */
 public interface ProjectActions extends Configurable {
-   
-   /**
-    * Passes to interested objects the project's root directory or
-    * any other directories that are relevaant to the project
-    */
-   public void applyProject();
    
    /**
     * Compiles source files

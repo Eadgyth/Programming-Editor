@@ -11,6 +11,17 @@ import java.io.IOException;
  */
 public class FileUtils {
    
+   public static String fileSuffix(String file) {
+      int indDot = file.lastIndexOf(".") + 1;
+      int indFileSep = file.lastIndexOf(File.separator);
+      if (indDot > indFileSep) {
+         return file.substring(indDot);
+      }
+      else {
+         return "";
+      }
+   }
+   
    /**
     * Deletes a folder
     * @param dir  the directory to be deleted

@@ -80,7 +80,7 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
     * Not used
     */
    @Override
-   public void build() {     
+   public void build() {
    }
    
    @Override

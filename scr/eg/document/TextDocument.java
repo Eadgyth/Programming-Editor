@@ -36,8 +36,8 @@ public class TextDocument {
    private String filename = "";
    private String filepath = "";
    private String dir = "";
-   private String language;
-   private String content;
+   private String content = "";
+   private Languages language;
 
    /**
     * Creates a TextDocument
@@ -47,8 +47,10 @@ public class TextDocument {
       this.textArea = editArea.textArea();
       type = new TypingEdit(editArea);
       PREFS.readPrefs();
-      language = PREFS.getProperty("language");
-      openSettings();
+      String lang = PREFS.getProperty("language");
+      language = Languages.valueOf(lang);
+      type.setUpEditing(language);
+      type.addAllRowNumbers(content);
    }
 
    /**
@@ -90,7 +92,9 @@ public class TextDocument {
       assignFileStrings(file);
       EventQueue.invokeLater(() -> {
          displayFileContent();
-         openSettings();
+         setLanguageBySuffix();
+         setContent();
+         type.addAllRowNumbers(content);    
       });
    }
 
@@ -118,7 +122,7 @@ public class TextDocument {
    public void saveFileAs(File file) {        
       assignFileStrings(file);
       saveToFile();
-      openSettings();
+      setLanguageBySuffix();
    }
 
    /**
@@ -135,7 +139,7 @@ public class TextDocument {
     * set to plain text
     */
    public boolean isComputerLanguage() {
-      return !"Plain text".equals(language);
+      return Languages.PLAIN_TEXT != language;
    }
 
    /**
@@ -232,8 +236,8 @@ public class TextDocument {
     */
    public void changeIndentUnit(String indentUnit) {
       if (indentUnit == null || !indentUnit.matches("[\\s]+")) {
-         throw new IllegalArgumentException(
-               "Argument 'indentUnit' is incorrect");
+         throw new IllegalArgumentException("Argument indentUnit is"
+               + " incorrect");
       }  
       type.changeIndentUnit(indentUnit);
    }
@@ -243,8 +247,8 @@ public class TextDocument {
     * @param isEnabled  true to enable syntax coloring and
     * auto-indentation
     */
-   public void enableTextModify(boolean isEnabled) {
-      type.enableTextModify(isEnabled);
+   public void enableTypeEdit(boolean isEnabled) {
+      type.enableTypeEdit(isEnabled);
    }
 
    /**
@@ -309,60 +313,47 @@ public class TextDocument {
    }
 
    /**
-    * Changes this language if no file has been assigned to this
-    * @param language  the language which has one of the constant values
+    * Changes this language if no file has been set but saves the
+    * specified language to prefs file in any case
+    * @param lang  the language which has one of the constant values
     * in {@link eg.Languages}
     */
-   public void changeLanguage(Languages language) {
-      PREFS.storePrefs("language", language.toString()); 
-      if (filename.length() > 0) {
-         return;
-      }
-      switch (language) {
-         case JAVA:
-            changeToJava();
-            break;
-         case PERL:
-            changeToPerl();
-            break;
-         case HTML:
-            changeToHtml();
-            break;
-         case PLAIN_TEXT:
-            changeToPlain();
-            break;
+   public void changeLanguage(Languages lang) {
+      PREFS.storePrefs("language", lang.toString()); 
+      if (filename.length() == 0) {
+         language = lang;
+         type.setUpEditing(language);
       }
    }
    
     /**
-    * Colors text elements specified by an array of search terms in the
-    * keyword color if this language is plain text.
+    * Colors in keyword color text elements specified by the array of search
+    * terms.
+    * <p>
+    * The method returns with a warning if the current language is not
+    * plain text. 
     * @param searchTerms  the array of Strings that contain search terms
-    * to be colored
     * @param constrainWord  true to color only words
     * @throws IllegalArgumentException  if searchTerms is null or contains
     * empty Strings
     */
    public void colorSearchedText(String[] searchTerms, boolean constrainWord) {
+      if (isComputerLanguage()) {
+         JOptions.infoMessage("The coloring of text requires that the language"
+               + " is plain text");
+         return;
+      }      
       if (searchTerms == null) {
          throw new IllegalArgumentException(
-               "Argument 'searchTerms' is null");
+               "Param searchTerms is null");
       }
-      for (String searchTerm : searchTerms) {
-         if (searchTerm.length() == 0) {
-            throw new IllegalArgumentException(
-                  "'searchTerms' contains an"
+      for (String s : searchTerms) {
+         if (s.length() == 0) {
+            throw new IllegalArgumentException("Param searchTerms contains an"
                   + " empty element");
-          }
-      }
-      if (isComputerLanguage()) {
-         JOptions.infoMessage(
-               "The coloring of text requires"
-               + " that the language is plain txt");
-         return;
-      }
+         }
+      }      
       type.setKeywords(searchTerms, constrainWord);
-      type.enableIndent(false);
       colorAll();
    }
    
@@ -372,9 +363,9 @@ public class TextDocument {
 
    private void displayFileContent() {
       type.enableDocListen(false);
-      type.enableTextModify(false);
-      /*
-       * set text attributes later to speed up placing larger pieces of text */
+      type.enableTypeEdit(false);
+      //
+      // Set text attributes later to speed up placing larger pieces of text
       Document blank = new DefaultStyledDocument();
       textArea.setDocument(blank);
       try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
@@ -385,8 +376,8 @@ public class TextDocument {
       }
       catch (IOException e) {
          FileUtils.logStack(e);
-      }   
-      textArea.setDocument(type.doc()); // doc is the StyledDocument
+      }
+      textArea.setDocument(type.doc());
       if (textArea.getText().endsWith("\n")) {
          removeStr(type.doc().getLength() - 1, 1);
       }
@@ -403,78 +394,21 @@ public class TextDocument {
       dir = filepath.getParent();
    }
 
-   private void openSettings() {
-      setContent();
-      type.addAllRowNumbers(content);
-      if (filename.endsWith(".java")
-            || (filename.length() == 0
-            & Languages.JAVA.toString().equals(language))) {
-         changeToJava();
-      }
-      else if (filename.endsWith(".html")
-            || (filename.length() == 0
-            & Languages.HTML.toString().equals(language))) {
-         changeToHtml();
-      }
-      else if (filename.endsWith(".pl")
-            || filename.endsWith(".pm")
-            || (filename.length() == 0
-            & Languages.PERL.toString().equals(language))) {
-         changeToPerl();
-      }
-      else {
-         changeToPlain();
-      }
-   }
-
-   private void changeToJava() {
-      configColoring(Languages.JAVA);
-      type.colorAll();
-      language = Languages.JAVA.toString();
-   }
-   
-   private void changeToHtml() {
-      configColoring(Languages.HTML);
-      type.colorAll();
-      language = Languages.HTML.toString();
-   }
-   
-   private void changeToPerl() {
-      configColoring(Languages.PERL);
-      type.colorAll();
-      language = Languages.PERL.toString();
-   }
-
-   private void changeToPlain() {
-      configColoring(Languages.PLAIN_TEXT);
-      backInBlack(getDocText().length(), 0);
-      enableTextModify(false);
-      language = Languages.PLAIN_TEXT.toString();
-   }
-   
-    /**
-    * Controls which text modification are done upon typing depending on
-    * the language.
-    * This method has to be modified if other languages are implemented in
-    * Eadgyth.
-    */
-   private void configColoring(Languages language) {
-      switch(language) {
-         case JAVA:
-            type.configColoring(language);
-            type.enableIndent(true);
+   private void setLanguageBySuffix() {
+      String suffix = FileUtils.fileSuffix(filename);     
+      switch (suffix) {
+         case "java":
+           language = Languages.JAVA;
+           break;
+         case "html":
+            language = Languages.HTML;
             break;
-         case HTML:
-            type.configColoring(language);
-            type.enableIndent(true);
+         case "pl": case "pm":
+            language = Languages.PERL;
             break;
-         case PERL:
-            type.configColoring(language);
-            type.enableIndent(true);
-            break;
-         case PLAIN_TEXT:
-            type.enableIndent(false);
-            break;
+         default:
+            language = Languages.PLAIN_TEXT;
       }
+      type.setUpEditing(language);
    }
 }

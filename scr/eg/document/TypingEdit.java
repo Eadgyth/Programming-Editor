@@ -1,6 +1,6 @@
 /**
- * This inner class {@code DocUndoManager} is based on and uses
- * methods of CompoundUndoManager class from JSyntaxPane at
+ * This inner class {@code DocUndoManager} uses methods 
+ * of CompoundUndoManager class from JSyntaxPane found at
  * https://github.com/aymanhs/jsyntaxpane
  * Copyright 2008 Ayman Al-Sairafi
  */
@@ -33,7 +33,7 @@ import eg.ui.EditArea;
 import eg.utils.FileUtils;
 
 /**
- * Responsible for the edits in the {@code EditArea} that shall happen 
+ * Responsible for the editing in the {@code EditArea} that shall happen 
  * during typing.
  * <p>
  * The changes include the line numbering, the syntax coloring,
@@ -41,7 +41,7 @@ import eg.utils.FileUtils;
  */
 class TypingEdit {
 
-   private final static char[] EDIT_SEP = {' ', '\n', '(', ')', '{', '}'};
+   private final static char[] UNDO_SEP = {' ', '\n', '(', ')', '{', '}'};
 
    private final StyledDocument doc;  
    private final Element el;
@@ -53,7 +53,7 @@ class TypingEdit {
    private final RowNumbers rowNum;
 
    private boolean isDocListen = true; 
-   private boolean isTextModify = false;
+   private boolean isTypeEdit = false;
    private boolean isIndent = false;
    private char typed = '\0';
 
@@ -75,20 +75,23 @@ class TypingEdit {
       this.isDocListen = isDocListen;
    }
 
-   void enableTextModify(boolean isTextModify) {
-      this.isTextModify = isTextModify;
-      col.enableSingleLines(isTextModify);
+   void enableTypeEdit(boolean isTypeEdit) {
+      this.isTypeEdit = isTypeEdit;
+      col.enableSingleLines(isTypeEdit);
    }
-
-   void enableIndent(boolean isEnabled) {
-      isIndent = isEnabled;
-      if (!isEnabled) {
+   
+   void setUpEditing(Languages language) {
+      if (Languages.PLAIN_TEXT == language) {
+         doc.setCharacterAttributes(0, getDocText().length(), normalSet(), false);
+         enableTypeEdit(false);
+         isIndent = false;
          autoInd.resetIndent();
       }
-   }
-
-   void configColoring(Languages language) {
-      col.configColoring(language);
+      else {
+         col.configColoring(language);
+         colorAll();
+         isIndent = true;
+      }
    }
 
    void setKeywords(String[] keywords, boolean constrainWord) {
@@ -131,18 +134,18 @@ class TypingEdit {
    }
 
    void colorAll() {
-      enableTextModify(false);
+      enableTypeEdit(false);
       String all = getDocText();
       doc.setCharacterAttributes(0, all.length(), normalSet(), false);
       col.color(all, 0);
-      enableTextModify(true);
+      enableTypeEdit(true);
    }
 
    void undo() {
       try {
          if (undomanager.canUndo()) {
             undomanager.undo();
-            if (isTextModify) {
+            if (isTypeEdit) {
                EventQueue.invokeLater(() -> {
                   colorAll();
                });
@@ -158,7 +161,7 @@ class TypingEdit {
       try {
          if (undomanager.canRedo()) {
             undomanager.redo();
-            if (isTextModify) {
+            if (isTypeEdit) {
                EventQueue.invokeLater(() -> {
                   colorAll();
                });
@@ -193,7 +196,7 @@ class TypingEdit {
             int pos = de.getOffset();
             typed = in.charAt(pos);
             updateRowNumber(in);
-            if (isTextModify) {
+            if (isTypeEdit) {
                insertTextModify(de, in, pos);
             }
          }
@@ -205,7 +208,7 @@ class TypingEdit {
             String in = getDocText();
             updateRowNumber(in);
             typed = '\0';
-            if (isTextModify) {
+            if (isTypeEdit) {
                int pos = de.getOffset();
                removeTextModify(de, in, pos);
             }
@@ -305,12 +308,12 @@ class TypingEdit {
 
       private boolean isEditSep() {
          int i = 0;
-         for (i = 0; i < EDIT_SEP.length; i++) {
-            if (EDIT_SEP[i] == typed) {
+         for (i = 0; i < UNDO_SEP.length; i++) {
+            if (UNDO_SEP[i] == typed) {
                break;
             }
          }
-         return i != EDIT_SEP.length;
+         return i != UNDO_SEP.length;
       }
    }
 }

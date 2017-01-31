@@ -16,6 +16,7 @@ import eg.projects.SelectedProject;
 import eg.document.TextDocument;
 
 import eg.utils.JOptions;
+import eg.utils.FileUtils;
 
 /**
  * The managing of projects.
@@ -78,7 +79,7 @@ public class CurrentProject {
     */
    public void setDocumentIndex(int docIndex) {
       currDoc = txtDoc[docIndex];
-      currExt = extension(currDoc.filepath());
+      currExt = FileUtils.fileSuffix(currDoc.filename());
    }
 
    /**
@@ -99,7 +100,7 @@ public class CurrentProject {
     * this list of configured projects.
     */
    public void retrieveProject() {
-      if (isProjectSet() && current.isProjectInPath(currDoc.dir())) {
+      if (isProjectSet() && current.isInProject(currDoc.dir())) {
          return;
       }
       ProjectActions prToFind = selProj.createProject(currExt, true);
@@ -114,7 +115,7 @@ public class CurrentProject {
             updateProjectSetting(current);
          }
          else {
-            if (inList() == null) {
+            if (selectFromList(currDoc.dir()) == null) {
                prToFind.addOkAction(e -> configureProject(prToFind));
                projList.add(prToFind);
                if (projList.size() == 2) {
@@ -145,14 +146,14 @@ public class CurrentProject {
       else {
          boolean openCurrent
               =  currDoc.filename().length() == 0
-              || current.isProjectInPath(currDoc.dir());
+              || current.isInProject(currDoc.dir());
          if (openCurrent) {
             current.makeSetWinVisible(true);
          }      
          else {
-            ProjectActions inList = inList();
-            if (inList != null) {
-               if (changeProject(inList)) {
+            ProjectActions fromList = selectFromList(currDoc.dir());
+            if (fromList != null) {
+               if (changeProject(fromList)) {
                    current.makeSetWinVisible(true);
                }
             }
@@ -172,13 +173,13 @@ public class CurrentProject {
     * project it is asked to set up a new project.
     */
    public void changeProject() {
-      ProjectActions inList = inList();
-      if (inList == current) {
+      ProjectActions fromList = selectFromList(currDoc.dir());
+      if (fromList == current) {
          JOptions.infoMessage(IS_IN_PROJ_MESSAGE);
       }
       else {
-         if (inList != null) {
-            changeProject(inList);
+         if (fromList != null) {
+            changeProject(fromList);
          }
          else {
             newProject();
@@ -194,7 +195,7 @@ public class CurrentProject {
     * See {@link FileTree#updateTree()}
     */
    public void updateFileTree(String path) {
-      if (isProjectSet() && current.isProjectInPath(path)) {
+      if (isProjectSet() && current.isInProject(path)) {
          fileTree.updateTree();
       }
    }
@@ -204,32 +205,33 @@ public class CurrentProject {
     */
    public void compile() {         
       displSet.setBusyCursor(true);
-      int missingIndex = 0;
+      int missingFileIndex = 0;
       try {
          for (int i = 0; i < txtDoc.length; i++) {
             boolean approved
                   = txtDoc[i] != null
                   && txtDoc[i].filename().endsWith(sourceExt)
-                  && current.isProjectInPath(txtDoc[i].dir());
+                  && current.isInProject(txtDoc[i].dir());
             if (approved) {
                boolean exists = new File(txtDoc[i].filepath()).exists();
                if (!exists) {
-                  missingIndex = i;
+                  missingFileIndex = i;
                }
                txtDoc[i].saveToFile();
             }
          }  
-         if (missingIndex == 0) {
+         if (missingFileIndex == 0) {
             current.compile();
          }
          else {
             JOptions.warnMessage(
-                    txtDoc[missingIndex].filename()
-                  + " cannot be found anymore");
+                    txtDoc[missingFileIndex].filename()
+                    + " cannot be found anymore");
          }
       }   
       finally {
          EventQueue.invokeLater(() -> {
+            fileTree.updateTree();
             displSet.setBusyCursor(false);
          });
       }
@@ -290,10 +292,10 @@ public class CurrentProject {
       }
    }
 
-   private ProjectActions inList() {
+   private ProjectActions selectFromList(String dir) {
       ProjectActions inList = null;
       for (ProjectActions p : projList) {
-         if (p.isProjectInPath(currDoc.dir())) {
+         if (p.isInProject(dir)) {
             inList = p;
          }
       }
@@ -316,17 +318,6 @@ public class CurrentProject {
       enableActions(projToSet.getClass().getSimpleName());
    }
    
-   private String extension(String fileStr) {
-      int indDot = fileStr.lastIndexOf(".");
-      int indFileSep = fileStr.lastIndexOf(F_SEP);
-      if (indDot > indFileSep) {
-         return fileStr.substring(indDot);
-      }
-      else {
-         return "";
-      }
-   }
-   
    private void enableActions(String className) {
       int projCount = projList.size();
       switch (className) {
@@ -340,7 +331,7 @@ public class CurrentProject {
             break;
          case "PerlActions":
             displSet.enableProjActions(false, true, false, projCount);
-            break;
+            break;            
       }
    }
 }

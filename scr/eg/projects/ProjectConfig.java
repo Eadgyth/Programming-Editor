@@ -11,7 +11,8 @@ import eg.utils.JOptions;
 /**
  * Represents the configuration of a project.
  * <p>
- * Class implements methods in {@link Configurable}
+ * Class implements methods in {@link Configurable} except for
+ * {@link Configurable #applyProject()}
  */
 public abstract class ProjectConfig implements Configurable {
    
@@ -32,7 +33,7 @@ public abstract class ProjectConfig implements Configurable {
    
    /**
     * @param suffix  the file extension that represents
-    * the type of project
+    * the type of project. Incudes the dot (e.g. .java)
     */
    protected ProjectConfig(String suffix) {
       this.suffix = suffix;
@@ -55,7 +56,7 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    @Override
-   public boolean configureProject(String dir) {    
+   public boolean configureProject(String dir) {   
       projectPath = findRootByFile(dir, pathRelToRoot());
       boolean success = storeInputs();
       if (success) {
@@ -78,7 +79,7 @@ public abstract class ProjectConfig implements Configurable {
    }
 
    @Override
-   public boolean isProjectInPath(String path) {
+   public boolean isInProject(String path) {
       return findRootInPath(path, PREFS).length() > 0;
    }
    
@@ -170,13 +171,13 @@ public abstract class ProjectConfig implements Configurable {
    
    /**
     * If the main executable file exists
-    * @param execSuffix  the extension of the project's executable file(s)
+    * @param aSuffix  the extension of the project's executable file(s)
     * @return  if the main executable file exists
     */
-   protected boolean mainProgramFileExists(String execSuffix) { 
+   protected boolean mainExecFileExists(String aSuffix) { 
       File target
             = new File(projectPath + F_SEP + execDir + F_SEP + moduleDir
-            + F_SEP + mainFile + execSuffix);
+            + F_SEP + mainFile + aSuffix);
       return target.exists();
    }
    
