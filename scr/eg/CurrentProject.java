@@ -318,6 +318,7 @@ public class CurrentProject {
    private void updateProjectSetting(ProjectActions projToSet) {
       String projName = new File(projToSet.getProjectPath()).getName();
       fileTree.setProjectTree(projToSet.getProjectPath());
+      fileTree.setDeletableDirName(projToSet.getExecutableDirName());
       proc.addWorkingDir(projToSet.getProjectPath());
       displSet.showProjectInfo(projName);
       enableActions(projToSet.getClass().getSimpleName());

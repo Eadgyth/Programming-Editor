@@ -57,8 +57,8 @@ public class SettingsWin {
    } 
    
    /**
-    * Returns a new SettingsWin with the minimal content, i.e.
-    * the option to enter the name for a project file
+    * Returns a new SettingsWin with the minimal content, i.e. the
+    * option to enter the name for a project file
     * @return  a new SettingsWin
     */
    public static SettingsWin basicWindow() {

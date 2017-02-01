@@ -105,9 +105,12 @@ public class FileTree extends Observable {
    /**
     * Sets the filepath of the folder that can be deleted
     * @param dirName  the directory that can be deleted although it is
-    * not empty
+    * not empty. Maybe the empty String but not null
     */
    public void setDeletableDirName(String dirName) {
+      if (dirName == null) {
+         throw new IllegalArgumentException("Param dirName is null");
+      }
       deletableDir = dirName;
    }
    
@@ -278,8 +281,7 @@ public class FileTree extends Observable {
    
    private boolean isInDeletableDir(File file) {
       return file.toString().endsWith(F_SEP + deletableDir)
-            || file.toString().contains(F_SEP
-                  + deletableDir + F_SEP);
+            || file.toString().contains(F_SEP + deletableDir + F_SEP);
    }      
    
    private String deleteMessage(File f) {
