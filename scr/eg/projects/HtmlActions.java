@@ -26,6 +26,17 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
       this.fileTree = fileTree;
    }
    
+   /**
+    * Creates an adapted {@link SettingsWin}.
+    */
+   @Override
+   public void createSettingsWin() { 
+      SettingsWin setWin = SettingsWin.adaptableWindow();
+      setWin.useNewFileLabel("Name of HTML file")
+            .setupWindow();
+      setSettingsWin(setWin);
+   }
+   
    @Override
    public boolean configureProject(String dir) {
       boolean success = super.configureProject(dir);
@@ -42,16 +53,6 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
          setHtmlFile();
       }
       return success;
-   }
-   
-   /**
-    * Passes the project's root to this {@code ProcessStarter}
-    * and this {@code FileTree} 
-    */
-   @Override
-   public void applyProject() {
-      proc.addWorkingDir(getProjectPath());
-      fileTree.setProjectTree(getProjectPath());
    }
    
    /**
@@ -81,13 +82,6 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void build() {
-   }
-   
-   @Override
-   protected void configSettingsWin(SettingsWin setWin) {
-      setWin.setProjectFile("HTML file",
-             "Subdirectory containing the source file(s)")
-            .setupWindow();
    }
    
    private void setHtmlFile() {

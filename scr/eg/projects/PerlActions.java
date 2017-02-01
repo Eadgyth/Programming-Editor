@@ -29,6 +29,19 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
       this.fileTree = fileTree;
    }
    
+   /**
+    * Creates an adapted {@link SettingsWin}.
+    */
+   @Override
+   public void createSettingsWin() {
+      SettingsWin setWin = SettingsWin.adaptableWindow();
+      setWin.useNewFileLabel("Name of perl script")
+            .useSourceDir()
+            .useArgs()
+            .setupWindow();
+      setSettingsWin(setWin);
+   }
+   
    @Override
    public boolean configureProject(String dir) {
       boolean success = super.configureProject(dir);
@@ -55,16 +68,6 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
    }
    
    /**
-    * Passes the project's root to this {@code ProcessStarter}
-    * and this {@code FileTree}
-    */
-   @Override
-   public void applyProject() {
-      proc.addWorkingDir(getProjectPath());
-      fileTree.setProjectTree(getProjectPath());
-   }
-   
-   /**
     * Not used
     */
    @Override
@@ -87,14 +90,6 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void build() {
-   }
-
-   @Override
-   protected void configSettingsWin(SettingsWin setWin) {
-      setWin.setProjectFile("Name of perl script", null)
-            .useSourceDir()
-            .useArgs()
-            .setupWindow();
    }
    
    private void setStartCommand() {

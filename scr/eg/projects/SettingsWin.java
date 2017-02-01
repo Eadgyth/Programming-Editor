@@ -33,7 +33,6 @@ public class SettingsWin {
    private final static Dimension DIM_SPACER = new Dimension(0, 20);
 
    private final JFrame frame = new JFrame("Eadgyth - Project settings");
-
    private final JTextField fileTf       = new JTextField();
    private final JTextField moduleTf     = new JTextField("");
    private final JTextField sourcesDirTf = new JTextField();      
@@ -44,33 +43,69 @@ public class SettingsWin {
    private final JButton    cancelBt     = new JButton("Cancel");
    private final JCheckBox  saveConfig   = new JCheckBox();
    
-   private String fileKind = null;
-   private String moduleKind = null;
+   private String fileLabel = "Name of project file";
+   private String moduleLabel = null;
    private boolean useScr = false;
    private boolean useExec = false;
    private boolean useArgs = false;
-   private String buildKind = null;
+   private String buildLabel = null;
+   
+   private SettingsWin(boolean initWindow) {
+      if (initWindow) {
+         initWindow();
+      }
+   } 
    
    /**
-    * Sets the text that describes what kind of project file and module
-    * is asked for
-    * @param fileKind  the text that describes the kind of project file
-    * (e.g. name of HTML file). Is not null.
-    * @param moduleKind  the desciption kind of module (e.g.
-    * package/subdirectory). Null to not show the related label and text
-    * field
+    * Returns a new SettingsWin with the minimal content, i.e.
+    * the option to enter the name for a project file
+    * @return  a new SettingsWin
+    */
+   public static SettingsWin basicWindow() {
+      SettingsWin setWin = new SettingsWin(true);
+      return setWin;
+   }
+   
+   /**
+    * Returns a new SettingsWin whose content is set up afterwards.
+    * <p>
+    * At the least the method {@link #setupWindow()} must be invoked
+    * to create the window (which then equals to a {@link #basicWindow}
+    * though).
+    *
+    * @return  a new SettingsWin
+    */
+   public static SettingsWin adaptableWindow() {
+      return new SettingsWin(false);
+   }
+      
+   
+   /**
+    * Sets the label for the text field that is used to enter the name
+    * of the (main) project file. If this method is not called the label
+    * is 'Name of project file'.
+    * @param fileLabel  the label for the file text field
     * @return  this
     */
-   public SettingsWin setProjectFile(String fileKind, String moduleKind) {
-      this.fileKind = fileKind;
-      this.moduleKind = moduleKind;
+   public SettingsWin useNewFileLabel(String fileLabel) {
+      this.fileLabel = fileLabel;
       return this;
    }
    
    /**
-    * Turns on asking for the name of a directory for source files.
-    * The related text field and label is not shown if this method is
-    * not called
+    * Adds the option to enter a name for a module/subdirectory and
+    * sets the label for the corresponding text field
+    * @param moduleLabel  the label for the module text field 
+    * @return  this
+    */
+   public SettingsWin useModule(String moduleLabel) {
+      this.moduleLabel = moduleLabel;
+      return this;
+   }
+   
+   /**
+    * Adds the option to enter a name of a directory where source
+    * files are stored
     * @return  this
     */
    public SettingsWin useSourceDir() {
@@ -79,9 +114,8 @@ public class SettingsWin {
    }
    
    /**
-    * Turns on asking for the name of a directory for executable files.
-    * The related text field and label is not shown if this method is
-    * not called
+    * Adds the option to enter a name of a directory where executable
+    * files are stored
     * @return  this
     */
    public SettingsWin useExecDir() {
@@ -90,8 +124,7 @@ public class SettingsWin {
    }
    
    /**
-    * Turns on asking for arguments in a start script. The related text
-    * field and label is not shown if this method is not called.
+    * Adds the option to enter arguments for a start script.
     * @return  this
     */
    public SettingsWin useArgs() {
@@ -100,27 +133,25 @@ public class SettingsWin {
    }
    
    /**
-    * Sets the text that describes what kind of build is asked for. The
-    * related text field is not shown if this method not called.
-    * @param  buildKind  he text that describes what kind of build is
-    * asked for (e.g. name of jar file).
+    * Adds the option to enter a build name and sets the label for the
+    * corresponding text field
+    * @param  buildLabel for the build text field
     * @return  this
     */
-   public SettingsWin setBuildKind(String buildKind) {
-      this.buildKind = buildKind;
+   public SettingsWin useBuild(String buildLabel) {
+      this.buildLabel = buildLabel;
       return this;
    }
    
    /**
     * Sets up this frame
-    * @throws IllegalArgumentException if no description for the kind of
-    * project file was set using {@link #setProjectFile(String, String)}
     */
    public void setupWindow() {
-      if (fileKind == null) {
-         throw new IllegalStateException("The settings window cannot be build");
+      if (frame.getContentPane().getComponentCount() > 0) {
+         throw new IllegalStateException("The SettingsWin is already"
+               + " initialized");
       }
-      setWindow();
+      initWindow();
    }
       
 
@@ -187,7 +218,7 @@ public class SettingsWin {
    }
 
    /**
-    * Shows in the related text field the name of the project file
+    * Shows in the corresponding text field the name of the project file
     * @param fileName  te name of the main file of a project
     */
    public void displayFile(String fileName) {
@@ -195,7 +226,7 @@ public class SettingsWin {
    }
 
    /**
-    * Shows in the related text field the name of a module/package
+    * Shows in the corresponding text field the name of a module/package
     * @param moduleName  the name of a module/package/namespace
     */
    public void displayModule(String moduleName) {
@@ -203,7 +234,7 @@ public class SettingsWin {
    }
 
    /**
-    * Shows in the related text field the name of the directory that
+    * Shows in the corresponding text field the name of the directory that
     * contains source files
     * @param dirName  the name of the directory for source files
     */
@@ -212,7 +243,7 @@ public class SettingsWin {
    }
 
    /**
-    * Shows in the related text field the name of the directory
+    * Shows in the corresponding text field the name of the directory
     * where executables are saved
     * @param in  the name of the directory for executable files
     */
@@ -221,7 +252,7 @@ public class SettingsWin {
    }
    
    /**
-    * Shows in the related text field the name of a build
+    * Shows in the corresponding text field the name of a build
     * @param in  the name of a build
     */
    public void displayBuildName(String in) {
@@ -250,14 +281,14 @@ public class SettingsWin {
       JPanel projPnl = new JPanel(grid);
 
       // file panel
-      JLabel fileLb = new JLabel(fileKind + ":");
+      JLabel fileLb = new JLabel(fileLabel + ":");
       projPnl.add(holdLbAndTf(fileLb, fileTf));
 
       // module/subdir panel
-      if (moduleKind != null) {
+      if (moduleLabel != null) {
          gridSize++;
          grid.setRows(gridSize);
-         JLabel moduleLb = new JLabel(moduleKind + ":");
+         JLabel moduleLb = new JLabel(moduleLabel + ":");
          projPnl.add(holdLbAndTf(moduleLb, moduleTf));
       }
       //
@@ -291,11 +322,11 @@ public class SettingsWin {
       return argsPnl;
    }  
 
-   private JPanel buildPanel(String buildKind) {
+   private JPanel buildPanel() {
       JPanel buildPnl = new JPanel(new GridLayout(1, 0));
-      JLabel buildLb = new JLabel("Name for " + buildKind +":");
+      JLabel buildLb = new JLabel("Name for " + buildLabel +":");
       buildPnl.add(holdLbAndTf(buildLb, buildTf));
-      buildPnl.setBorder(titledBorder("Build (" + buildKind + ")"));      
+      buildPnl.setBorder(titledBorder("Build (" + buildLabel + ")"));      
       return buildPnl;
    }
 
@@ -350,23 +381,23 @@ public class SettingsWin {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
          combineAll.add(argsPanel());
       }
-      if (buildKind != null) {
+      if (buildLabel != null) {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
-         combineAll.add(buildPanel(buildKind));
+         combineAll.add(buildPanel());
       }
       combineAll.add(Box.createRigidArea(DIM_SPACER));
       combineAll.add(buttonsPanel());
       return combineAll;
    }
 
-   private void setWindow() {
+   private void initWindow() {
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       frame.setResizable(false);
       frame.setLocation(550, 100);
-      frame.setContentPane(combineAll());
-      frame.pack();
       frame.setVisible(false);
       frame.setAlwaysOnTop(true);
       frame.setIconImage(IconFiles.EADGYTH_ICON.getImage());
+      frame.getContentPane().add(combineAll());
+      frame.pack();
    }
 }

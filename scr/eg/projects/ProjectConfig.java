@@ -11,8 +11,8 @@ import eg.utils.JOptions;
 /**
  * Represents the configuration of a project.
  * <p>
- * Class implements methods in {@link Configurable} except for
- * {@link Configurable #applyProject()}
+ * Class contains default implementations of {@link Configurable}
+ * except for {@link Configurable #applyProject()}
  */
 public abstract class ProjectConfig implements Configurable {
    
@@ -22,7 +22,7 @@ public abstract class ProjectConfig implements Configurable {
    
    private final String suffix;
    
-   private SettingsWin setWin;  
+   private SettingsWin setWin = null;  
    private String projectPath = "";
    private String mainFile = "";
    private String moduleDir = "";
@@ -39,10 +39,13 @@ public abstract class ProjectConfig implements Configurable {
       this.suffix = suffix;
    }
    
+   /**
+    * Creates a basic {@link SettingsWin}
+    */
    @Override
    public void createSettingsWin() {
-      setWin = new SettingsWin();
-      configSettingsWin(setWin);
+      SettingsWin setWin = SettingsWin.basicWindow();
+      setSettingsWin(setWin);
    }
 
    @Override
@@ -84,9 +87,13 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    @Override
-   public String getProjectName() {
-      File f = new File(projectPath);
-      return f.getName();
+   public String getProjectPath() {
+      return projectPath;
+   }
+   
+   @Override
+   public String getExecutableDirName() {
+      return execDir;
    }
    
    @Override
@@ -101,17 +108,24 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    /**
-    * Configures the {@code SettingsWin}
-    * @param setWin  the {@link SettingsWin}
+    * Sets this {@code SettingsWin}
+    * @param setWin  the new {@link SettingsWin}
     */
-   protected abstract void configSettingsWin(SettingsWin setWin);
+   protected void setSettingsWin(SettingsWin setWin) {
+      if (this.setWin != null) {
+         throw new IllegalStateException("A SettingsWin"
+               + " is already set cannot be replaced.");
+      }
+      this.setWin = setWin;
+   }
    
    /**
-    * Returns the path of the project's root directory
-    * @return  the the path of the project's root directory
+    * Returns the name of the project directory
+    * @return  the name of the project directory
     */
-   protected String getProjectPath() {
-      return projectPath;
+   protected String getProjectName() {
+      File f = new File(projectPath);
+      return f.getName();
    }
    
    /**
@@ -141,16 +155,6 @@ public abstract class ProjectConfig implements Configurable {
     */ 
    protected String getSourceDirName() {
       return sourceDir;
-   }
-   
-   /**
-    * Returns the name of the directoy where executable files are
-    * saved
-    * @return  the name of the directoy where executable files are
-    * saved
-    */
-   protected String getExecDirName() {
-      return execDir;
    }
 
    /**

@@ -15,8 +15,7 @@ import java.awt.event.ActionListener;
 public interface Configurable {
    
    /**
-    * Creates and sets a new {@link SettingsWin} and configures the window
-    * to display the input options needed for a given project
+    * Creates and sets a new {@link SettingsWin}
     */
    public void createSettingsWin();
    
@@ -53,12 +52,6 @@ public interface Configurable {
    public boolean retrieveProject(String dir);
    
    /**
-    * Passes to interested objects the project's root directory or
-    * any other directories that are relevant to the project
-    */
-   public void applyProject();
-   
-   /**
     * If the project's root directory is in the path of the
     * specified directory
     * @param dir  the directory that may include the project's root
@@ -69,10 +62,18 @@ public interface Configurable {
    public boolean isInProject(String dir);
    
    /**
-     * Returns the name of the project's root directory
-     * @return  the name of the project's root directory
-     */
-   public String getProjectName();
+    * Returns the path of the project's root directory
+    * @return  the path of the project's root directory
+    */
+   public String getProjectPath();
+   
+   /**
+    * Returns the name of the directoy where executable files are
+    * saved
+    * @return  the name of the directoy where executable files are
+    * saved
+    */
+   public String getExecutableDirName();
    
    /**
     * Saves the current configuration to a preferences file

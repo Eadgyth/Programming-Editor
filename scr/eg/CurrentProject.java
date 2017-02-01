@@ -46,6 +46,7 @@ public class CurrentProject {
 
    private final SelectedProject selProj;
    private final DisplaySetter displSet;
+   private final ProcessStarter proc;
    private final FileTree fileTree;
    private final List<ProjectActions> projList = new ArrayList<>();
 
@@ -59,6 +60,7 @@ public class CurrentProject {
          ConsolePanel consPnl, FileTree fileTree) {
           
       this.displSet = displSet;
+      this.proc = proc;
       this.fileTree = fileTree;
       selProj = new SelectedProject(displSet, proc, consPnl, fileTree);
    }
@@ -278,9 +280,10 @@ public class CurrentProject {
       }
    }
    
-   private boolean changeProject(ProjectActions toChangeTo) {     
+   private boolean changeProject(ProjectActions toChangeTo) {
+      String projName = new File(toChangeTo.getProjectPath()).getName();  
       int result = JOptions.confirmYesNo("Change to project '"
-                 + toChangeTo.getProjectName() + "'");
+                 + projName + "'");
       if (result == 0) {
          current = toChangeTo;
          current.storeInPrefs();
@@ -313,8 +316,10 @@ public class CurrentProject {
    }
 
    private void updateProjectSetting(ProjectActions projToSet) {
-      displSet.showProjectInfo(projToSet.getProjectName());
-      projToSet.applyProject();
+      String projName = new File(projToSet.getProjectPath()).getName();
+      fileTree.setProjectTree(projToSet.getProjectPath());
+      proc.addWorkingDir(projToSet.getProjectPath());
+      displSet.showProjectInfo(projName);
       enableActions(projToSet.getClass().getSimpleName());
    }
    

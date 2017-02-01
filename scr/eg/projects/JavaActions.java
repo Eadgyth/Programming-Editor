@@ -38,9 +38,24 @@ public final class JavaActions extends ProjectConfig
       this.proc = proc;
       this.consPnl = consPnl;
       this.fileTree = fileTree;
- 
       comp = new Compile(consPnl);
       jar = new CreateJar(consPnl);
+   }
+   
+   /**
+    * Creates an adapted {@link SettingsWin}.
+    */
+   @Override
+   public void createSettingsWin() {
+      SettingsWin setWin = SettingsWin.adaptableWindow();
+      setWin.useNewFileLabel("Name of main class")
+            .useModule("Package containing the main class")
+            .useSourceDir()
+            .useExecDir()
+            .useArgs()
+            .useBuild("jar file")
+            .setupWindow();
+       setSettingsWin(setWin);
    }
    
    @Override
@@ -61,24 +76,12 @@ public final class JavaActions extends ProjectConfig
       return success;
    }
    
-   /**
-    * Passes the project's root directory to this {@link ProcessStarter}
-    * and this {@link FileTree} and also passes the name of the
-    * the directory that contain executables to this {@code FileTree}
-    */
-   @Override
-   public void applyProject() {
-      proc.addWorkingDir(getProjectPath());
-      fileTree.setProjectTree(getProjectPath());
-      fileTree.setDeletableDirName(getExecDirName());
-   }
-   
    @Override                                                                        
    public void compile() {      
       consPnl.setText("<<Compile " + getProjectName() + ">>\n");
       EventQueue.invokeLater(() -> {
          if (proc.isProcessEnded()) {    
-            comp.compile(getProjectPath(), getExecDirName(),
+            comp.compile(getProjectPath(), getExecutableDirName(),
                   getSourceDirName());            
             consPnl.setCaret(0);
             if (!displSet.isConsoleSelected()) {
@@ -132,7 +135,7 @@ public final class JavaActions extends ProjectConfig
       try {
          consPnl.setText("");
          jar.createJar(getProjectPath(), getMainFile(),
-               getModuleName(), getExecDirName(), jarName);
+               getModuleName(), getExecutableDirName(), jarName);
          if (!existed) {
             boolean exists = false;
             while (!exists) {
@@ -152,17 +155,6 @@ public final class JavaActions extends ProjectConfig
          FileUtils.logStack(e);
       }        
    }
-   
-   @Override
-   protected void configSettingsWin(SettingsWin setWin) {
-      setWin.setProjectFile("Name of main class",
-                "Package containing the main class")
-            .useSourceDir()
-            .useExecDir()
-            .useArgs()
-            .setBuildKind("jar file")
-            .setupWindow();
-   }
 
    private boolean mainClassFileExists() {
       boolean exists = mainExecFileExists(".class");
@@ -173,7 +165,7 @@ public final class JavaActions extends ProjectConfig
    }
 
    private boolean jarFileExists(String jarName) {
-      String execDir = getProjectPath() + F_SEP + getExecDirName();
+      String execDir = getProjectPath() + F_SEP + getExecutableDirName();
       return new File(execDir + F_SEP + jarName + ".jar").exists();
    }
    
@@ -182,17 +174,17 @@ public final class JavaActions extends ProjectConfig
       if (getArgs().length() > 0) {
          main += " " + getArgs();
       }
-      if (getExecDirName().length() == 0 && getModuleName().length() == 0 ) {
+      if (getExecutableDirName().length() == 0 && getModuleName().length() == 0 ) {
          startCommand = "java " + main;
       }
-      else if (getExecDirName().length() == 0 && getModuleName().length() > 0 ) {
+      else if (getExecutableDirName().length() == 0 && getModuleName().length() > 0 ) {
          startCommand = "java " + getModuleName() + "." + main;
       }
-      else if (getExecDirName().length() > 0 && getModuleName().length() == 0 ) {
-         startCommand = "java -cp " + getExecDirName() + " " + main;
+      else if (getExecutableDirName().length() > 0 && getModuleName().length() == 0 ) {
+         startCommand = "java -cp " + getExecutableDirName() + " " + main;
       }
-      else if (getExecDirName().length() > 0 && getModuleName().length() > 0 ) {
-         startCommand = "java -cp " + getExecDirName() + " " + getModuleName()
+      else if (getExecutableDirName().length() > 0 && getModuleName().length() > 0 ) {
+         startCommand = "java -cp " + getExecutableDirName() + " " + getModuleName()
                + "." + main;
       }
    }
