@@ -12,7 +12,6 @@ import eg.utils.JOptions;
  * Represents the configuration of a project.
  * <p>
  * Class contains default implementations of {@link Configurable}
- * except for {@link Configurable #applyProject()}
  */
 public abstract class ProjectConfig implements Configurable {
    
