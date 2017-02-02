@@ -11,6 +11,7 @@ import eg.utils.JOptions;
 /**
  * Represents the configuration of a project.
  * <p>
+<<<<<<< HEAD
  * Class works in connection with {@link SettingsWin} where the name
  * of a project file and optionally names of directories are entered.
  * A project is defined based on an existing file.
@@ -32,6 +33,9 @@ import eg.utils.JOptions;
  * The configuration of a project is stored in the prefs file of the
  * program and optionally in a 'config' file that is saved in the 
  * project's root folder.
+=======
+ * Class contains default implementations of {@link Configurable}
+>>>>>>> origin/master
  */
 public abstract class ProjectConfig implements Configurable {
    
