@@ -41,8 +41,7 @@ public class Preferences {
       "recentModule",
       "recentSourceDir",
       "recentExecDir",
-      "recentBuildName",
-      "recentSuffix"
+      "recentBuildName"
    };
    
    private final static String[] CONFIG_KEYS = {
@@ -50,8 +49,7 @@ public class Preferences {
       "recentModule",
       "recentSourceDir",
       "recentExecDir",
-      "recentBuildName",
-      "recentSuffix"
+      "recentBuildName"
    };
 
    private Properties prop = null;

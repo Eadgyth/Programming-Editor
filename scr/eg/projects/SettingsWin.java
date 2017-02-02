@@ -43,53 +43,44 @@ public class SettingsWin {
    private final JButton    cancelBt     = new JButton("Cancel");
    private final JCheckBox  saveConfig   = new JCheckBox();
    
-   private String fileLabel = "Name of project file";
+   private String fileLabel = "";
    private String moduleLabel = null;
    private boolean useScr = false;
    private boolean useExec = false;
    private boolean useArgs = false;
    private String buildLabel = null;
    
-   private SettingsWin(boolean initWindow) {
+   private SettingsWin(String fileLabel, boolean initWindow) {
+      this.fileLabel = fileLabel;
       if (initWindow) {
          initWindow();
       }
    } 
    
    /**
-    * Returns a new SettingsWin with the minimal content, i.e. the
-    * option to enter the name for a project file
+    * Returns a new SettingsWin where only the name for a project
+    * file can be entered
+    * @param fileLabel  the label for the file text field
     * @return  a new SettingsWin
     */
-   public static SettingsWin basicWindow() {
-      SettingsWin setWin = new SettingsWin(true);
+   public static SettingsWin basicWindow(String fileLabel) {
+      SettingsWin setWin = new SettingsWin(fileLabel, true);
       return setWin;
    }
    
    /**
-    * Returns a new SettingsWin whose content is set up afterwards.
+    * Returns a new SettingsWin whose content is set up afterwards
+    * by choosing from the methods that add input options.
     * <p>
-    * At the least the method {@link #setupWindow()} must be invoked
-    * to create the window (which then equals to a {@link #basicWindow}
-    * though).
-    *
+    * The method {@link #setupWindow()} must be invoked lastly to
+    * initialize the window. Calling only this method yields a 
+    * SettingsWin that equals to a {@link #basicWindow}.
+    * <p>
+    * @param fileLabel  the label for the file text field
     * @return  a new SettingsWin
     */
-   public static SettingsWin adaptableWindow() {
-      return new SettingsWin(false);
-   }
-      
-   
-   /**
-    * Sets the label for the text field that is used to enter the name
-    * of the (main) project file. If this method is not called the label
-    * is 'Name of project file'.
-    * @param fileLabel  the label for the file text field
-    * @return  this
-    */
-   public SettingsWin useNewFileLabel(String fileLabel) {
-      this.fileLabel = fileLabel;
-      return this;
+   public static SettingsWin adaptableWindow(String fileLabel) {
+      return new SettingsWin(fileLabel, false);
    }
    
    /**
@@ -148,12 +139,19 @@ public class SettingsWin {
     */
    public void setupWindow() {
       if (frame.getContentPane().getComponentCount() > 0) {
-         throw new IllegalStateException("The SettingsWin is already"
-               + " initialized");
+         throw new IllegalStateException("The frame of this SettingsWin"
+               + " is already initialized");
       }
       initWindow();
    }
-      
+   
+   /**
+    * Adds an {@code ActionListener} to this ok button
+    * @param al  the {@code ActionListener};
+    */
+   public void okAct(ActionListener al) {
+      okBt.addActionListener(al);
+   }      
 
    /**
     * Makes this frame visible
@@ -162,58 +160,51 @@ public class SettingsWin {
    public void makeVisible(boolean isVisible) {
       fileTf.requestFocus();
       frame.setVisible(isVisible);
-   }      
-
-   /**
-    * Adds an {@code ActionListener} to this ok button
-    * @param al  the {@code ActionListener};
-    */
-   public void okAct(ActionListener al) {
-      okBt.addActionListener(al);
    }
    
    /**
     * @return  the input in the text field for the name of the project
     * file
     */
-   String projectFileIn() {
+   public String projectFileNameInput() {
       return fileTf.getText();
    }
 
    /**
-    * @return  the input in the text field for the module/package
+    * @return  the input in the text field for the name of a
+    * module/package directory
     */
-   String moduleIn() {
+   public String moduleNameInput() {
       return moduleTf.getText();
    }
 
    /**
-    * @return  the input in the text field for the directory of source
-    * files
+    * @return  the input in the text field for the name of a
+    * directory for source files
     */
-   public String sourcesDirIn() {
+   public String sourcesDirNameInput() {
       return sourcesDirTf.getText();
    }
 
    /**
-    * @return  the input in the text field for the directory of
-    * executables
+    * @return  the input in the text field for the name of a
+    * directory for executables
     */
-   public String execDirIn() {
+   public String execDirNameInput() {
       return execDirTf.getText();
    }
 
    /**
     * @return  the input in the text field for arguments
     */
-   public String argsIn() {
+   public String argsInput() {
       return argsTf.getText();
    }
 
    /**
     * @return  the input in the text field for a name of a build
     */
-   public String buildNameIn() {
+   public String buildNameInput() {
       return buildTf.getText();
    }
 

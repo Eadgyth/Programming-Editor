@@ -2,6 +2,8 @@ package eg;
 
 import java.util.Observer;
 import java.util.Observable;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JOptionPane;
@@ -139,22 +141,37 @@ public class TabbedFiles implements Observer{
 
    /**
     * Saves the text content of the {@code TextDocument} objects
-    * in all tabs
+    * in all tabs.
+    * <p>
+    * In the case that TextDocuments are found whose filepath do
+    * not refer to an existing file a list of this file is shown
+    * in a dialog.
     */
    public void saveAll() {
+      StringBuilder sb = new StringBuilder();
       for (int count = 0; count < tp.nTabs(); count++) {
          if (txtDoc[count].filename().length() > 0) {
-            txtDoc[count].saveToFile();
+            if (new File(txtDoc[count].filepath()).exists()) {
+               txtDoc[count].saveToFile();
+            }
+            else {
+               sb.append(txtDoc[count].filename());
+               sb.append("\n");
+            }
          } 
+      }
+      if (sb.length() > 0) {
+         sb.insert(0, "These files seem to be deleted and were not newly saved:\n");
+         JOptions.warnMessage(sb.toString());
       }
    }
 
    /**
-    * Saves the text content of the {@code TextDocument} in the selected tab
-    * as a new file that is specified in the file chooser
+    * Saves the text content of the {@code TextDocument} in the selected
+    * tab as a new file that is specified in the file chooser
     */
    public void saveAs() {
-      File f = fs.fileToSave();
+      File f = fs.fileToSave(txtDoc[iTab].filepath());
       if (f == null) {
          return; // if cancel or close window clicked
       }

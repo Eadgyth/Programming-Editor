@@ -19,20 +19,33 @@ public class FileChooserSave {
    private final Preferences prefs = new Preferences();
    private JFileChooser chooser;
 
-   FileChooserSave() {
+   public FileChooserSave() {
       setLaf();
       prefs.readPrefs();
-      File recent = new File(prefs.getProperty("recentPath"));  
-      chooser.setCurrentDirectory(recent);
-      chooser.setAcceptAllFileFilterUsed(true); 
+      setCurrentDir();
+      chooser.setAcceptAllFileFilterUsed(true);
+      chooser.setDialogTitle("Eadgyth - Save as");
    }
 
    /**
+    * Returns a File object if ok is clicked and null if cancel was
+    * clicked or the window was closed.
+    * @param presetFile  the file that is preselected. If null
+    * or the empty String the preset dir is taken from recent dir
+    * in prefs
     * @return  the file to save
     */  
-   public File fileToSave() {
+   public File fileToSave(String presetFile) {
       File fileToSave = null;
-
+      
+      File dirToSet = null;
+      if (presetFile == null || presetFile.length() == 0) {
+         setCurrentDir();
+      }
+      else {
+         File toSet = new File(presetFile);
+         chooser.setSelectedFile(toSet);
+      }
       int result = chooser.showSaveDialog(frame);  
       if (result == JFileChooser.APPROVE_OPTION) {
          fileToSave = chooser.getSelectedFile();
@@ -51,5 +64,10 @@ public class FileChooserSave {
             }
         });
       }
+   }
+   
+   private void setCurrentDir() {
+      File dirToSet = new File(prefs.getProperty("recentPath"));
+      chooser.setCurrentDirectory(dirToSet);
    }
 }

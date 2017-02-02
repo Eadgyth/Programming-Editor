@@ -47,9 +47,8 @@ public final class JavaActions extends ProjectConfig
     */
    @Override
    public void createSettingsWin() {
-      SettingsWin setWin = SettingsWin.adaptableWindow();
-      setWin.useNewFileLabel("Name of main class")
-            .useModule("Package containing the main class")
+      SettingsWin setWin = SettingsWin.adaptableWindow("Name of main class");
+      setWin.useModule("Package containing the main class")
             .useSourceDir()
             .useExecDir()
             .useArgs()

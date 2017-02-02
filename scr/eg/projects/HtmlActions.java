@@ -27,13 +27,11 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    /**
-    * Creates an adapted {@link SettingsWin}.
+    * Creates a basic {@link SettingsWin}.
     */
    @Override
    public void createSettingsWin() { 
-      SettingsWin setWin = SettingsWin.adaptableWindow();
-      setWin.useNewFileLabel("Name of HTML file")
-            .setupWindow();
+      SettingsWin setWin = SettingsWin.basicWindow("Name of HTML file");
       setSettingsWin(setWin);
    }
    

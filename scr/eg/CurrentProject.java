@@ -129,7 +129,7 @@ public class CurrentProject {
    }
 
    /**
-    * Opens the window of the {@code SettingsWin} object that blongs to
+    * Opens the window of the {@code SettingsWin} object that belongs to
     * a project.
     * <p>
     * Depending on the currently set {@link TextDocument} the opened window

@@ -11,8 +11,27 @@ import eg.utils.JOptions;
 /**
  * Represents the configuration of a project.
  * <p>
- * Class contains default implementations of {@link Configurable}
- * except for {@link Configurable #applyProject()}
+ * Class works in connection with {@link SettingsWin} where the name
+ * of a project file and optionally names of directories are entered.
+ * A project is defined based on an existing file.
+ * <p>
+ * To find an existing filepath based on the entries in the settings
+ * window a relative path is built in the order
+ * [sourcesDirName]/[moduleName] where both or one of both directories
+ * are optional. The project's root is defined as the parent of this
+ * relatative path or of the project file if no directory names
+ * are specified. The directories specified in the settings window
+ * may itself be (relative) paths.
+ * <p>
+ * It can be queried if any file, not just the specified project file,
+ * is found in the project's root folder.
+ * <p>
+ * The terms 'SourcesDir', 'module' and 'project file' are not linked
+ * to any function.
+ * <p>
+ * The configuration of a project is stored in the prefs file of the
+ * program and optionally in a 'config' file that is saved in the 
+ * project's root folder.
  */
 public abstract class ProjectConfig implements Configurable {
    
@@ -33,18 +52,19 @@ public abstract class ProjectConfig implements Configurable {
    
    /**
     * @param suffix  the file extension that represents
-    * the type of project. Incudes the dot (e.g. .java)
+    * the type of project. Includes the dot (e.g. .java)
     */
    protected ProjectConfig(String suffix) {
       this.suffix = suffix;
    }
    
    /**
-    * Creates a basic {@link SettingsWin}
+    * Creates a {@code SettingsWin} with the basic content.
+    * @see SettingsWin#basicWindow(String)
     */
    @Override
    public void createSettingsWin() {
-      SettingsWin setWin = SettingsWin.basicWindow();
+      SettingsWin setWin = SettingsWin.basicWindow("Name of project file");
       setSettingsWin(setWin);
    }
 
@@ -60,7 +80,7 @@ public abstract class ProjectConfig implements Configurable {
    
    @Override
    public boolean configureProject(String dir) {   
-      projectPath = findRootByFile(dir, pathRelToRoot());
+      projectPath = findRootByFile(dir, pathRelToRoot(true));
       boolean success = storeInputs();
       if (success) {
          setWin.makeVisible(false);
@@ -70,7 +90,10 @@ public abstract class ProjectConfig implements Configurable {
    
    /**
     * If a project configuration stored in 'config' or 'prefs' can be
-    * retrieved
+    * retrieved.
+    * Method first looks for a config file and, if not present, in the
+    * prefs file of the program.
+    * <p>
     * @param dir  the directory of a file that maybe part of the project 
     * @return  If a project configuration stored in 'config' or 'prefs'
     * can be retrieved
@@ -104,7 +127,6 @@ public abstract class ProjectConfig implements Configurable {
       PREFS.storePrefs("recentSourceDir", sourceDir);
       PREFS.storePrefs("recentExecDir", execDir);
       PREFS.storePrefs("recentBuildName", buildName);
-      PREFS.storePrefs("recentSuffix", suffix);
    }
    
    /**
@@ -209,12 +231,8 @@ public abstract class ProjectConfig implements Configurable {
          root = findRootInPath(path, props);
       }
       //
-      // if the project type conforms to the type in props file    
-      boolean isTypeCorrect
-            = suffix.equals(props.getProperty("recentSuffix"));
-      //
       // read in props and set text fields in this SettingsWin  
-      if (isTypeCorrect && root.length() > 0) {        
+      if (root.length() > 0) {        
          configProjectByProps(root, props);
       }
    }
@@ -286,14 +304,19 @@ public abstract class ProjectConfig implements Configurable {
       buildName = props.getProperty("recentBuildName");
       setWin.displayBuildName(buildName);
       
-      projectPath = previousRoot;
-      if (props == CONFIG) {
-         storeInPrefs();
+      File fToTest = new File(previousRoot + F_SEP + pathRelToRoot(false));     
+      if (fToTest.exists()) {
+         projectPath = previousRoot;
+         if (props == CONFIG) {
+            storeInPrefs();
+         }
       }
    }
    
-   private String pathRelToRoot() {
-      getTextFieldsInput();
+   private String pathRelToRoot(boolean bySetWin) {
+      if (bySetWin) {
+         getTextFieldsInput();
+      }
       String dirRelToRoot = "";
       if (sourceDir.length() > 0 & moduleDir.length() == 0) {
          dirRelToRoot += sourceDir;
@@ -308,12 +331,12 @@ public abstract class ProjectConfig implements Configurable {
    }      
    
    private void getTextFieldsInput() {
-      mainFile = setWin.projectFileIn();
-      moduleDir = setWin.moduleIn();
-      sourceDir = setWin.sourcesDirIn();
-      execDir = setWin.execDirIn();
-      args = setWin.argsIn();
-      buildName = setWin.buildNameIn();
+      mainFile = setWin.projectFileNameInput();
+      moduleDir = setWin.moduleNameInput();
+      sourceDir = setWin.sourcesDirNameInput();
+      execDir = setWin.execDirNameInput();
+      args = setWin.argsInput();
+      buildName = setWin.buildNameInput();
    }
    
    private boolean storeInputs() {
@@ -331,7 +354,6 @@ public abstract class ProjectConfig implements Configurable {
             CONFIG.storeConfig("recentSourceDir", sourceDir, projectPath);
             CONFIG.storeConfig("recentExecDir", execDir, projectPath);
             CONFIG.storeConfig("recentBuildName", buildName, projectPath);
-            CONFIG.storeConfig("recentSuffix", suffix, projectPath);
          }
          else {
             File configFile;
