@@ -11,14 +11,13 @@ import eg.utils.JOptions;
 /**
  * Represents the configuration of a project.
  * <p>
-<<<<<<< HEAD
  * Class works in connection with {@link SettingsWin} where the name
  * of a project file and optionally names of directories are entered.
  * A project is defined based on an existing file.
  * <p>
  * To find an existing filepath based on the entries in the settings
  * window a relative path is built in the order
- * [sourcesDirName]/[moduleName] where both or one of both directories
+ * 'sourcesDirName'/'moduleName' where both or one of both directories
  * are optional. The project's root is defined as the parent of this
  * relatative path or of the project file if no directory names
  * are specified. The directories specified in the settings window
@@ -33,9 +32,6 @@ import eg.utils.JOptions;
  * The configuration of a project is stored in the prefs file of the
  * program and optionally in a 'config' file that is saved in the 
  * project's root folder.
-=======
- * Class contains default implementations of {@link Configurable}
->>>>>>> origin/master
  */
 public abstract class ProjectConfig implements Configurable {
    
