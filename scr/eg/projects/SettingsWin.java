@@ -64,8 +64,7 @@ public class SettingsWin {
     * @return  a new SettingsWin
     */
    public static SettingsWin basicWindow(String fileLabel) {
-      SettingsWin setWin = new SettingsWin(fileLabel, true);
-      return setWin;
+      return new SettingsWin(fileLabel, true);
    }
    
    /**
@@ -163,6 +162,7 @@ public class SettingsWin {
    }
    
    /**
+    * Returns the input in the text field for the name of the project
     * @return  the input in the text field for the name of the project
     * file
     */
@@ -171,30 +171,35 @@ public class SettingsWin {
    }
 
    /**
-    * @return  the input in the text field for the name of a
-    * module/package directory
-    */
+    * Returns the input in the text field for the name of a module/package
+    * @return  the input in the text field for the name of a module/package
+     */
    public String moduleNameInput() {
       return moduleTf.getText();
    }
 
    /**
-    * @return  the input in the text field for the name of a
-    * directory for source files
+    * Returns the input in the text field for the name of a directory for
+    * source files
+    * @return  the input in the text field for the name of a directory for
+    * source files
     */
    public String sourcesDirNameInput() {
       return sourcesDirTf.getText();
    }
 
    /**
-    * @return  the input in the text field for the name of a
-    * directory for executables
+    * Returns the input in the text field for the name of a directory for
+    * executables
+    * @return  the input in the text field for the name of a directory for
+    * executables
     */
    public String execDirNameInput() {
       return execDirTf.getText();
    }
 
    /**
+    * Returns the input in the text field for arguments
     * @return  the input in the text field for arguments
     */
    public String argsInput() {
@@ -202,6 +207,7 @@ public class SettingsWin {
    }
 
    /**
+    * Returns the input in the text field for a name of a build
     * @return  the input in the text field for a name of a build
     */
    public String buildNameInput() {

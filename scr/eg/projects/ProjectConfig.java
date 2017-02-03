@@ -11,27 +11,21 @@ import eg.utils.JOptions;
 /**
  * Represents the configuration of a project.
  * <p>
- * Class works in connection with {@link SettingsWin} where the name
- * of a project file and optionally names of directories are entered.
- * A project is defined based on an existing file.
+ * Class works in combination with {@link SettingsWin} where the name of a
+ * project file and optionally names of directories are entered.
  * <p>
- * To find an existing filepath based on the entries in the settings
- * window a relative path is built in the order
- * 'sourcesDirName'/'moduleName' where both or one of both directories
- * are optional. The project's root is defined as the parent of this
- * relatative path or of the project file if no directory names
- * are specified. The directories specified in the settings window
- * may itself be (relative) paths.
+ * The root folder of the project is not specified explicitely but is determined
+ * based on the entries in the settings window. In the simplest case the root
+ * would be the parent folder of specified project file. If other sub-directories
+ * are specified the root would be the parent of the relative path given by the
+ * named sub-directories. The relative  path to the project file has the order
+ * 'sourcesDirName'/'moduleName' if both of these directories are specified.
  * <p>
- * It can be queried if any file, not just the specified project file,
- * is found in the project's root folder.
+ * It can be queried if any directory, not just the directory of the specified
+ * project file, is found in the project's root folder.
  * <p>
- * The terms 'SourcesDir', 'module' and 'project file' are not linked
- * to any function.
- * <p>
- * The configuration of a project is stored in the prefs file of the
- * program and optionally in a 'config' file that is saved in the 
- * project's root folder.
+ * The configuration of a project is stored in the prefs file of the program and
+ * optionally in a 'config' file that is saved in the  project's root folder.
  */
 public abstract class ProjectConfig implements Configurable {
    
@@ -51,8 +45,8 @@ public abstract class ProjectConfig implements Configurable {
    private String buildName = "";
    
    /**
-    * @param suffix  the file extension that represents
-    * the type of project. Includes the dot (e.g. .java)
+    * @param suffix  the file extension that represents the type of project.
+    * Includes the dot (e.g. .java)
     */
    protected ProjectConfig(String suffix) {
       this.suffix = suffix;
@@ -91,8 +85,9 @@ public abstract class ProjectConfig implements Configurable {
    /**
     * If a project configuration stored in 'config' or 'prefs' can be
     * retrieved.
+    * <p>
     * Method first looks for a config file and, if not present, in the
-    * prefs file of the program.
+    * preferences file in the program folder.
     * <p>
     * @param dir  the directory of a file that maybe part of the project 
     * @return  If a project configuration stored in 'config' or 'prefs'
@@ -170,26 +165,24 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    /**
-    * Returns the name of the directoy where source files are
-    * saved
-    * @return  the name of the directoy where source files are
-    * saved
+    * Returns the name of the directoy where source files are saved
+    * @return  the name of the directoy where source files are saved
     */ 
    protected String getSourceDirName() {
       return sourceDir;
    }
 
    /**
-    * @return  the name for a build entered in the
-    * text field of this {@code SettingsWin}
+    * Returns the name for a build
+    * @return  the name for a build
     */ 
    protected String getBuildName() {
       return buildName;
    }
    
    /**
-    * @return  the arguments for a start command entered in the
-    * text field of this {@code SettingsWin}
+    * Retunrns the String that contains arguments for a start script.
+    * @return  the String that contains arguments for a start command
     */ 
    protected String getArgs() {
       return args;
