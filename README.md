@@ -36,6 +36,8 @@ in the script itself.
 <br>
 2) The built in packing of a jar file bundles only .class files.
 <br>
+3) The printing is right now rudimentary. The text is printed with a fixed font.
+<br>
 <p>
 PROBLEMS <br>
 1) The undo/redo is under work. Some condition causes the prgram to hang when undo or redo is
