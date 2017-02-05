@@ -46,7 +46,7 @@ public class Toolbar {
     */
    public void registerFileActions(TabbedFiles tf) {
       openBt.addActionListener(e -> tf.openFileByChooser());
-      saveBt.addActionListener(e -> tf.saveOrSaveAs());      
+      saveBt.addActionListener(e -> tf.save());      
    }
    
    /**

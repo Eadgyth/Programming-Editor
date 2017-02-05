@@ -97,8 +97,10 @@ public final class EditArea {
    }
    
    /**
+    * Returns the JPanel that holds the area to edit text and 
+    * the area showing line numbers
     * @return  the JPanel that holds the area to edit text and 
-    * the area showing line numbers in a scroll pane
+    * the area showing line numbers
     */
    public JPanel scrolledArea() {
       return scrolledArea;
@@ -110,6 +112,14 @@ public final class EditArea {
     */
    public boolean isWordWrap() {
       return isWordWrap;
+   }
+   
+   /**
+    * Returns the current font
+    * @return  the current font
+    */
+   public Font currFont() {
+      return new Font(font, Font.PLAIN, fontSize);
    }
    
    /**
@@ -156,7 +166,7 @@ public final class EditArea {
    /**
     * Hides the area that displays line numbers.
     * <p>
-    * Invoking this mathod also annules wordwrap
+    * Invoking this method also annules wordwrap
     */
    public void hideLineNumbers() {
       scrolledArea.remove(scrollLines);

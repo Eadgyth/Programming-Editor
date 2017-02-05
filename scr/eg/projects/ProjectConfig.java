@@ -19,7 +19,8 @@ import eg.utils.JOptions;
  * would be the parent folder of specified project file. If other sub-directories
  * are specified the root would be the parent of the relative path given by the
  * named sub-directories. The relative  path to the project file has the order
- * 'sourcesDirName'/'moduleName' if both of these directories are specified.
+ * 'sourcesDirName'/'moduleName' if names of directories for both of these
+ * properties are specified.
  * <p>
  * It can be queried if any directory, not just the directory of the specified
  * project file, is found in the project's root folder.

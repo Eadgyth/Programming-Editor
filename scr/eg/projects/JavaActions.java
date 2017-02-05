@@ -48,11 +48,11 @@ public final class JavaActions extends ProjectConfig
    @Override
    public void createSettingsWin() {
       SettingsWin setWin = SettingsWin.adaptableWindow("Name of main class");
-      setWin.useModule("Package containing the main class")
-            .useSourceDir()
-            .useExecDir()
-            .useArgs()
-            .useBuild("jar file")
+      setWin.addModuleOption("Package containing the main class")
+            .addSourceDirOption()
+            .addExecDirOption()
+            .addArgsOption()
+            .addBuildOption("jar file")
             .setupWindow();
        setSettingsWin(setWin);
    }

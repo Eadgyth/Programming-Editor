@@ -26,22 +26,22 @@ public class EditMenu {
    private final Preferences prefs = new Preferences();
 
     /* Edit */
-   private final JMenu     menu         = new JMenu("Edit");
-   private final JMenuItem undo         = new JMenuItem("Undo", IconFiles.UNDO_ICON);
-   private final JMenuItem redo         = new JMenuItem("Redo", IconFiles.REDO_ICON);
-   private final JMenuItem selectAll    = new JMenuItem("Select all");
-   private final JMenuItem cut          = new JMenuItem("Cut", IconFiles.CUT_ICON);
-   private final JMenuItem copy         = new JMenuItem("Copy", IconFiles.COPY_ICON);
-   private final JMenuItem paste        = new JMenuItem("Paste", IconFiles.PASTE_ICON);
-   private final JMenuItem indent       = new JMenuItem("Indent selection more ",
-                                          IconFiles.INDENT_ICON);
-   private final JMenuItem outdent      = new JMenuItem("Indent selection less",
-                                          IconFiles.OUTDENT_ICON);
-   private final JMenuItem changeIndent = new JMenuItem("Indent/outdent length");
-   private final JMenuItem clearSpaces  = new JMenuItem("Clear spaces");
-   private final JMenu     language     = new JMenu("Language");
-   private final JCheckBoxMenuItem[] selectLanguage
-                                        = new JCheckBoxMenuItem[LANGUAGES.length];
+   private final JMenu     menu            = new JMenu("Edit");
+   private final JMenuItem undoItm         = new JMenuItem("Undo", IconFiles.UNDO_ICON);
+   private final JMenuItem redoItm         = new JMenuItem("Redo", IconFiles.REDO_ICON);
+   private final JMenuItem selectAllItm    = new JMenuItem("Select all");
+   private final JMenuItem cutItm          = new JMenuItem("Cut", IconFiles.CUT_ICON);
+   private final JMenuItem copyItm         = new JMenuItem("Copy", IconFiles.COPY_ICON);
+   private final JMenuItem pasteItm        = new JMenuItem("Paste", IconFiles.PASTE_ICON);
+   private final JMenuItem indentItm       = new JMenuItem("Indent selection more ",
+                                             IconFiles.INDENT_ICON);
+   private final JMenuItem outdentItm      = new JMenuItem("Indent selection less",
+                                             IconFiles.OUTDENT_ICON);
+   private final JMenuItem changeIndentItm = new JMenuItem("Indent/outdent length");
+   private final JMenuItem clearSpacesItm  = new JMenuItem("Clear spaces");
+   private final JMenu     language        = new JMenu("Language");
+   private final JCheckBoxMenuItem[] selectLangChBxItm
+                                            = new JCheckBoxMenuItem[LANGUAGES.length];
 
    EditMenu() {
       assembleMenu();
@@ -53,69 +53,69 @@ public class EditMenu {
    }
 
    public void registerAct(Edit edit) {
-      undo.addActionListener(e -> edit.undo());
-      redo.addActionListener(e -> edit.redo());
-      selectAll.addActionListener(e -> edit.selectAll());
-      cut.addActionListener(e -> edit.cut());
-      copy.addActionListener(e -> edit.setClipboard());  
-      paste.addActionListener(e -> edit.pasteText());   
-      indent.addActionListener(e -> edit.indentSelection());
-      outdent.addActionListener(e -> edit.outdentSelection());
-      clearSpaces.addActionListener(e -> edit.clearSpaces());
-      changeIndent.addActionListener(e -> edit.setNewIndentUnit());
-       for (JCheckBoxMenuItem selectLanguage1 : selectLanguage) {
-           selectLanguage1.addActionListener(e ->
-                   edit.changeLanguage(getNewLanguage(e)));
+      undoItm.addActionListener(e -> edit.undo());
+      redoItm.addActionListener(e -> edit.redo());
+      selectAllItm.addActionListener(e -> edit.selectAll());
+      cutItm.addActionListener(e -> edit.cut());
+      copyItm.addActionListener(e -> edit.setClipboard());  
+      pasteItm.addActionListener(e -> edit.pasteText());   
+      indentItm.addActionListener(e -> edit.indentSelection());
+      outdentItm.addActionListener(e -> edit.outdentSelection());
+      clearSpacesItm.addActionListener(e -> edit.clearSpaces());
+      changeIndentItm.addActionListener(e -> edit.setNewIndentUnit());
+      for (JCheckBoxMenuItem item : selectLangChBxItm) {
+           item.addActionListener(e -> edit.changeLanguage(getNewLanguage(e)));
        }
    }
 
    private Languages getNewLanguage(ActionEvent e) {
       Languages lang = null;
-      for (int i = 0; i < selectLanguage.length; i++) {
-         if (e.getSource() == selectLanguage[i]) {
+      for (int i = 0; i < selectLangChBxItm.length; i++) {
+         if (e.getSource() == selectLangChBxItm[i]) {
             lang = Languages.values()[i];
          }
-         else selectLanguage[i].setState(false);
+         else selectLangChBxItm[i].setState(false);
       }
       return lang;
    }
 
    private void assembleMenu() {
-      menu.add(undo);
-      menu.add(redo);
+      menu.add(undoItm);
+      menu.add(redoItm);
       menu.addSeparator();
-      menu.add(cut);
-      menu.add(copy);
-      menu.add(paste );
-      menu.add(selectAll);
+      menu.add(cutItm);
+      menu.add(copyItm);
+      menu.add(pasteItm );
+      menu.add(selectAllItm);
       menu.addSeparator();
-      menu.add(indent);
-      menu.add(outdent);
-      menu.add(changeIndent);
-      menu.add(clearSpaces);
+      menu.add(indentItm);
+      menu.add(outdentItm);
+      menu.add(changeIndentItm);
+      menu.add(clearSpacesItm);
       menu.addSeparator();
       prefs.readPrefs();
-      for (int i = 0; i < selectLanguage.length; i++) {
-         selectLanguage[i] = new JCheckBoxMenuItem(LANGUAGES[i]);
+      for (int i = 0; i < selectLangChBxItm.length; i++) {
+         selectLangChBxItm[i] = new JCheckBoxMenuItem(LANGUAGES[i]);
          if (prefs.getProperty("language").equals(
                eg.Languages.values()[i].toString())) {
-            selectLanguage[i].setState(true);
+            selectLangChBxItm[i].setState(true);
          }
       }
       menu.add(language);
-       for (JCheckBoxMenuItem itm : selectLanguage) {
+       for (JCheckBoxMenuItem itm : selectLangChBxItm) {
            language.add(itm);
        }
    }
 
    private void shortCuts() {
-      cut.setAccelerator(KeyStroke.getKeyStroke('X',
+      cutItm.setAccelerator(KeyStroke.getKeyStroke('X',
             Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-      copy.setAccelerator(KeyStroke.getKeyStroke('C',
+      copyItm.setAccelerator(KeyStroke.getKeyStroke('C',
             Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-      paste.setAccelerator(KeyStroke.getKeyStroke('V',
+      pasteItm.setAccelerator(KeyStroke.getKeyStroke('V',
             Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-      indent.setAccelerator(KeyStroke.getKeyStroke("control R"));
-      outdent.setAccelerator(KeyStroke.getKeyStroke("control L"));
+      selectAllItm.setAccelerator(KeyStroke.getKeyStroke("control A"));
+      indentItm.setAccelerator(KeyStroke.getKeyStroke("control R"));
+      outdentItm.setAccelerator(KeyStroke.getKeyStroke("control L"));
    }
 }

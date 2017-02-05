@@ -1,5 +1,7 @@
 package eg;
 
+import java.awt.print.*;
+
 import java.util.Observer;
 import java.util.Observable;
 import java.util.List;
@@ -78,6 +80,9 @@ public class TabbedFiles implements Observer{
       return edArea;
    }
 
+   /**
+    * Sets the focus in the selected document
+    */
    public void focusInSelectedTab() { 
       txtDoc[iTab].requestFocus();
    }
@@ -109,7 +114,7 @@ public class TabbedFiles implements Observer{
     */
    public void openFileByChooser() {
       File f = fo.chosenFile();     
-      if (f == null) { // if cancel or close window clicked
+      if (f == null) {
          return;
       }     
       if (!f.exists()) {
@@ -121,15 +126,14 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Saves the text content of the {@code TextDocument} in the selected
-    * tab if a file has been assigned to it or saves the content as a new
-    * file that is specified in the file chooser.
+    * Saves the text content of the selected document.
+    * <p>
+    * If the selected document is unnamed {@link #saveAs()} is used. 
     * <p>
     * 'Save-as-mode' also applies if a file has been assigned to the
-    * currently selected {@link TextDocument} but the file no longer
-    * exists on the hard drive
+    * selected document but the file does not exists anymore.
     */
-   public void saveOrSaveAs() {  
+   public void save() {  
       if (txtDoc[iTab].filename().length() == 0 
             || !new File(txtDoc[iTab].filepath()).exists()) {
          saveAs();
@@ -140,40 +144,37 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Saves the text content of the {@code TextDocument} objects
-    * in all tabs.
+    * Saves the text content in all tabs.
     * <p>
-    * In the case that TextDocuments are found whose filepath do
-    * not refer to an existing file a list of this file is shown
-    * in a dialog.
+    * A warning is shown if files no longer exist.
     */
    public void saveAll() {
       StringBuilder sb = new StringBuilder();
-      for (int count = 0; count < tp.nTabs(); count++) {
-         if (txtDoc[count].filename().length() > 0) {
-            if (new File(txtDoc[count].filepath()).exists()) {
-               txtDoc[count].saveToFile();
+      for (int i = 0; i < tp.nTabs(); i++) {
+         if (txtDoc[i].filename().length() > 0) {
+            if (new File(txtDoc[i].filepath()).exists()) {
+               txtDoc[i].saveToFile();
             }
             else {
-               sb.append(txtDoc[count].filename());
+               sb.append(txtDoc[i].filename());
                sb.append("\n");
             }
          } 
       }
       if (sb.length() > 0) {
-         sb.insert(0, "These files seem to be deleted and were not newly saved:\n");
+         sb.insert(0, "These files were not found:\n");
          JOptions.warnMessage(sb.toString());
       }
    }
 
    /**
-    * Saves the text content of the {@code TextDocument} in the selected
-    * tab as a new file that is specified in the file chooser
+    * Saves the text content of the selected document as new file that
+    * is specified in the file chooser
     */
    public void saveAs() {
       File f = fs.fileToSave(txtDoc[iTab].filepath());
       if (f == null) {
-         return; // if cancel or close window clicked
+         return;
       }
       if (f.exists()) {
          JOptions.warnMessage(f.getName() + " already exists");
@@ -187,6 +188,22 @@ public class TabbedFiles implements Observer{
          mw.displayFrameTitle(txtDoc[iTab].filepath());
          prefs.storePrefs("recentPath", txtDoc[iTab].dir());
       }
+   }
+   
+   /**
+    * Prints the text content of the selected document to a printer
+    */
+   public void print() {
+      PrinterJob prJob = PrinterJob.getPrinterJob();
+      prJob.setPrintable(new PagePrinter(txtDoc[iTab].getDocText()));
+      boolean ok = prJob.printDialog();
+      if (ok) {
+          try {
+              prJob.print();
+          } catch (PrinterException ex) {
+              System.out.println("not printing");
+          }
+      }     
    }
 
    /**
@@ -223,6 +240,8 @@ public class TabbedFiles implements Observer{
       int count = unsavedTab();
       if (count == tp.nTabs()) {     
          while(tp.nTabs() > 0) {
+            txtDoc[iTab] = null;
+            edArea[iTab] = null;
             tp.removeTab(iTab);
          }
          newEmptyTab();
@@ -231,7 +250,7 @@ public class TabbedFiles implements Observer{
          tp.selectTab(count);                 
          int res = saveOrCloseOption(count);
          if (res == JOptionPane.YES_OPTION) {
-            saveOrSaveAs();
+            save();
             tryCloseAll();
          }
          else if (res == JOptionPane.NO_OPTION) {
@@ -254,7 +273,7 @@ public class TabbedFiles implements Observer{
          tp.selectTab(count);                 
          int res = saveOrCloseOption(count);
          if (res == JOptionPane.YES_OPTION) {
-            saveOrSaveAs();
+            save();
             tryExit();
          }
          else if (res == JOptionPane.NO_OPTION) {

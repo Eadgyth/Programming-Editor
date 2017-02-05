@@ -58,8 +58,8 @@ public class SettingsWin {
    } 
    
    /**
-    * Returns a new SettingsWin where only the name for a project
-    * file can be entered
+    * Returns a new SettingsWin where only the name for a project can be
+    * entered
     * @param fileLabel  the label for the file text field
     * @return  a new SettingsWin
     */
@@ -68,12 +68,12 @@ public class SettingsWin {
    }
    
    /**
-    * Returns a new SettingsWin whose content is set up afterwards
-    * by choosing from the methods that add input options.
+    * Returns a new SettingsWin whose content is set up afterwards by
+    * choosing from the methods that add input options.
     * <p>
-    * The method {@link #setupWindow()} must be invoked lastly to
-    * initialize the window. Calling only this method yields a 
-    * SettingsWin that equals to a {@link #basicWindow}.
+    * The method {@link #setupWindow()} must be invoked lastly to initialize
+    * the window. Calling only this method yields a SettingsWin that equals
+    * to a {@link #basicWindow}.
     * <p>
     * @param fileLabel  the label for the file text field
     * @return  a new SettingsWin
@@ -88,7 +88,7 @@ public class SettingsWin {
     * @param moduleLabel  the label for the module text field 
     * @return  this
     */
-   public SettingsWin useModule(String moduleLabel) {
+   public SettingsWin addModuleOption(String moduleLabel) {
       this.moduleLabel = moduleLabel;
       return this;
    }
@@ -98,7 +98,7 @@ public class SettingsWin {
     * files are stored
     * @return  this
     */
-   public SettingsWin useSourceDir() {
+   public SettingsWin addSourceDirOption() {
       this.useScr = true;
       return this;
    }
@@ -108,7 +108,7 @@ public class SettingsWin {
     * files are stored
     * @return  this
     */
-   public SettingsWin useExecDir() {
+   public SettingsWin addExecDirOption() {
       useExec = true;
       return this;
    }
@@ -117,7 +117,7 @@ public class SettingsWin {
     * Adds the option to enter arguments for a start script.
     * @return  this
     */
-   public SettingsWin useArgs() {
+   public SettingsWin addArgsOption() {
       this.useArgs = true;
       return this;
    }
@@ -128,7 +128,7 @@ public class SettingsWin {
     * @param  buildLabel for the build text field
     * @return  this
     */
-   public SettingsWin useBuild(String buildLabel) {
+   public SettingsWin addBuildOption(String buildLabel) {
       this.buildLabel = buildLabel;
       return this;
    }
