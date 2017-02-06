@@ -1,7 +1,5 @@
 package eg;
 
-import java.awt.print.*;
-
 import java.util.Observer;
 import java.util.Observable;
 import java.util.List;
@@ -23,8 +21,6 @@ import eg.document.TextDocument;
 import eg.ui.MainWin;
 import eg.ui.TabbedPane;
 import eg.ui.EditArea;
-
-import eg.projects.ProjectActions;
 
 /**
  * Controls file operations that require knowledge of the opened tabs and 
@@ -194,16 +190,7 @@ public class TabbedFiles implements Observer{
     * Prints the text content of the selected document to a printer
     */
    public void print() {
-      PrinterJob prJob = PrinterJob.getPrinterJob();
-      prJob.setPrintable(new PagePrinter(txtDoc[iTab].getDocText()));
-      boolean ok = prJob.printDialog();
-      if (ok) {
-          try {
-              prJob.print();
-          } catch (PrinterException ex) {
-              System.out.println("not printing");
-          }
-      }     
+      txtDoc[iTab].print();
    }
 
    /**

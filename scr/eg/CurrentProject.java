@@ -21,12 +21,12 @@ import eg.utils.FileUtils;
 /**
  * The managing of projects.
  * <p>
- * A project is represented by an object of type {@link ProjectActions}
- * and is configured and/or set active depending on the {@link TextDocument}
- * that is set as selected at the time.
+ * A project is represented by an object of type {@link ProjectActions} and
+ * is configured and/or set active depending on the {@link TextDocument} that
+ * is set as selected at the time.
  * <p>
- * Several configured projects are stored in a {@code List} of projects.
- * Any of these can be (re-) activated depending on the currently set
+ * Several configured projects are stored in a {@code List} of projects. Any
+ * of these can be (re-) activated depending on the currently set
  * {@link TextDocument}
  */ 
 public class CurrentProject {
@@ -74,10 +74,10 @@ public class CurrentProject {
    }
    
    /**
-    * Selects the object of this array of {@code TextDocument}
-    * that is used to configure and/or set active a project
-    * @param docIndex  the index of the element in this array
-    * of {@link TextDocument}
+    * Selects the object of this array of {@code TextDocument} that is
+    * used to configure and/or set active a project
+    * @param docIndex  the index of the element in this array of
+    * {@link TextDocument}
     */
    public void setDocumentIndex(int docIndex) {
       currDoc = txtDoc[docIndex];

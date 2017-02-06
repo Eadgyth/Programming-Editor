@@ -130,7 +130,7 @@ public final class EditArea {
       this.fontSize = fontSize;
       Font fontNew = new Font(font, Font.PLAIN, fontSize);
       lineArea.setFont(fontNew);
-      textArea.setFont(fontNew );
+      textArea.setFont(fontNew);
       PREFS.storePrefs("fontSize", String.valueOf(fontSize));
    }
 

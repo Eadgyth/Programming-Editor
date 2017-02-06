@@ -1,6 +1,7 @@
 package eg.document;
 
 import java.awt.EventQueue;
+import java.awt.print.*;
 
 import javax.swing.JTextPane;
 
@@ -123,6 +124,17 @@ public class TextDocument {
       assignFileStrings(file);
       saveToFile();
       setLanguageBySuffix();
+   }
+   
+   /**
+    * Prints this document to a printer
+    */
+   public void print() {
+      try {
+         boolean complete = textArea.print();
+      } catch (PrinterException ex) {
+         System.out.println("not printing");
+      }
    }
 
    /**
