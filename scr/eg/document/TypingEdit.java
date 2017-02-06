@@ -1,6 +1,6 @@
 /**
- * This inner class {@code DocUndoManager} uses methods 
- * of CompoundUndoManager class from JSyntaxPane found at
+ * This inner class {@code DocUndoManager} uses methods of
+ * CompoundUndoManager class from JSyntaxPane found at
  * https://github.com/aymanhs/jsyntaxpane
  * Copyright 2008 Ayman Al-Sairafi
  */
@@ -185,6 +185,7 @@ class TypingEdit {
    }
 
    private final DocumentListener docListen = new DocumentListener() {
+
       @Override
       public void changedUpdate(DocumentEvent documentEvent) {
       }
@@ -239,7 +240,7 @@ class TypingEdit {
       CompoundEdit comp = null;
 
       @Override
-      public void undoableEditHappened(UndoableEditEvent e) {
+      public synchronized void undoableEditHappened(UndoableEditEvent e) {
          if (!isDocListen) {
             return;
          }
@@ -254,30 +255,30 @@ class TypingEdit {
       }
 
       @Override
-      public boolean canUndo() {
+      public synchronized boolean canUndo() {
          commitCompound();
          return super.canUndo();
       }
 
       @Override
-      public boolean canRedo() {
+      public synchronized boolean canRedo() {
          commitCompound();
          return super.canRedo();
       }
 
       @Override
-      public void undo() {
+      public synchronized void undo() {
          commitCompound();
          super.undo();
       }
 
       @Override
-      public void redo() {
+      public synchronized void redo() {
          commitCompound();
          super.redo();
       }
 
-      private boolean addAnEdit(UndoableEdit anEdit) {
+      private synchronized boolean addAnEdit(UndoableEdit anEdit) {
          if (comp == null) {
              comp = new CompoundEdit();
          }
