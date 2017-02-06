@@ -36,17 +36,16 @@ in the script itself.
 <br>
 2) The built in packing of a jar file bundles only .class files.
 <br>
-3) The printing is right now rudimentary. The text is printed with a fixed font.
+3) The printing to a printer is right now rudimentary. 
 <br>
 <p>
 PROBLEMS <br>
-1) The undo/redo is under work. Some condition causes the prgram to hang when undo or redo is
-invoked.
+1) The undo/redo causes the program to hang under some circumstance.
 <br>
 2) The rendering of the GUI has gone wrong after the computer was in sleep mode or inactive
 when the system look and feel was selected.
 <br>
-3) There may be problems with the syntax coloring
+3) There may be problems with the syntax coloring when larger chunks of text are inserted/deleted.
 <br>
 <p>
 CONTACT<br>
