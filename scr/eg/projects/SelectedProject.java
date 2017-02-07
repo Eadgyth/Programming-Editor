@@ -15,6 +15,8 @@ public class SelectedProject {
    private final ProcessStarter proc;
    private final ConsolePanel consPnl;
    private final FileTree fileTree;
+   
+   private String sourceExt;
 
    public SelectedProject(DisplaySetter displSet, ProcessStarter proc,
          ConsolePanel consPnl, FileTree fileTree) {
@@ -23,35 +25,36 @@ public class SelectedProject {
       this.consPnl = consPnl;
       this.fileTree = fileTree;
    }
+   
+   public String getSourceExt() {
+      return sourceExt;
+   }
 
    /**
-    * Returns an object of type {@code ProjectActions}
+    * Returns an object of type {@code ProjectActions} and creates the
+    * {@code SettingsWin} for the project
     *
-    * @param fileExt  the extension of the file which a project
-    * is to be defined for (has the form "java", for example)
-    * @param isSearchByLang  true to create a {@link ProjectActions}
-    * based on the currently set language. True has still no effect if
-    * {@code fileExt} already specifies the type of {@code ProjectActions}
+    * @param fileExt  the extension of the file which a project is to be
+    * defined for
     * @return  an object of type {@link ProjectActions} or null if no
     * class exists that implements ProjectActions for the given file
     * extension.
     */
-   public ProjectActions createProject(String fileExt, boolean isSearchByLang) {
+   public ProjectActions createProject(String fileExt) {
       ProjectActions newProj = null;
       switch (fileExt) {
          case "java":
             newProj = new JavaActions(displSet, proc, consPnl, fileTree);
             break;
          case "html":
-            newProj = new HtmlActions(proc, fileTree);
+            newProj = new HtmlActions();
             break;
          case "pl": case "pm":
-            newProj = new PerlActions(displSet, proc, consPnl, fileTree);
+            newProj = new PerlActions(displSet, proc);
             break;
          default:
-            if (isSearchByLang) {
-               newProj = createProjByLang();
-            }   
+            newProj = createProjByLang(fileExt);
+            break;
       }
       if (newProj != null) {
          newProj.createSettingsWin();
@@ -59,7 +62,26 @@ public class SelectedProject {
       return newProj;
    }
    
-   private ProjectActions createProjByLang() {
+   public void enableActions(String className, int projCount) {
+      switch (className) {
+         case "JavaActions":
+            displSet.enableProjActions(true, true, true, projCount);
+            displSet.setBuildMenuItmText("Create jar");
+            sourceExt = ".java";
+            break;
+         case "HtmlActions":
+            displSet.enableProjActions(false, true, false, projCount);
+            break;
+         case "PerlActions":
+            displSet.enableProjActions(false, true, false, projCount);
+            break;
+         case "TxtActions":
+            displSet.enableProjActions(false, false, false, projCount);
+            break;        
+      }
+   }
+   
+   private ProjectActions createProjByLang(String fileExt) {
       ProjectActions newProj = null;
       prefs.readPrefs();
       String language = prefs.getProperty("language");
@@ -68,10 +90,15 @@ public class SelectedProject {
             newProj = new JavaActions(displSet, proc, consPnl, fileTree);
             break;
          case "HTML":
-            newProj = new HtmlActions(proc, fileTree);
+            newProj = new HtmlActions();
             break;
          case "PERL":
-            newProj = new PerlActions(displSet, proc, consPnl, fileTree);
+            newProj = new PerlActions(displSet, proc);
+            break;
+         case "PLAIN_TEXT":
+            if ("txt".equals(fileExt)) {
+               newProj = new TxtActions();
+            }
             break;
       }
       return newProj;

@@ -53,7 +53,6 @@ public class CurrentProject {
    private ProjectActions current;
    private TextDocument[] txtDoc;
    private TextDocument currDoc;
-   private String sourceExt;
    private String currExt;
 
    public CurrentProject(DisplaySetter displSet, ProcessStarter proc,
@@ -105,7 +104,7 @@ public class CurrentProject {
       if (isProjectSet() && current.isInProject(currDoc.dir())) {
          return;
       }
-      ProjectActions prToFind = selProj.createProject(currExt, true);
+      ProjectActions prToFind = selProj.createProject(currExt);
       boolean isFound
             =  prToFind != null
             && prToFind.retrieveProject(currDoc.dir());
@@ -187,7 +186,7 @@ public class CurrentProject {
             newProject();
          }   
       }
-   } 
+   }      
 
    /**
     * Updates the file tree of {@code FileTree} if the specified
@@ -212,7 +211,7 @@ public class CurrentProject {
          for (int i = 0; i < txtDoc.length; i++) {
             boolean approved
                   = txtDoc[i] != null
-                  && txtDoc[i].filename().endsWith(sourceExt)
+                  && txtDoc[i].filename().endsWith(selProj.getSourceExt())
                   && current.isInProject(txtDoc[i].dir());
             if (approved) {
                boolean exists = new File(txtDoc[i].filepath()).exists();
@@ -264,7 +263,7 @@ public class CurrentProject {
    //
    
    private void newProject() {
-      ProjectActions projNew = selProj.createProject(currExt, false);
+      ProjectActions projNew = selProj.createProject(currExt);
       if (projNew == null) {
          JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
       }
@@ -321,23 +320,6 @@ public class CurrentProject {
       fileTree.setDeletableDirName(projToSet.getExecutableDirName());
       proc.addWorkingDir(projToSet.getProjectPath());
       displSet.showProjectInfo(projName);
-      enableActions(projToSet.getClass().getSimpleName());
-   }
-   
-   private void enableActions(String className) {
-      int projCount = projList.size();
-      switch (className) {
-         case "JavaActions":
-            displSet.enableProjActions(true, true, true, projCount);
-            displSet.setBuildMenuItmText("Create jar");
-            sourceExt = ".java";
-            break;
-         case "HtmlActions":
-            displSet.enableProjActions(false, true, false, projCount);
-            break;
-         case "PerlActions":
-            displSet.enableProjActions(false, true, false, projCount);
-            break;            
-      }
+      selProj.enableActions(projToSet.getClass().getSimpleName(), projList.size());
    }
 }

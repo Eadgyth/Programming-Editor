@@ -12,7 +12,8 @@ import eg.utils.JOptions;
  * Represents the configuration of a project.
  * <p>
  * Class works in combination with {@link SettingsWin} where the name of a
- * project file and optionally names of directories are entered.
+ * project file and optionally names of directories and other properties are
+ * entered.
  * <p>
  * The root folder of the project is not specified explicitely but is determined
  * based on the entries in the settings window. In the simplest case the root
@@ -334,11 +335,10 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    private boolean storeInputs() {
-      boolean canStore = true;
-      if (projectPath.length() == 0) {
+      boolean canStore = projectPath.length() > 0;
+      if (!canStore) {
          JOptions.warnMessageToFront(
                "An entry in the 'Project' panel is incorrect");      
-         canStore = false;
       }
       else {
          storeInPrefs();   
