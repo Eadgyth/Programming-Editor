@@ -87,7 +87,7 @@ public class TabbedFiles implements Observer{
     * Opens a new 'unnamed' Tab to which no file is assigned
     */
    public final void newEmptyTab() {
-      edArea[tp.nTabs()] = new EditArea();
+      edArea[tp.nTabs()] = createEditArea();
       txtDoc[tp.nTabs()] = new TextDocument(edArea[tp.nTabs()]);
       addNewTab("unnamed", edArea[tp.nTabs()].scrolledArea(),
             tp.nTabs());       
@@ -105,8 +105,8 @@ public class TabbedFiles implements Observer{
    /**
     * Opens a file that is selected in the file chooser.
     * <p>
-    * If a project is not yet defined and a {@link ProjectActions}
-    * exists for the file type it is tried to set active a project 
+    * If a project is not yet defined it is tried to set active a
+    * project 
     */
    public void openFileByChooser() {
       File f = fo.chosenFile();     
@@ -292,7 +292,7 @@ public class TabbedFiles implements Observer{
       }
       else {
          openIndex = tp.nTabs();       
-         edArea[openIndex] = new EditArea();
+         edArea[openIndex] = createEditArea();
          txtDoc[openIndex] = new TextDocument(edArea[openIndex]);
          txtDoc[openIndex].openFile(file);
       }
@@ -313,6 +313,15 @@ public class TabbedFiles implements Observer{
       return isFileOpen;
    }
    
+   private EditArea createEditArea() {
+      prefs.readPrefs();
+      boolean isWordWrap = "enabled".equals(prefs.getProperty("wordWrap"));
+      boolean isLineNr = "show".equals(prefs.getProperty("lineNumbers"));
+      String font = prefs.getProperty("font");
+      int fontSize = Integer.parseInt(prefs.getProperty("fontSize"));
+      return new EditArea(isWordWrap, isLineNr, font, fontSize);
+   }
+
    private void addNewTab(String filename, JPanel pnl, int index) {
       JButton closeBt = new JButton();
       tp.addNewTab(filename, pnl, closeBt, index);

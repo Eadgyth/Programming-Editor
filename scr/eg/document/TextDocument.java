@@ -6,6 +6,7 @@ import java.awt.print.*;
 import javax.swing.JTextPane;
 
 import javax.swing.text.Document;
+import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.BadLocationException;
 
@@ -132,8 +133,8 @@ public class TextDocument {
    public void print() {
       try {
          boolean complete = textArea.print();
-      } catch (PrinterException ex) {
-         System.out.println("not printing");
+      } catch (PrinterException e) {
+         FileUtils.logStack(e);
       }
    }
 
@@ -271,8 +272,8 @@ public class TextDocument {
     * @param pos  the position where the text to color starts
     */
    public void backInBlack(int length, int pos) {
-      type.doc().setCharacterAttributes(pos, length,
-            type.normalSet(), false);
+      type.getDoc().setCharacterAttributes(pos, length,
+            type.getNormalSet(), false);
    }
 
    /**
@@ -303,7 +304,7 @@ public class TextDocument {
     */
    public void insertStr(int pos, String toInsert) {
       try {
-         type.doc().insertString(pos, toInsert, type.normalSet());
+         type.getDoc().insertString(pos, toInsert, type.getNormalSet());
       }
       catch (BadLocationException e) {
          FileUtils.logStack(e);
@@ -317,7 +318,7 @@ public class TextDocument {
     */   
    public void removeStr(int start, int length) {
       try {
-         type.doc().remove(start, length);
+         type.getDoc().remove(start, length);
       }
       catch (BadLocationException e) {
          FileUtils.logStack(e);
@@ -383,15 +384,15 @@ public class TextDocument {
       try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
          String line;
          while ((line = br.readLine()) != null) {
-            insertStr(type.doc().getLength(), line + "\n");
+            insertStr(textLength(), line + "\n");
          }
       }
       catch (IOException e) {
          FileUtils.logStack(e);
       }
-      textArea.setDocument(type.doc());
+      textArea.setDocument(type.getDoc());
       if (textArea.getText().endsWith("\n")) {
-         removeStr(type.doc().getLength() - 1, 1);
+         removeStr(type.getDoc().getLength() - 1, 1);
       }
       type.enableDocListen(true);
    }

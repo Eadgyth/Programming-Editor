@@ -14,19 +14,13 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
    
    private final DisplaySetter displSet;
    private final ProcessStarter proc;
-   private final ConsolePanel cw;
-   private final FileTree fileTree;
    
    private String startCommand = "";
    
-   PerlActions(DisplaySetter displSet, ProcessStarter proc,
-         ConsolePanel cw, FileTree fileTree) {
-
+   PerlActions(DisplaySetter displSet, ProcessStarter proc) {
       super(".pl");
       this.displSet = displSet;
       this.proc = proc;
-      this.cw = cw;
-      this.fileTree = fileTree;
    }
    
    /**

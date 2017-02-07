@@ -51,7 +51,7 @@ class Coloring {
       return isBlockCmnt;
    }
    
-   void configColoring(Languages language) {
+   void setUpColoring(Languages language) {
       switch(language) {
          case JAVA:
             keywords = Syntax.JAVA_KEYWORDS;

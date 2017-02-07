@@ -82,13 +82,13 @@ class TypingEdit {
    
    void setUpEditing(Languages language) {
       if (Languages.PLAIN_TEXT == language) {
-         doc.setCharacterAttributes(0, getDocText().length(), normalSet(), false);
+         doc.setCharacterAttributes(0, getDocText().length(), normalSet, false);
          enableTypeEdit(false);
          isIndent = false;
          autoInd.resetIndent();
       }
       else {
-         col.configColoring(language);
+         col.setUpColoring(language);
          colorAll();
          isIndent = true;
       }
@@ -98,11 +98,11 @@ class TypingEdit {
       col.setKeywords(keywords, constrainWord);
    }
 
-   StyledDocument doc() {
+   StyledDocument getDoc() {
       return doc;
    }
 
-   SimpleAttributeSet normalSet() {
+   SimpleAttributeSet getNormalSet() {
       return normalSet;
    }
 
@@ -136,7 +136,7 @@ class TypingEdit {
    void colorAll() {
       enableTypeEdit(false);
       String all = getDocText();
-      doc.setCharacterAttributes(0, all.length(), normalSet(), false);
+      doc.setCharacterAttributes(0, all.length(), normalSet, false);
       col.color(all, 0);
       enableTypeEdit(true);
    }

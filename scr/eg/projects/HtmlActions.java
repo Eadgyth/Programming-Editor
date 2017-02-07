@@ -15,15 +15,11 @@ import eg.ui.filetree.FileTree;
 public final class HtmlActions extends ProjectConfig implements ProjectActions {
 
    private final static String F_SEP = File.separator;
-   private final ProcessStarter proc;
-   private final FileTree fileTree;
    
    private File htmlFile;
    
-   HtmlActions(ProcessStarter proc, FileTree fileTree) {
+   HtmlActions() {
       super(".html");
-      this.proc = proc;
-      this.fileTree = fileTree;
    }
    
    /**

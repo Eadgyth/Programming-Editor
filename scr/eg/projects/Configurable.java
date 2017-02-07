@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
  * project may be retrieved.
  * <p>
  * {@code Configurable} is made to be used with {@link ProjectConfig} which
- * works with {@link SettingsWin} as the settings window.
+ * works with {@link SettingsWin} as the class that defines a settings window.
  */
 public interface Configurable {
    

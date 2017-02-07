@@ -53,7 +53,7 @@ public class MainWin {
    private final JPanel consolePnl;
 
    private final Preferences prefs = new Preferences();
-   
+
    private JSplitPane splitHorAll;
    private JSplitPane splitHor;
    private JSplitPane splitVert;
@@ -203,7 +203,7 @@ public class MainWin {
       splitHor.setDividerSize(6);
       splitHor.setLeftComponent(fileViewPnl);
       if (dividerLocHor == 0) {
-         dividerLocHor = (int)(frame.getWidth() * 0.25);
+         dividerLocHor = (int)(frame.getWidth() * 0.22);
       }
       splitHor.setDividerLocation(dividerLocHor);
    }
@@ -266,10 +266,9 @@ public class MainWin {
    private void initFrame() {
       frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
       frame.setContentPane(allComponents);
-      frame.setLocation(175, 25);
-      frame.pack();
-      frame.setSize(900, 650);
       frame.setIconImage(IconFiles.EADGYTH_ICON.getImage());
+      frame.setLocation(175, 25);
+      frame.setSize(900, 650);
    }
 
    private void initAllComponents() {
@@ -282,7 +281,7 @@ public class MainWin {
          allComponents.add(statusBar, BorderLayout.SOUTH);
       }
       frame.setJMenuBar(menubar);
-   }
+   }      
 
    private void initSplitPane() {      
       splitHor = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
@@ -304,7 +303,6 @@ public class MainWin {
    private void initStatusbar() {
       showProjectLb.setFont(Constants.VERDANA_PLAIN_11);
       statusBar.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
-      statusBar.setPreferredSize(new Dimension(0, 20));
       statusBar.add(showProjectLb);
    }
 

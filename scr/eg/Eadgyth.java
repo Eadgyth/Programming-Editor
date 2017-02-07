@@ -110,7 +110,7 @@ public class Eadgyth {
       UIManager.put("CheckBoxMenuItem.font", Constants.SANSSERIF_PLAIN_12);
       UIManager.put("SplitPaneDivider.border", new EmptyBorder(0, 0, 0, 0));
       UIManager.getDefaults().put("TabbedPane.contentBorderInsets",
-               new Insets(topTabInset, 0, 0, 0));
+            new Insets(topTabInset, 0, 0, 0));
       if ("Metal".equals(UIManager.getLookAndFeel().getName())) {
          UIManager.put("TabbedPane.selected", 
                new javax.swing.plaf.ColorUIResource(Color.WHITE));
