@@ -150,11 +150,9 @@ public class MainWin {
    public void showToolbar(boolean isShowToolbar) {
       if (isShowToolbar) {
          allComponents.add(toolbar, BorderLayout.NORTH);
-         prefs.storePrefs("toolbar", "show");
       }
       else {
          allComponents.remove(toolbar);
-         prefs.storePrefs("toolbar", "hide");
       }
       allComponents.revalidate();
    }
@@ -166,11 +164,9 @@ public class MainWin {
    public void showStatusbar(boolean isShowStatusbar) {
       if (isShowStatusbar) {
          allComponents.add(statusBar, BorderLayout.SOUTH);
-         prefs.storePrefs("statusbar", "show");
       }
       else {
          allComponents.remove(statusBar);
-         prefs.storePrefs("statusbar", "hide");
       }
       allComponents.revalidate();
    }

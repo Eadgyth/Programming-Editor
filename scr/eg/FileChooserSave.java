@@ -19,10 +19,9 @@ public class FileChooserSave {
    private final Preferences prefs = new Preferences();
    private JFileChooser chooser;
 
-   public FileChooserSave() {
+   public FileChooserSave(String startingDir) {
       setLaf();
-      prefs.readPrefs();
-      setCurrentDir();
+      chooser.setCurrentDirectory(new File(startingDir));
       chooser.setAcceptAllFileFilterUsed(true);
       chooser.setDialogTitle("Eadgyth - Save as");
    }
@@ -37,12 +36,8 @@ public class FileChooserSave {
     */  
    public File fileToSave(String presetFile) {
       File fileToSave = null;
-      
-      File dirToSet = null;
-      if (presetFile == null || presetFile.length() == 0) {
-         setCurrentDir();
-      }
-      else {
+
+      if (presetFile != null && presetFile.length() > 0) {
          File toSet = new File(presetFile);
          chooser.setSelectedFile(toSet);
       }
@@ -64,10 +59,5 @@ public class FileChooserSave {
             }
         });
       }
-   }
-   
-   private void setCurrentDir() {
-      File dirToSet = new File(prefs.getProperty("recentPath"));
-      chooser.setCurrentDirectory(dirToSet);
    }
 }

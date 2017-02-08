@@ -6,6 +6,7 @@ import javax.swing.KeyStroke;
 
 //--Eadgyth--//
 import eg.TabbedFiles;
+import eg.Edit;
 
 import eg.ui.IconFiles;
 

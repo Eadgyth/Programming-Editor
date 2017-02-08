@@ -36,7 +36,7 @@ public class Edit {
     */
    public void setTextDocument(TextDocument txtDoc) {
       this.txtDoc  = txtDoc;
-      indentUnit   = txtDoc.getIndentUnit();
+      indentUnit = txtDoc.getIndentUnit();
       indentLength = indentUnit.length();
    }
 
@@ -98,7 +98,6 @@ public class Edit {
    public void setNewIndentUnit() {
       String selectedNumber = JOptions.comboBoxRes("Number of spaces:",
             "Indentation length", SPACE_NUMBER, String.valueOf(indentLength));
-
       if (selectedNumber != null) {    // if not cancelled
          indentLength = Integer.parseInt(selectedNumber);
          indentUnit = "";
@@ -236,8 +235,7 @@ public class Edit {
 
    /**
     * Changes the language
-    * @param newLanguage  the language that is used
-    * for the editing of text during typing
+    * @param newLanguage  the language that is used for the editing of text
     */
    public void changeLanguage(Languages newLanguage) {
       txtDoc.changeLanguage(newLanguage);

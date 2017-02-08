@@ -52,8 +52,7 @@ public class Eadgyth {
       Edit            edit      = new Edit();
       PluginStarter   plugStart = new PluginStarter(mw);
       DocumentUpdate  docUpdate = new DocumentUpdate(displSet, edit, plugStart);
-      TabbedFiles     tabFiles  = new TabbedFiles(tabPane, mw, currProj, docUpdate);
-      FontSetter      fontSet   = new FontSetter(tabFiles.getEditArea());
+      TabbedFiles     tabFiles  = new TabbedFiles(tabPane, displSet, currProj, docUpdate);
 
       WindowListener winListener = new WindowAdapter() {
          @Override
@@ -61,14 +60,15 @@ public class Eadgyth {
             tabFiles.tryExit();
          }
       };
-      mw.winListen(winListener);     
+      mw.winListen(winListener);
+          
       tBar.registerFileActions(tabFiles);
       tBar.registerProjectActions(currProj);
       tBar.registerEdit(edit);
       menu.getFileMenu().registerAct(tabFiles);
       menu.getProjectMenu().registerAct(currProj);
       menu.getEditMenu().registerAct(edit);
-      menu.getFormatMenu().registerAct(fontSet, displSet);
+      menu.getFormatMenu().registerAct(tabFiles.getFontSet(), displSet);
       menu.getViewMenu().registerAct(displSet);
       consPnl.closeAct(e -> displSet.setShowConsoleState(false));
       fileTree.closeAct(e -> displSet.setShowFileViewState(false));
@@ -118,5 +118,5 @@ public class Eadgyth {
                new javax.swing.plaf.ColorUIResource(Color.WHITE));
       }
       UIManager.put("Tree.rowHeight", 20);
-   }
+   } 
 }

@@ -17,15 +17,11 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 
 //--Eadgyth--//
-import eg.Preferences;
 import eg.Constants;
 
 /**
  * The scolled text area which consist in the text area to edit text, the
  * area that displays line numbers and the font.
- * <p>
- * This class can change its font and the font size, can show or hide the
- * area that shows line numbers and can enable/disable wordwrap.
  * <p>
  * The usage of the select all, copy, cut, paste key combinations is
  * disabled.
@@ -35,14 +31,12 @@ public final class EditArea {
    private final static LineBorder WHITE_BORDER
          = new LineBorder(Color.WHITE, 5); 
 
-   private final JPanel scrolledArea   = new JPanel(new BorderLayout());
-   private final JTextPane textArea    = new JTextPane();
+   private final JPanel scrolledArea = new JPanel(new BorderLayout());
+   private final JTextPane textArea = new JTextPane();
    private final JTextPane lineNumArea = new JTextPane();
-
    private final JPanel disabledWordwrapPnl
          = new JPanel(new BorderLayout());
    private final JPanel enabledWordwrapPnl = new JPanel();
-
    private final JScrollPane wrapPnlScoll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -244,7 +238,7 @@ public final class EditArea {
       lineNumAreaScroll.setViewportView(lineNumArea);
       lineNumAreaScroll.setBorder(new MatteBorder(0, 0, 0, 1, Constants.BORDER_GRAY));
       //
-      // link scrolling of row number area to text area
+      // link scrolling of line number area to text area
       lineNumAreaScroll.getVerticalScrollBar().setModel
             (lineNumPnlScroll.getVerticalScrollBar().getModel());
    }

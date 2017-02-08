@@ -17,13 +17,11 @@ import java.io.File;
 public class FileChooserOpen {
 
    private final JFrame frame = new JFrame();
-   private final Preferences prefs = new Preferences();
    private JFileChooser chooser = null;
 
-   FileChooserOpen() {
+   FileChooserOpen(String startingDir) {
       setLaf();
-      prefs.readPrefs();
-      File recent = new File(prefs.getProperty("recentPath"));
+      File recent = new File(startingDir);
       chooser.setCurrentDirectory(recent);
 
       chooser.setAcceptAllFileFilterUsed(false);

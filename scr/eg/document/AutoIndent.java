@@ -33,15 +33,7 @@ class AutoIndent {
       this.textArea = textArea;
       this.doc = doc;
       this.normalSet = normalSet;
-
-      PREFS.readPrefs();
-      indentUnit = PREFS.getProperty("indentUnit");
-      indentLength = indentUnit.length();
       textArea.addKeyListener(listener);
-   }
-
-   String getIndentUnit() {
-      return indentUnit;
    }
 
    void resetIndent() {
@@ -50,9 +42,12 @@ class AutoIndent {
 
    void changeIndentUnit(String indentUnit) {
       this.indentUnit = indentUnit;
-      indentLength = indentUnit.length();    
-      PREFS.storePrefs("indentUnit", indentUnit);
-   }  
+      indentLength = indentUnit.length();
+   }
+
+   String getIndentUnit() {
+      return indentUnit;
+   }
 
    void openBracketIndent(String in, int pos) {
       String currIndent = currentIndent(in, pos);

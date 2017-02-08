@@ -48,11 +48,12 @@ public class TextDocument {
    public TextDocument(EditArea editArea) {
       this.textArea = editArea.textArea();
       type = new TypingEdit(editArea);
-      PREFS.readPrefs();
-      String lang = PREFS.getProperty("language");
-      language = Languages.valueOf(lang);
-      type.setUpEditing(language);
       type.addAllRowNumbers(content);
+      PREFS.readPrefs();
+      String indentUnit = PREFS.getProperty("indentUnit");
+      changeIndentUnit(indentUnit);
+      language = Languages.valueOf(PREFS.getProperty("language"));
+      type.setUpEditing(language);       
    }
 
    /**
@@ -237,13 +238,6 @@ public class TextDocument {
    }
 
    /**
-    * @return  the current indentation unit
-    */
-   public String getIndentUnit() {
-      return type.getIndentUnit();
-   }
-
-   /**
     * @param indentUnit  the String that consists of a certain number of
     * white spaces
     */
@@ -251,8 +245,17 @@ public class TextDocument {
       if (indentUnit == null || !indentUnit.matches("[\\s]+")) {
          throw new IllegalArgumentException("Argument indentUnit is"
                + " incorrect");
-      }  
+      }
       type.changeIndentUnit(indentUnit);
+      PREFS.storePrefs("indentUnit", type.getIndentUnit());
+   }
+   
+  /**
+    * Returns the currently set indentation unit
+    * @return the currently set indentation unit
+    */
+   public String getIndentUnit() {
+      return type.getIndentUnit();
    }
 
    /**
@@ -326,13 +329,12 @@ public class TextDocument {
    }
 
    /**
-    * Changes this language if no file has been set but saves the
-    * specified language to prefs file in any case
+    * Changes this language if no file has been set
     * @param lang  the language which has one of the constant values
     * in {@link eg.Languages}
     */
    public void changeLanguage(Languages lang) {
-      PREFS.storePrefs("language", lang.toString()); 
+      PREFS.storePrefs("language", lang.toString());
       if (filename.length() == 0) {
          language = lang;
          type.setUpEditing(language);
@@ -343,8 +345,8 @@ public class TextDocument {
     * Colors in keyword color text elements specified by the array of search
     * terms.
     * <p>
-    * The method returns with a warning if the current language is not
-    * plain text. 
+    * The method returns with a warning if the current language is not plain
+    * text. 
     * @param searchTerms  the array of Strings that contain search terms
     * @param constrainWord  true to color only words
     * @throws IllegalArgumentException  if searchTerms is null or contains

@@ -26,8 +26,9 @@ public class DisplaySetter {
    private EditArea[] editArea;
    private int editAreaIndex;
 
-   private boolean isShowToolbar;
+   private boolean isWordWrap;
    private boolean isShowLineNumbers;
+   private boolean isShowToolbar;
    private boolean isShowStatusbar;
    private int selectedLafInd;
 
@@ -46,6 +47,7 @@ public class DisplaySetter {
       isShowStatusbar = displSetWin.isShowStatusbar();
       isShowToolbar = displSetWin.isShowToolbar();
       isShowLineNumbers = displSetWin.isShowLineNumbers();
+      isWordWrap = "enabled".equals(prefs.getProperty("wordWrap"));
       selectedLafInd = displSetWin.selectedLaf();
       displSetWin.okAct(e -> applySetWinOk());
    }
@@ -77,6 +79,38 @@ public class DisplaySetter {
    public void makeViewSetWinVisible() {
       displSetWin.makeViewSetWinVisible(true);
    }
+   
+   /**
+    * If enabling word wrap is currently set.
+    * @return  if wordwrap is currently set
+    */
+   public boolean isWordWrap() {
+      return isWordWrap;
+   }
+   
+   /**
+    * If showing line numbering is currently set
+    * @return If showing line numbering is currenty set
+    */
+   public boolean isLineNumbers() {
+      return isShowLineNumbers;
+   }
+   
+   /**
+    * Stores view settings to prefs
+    */
+   public void storeToPrefs() {
+      String state = null;
+      state = isWordWrap ? "enabled" : "disabled";
+      prefs.storePrefs("wordWrap", state);
+      state = isShowLineNumbers ? "show" : "hide";
+      prefs.storePrefs("lineNumbers", state);
+      state = isShowToolbar ? "show" : "hide";
+      prefs.storePrefs("toolbar", state);
+      state = isShowStatusbar ? "show" : "hide";
+      prefs.storePrefs("statusbar", state);
+      prefs.storePrefs("LaF", displSetWin.LAF_OPT[selectedLafInd]);
+   } 
 
    /**
     * Enables/disables wordwrap in the {@code EditArea} whose
@@ -87,9 +121,9 @@ public class DisplaySetter {
     * is selected in the view settings win
     */
    public void changeWordWrap(boolean isWordWrap) {
+      this.isWordWrap = isWordWrap;
       if (isWordWrap) {
          editArea[editAreaIndex].enableWordWrap();
-         prefs.storePrefs("wordWrap", "enabled");
       }
       else {
          if (isShowLineNumbers) {
@@ -98,7 +132,6 @@ public class DisplaySetter {
          else {
             editArea[editAreaIndex].hideLineNumbers();
          }
-         prefs.storePrefs("wordWrap", "disabled");
       }   
    }
 
@@ -226,6 +259,15 @@ public class DisplaySetter {
    }
    
    /**
+    * Displays text in the title bar of the main window (i.e., the file)
+    * @param title  the text that is displayed in the title bar of the
+    * main window
+    */
+   public void displayFrameTitle(String title) {
+      mw.displayFrameTitle(title);
+   }
+   
+   /**
     * Displays the project name in the status bar
     * @param name  the name of the project
     */
@@ -260,8 +302,6 @@ public class DisplaySetter {
 
       int index = displSetWin.selectedLaf();
       if (selectedLafInd != index) {
-         prefs.storePrefs("LaF",
-               DisplaySettingWin.LAF_OPT[index]);
          selectedLafInd = index;
       }    
       displSetWin.makeViewSetWinVisible(false);
@@ -272,10 +312,8 @@ public class DisplaySetter {
          if (ea != null && !ea.isWordWrap()) {
             if (!isShowLineNumbers) {
                ea.hideLineNumbers();
-               prefs.storePrefs("lineNumbers", "hide");
             } else {
                ea.showLineNumbers();
-               prefs.storePrefs("lineNumbers", "show");
             }
          }
       }

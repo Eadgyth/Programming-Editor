@@ -102,9 +102,9 @@ public class EditMenu {
          }
       }
       menu.add(language);
-       for (JCheckBoxMenuItem itm : selectLangChBxItm) {
-           language.add(itm);
-       }
+      for (JCheckBoxMenuItem itm : selectLangChBxItm) {
+         language.add(itm);
+      }
    }
 
    private void shortCuts() {

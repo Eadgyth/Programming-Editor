@@ -117,10 +117,6 @@ class TypingEdit {
       return in;
    }
 
-   String getIndentUnit() {
-      return autoInd.getIndentUnit();
-   }
-
    void changeIndentUnit(String indentUnit) {
       autoInd.changeIndentUnit(indentUnit);
    }
@@ -171,6 +167,14 @@ class TypingEdit {
       catch (CannotRedoException e) {
          FileUtils.logStack(e);
       }
+   }
+   
+  /**
+    * Returns the currently set indentation unit
+    * @return the currently set indentation unit
+    */
+   public String getIndentUnit() {
+      return autoInd.getIndentUnit();
    }
 
    //

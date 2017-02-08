@@ -30,11 +30,12 @@ public class TabbedFiles implements Observer{
 
    private final TextDocument[] txtDoc = new TextDocument[10];
    private final EditArea[] edArea = new EditArea[10];
-   private final FileChooserOpen fo = new FileChooserOpen();
-   private final FileChooserSave fs = new FileChooserSave();
+   private final FileChooserOpen fo;
+   private final FileChooserSave fs;
    private final Preferences prefs = new Preferences();   
    private final TabbedPane tp;
-   private final MainWin mw;
+   private final DisplaySetter displSet;
+   private final FontSetter fontSet;
    private final DocumentUpdate docUpdate;
    private final ChangeListener changeListener;
    private final CurrentProject currProj;
@@ -42,21 +43,25 @@ public class TabbedFiles implements Observer{
    /* The index of the selected tab */
    private int iTab = 0;
    
-   public TabbedFiles(TabbedPane tp, MainWin mw, CurrentProject currProj,
-         DocumentUpdate docUpdate) {
+   public TabbedFiles(TabbedPane tp, DisplaySetter displSet,
+         CurrentProject currProj, DocumentUpdate docUpdate) {
 
       this.tp = tp;
-      this.mw = mw;
+      this.displSet = displSet;
       this.docUpdate = docUpdate;
       this.currProj = currProj;
 
+      fontSet = new FontSetter(edArea);
       currProj.setDocumentArr(txtDoc);
       docUpdate.setDocumentArrays(txtDoc, edArea);
       changeListener = (ChangeEvent changeEvent) -> {
          changeTabEvent(changeEvent);
       };
       tp.changeListen(changeListener);
-      prefs.readPrefs();  
+      prefs.readPrefs();
+      String recentDir = prefs.getProperty("recentPath");
+      fo = new FileChooserOpen(recentDir);
+      fs = new FileChooserSave(recentDir);
       newEmptyTab();
    }
 
@@ -74,6 +79,14 @@ public class TabbedFiles implements Observer{
     */
    public EditArea[] getEditArea() {
       return edArea;
+   }
+   
+   /**
+    * Returns this reference to the {@code FontSetter}
+    * @return  this reference to the {@link FontSetter}
+    */
+   public FontSetter getFontSet() {
+      return fontSet;
    }
 
    /**
@@ -181,8 +194,7 @@ public class TabbedFiles implements Observer{
          currProj.retrieveProject();
          currProj.updateFileTree(txtDoc[iTab].dir());
          tp.changeTabTitle(iTab, txtDoc[iTab].filename());
-         mw.displayFrameTitle(txtDoc[iTab].filepath());
-         prefs.storePrefs("recentPath", txtDoc[iTab].dir());
+         displSet.displayFrameTitle(txtDoc[iTab].filepath());
       }
    }
    
@@ -254,6 +266,7 @@ public class TabbedFiles implements Observer{
    public void tryExit() {
       int count = unsavedTab();
       if (count == tp.nTabs()) {
+         storeToPrefs();
          System.exit(0);
       }
       else {
@@ -298,9 +311,8 @@ public class TabbedFiles implements Observer{
       }
       addNewTab(txtDoc[openIndex].filename(),
       edArea[openIndex].scrolledArea(), openIndex);
-      mw.displayFrameTitle(txtDoc[openIndex].filepath());         
-      currProj.retrieveProject();      
-      prefs.storePrefs("recentPath", txtDoc[openIndex].dir());
+      displSet.displayFrameTitle(txtDoc[openIndex].filepath());         
+      currProj.retrieveProject();
    }
 
    private boolean isFileOpen(String fileToOpen) {
@@ -314,11 +326,10 @@ public class TabbedFiles implements Observer{
    }
    
    private EditArea createEditArea() {
-      prefs.readPrefs();
-      boolean isWordWrap = "enabled".equals(prefs.getProperty("wordWrap"));
-      boolean isLineNr = "show".equals(prefs.getProperty("lineNumbers"));
-      String font = prefs.getProperty("font");
-      int fontSize = Integer.parseInt(prefs.getProperty("fontSize"));
+      boolean isWordWrap = displSet.isWordWrap();
+      boolean isLineNr = displSet.isLineNumbers();
+      String font = fontSet.getFont();
+      int fontSize = fontSet.getFontSize();
       return new EditArea(isWordWrap, isLineNr, font, fontSize);
    }
 
@@ -361,7 +372,7 @@ public class TabbedFiles implements Observer{
          txtDoc[tp.nTabs()] = null;
          edArea[tp.nTabs()] = null;
          int index = tp.selectedIndex();
-         mw.displayFrameTitle(txtDoc[index].filepath());
+         displSet.displayFrameTitle(txtDoc[index].filepath());
       }
       else { 
          newEmptyTab();
@@ -375,7 +386,17 @@ public class TabbedFiles implements Observer{
          txtDoc[iTab].requestFocus();
          docUpdate.updateDocument(iTab);
          currProj.setDocumentIndex(iTab);
-         mw.displayFrameTitle(txtDoc[iTab].filepath());
+         displSet.displayFrameTitle(txtDoc[iTab].filepath());
       }
+   }
+   
+   private void storeToPrefs() {
+      prefs.storePrefs("font", fontSet.getFont());
+      prefs.storePrefs("fontSize", String.valueOf(fontSet.getFontSize()));
+      String dir = txtDoc[tp.nTabs() - 1].dir();
+      if (dir.length() > 0) {
+         prefs.storePrefs("recentPath", txtDoc[tp.nTabs() - 1].dir());
+      }
+      displSet.storeToPrefs();
    }
 }
