@@ -49,7 +49,8 @@ public class Syntax {
    };
    
    final static String[] HTML_KEYWORDS = {
-      "<a>", "<a ", "</a>",
+      "/>",
+      "<a ", "<a>", "</a>",
       "<applet ", "</applet>",
       "<b>", "</b>", "<br>", "</br>",
       "<body>", "</body>",
@@ -61,7 +62,7 @@ public class Syntax {
       "<h1 ", "<h2 ", "<h3 ", "<h4 ", "<h5 ", "<h6 ",
       "<i>", "</i>", "<img>",
       "<li>", "</li>",
-      "<meta>",
+      "<meta>", "<meta ",
       "<ol>", "</ol>",
       "<object ", "</object>",
       "<p>", "</p>",

@@ -18,10 +18,10 @@ import eg.utils.JOptions;
  * The root folder of the project is not specified explicitely but is determined
  * based on the entries in the settings window. In the simplest case the root
  * would be the parent folder of specified project file. If other sub-directories
- * are specified the root would be the parent of the relative path given by the
- * named sub-directories. The relative  path to the project file has the order
- * 'sourcesDirName'/'moduleName' if names of directories for both of these
- * properties are specified.
+ * are specified that point to the project file the root would be the parent of
+ * the relative path given by the named sub-directories. The relative path to the
+ * project file has the order 'sourcesDirName'/'moduleName' if names of directories
+ * for both of these properties are specified.
  * <p>
  * It can be queried if any directory, not just the directory of the specified
  * project file, is found in the project's root folder.
@@ -60,8 +60,8 @@ public abstract class ProjectConfig implements Configurable {
     */
    @Override
    public void createSettingsWin() {
-      SettingsWin setWin = SettingsWin.basicWindow("Name of project file");
-      setSettingsWin(setWin);
+      SettingsWin win = SettingsWin.basicWindow("Name of project file");
+      setSettingsWin(win);
    }
 
    @Override
@@ -114,6 +114,11 @@ public abstract class ProjectConfig implements Configurable {
    @Override
    public String getExecutableDirName() {
       return execDir;
+   }
+   
+   @Override
+   public String getSourceSuffix() {
+      return suffix;
    }
    
    @Override

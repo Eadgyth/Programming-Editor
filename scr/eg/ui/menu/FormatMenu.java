@@ -5,7 +5,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 
 //--Eadgyth--//
-import eg.FontSetter;
+import eg.TabbedFiles;
 import eg.DisplaySetter;
 
 public class FormatMenu {
@@ -19,9 +19,9 @@ public class FormatMenu {
       assembleMenu();
    }
    
-   public void registerAct(FontSetter fontSet, DisplaySetter displSet) {
+   public void registerAct(TabbedFiles tb, DisplaySetter displSet) {
       fontItm.addActionListener(e ->
-            fontSet.makeFontSetWinVisible(true));
+            tb.makeFontSetWinVisible());
       wordWrapItm.addActionListener(e ->
             displSet.changeWordWrap(wordWrapItm.getState()));
    }

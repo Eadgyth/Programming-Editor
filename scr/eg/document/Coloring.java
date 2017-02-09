@@ -47,10 +47,6 @@ class Coloring {
       isSingleLines = isEnabled;
    }
    
-   boolean isBlockCmnt() {
-      return isBlockCmnt;
-   }
-   
    void setUpColoring(Languages language) {
       switch(language) {
          case JAVA:
@@ -300,7 +296,7 @@ class Coloring {
       }
    }
    
-   /* Colors the specifies String but skips block comments */
+   /* Colors the specified String but skips block comments */
    private void colSectionExBlock(String section, int pos) {
       enableSingleLines(false);
       isBlockCmnt = false;

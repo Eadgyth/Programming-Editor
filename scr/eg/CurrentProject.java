@@ -54,6 +54,7 @@ public class CurrentProject {
    private TextDocument[] txtDoc;
    private TextDocument currDoc;
    private String currExt;
+   private Languages lang;
 
    public CurrentProject(DisplaySetter displSet, ProcessStarter proc,
          ConsolePanel consPnl, FileTree fileTree) {
@@ -82,6 +83,15 @@ public class CurrentProject {
       currDoc = txtDoc[docIndex];
       currExt = FileUtils.fileSuffix(currDoc.filename());
    }
+   
+   /**
+    * Sets the current language
+    * @param lang  the language that is one of the constants in
+    * {@link Languages}
+    */   
+   public void setLanguage(Languages lang) {
+      this.lang = lang;
+   }
 
    /**
     * If at least one project has been created
@@ -104,7 +114,7 @@ public class CurrentProject {
       if (isProjectSet() && current.isInProject(currDoc.dir())) {
          return;
       }
-      ProjectActions prToFind = selProj.createProject(currExt);
+      ProjectActions prToFind = selProj.createProject(currExt, lang);
       boolean isFound
             =  prToFind != null
             && prToFind.retrieveProject(currDoc.dir());
@@ -211,7 +221,7 @@ public class CurrentProject {
          for (int i = 0; i < txtDoc.length; i++) {
             boolean approved
                   = txtDoc[i] != null
-                  && txtDoc[i].filename().endsWith(selProj.getSourceExt())
+                  && txtDoc[i].filename().endsWith(current.getSourceSuffix())
                   && current.isInProject(txtDoc[i].dir());
             if (approved) {
                boolean exists = new File(txtDoc[i].filepath()).exists();
@@ -263,7 +273,7 @@ public class CurrentProject {
    //
    
    private void newProject() {
-      ProjectActions projNew = selProj.createProject(currExt);
+      ProjectActions projNew = selProj.createProject(currExt, lang);
       if (projNew == null) {
          JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
       }

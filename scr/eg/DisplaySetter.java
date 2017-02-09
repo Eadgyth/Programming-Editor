@@ -95,22 +95,6 @@ public class DisplaySetter {
    public boolean isLineNumbers() {
       return isShowLineNumbers;
    }
-   
-   /**
-    * Stores view settings to prefs
-    */
-   public void storeToPrefs() {
-      String state = null;
-      state = isWordWrap ? "enabled" : "disabled";
-      prefs.storePrefs("wordWrap", state);
-      state = isShowLineNumbers ? "show" : "hide";
-      prefs.storePrefs("lineNumbers", state);
-      state = isShowToolbar ? "show" : "hide";
-      prefs.storePrefs("toolbar", state);
-      state = isShowStatusbar ? "show" : "hide";
-      prefs.storePrefs("statusbar", state);
-      prefs.storePrefs("LaF", displSetWin.LAF_OPT[selectedLafInd]);
-   } 
 
    /**
     * Enables/disables wordwrap in the {@code EditArea} whose
@@ -132,7 +116,9 @@ public class DisplaySetter {
          else {
             editArea[editAreaIndex].hideLineNumbers();
          }
-      }   
+      }
+      String state = isWordWrap ? "enabled" : "disabled";
+      prefs.storePrefs("wordWrap", state);  
    }
 
    /**
@@ -281,28 +267,36 @@ public class DisplaySetter {
 
    private void applySetWinOk() {
       boolean show = false;
+      String state = null;
 
       show = displSetWin.isShowToolbar();
       if (isShowToolbar != show) {
          mw.showToolbar(show);
-         isShowToolbar = show;
+         isShowToolbar = show; 
+         state = isShowToolbar ? "show" : "hide";
+         prefs.storePrefs("toolbar", state);
       }
 
       show = displSetWin.isShowStatusbar();
       if (isShowStatusbar != show) {
          mw.showStatusbar(show);
          isShowStatusbar = show;
+         state = isShowStatusbar ? "show" : "hide";
+         prefs.storePrefs("statusbar", state);
       }
 
       show = displSetWin.isShowLineNumbers();
       if (isShowLineNumbers != show) {
          isShowLineNumbers = show;
          showHideLineNumbers();
+         state = isShowLineNumbers ? "show" : "hide";
+         prefs.storePrefs("lineNumbers", state);
       }
 
       int index = displSetWin.selectedLaf();
       if (selectedLafInd != index) {
          selectedLafInd = index;
+         prefs.storePrefs("LaF", DisplaySettingWin.LAF_OPT[selectedLafInd]);
       }    
       displSetWin.makeViewSetWinVisible(false);
    }

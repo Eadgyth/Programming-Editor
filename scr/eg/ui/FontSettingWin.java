@@ -52,11 +52,13 @@ public class FontSettingWin {
 
    public String fontComboBxRes() {
       String font = FONTS[selectFont.getSelectedIndex()];
+      prefs.storePrefs("font", font);
       return font;
    }
 
    public int sizeComboBxRes() {
       String size = FONT_SIZES[selectSize.getSelectedIndex()];
+      prefs.storePrefs("fontSize", size);
       return Integer.parseInt(size);
    }
 

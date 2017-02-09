@@ -18,7 +18,7 @@ import eg.document.TextDocument;
 
 /**
  * The editing of the document in the selected tab by actions
- * that are invoked in the edit menu / toolbar
+ * that are invoked in the edit menu/toolbar except the language
  */ 
 public class Edit {
 
@@ -87,9 +87,7 @@ public class Edit {
          txtDoc.setCaretPos(pos - selection.length() + clipboard.length());
       }
 
-      if (txtDoc.isComputerLanguage()) {
-         txtDoc.colorAll();
-      }
+      txtDoc.colorAll();
    }
 
   /**
@@ -127,9 +125,7 @@ public class Edit {
       }
       txtDoc.select(start, (sel.length()
             + selSplit.length * indentLength) + start);
-      if (txtDoc.isComputerLanguage()) {
-         txtDoc.enableTypeEdit(true);
-      }
+      txtDoc.enableTypeEdit(true);
    }
 
    /**
@@ -193,9 +189,7 @@ public class Edit {
          txtDoc.removeStr(start + startOfLines[i] - i * indentLength,
                indentLength);
       }
-      if (txtDoc.isComputerLanguage()) {
-         txtDoc.enableTypeEdit(true);
-      }
+      txtDoc.enableTypeEdit(true);
    }
 
    /**
@@ -214,9 +208,7 @@ public class Edit {
             }
          }
       }
-      if (txtDoc.isComputerLanguage()) {
-         txtDoc.enableTypeEdit(true);
-      }
+      txtDoc.enableTypeEdit(true);
    }
 
    /**
@@ -231,14 +223,6 @@ public class Edit {
     */
    public void redo() {
       txtDoc.redo();
-   }
-
-   /**
-    * Changes the language
-    * @param newLanguage  the language that is used for the editing of text
-    */
-   public void changeLanguage(Languages newLanguage) {
-      txtDoc.changeLanguage(newLanguage);
    }
 
    private String getClipboard() {

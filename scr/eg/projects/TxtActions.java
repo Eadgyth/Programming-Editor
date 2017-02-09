@@ -1,8 +1,5 @@
 package eg.projects;
 
-import java.io.File;
-import java.io.IOException;
-
 /**
  * Represents a placeholder project for text files with extension .txt
  */

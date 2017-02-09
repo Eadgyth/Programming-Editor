@@ -36,8 +36,9 @@ public interface Configurable {
    
    /**
     * If a project can be successfully configured based on the entries in
-    * the the settings window
-    * @param dir  the directory of a file that maybe part of the project
+    * the settings window
+    * @param dir  the directory that may be or include the project's root
+    * folder
     * @return  if a project can be successfully configured based on entries
     * in this settings window
     */
@@ -72,6 +73,13 @@ public interface Configurable {
     * @return  the name of the directory where executable files are saved
     */
    public String getExecutableDirName();
+   
+   /**
+    * Returns the suffix of source files
+    * @return  the suffix of source files (has the form '.java', for
+    * example
+    */
+   public String getSourceSuffix();
    
    /**
     * Saves the current configuration to a preferences file

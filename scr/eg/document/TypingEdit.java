@@ -1,6 +1,6 @@
 /**
  * This inner class {@code DocUndoManager} uses methods of
- * CompoundUndoManager class from JSyntaxPane found at
+ * CompoundUndoManager class from JSyntaxPane found at 
  * https://github.com/aymanhs/jsyntaxpane
  * Copyright 2008 Ayman Al-Sairafi
  */
@@ -67,7 +67,7 @@ class TypingEdit {
       undomanager.setLimit(1000);
 
       col = new Coloring(doc, normalSet);
-      rowNum = new RowNumbers(editArea.lineArea(), editArea.scrolledArea());
+      rowNum = new RowNumbers(editArea.lineArea(), editArea.textPanel());
       autoInd = new AutoIndent(editArea.textArea(), doc, normalSet);
    }
 
@@ -121,6 +121,10 @@ class TypingEdit {
       autoInd.changeIndentUnit(indentUnit);
    }
 
+   public String getIndentUnit() {
+      return autoInd.getIndentUnit();
+   }
+
    void addAllRowNumbers(String in) {
       rowNum.addAllRowNumbers(in);
    }
@@ -167,14 +171,6 @@ class TypingEdit {
       catch (CannotRedoException e) {
          FileUtils.logStack(e);
       }
-   }
-   
-  /**
-    * Returns the currently set indentation unit
-    * @return the currently set indentation unit
-    */
-   public String getIndentUnit() {
-      return autoInd.getIndentUnit();
    }
 
    //

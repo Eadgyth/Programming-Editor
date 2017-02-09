@@ -2,8 +2,6 @@ package eg;
 
 import java.util.Observer;
 import java.util.Observable;
-import java.util.List;
-import java.util.ArrayList;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JOptionPane;
@@ -18,7 +16,6 @@ import java.io.File;
 //--Eadgyth--//
 import eg.utils.JOptions;
 import eg.document.TextDocument;
-import eg.ui.MainWin;
 import eg.ui.TabbedPane;
 import eg.ui.EditArea;
 
@@ -39,6 +36,8 @@ public class TabbedFiles implements Observer{
    private final DocumentUpdate docUpdate;
    private final ChangeListener changeListener;
    private final CurrentProject currProj;
+   
+   private Languages lang;
 
    /* The index of the selected tab */
    private int iTab = 0;
@@ -52,17 +51,35 @@ public class TabbedFiles implements Observer{
       this.currProj = currProj;
 
       fontSet = new FontSetter(edArea);
-      currProj.setDocumentArr(txtDoc);
       docUpdate.setDocumentArrays(txtDoc, edArea);
       changeListener = (ChangeEvent changeEvent) -> {
          changeTabEvent(changeEvent);
       };
       tp.changeListen(changeListener);
       prefs.readPrefs();
+      lang = Languages.valueOf(prefs.getProperty("language"));
+      currProj.setDocumentArr(txtDoc);
+      currProj.setLanguage(lang);
       String recentDir = prefs.getProperty("recentPath");
       fo = new FileChooserOpen(recentDir);
       fs = new FileChooserSave(recentDir);
       newEmptyTab();
+   }
+   
+   /**
+    * Sets the current language
+    * @param lang  the language that has one of the constant
+    * values in {@link Languages}
+    */
+   public void setLanguage(Languages lang) {
+      this.lang = lang;
+      currProj.setLanguage(lang);
+      for (TextDocument t : txtDoc) {
+         if (t != null) {
+            t.changeLanguage(lang);
+         }
+      }
+      prefs.storePrefs("language", lang.toString());
    }
 
    /**
@@ -82,11 +99,10 @@ public class TabbedFiles implements Observer{
    }
    
    /**
-    * Returns this reference to the {@code FontSetter}
-    * @return  this reference to the {@link FontSetter}
+    * Makes the window of this {@code FontSetter} visible/invisible
     */
-   public FontSetter getFontSet() {
-      return fontSet;
+   public void makeFontSetWinVisible() {
+      fontSet.makeFontSetWinVisible();
    }
 
    /**
@@ -101,8 +117,8 @@ public class TabbedFiles implements Observer{
     */
    public final void newEmptyTab() {
       edArea[tp.nTabs()] = createEditArea();
-      txtDoc[tp.nTabs()] = new TextDocument(edArea[tp.nTabs()]);
-      addNewTab("unnamed", edArea[tp.nTabs()].scrolledArea(),
+      txtDoc[tp.nTabs()] = new TextDocument(edArea[tp.nTabs()], lang);
+      addNewTab("unnamed", edArea[tp.nTabs()].textPanel(),
             tp.nTabs());       
    }
    
@@ -127,7 +143,7 @@ public class TabbedFiles implements Observer{
          return;
       }     
       if (!f.exists()) {
-         JOptions.warnMessage(f.getName() + " is was not found");
+         JOptions.warnMessage(f.getName() + " was not found");
       }
       else {
          open(f);
@@ -195,6 +211,7 @@ public class TabbedFiles implements Observer{
          currProj.updateFileTree(txtDoc[iTab].dir());
          tp.changeTabTitle(iTab, txtDoc[iTab].filename());
          displSet.displayFrameTitle(txtDoc[iTab].filepath());
+         prefs.storePrefs("recentPath", txtDoc[iTab].dir());
       }
    }
    
@@ -266,7 +283,6 @@ public class TabbedFiles implements Observer{
    public void tryExit() {
       int count = unsavedTab();
       if (count == tp.nTabs()) {
-         storeToPrefs();
          System.exit(0);
       }
       else {
@@ -310,9 +326,10 @@ public class TabbedFiles implements Observer{
          txtDoc[openIndex].openFile(file);
       }
       addNewTab(txtDoc[openIndex].filename(),
-      edArea[openIndex].scrolledArea(), openIndex);
+           edArea[openIndex].textPanel(), openIndex);
       displSet.displayFrameTitle(txtDoc[openIndex].filepath());         
       currProj.retrieveProject();
+      prefs.storePrefs("recentPath", txtDoc[openIndex].dir());
    }
 
    private boolean isFileOpen(String fileToOpen) {
@@ -388,15 +405,5 @@ public class TabbedFiles implements Observer{
          currProj.setDocumentIndex(iTab);
          displSet.displayFrameTitle(txtDoc[iTab].filepath());
       }
-   }
-   
-   private void storeToPrefs() {
-      prefs.storePrefs("font", fontSet.getFont());
-      prefs.storePrefs("fontSize", String.valueOf(fontSet.getFontSize()));
-      String dir = txtDoc[tp.nTabs() - 1].dir();
-      if (dir.length() > 0) {
-         prefs.storePrefs("recentPath", txtDoc[tp.nTabs() - 1].dir());
-      }
-      displSet.storeToPrefs();
    }
 }

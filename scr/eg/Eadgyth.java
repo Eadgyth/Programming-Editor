@@ -67,8 +67,8 @@ public class Eadgyth {
       tBar.registerEdit(edit);
       menu.getFileMenu().registerAct(tabFiles);
       menu.getProjectMenu().registerAct(currProj);
-      menu.getEditMenu().registerAct(edit);
-      menu.getFormatMenu().registerAct(tabFiles.getFontSet(), displSet);
+      menu.getEditMenu().registerAct(edit, tabFiles);
+      menu.getFormatMenu().registerAct(tabFiles, displSet);
       menu.getViewMenu().registerAct(displSet);
       consPnl.closeAct(e -> displSet.setShowConsoleState(false));
       fileTree.closeAct(e -> displSet.setShowFileViewState(false));

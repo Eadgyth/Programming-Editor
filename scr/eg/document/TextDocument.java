@@ -6,7 +6,6 @@ import java.awt.print.*;
 import javax.swing.JTextPane;
 
 import javax.swing.text.Document;
-import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.BadLocationException;
 
@@ -27,7 +26,7 @@ import eg.ui.EditArea;
 /**
  * Class represents the text document
  */
-public class TextDocument {
+public final class TextDocument {
 
    private final static String LINE_SEP = System.lineSeparator();
    private final static Preferences PREFS = new Preferences();
@@ -39,7 +38,7 @@ public class TextDocument {
    private String filepath = "";
    private String dir = "";
    private String content = "";
-   private Languages language;
+   boolean isPlainText = false;
 
    /**
     * Creates a TextDocument
@@ -51,9 +50,21 @@ public class TextDocument {
       type.addAllRowNumbers(content);
       PREFS.readPrefs();
       String indentUnit = PREFS.getProperty("indentUnit");
-      changeIndentUnit(indentUnit);
-      language = Languages.valueOf(PREFS.getProperty("language"));
-      type.setUpEditing(language);       
+      changeIndentUnit(indentUnit);    
+   }
+   
+   /**
+    * Creates a TextDocument with a specified language.
+    * <p>
+    * The language is overridden when a file is assigned.
+    * @param editArea  the reference to the {@link EditArea}
+    * @param lang  the language that is one of the constants in
+    * {@link Languages}
+    */
+   public TextDocument(EditArea editArea, Languages lang) {
+      this(editArea);
+      isPlainText = Languages.PLAIN_TEXT == lang;
+      type.setUpEditing(lang);
    }
 
    /**
@@ -145,15 +156,6 @@ public class TextDocument {
     */ 
    public boolean isContentSaved() {
       return content.equals(type.getDocText());
-   }
-   
-   /**
-    * If this language is a computer language
-    * @return  if this language is a computer language, i.e. not
-    * set to plain text
-    */
-   public boolean isComputerLanguage() {
-      return Languages.PLAIN_TEXT != language;
    }
 
    /**
@@ -264,7 +266,9 @@ public class TextDocument {
     * auto-indentation
     */
    public void enableTypeEdit(boolean isEnabled) {
-      type.enableTypeEdit(isEnabled);
+      if (!isPlainText) {
+         type.enableTypeEdit(isEnabled);
+      }
    }
 
    /**
@@ -283,7 +287,9 @@ public class TextDocument {
     * Colors keyword/syntax of the entire text in this document.
     */
    public void colorAll() {
-      type.colorAll();
+      if (!isPlainText) {
+         type.colorAll();
+      }
    }
 
    /**
@@ -329,15 +335,14 @@ public class TextDocument {
    }
 
    /**
-    * Changes this language if no file has been set
+    * Changes the language if no file has been set
     * @param lang  the language which has one of the constant values
     * in {@link eg.Languages}
     */
    public void changeLanguage(Languages lang) {
-      PREFS.storePrefs("language", lang.toString());
       if (filename.length() == 0) {
-         language = lang;
-         type.setUpEditing(language);
+         isPlainText = Languages.PLAIN_TEXT == lang;
+         type.setUpEditing(lang);
       }
    }
    
@@ -353,14 +358,13 @@ public class TextDocument {
     * empty Strings
     */
    public void colorSearchedText(String[] searchTerms, boolean constrainWord) {
-      if (isComputerLanguage()) {
+      if (!isPlainText) {
          JOptions.infoMessage("The coloring of text requires that the language"
                + " is plain text");
          return;
       }      
       if (searchTerms == null) {
-         throw new IllegalArgumentException(
-               "Param searchTerms is null");
+         throw new IllegalArgumentException("Param searchTerms is null");
       }
       for (String s : searchTerms) {
          if (s.length() == 0) {
@@ -410,20 +414,22 @@ public class TextDocument {
    }
 
    private void setLanguageBySuffix() {
-      String suffix = FileUtils.fileSuffix(filename);     
+      String suffix = FileUtils.fileSuffix(filename);
+      Languages lang;   
       switch (suffix) {
          case "java":
-           language = Languages.JAVA;
+           lang = Languages.JAVA;
            break;
          case "html":
-            language = Languages.HTML;
+            lang = Languages.HTML;
             break;
          case "pl": case "pm":
-            language = Languages.PERL;
+            lang = Languages.PERL;
             break;
          default:
-            language = Languages.PLAIN_TEXT;
+            lang = Languages.PLAIN_TEXT;
       }
-      type.setUpEditing(language);
+      isPlainText = Languages.PLAIN_TEXT == lang;
+      type.setUpEditing(lang);
    }
 }

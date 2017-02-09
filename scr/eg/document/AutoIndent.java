@@ -4,7 +4,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyAdapter;
 
-import javax.swing.JComponent;
 import javax.swing.JTextPane;
 
 import javax.swing.text.StyledDocument;
@@ -22,7 +21,6 @@ class AutoIndent {
    private final StyledDocument doc;
    private final SimpleAttributeSet normalSet;
 
-   private boolean isEnterPressed = false;
    private String indentUnit;
    private int indentLength;  
    private String indent = "";

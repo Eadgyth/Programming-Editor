@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 //--Eadgyth--//
-import eg.console.ProcessStarter;
-import eg.utils.JOptions;
 import eg.utils.FileUtils;
-import eg.ui.filetree.FileTree;
 
 /**
  * Represents a project to write a webpage in HTML

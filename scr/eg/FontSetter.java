@@ -22,8 +22,8 @@ public class FontSetter {
       fontSetWin.okAct(e -> setFont());
    }
    
-   public void makeFontSetWinVisible(boolean isVisible) {
-      fontSetWin.makeVisible(isVisible);
+   public void makeFontSetWinVisible() {
+      fontSetWin.makeVisible(true);
    }
    
    public String getFont() {

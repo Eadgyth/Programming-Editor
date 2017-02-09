@@ -5,7 +5,6 @@ import java.io.File;
 //--Eadgyth--//
 import eg.DisplaySetter;
 import eg.console.*;
-import eg.ui.filetree.FileTree;
 
 /**
  * Represents a programming project in Perl

@@ -12,6 +12,7 @@ import javax.swing.KeyStroke;
 
 //--Eadgyth--//
 import eg.Edit;
+import eg.TabbedFiles;
 import eg.Languages;
 import eg.Preferences;
 
@@ -39,7 +40,7 @@ public class EditMenu {
                                              IconFiles.OUTDENT_ICON);
    private final JMenuItem changeIndentItm = new JMenuItem("Indent/outdent length");
    private final JMenuItem clearSpacesItm  = new JMenuItem("Clear spaces");
-   private final JMenu     language        = new JMenu("Language");
+   private final JMenu     languageMenu    = new JMenu("Language");
    private final JCheckBoxMenuItem[] selectLangChBxItm
                                             = new JCheckBoxMenuItem[LANGUAGES.length];
 
@@ -52,7 +53,7 @@ public class EditMenu {
       return menu;
    }
 
-   public void registerAct(Edit edit) {
+   public void registerAct(Edit edit, TabbedFiles tf) {
       undoItm.addActionListener(e -> edit.undo());
       redoItm.addActionListener(e -> edit.redo());
       selectAllItm.addActionListener(e -> edit.selectAll());
@@ -64,19 +65,19 @@ public class EditMenu {
       clearSpacesItm.addActionListener(e -> edit.clearSpaces());
       changeIndentItm.addActionListener(e -> edit.setNewIndentUnit());
       for (JCheckBoxMenuItem item : selectLangChBxItm) {
-           item.addActionListener(e -> edit.changeLanguage(getNewLanguage(e)));
+           item.addActionListener(e -> getNewLanguage(e, edit, tf));
        }
    }
 
-   private Languages getNewLanguage(ActionEvent e) {
+   private void getNewLanguage(ActionEvent e, Edit edit, TabbedFiles tf) {
       Languages lang = null;
       for (int i = 0; i < selectLangChBxItm.length; i++) {
          if (e.getSource() == selectLangChBxItm[i]) {
             lang = Languages.values()[i];
+            tf.setLanguage(lang);
          }
          else selectLangChBxItm[i].setState(false);
       }
-      return lang;
    }
 
    private void assembleMenu() {
@@ -101,9 +102,9 @@ public class EditMenu {
             selectLangChBxItm[i].setState(true);
          }
       }
-      menu.add(language);
+      menu.add(languageMenu);
       for (JCheckBoxMenuItem itm : selectLangChBxItm) {
-         language.add(itm);
+         languageMenu.add(itm);
       }
    }
 

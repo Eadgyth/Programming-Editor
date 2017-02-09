@@ -65,11 +65,11 @@ public class FileTree extends Observable {
    private final JButton   closeBt   = new JButton(IconFiles.CLOSE_ICON);
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
    private final PopupMenu popupDir  = new PopupMenu(PopupMenu.FOLDER_OPT);
+   private final MouseListener ml;
       
    private JTree tree = null;
    private DefaultTreeModel model;
    private DefaultMutableTreeNode root;
-   private MouseListener ml;
 
    private String projRoot = "";
    private String pathHelper = "";
