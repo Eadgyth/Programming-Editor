@@ -36,16 +36,17 @@ in the script itself.
 <br>
 2) The built in packing of a jar file bundles only .class files.
 <br>
-3) The printing to a printer is right now rudimentary. 
+3) The printing to a printer is rudimentary and the font size is different from
+the corresponding font size in other programs (e.g. Editor in Windows). 
 <br>
 <p>
 PROBLEMS <br>
-1) The undo/redo causes the program to hang under some circumstance.
+1) The undo has a serious problem: when the cursor is placed right after a colored
+word/character and then enter is pressed undo will erase the content that followed
+the cursor position in the given line. Please see class eg.document.TypinhEdit.
 <br>
-2) The rendering of the GUI has gone wrong after the computer was in sleep mode or inactive
-when the system look and feel was selected.
-<br>
-3) There may be problems with the syntax coloring when larger chunks of text are inserted/deleted.
+2) Unexpected rendering of the UI happened when the system look and feel was selected
+(Windows) and the program was idling for a longer period of time.
 <br>
 <p>
 CONTACT<br>
