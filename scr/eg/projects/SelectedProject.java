@@ -31,7 +31,7 @@ public class SelectedProject {
     * extension. Only if no corresponding class is found the language
     * is used.
     * <p>
-    * @param fileExt  the extension of the file which a project is to be
+    * @param fileExt  the file extension which a project is to be
     * defined for
     * @param lang  the language which has a value from {@link Languages}
     * @return  an object of type {@link ProjectActions} or null if no
@@ -76,8 +76,8 @@ public class SelectedProject {
    }
    
    /**
-    * Enables action components in the menu and toolbar depending onn type of
-    * project
+    * Enables action components in the menu and toolbar depending on the
+    * type of project
     * @param className  the name of the class of type {@link ProjectActions}
     * @param projCount  the number of already configured projects
     */

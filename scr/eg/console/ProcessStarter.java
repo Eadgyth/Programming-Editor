@@ -214,7 +214,7 @@ public class ProcessStarter {
       protected Void doInBackground() throws Exception {
          try {
             int cInt = - 1;
-            char c;  
+            char c;
             while ((cInt = reader.read()) != -1) {
                 c = (char) cInt;
                 consPnl.appendText(String.valueOf(c));

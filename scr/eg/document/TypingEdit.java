@@ -1,5 +1,5 @@
 /**
- * This inner class {@code DocUndoManager} uses methods of
+ * This inner class {@code DocUndoManager} is based on
  * CompoundUndoManager class from JSyntaxPane found at 
  * https://github.com/aymanhs/jsyntaxpane
  * Copyright 2008 Ayman Al-Sairafi
@@ -33,15 +33,14 @@ import eg.ui.EditArea;
 import eg.utils.FileUtils;
 
 /**
- * Responsible for the editing in the {@code EditArea} that shall happen 
- * during typing.
+ * The editing in the {@code EditArea} that shall happen during typing.
  * <p>
  * The changes include the line numbering, the syntax coloring,
  * auto-indentation and undo/redo editing.
  */
 class TypingEdit {
 
-   private final static char[] UNDO_SEP = {' ', '\n', '(', ')', '{', '}'};
+   private final static char[] UNDO_SEP = {' ', '(', ')', '{', '}'};
 
    private final StyledDocument doc;  
    private final Element el;
@@ -56,6 +55,7 @@ class TypingEdit {
    private boolean isTypeEdit = false;
    private boolean isIndent = false;
    private char typed = '\0';
+   private boolean isChangeEvent;
 
    TypingEdit(EditArea editArea) {
       doc = editArea.textArea().getStyledDocument();
@@ -79,7 +79,7 @@ class TypingEdit {
       this.isTypeEdit = isTypeEdit;
       col.enableSingleLines(isTypeEdit);
    }
-   
+
    void setUpEditing(Languages language) {
       if (Languages.PLAIN_TEXT == language) {
          doc.setCharacterAttributes(0, getDocText().length(), normalSet, false);
@@ -187,12 +187,9 @@ class TypingEdit {
    private final DocumentListener docListen = new DocumentListener() {
 
       @Override
-      public void changedUpdate(DocumentEvent documentEvent) {
-      }
-
-      @Override
       public void insertUpdate(DocumentEvent de) {
          if (isDocListen) {
+            isChangeEvent = false;
             String in = getDocText();
             int pos = de.getOffset();
             typed = in.charAt(pos);
@@ -206,13 +203,21 @@ class TypingEdit {
       @Override
       public void removeUpdate(DocumentEvent de) {
          if (isDocListen) {
+            isChangeEvent = false;
             String in = getDocText();
-            updateRowNumber(in);
             typed = '\0';
+            updateRowNumber(in);
             if (isTypeEdit) {
                int pos = de.getOffset();
                removeTextModify(de, in, pos);
             }
+         }
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent de) {
+         if (isDocListen) {
+            isChangeEvent = true;
          }
       }
    };
@@ -225,7 +230,9 @@ class TypingEdit {
          if (isIndent) {
             autoInd.closeBracketIndent(in, pos);
          }
-         col.color(in, pos);
+         if (typed != '\n') {
+            col.color(in, pos);
+         }
       });
    }
 
@@ -243,15 +250,10 @@ class TypingEdit {
       public synchronized void undoableEditHappened(UndoableEditEvent e) {
          if (!isDocListen) {
             return;
+         }    
+         if (!isChangeEvent) {
+            addAnEdit(e.getEdit());
          }
-         //
-         // Exclude changes of the style
-         AbstractDocument.DefaultDocumentEvent event =
-               (AbstractDocument.DefaultDocumentEvent) e.getEdit();
-         if (event.getType().equals(DocumentEvent.EventType.CHANGE)) {
-            return;
-         }
-         addAnEdit(e.getEdit());
       }
 
       @Override
@@ -267,22 +269,22 @@ class TypingEdit {
       }
 
       @Override
-      public synchronized void undo() {
-         commitCompound();
+      public synchronized void undo() { 
+         //commitCompound();
          super.undo();
       }
 
       @Override
       public synchronized void redo() {
-         commitCompound();
+         //commitCompound();
          super.redo();
       }
 
       private synchronized boolean addAnEdit(UndoableEdit anEdit) {
          if (comp == null) {
-             comp = new CompoundEdit();
+            comp = new CompoundEdit();
          }
-         if (typed != '\0') {
+         if (typed != '\0' & typed != '\n') {
             comp.addEdit(anEdit);
          }
          else {
@@ -291,11 +293,11 @@ class TypingEdit {
             comp = null;
             super.addEdit(anEdit);
          }
-         if (isEditSep()) {
+         if (isEditSeparator()) {
             comp.end();
             super.addEdit(comp);
             comp = null;
-         }            
+         }
          return true;
       }
 
@@ -307,7 +309,7 @@ class TypingEdit {
          }
       }
 
-      private boolean isEditSep() {
+      private boolean isEditSeparator() {
          int i = 0;
          for (i = 0; i < UNDO_SEP.length; i++) {
             if (UNDO_SEP[i] == typed) {
