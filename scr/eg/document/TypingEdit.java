@@ -3,6 +3,8 @@
  * CompoundUndoManager class from JSyntaxPane found at 
  * https://github.com/aymanhs/jsyntaxpane
  * Copyright 2008 Ayman Al-Sairafi
+ * In the present class merged edits are separated by "edit separators".
+ * (white space and brackets). A newline is treated as an edit on its own.
  */
 package eg.document;
 
@@ -145,11 +147,6 @@ class TypingEdit {
       try {
          if (undomanager.canUndo()) {
             undomanager.undo();
-            if (isTypeEdit) {
-               EventQueue.invokeLater(() -> {
-                  colorAll();
-               });
-            }
          }
       }
       catch (CannotUndoException e) {
@@ -161,11 +158,6 @@ class TypingEdit {
       try {
          if (undomanager.canRedo()) {
             undomanager.redo();
-            if (isTypeEdit) {
-               EventQueue.invokeLater(() -> {
-                  colorAll();
-               });
-            }
          }
       }
       catch (CannotRedoException e) {
@@ -237,7 +229,7 @@ class TypingEdit {
    }
 
    private void removeTextModify(DocumentEvent de, String in, int pos) {
-      EventQueue.invokeLater( () -> {
+      EventQueue.invokeLater(() -> {
          col.color(in, pos);
       });
    }
@@ -280,7 +272,7 @@ class TypingEdit {
          super.redo();
       }
 
-      private synchronized boolean addAnEdit(UndoableEdit anEdit) {
+      private synchronized void addAnEdit(UndoableEdit anEdit) {
          if (comp == null) {
             comp = new CompoundEdit();
          }
@@ -298,7 +290,6 @@ class TypingEdit {
             super.addEdit(comp);
             comp = null;
          }
-         return true;
       }
 
       private void commitCompound() {
