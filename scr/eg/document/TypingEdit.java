@@ -3,10 +3,11 @@
  * CompoundUndoManager class from JSyntaxPane found at 
  * https://github.com/aymanhs/jsyntaxpane
  * Copyright 2008 Ayman Al-Sairafi
- * In the present class merged edits are separated by "edit separators".
- * (white space and brackets). A newline is treated as an edit on its own.
+ * The methods are currently disabled though
  */
 package eg.document;
+
+import javax.swing.SwingWorker;
 
 import javax.swing.text.StyledDocument;
 import javax.swing.text.SimpleAttributeSet;
@@ -28,6 +29,8 @@ import javax.swing.undo.CannotRedoException;
 
 import java.awt.EventQueue;
 import java.awt.Color;
+
+import java.util.Vector;
 
 //--Eadgyth--//
 import eg.Languages;
@@ -58,6 +61,7 @@ class TypingEdit {
    private boolean isIndent = false;
    private char typed = '\0';
    private boolean isChangeEvent;
+   private boolean isUndoMode = false;
 
    TypingEdit(EditArea editArea) {
       doc = editArea.textArea().getStyledDocument();
@@ -147,7 +151,7 @@ class TypingEdit {
       try {
          if (undomanager.canUndo()) {
             undomanager.undo();
-         }
+         }    
       }
       catch (CannotUndoException e) {
          FileUtils.logStack(e);
@@ -158,7 +162,7 @@ class TypingEdit {
       try {
          if (undomanager.canRedo()) {
             undomanager.redo();
-         }
+         } 
       }
       catch (CannotRedoException e) {
          FileUtils.logStack(e);
@@ -201,7 +205,7 @@ class TypingEdit {
             updateRowNumber(in);
             if (isTypeEdit) {
                int pos = de.getOffset();
-               removeTextModify(de, in, pos);
+               removeTextModify(in, pos);
             }
          }
       }
@@ -228,7 +232,8 @@ class TypingEdit {
       });
    }
 
-   private void removeTextModify(DocumentEvent de, String in, int pos) {
+   private void removeTextModify(String in, int pos) {
+      System.out.println("remove");
       EventQueue.invokeLater(() -> {
          col.color(in, pos);
       });
@@ -244,7 +249,7 @@ class TypingEdit {
             return;
          }    
          if (!isChangeEvent) {
-            addAnEdit(e.getEdit());
+            addEdit(e.getEdit()); // comp not used
          }
       }
 
@@ -261,7 +266,7 @@ class TypingEdit {
       }
 
       @Override
-      public synchronized void undo() { 
+      public synchronized void undo() {
          //commitCompound();
          super.undo();
       }
@@ -276,19 +281,15 @@ class TypingEdit {
          if (comp == null) {
             comp = new CompoundEdit();
          }
-         if (typed != '\0' & typed != '\n') {
+         if (typed != '\n' && typed != '\0') {
             comp.addEdit(anEdit);
          }
-         else {
-            comp.end();
-            super.addEdit(comp);
-            comp = null;
+         else {         
+            commitCompound();
             super.addEdit(anEdit);
          }
          if (isEditSeparator()) {
-            comp.end();
-            super.addEdit(comp);
-            comp = null;
+            commitCompound();
          }
       }
 
