@@ -41,9 +41,8 @@ the corresponding font size in other programs (e.g. Editor in Windows).
 <br>
 <p>
 PROBLEMS <br>
-1) The undo has a problem: when the cursor is placed right after a colored
-word/character and then enter is pressed undo will erase the content that followed
-the cursor position in the given line. Please see class eg.document.TypinhEdit.
+1) The undo has a problem with syntax coloring in combination with undoing several characters
+at once. Therefore undoing several characters is not enabled.
 <br>
 2) Unexpected rendering of the UI happened when the system look and feel was selected
 (Windows) and the program was idling for a longer period of time.
