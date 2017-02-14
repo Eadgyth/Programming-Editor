@@ -105,7 +105,7 @@ class Coloring {
       isBrackets = false;
    }
 
-   void color(String in, int pos) {   
+   void color(String in, int pos) {
       String chunk;
       int posStart = pos;
       if (isSingleLines) {
@@ -114,9 +114,9 @@ class Coloring {
       }
       else {
          chunk = in;
+         doc.setCharacterAttributes(0, chunk.length(), normalSet, false);
       }
-      boolean isInBlock = isInBlock(in, pos);
-      if (!isBlockCmnt || !isInBlock) {
+      if (!isBlockCmnt || !isInBlock(in, pos)) {
          doc.setCharacterAttributes(posStart, chunk.length(), normalSet, false);
          if (isFlags) {
             for (String f : flags) {
@@ -159,9 +159,9 @@ class Coloring {
             lineComments(chunk, posStart);
          }
       }
-      if (isBlockCmnt) {            
+      if (isBlockCmnt) {           
          blockComments(in);
-      } 
+      }
    }
 
    private void keys(String in, String key, SimpleAttributeSet set, int pos) {
@@ -256,11 +256,11 @@ class Coloring {
                   blockCmntEnd);
             if (end != -1) {
                int length = end - start + blockCmntEnd.length();
-               doc.setCharacterAttributes(start, length, comSet, false);
                if (isSingleLines) {
                   uncommentBlock(in, end + 2);
                   uncommentBlock(in, start - 2);
                }
+               doc.setCharacterAttributes(start, length, comSet, false);
             }
             else {
                if (isSingleLines) {
