@@ -41,9 +41,8 @@ the corresponding font size in other programs (e.g. Editor in Windows).
 <br>
 <p>
 PROBLEMS <br>
-1) The undo has a problem with syntax coloring in combination with undoing several characters
-at once. Therefore undoing several characters is not enabled.
-<br>
+1) The undo/rodo has some problems with regard to the syntax coloring. Undoing/redoing insertion/
+deletion of multiline text may yields inclompletely colored text<br>
 2) Unexpected rendering of the UI happened when the system look and feel was selected
 (Windows) and the program was idling for a longer period of time.
 <br>
