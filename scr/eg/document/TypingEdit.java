@@ -3,11 +3,10 @@
  * CompoundUndoManager class from JSyntaxPane found at 
  * https://github.com/aymanhs/jsyntaxpane
  * Copyright 2008 Ayman Al-Sairafi
- * The methods are currently disabled though
+ * The separation of merged undo edits by time is replaced by
+ * "undo-separators"
  */
 package eg.document;
-
-import javax.swing.SwingWorker;
 
 import javax.swing.text.StyledDocument;
 import javax.swing.text.SimpleAttributeSet;
@@ -27,30 +26,33 @@ import javax.swing.undo.UndoableEdit;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.CannotRedoException;
 
+import javax.swing.JTextPane;
+
 import java.awt.EventQueue;
 import java.awt.Color;
-
-import java.util.Vector;
 
 //--Eadgyth--//
 import eg.Languages;
 import eg.ui.EditArea;
 import eg.utils.FileUtils;
+import eg.utils.Finder;
 
 /**
- * The editing in the {@code EditArea} that shall happen during typing.
+ * Mediates the editing in the {@code EditArea} that shall happen during
+ * typing.
  * <p>
- * The changes include the line numbering, the syntax coloring,
- * auto-indentation and undo/redo editing.
+ * Methods are used in the other classes that show line numbering, syntax
+ * coloring, auto-indentation and undo/redo editing (the latter an inner class).
  */
 class TypingEdit {
 
-   private final static char[] UNDO_SEP = {' ', '(', ')', '{', '}'};
+   private final static char[] UNDO_SEP = {' ', '(', ')', '{', '}', '\n', '\0'};
 
-   private final StyledDocument doc;  
+   private final StyledDocument doc;
    private final Element el;
    private final SimpleAttributeSet normalSet = new SimpleAttributeSet(); 
 
+   private final JTextPane textArea;
    private final UndoManager undomanager = new DocUndoManager();
    private final Coloring col;
    private final AutoIndent autoInd;
@@ -61,9 +63,9 @@ class TypingEdit {
    private boolean isIndent = false;
    private char typed = '\0';
    private boolean isChangeEvent;
-   private boolean isUndoMode = false;
 
    TypingEdit(EditArea editArea) {
+      textArea = editArea.textArea();
       doc = editArea.textArea().getStyledDocument();
       el = doc.getParagraphElement(0);
       setStyles();
@@ -127,7 +129,7 @@ class TypingEdit {
       autoInd.changeIndentUnit(indentUnit);
    }
 
-   public String getIndentUnit() {
+   String getIndentUnit() {
       return autoInd.getIndentUnit();
    }
 
@@ -142,16 +144,20 @@ class TypingEdit {
    void colorAll() {
       enableTypeEdit(false);
       String all = getDocText();
-      doc.setCharacterAttributes(0, all.length(), normalSet, false);
       col.color(all, 0);
       enableTypeEdit(true);
    }
 
    void undo() {
       try {
+         enableDocListen(false);
          if (undomanager.canUndo()) {
             undomanager.undo();
-         }    
+         }
+         String in = getDocText();
+         updateRowNumber(in);
+         colorStandard(in, textArea.getCaretPosition());
+         enableDocListen(true);
       }
       catch (CannotUndoException e) {
          FileUtils.logStack(e);
@@ -160,9 +166,14 @@ class TypingEdit {
 
    void redo() {
       try {
+         enableDocListen(false);
          if (undomanager.canRedo()) {
             undomanager.redo();
-         } 
+         }
+         String in = getDocText();
+         updateRowNumber(in);
+         colorStandard(in, textArea.getCaretPosition());
+         enableDocListen(true);
       }
       catch (CannotRedoException e) {
          FileUtils.logStack(e);
@@ -170,15 +181,8 @@ class TypingEdit {
    }
 
    //
-   //--private--
+   //--private--//
    //
-
-   private void setStyles() {
-      StyleConstants.setForeground(normalSet, Color.BLACK);
-      StyleConstants.setLineSpacing(normalSet, 0.2f);
-      StyleConstants.setBold(normalSet, false);
-      doc.setParagraphAttributes(0, el.getEndOffset(), normalSet, false);
-   }
 
    private final DocumentListener docListen = new DocumentListener() {
 
@@ -205,7 +209,7 @@ class TypingEdit {
             updateRowNumber(in);
             if (isTypeEdit) {
                int pos = de.getOffset();
-               removeTextModify(in, pos);
+               colorStandard(in, pos);
             }
          }
       }
@@ -227,17 +231,23 @@ class TypingEdit {
             autoInd.closeBracketIndent(in, pos);
          }
          if (typed != '\n') {
-            col.color(in, pos);
+            colorStandard(in, pos);
          }
       });
    }
 
-   private void removeTextModify(String in, int pos) {
-      System.out.println("remove");
+   private void colorStandard(String in, int pos) {
       EventQueue.invokeLater(() -> {
          col.color(in, pos);
       });
    }
+   
+   private void setStyles() {
+      StyleConstants.setForeground(normalSet, Color.BLACK);
+      StyleConstants.setLineSpacing(normalSet, 0.2f);
+      StyleConstants.setBold(normalSet, false);
+      doc.setParagraphAttributes(0, el.getEndOffset(), normalSet, false);
+   }  
 
    class DocUndoManager extends UndoManager implements UndoableEditListener {
 
@@ -249,7 +259,7 @@ class TypingEdit {
             return;
          }    
          if (!isChangeEvent) {
-            addEdit(e.getEdit()); // comp not used
+            addAnEdit(e.getEdit());
          }
       }
 
@@ -281,15 +291,12 @@ class TypingEdit {
          if (comp == null) {
             comp = new CompoundEdit();
          }
-         if (typed != '\n' && typed != '\0') {
-            comp.addEdit(anEdit);
-         }
-         else {         
+         if (isEditSeparator()) {
             commitCompound();
             super.addEdit(anEdit);
          }
-         if (isEditSeparator()) {
-            commitCompound();
+         else {
+            comp.addEdit(anEdit);
          }
       }
 
