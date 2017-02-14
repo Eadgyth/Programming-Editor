@@ -41,8 +41,8 @@ the corresponding font size in other programs (e.g. Editor in Windows).
 <br>
 <p>
 PROBLEMS <br>
-1) The undo/rodo has some problems with regard to the syntax coloring. Undoing/redoing insertion/
-deletion of multiline text may yields inclompletely colored text<br>
+1) The undo/rodo has some problems with regard to the syntax coloring. Undoing/redoing
+the insertion/deletion of multiline text may yield incompletely colored text<br>
 2) Unexpected rendering of the UI happened when the system look and feel was selected
 (Windows) and the program was idling for a longer period of time.
 <br>
