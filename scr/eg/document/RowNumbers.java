@@ -32,6 +32,13 @@ class RowNumbers {
       this.scrolledArea = scrolledArea;
       setStyle();
    }
+   
+   /**
+    *
+    */
+   int getCurrLineNr() {
+      return nRowsCurr;
+   }
 
    /**
     * Updates row numbers based on the number of newlines

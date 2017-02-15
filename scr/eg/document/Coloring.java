@@ -114,7 +114,6 @@ class Coloring {
       }
       else {
          chunk = in;
-         doc.setCharacterAttributes(0, chunk.length(), normalSet, false);
       }
       if (!isBlockCmnt || !isInBlock(in, pos)) {
          doc.setCharacterAttributes(posStart, chunk.length(), normalSet, false);

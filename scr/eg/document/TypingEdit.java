@@ -51,7 +51,6 @@ class TypingEdit {
    private final StyledDocument doc;
    private final Element el;
    private final SimpleAttributeSet normalSet = new SimpleAttributeSet(); 
-
    private final JTextPane textArea;
    private final UndoManager undomanager = new DocUndoManager();
    private final Coloring col;
@@ -144,20 +143,19 @@ class TypingEdit {
    void colorAll() {
       enableTypeEdit(false);
       String all = getDocText();
+      doc.setCharacterAttributes(0, all.length(), normalSet, false);
       col.color(all, 0);
       enableTypeEdit(true);
    }
 
    void undo() {
       try {
+         int previousLineNr = rowNum.getCurrLineNr();
          enableDocListen(false);
          if (undomanager.canUndo()) {
             undomanager.undo();
          }
-         String in = getDocText();
-         updateRowNumber(in);
-         colorStandard(in, textArea.getCaretPosition());
-         enableDocListen(true);
+         updateAfterUndoRedo(previousLineNr);
       }
       catch (CannotUndoException e) {
          FileUtils.logStack(e);
@@ -166,14 +164,12 @@ class TypingEdit {
 
    void redo() {
       try {
+         int previousLineNr = rowNum.getCurrLineNr();
          enableDocListen(false);
          if (undomanager.canRedo()) {
             undomanager.redo();
          }
-         String in = getDocText();
-         updateRowNumber(in);
-         colorStandard(in, textArea.getCaretPosition());
-         enableDocListen(true);
+         updateAfterUndoRedo(previousLineNr);
       }
       catch (CannotRedoException e) {
          FileUtils.logStack(e);
@@ -209,7 +205,7 @@ class TypingEdit {
             updateRowNumber(in);
             if (isTypeEdit) {
                int pos = de.getOffset();
-               colorStandard(in, pos);
+               color(in, pos);
             }
          }
       }
@@ -231,12 +227,25 @@ class TypingEdit {
             autoInd.closeBracketIndent(in, pos);
          }
          if (typed != '\n') {
-            colorStandard(in, pos);
+            color(in, pos);
          }
       });
    }
+   
+   private void updateAfterUndoRedo(int previousLineNr) {
+      String in = getDocText();
+      updateRowNumber(in);
+      int newLineNr = rowNum.getCurrLineNr();
+      if (previousLineNr - newLineNr > 1) {
+         colorAll();
+      }
+      else {
+         color(in, textArea.getCaretPosition());
+      }
+      enableDocListen(true);
+   }
 
-   private void colorStandard(String in, int pos) {
+   private void color(String in, int pos) {
       EventQueue.invokeLater(() -> {
          col.color(in, pos);
       });
