@@ -14,6 +14,7 @@ import java.io.IOException;
 import eg.utils.JOptions;
 import eg.utils.Finder;
 import eg.utils.FileUtils;
+import eg.ui.EditArea;
 import eg.document.TextDocument;
 
 /**
@@ -25,17 +26,18 @@ public class Edit {
    /* Options for the numbers of white spaces in indentation unit */
    private static final String[] SPACE_NUMBER = { "1", "2", "3", "4", "5", "6" };
 
+   private EditArea editArea;
    private TextDocument txtDoc;
    private String indentUnit;
    private int indentLength;
 
    /**
-    * Assigns to this the TextDocument object that is edited and
-    * its current indentation unit
     * @param txtDoc  the {@link TextDocument} object
+    * @param editArea  the {@link EditArea} object
     */
-   public void setTextDocument(TextDocument txtDoc) {
+   public void setTextDocument(TextDocument txtDoc, EditArea editArea) {
       this.txtDoc  = txtDoc;
+      this.editArea = editArea;
       indentUnit = txtDoc.getIndentUnit();
       indentLength = indentUnit.length();
    }
@@ -75,7 +77,7 @@ public class Edit {
 
       String clipboard = getClipboard();
       String selection = txtDoc.selectedText();
-      int pos = txtDoc.getCaretPos();
+      int pos = txtDoc.caretPos();
 
       if (selection == null) {
          txtDoc.insertStr(pos, clipboard);
@@ -137,7 +139,7 @@ public class Edit {
          return;
       }      
       int start = txtDoc.selectionStart();
-      String startingLine = Finder.currLine(txtDoc.getDocText(), start);
+      String startingLine = Finder.currLine(txtDoc.getText(), start);
       if (!startingLine.startsWith(indentUnit)) {
          return;
       }
@@ -176,7 +178,7 @@ public class Edit {
       }
       /*
        * renew selection */
-      int startOfFirstLine = txtDoc.getDocText().lastIndexOf("\n", start);
+      int startOfFirstLine = editArea.getDocText().lastIndexOf("\n", start);
       int startUpdate = start - indentLength + countSpaces;
       if (countSpaces != indentLength && startUpdate > startOfFirstLine) {
          txtDoc.select(startUpdate, txtDoc.selectionEnd());
@@ -197,7 +199,7 @@ public class Edit {
     */
    public void clearSpaces() {
       txtDoc.enableTypeEdit(false);
-      String allTxt = txtDoc.getDocText();
+      String allTxt = editArea.getDocText();
       String[] allTxtArr = allTxt.split("\n");
       int[] startOfLines = Finder.startOfLines(allTxtArr);
       for (int i = 0; i < allTxtArr.length; i++) {

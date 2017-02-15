@@ -1,7 +1,6 @@
 package eg.document;
 
 import java.awt.EventQueue;
-import java.awt.print.*;
 
 import javax.swing.JTextPane;
 
@@ -24,7 +23,8 @@ import eg.utils.FileUtils;
 import eg.ui.EditArea;
 
 /**
- * Class represents the text document
+ * Class represents the text document and text style which is edited
+ * during typing
  */
 public final class TextDocument {
 
@@ -32,6 +32,7 @@ public final class TextDocument {
    private final static Preferences PREFS = new Preferences();
 
    private final JTextPane textArea;
+   private final EditArea editArea;
    private final TypingEdit type;
 
    private String filename = "";
@@ -45,6 +46,7 @@ public final class TextDocument {
     * @param editArea  the reference to the {@link EditArea}
     */
    public TextDocument(EditArea editArea) {
+      this.editArea = editArea;
       this.textArea = editArea.textArea();
       type = new TypingEdit(editArea);
       type.addAllRowNumbers(content);
@@ -138,105 +140,13 @@ public final class TextDocument {
       saveToFile();
       setLanguageBySuffix();
    }
-   
-   /**
-    * Prints this document to a printer
-    */
-   public void print() {
-      try {
-         boolean complete = textArea.print();
-      } catch (PrinterException e) {
-         FileUtils.logStack(e);
-      }
-   }
 
    /**
     * @return  if the content of this text area equals the content 
     * since the last saving point
     */ 
    public boolean isContentSaved() {
-      return content.equals(type.getDocText());
-   }
-
-   /**
-    * Returns the content of this document
-    * @return  the content of this document
-    */
-   public String getDocText() {
-      return type.getDocText();
-   }
-   
-   /**
-    * Returns the current length of the text of this document
-    * @return  the current length of text of this document
-    */
-   public int textLength() {
-      return type.getDocText().length();
-   }
-
-   /**
-    * Selects the entire text of this text area
-    */
-   public void selectAll() {
-      textArea.selectAll();
-   }
-
-   /**
-    * Selects text between the specified start end end positions
-    * in this text area
-    * @param start  the start of the selection
-    * @param end  the end position of the selection
-    */
-   public void select(int start, int end) {
-      textArea.select(start, end);
-   }
-
-   /**
-    * Returns the selected text in this text area
-    * @return  the selected text in this text area. Null if no text
-    * is selected
-    */
-   public String selectedText() {
-      return textArea.getSelectedText();
-   }
-
-   /**
-    * Returns the selection start
-    * @return the start position of selected text
-    */
-   public int selectionStart() {
-      return textArea.getSelectionStart();
-   }
-
-   /**
-    * Returns the selection end
-    * @return the end position of selected text
-    */
-   public int selectionEnd() {
-      return textArea.getSelectionEnd();
-   }
-
-   /**
-    * @return the caret position of this text area
-    */
-   public int getCaretPos() {
-      return textArea.getCaretPosition();
-   }
-
-   /**
-    * Sets the caret at the sepecified position of
-    * this text document
-    * @param pos  the position where the caret is set
-    */
-   public void setCaretPos(int pos) {
-      textArea.setCaretPosition(pos);
-   }
-
-   /**
-    * Gains focus in this text area
-    */
-   public void requestFocus() {
-      textArea.requestFocusInWindow();
+      return content.equals(editArea.getDocText());
    }
 
    /**
@@ -261,9 +171,9 @@ public final class TextDocument {
    }
 
    /**
-    * Enables/Disables syntax coloring and auto-indentation
+    * Enables/disables syntax coloring and auto-indentation
     * @param isEnabled  true to enable syntax coloring and
-    * auto-indentation
+    * auto-indentation, false to disable
     */
    public void enableTypeEdit(boolean isEnabled) {
       if (!isPlainText) {
@@ -278,9 +188,8 @@ public final class TextDocument {
     * default color
     * @param pos  the position where the text to color starts
     */
-   public void backInBlack(int length, int pos) {
-      type.getDoc().setCharacterAttributes(pos, length,
-            type.getNormalSet(), false);
+   public void textToBlack(int length, int pos) {
+      editArea.textToBlack(length, pos);
    }
 
    /**
@@ -305,33 +214,96 @@ public final class TextDocument {
    public void redo() {
       type.redo();
    }
+   
+   /**
+    * Returns the text in this text area
+    * @return  the text in this text area
+    */
+   public String getText() {
+      return editArea.getDocText();
+   }
+   
+   /**
+    * @return the caret position of this text area
+    */
+   public int caretPos() {
+      return textArea.getCaretPosition();
+   }
+   
+   /**
+    * Selects the entire text of this text area
+    */
+   public void selectAll() {
+      textArea.selectAll();
+   }
+   
+   /**
+    * Selects text between the specified start end end positions
+    * in this text area
+    * @param start  the start of the selection
+    * @param end  the end position of the selection
+    */
+   public void select(int start, int end) {
+      textArea.select(start, end);
+   }
+   
+   /**
+    * Returns the selection start
+    * @return the start position of selected text
+    */
+   public int selectionStart() {
+      return textArea.getSelectionStart();
+   }
+   
+   /**
+    * Returns the selection end
+    * @return the end position of selected text
+    */
+   public int selectionEnd() {
+      return textArea.getSelectionEnd();
+   }
+   
+   /**
+    * Returns the selected text in this text area
+    * @return  the selected text in this text area. Null if no text
+    * is selected
+    */
+   public String selectedText() {
+      return textArea.getSelectedText();
+   }
+   
+   /**
+    * Sets the caret at the sepecified position of
+    * this text document
+    * @param pos  the position where the caret is set
+    */
+   public void setCaretPos(int pos) {
+      textArea.setCaretPosition(pos);
+   }
 
    /**
-    * Inserts text in this document
+    * Inserts text in this text area
     * @param pos  the position where new text is inserted
     * @param toInsert  the String that contains the text to insert
     */
    public void insertStr(int pos, String toInsert) {
-      try {
-         type.getDoc().insertString(pos, toInsert, type.getNormalSet());
-      }
-      catch (BadLocationException e) {
-         FileUtils.logStack(e);
-      }
+      editArea.insertStr(pos, toInsert);
    }
 
    /**
     * Removes text from this document
     * @param start  the position where text to be removed starts
     * @param length  the length of the text to be removed
-    */   
+    */  
    public void removeStr(int start, int length) {
-      try {
-         type.getDoc().remove(start, length);
-      }
-      catch (BadLocationException e) {
-         FileUtils.logStack(e);
-      }
+      editArea.removeStr(start, length);
+   }
+   
+   /**
+    * Gains focus in this text area
+    */
+   public void requestFocus() {
+      textArea.requestFocusInWindow();
    }
 
    /**
@@ -371,9 +343,9 @@ public final class TextDocument {
             throw new IllegalArgumentException("Param searchTerms contains an"
                   + " empty element");
          }
-      }      
+      }   
       type.setKeywords(searchTerms, constrainWord);
-      colorAll();
+      type.colorAll();
    }
    
    //
@@ -385,26 +357,25 @@ public final class TextDocument {
       type.enableTypeEdit(false);
       //
       // Set text attributes later to speed up placing larger pieces of text
-      Document blank = new DefaultStyledDocument();
-      textArea.setDocument(blank);
+      editArea.setBlankDoc();
       try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
          String line;
          while ((line = br.readLine()) != null) {
-            insertStr(textLength(), line + "\n");
+            insertStr(editArea.getDocText().length(), line + "\n");
          }
       }
       catch (IOException e) {
          FileUtils.logStack(e);
       }
-      textArea.setDocument(type.getDoc());
-      if (textArea.getText().endsWith("\n")) {
-         removeStr(type.getDoc().getLength() - 1, 1);
+      editArea.setDoc();
+      if (editArea.getDocText().endsWith("\n")) {
+         editArea.removeStr(getText().length() - 1, 1);
       }
       type.enableDocListen(true);
    }
    
    private void setContent() {
-      content = type.getDocText();
+      content = editArea.getDocText();
    }
 
    private void assignFileStrings(File filepath) {

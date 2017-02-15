@@ -8,12 +8,6 @@
  */
 package eg.document;
 
-import javax.swing.text.StyledDocument;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.Element;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.AbstractDocument;
 
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
@@ -29,7 +23,6 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.JTextPane;
 
 import java.awt.EventQueue;
-import java.awt.Color;
 
 //--Eadgyth--//
 import eg.Languages;
@@ -48,10 +41,7 @@ class TypingEdit {
 
    private final static char[] UNDO_SEP = {' ', '(', ')', '{', '}', '\n', '\0'};
 
-   private final StyledDocument doc;
-   private final Element el;
-   private final SimpleAttributeSet normalSet = new SimpleAttributeSet(); 
-   private final JTextPane textArea;
+   private final EditArea editArea;
    private final UndoManager undomanager = new DocUndoManager();
    private final Coloring col;
    private final AutoIndent autoInd;
@@ -64,18 +54,15 @@ class TypingEdit {
    private boolean isChangeEvent;
 
    TypingEdit(EditArea editArea) {
-      textArea = editArea.textArea();
-      doc = editArea.textArea().getStyledDocument();
-      el = doc.getParagraphElement(0);
-      setStyles();
+      this.editArea = editArea;
 
-      doc.addDocumentListener(docListen);
-      doc.addUndoableEditListener(undomanager);
+      editArea.getDoc().addDocumentListener(docListen);
+      editArea.getDoc().addUndoableEditListener(undomanager);
       undomanager.setLimit(1000);
 
-      col = new Coloring(doc, normalSet);
-      rowNum = new RowNumbers(editArea.lineArea(), editArea.textPanel());
-      autoInd = new AutoIndent(editArea.textArea(), doc, normalSet);
+      col = new Coloring(editArea.getDoc(), editArea.getNormalSet());
+      rowNum = new RowNumbers(editArea);
+      autoInd = new AutoIndent(editArea);
    }
 
    void enableDocListen(boolean isDocListen) {
@@ -89,7 +76,7 @@ class TypingEdit {
 
    void setUpEditing(Languages language) {
       if (Languages.PLAIN_TEXT == language) {
-         doc.setCharacterAttributes(0, getDocText().length(), normalSet, false);
+         editArea.allTextToBlack();
          enableTypeEdit(false);
          isIndent = false;
          autoInd.resetIndent();
@@ -103,25 +90,6 @@ class TypingEdit {
 
    void setKeywords(String[] keywords, boolean constrainWord) {
       col.setKeywords(keywords, constrainWord);
-   }
-
-   StyledDocument getDoc() {
-      return doc;
-   }
-
-   SimpleAttributeSet getNormalSet() {
-      return normalSet;
-   }
-
-   String getDocText() {
-      String in = null;
-      try {
-         in = doc.getText(0, doc.getLength());
-      }
-      catch (BadLocationException e) {
-         FileUtils.logStack(e);
-      }
-      return in;
    }
 
    void changeIndentUnit(String indentUnit) {
@@ -142,8 +110,8 @@ class TypingEdit {
 
    void colorAll() {
       enableTypeEdit(false);
-      String all = getDocText();
-      doc.setCharacterAttributes(0, all.length(), normalSet, false);
+      String all = editArea.getDocText();
+      editArea.allTextToBlack();
       col.color(all, 0);
       enableTypeEdit(true);
    }
@@ -186,12 +154,12 @@ class TypingEdit {
       public void insertUpdate(DocumentEvent de) {
          if (isDocListen) {
             isChangeEvent = false;
-            String in = getDocText();
+            String in = editArea.getDocText();
             int pos = de.getOffset();
             typed = in.charAt(pos);
             updateRowNumber(in);
             if (isTypeEdit) {
-               insertTextModify(de, in, pos);
+               insertTextModify(in, pos);
             }
          }
       }
@@ -200,7 +168,7 @@ class TypingEdit {
       public void removeUpdate(DocumentEvent de) {
          if (isDocListen) {
             isChangeEvent = false;
-            String in = getDocText();
+            String in = editArea.getDocText();
             typed = '\0';
             updateRowNumber(in);
             if (isTypeEdit) {
@@ -218,7 +186,7 @@ class TypingEdit {
       }
    };
 
-   private void insertTextModify(DocumentEvent de, String in, int pos) {
+   private void insertTextModify(String in, int pos) {
       if (pos > 0 && isIndent) {
          autoInd.openBracketIndent(in, pos);
       }
@@ -233,14 +201,14 @@ class TypingEdit {
    }
    
    private void updateAfterUndoRedo(int previousLineNr) {
-      String in = getDocText();
+      String in = editArea.getDocText();
       updateRowNumber(in);
       int newLineNr = rowNum.getCurrLineNr();
       if (previousLineNr - newLineNr > 1) {
          colorAll();
       }
       else {
-         color(in, textArea.getCaretPosition());
+         color(in, editArea.textArea().getCaretPosition());
       }
       enableDocListen(true);
    }
@@ -250,15 +218,8 @@ class TypingEdit {
          col.color(in, pos);
       });
    }
-   
-   private void setStyles() {
-      StyleConstants.setForeground(normalSet, Color.BLACK);
-      StyleConstants.setLineSpacing(normalSet, 0.2f);
-      StyleConstants.setBold(normalSet, false);
-      doc.setParagraphAttributes(0, el.getEndOffset(), normalSet, false);
-   }  
 
-   class DocUndoManager extends UndoManager implements UndoableEditListener {
+   private class DocUndoManager extends UndoManager implements UndoableEditListener {
 
       CompoundEdit comp = null;
 

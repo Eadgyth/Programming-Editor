@@ -6,32 +6,25 @@ import java.awt.event.KeyAdapter;
 
 import javax.swing.JTextPane;
 
-import javax.swing.text.StyledDocument;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.SimpleAttributeSet;
-
 //--Eadgyth--//
 import eg.Preferences;
 import eg.utils.FileUtils;
+import eg.ui.EditArea;
 
+/**
+ * The auto-indentation
+ */
 class AutoIndent {
 
-   private final static Preferences PREFS = new Preferences();
-   private final JTextPane textArea;
-   private final StyledDocument doc;
-   private final SimpleAttributeSet normalSet;
+   private final EditArea editArea;
 
    private String indentUnit;
    private int indentLength;  
    private String indent = "";
 
-   AutoIndent(JTextPane textArea, StyledDocument doc,
-         SimpleAttributeSet normalSet) {
-
-      this.textArea = textArea;
-      this.doc = doc;
-      this.normalSet = normalSet;
-      textArea.addKeyListener(listener);
+   AutoIndent(EditArea editArea) {
+      this.editArea = editArea;
+      editArea.textArea().addKeyListener(listener);
    }
 
    void resetIndent() {
@@ -62,7 +55,7 @@ class AutoIndent {
          String atPos = in.substring(pos, pos + 1);
          if ("}".equals(atPos)) {
             if (in.substring(pos - indentLength, pos).equals(indentUnit)) {   
-               removeIndent(pos - indentLength, indentLength);
+               editArea.removeStr(pos - indentLength, indentLength);
             }   
          }
       }
@@ -80,15 +73,6 @@ class AutoIndent {
          }
       }
       return currIndent;
-   }
-
-   private void removeIndent(int pos, int length) {
-      try {
-         doc.remove(pos, length);
-      }
-      catch (BadLocationException e) {
-         FileUtils.logStack(e);
-      }
    }
    
    KeyListener listener = new KeyAdapter() {
@@ -108,15 +92,10 @@ class AutoIndent {
 
       @Override
       public void keyReleased(KeyEvent e) {
-         int pos = textArea.getCaretPosition();
+         int pos = editArea.textArea().getCaretPosition();
          int key = e.getKeyCode();
-         try {       
-            if (isEnter && key == KeyEvent.VK_ENTER) {
-               doc.insertString(pos, indent, normalSet);            
-            }
-         }
-         catch (BadLocationException ble) {
-            ble.printStackTrace();
+         if (isEnter && key == KeyEvent.VK_ENTER) {
+            editArea.insertStr(pos, indent);            
          }
          isEnter = false;
       }

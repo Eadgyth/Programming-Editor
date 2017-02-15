@@ -219,7 +219,7 @@ public class TabbedFiles implements Observer{
     * Prints the text content of the selected document to a printer
     */
    public void print() {
-      txtDoc[iTab].print();
+      edArea[iTab].print();
    }
 
    /**
@@ -315,7 +315,7 @@ public class TabbedFiles implements Observer{
       
       int openIndex = 0;
       boolean isUnnamedBlank = txtDoc[openIndex].filename().length() == 0
-            && txtDoc[openIndex].textLength() == 0;
+            && edArea[openIndex].getDocText().length() == 0;
       if (isUnnamedBlank && tp.nTabs() == 1) { 
          txtDoc[openIndex].openFile(file);
       }

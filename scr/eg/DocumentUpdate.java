@@ -16,6 +16,7 @@ public class DocumentUpdate {
    private final PluginStarter plugStart;
    
    private TextDocument[] txtDoc;
+   private EditArea[] editArea;
  
    public DocumentUpdate(DisplaySetter displSet, Edit edit,
          PluginStarter plugStart) {
@@ -26,13 +27,14 @@ public class DocumentUpdate {
    }
    
    /**
-    * Assigns to this the array of {@code TextDocument} objects and to this
-    * object of {@code ViewSettings} the array of {@code EditArea} objects
+    * Assigns the array of {@code TextDocument} and {@code EditArea} objects
+    * and to this {@code DisplaySetter} the array of {@code EditArea} objects
     * @param txtDoc  the array of {@link TextDocument}
     * @param editArea  the array of {@link EditArea}
     */
    public void setDocumentArrays(TextDocument[] txtDoc, EditArea[] editArea) {
       this.txtDoc = txtDoc;
+      this.editArea = editArea;
       displSet.setEditAreaArr(editArea);
    }
 
@@ -41,7 +43,7 @@ public class DocumentUpdate {
     * {@link TextDocument} and {@link EditArea}
     */
    public void updateDocument(int index) {
-      edit.setTextDocument(txtDoc[index]);
+      edit.setTextDocument(txtDoc[index], editArea[index]);
       plugStart.setTextDocument(txtDoc[index]);
       displSet.setEditAreaIndex(index);
    }
