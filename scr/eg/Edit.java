@@ -43,6 +43,9 @@ public class Edit {
       indentLength = indentUnit.length();
    }
 
+   /**
+    * Selects the entire text
+    */
    public void selectAll() {
       textArea.selectAll();
    }
@@ -99,7 +102,7 @@ public class Edit {
    public void setNewIndentUnit() {
       String selectedNumber = JOptions.comboBoxRes("Number of spaces:",
             "Indentation length", SPACE_NUMBER,
-            String.valueOf(txtDoc.getIndentUnit()));
+            String.valueOf(indentLength));
       if (selectedNumber != null) {    // if not cancelled
          indentLength = Integer.parseInt(selectedNumber);
          indentUnit = "";
