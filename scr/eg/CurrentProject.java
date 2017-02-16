@@ -30,19 +30,26 @@ import eg.utils.FileUtils;
  * {@link TextDocument}
  */ 
 public class CurrentProject {
-   
+
    private final static String F_SEP = File.separator;
-   
+
    private final String NO_FILE_IN_TAB_MESSAGE
          = "A project can be set after opening a file or"
-         + " saving a new file";
-   
+         + " saving a new file.";
+
    private final String IS_IN_PROJ_MESSAGE 
          = "The selected file belongs to the"
-         + " currently active project";
+         + " currently active project.";
          
+   private final String NOT_IN_PROJ_MESSAGE 
+         = "The selected file does not belong to the"
+         + " currently active project.";
+
    private final String WRONG_TYPE_MESSAGE
-         = "No project can be defined for this file type";
+         = "No project can be defined for this file type.";
+         
+   private final String FILES_NOT_FOUND_MESSAGE
+         = "The following file could not be found anymore:";
 
    private final SelectedProject selProj;
    private final DisplaySetter displSet;
@@ -58,7 +65,7 @@ public class CurrentProject {
 
    public CurrentProject(DisplaySetter displSet, ProcessStarter proc,
          ConsolePanel consPnl, FileTree fileTree) {
-          
+
       this.displSet = displSet;
       this.proc = proc;
       this.fileTree = fileTree;
@@ -72,7 +79,7 @@ public class CurrentProject {
    public void setDocumentArr(TextDocument[] txtDoc) {
       this.txtDoc = txtDoc;
    }
-   
+
    /**
     * Selects the object of this array of {@code TextDocument} that is
     * used to configure and/or set active a project
@@ -83,7 +90,7 @@ public class CurrentProject {
       currDoc = txtDoc[docIndex];
       currExt = FileUtils.fileSuffix(currDoc.filename());
    }
-   
+
    /**
     * Sets the current language
     * @param lang  the language that is one of the constants in
@@ -132,6 +139,7 @@ public class CurrentProject {
                if (projList.size() == 2) {
                   displSet.enableChangeProjItm();
                }
+               changeProject(prToFind);            
             }
          }
       }
@@ -174,7 +182,7 @@ public class CurrentProject {
          }
       }       
    }
-   
+
    /**
     * Assigns to this current project the project from this {@code List} of
     * configured projects which the currently selected {@code TextDocument}
@@ -214,30 +222,34 @@ public class CurrentProject {
    /**
     * Compiles this current project
     */
-   public void compile() {         
+   public void compile() {
+      if (!current.isInProject(currDoc.dir())) {
+         JOptions.warnMessage(NOT_IN_PROJ_MESSAGE);
+         return;
+      }     
       displSet.setBusyCursor(true);
-      int missingFileIndex = 0;
+      StringBuilder missingFiles = new StringBuilder();
       try {
          for (int i = 0; i < txtDoc.length; i++) {
             boolean approved
                   = txtDoc[i] != null
-                  && txtDoc[i].filename().endsWith(current.getSourceSuffix())
-                  && current.isInProject(txtDoc[i].dir());
+                  && txtDoc[i].filename().endsWith(current.getSourceSuffix());
             if (approved) {
                boolean exists = new File(txtDoc[i].filepath()).exists();
-               if (!exists) {
-                  missingFileIndex = i;
+               if (exists) {
+                  txtDoc[i].saveToFile();
                }
-               txtDoc[i].saveToFile();
+               else {
+                  missingFiles.append("\n");
+                  missingFiles.append(txtDoc[i].filename());
+               }
             }
          }  
-         if (missingFileIndex == 0) {
+         if (missingFiles.length() == 0) {
             current.compile();
          }
          else {
-            JOptions.warnMessage(
-                    txtDoc[missingFileIndex].filename()
-                    + " cannot be found anymore");
+            JOptions.warnMessage(FILES_NOT_FOUND_MESSAGE + missingFiles);
          }
       }   
       finally {
@@ -271,7 +283,7 @@ public class CurrentProject {
    //
    //--private methods
    //
-   
+
    private void newProject() {
       ProjectActions projNew = selProj.createProject(currExt, lang);
       if (projNew == null) {
@@ -288,7 +300,7 @@ public class CurrentProject {
          }
       }
    }
-   
+
    private boolean changeProject(ProjectActions toChangeTo) {
       String projName = new File(toChangeTo.getProjectPath()).getName();  
       int result = JOptions.confirmYesNo("Change to project '"
@@ -313,7 +325,7 @@ public class CurrentProject {
       }
       return inList;
    }
-   
+
    private void configureProject(ProjectActions projToConf) {
       if (projToConf.configureProject(currDoc.dir())) {
          if (current != projToConf) {
