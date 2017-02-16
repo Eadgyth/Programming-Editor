@@ -39,9 +39,9 @@ import eg.utils.FileUtils;
  */
 public final class EditArea {
 
+   private final static Color NUM_GRAY = new Color(100, 100, 100);
    private final static LineBorder WHITE_BORDER
          = new LineBorder(Color.WHITE, 5);
-   private final static Color NUM_GRAY = new Color(160, 160, 160);
 
    private final JPanel textPanel = new JPanel(new BorderLayout());
 
@@ -399,6 +399,7 @@ public final class EditArea {
       lineNumPnlScroll.setBorder(null);
       lineNumPnlScroll.setViewportView(disabledWordwrapPnl);
       lineNumAreaScroll.setViewportView(lineArea);
+      lineNumAreaScroll.setBorder(null);
       lineNumAreaScroll.setBorder(new MatteBorder(0, 0, 0, 1, Constants.BORDER_GRAY));
       //
       // link scrolling of line number area to text area
