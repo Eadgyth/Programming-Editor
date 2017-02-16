@@ -122,8 +122,8 @@ class TypingEdit {
          enableDocListen(false);
          if (undomanager.canUndo()) {
             undomanager.undo();
+            updateAfterUndoRedo(previousLineNr);
          }
-         updateAfterUndoRedo(previousLineNr);
       }
       catch (CannotUndoException e) {
          FileUtils.logStack(e);
@@ -136,8 +136,8 @@ class TypingEdit {
          enableDocListen(false);
          if (undomanager.canRedo()) {
             undomanager.redo();
+            updateAfterUndoRedo(previousLineNr);
          }
-         updateAfterUndoRedo(previousLineNr);
       }
       catch (CannotRedoException e) {
          FileUtils.logStack(e);
@@ -208,7 +208,10 @@ class TypingEdit {
          colorAll();
       }
       else {
-         color(in, editArea.textArea().getCaretPosition());
+         int pos = editArea.textArea().getCaretPosition();
+         if (pos > 0) {
+            color(in, pos);
+         }
       }
       enableDocListen(true);
    }
