@@ -8,13 +8,14 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
+import javax.swing.JTextPane;
+
 import java.io.IOException;
 
 //--Eadgyth--//
 import eg.utils.JOptions;
 import eg.utils.Finder;
 import eg.utils.FileUtils;
-import eg.ui.EditArea;
 import eg.document.TextDocument;
 
 /**
@@ -26,8 +27,8 @@ public class Edit {
    /* Options for the numbers of white spaces in indentation unit */
    private static final String[] SPACE_NUMBER = { "1", "2", "3", "4", "5", "6" };
 
-   private EditArea editArea;
    private TextDocument txtDoc;
+   private JTextPane textArea;
    private String indentUnit;
    private int indentLength;
 
@@ -35,23 +36,23 @@ public class Edit {
     * @param txtDoc  the {@link TextDocument} object
     * @param editArea  the {@link EditArea} object
     */
-   public void setTextDocument(TextDocument txtDoc, EditArea editArea) {
+   public void setTextDocument(TextDocument txtDoc) {
       this.txtDoc  = txtDoc;
-      this.editArea = editArea;
+      this.textArea = txtDoc.getTextArea();
       indentUnit = txtDoc.getIndentUnit();
       indentLength = indentUnit.length();
    }
 
    public void selectAll() {
-      txtDoc.selectAll();
+      textArea.selectAll();
    }
    
    /**
     * Cuts selected text and stores it to the system's clipboard
     */
    public void cut() {
-      int start = txtDoc.selectionStart();
-      int end = txtDoc.selectionEnd();
+      int start = textArea.getSelectionStart();
+      int end = textArea.getSelectionEnd();
       setClipboard();
       txtDoc.removeStr(start, end - start);
    }
@@ -60,7 +61,7 @@ public class Edit {
     * Copies selected text to the system's clipboard
     */
    public void setClipboard() {
-      String str = txtDoc.selectedText();
+      String str = textArea.getSelectedText();
       if (str != null) {
          Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
          StringSelection strSel = new StringSelection(str);
@@ -76,17 +77,17 @@ public class Edit {
       txtDoc.enableTypeEdit(false);
 
       String clipboard = getClipboard();
-      String selection = txtDoc.selectedText();
-      int pos = txtDoc.caretPos();
+      String selection = textArea.getSelectedText();
+      int pos = textArea.getCaretPosition();
 
       if (selection == null) {
          txtDoc.insertStr(pos, clipboard);
-         txtDoc.setCaretPos(pos + clipboard.length());
+         textArea.setCaretPosition(pos + clipboard.length());
       }
       else {
          txtDoc.removeStr(pos - selection.length(), selection.length());
          txtDoc.insertStr(pos - selection.length(), clipboard);
-         txtDoc.setCaretPos(pos - selection.length() + clipboard.length());
+         textArea.setCaretPosition(pos - selection.length() + clipboard.length());
       }
 
       txtDoc.colorAll();
@@ -97,7 +98,8 @@ public class Edit {
    */
    public void setNewIndentUnit() {
       String selectedNumber = JOptions.comboBoxRes("Number of spaces:",
-            "Indentation length", SPACE_NUMBER, String.valueOf(indentLength));
+            "Indentation length", SPACE_NUMBER,
+            String.valueOf(txtDoc.getIndentUnit()));
       if (selectedNumber != null) {    // if not cancelled
          indentLength = Integer.parseInt(selectedNumber);
          indentUnit = "";
@@ -112,20 +114,20 @@ public class Edit {
     * Indents all lines of selected text by one indentation unit
     */
    public void indentSelection()  {
-      String sel = txtDoc.selectedText();
+      String sel = textArea.getSelectedText();
       if (sel == null) {
          return;
       }
       txtDoc.enableTypeEdit(false);
       String[] selSplit = sel.replaceAll("\\r", "").split("\\n");
-      int start = txtDoc.selectionStart();
+      int start = textArea.getSelectionStart();
       int[] startOfLines = Finder.startOfLines(selSplit);
 
       for (int i = 0; i < selSplit.length; i++) {
          txtDoc.insertStr(start + startOfLines[i]
                + i * (indentLength), indentUnit);
       }
-      txtDoc.select(start, (sel.length()
+      textArea.select(start, (sel.length()
             + selSplit.length * indentLength) + start);
       txtDoc.enableTypeEdit(true);
    }
@@ -134,11 +136,11 @@ public class Edit {
     * Reduces the indentation of selected text by one indentation unit
     */
    public void outdentSelection() {
-      String sel = txtDoc.selectedText();
+      String sel = textArea.getSelectedText();
       if (sel == null) {
          return;
       }      
-      int start = txtDoc.selectionStart();
+      int start = textArea.getSelectionStart();
       String startingLine = Finder.currLine(txtDoc.getText(), start);
       if (!startingLine.startsWith(indentUnit)) {
          return;
@@ -178,13 +180,13 @@ public class Edit {
       }
       /*
        * renew selection */
-      int startOfFirstLine = editArea.getDocText().lastIndexOf("\n", start);
+      int startOfFirstLine = txtDoc.getText().lastIndexOf("\n", start);
       int startUpdate = start - indentLength + countSpaces;
       if (countSpaces != indentLength && startUpdate > startOfFirstLine) {
-         txtDoc.select(startUpdate, txtDoc.selectionEnd());
-         sel = txtDoc.selectedText();
+         textArea.select(startUpdate, textArea.getSelectionEnd());
+         sel = textArea.getSelectedText();
          selSplit = sel.split("\\n");
-         start = txtDoc.selectionStart();
+         start = textArea.getSelectionStart();
       }           
       startOfLines = Finder.startOfLines(selSplit);
       for (int i = 0; i < selSplit.length; i++) {
@@ -199,7 +201,7 @@ public class Edit {
     */
    public void clearSpaces() {
       txtDoc.enableTypeEdit(false);
-      String allTxt = editArea.getDocText();
+      String allTxt = txtDoc.getText();
       String[] allTxtArr = allTxt.split("\n");
       int[] startOfLines = Finder.startOfLines(allTxtArr);
       for (int i = 0; i < allTxtArr.length; i++) {

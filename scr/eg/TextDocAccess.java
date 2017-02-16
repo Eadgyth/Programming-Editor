@@ -1,51 +1,30 @@
-package eg.plugin;
+package eg;
 
 import javax.swing.JTextPane;
 
 //--Eadgyth--//
-import eg.ui.MainWin;
 import eg.document.TextDocument;
 
-/**
- * Makes accessible for a plugin methods to work with the text area in the
- * selected tab and the possibility to add a Component to the 'function panel'
- * in the main window
- */
-public class EditorAccess {
+class TextDocAccess {
    
-   MainWin mw;
    TextDocument txtDoc;
-
-   EditorAccess(MainWin mw) {
-      this.mw = mw;
-   }
-   
-   void setTextDocument(TextDocument txtDoc) {
+  
+   TextDocAccess(TextDocument txtDoc) {
       this.txtDoc = txtDoc;
    }
-   
-   /**
-    * Returns the text area in the currently selected tab
-    * @return  the text area in the currently selected tab
-    */
+  
    public JTextPane textArea() {
       return txtDoc.getTextArea();
    }
-   
-   /**
-    * Returns the text content in the {@code StyledDocument}
-    * associated with the text area
-    * @return  the text content in the {@code StyledDocument}
-    * associated with the text area
-    */
+  
    public String getText() {
       return txtDoc.getText();
    }
   
    /**
-    * Enables/disables keywords coloring during typing
-    * @param isEnabled  true to enable keywords coloring, false
-    * to disable
+    * Enables/disables syntax coloring and auto-indentation
+    * @param isEnabled  true to enable syntax coloring and
+    * auto-indentation, false to disable
     */
    public void enableTypeEdit(boolean isEnabled) {
       txtDoc.enableTypeEdit(isEnabled);
@@ -64,7 +43,7 @@ public class EditorAccess {
    
    /**
     * Colors in keyword color text elements specified by the array of search
-    * terms and turns on coloring during typing.
+    * terms.
     * <p>
     * The method returns with a warning if the current language is not plain
     * text. 
@@ -84,7 +63,7 @@ public class EditorAccess {
       txtDoc.colorAll();
    }
    
-   /**
+    /**
     * Inserts text
     * @param pos  the position where new text is inserted
     * @param toInsert  the String that contains the text to insert
@@ -108,13 +87,7 @@ public class EditorAccess {
    public void requestFocus() {
       txtDoc.requestFocus();
    }
-   
-   /**
-    * Adds a component to the 'function panel' of the main window
-    * @param c  the Component that is added to the right of this plit window
-    * @param title  the title for the function
-    */
-   public void addToFunctionPanel(java.awt.Component c, String title) {
-      mw.addToFunctionPanel(c, title);
-   }
 }
+  
+  
+     

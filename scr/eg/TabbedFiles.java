@@ -216,6 +216,21 @@ public class TabbedFiles implements Observer{
    }
    
    /**
+    * Saves a copy of the selected document but not assign the
+    * file to the {@link TextDocument} object in the selected Tab
+    */
+   public void saveCopy() {
+      File f = fs.fileToSave(txtDoc[iTab].filepath());
+      if (f == null) {
+         return;
+      }
+      if (f.exists()) {
+         JOptions.warnMessage(f.getName() + " already exists");
+      }
+      txtDoc[iTab].saveCopy(f);
+   }      
+   
+   /**
     * Prints the text content of the selected document to a printer
     */
    public void print() {

@@ -23,6 +23,7 @@ public class FileMenu {
                                          IconFiles.SAVE_ICON);
    private final JMenuItem saveAllItm  = new JMenuItem("Save all");
    private final JMenuItem saveAsItm   = new JMenuItem("Save as ...");
+   private final JMenuItem saveCopyItm = new JMenuItem("Save copy ...");
    private final JMenuItem printItm    = new JMenuItem("Print...");
    private final JMenuItem exitItm     = new JMenuItem("Exit");
    
@@ -47,6 +48,7 @@ public class FileMenu {
       saveItm.addActionListener(e -> tf.save());     
       saveAllItm.addActionListener(e -> tf.saveAll());
       saveAsItm.addActionListener(e -> tf.saveAs());
+      saveCopyItm.addActionListener(e -> tf.saveCopy());
       printItm.addActionListener(e -> tf.print());      
       exitItm.addActionListener(e -> tf.tryExit());
    }
@@ -60,6 +62,7 @@ public class FileMenu {
       menu.add(saveItm);
       menu.add(saveAllItm);
       menu.add(saveAsItm);
+      menu.add(saveCopyItm);
       menu.addSeparator();
       menu.add(printItm);
       menu.addSeparator();

@@ -35,6 +35,7 @@ public final class TextDocument {
    private final EditArea editArea;
    private final TypingEdit type;
 
+   private File docFile = null;
    private String filename = "";
    private String filepath = "";
    private String dir = "";
@@ -54,6 +55,14 @@ public final class TextDocument {
       String indentUnit = PREFS.getProperty("indentUnit");
       changeIndentUnit(indentUnit);    
    }
+   
+   /**
+    * Returns this text area
+    * @return  this text area which is of type {@link EditArea}
+    */
+    public JTextPane getTextArea() {
+       return editArea.textArea();
+    }
    
    /**
     * Creates a TextDocument with a specified language.
@@ -105,6 +114,7 @@ public final class TextDocument {
                  "Illegal attempt to assign a file to a "
                + " TextDocument which a file was assigned to before");
       }
+      docFile = file;
       assignFileStrings(file);
       EventQueue.invokeLater(() -> {
          displayFileContent();
@@ -118,16 +128,15 @@ public final class TextDocument {
     * Saves the current content to this file
     */
    public void saveToFile() {
-      setContent();
-      String[] lines = content.split("\n"); 
-      try (FileWriter writer = new FileWriter(filepath)) {
-         for (String s : lines) {
-            writer.write(s + LINE_SEP);
-         }
-      }
-      catch(IOException e) {
-         FileUtils.logStack(e);
-      }
+      saveToFile(docFile);
+   }
+   
+   /**
+    * Saves the current content to the specified file but does not
+    * assign the file to this as the document file
+    */
+   public void saveCopy(File file) {
+      saveToFile(file);
    }
 
    /**
@@ -137,7 +146,7 @@ public final class TextDocument {
     */
    public void saveFileAs(File file) {        
       assignFileStrings(file);
-      saveToFile();
+      saveToFile(file);
       setLanguageBySuffix();
    }
 
@@ -171,13 +180,19 @@ public final class TextDocument {
    }
 
    /**
-    * Enables/disables syntax coloring and auto-indentation
+    * Enables/disables syntax/keywords coloring and auto-indentation.
+    * Enabling requires that the language is not plain text.
     * @param isEnabled  true to enable syntax coloring and
     * auto-indentation, false to disable
     */
    public void enableTypeEdit(boolean isEnabled) {
-      if (!isPlainText) {
+      if (!isEnabled) {
          type.enableTypeEdit(isEnabled);
+      }
+      else {
+         if (!isPlainText) {
+            type.enableTypeEdit(isEnabled);
+         }
       }
    }
 
@@ -216,69 +231,11 @@ public final class TextDocument {
    }
    
    /**
-    * Returns the text in this text area
-    * @return  the text in this text area
+    * Returns the text in the document associated with this text area
+    * @return  the text in the document associated with this text area
     */
    public String getText() {
       return editArea.getDocText();
-   }
-   
-   /**
-    * @return the caret position of this text area
-    */
-   public int caretPos() {
-      return textArea.getCaretPosition();
-   }
-   
-   /**
-    * Selects the entire text of this text area
-    */
-   public void selectAll() {
-      textArea.selectAll();
-   }
-   
-   /**
-    * Selects text between the specified start end end positions
-    * in this text area
-    * @param start  the start of the selection
-    * @param end  the end position of the selection
-    */
-   public void select(int start, int end) {
-      textArea.select(start, end);
-   }
-   
-   /**
-    * Returns the selection start
-    * @return the start position of selected text
-    */
-   public int selectionStart() {
-      return textArea.getSelectionStart();
-   }
-   
-   /**
-    * Returns the selection end
-    * @return the end position of selected text
-    */
-   public int selectionEnd() {
-      return textArea.getSelectionEnd();
-   }
-   
-   /**
-    * Returns the selected text in this text area
-    * @return  the selected text in this text area. Null if no text
-    * is selected
-    */
-   public String selectedText() {
-      return textArea.getSelectedText();
-   }
-   
-   /**
-    * Sets the caret at the sepecified position of
-    * this text document
-    * @param pos  the position where the caret is set
-    */
-   public void setCaretPos(int pos) {
-      textArea.setCaretPosition(pos);
    }
 
    /**
@@ -300,7 +257,7 @@ public final class TextDocument {
    }
    
    /**
-    * Gains focus in this text area
+    * Asks this text area to gain the focus
     */
    public void requestFocus() {
       textArea.requestFocusInWindow();
@@ -318,9 +275,9 @@ public final class TextDocument {
       }
    }
    
-    /**
+   /**
     * Colors in keyword color text elements specified by the array of search
-    * terms.
+    * terms and turns on coloring during typing.
     * <p>
     * The method returns with a warning if the current language is not plain
     * text. 
@@ -358,7 +315,7 @@ public final class TextDocument {
       //
       // Set text attributes later to speed up placing larger pieces of text
       editArea.setBlankDoc();
-      try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+      try (BufferedReader br = new BufferedReader(new FileReader(docFile))) {
          String line;
          while ((line = br.readLine()) != null) {
             insertStr(editArea.getDocText().length(), line + "\n");
@@ -372,6 +329,22 @@ public final class TextDocument {
          editArea.removeStr(getText().length() - 1, 1);
       }
       type.enableDocListen(true);
+   }
+   
+   /**
+    * Saves the current content to this file
+    */
+   private void saveToFile(File file) {
+      setContent();
+      String[] lines = content.split("\n"); 
+      try (FileWriter writer = new FileWriter(file)) {
+         for (String s : lines) {
+            writer.write(s + LINE_SEP);
+         }
+      }
+      catch(IOException e) {
+         FileUtils.logStack(e);
+      }
    }
    
    private void setContent() {
