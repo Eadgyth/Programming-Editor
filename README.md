@@ -1,6 +1,6 @@
 # Java-Programming-Editor / Eadgyth
-A text editor written in Java that helps coding (in Java, Perl, HTML) and that is extensible
-by plugins which may be developed to perform specialized tasks with text files.
+A text editor written in Java that helps coding (Java mainly and less worked out Perl, HTML) and
+that is extensible by plugins which may be developed to perform specialized tasks with text files.
 <p>
 A particular goal is a very simple but flexible setting of a project and usage of already
 configured projects.
@@ -18,21 +18,22 @@ A guide how to configure a project and some other info is found in the Resources
 folder (Help.html) and is adressable from the '?' menu. 
 <p>
 IDEA FOR FURTHER DEVELOPEMENT<br>
-1) More types of projects may be added. A type of project is defined by the interface
-'ProjectActions' in the 'projects' package.<br>
+1) To develop types of projects (for coding or other). A type of project is defined
+by the interface 'ProjectActions' in the 'projects' package.<br>
 2) To develop plugins that can do specialized work with text files. Presently, a
-plugin would implement the interface 'Pluggable' in the 'plugins' package. This can be
-implemented to have access to the text document that is in the selected tab and that can
-have a graphical view in the main window.
+plugin would implement the interface 'Pluggable' in the 'plugins' package. An implementing
+plugin receives a reference to EditorAccess class which provides a reference to the text
+area object (JTExtPane) in the currently selected tab, methods to modify text and amethod
+to add a graphical view in the main window.
 <p>
 DOCUMENTATION <br>
 The javadoc of the program is found in this repository (Docs/Ead-JavaDoc).
 <p>
 LIMITATIONS <br> 
-1) Running interactive programs that then require reading from and writing to the started process
-in the console panel are not guaranteed to work. Interactive programs in Java seem to
-work fine but, for example, a Perl script does not unless the autoflushing of STDOUT is enabled
-in the script itself.
+1) Running an interactive (console) program that then requires writing to this process is not
+guaranteed to work in the console panel of the program. Interactive programs in Java seem to
+work fine but, for example, an interactive Perl script does not unless the autoflushing of its
+STDOUT is enabled in the script itself.
 <br>
 2) The built in packing of a jar file bundles only .class files.
 <br>
