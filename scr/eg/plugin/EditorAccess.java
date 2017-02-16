@@ -94,7 +94,7 @@ public class EditorAccess {
    }
 
    /**
-    * Removes text
+    * Removes text from the document associated with the text area
     * @param start  the position where text to be removed starts
     * @param length  the length of the text to be removed
     */  
@@ -103,7 +103,7 @@ public class EditorAccess {
    }
    
    /**
-    * Asks text area to gain the focus
+    * Asks the text area to gain the focus
     */
    public void requestFocus() {
       txtDoc.requestFocus();
@@ -113,6 +113,7 @@ public class EditorAccess {
     * Adds a component to the 'function panel' of the main window
     * @param c  the Component that is added to the right of this plit window
     * @param title  the title for the function
+    * @see MainWin#addToFunctionPanel(java.awt.Component, String)
     */
    public void addToFunctionPanel(java.awt.Component c, String title) {
       mw.addToFunctionPanel(c, title);

@@ -227,9 +227,9 @@ public class CurrentProject {
          JOptions.warnMessage(NOT_IN_PROJ_MESSAGE);
          return;
       }     
-      displSet.setBusyCursor(true);
       StringBuilder missingFiles = new StringBuilder();
       try {
+         displSet.setBusyCursor(true);
          for (int i = 0; i < txtDoc.length; i++) {
             boolean approved
                   = txtDoc[i] != null
