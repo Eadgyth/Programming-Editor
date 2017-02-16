@@ -169,22 +169,18 @@ public final class JavaActions extends ProjectConfig
    }
    
    private void setStartCommand() {
+      StringBuilder sb = new StringBuilder("java ");
+      if (getExecutableDirName().length() > 0) {
+         sb.append("-cp " + getExecutableDirName() + " ");
+      }
+      if (getModuleName().length() > 0) {
+         sb.append(getModuleName() + ".");
+      }
       String main = getMainFile();
       if (getArgs().length() > 0) {
          main += " " + getArgs();
       }
-      if (getExecutableDirName().length() == 0 && getModuleName().length() == 0 ) {
-         startCommand = "java " + main;
-      }
-      else if (getExecutableDirName().length() == 0 && getModuleName().length() > 0 ) {
-         startCommand = "java " + getModuleName() + "." + main;
-      }
-      else if (getExecutableDirName().length() > 0 && getModuleName().length() == 0 ) {
-         startCommand = "java -cp " + getExecutableDirName() + " " + main;
-      }
-      else if (getExecutableDirName().length() > 0 && getModuleName().length() > 0 ) {
-         startCommand = "java -cp " + getExecutableDirName() + " " + getModuleName()
-               + "." + main;
-      }
+      sb.append(main);
+      startCommand = sb.toString();
    }
 }
