@@ -23,8 +23,7 @@ import eg.utils.FileUtils;
 import eg.ui.EditArea;
 
 /**
- * Class represents the text document and text style which is edited
- * during typing
+ * Class represents the text document which a file can be assigned to
  */
 public final class TextDocument {
 
@@ -57,18 +56,10 @@ public final class TextDocument {
    }
    
    /**
-    * Returns this text area
-    * @return  this text area which is of type {@link EditArea}
-    */
-    public JTextPane getTextArea() {
-       return editArea.textArea();
-    }
-   
-   /**
     * Creates a TextDocument with a specified language.
     * <p>
     * The language is overridden when a file is assigned.
-    * @param editArea  the reference to the {@link EditArea}
+    * @param editArea  the reference to an {@link EditArea}
     * @param lang  the language that is one of the constants in
     * {@link Languages}
     */
@@ -77,6 +68,14 @@ public final class TextDocument {
       isPlainText = Languages.PLAIN_TEXT == lang;
       type.setUpEditing(lang);
    }
+   
+   /**
+    * Returns this text area
+    * @return  this text area which is of type {@link EditArea}
+    */
+    public JTextPane getTextArea() {
+       return editArea.textArea();
+    }
 
    /**
     * Returns the name of this file
@@ -182,9 +181,9 @@ public final class TextDocument {
 
    /**
     * Enables/disables syntax/keywords coloring and auto-indentation.
-    * Enabling requires that the language is not plain text.
-    * @param isEnabled  true to enable syntax coloring and
-    * auto-indentation, false to disable
+    * @param isEnabled  true to enable coloring and auto-indentation,
+    * false to disable. Enabling is possible if this language is not 
+    * plain text.
     */
    public void enableTypeEdit(boolean isEnabled) {
       if (!isEnabled) {
@@ -198,8 +197,8 @@ public final class TextDocument {
    }
 
    /**
-    * (Re-)colors the text starting at the specified position
-    * and spanning the specified length in the default color
+    * (Re-)colors the text starting at the specified position and
+    * spanning the specified length in the default color.
     * @param length  the length of text that is colored in the
     * default color
     * @param pos  the position where the text to color starts
@@ -280,12 +279,9 @@ public final class TextDocument {
     * Colors in keyword color text elements specified by the array of search
     * terms and turns on coloring during typing.
     * <p>
-    * The method returns with a warning if the current language is not plain
-    * text. 
+    * Returns with a warning if the current language is not plain text. 
     * @param searchTerms  the array of Strings that contain search terms
     * @param constrainWord  true to color only words
-    * @throws IllegalArgumentException  if searchTerms is null or contains
-    * empty Strings
     */
    public void colorSearchedText(String[] searchTerms, boolean constrainWord) {
       if (!isPlainText) {

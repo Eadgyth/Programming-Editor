@@ -66,12 +66,9 @@ public class EditorAccess {
     * Colors in keyword color text elements specified by the array of search
     * terms and turns on coloring during typing.
     * <p>
-    * The method returns with a warning if the current language is not plain
-    * text. 
+    * Returns with a warning if the current language is not plain text. 
     * @param searchTerms  the array of Strings that contain search terms
     * @param constrainWord  true to color only words
-    * @throws IllegalArgumentException  if searchTerms is null or contains
-    * empty Strings
     */
    public void colorSearchedText(String[] searchTerms, boolean constrainWord) {
       txtDoc.colorSearchedText(searchTerms, constrainWord);
@@ -110,8 +107,9 @@ public class EditorAccess {
    }
    
    /**
-    * Adds a component to the 'function panel' of the main window
-    * @param c  the Component that is added to the right of this plit window
+    * Adds a component to the main window. The 'function panel' is found at the
+    * right of the split window of the main window.
+    * @param c  the Component that is added
     * @param title  the title for the function
     * @see MainWin#addToFunctionPanel(java.awt.Component, String)
     */

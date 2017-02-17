@@ -31,8 +31,11 @@ import eg.Constants;
 import eg.utils.FileUtils;
 
 /**
- * Defines the panel which consist in the text area to edit text and,
- * if selected, the area that displays line numbers.
+ * Defines the editor view that contains the text area to edit text and the 
+ * area that displays line numbers.
+ * <p>
+ * The text area (defined by a {@code JTextPane}) is associated with a
+ * {@code StyledDocument}.
  * <p>
  * The usage of the select all, copy, cut, paste key combinations is
  * disabled.
