@@ -48,7 +48,7 @@ public class Syntax {
       "@Override", "@Deprecated", "@SuppressWarnings", "@SafeVarargs"
    };
    
-   final static String[] HTML_KEYWORDS = {
+   final static String[] HTML_TAGS = {
       "/>",
       "<a ", "<a>", "</a>",
       "<applet ", "</applet>",
@@ -68,9 +68,16 @@ public class Syntax {
       "<p>", "</p>",
       "<style>", "</style>",
       "<table>", "</table>", "<title>", "</title>",
-      "<ul>", "</ul>",
-      "bu%20",
-      "&lsquo;", "&rsquo;"
+      "<ul>", "</ul>"
+   };
+   
+   final static String[] HTML_ATTR = {
+      " height",
+      " href",
+      " id",
+      " title",
+      " scr",
+      " width",
    };
    
    final static String[] PERL_KEYWORDS = {

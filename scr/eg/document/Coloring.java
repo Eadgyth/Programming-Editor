@@ -65,9 +65,10 @@ class Coloring {
             isBrackets = true;
             break;
         case HTML:
-            keywords = Syntax.HTML_KEYWORDS;
+            keywords = Syntax.HTML_TAGS;
             contrainWord = false;
-            isFlagged = false;
+            flagged = Syntax.HTML_ATTR; //begin with space
+            isFlagged = true;
             isFlags = false;
             isOperators = false;
             isLineCmnt = false;
@@ -75,7 +76,7 @@ class Coloring {
             blockCmntEnd = "-->";
             isBlockCmnt = true;
             isStringLit = true;
-            isBrackets = true;
+            isBrackets = false;
             break;
         case PERL:
             keywords = Syntax.PERL_KEYWORDS;
