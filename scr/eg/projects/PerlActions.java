@@ -42,14 +42,7 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
       }
       return success;
    }
-   
-   /**
-    * If a project configuration stored in 'config' or 'prefs' can be
-    * retrieved
-    * @param dir  the directory of a file that maybe part of the project
-    * @return  If a project configuration stored in 'config' or 'prefs'
-    * can be retrieved
-    */
+
    @Override
    public boolean retrieveProject(String dir) {
       boolean success = super.retrieveProject(dir);
@@ -57,13 +50,6 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
          setStartCommand();
       }
       return success;
-   }
-   
-   /**
-    * Not used
-    */
-   @Override
-   public void compile() {
    }
    
    /**
@@ -75,13 +61,6 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
          displSet.setShowConsoleState(true);
       }
       proc.startProcess(startCommand);
-   }
-   
-   /**
-    * Not used
-    */
-   @Override
-   public void build() {
    }
    
    private void setStartCommand() {

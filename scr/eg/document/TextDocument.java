@@ -133,7 +133,8 @@ public final class TextDocument {
    
    /**
     * Saves the current content to the specified file but does not
-    * assign the file to this as the document file
+    * assign the file to this
+    * @param file  the file which the current content is saved to
     */
    public void saveCopy(File file) {
       saveToFile(file);

@@ -8,16 +8,22 @@ public interface ProjectActions extends Configurable {
    /**
     * Compiles source files
     */
-   public void compile();
+   public default void compile() {
+       throw new UnsupportedOperationException("Method not used");
+   };
    
    /**
     * Runs a project
     */
-   public void runProject();
+   public default void runProject() {
+       throw new UnsupportedOperationException("Method not used");
+   };
    
    /**
     * Creates a build of a project, where it is not specified
-    * what 'build' refers to
+    * what 'build' is
     */
-   public void build();
+   public default void build() {
+       throw new UnsupportedOperationException("Method not used");
+   };
 }

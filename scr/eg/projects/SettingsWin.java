@@ -58,8 +58,8 @@ public class SettingsWin {
    } 
    
    /**
-    * Returns a new SettingsWin where only the name for a project can be
-    * entered
+    * Returns a new SettingsWin where only the name for a project file can
+    * be entered
     * @param fileLabel  the label for the file text field
     * @return  a new SettingsWin
     */
@@ -73,7 +73,7 @@ public class SettingsWin {
     * <p>
     * The method {@link #setupWindow()} must be invoked lastly to initialize
     * the window. Calling only this method yields a SettingsWin that equals
-    * to a {@link #basicWindow}.
+    * to a {@link #basicWindow(String)}.
     * <p>
     * @param fileLabel  the label for the file text field
     * @return  a new SettingsWin

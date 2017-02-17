@@ -1,32 +1,13 @@
 package eg.projects;
 
 /**
- * Represents a placeholder project for text files with extension .txt
+ * Represents a placeholder project that does not override any method
+ * of {@code ProjectActions} and that is defined for text files with
+ * extension '.txt'.
  */
 public final class TxtActions extends ProjectConfig implements ProjectActions {
    
    TxtActions() {
       super(".txt");
-   }
-   
-   /**
-    * Not used
-    */
-   @Override
-   public void compile() {
-   }
-   
-   /**
-    * Not used
-    */
-   @Override
-   public void runProject() {
-   }
-   
-   /**
-    * Not used
-    */
-   @Override
-   public void build() {
    }
 }

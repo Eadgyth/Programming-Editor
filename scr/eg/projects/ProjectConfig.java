@@ -16,11 +16,11 @@ import eg.utils.JOptions;
  * entered.
  * <p>
  * The root folder of the project is not specified explicitely but is determined
- * based on the entries in the settings window. In the simplest case the root
- * would be the parent folder of specified project file. If other sub-directories
- * are specified that point to the project file the root would be the parent of
- * the relative path given by the named sub-directories. The relative path to the
- * project file has the order 'sourcesDirName'/'moduleName' if names of directories
+ * based on the entries in the settings window. In the simplest case, for example,
+ * the root would be the parent folder of specified project file. If other
+ * sub-directories are specified the root would be the parent of the relative path
+ * given by the named sub-directories that point to the project file. The relative
+ * path to the project file has the order 'sourcesDirName'/'moduleName' if names
  * for both of these properties are specified.
  * <p>
  * It can be queried if any directory, not just the directory of the specified

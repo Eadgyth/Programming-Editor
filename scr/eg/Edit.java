@@ -33,8 +33,9 @@ public class Edit {
    private int indentLength;
 
    /**
-    * @param txtDoc  the {@link TextDocument} object
-    * @param editArea  the {@link EditArea} object
+    * Sets the {@code TextDocument} that is edited and its current
+    * indentation unit
+    * @param txtDoc  the {@link TextDocument} that is edited
     */
    public void setTextDocument(TextDocument txtDoc) {
       this.txtDoc  = txtDoc;
