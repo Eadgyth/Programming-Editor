@@ -1,6 +1,8 @@
 # Java-Programming-Editor / Eadgyth
-A text editor written in Java that helps coding (presently Java, Perl, HTML) and that is
-extensible by plugins which may be developed to perform specialized tasks with text files.
+A text editor written in Java that helps coding in Java (Perl, HTML included but less elaborated).
+<p>
+The program is extensible by plugins which have access to the editor field in a selected tab and by 
+implementing other types of projects using the interface intended for this purpose.
 <p>
 A particular goal is a very simple but flexible setting of a project and usage of already
 configured projects.
