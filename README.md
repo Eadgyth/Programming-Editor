@@ -13,8 +13,8 @@ Running the program requires JAVA 8 (JRE 8). I did not have the opportunity to t
 the program on operating systems other than windows Vista, 7 and 10.<p>
 The program must be found in the same folder as the two .properties files and the Resources
 folder, just like in the 'EadgythProgram' folder in this repository.<p>
-Plugins must be stored in the folder 'Plugins' in the same folder as the program and be available
-as single jar files.<p>
+Plugins must be stored in the folder 'Plugins' which must be found in the same folder as the
+program. Plugins currently must be available as single jar files.<p>
 To compile the program the source files (packages) must be placed in a directory that also
 includes the ".properties" files and the 'Resources' folder.<p>
 A guide how to configure a project and some other info is found in the Resources
@@ -26,7 +26,7 @@ by the interface 'ProjectActions' in the 'projects' package.<br>
 2) To develop plugins that can do specialized work with text files. Presently, a
 plugin would implement the interface 'Pluggable' in the 'plugins' package. An implementing
 plugin receives a reference to EditorAccess class which provides a reference to the text
-area object (JTExtPane) in the currently selected tab, methods to modify text and amethod
+area object (JTextPane) in the currently selected tab, methods to modify text and a method
 to add a graphical view in the main window.
 <p>
 DOCUMENTATION <br>
@@ -45,9 +45,11 @@ the corresponding font size in other programs (e.g. Editor in Windows).
 <br>
 <p>
 PROBLEMS <br>
-1) The undo/redo may cause problems with regard to the syntax coloring.<br>
+1) The undo/redo may cause problems with regard to the syntax coloring. A problem that
+occured when a colored word is at a line end and a newline before this word is undone
+seems be circumvented(not really understood though)<br>
 2) Unexpected rendering of the UI happened when the system look and feel was selected
-(Windows) and the program was idling for a longer period of time.
+and the program was idling for a longer period of time (under Windows 10).
 <br>
 <p>
 CONTACT<br>
