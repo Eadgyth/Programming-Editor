@@ -121,28 +121,30 @@ public class CurrentProject {
       if (isProjectSet() && current.isInProject(currDoc.dir())) {
          return;
       }
-      ProjectActions prToFind = selProj.createProject(currExt, lang);
-      boolean isFound
-            =  prToFind != null
-            && prToFind.retrieveProject(currDoc.dir());
-      if (isFound) {
-         if (!isProjectSet()) {   
-            current = prToFind;
-            current.addOkAction(e -> configureProject(current)); 
-            projList.add(current); 
-            updateProjectSetting(current);
-         }
-         else {
-            if (selectFromList(currDoc.dir()) == null) {
-               prToFind.addOkAction(e -> configureProject(prToFind));
-               projList.add(prToFind);
-               if (projList.size() == 2) {
-                  displSet.enableChangeProjItm();
+      EventQueue.invokeLater(() -> {
+         ProjectActions prToFind = selProj.createProject(currExt, lang);
+         boolean isFound
+               =  prToFind != null
+               && prToFind.retrieveProject(currDoc.dir());
+         if (isFound) {
+            if (!isProjectSet()) {   
+               current = prToFind;
+               current.addOkAction(e -> configureProject(current)); 
+               projList.add(current); 
+               updateProjectSetting(current);
+            }
+            else {
+               if (selectFromList(currDoc.dir()) == null) {
+                  prToFind.addOkAction(e -> configureProject(prToFind));
+                  projList.add(prToFind);
+                  if (projList.size() == 2) {
+                     displSet.enableChangeProjItm();
+                  }
+                  changeProject(prToFind);            
                }
-               changeProject(prToFind);            
             }
          }
-      }
+      });
    }
 
    /**
@@ -223,8 +225,7 @@ public class CurrentProject {
     * Compiles this current project
     */
    public void compile() {
-      if (!current.isInProject(currDoc.dir())) {
-         JOptions.warnMessage(NOT_IN_PROJ_MESSAGE);
+      if (!isCurrent("Compile")) {
          return;
       }     
       StringBuilder missingFiles = new StringBuilder();
@@ -264,6 +265,9 @@ public class CurrentProject {
     * Runs this project
     */
    public void runProj() {
+      if (!isCurrent("Run")) {
+         return;
+      }
       current.runProject();
    }
 
@@ -271,6 +275,9 @@ public class CurrentProject {
     * Creates a build of this current project
     */
    public void buildProj() {
+      if (!isCurrent("Build")) {
+         return;
+      }
       try {
          displSet.setBusyCursor(true);
          current.build();
@@ -302,9 +309,8 @@ public class CurrentProject {
    }
 
    private boolean changeProject(ProjectActions toChangeTo) {
-      String projName = new File(toChangeTo.getProjectPath()).getName();  
       int result = JOptions.confirmYesNo("Change to project '"
-                 + projName + "'");
+                 + projectName(toChangeTo) + "' ?");
       if (result == 0) {
          current = toChangeTo;
          current.storeInPrefs();
@@ -337,11 +343,25 @@ public class CurrentProject {
    }
 
    private void updateProjectSetting(ProjectActions projToSet) {
-      String projName = new File(projToSet.getProjectPath()).getName();
-      fileTree.setProjectTree(projToSet.getProjectPath());
       fileTree.setDeletableDirName(projToSet.getExecutableDirName());
       proc.addWorkingDir(projToSet.getProjectPath());
-      displSet.showProjectInfo(projName);
+      displSet.showProjectInfo(projectName(projToSet));
       selProj.enableActions(projToSet.getClass().getSimpleName(), projList.size());
+      EventQueue.invokeLater(() -> 
+            fileTree.setProjectTree(projToSet.getProjectPath()));
+   }
+   
+   private String projectName(ProjectActions toName) {
+      return new File(toName.getProjectPath()).getName();
+   }
+   
+   private boolean isCurrent(String action) {
+      boolean useCurrentProj = current.isInProject(currDoc.dir());
+      int res = 0;
+      if (!useCurrentProj) {
+         res = JOptions.confirmYesNo(NOT_IN_PROJ_MESSAGE
+               + "\n" + action + " '" + projectName(current) + "'?");
+      }
+      return useCurrentProj || res == 0;
    }
 }

@@ -3,6 +3,8 @@ package eg;
 import java.util.Observer;
 import java.util.Observable;
 
+import java.awt.EventQueue;
+
 import javax.swing.JTabbedPane;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
@@ -208,10 +210,11 @@ public class TabbedFiles implements Observer{
          txtDoc[iTab].saveFileAs(f);
          currProj.setDocumentIndex(iTab);
          currProj.retrieveProject();
-         currProj.updateFileTree(txtDoc[iTab].dir());
          tp.changeTabTitle(iTab, txtDoc[iTab].filename());
          displSet.displayFrameTitle(txtDoc[iTab].filepath());
          prefs.storePrefs("recentPath", txtDoc[iTab].dir());
+         EventQueue.invokeLater(() ->
+               currProj.updateFileTree(txtDoc[iTab].dir()));
       }
    }
    
