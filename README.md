@@ -1,11 +1,12 @@
 # Java-Programming-Editor / Eadgyth
-A text editor written in Java that helps coding in Java (Perl, HTML included but less elaborated).
+A text editor written in Java that helps coding in Java (Perl, HTML included but less elaborated) and that features a simple but flexible setting of projects.
 <p>
 The program is extensible by plugins which have access to the editor field in a selected tab and by 
 implementing other types of projects using the interface intended for this purpose.
 <p>
-A particular goal is a very simple but flexible setting of a project and usage of already
-configured projects.
+SCREENSHOT<br>
+Under Windows 10, setting the system look and feel<br>
+<img src="Screenshots/Windows10SystemLAF.png" width="600"/>
 <p>
 REQUIREMENTS FOR TESTING <br>
 Running the program requires JAVA 8 (JRE 8). I did not have the opportunity to test
@@ -57,8 +58,4 @@ CONTRIBUTORS<br>
 I hope for contributions and critiques.<br>
 <p>
 LICENSE: MIT, see LICENSE<br>
-<p>
-SCREENSHOT<br>
-Under Windows 10, setting the system look and feel<br>
-<img src="Screenshots/Windows10SystemLAF.png" width="600"/>
 
