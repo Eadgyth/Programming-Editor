@@ -204,7 +204,7 @@ class TypingEdit {
       String in = editArea.getDocText();
       updateRowNumber(in);
       int newLineNr = rowNum.getCurrLineNr();
-      if (previousLineNr - newLineNr > 1) {
+      if (previousLineNr < newLineNr) {
          colorAll();
       }
       else {
