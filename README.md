@@ -45,9 +45,8 @@ the corresponding font size in other programs (e.g. Editor in Windows).
 <br>
 <p>
 PROBLEMS <br>
-1) The undo/redo may cause problems with regard to the syntax coloring. A problem that
-occured while undoing a line break right after a colored word seems be circumvented, though
-(whether it's understood is another question).<br>
+1) The undo/redo may causes problems with regard to the syntax coloring. Undoing a line break right
+after a colored word is a problem when the line with the colored word is edited.<br>
 2) Unexpected rendering of the UI happened when the system look and feel was selected
 and the program was idling for a longer period of time (under Windows 10).
 <br>
