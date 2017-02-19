@@ -78,7 +78,7 @@ public class TabbedFiles implements Observer{
       currProj.setLanguage(lang);
       for (TextDocument t : txtDoc) {
          if (t != null) {
-            t.changeLanguage(lang);
+            t.changeLanguage(lang); // no effect if a file is assigned
          }
       }
       prefs.storePrefs("language", lang.toString());
@@ -262,7 +262,8 @@ public class TabbedFiles implements Observer{
       if (txtDoc[iTab].isContentSaved()) {
          close();
       }
-      else {                 
+      else {
+         tp.selectTab(iTab);             
          int res = saveOrCloseOption(iTab);
          if (res == JOptionPane.YES_OPTION) {
             if (txtDoc[iTab].filename().length() == 0
