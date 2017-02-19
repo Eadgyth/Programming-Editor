@@ -1,5 +1,8 @@
 package eg.ui.menu;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
@@ -67,11 +70,15 @@ public class FileMenu {
       menu.add(printItm);
       menu.addSeparator();
       menu.add(exitItm);
+      menu.setMnemonic(KeyEvent.VK_F);
    }
    
    private void shortCuts() {
-      newFileItm.setAccelerator(KeyStroke.getKeyStroke("control N"));
-      openItm.setAccelerator(KeyStroke.getKeyStroke("control O"));
-      saveItm.setAccelerator(KeyStroke.getKeyStroke("control S"));
+      newFileItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
+            ActionEvent.CTRL_MASK));
+      openItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
+            ActionEvent.CTRL_MASK));
+      saveItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+            ActionEvent.CTRL_MASK));
    }
 }

@@ -1,5 +1,8 @@
 package eg.ui.menu;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.ActionEvent;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
@@ -62,11 +65,14 @@ public class ProjectMenu {
       menu.add(setProject);
       menu.add(changeProj);
       changeProj.setEnabled(false);
+      menu.setMnemonic(KeyEvent.VK_P);
    }
    
    private void shortCuts() {
-      compile.setAccelerator(KeyStroke.getKeyStroke("control K"));
-      run.setAccelerator(KeyStroke.getKeyStroke("control E"));
+      compile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,
+            ActionEvent.CTRL_MASK));
+      run.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
+            ActionEvent.CTRL_MASK));
    }
 }
       

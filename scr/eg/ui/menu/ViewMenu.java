@@ -1,5 +1,7 @@
 package eg.ui.menu;
 
+import java.awt.event.KeyEvent;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
@@ -89,5 +91,6 @@ public class ViewMenu {
       menu.add(functionItm);
       menu.addSeparator();
       menu.add(openSettingsItm);
+      menu.setMnemonic(KeyEvent.VK_V);
    }
 }

@@ -1,5 +1,7 @@
 package eg.ui.menu;
 
+import java.awt.event.KeyEvent;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
@@ -37,5 +39,6 @@ public class FormatMenu {
    private void assembleMenu() {
       menu.add(fontItm);
       menu.add(wordWrapItm);
+      menu.setMnemonic(KeyEvent.VK_F);
    }
 }

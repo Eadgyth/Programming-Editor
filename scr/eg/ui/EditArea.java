@@ -108,14 +108,13 @@ public final class EditArea {
             hideLineNumbers();
          }
       }
-      removeKeyActions();
    }
    
    /**
     * Returns the JPanel that holds the area to edit text and, if
-    * enabled, the area showing line numbers
-    * @return  the JPanel that holds the area to edit text and 
-    * the area showing line numbers
+    * selected, the area showing line numbers
+    * @return  the JPanel that holds the area to edit text and, if
+    * selected the area showing line numbers
     */
    public JPanel textPanel() {
       return textPanel;
@@ -432,16 +431,5 @@ public final class EditArea {
       StyleConstants.setLineSpacing(lineSet, 0.2f);
       Element el = lineDoc.getParagraphElement(0);
       lineDoc.setParagraphAttributes(0, el.getEndOffset(), lineSet, false);
-   }
-
-   private void removeKeyActions() {
-      KeyStroke ksSelAll = KeyStroke.getKeyStroke("control pressed a");
-      textArea.getInputMap().put(ksSelAll, "dummy");
-      KeyStroke ksCut = KeyStroke.getKeyStroke("control pressed X");
-      textArea.getInputMap().put(ksCut, "dummy");
-      KeyStroke ksCopy = KeyStroke.getKeyStroke("control pressed C");
-      textArea.getInputMap().put(ksCopy, "dummy");
-      KeyStroke ksPaste = KeyStroke.getKeyStroke("control pressed V");
-      textArea.getInputMap().put(ksPaste, "dummy");
    }
 }

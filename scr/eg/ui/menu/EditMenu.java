@@ -3,11 +3,11 @@ package eg.ui.menu;
 import java.awt.Toolkit;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
-
 import javax.swing.KeyStroke;
 
 //--Eadgyth--//
@@ -106,17 +106,25 @@ public class EditMenu {
       for (JCheckBoxMenuItem itm : selectLangChBxItm) {
          languageMenu.add(itm);
       }
+      menu.setMnemonic(KeyEvent.VK_E);
    }
 
    private void shortCuts() {
-      cutItm.setAccelerator(KeyStroke.getKeyStroke('X',
-            Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-      copyItm.setAccelerator(KeyStroke.getKeyStroke('C',
-            Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-      pasteItm.setAccelerator(KeyStroke.getKeyStroke('V',
-            Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-      selectAllItm.setAccelerator(KeyStroke.getKeyStroke("control A"));
-      indentItm.setAccelerator(KeyStroke.getKeyStroke("control R"));
-      outdentItm.setAccelerator(KeyStroke.getKeyStroke("control L"));
+      undoItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
+            ActionEvent.CTRL_MASK));
+      redoItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
+            ActionEvent.CTRL_MASK));
+      cutItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
+            ActionEvent.CTRL_MASK));
+      copyItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
+            ActionEvent.CTRL_MASK));
+      pasteItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
+            ActionEvent.CTRL_MASK));
+      selectAllItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
+            ActionEvent.CTRL_MASK));
+      indentItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,
+            ActionEvent.CTRL_MASK));
+      outdentItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L,
+            ActionEvent.CTRL_MASK));
    }
 }
