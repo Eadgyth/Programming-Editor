@@ -245,7 +245,7 @@ public final class EditArea {
       catch(BadLocationException e) {
          FileUtils.logStack(e);
       }
-      revalidateLineAreaWidth(lineNr);
+      //revalidateLineAreaWidth(lineNr);
    }
    
    /**
@@ -266,9 +266,7 @@ public final class EditArea {
     * @param nLines  the number of lines
     */
    public void revalidateLineAreaWidth(int nLines) {
-      if ((nLines + 1) % 10 == 0 || nLines == 0) {
-         textPanel.revalidate();
-      }
+      textPanel.revalidate();
    }
    
    /**
@@ -276,7 +274,7 @@ public final class EditArea {
     */
    public void print() {
       try {
-         boolean complete = textArea.print();
+         textArea.print();
       } catch (PrinterException e) {
          FileUtils.logStack(e);
       }

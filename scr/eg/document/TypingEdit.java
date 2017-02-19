@@ -13,6 +13,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
+import javax.swing.event.CaretListener;
+import javax.swing.event.CaretEvent;
 
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.CompoundEdit;
@@ -34,12 +36,12 @@ import eg.utils.Finder;
  * Mediates the editing in the {@code EditArea} that shall happen during
  * typing.
  * <p>
- * Methods are used in the other classes that show line numbering, syntax
+ * Methods are used in other classes that show line numbering, syntax
  * coloring, auto-indentation and undo/redo editing (the latter an inner class).
  */
 class TypingEdit {
 
-   private final static char[] UNDO_SEP = {' ', '(', ')', '{', '}', '\n', '\0'};
+   private final static char[] UNDO_SEP = {' ', '(', ')', '{', '}', '\0', '\n'};
 
    private final EditArea editArea;
    private final UndoManager undomanager = new DocUndoManager();
@@ -51,6 +53,8 @@ class TypingEdit {
    private boolean isTypeEdit = false;
    private boolean isIndent = false;
    private char typed = '\0';
+   private int pos;
+   private int caret;
    private boolean isChangeEvent;
 
    TypingEdit(EditArea editArea) {
@@ -59,6 +63,7 @@ class TypingEdit {
       editArea.getDoc().addDocumentListener(docListen);
       editArea.getDoc().addUndoableEditListener(undomanager);
       undomanager.setLimit(1000);
+      editArea.textArea().addCaretListener(new DocCaretListener());
 
       col = new Coloring(editArea.getDoc(), editArea.getNormalSet());
       rowNum = new RowNumbers(editArea);
@@ -122,8 +127,8 @@ class TypingEdit {
          enableDocListen(false);
          if (undomanager.canUndo()) {
             undomanager.undo();
-            updateAfterUndoRedo(previousLineNr);
          }
+         updateAfterUndoRedo(previousLineNr);
       }
       catch (CannotUndoException e) {
          FileUtils.logStack(e);
@@ -136,56 +141,22 @@ class TypingEdit {
          enableDocListen(false);
          if (undomanager.canRedo()) {
             undomanager.redo();
-            updateAfterUndoRedo(previousLineNr);
          }
+         updateAfterUndoRedo(previousLineNr);
       }
       catch (CannotRedoException e) {
          FileUtils.logStack(e);
       }
    }
+   
+   void restartUndo() {
+      undomanager.discardAllEdits();
+   }
 
    //
    //--private--//
    //
-
-   private final DocumentListener docListen = new DocumentListener() {
-
-      @Override
-      public void insertUpdate(DocumentEvent de) {
-         if (isDocListen) {
-            isChangeEvent = false;
-            String in = editArea.getDocText();
-            int pos = de.getOffset();
-            typed = in.charAt(pos);
-            updateRowNumber(in);
-            if (isTypeEdit) {
-               insertTextModify(in, pos);
-            }
-         }
-      }
-
-      @Override
-      public void removeUpdate(DocumentEvent de) {
-         if (isDocListen) {
-            isChangeEvent = false;
-            String in = editArea.getDocText();
-            typed = '\0';
-            updateRowNumber(in);
-            if (isTypeEdit) {
-               int pos = de.getOffset();
-               color(in, pos);
-            }
-         }
-      }
-
-      @Override
-      public void changedUpdate(DocumentEvent de) {
-         if (isDocListen) {
-            isChangeEvent = true;
-         }
-      }
-   };
-
+   
    private void insertTextModify(String in, int pos) {
       if (pos > 0 && isIndent) {
          autoInd.openBracketIndent(in, pos);
@@ -208,9 +179,8 @@ class TypingEdit {
          colorAll();
       }
       else {
-         int pos = editArea.textArea().getCaretPosition();
-         if (pos > 0) {
-            color(in, pos);
+         if (caret > 0) {
+            color(in, caret);
          }
       }
       enableDocListen(true);
@@ -222,15 +192,73 @@ class TypingEdit {
       });
    }
 
+   private final DocumentListener docListen = new DocumentListener() {
+
+      @Override
+      public void insertUpdate(DocumentEvent de) {
+         if (isDocListen) {
+            isChangeEvent = false;
+            String in = editArea.getDocText();
+            pos = de.getOffset();
+            typed = in.charAt(pos);
+            updateRowNumber(in);
+            if (isTypeEdit) {
+               insertTextModify(in, pos);
+            }
+         }
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent de) {
+         if (isDocListen) {
+            isChangeEvent = false;
+            String in = editArea.getDocText();
+            typed = '\0';
+            pos = de.getOffset();
+            updateRowNumber(in);
+            if (isTypeEdit) {            
+               color(in, pos);
+            }
+         }
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent de) {
+         if (isDocListen) {
+            isChangeEvent = true;
+         }
+      }
+   };
+   
+   private class DocCaretListener implements CaretListener {
+      
+      int lastCaret;
+      int lastPos;
+
+      @Override
+      public void caretUpdate(CaretEvent ce) {
+         caret = ce.getDot();
+         if (isDocListen && pos > 0 && pos == lastPos) {
+            //
+            // cursor was moved by mouse or arrow keys
+            if (caret != lastCaret) {
+               restartUndo();
+            }
+         }
+         lastCaret = caret;
+         lastPos = pos;
+      }
+   }
+
    private class DocUndoManager extends UndoManager implements UndoableEditListener {
 
       CompoundEdit comp = null;
-
+ 
       @Override
       public synchronized void undoableEditHappened(UndoableEditEvent e) {
          if (!isDocListen) {
             return;
-         }    
+         }        
          if (!isChangeEvent) {
             addAnEdit(e.getEdit());
          }
@@ -250,16 +278,22 @@ class TypingEdit {
 
       @Override
       public synchronized void undo() {
-         //commitCompound();
          super.undo();
       }
 
       @Override
       public synchronized void redo() {
-         //commitCompound();
          super.redo();
       }
-
+      
+      @Override
+      public void discardAllEdits() {
+         if (comp != null) {
+            comp = null;
+         }
+         super.discardAllEdits();
+      }
+      
       private synchronized void addAnEdit(UndoableEdit anEdit) {
          if (comp == null) {
             comp = new CompoundEdit();
@@ -272,7 +306,7 @@ class TypingEdit {
             comp.addEdit(anEdit);
          }
       }
-
+      
       private void commitCompound() {
          if (comp != null) {
             comp.end();
