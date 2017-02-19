@@ -121,30 +121,28 @@ public class CurrentProject {
       if (isProjectSet() && current.isInProject(currDoc.dir())) {
          return;
       }
-      EventQueue.invokeLater(() -> {
-         ProjectActions prToFind = selProj.createProject(currExt, lang);
-         boolean isFound
-               =  prToFind != null
-               && prToFind.retrieveProject(currDoc.dir());
-         if (isFound) {
-            if (!isProjectSet()) {   
-               current = prToFind;
-               current.addOkAction(e -> configureProject(current)); 
-               projList.add(current); 
-               updateProjectSetting(current);
-            }
-            else {
-               if (selectFromList(currDoc.dir()) == null) {
-                  prToFind.addOkAction(e -> configureProject(prToFind));
-                  projList.add(prToFind);
-                  if (projList.size() == 2) {
-                     displSet.enableChangeProjItm();
-                  }
-                  changeProject(prToFind);            
+      ProjectActions prToFind = selProj.createProject(currExt, lang);
+      boolean isFound
+            =  prToFind != null
+            && prToFind.retrieveProject(currDoc.dir());
+      if (isFound) {
+         if (!isProjectSet()) {   
+            current = prToFind;
+            current.addOkAction(e -> configureProject(current)); 
+            projList.add(current); 
+            updateProjectSetting(current);
+         }
+         else {
+            if (selectFromList(currDoc.dir()) == null) {
+               prToFind.addOkAction(e -> configureProject(prToFind));
+               projList.add(prToFind);
+               if (projList.size() == 2) {
+                  displSet.enableChangeProjItm();
                }
+               EventQueue.invokeLater(() -> changeProject(prToFind));            
             }
          }
-      });
+      }
    }
 
    /**

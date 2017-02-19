@@ -113,7 +113,6 @@ public final class TextDocument {
                  "Illegal attempt to assign a file to a "
                + " TextDocument which a file was assigned to before");
       }
-      docFile = file;
       assignFileStrings(file);
       EventQueue.invokeLater(() -> {
          displayFileContent();
@@ -144,7 +143,7 @@ public final class TextDocument {
     * this text area to the specified file.
     * @param file  the file which the current content is saved to
     */
-   public void saveFileAs(File file) {        
+   public void saveFileAs(File file) {     
       assignFileStrings(file);
       saveToFile(file);
       setLanguageBySuffix();
@@ -349,6 +348,7 @@ public final class TextDocument {
    }
 
    private void assignFileStrings(File filepath) {
+      docFile = filepath;
       filename = filepath.getName();
       this.filepath = filepath.toString();
       dir = filepath.getParent();
