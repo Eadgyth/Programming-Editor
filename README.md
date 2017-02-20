@@ -16,18 +16,6 @@ includes the ".properties" files and the 'Resources' folder.<p>
 A guide how to configure a project and some other info is found in the Resources
 folder (Help.html) and is adressable from the '?' menu. 
 <p>
-IDEA FOR FURTHER DEVELOPEMENT<br>
-1) To develop types of projects (for coding or other). A type of project is defined
-by the interface 'ProjectActions' in the 'projects' package.<br>
-2) To develop plugins that can do specialized work with text files. Presently, a
-plugin would implement the interface 'Pluggable' in the 'plugins' package. An implementing
-plugin receives a reference to EditorAccess class which provides a reference to the text
-area object (JTextPane) in the currently selected tab, methods to modify text and a method
-to add a graphical view in the main window.
-<p>
-DOCUMENTATION <br>
-The javadoc of the program is found in this repository (Docs/Ead-JavaDoc).
-<p>
 LIMITATIONS <br> 
 1) Running an interactive (console) program that then requires writing to this process is not
 guaranteed to work in the console panel of the program. Interactive programs in Java seem to
@@ -43,10 +31,21 @@ the corresponding font size in other programs (e.g. Editor in Windows).
 PROBLEMS <br>
 1) The undo/redo may may cause problems with regard to the syntax coloring. These problems
 (which caused the text view to break when a linebreak right before a colored character is undone)
-seem to be circumvented (not solved) but it's not certain if this applies to all situation .<br>
+seem to be circumvented (not solved) but it's not certain if that's true all situations.<br>
 2) Unexpected rendering of the UI happened when the system look and feel was selected
-and the program was idling for a longer period of time (under Windows 10).
-<br>
+and the program was idling for a longer period of time (under Windows 10).<br>
+<p>
+IDEA FOR FURTHER DEVELOPEMENT<br>
+1) To develop types of projects (for coding or other). A type of project is defined
+by the interface 'ProjectActions' in the 'projects' package.<br>
+2) To develop plugins that can do specialized work with text files. Presently, a
+plugin would implement the interface 'Pluggable' in the 'plugins' package. An implementing
+plugin receives a reference to EditorAccess class which provides a reference to the text
+area object (JTextPane) in the currently selected tab, methods to modify text and a method
+to add a graphical view in the main window.
+<p>
+DOCUMENTATION <br>
+The javadoc of the program is found in this repository (Docs/Ead-JavaDoc).
 <p>
 CONTACT<br>
 Malte Bussiek<br>
