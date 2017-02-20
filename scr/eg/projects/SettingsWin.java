@@ -34,10 +34,10 @@ public class SettingsWin {
 
    private final JFrame frame = new JFrame("Eadgyth - Project settings");
    private final JTextField fileTf       = new JTextField();
-   private final JTextField moduleTf     = new JTextField("");
+   private final JTextField moduleTf     = new JTextField();
    private final JTextField sourcesDirTf = new JTextField();      
    private final JTextField execDirTf    = new JTextField();
-   private final JTextField argsTf       = new JTextField("");
+   private final JTextField argsTf       = new JTextField();
    private final JTextField buildTf      = new JTextField();
    private final JButton    okBt         = new JButton("   OK   ");
    private final JButton    cancelBt     = new JButton("Cancel");
@@ -49,9 +49,14 @@ public class SettingsWin {
    private boolean useExec = false;
    private boolean useArgs = false;
    private String buildLabel = null;
+   private StringBuilder sb = new StringBuilder("Eadgyth - project settings");
    
-   private SettingsWin(String fileLabel, boolean initWindow) {
+   private SettingsWin(String fileLabel, String title, boolean initWindow) {
       this.fileLabel = fileLabel;
+      if (title.length() > 0) {
+         sb.insert(10, title + " ");
+      }
+      frame.setTitle(sb.toString());
       if (initWindow) {
          initWindow();
       }
@@ -61,10 +66,12 @@ public class SettingsWin {
     * Returns a new SettingsWin where only the name for a project file can
     * be entered
     * @param fileLabel  the label for the file text field
+    * @param title  the title for the project. The empty string to use the 
+    * default title
     * @return  a new SettingsWin
     */
-   public static SettingsWin basicWindow(String fileLabel) {
-      return new SettingsWin(fileLabel, true);
+   public static SettingsWin basicWindow(String fileLabel, String title) {
+      return new SettingsWin(fileLabel, title, true);
    }
    
    /**
@@ -76,10 +83,12 @@ public class SettingsWin {
     * to a {@link #basicWindow(String)}.
     * <p>
     * @param fileLabel  the label for the file text field
+    * @param title  the title for the project. The empty string to use the 
+    * default title
     * @return  a new SettingsWin
     */
-   public static SettingsWin adaptableWindow(String fileLabel) {
-      return new SettingsWin(fileLabel, false);
+   public static SettingsWin adaptableWindow(String fileLabel, String title) {
+      return new SettingsWin(fileLabel, title, false);
    }
    
    /**

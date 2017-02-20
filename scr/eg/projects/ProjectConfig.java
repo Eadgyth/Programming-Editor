@@ -60,7 +60,7 @@ public abstract class ProjectConfig implements Configurable {
     */
    @Override
    public void createSettingsWin() {
-      SettingsWin win = SettingsWin.basicWindow("Name of project file");
+      SettingsWin win = SettingsWin.basicWindow("Name of project file", "");
       setSettingsWin(win);
    }
 

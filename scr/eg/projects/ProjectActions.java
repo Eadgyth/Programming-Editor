@@ -1,7 +1,10 @@
 package eg.projects;
 
+import eg.utils.JOptions;
+
 /**
- * The interface to perform actions in a project
+ * The interface to perform actions in a project. By default the methods
+ * show in a message window that the operation is not supported
  */
 public interface ProjectActions extends Configurable {
    
@@ -9,14 +12,14 @@ public interface ProjectActions extends Configurable {
     * Compiles source files
     */
    public default void compile() {
-       throw new UnsupportedOperationException("Method not used");
+       message();
    };
    
    /**
     * Runs a project
     */
    public default void runProject() {
-       throw new UnsupportedOperationException("Method not used");
+       message();
    };
    
    /**
@@ -24,6 +27,10 @@ public interface ProjectActions extends Configurable {
     * what 'build' is
     */
    public default void build() {
-       throw new UnsupportedOperationException("Method not used");
+       message();
    };
+   
+   static void message() {
+      JOptions.warnMessage("This operation is not supprted");
+   }
 }

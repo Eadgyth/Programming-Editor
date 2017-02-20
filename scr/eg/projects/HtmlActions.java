@@ -24,7 +24,7 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void createSettingsWin() { 
-      SettingsWin setWin = SettingsWin.basicWindow("Name of HTML file");
+      SettingsWin setWin = SettingsWin.basicWindow("Name of HTML file", "HTML");
       setSettingsWin(setWin);
    }
    

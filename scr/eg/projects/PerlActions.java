@@ -27,7 +27,7 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void createSettingsWin() {
-      SettingsWin setWin = SettingsWin.adaptableWindow("Name of perl script");
+      SettingsWin setWin = SettingsWin.adaptableWindow("Name of perl script", "Perl");
       setWin.addSourceDirOption()
             .addArgsOption()
             .setupWindow();

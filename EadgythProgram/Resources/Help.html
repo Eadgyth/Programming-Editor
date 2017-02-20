@@ -107,7 +107,7 @@
                 that project) and no other project is already active. The extension of the file must
                 correspond with the type of project (See <a href="#ProjectTypes">Types of projects</a>).
                 The extension may be different if and only if the language is set correspondingly
-                under 'Edit' > 'Language' before opening the file.</li>
+                under 'Edit' > 'Language'.</li>
             <li>If 'Save settings in eadconfig file' is selected in the settings window the
                 configuration of the project is stored in such config file. This is saved in the
                 project folder but can be deleted at any time by unselecting the option to save it.
@@ -126,10 +126,15 @@
    
          <h4 id="Language">Setting the language</h4>
          <ul>
-            <li>The language defines the syntax coloring and is internally set by the extension of the
+            <li>The language defines the syntax coloring which firstly depends on the extension of the
                 file that is opened or newly saved (for the file types .java, .pl, .pm, and .html).</li>
-            <li>Setting the language by selecting 'Edit' > 'Language'
-                takes effect only in unnamed tabs.</li>           
+            <li>Setting the language by selecting 'Edit' > 'Language' takes effect only in unnamed
+                tabs.</li>
+            <li>Setting the language may also determine which input options are shown in the project
+                settings windows. For example, a file with "wrong" extension but what is supposed to
+                belong to a Java project (some resources file, maybe) is in the selected tab. Opening
+                the settings window would show the "correct" options if the language were set to Java.
+                However, the file extension that cooresponds to a project type has always the priority</p>                   
          </ul>
    
          <h4 id="JavaProject">Testing Java code and packing a jar file</h4>
