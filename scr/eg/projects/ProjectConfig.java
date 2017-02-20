@@ -317,17 +317,17 @@ public abstract class ProjectConfig implements Configurable {
       if (bySetWin) {
          getTextFieldsInput();
       }
-      String dirRelToRoot = "";
-      if (sourceDir.length() > 0 & moduleDir.length() == 0) {
-         dirRelToRoot += sourceDir;
+      StringBuilder sb = new StringBuilder();
+      if (sourceDir.length() > 0) {
+         sb.append(sourceDir);
+         sb.append(F_SEP);
       }
-      else if (sourceDir.length() == 0 & moduleDir.length() > 0) {
-         dirRelToRoot += moduleDir;
+      if (moduleDir.length() > 0) {
+         sb.append(moduleDir);
+         sb.append(F_SEP);
       }
-      else if (sourceDir.length() > 0 & moduleDir.length() > 0) {
-         dirRelToRoot += sourceDir + F_SEP + moduleDir;
-      }     
-      return dirRelToRoot + F_SEP + mainFile + suffix;
+      sb.append(mainFile  + suffix);
+      return sb.toString();
    }      
    
    private void getTextFieldsInput() {
