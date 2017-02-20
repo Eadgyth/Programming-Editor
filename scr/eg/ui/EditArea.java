@@ -87,6 +87,7 @@ public final class EditArea {
       setDocStyle();
       this.lineDoc = lineArea.getStyledDocument();
       setLineDocStyle();
+      removeShortCuts();
             
       this.font = font;
       this.fontSize = fontSize;
@@ -244,7 +245,6 @@ public final class EditArea {
       catch(BadLocationException e) {
          FileUtils.logStack(e);
       }
-      //revalidateLineAreaWidth(lineNr);
    }
    
    /**
@@ -431,5 +431,16 @@ public final class EditArea {
       StyleConstants.setLineSpacing(lineSet, 0.2f);
       Element el = lineDoc.getParagraphElement(0);
       lineDoc.setParagraphAttributes(0, el.getEndOffset(), lineSet, false);
+   }
+   
+   private void removeShortCuts() {
+      KeyStroke ksSelAll = KeyStroke.getKeyStroke("control pressed a");
+      textArea.getInputMap().put(ksSelAll, "dummy");
+      KeyStroke ksCut = KeyStroke.getKeyStroke("control pressed X");
+      textArea.getInputMap().put(ksCut, "dummy");
+      KeyStroke ksCopy = KeyStroke.getKeyStroke("control pressed C");
+      textArea.getInputMap().put(ksCopy, "dummy");
+      KeyStroke ksPaste = KeyStroke.getKeyStroke("control pressed V");
+      textArea.getInputMap().put(ksPaste, "dummy");
    }
 }
