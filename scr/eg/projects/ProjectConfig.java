@@ -17,11 +17,12 @@ import eg.utils.JOptions;
  * <p>
  * The root folder of the project is not specified explicitely but is determined
  * based on the entries in the settings window. In the simplest case, for example,
- * the root would be the parent folder of specified project file. If other
+ * the root would be the parent folder of a specified project file. If other
  * sub-directories are specified the root would be the parent of the relative path
  * given by the named sub-directories that point to the project file. The relative
  * path to the project file has the order 'sourcesDirName'/'moduleName' if names
- * for both of these properties are specified.
+ * for both of these properties are specified. The name of the root may be specified
+ * to enforce that a root directory with this name is found.
  * <p>
  * It can be queried if any directory, not just the directory of the specified
  * project file, is found in the project's root folder.
@@ -37,7 +38,8 @@ public abstract class ProjectConfig implements Configurable {
    
    private final String suffix;
    
-   private SettingsWin setWin = null;  
+   private SettingsWin setWin = null;
+   private String projTestName = "";  
    private String projectPath = "";
    private String mainFile = "";
    private String moduleDir = "";
@@ -56,7 +58,7 @@ public abstract class ProjectConfig implements Configurable {
    
    /**
     * Creates a {@code SettingsWin} with the basic content.
-    * @see SettingsWin#basicWindow(String)
+    * @see SettingsWin#basicWindow(String, String)
     */
    @Override
    public void createSettingsWin() {
@@ -74,6 +76,17 @@ public abstract class ProjectConfig implements Configurable {
       setWin.makeVisible(isVisible);
    }
    
+   /**
+    * If a project can be successfully configured based on the entries in
+    * the settings window.
+    * <p>
+    * In the case of success the frame of [@link SettingsWin} is closed.
+    * <p>
+    * @param dir  the directory that may be or include the project's root
+    * folder
+    * @return  if a project can be successfully configured based on entries
+    * in this settings window
+    */
    @Override
    public boolean configureProject(String dir) {   
       projectPath = findRootByFile(dir, pathRelToRoot(true));
@@ -307,6 +320,7 @@ public abstract class ProjectConfig implements Configurable {
       File fToTest = new File(previousRoot + F_SEP + pathRelToRoot(false));     
       if (fToTest.exists()) {
          projectPath = previousRoot;
+         setWin.displayProjDirName(getProjectName());
          if (props == CONFIG) {
             storeInPrefs();
          }
@@ -331,6 +345,7 @@ public abstract class ProjectConfig implements Configurable {
    }      
    
    private void getTextFieldsInput() {
+      projTestName = setWin.projDirNameInput();         
       mainFile = setWin.projectFileNameInput();
       moduleDir = setWin.moduleNameInput();
       sourceDir = setWin.sourcesDirNameInput();
@@ -341,9 +356,15 @@ public abstract class ProjectConfig implements Configurable {
    
    private boolean storeInputs() {
       boolean canStore = projectPath.length() > 0;
+      if (canStore && projTestName.length() == 0) {
+         setWin.displayProjDirName(getProjectName());
+      }
+      if (canStore && projTestName.length() > 0) {
+         canStore = projTestName.equals(getProjectName());
+      }
       if (!canStore) {
          JOptions.warnMessageToFront(
-               "An entry in the 'Project' panel is incorrect");      
+               "An entry in the 'Structure' panel is incorrect");  
       }
       else {
          storeInPrefs();   
@@ -360,8 +381,8 @@ public abstract class ProjectConfig implements Configurable {
                      + Preferences.CONFIG_FILE);
             if (configFile.exists()) {
                int res = JOptions.confirmYesNo(
-                       "'Save settings in project folder' is disabled."
-                     + " Remove the 'config' file?");
+                       "Save 'eadconfig' is disabled."
+                     + " Remove the config file from project?");
                if (res == 0) {
                   boolean success = configFile.delete();
                   if (!success) {

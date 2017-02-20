@@ -37,6 +37,7 @@ public class SettingsWin {
    private final JTextField moduleTf     = new JTextField();
    private final JTextField sourcesDirTf = new JTextField();      
    private final JTextField execDirTf    = new JTextField();
+   private final JTextField projDirTf    = new JTextField();
    private final JTextField argsTf       = new JTextField();
    private final JTextField buildTf      = new JTextField();
    private final JButton    okBt         = new JButton("   OK   ");
@@ -63,8 +64,8 @@ public class SettingsWin {
    } 
    
    /**
-    * Returns a new SettingsWin where only the name for a project file can
-    * be entered
+    * Returns a new SettingsWin where only the name for a project file and
+    * for a project root can be entered
     * @param fileLabel  the label for the file text field
     * @param title  the title for the project. The empty string to use the 
     * default title
@@ -75,12 +76,12 @@ public class SettingsWin {
    }
    
    /**
-    * Returns a new SettingsWin whose content is set up afterwards by
-    * choosing from the methods that add input options.
+    * Returns a new SettingsWin whose content is set up afterwards by choosing
+    * from the methods that add input options.
     * <p>
-    * The method {@link #setupWindow()} must be invoked lastly to initialize
-    * the window. Calling only this method yields a SettingsWin that equals
-    * to a {@link #basicWindow(String)}.
+    * The method {@link #setupWindow()} must be invoked (lastly) to initialize
+    * the window. Calling only this method yields a SettingsWin that equals to
+    * a {@link #basicWindow(String, String)}.
     * <p>
     * @param fileLabel  the label for the file text field
     * @param title  the title for the project. The empty string to use the 
@@ -206,6 +207,16 @@ public class SettingsWin {
    public String execDirNameInput() {
       return execDirTf.getText();
    }
+   
+   /**
+    * Returns the input in the text field for the name of a project root
+    * directory
+    * @return  the input in the text field for the name of a project root
+    * directory
+    */
+   public String projDirNameInput() {
+      return projDirTf.getText();
+   }
 
    /**
     * Returns the input in the text field for arguments
@@ -258,6 +269,15 @@ public class SettingsWin {
    }
    
    /**
+    * Shows in the corresponding text field the name of the directory
+    * where executables are saved
+    * @param in  the name of the directory for executable files
+    */
+   public void displayProjDirName(String in) {
+      projDirTf.setText(in);
+   }
+   
+   /**
     * Shows in the corresponding text field the name of a build
     * @param in  the name of a build
     */
@@ -281,8 +301,8 @@ public class SettingsWin {
       saveConfig.setSelected(isSelected);
    }
 
-   private JPanel projectPanel() {
-      int gridSize = 2;
+   private JPanel structurePanel() {
+      int gridSize = 3;
       GridLayout grid = new GridLayout(gridSize, 0);
       JPanel projPnl = new JPanel(grid);
 
@@ -302,7 +322,7 @@ public class SettingsWin {
       if (useScr) {
          gridSize++;
          grid.setRows(gridSize);        
-         JLabel sourcesDirLb = new JLabel("Source directory:");
+         JLabel sourcesDirLb = new JLabel("Name of source's directory:");
          projPnl.add(holdLbAndTf(sourcesDirLb, sourcesDirTf));
       }
       //
@@ -310,13 +330,15 @@ public class SettingsWin {
       if (useExec) {
          gridSize++;
          grid.setRows(gridSize);
-         JLabel execDirLb = new JLabel("Executable directory:");
+         JLabel execDirLb = new JLabel("Name of executable's directory:");
          projPnl.add(holdLbAndTf(execDirLb, execDirTf));
       }
+ 
+      JLabel projDirLb = new JLabel("Name of project root (no input rqd.):");
+      projPnl.add(holdLbAndTf(projDirLb, projDirTf));
+      projPnl.add(checkBxPnl(saveConfig, "Save 'eadconfig' file"));
 
-      projPnl.add(checkBxPnl(saveConfig, "Save settings in 'eadconfig' file"));
-
-      projPnl.setBorder(titledBorder("Project"));  
+      projPnl.setBorder(titledBorder("Structure"));  
       return projPnl;
    }
 
@@ -382,7 +404,7 @@ public class SettingsWin {
       JPanel combineAll = new JPanel();
       combineAll.setLayout(new BoxLayout(combineAll, BoxLayout.Y_AXIS));
       combineAll.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-      combineAll.add(projectPanel());
+      combineAll.add(structurePanel());
       if (useArgs) {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
          combineAll.add(argsPanel());
