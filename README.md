@@ -4,10 +4,6 @@ A text editor written in Java that helps coding in Java (Perl, HTML included but
 The program is extensible by plugins which have access to the editor field in a selected tab and by 
 implementing other types of projects using the interface intended for this purpose.
 <p>
-SCREENSHOT<br>
-Under Windows 10, setting the system look and feel<br>
-<img src="Screenshots/Windows10SystemLAF.png" width="600"/>
-<p>
 REQUIREMENTS FOR TESTING <br>
 Running the program requires JAVA 8 (JRE 8). I did not have the opportunity to test
 the program on operating systems other than windows Vista, 7 and 10.<p>
@@ -60,4 +56,7 @@ CONTRIBUTORS<br>
 I hope for contributions and critiques.<br>
 <p>
 LICENSE: MIT, see LICENSE<br>
-
+<p>
+SCREENSHOT<br>
+Under Windows 10, setting the system look and feel<br>
+<img src="Screenshots/Windows10SystemLAF.png" width="600"/>
