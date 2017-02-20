@@ -50,14 +50,9 @@ public class SettingsWin {
    private boolean useExec = false;
    private boolean useArgs = false;
    private String buildLabel = null;
-   private StringBuilder sb = new StringBuilder("Eadgyth - project settings");
    
-   private SettingsWin(String fileLabel, String title, boolean initWindow) {
+   private SettingsWin(String fileLabel, boolean initWindow) {
       this.fileLabel = fileLabel;
-      if (title.length() > 0) {
-         sb.insert(10, title + " ");
-      }
-      frame.setTitle(sb.toString());
       if (initWindow) {
          initWindow();
       }
@@ -67,12 +62,10 @@ public class SettingsWin {
     * Returns a new SettingsWin where only the name for a project file and
     * for a project root can be entered
     * @param fileLabel  the label for the file text field
-    * @param title  the title for the project. The empty string to use the 
-    * default title
     * @return  a new SettingsWin
     */
-   public static SettingsWin basicWindow(String fileLabel, String title) {
-      return new SettingsWin(fileLabel, title, true);
+   public static SettingsWin basicWindow(String fileLabel) {
+      return new SettingsWin(fileLabel, true);
    }
    
    /**
@@ -84,12 +77,10 @@ public class SettingsWin {
     * a {@link #basicWindow(String, String)}.
     * <p>
     * @param fileLabel  the label for the file text field
-    * @param title  the title for the project. The empty string to use the 
-    * default title
     * @return  a new SettingsWin
     */
-   public static SettingsWin adaptableWindow(String fileLabel, String title) {
-      return new SettingsWin(fileLabel, title, false);
+   public static SettingsWin adaptableWindow(String fileLabel) {
+      return new SettingsWin(fileLabel, false);
    }
    
    /**
