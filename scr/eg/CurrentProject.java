@@ -232,7 +232,8 @@ public class CurrentProject {
          for (int i = 0; i < txtDoc.length; i++) {
             boolean approved
                   = txtDoc[i] != null
-                  && txtDoc[i].filename().endsWith(current.getSourceSuffix());
+                  && txtDoc[i].filename().endsWith(current.getSourceSuffix())
+                  && current.isInProject(txtDoc[i].dir());
             if (approved) {
                boolean exists = new File(txtDoc[i].filepath()).exists();
                if (exists) {
