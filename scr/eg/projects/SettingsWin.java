@@ -313,7 +313,7 @@ public class SettingsWin {
       if (useScr) {
          gridSize++;
          grid.setRows(gridSize);        
-         JLabel sourcesDirLb = new JLabel("Name of source's directory:");
+         JLabel sourcesDirLb = new JLabel("Name of sources directory:");
          projPnl.add(holdLbAndTf(sourcesDirLb, sourcesDirTf));
       }
       //
@@ -321,11 +321,11 @@ public class SettingsWin {
       if (useExec) {
          gridSize++;
          grid.setRows(gridSize);
-         JLabel execDirLb = new JLabel("Name of executable's directory:");
+         JLabel execDirLb = new JLabel("Name of executables directory:");
          projPnl.add(holdLbAndTf(execDirLb, execDirTf));
       }
  
-      JLabel projDirLb = new JLabel("Name of project root (no input rqd.):");
+      JLabel projDirLb = new JLabel("Name of project root (input not rqd.):");
       projPnl.add(holdLbAndTf(projDirLb, projDirTf));
       projPnl.add(checkBxPnl(saveConfig, "Save 'eadconfig' file"));
 
