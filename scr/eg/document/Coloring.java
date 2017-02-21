@@ -21,7 +21,7 @@ class Coloring {
    private final StyledDocument doc;
    
    private String[] keywords;
-   private boolean contrainWord = false;
+   private boolean constrainWord = false;
    private String[] operators;
    private boolean isOperators = false;
    private String[] flagged;
@@ -51,7 +51,7 @@ class Coloring {
       switch(language) {
          case JAVA:
             keywords = Syntax.JAVA_KEYWORDS;
-            contrainWord = true;
+            constrainWord = true;
             flagged = Syntax.JAVA_ANNOTATIONS;
             isFlagged = true;
             isFlags = false;
@@ -65,9 +65,9 @@ class Coloring {
             isBrackets = true;
             break;
         case HTML:
-            keywords = Syntax.HTML_TAGS;
-            contrainWord = false;
-            flagged = Syntax.HTML_ATTR; //begin with space
+            keywords = Syntax.HTML_ATTR;
+            constrainWord = true;
+            flagged = Syntax.HTML_TAGS;
             isFlagged = true;
             isFlags = false;
             isOperators = false;
@@ -80,7 +80,7 @@ class Coloring {
             break;
         case PERL:
             keywords = Syntax.PERL_KEYWORDS;
-            contrainWord = true;
+            constrainWord = true;
             isFlagged = false;
             operators = Syntax.PERL_OP;
             isOperators = true;
@@ -96,7 +96,7 @@ class Coloring {
    
    void setKeywords(String[] keywords, boolean constrainWord) {
       this.keywords = keywords;
-      this.contrainWord = constrainWord;
+      this.constrainWord = constrainWord;
       isFlagged = false;
       isFlags = false;
       isOperators = false;
@@ -125,11 +125,11 @@ class Coloring {
          }
          if (isFlagged) {
             for (String f : flagged) {
-               keys(chunk, f, flagSet, posStart);
+               keys(chunk, f, flagSet, posStart, false);
             }
          }
          for (String k : keywords) {
-            keys(chunk, k, keySet, posStart);
+            keys(chunk, k, keySet, posStart, constrainWord);
          }
          if (isOperators) {
             for (String o : operators) {
@@ -164,13 +164,14 @@ class Coloring {
       }
    }
 
-   private void keys(String in, String key, SimpleAttributeSet set, int pos) {
+   private void keys(String in, String key, SimpleAttributeSet set,
+         int pos, boolean reqWord) {
       int start = 0;
       int jump = 0;
       while (start != -1) {
          start = in.indexOf(key, start + jump);
          if (start != -1) {
-            boolean ok = !contrainWord || Syntax.isWord(in, key, start);
+            boolean ok = !reqWord || Syntax.isWord(in, key, start);
             if (ok) {
                doc.setCharacterAttributes(start + pos, key.length(),
                      set, false);
@@ -314,7 +315,7 @@ class Coloring {
    }
    
    private void setStyles() {
-      Color commentGreen = new Color(60, 190, 80);
+      Color commentGreen = new Color(100, 190, 100);
       StyleConstants.setForeground(comSet, commentGreen);
       StyleConstants.setBold(comSet, false);
 

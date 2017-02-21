@@ -72,12 +72,11 @@ public class Syntax {
    };
    
    final static String[] HTML_ATTR = {
-      " height",
-      " href",
-      " id",
-      " title",
-      " scr",
-      " width",
+      "height",
+      "href",
+      "id",
+      "scr",
+      "width",
    };
    
    final static String[] PERL_KEYWORDS = {
