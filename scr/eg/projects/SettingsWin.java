@@ -74,7 +74,7 @@ public class SettingsWin {
     * <p>
     * The method {@link #setupWindow()} must be invoked (lastly) to initialize
     * the window. Calling only this method yields a SettingsWin that equals to
-    * a {@link #basicWindow(String, String)}.
+    * a {@link #basicWindow(String)}.
     * <p>
     * @param fileLabel  the label for the file text field
     * @return  a new SettingsWin

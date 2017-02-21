@@ -58,7 +58,7 @@ public abstract class ProjectConfig implements Configurable {
    
    /**
     * Creates a {@code SettingsWin} with the basic content.
-    * @see SettingsWin#basicWindow(String, String)
+    * @see SettingsWin#basicWindow(String)
     */
    @Override
    public void createSettingsWin() {
