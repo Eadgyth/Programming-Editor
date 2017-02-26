@@ -361,7 +361,7 @@ public final class TextDocument {
          case "java":
            lang = Languages.JAVA;
            break;
-         case "html":
+         case "html": case "htm":
             lang = Languages.HTML;
             break;
          case "pl": case "pm":

@@ -13,14 +13,12 @@ public class SelectedProject {
    private final DisplaySetter displSet;
    private final ProcessStarter proc;
    private final ConsolePanel consPnl;
-   private final FileTree fileTree;
 
    public SelectedProject(DisplaySetter displSet, ProcessStarter proc,
-         ConsolePanel consPnl, FileTree fileTree) {
+         ConsolePanel consPnl) {
       this.displSet = displSet;
       this.proc = proc;
       this.consPnl = consPnl;
-      this.fileTree = fileTree;
    }
 
    /**
@@ -42,10 +40,10 @@ public class SelectedProject {
       ProjectActions newProj = null;
       switch (fileExt) {
          case "java":
-            newProj = new JavaActions(displSet, proc, consPnl, fileTree);
+            newProj = new JavaActions(displSet, proc, consPnl);
             break;
-         case "html":
-            newProj = new HtmlActions();
+         case "html": case "htm":
+            newProj = new HtmlActions(fileExt);
             break;
          case "pl": case "pm":
             newProj = new PerlActions(displSet, proc);
@@ -54,10 +52,10 @@ public class SelectedProject {
       if (newProj == null) {
          switch (lang) {
             case JAVA:
-               newProj = new JavaActions(displSet, proc, consPnl, fileTree);
+               newProj = new JavaActions(displSet, proc, consPnl);
                break;
             case HTML:
-               newProj = new HtmlActions();
+               newProj = new HtmlActions("html");
                break;
             case PERL:
                newProj = new PerlActions(displSet, proc);

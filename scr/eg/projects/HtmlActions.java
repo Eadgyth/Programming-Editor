@@ -15,8 +15,8 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    
    private File htmlFile;
    
-   HtmlActions() {
-      super(".html");
+   HtmlActions(String suffix) {
+      super("." + suffix);
    }
    
    /**
@@ -47,13 +47,6 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    /**
-    * Not used
-    */
-   @Override
-   public void compile() {
-   }
-   
-   /**
     * Shows the html document in the default file browser
     */
    @Override
@@ -68,15 +61,8 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
       }
    }
    
-   /**
-    * Not used
-    */
-   @Override
-   public void build() {
-   }
-   
-   private void setHtmlFile() {
+   private void setHtmlFile() {      
       htmlFile = new File(getProjectPath() + F_SEP
-            + getModuleName() + F_SEP + getMainFile() + ".html");
+            + getModuleName() + F_SEP + getMainFile() + super.getSourceSuffix());
    }
 }

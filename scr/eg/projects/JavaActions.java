@@ -26,18 +26,16 @@ public final class JavaActions extends ProjectConfig
    private final CreateJar jar;
    private final ProcessStarter proc;
    private final ConsolePanel consPnl;
-   private final FileTree fileTree;
 
    private String startCommand = "";
 
    JavaActions(DisplaySetter displSet, ProcessStarter proc,
-         ConsolePanel consPnl, FileTree fileTree) {
+         ConsolePanel consPnl) {
 
       super(".java");
       this.displSet = displSet;
       this.proc = proc;
       this.consPnl = consPnl;
-      this.fileTree = fileTree;
       comp = new Compile(consPnl);
       jar = new CreateJar(consPnl);
    }
@@ -145,7 +143,7 @@ public final class JavaActions extends ProjectConfig
                }
                exists = jarFileExists(jarName);
             }
-            fileTree.updateTree();
+            displSet.updateFileTree();
          }
          consPnl.appendText("<<Saved jar file named " + jarName + ">>\n");
          JOptions.infoMessage("Saved jar file named " + jarName);
