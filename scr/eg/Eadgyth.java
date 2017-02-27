@@ -46,7 +46,7 @@ public class Eadgyth {
       MainWin         mw        = new MainWin(menu.menubar(), tBar.toolbar(),
                                       tabPane.tabbedPane(), fileTree.fileTreePnl(),
                                       consPnl.consolePnl());
-      DisplaySetter   displSet  = new DisplaySetter(mw, menu, tBar);
+      DisplaySetter   displSet  = new DisplaySetter(mw, menu, tBar, fileTree);
       ProcessStarter  proc      = new ProcessStarter(consPnl);
       CurrentProject  currProj  = new CurrentProject(displSet, proc, consPnl, fileTree);
       Edit            edit      = new Edit();
@@ -62,17 +62,15 @@ public class Eadgyth {
       };
       mw.winListen(winListener);
           
-      tBar.registerFileActions(tabFiles);
-      tBar.registerProjectActions(currProj);
-      tBar.registerEdit(edit);
+      tBar.registerFileAct(tabFiles);
+      tBar.registerProjectAct(currProj);
+      tBar.registerEditAct(edit);
       menu.getFileMenu().registerAct(tabFiles);
       menu.getProjectMenu().registerAct(currProj);
       menu.getEditMenu().registerAct(edit, tabFiles);
       menu.getFormatMenu().registerAct(tabFiles, displSet);
       menu.getViewMenu().registerAct(displSet);
       consPnl.closeAct(e -> displSet.setShowConsoleState(false));
-      fileTree.closeAct(e -> displSet.setShowFileViewState(false));
-      mw.closeFunctPnlAct(e -> displSet.setShowFunctionState(false)); 
       fileTree.addObserver(tabFiles);
       menu.getPluginMenu().startPlugin(plugStart, displSet); 
       

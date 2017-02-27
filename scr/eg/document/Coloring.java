@@ -315,7 +315,7 @@ class Coloring {
    }
    
    private void setStyles() {
-      Color commentGreen = new Color(100, 190, 100);
+      Color commentGreen = new Color(90, 190, 90);
       StyleConstants.setForeground(comSet, commentGreen);
       StyleConstants.setBold(comSet, false);
 

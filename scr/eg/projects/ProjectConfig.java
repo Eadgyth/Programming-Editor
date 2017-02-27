@@ -35,9 +35,10 @@ public abstract class ProjectConfig implements Configurable {
    private final static Preferences PREFS = new Preferences();
    private final static Preferences CONFIG = new Preferences();
    private final static String F_SEP = File.separator;
+
+   private final String suffix;
    
    private SettingsWin setWin = null;
-   private String suffix;
    private String projTestName = "";  
    private String projectPath = "";
    private String mainFile = "";

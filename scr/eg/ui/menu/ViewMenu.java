@@ -29,7 +29,12 @@ public class ViewMenu {
    JMenu getMenu() {
       return menu;
    }
-   
+
+   /**
+    * Adds action listeners to this menu items which are handled
+    * by the {@code DisplaySetter} object
+    * @param displSet  the reference to {@link DisplaySetter}
+    */
    public void registerAct(DisplaySetter displSet) {
       consoleItm.addActionListener(e ->
             displSet.showConsole(isConsoleItmSelected()));
@@ -42,7 +47,7 @@ public class ViewMenu {
    }
    
    /**
-    * @return  true if this checkbox menu item for showing the console
+    * @return  if this checkbox menu item for showing the console
     * is selected
     */
    public boolean isConsoleItmSelected() {
@@ -50,7 +55,7 @@ public class ViewMenu {
    }
 
    /**
-    * @return  true if this checkbox menu item for showing the file explorer
+    * @return  if this checkbox menu item for showing the file explorer
     * is selected
     */
    public boolean isFileViewItmSelected() {
@@ -65,14 +70,32 @@ public class ViewMenu {
       return functionItm.getState();
    }
    
+   /**
+    * Sets the selection state of the checkbox menu item for showing the
+    * console panel
+    * @param select  true/false to set the menu item for showing the
+    * console panel selected/unselected
+    */
    public void selectConsoleItm(boolean select) {
       consoleItm.setState(select);
    }
 
+   /**
+    * Sets the selection state of the checkbox menu item for showing the
+    * file view panel
+    * @param select  true/false to set the menu item for showing the
+    * file view panel selected/unselected
+    */
    public void selectFileViewItm(boolean select) {
       fileViewItm.setState(select);
    }
 
+   /**
+    * Sets the selection state of the checkbox menu item for showing the
+    * function panel
+    * @param select  true/false to set the menu item for showing the
+    * function panel selected/unselected
+    */
    public void selectFunctionItm(boolean select) {
       functionItm.setState(select);
    }

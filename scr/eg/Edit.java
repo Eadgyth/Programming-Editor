@@ -93,7 +93,6 @@ public class Edit {
          txtDoc.insertStr(pos - selection.length(), clipboard);
          textArea.setCaretPosition(pos - selection.length() + clipboard.length());
       }
-
       txtDoc.colorAll();
    }
 

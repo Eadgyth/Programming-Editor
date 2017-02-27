@@ -13,8 +13,6 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
 
    private final static String F_SEP = File.separator;
    
-   private File htmlFile;
-   
    HtmlActions(String suffix) {
       super("." + suffix);
    }
@@ -24,33 +22,17 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void createSettingsWin() { 
-      SettingsWin setWin = SettingsWin.basicWindow("Name of HTML file");
+      SettingsWin setWin = SettingsWin.basicWindow("Name of an HTML file");
       setSettingsWin(setWin);
-   }
-   
-   @Override
-   public boolean configureProject(String dir) {
-      boolean success = super.configureProject(dir);
-      if (success) {
-         setHtmlFile();
-      }
-      return success;
-   }
-   
-   @Override
-   public boolean retrieveProject(String dir) {
-      boolean success = super.retrieveProject(dir);
-      if (success) {
-         setHtmlFile();
-      }
-      return success;
    }
    
    /**
     * Shows the html document in the default file browser
+    * @param filename  the name of the html source file
     */
    @Override
-   public void runProject() {
+   public void runProject(String filename) {
+      File htmlFile = htmlFile(filename);
       try{
          if (java.awt.Desktop.isDesktopSupported()) {
             java.awt.Desktop.getDesktop().open(htmlFile);
@@ -61,8 +43,7 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
       }
    }
    
-   private void setHtmlFile() {      
-      htmlFile = new File(getProjectPath() + F_SEP
-            + getModuleName() + F_SEP + getMainFile() + super.getSourceSuffix());
+   private File htmlFile(String filename) {      
+      return new File(getProjectPath() + F_SEP + filename);
    }
 }

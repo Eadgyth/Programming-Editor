@@ -94,12 +94,14 @@ public class FileTree extends Observable {
    
    /**
     * Sets the project's root directory and displays the file system at
-    * this root
+    * this root if the root is not set before
     * @param projRoot  the project's root directory
     */
    public void setProjectTree(String projRoot) {
+      if (!this.projRoot.equals(projRoot)) {
+         setNewTree(projRoot);
+      }
       this.projRoot = projRoot;
-      setNewTree(projRoot);
    }
    
    /**

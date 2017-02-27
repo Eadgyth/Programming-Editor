@@ -44,7 +44,7 @@ public class Toolbar {
     * @param tf  the reference to the {@link TabbedFiles} object
     * that handles the file actions
     */
-   public void registerFileActions(TabbedFiles tf) {
+   public void registerFileAct(TabbedFiles tf) {
       openBt.addActionListener(e -> tf.openFileByChooser());
       saveBt.addActionListener(e -> tf.save());      
    }
@@ -54,7 +54,7 @@ public class Toolbar {
     * @param currProj  the reference to the {@link CurrentProject}
     * object that handles the project actions
     */
-   public void registerProjectActions(CurrentProject currProj) {
+   public void registerProjectAct(CurrentProject currProj) {
       runBt.addActionListener(e -> currProj.runProj());
       compileBt.addActionListener(e -> currProj.compile());
    }
@@ -64,7 +64,7 @@ public class Toolbar {
     * @param edit  the reference to the {@link Edit}
     * object that handles the edit actions
     */
-   public void registerEdit(Edit edit) {
+   public void registerEditAct(Edit edit) {
       undoBt.addActionListener(e -> edit.undo());
       redoBt.addActionListener(e -> edit.redo());
       cutBt.addActionListener(e -> edit.cut());

@@ -52,7 +52,8 @@ public class FileChooserSave {
    private void setLaf() {
       chooser = new JFileChooser();
       if ("Metal".equals(UIManager.getLookAndFeel().getName())) {
-         chooser.setFileView(new FileView(){
+         chooser.setFileView(new FileView() {
+
             @Override
             public Icon getIcon(File f) {
                return FileSystemView.getFileSystemView().getSystemIcon(f);

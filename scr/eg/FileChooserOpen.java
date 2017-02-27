@@ -23,7 +23,6 @@ public class FileChooserOpen {
       setLaf();
       File recent = new File(startingDir);
       chooser.setCurrentDirectory(recent);
-
       chooser.setAcceptAllFileFilterUsed(false);
       chooser.setApproveButtonText("Open");
       chooser.addChoosableFileFilter(new FileNameExtensionFilter(
@@ -54,6 +53,7 @@ public class FileChooserOpen {
       chooser = new JFileChooser();
       if ("Metal".equals(UIManager.getLookAndFeel().getName())) {       
          chooser.setFileView(new FileView() {
+
             @Override
             public Icon getIcon(File f) {
                return FileSystemView.getFileSystemView().getSystemIcon(f);

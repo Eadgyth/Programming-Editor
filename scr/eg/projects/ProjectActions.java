@@ -12,14 +12,22 @@ public interface ProjectActions extends Configurable {
     * Compiles source files
     */
    public default void compile() {
-       message();
+      JOptions.warnMessage("This operation is not supprted");
    };
    
    /**
     * Runs a project
     */
    public default void runProject() {
-       message();
+      JOptions.warnMessage("This operation is not supprted");
+   };
+   
+   /**
+    * Runs a project using the specified filename
+    * @param filename  the name of a file of the project
+    */
+   public default void runProject(String filename) {
+      JOptions.warnMessage("This operation is not supprted");
    };
    
    /**
@@ -27,10 +35,6 @@ public interface ProjectActions extends Configurable {
     * what 'build' is
     */
    public default void build() {
-       message();
-   };
-   
-   static void message() {
       JOptions.warnMessage("This operation is not supprted");
-   }
+   };
 }

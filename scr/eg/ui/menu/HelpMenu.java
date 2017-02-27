@@ -5,8 +5,8 @@ import javax.swing.JMenuItem;
 
 class HelpMenu {
    
-   private final JMenu     menu       = new JMenu("?");
-   private final JMenuItem aboutItm   = new JMenuItem("About Eadgyth");
+   private final JMenu     menu        = new JMenu("?");
+   private final JMenuItem aboutItm    = new JMenuItem("About Eadgyth");
    private final JMenuItem showHelpItm = new JMenuItem("Show help");
    
    HelpMenu() {

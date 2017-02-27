@@ -54,7 +54,7 @@ public class Syntax {
       "<applet ", "</applet>",
       "<b>", "</b>", "<br>", "</br>",
       "<body>", "</body>",
-      "<div>", "</div>",
+      "<div ", "<div>", "</div>",
       "<em>", "</em>",
       "<head>", "</head>", "<html>",  "</html>", "<hr>",
       "<h1>", "</h1>", "<h2>", "</h2>", "<h3>", "</h3>",

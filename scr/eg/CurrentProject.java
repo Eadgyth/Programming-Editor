@@ -69,7 +69,7 @@ public class CurrentProject {
       this.displSet = displSet;
       this.proc = proc;
       this.fileTree = fileTree;
-      selProj = new SelectedProject(displSet, proc, consPnl, fileTree);
+      selProj = new SelectedProject(displSet, proc, consPnl);
    }
 
    /**
@@ -267,7 +267,12 @@ public class CurrentProject {
       if (!isCurrent("Run")) {
          return;
       }
-      current.runProject();
+      if ("HtmlActions".equals(current.getClass().getSimpleName())) {
+         current.runProject(currDoc.filename());
+      }
+      else {
+         current.runProject();
+      }
    }
 
    /**

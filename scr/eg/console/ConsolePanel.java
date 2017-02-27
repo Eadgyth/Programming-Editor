@@ -48,7 +48,6 @@ public class ConsolePanel {
    public ConsolePanel() {
       scroll.setViewportView(area);
       scroll.setBorder(null);
-
       area.setBorder(new LineBorder(Color.WHITE, 5));
       area.setFont(Constants.VERDANA_PLAIN_11);
       area.setForeground(areaFontColor);

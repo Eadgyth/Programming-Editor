@@ -9,6 +9,7 @@ import eg.ui.menu.FormatMenu;
 import eg.ui.menu.ViewMenu;
 import eg.ui.menu.ProjectMenu;
 import eg.ui.DisplaySettingWin;
+import eg.ui.filetree.FileTree;
 
 /**
  * The setting of the display and behavior of the main window
@@ -20,6 +21,7 @@ public class DisplaySetter {
    private final ViewMenu vMenu;
    private final ProjectMenu prMenu;
    private final Toolbar tBar;
+   private final FileTree fileTree;
    private final DisplaySettingWin displSetWin = new DisplaySettingWin();
    private final Preferences prefs = new Preferences();
 
@@ -36,13 +38,15 @@ public class DisplaySetter {
     * @param mw  the reference to {@link MainWin}
     * @param menu  the reference to {@link Menu}
     * @param tBar  the reference to {@link Toolbar}
+    * @param fileTree  the reference to {@link FileTree}
     */
-   public DisplaySetter(MainWin mw, Menu menu, Toolbar tBar) {
+   public DisplaySetter(MainWin mw, Menu menu, Toolbar tBar, FileTree fileTree) {
       this.mw = mw;
       this.vMenu = menu.getViewMenu();
       this.fMenu = menu.getFormatMenu();
       this.prMenu = menu.getProjectMenu();
       this.tBar = tBar;
+      this.fileTree = fileTree;
       prefs.readPrefs();
       isShowStatusbar = displSetWin.isShowStatusbar();
       isShowToolbar = displSetWin.isShowToolbar();
@@ -50,6 +54,8 @@ public class DisplaySetter {
       isWordWrap = "enabled".equals(prefs.getProperty("wordWrap"));
       selectedLafInd = displSetWin.selectedLaf();
       displSetWin.okAct(e -> applySetWinOk());
+      fileTree.closeAct(e -> setShowFileViewState(false));
+      mw.closeFunctPnlAct(e -> setShowFunctionState(false)); 
    }
 
    /**
@@ -196,6 +202,13 @@ public class DisplaySetter {
       else {
          mw.hideFunctionPnl();
       }
+   }
+   
+   /**
+    * Updates the file tree
+    */
+   public void updateFileTree() {
+      fileTree.updateTree();
    }
    
    /**
