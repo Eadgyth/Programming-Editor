@@ -233,6 +233,7 @@ public class DisplaySetter {
          boolean isBuild, int projCount) {
       if (projCount == 1) {
          vMenu.enableFileView();
+         prMenu.enableSetNewProjItm();
       }
       if (projCount == 2) {
          enableChangeProjItm();
@@ -242,7 +243,8 @@ public class DisplaySetter {
    }
    
    /**
-    * Enables the menu item to change between projects
+    * Enables the menu items to change between projects and t
+    * to set a new project
     */
    public void enableChangeProjItm() {
       prMenu.enableChangeProjItm();

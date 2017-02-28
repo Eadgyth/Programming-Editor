@@ -14,13 +14,14 @@ import eg.ui.IconFiles;
 
 public class ProjectMenu {
    
-   private final JMenu     menu       = new JMenu("Project");
-   private final JMenuItem compile    = new JMenuItem("Save open files and compile",
-                                        IconFiles.COMPILE_ICON);
-   private final JMenuItem run        = new JMenuItem("Run", IconFiles.RUN_ICON);
-   private final JMenuItem build      = new JMenuItem("Build");
-   private final JMenuItem setProject = new JMenuItem("Project settings");
-   private final JMenuItem changeProj = new JMenuItem("Change project");
+   private final JMenu     menu         = new JMenu("Project");
+   private final JMenuItem compile      = new JMenuItem("Save open files and compile",
+                                          IconFiles.COMPILE_ICON);
+   private final JMenuItem run          = new JMenuItem("Run", IconFiles.RUN_ICON);
+   private final JMenuItem build        = new JMenuItem("Build");
+   private final JMenuItem setProject   = new JMenuItem("Project settings");
+   private final JMenuItem changeProj   = new JMenuItem("Change project");
+   private final JMenuItem setNewProj   = new JMenuItem("New project settings");
    
    ProjectMenu() {
       assembleMenu();
@@ -32,15 +33,20 @@ public class ProjectMenu {
    }
    
    public void registerAct(CurrentProject currProj) {
-      changeProj.addActionListener(e -> currProj.changeProject());
-      run.addActionListener(e -> currProj.runProj());
       setProject.addActionListener(e -> currProj.openSettingsWindow());
+      changeProj.addActionListener(e -> currProj.changeProject());
+      setNewProj.addActionListener(e -> currProj.createNewProject());
+      run.addActionListener(e -> currProj.runProj());
       build.addActionListener(e -> currProj.buildProj());
       compile.addActionListener(e -> currProj.compile());
    }
    
    public void enableChangeProjItm() {
       changeProj.setEnabled(true);
+   }
+   
+   public void enableSetNewProjItm() {
+      setNewProj.setEnabled(true);
    }
 
    public void enableProjItms(boolean isCompile, boolean isRun, boolean isBuild) {
@@ -64,7 +70,9 @@ public class ProjectMenu {
       menu.addSeparator();
       menu.add(setProject);
       menu.add(changeProj);
+      menu.add(setNewProj);
       changeProj.setEnabled(false);
+      setNewProj.setEnabled(false);
       menu.setMnemonic(KeyEvent.VK_P);
    }
    

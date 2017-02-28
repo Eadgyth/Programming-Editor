@@ -107,6 +107,26 @@ public class CurrentProject {
    public boolean isProjectSet() {
       return current != null;
    }
+   
+   /**
+    * Creates a new project
+    */
+   public void createNewProject() {
+      ProjectActions projNew = selProj.createProject(currExt, lang);
+      if (projNew == null) {
+         JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
+      }
+      else {    
+         int result = 0;
+         if (isProjectSet()) {
+            result = JOptions.confirmYesNo("Set new project ?");
+         }
+         if (result == 0) {
+            projNew.makeSetWinVisible(true);
+            projNew.addOkAction(e -> configureProject(projNew));
+         }
+      }
+   }
 
    /**
     * Tries to assign to this current project a project which a configuration
@@ -159,7 +179,7 @@ public class CurrentProject {
             JOptions.titledInfoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          }
          else {
-            newProject();
+            createNewProject();
          }
       }
       else {
@@ -177,7 +197,7 @@ public class CurrentProject {
                }
             }
             else {
-               newProject();
+               createNewProject();
             }
          }
       }       
@@ -201,7 +221,7 @@ public class CurrentProject {
             changeProject(fromList);
          }
          else {
-            newProject();
+            createNewProject();
          }   
       }
    }      
@@ -294,23 +314,6 @@ public class CurrentProject {
    //
    //--private methods
    //
-
-   private void newProject() {
-      ProjectActions projNew = selProj.createProject(currExt, lang);
-      if (projNew == null) {
-         JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
-      }
-      else {    
-         int result = 0;
-         if (isProjectSet()) {
-            result = JOptions.confirmYesNo("Set new project ?");
-         }
-         if (result == 0) {
-            projNew.makeSetWinVisible(true);
-            projNew.addOkAction(e -> configureProject(projNew));
-         }
-      }
-   }
 
    private boolean changeProject(ProjectActions toChangeTo) {
       int result = JOptions.confirmYesNo("Change to project '"
