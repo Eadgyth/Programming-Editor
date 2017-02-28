@@ -5,6 +5,7 @@ import java.io.IOException;
 
 //--Eadgyth--//
 import eg.utils.FileUtils;
+import eg.utils.JOptions;
 
 /**
  * Represents a project to write a webpage in HTML
@@ -33,13 +34,21 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    @Override
    public void runProject(String filename) {
       File htmlFile = htmlFile(filename);
-      try{
-         if (java.awt.Desktop.isDesktopSupported()) {
-            java.awt.Desktop.getDesktop().open(htmlFile);
+      String fileStr = htmlFile.toString();
+      boolean ok = htmlFile.exists() && fileStr.endsWith(getSourceSuffix());
+      if (ok) {
+         try{
+            if (java.awt.Desktop.isDesktopSupported()) {
+               java.awt.Desktop.getDesktop().open(htmlFile);
+            }
+         }
+         catch (IOException e) {
+            FileUtils.logStack(e);
          }
       }
-      catch (IOException e) {
-         FileUtils.logStack(e);
+      else {
+         JOptions.warnMessage("This file is not html code or not found in the"
+               + " project's root direcory");
       }
    }
    
