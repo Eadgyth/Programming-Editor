@@ -107,26 +107,6 @@ public class CurrentProject {
    public boolean isProjectSet() {
       return current != null;
    }
-   
-   /**
-    * Creates a new project
-    */
-   public void createNewProject() {
-      ProjectActions projNew = selProj.createProject(currExt, lang);
-      if (projNew == null) {
-         JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
-      }
-      else {    
-         int result = 0;
-         if (isProjectSet()) {
-            result = JOptions.confirmYesNo("Set new project ?");
-         }
-         if (result == 0) {
-            projNew.makeSetWinVisible(true);
-            projNew.addOkAction(e -> configureProject(projNew));
-         }
-      }
-   }
 
    /**
     * Tries to assign to this current project a project which a configuration
@@ -157,7 +137,7 @@ public class CurrentProject {
                prToFind.addOkAction(e -> configureProject(prToFind));
                projList.add(prToFind);
                if (projList.size() == 2) {
-                  displSet.enableChangeProjItm();
+                  displSet.enableChangeProj();
                }
                EventQueue.invokeLater(() -> changeProject(prToFind));            
             }
@@ -202,6 +182,24 @@ public class CurrentProject {
          }
       }       
    }
+   
+   /**
+    * Creates a project although the selected {@code TextDocument} belongs to the
+    * currently active project
+    * @throws IllegalArgumentException  if no project is set
+    */
+   public void createInterlacedProject() {
+      if (!isProjectSet()) {
+         throw new IllegalStateException("Method requires that a project is set");
+      }
+      boolean isInterlaced = current.isInProject(currDoc.dir());
+      if (isInterlaced) {
+         createNewProject();
+      }
+      else {
+         JOptions.infoMessage("The file does not belong the active project");
+      }
+   }         
 
    /**
     * Assigns to this current project the project from this {@code List} of
@@ -238,23 +236,48 @@ public class CurrentProject {
          fileTree.updateTree();
       }
    }
-
-   /**
-    * Compiles this current project
+   
+  /**
+    * Saves the selected file in the current project and compiles all source files
+    * present in the project root directory
     */
-   public void compile() {
+   public void saveAndCompile() {
       if (!isCurrent("Compile")) {
          return;
-      }     
+      }
+      try {
+        displSet.setBusyCursor(true);
+        if (isFileToCompile(currDoc)) {
+            boolean exists = new File(currDoc.filepath()).exists();
+            if (exists) {
+               currDoc.saveToFile();
+               current.compile();
+            }
+            else {
+               JOptions.warnMessage(currDoc.filename()
+                     + " could not be found anymore");
+            }
+         }
+      }
+      finally {
+         endCompilation();
+      }
+   }
+               
+
+   /**
+    * Saves all open files in the current project and compiles all source files
+    * present in the project root directory
+    */
+   public void saveAllAndCompile() {
+      if (!isCurrent("Compile")) {
+         return;
+      }
       StringBuilder missingFiles = new StringBuilder();
       try {
          displSet.setBusyCursor(true);
          for (int i = 0; i < txtDoc.length; i++) {
-            boolean approved
-                  = txtDoc[i] != null
-                  && txtDoc[i].filename().endsWith(current.getSourceSuffix())
-                  && current.isInProject(txtDoc[i].dir());
-            if (approved) {
+            if (isFileToCompile(txtDoc[i])) {
                boolean exists = new File(txtDoc[i].filepath()).exists();
                if (exists) {
                   txtDoc[i].saveToFile();
@@ -273,15 +296,15 @@ public class CurrentProject {
          }
       }   
       finally {
-         EventQueue.invokeLater(() -> {
-            fileTree.updateTree();
-            displSet.setBusyCursor(false);
-         });
+         endCompilation();
       }
    }
 
    /**
-    * Runs this project
+    * Runs this project.
+    * <p>
+    * If the project type is html the currently selected html
+    * file is used
     */
    public void runProj() {
       if (!isCurrent("Run")) {
@@ -314,6 +337,26 @@ public class CurrentProject {
    //
    //--private methods
    //
+   
+   /**
+    * Creates a new project
+    */
+   private void createNewProject() {
+      ProjectActions projNew = selProj.createProject(currExt, lang);
+      if (projNew == null) {
+         JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
+      }
+      else {    
+         int result = 0;
+         if (isProjectSet()) {
+            result = JOptions.confirmYesNo("Set new project ?");
+         }
+         if (result == 0) {
+            projNew.makeSetWinVisible(true);
+            projNew.addOkAction(e -> configureProject(projNew));
+         }
+      }
+   }
 
    private boolean changeProject(ProjectActions toChangeTo) {
       int result = JOptions.confirmYesNo("Change to project '"
@@ -360,6 +403,19 @@ public class CurrentProject {
    
    private String projectName(ProjectActions toName) {
       return new File(toName.getProjectPath()).getName();
+   }
+   
+   private boolean isFileToCompile(TextDocument td) {
+       return td != null
+             && td.filename().endsWith(current.getSourceSuffix())
+             && current.isInProject(td.dir());
+   }
+   
+   private void endCompilation() {
+      EventQueue.invokeLater(() -> {
+         fileTree.updateTree();
+         displSet.setBusyCursor(false);
+      });
    }
    
    private boolean isCurrent(String action) {

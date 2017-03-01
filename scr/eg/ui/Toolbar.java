@@ -16,17 +16,18 @@ public class Toolbar {
 
    private final JToolBar toolbar = new JToolBar(JToolBar.HORIZONTAL);
 
-   private final JButton openBt    = new JButton(IconFiles.OPEN_ICON);
-   private final JButton saveBt    = new JButton(IconFiles.SAVE_ICON);
-   private final JButton undoBt    = new JButton(IconFiles.UNDO_ICON);
-   private final JButton redoBt    = new JButton(IconFiles.REDO_ICON);
-   private final JButton cutBt     = new JButton(IconFiles.CUT_ICON);
-   private final JButton copyBt    = new JButton(IconFiles.COPY_ICON);
-   private final JButton pasteBt   = new JButton(IconFiles.PASTE_ICON);
-   private final JButton indentBt  = new JButton(IconFiles.INDENT_ICON);
-   private final JButton outdentBt = new JButton(IconFiles.OUTDENT_ICON); 
-   private final JButton compileBt = new JButton(IconFiles.COMPILE_ICON);
-   private final JButton runBt     = new JButton(IconFiles.RUN_ICON);
+   private final JButton openBt       = new JButton(IconFiles.OPEN_ICON);
+   private final JButton saveBt       = new JButton(IconFiles.SAVE_ICON);
+   private final JButton undoBt       = new JButton(IconFiles.UNDO_ICON);
+   private final JButton redoBt       = new JButton(IconFiles.REDO_ICON);
+   private final JButton cutBt        = new JButton(IconFiles.CUT_ICON);
+   private final JButton copyBt       = new JButton(IconFiles.COPY_ICON);
+   private final JButton pasteBt      = new JButton(IconFiles.PASTE_ICON);
+   private final JButton indentBt     = new JButton(IconFiles.INDENT_ICON);
+   private final JButton outdentBt    = new JButton(IconFiles.OUTDENT_ICON);
+   private final JButton changeProjBt = new JButton(IconFiles.CHANGE_PROJ_ICON);
+   private final JButton compileBt    = new JButton(IconFiles.COMPILE_ICON);
+   private final JButton runBt        = new JButton(IconFiles.RUN_ICON);
    
    public Toolbar() {
       initToolbar();
@@ -55,8 +56,9 @@ public class Toolbar {
     * object that handles the project actions
     */
    public void registerProjectAct(CurrentProject currProj) {
+      changeProjBt.addActionListener(e -> currProj.changeProject());
       runBt.addActionListener(e -> currProj.runProj());
-      compileBt.addActionListener(e -> currProj.compile());
+      compileBt.addActionListener(e -> currProj.saveAllAndCompile());
    }
    
    /**
@@ -83,6 +85,10 @@ public class Toolbar {
       compileBt.setEnabled(isCompile);
       runBt.setEnabled(isRun);
    }
+   
+   public void enableChangeProjBt() {
+      changeProjBt.setEnabled(true);
+   }
 
    //
    //--private methods
@@ -93,11 +99,12 @@ public class Toolbar {
       toolbar.setBorder(null);
       toolbar.setFloatable(false);
       enableProjBts(false, false);
+      changeProjBt.setEnabled(false);
       JButton[] bts = new JButton[] {
          openBt, saveBt,
          undoBt, redoBt, cutBt, copyBt, pasteBt,
          indentBt, outdentBt,
-         compileBt, runBt
+         compileBt, runBt, changeProjBt
       };
                           
       String[] toolTips = new String[] {
@@ -105,7 +112,8 @@ public class Toolbar {
          "Undo", "Redo", "Cut selection", "Copy selection",
          "Paste",
          "Indent selection more", "Indent selection less",
-         "Save open files and compile project", "Run project"
+         "Save all open source files and compile project", "Run project",
+         "Change between projects"
       };
       
       for (int i = 0; i < bts.length; i++) {

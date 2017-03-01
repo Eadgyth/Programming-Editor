@@ -277,7 +277,7 @@ public abstract class ProjectConfig implements Configurable {
       }
    }
 
-   private String findRootInPath(String path, Preferences props) { 
+   private String findRootInPath(String path, Preferences props) {
       File searched = new File(path);
       File project;
       if (projectPath.length() > 0) {

@@ -14,14 +14,19 @@ import eg.ui.IconFiles;
 
 public class ProjectMenu {
    
-   private final JMenu     menu         = new JMenu("Project");
-   private final JMenuItem compile      = new JMenuItem("Save open files and compile",
-                                          IconFiles.COMPILE_ICON);
-   private final JMenuItem run          = new JMenuItem("Run", IconFiles.RUN_ICON);
-   private final JMenuItem build        = new JMenuItem("Build");
-   private final JMenuItem setProject   = new JMenuItem("Project settings");
-   private final JMenuItem changeProj   = new JMenuItem("Change project");
-   private final JMenuItem setNewProj   = new JMenuItem("New project settings");
+   private final JMenu     menu       = new JMenu("Project");
+   private final JMenuItem SaveCompile
+         = new JMenuItem("Save selected source file and compile");
+   private final JMenuItem SaveAllCompile
+         = new JMenuItem("Save all open source files and compile",
+         IconFiles.COMPILE_ICON);
+   private final JMenuItem run        = new JMenuItem("Run", IconFiles.RUN_ICON);
+   private final JMenuItem build      = new JMenuItem("Build");
+   private final JMenuItem setProject = new JMenuItem("Project settings");
+   private final JMenuItem interlacedProj
+         = new JMenuItem("New settings for interlaced project");
+    private final JMenuItem changeProj
+         = new JMenuItem("Change project", IconFiles.CHANGE_PROJ_ICON);
    
    ProjectMenu() {
       assembleMenu();
@@ -35,22 +40,24 @@ public class ProjectMenu {
    public void registerAct(CurrentProject currProj) {
       setProject.addActionListener(e -> currProj.openSettingsWindow());
       changeProj.addActionListener(e -> currProj.changeProject());
-      setNewProj.addActionListener(e -> currProj.createNewProject());
+      interlacedProj.addActionListener(e -> currProj.createInterlacedProject());
       run.addActionListener(e -> currProj.runProj());
       build.addActionListener(e -> currProj.buildProj());
-      compile.addActionListener(e -> currProj.compile());
+      SaveCompile.addActionListener(e -> currProj.saveAndCompile());
+      SaveAllCompile.addActionListener(e -> currProj.saveAllAndCompile());
    }
    
    public void enableChangeProjItm() {
       changeProj.setEnabled(true);
    }
    
-   public void enableSetNewProjItm() {
-      setNewProj.setEnabled(true);
+   public void enableInterlacedProjItm() {
+      interlacedProj.setEnabled(true);
    }
 
    public void enableProjItms(boolean isCompile, boolean isRun, boolean isBuild) {
-      compile.setEnabled(isCompile);
+      SaveCompile.setEnabled(isCompile);
+      SaveAllCompile.setEnabled(isCompile);
       run.setEnabled(isRun);
       build.setEnabled(isBuild);
    }
@@ -60,8 +67,10 @@ public class ProjectMenu {
    }
 
    private void assembleMenu() {
-      menu.add(compile);
-      compile.setEnabled(false);
+      menu.add(SaveCompile);
+      SaveCompile.setEnabled(false);
+      menu.add(SaveAllCompile);
+      SaveAllCompile.setEnabled(false);
       menu.add(run);
       run.setEnabled(false);
       menu.addSeparator();
@@ -69,15 +78,15 @@ public class ProjectMenu {
       build.setEnabled(false);
       menu.addSeparator();
       menu.add(setProject);
+      menu.add(interlacedProj);
       menu.add(changeProj);
-      menu.add(setNewProj);
       changeProj.setEnabled(false);
-      setNewProj.setEnabled(false);
+      interlacedProj.setEnabled(false);
       menu.setMnemonic(KeyEvent.VK_P);
    }
    
    private void shortCuts() {
-      compile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,
+      SaveAllCompile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,
             ActionEvent.CTRL_MASK));
       run.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
             ActionEvent.CTRL_MASK));

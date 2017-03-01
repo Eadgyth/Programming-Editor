@@ -233,10 +233,10 @@ public class DisplaySetter {
          boolean isBuild, int projCount) {
       if (projCount == 1) {
          vMenu.enableFileView();
-         prMenu.enableSetNewProjItm();
+         prMenu.enableInterlacedProjItm();
       }
       if (projCount == 2) {
-         enableChangeProjItm();
+         enableChangeProj();
       }
       prMenu.enableProjItms(isCompile, isRun, isBuild);
       tBar.enableProjBts(isCompile, isRun);
@@ -246,8 +246,9 @@ public class DisplaySetter {
     * Enables the menu items to change between projects and t
     * to set a new project
     */
-   public void enableChangeProjItm() {
+   public void enableChangeProj() {
       prMenu.enableChangeProjItm();
+      tBar.enableChangeProjBt();
    }
    
    /**

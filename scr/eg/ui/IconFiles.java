@@ -52,6 +52,8 @@ public class IconFiles {
          = new ImageIcon(TANGO_DIR + "view-refresh.png");
          
    // Eadgyth icons, drawn for this project
+   public final static ImageIcon CHANGE_PROJ_ICON
+         = new ImageIcon(EAD_DIR + "changeProj.png" );
    public final static ImageIcon RUN_ICON
          = new ImageIcon(EAD_DIR + "run.png" );
    public final static ImageIcon RUN_CMD_ICON
