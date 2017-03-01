@@ -4,7 +4,6 @@ import java.awt.Toolkit;
 
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
@@ -226,7 +225,7 @@ public class Edit {
    }
 
    /**
-    * performes redo action
+    * performs redo action
     */
    public void redo() {
       txtDoc.redo();
@@ -236,9 +235,9 @@ public class Edit {
       String inClipboard = "";
       Toolkit toolkit = Toolkit.getDefaultToolkit();
       Clipboard clipboard = toolkit.getSystemClipboard();
-      Transferable content = clipboard.getContents(null);
+      DataFlavor flavor = DataFlavor.stringFlavor;
       try {
-         inClipboard = (String) content.getTransferData(DataFlavor.stringFlavor);
+         inClipboard = (String) clipboard.getData(flavor); 
       }
       catch (UnsupportedFlavorException | IOException e) {
          FileUtils.logStack(e);
