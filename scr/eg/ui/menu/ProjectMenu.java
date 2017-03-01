@@ -18,7 +18,7 @@ public class ProjectMenu {
    private final JMenuItem SaveCompile
          = new JMenuItem("Save selected source file and compile");
    private final JMenuItem SaveAllCompile
-         = new JMenuItem("Save all open source files and compile",
+         = new JMenuItem("Save all opened source files and compile",
          IconFiles.COMPILE_ICON);
    private final JMenuItem run        = new JMenuItem("Run", IconFiles.RUN_ICON);
    private final JMenuItem build      = new JMenuItem("Build");

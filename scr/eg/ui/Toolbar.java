@@ -112,7 +112,7 @@ public class Toolbar {
          "Undo", "Redo", "Cut selection", "Copy selection",
          "Paste",
          "Indent selection more", "Indent selection less",
-         "Save all open source files and compile project", "Run project",
+         "Save all opened source files and compile project", "Run project",
          "Change between projects"
       };
       
