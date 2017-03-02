@@ -35,18 +35,19 @@ public class Eadgyth {
 
    public static void main(String[] arg) {
       Locale.setDefault(Locale.US);
+      uiManagerSettings();
+      TabbedPane      tabPane   = new TabbedPane();
       setLaf();
       FileUtils.emptyLog();
-      
+      Toolbar         tBar      = new Toolbar();
       ConsolePanel    consPnl   = new ConsolePanel();   
       FileTree        fileTree  = new FileTree();
       Menu            menu      = new Menu();
-      Toolbar         tBar      = new Toolbar();
-      TabbedPane      tabPane   = new TabbedPane();
       MainWin         mw        = new MainWin(menu.menubar(), tBar.toolbar(),
                                       tabPane.tabbedPane(), fileTree.fileTreePnl(),
                                       consPnl.consolePnl());
-      DisplaySetter   displSet  = new DisplaySetter(mw, menu, tBar, fileTree);
+      DisplaySetter   displSet  = new DisplaySetter(mw, menu, tBar,
+                                      fileTree);
       ProcessStarter  proc      = new ProcessStarter(consPnl);
       CurrentProject  currProj  = new CurrentProject(displSet, proc, consPnl, fileTree);
       Edit            edit      = new Edit();
@@ -94,21 +95,18 @@ public class Eadgyth {
             FileUtils.logStack(e);
          }
       }
-      int topTabInset = 0;
-      if ("Windows".equals(UIManager.getLookAndFeel().getName())) {
-         topTabInset = -2;
-      }
-      uiManagerSettings(topTabInset);
    }
    
-   private static void uiManagerSettings(int topTabInset) {
+   private static void uiManagerSettings() {
       UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
       UIManager.put("Menu.font", Constants.SANSSERIF_PLAIN_12);
       UIManager.put("MenuItem.font", Constants.SANSSERIF_PLAIN_12);
       UIManager.put("CheckBoxMenuItem.font", Constants.SANSSERIF_PLAIN_12);
       UIManager.put("SplitPaneDivider.border", new EmptyBorder(0, 0, 0, 0));
       UIManager.getDefaults().put("TabbedPane.contentBorderInsets",
-            new Insets(topTabInset, 0, 0, 0));
+            new Insets(0, 0, 0, 0));
+      UIManager.getDefaults().put("TabbedPane.selectedTabAreaInsets",
+            new Insets(0, 0, 0, 0));
       if ("Metal".equals(UIManager.getLookAndFeel().getName())) {
          UIManager.put("TabbedPane.selected", 
                new javax.swing.plaf.ColorUIResource(Color.WHITE));
