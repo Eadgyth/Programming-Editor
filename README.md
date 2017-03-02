@@ -31,7 +31,7 @@ the corresponding font size in other programs (e.g. Editor in Windows).
 PROBLEMS <br>
 1) The undo/redo may may cause problems with regard to the syntax coloring. These problems
 (which caused the text view to break when a linebreak right before a colored character is undone)
-seem to be circumvented (not solved) but it's not certain if that's true all situations.<br>
+seem to be circumvented (not solved) but it's not certain if that's true for all situations.<br>
 2) Unexpected rendering of the UI happened when the system look and feel was selected
 and the program was idling for a longer period of time (under Windows 10).<br>
 <p>
