@@ -39,6 +39,6 @@ public class FormatMenu {
    private void assembleMenu() {
       menu.add(fontItm);
       menu.add(wordWrapItm);
-      menu.setMnemonic(KeyEvent.VK_F);
+      menu.setMnemonic(KeyEvent.VK_O);
    }
 }
