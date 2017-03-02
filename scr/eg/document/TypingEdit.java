@@ -174,6 +174,9 @@ class TypingEdit {
    private void updateAfterUndoRedo(int previousLineNr) {
       String in = editArea.getDocText();
       updateRowNumber(in);
+      if (!isTypeEdit) {
+         return;
+      }
       int newLineNr = rowNum.getCurrLineNr();
       if (previousLineNr < newLineNr) {
          colorAll();
