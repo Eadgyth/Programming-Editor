@@ -38,7 +38,6 @@ class RowNumbers {
             editArea.removeAllLineNumbers();
             addAllRowNumbers(in);
          }
-         editArea.revalidateLineAreaWidth(nRows);
       }
       nRowsCurr = nRows;
    }
@@ -61,5 +60,6 @@ class RowNumbers {
       for (int i = previousRows; i <= nRows; i++) {
          editArea.appendRowNumber(i + 1);
       }
+      editArea.revalidateLineAreaWidth();
    }
 }

@@ -260,12 +260,11 @@ public final class EditArea {
    }
    
    /**
-    * Adapts the withs of the area showing line numbers as the number
-    * of digits of the highest line number changes
-    * @param nLines  the number of lines
+    * Adapts the withs of the area showing line numbers
     */
-   public void revalidateLineAreaWidth(int nLines) {
+   public void revalidateLineAreaWidth() {
       textPanel.revalidate();
+      textPanel.repaint();
    }
    
    /**
