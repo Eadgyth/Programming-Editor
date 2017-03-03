@@ -4,7 +4,7 @@ import java.awt.Font;
 import java.awt.Color;
 
 import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
 
 /**
  * Holds different static values
@@ -13,13 +13,17 @@ public class Constants {
 
     // Borders
     //
+    /**
+     * The gray color for borders */
+    public final static Color BORDER_GRAY = new Color(170, 170, 170);
+    
+    /**
+     * The light gray color for borders */
+    public final static Color BORDER_LIGHT_GRAY = new Color(190, 190, 190);
 
     /**
-     * The Border for borders. This is the lowered etched border */
-    public final static Border BORDER = new EtchedBorder(EtchedBorder.LOWERED);  
-    /**
-     * The color for borders which is 160, 160, 160 (rgb) */
-    public final static Color BORDER_GRAY = new Color(160, 160, 160);
+     * The  line border with gray color */
+    public final static Border BORDER = new LineBorder(BORDER_GRAY, 1);  
 
     // Fonts
     //
