@@ -120,8 +120,7 @@ public class TabbedFiles implements Observer{
    public final void newEmptyTab() {
       edArea[tp.nTabs()] = createEditArea();
       txtDoc[tp.nTabs()] = new TextDocument(edArea[tp.nTabs()], lang);
-      addNewTab("unnamed", edArea[tp.nTabs()].textPanel(),
-            tp.nTabs());       
+      addNewTab("unnamed", edArea[tp.nTabs()].textPanel(), tp.nTabs());
    }
    
    /**
@@ -289,9 +288,11 @@ public class TabbedFiles implements Observer{
       int count = unsavedTab();
       if (count == tp.nTabs()) {     
          while(tp.nTabs() > 0) {
-            txtDoc[iTab] = null;
-            edArea[iTab] = null;
             tp.removeTab(iTab);
+         }
+         for (int i = 0; i < txtDoc.length; i++) {
+            txtDoc[i] = null;
+            edArea[i] = null;
          }
          newEmptyTab();
       }
@@ -349,7 +350,7 @@ public class TabbedFiles implements Observer{
       int openIndex = 0;
       boolean isUnnamedBlank = txtDoc[openIndex].filename().length() == 0
             && edArea[openIndex].getDocText().length() == 0;
-      if (isUnnamedBlank && tp.nTabs() == 1) { 
+      if (isUnnamedBlank && tp.nTabs() == 1) {
          txtDoc[openIndex].openFile(file);
       }
       else {
