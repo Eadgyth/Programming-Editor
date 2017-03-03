@@ -108,10 +108,11 @@ public class TabbedPane {
 
    private JTabbedPane initTab() {
       tabbedPane = new JTabbedPane();
-      tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+      tabbedPane.setUI(new UIForTab());
+      //tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
       tabbedPane.setBorder(null);
       tabbedPane.setFocusable(false);
-      tabbedPane.setTabPlacement(JTabbedPane.BOTTOM); //comment to make it top
+      //tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
       tabbedPane.addMouseMotionListener(mml);
       return tabbedPane;
    }
@@ -125,5 +126,5 @@ public class TabbedPane {
             iTabMouseOver = x;
          }
       }
-   };
+   }; 
 }
