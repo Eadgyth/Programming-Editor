@@ -22,10 +22,15 @@ class UIForTab extends MetalTabbedPaneUI {
       h += 2;
       x -= 2;
       w += 2;
-      g.setColor(eg.Constants.BORDER_GRAY);
+      if (!isSelected) {
+         g.setColor(eg.Constants.BORDER_LIGHT_GRAY);
+      }
+      else {
+         g.setColor(eg.Constants.BORDER_GRAY);
+      }
       g.drawLine(x, y, x, y + h); // left vertical
-      g.drawLine(x, y , x + w, y ); // bottom hor
       g.drawLine(x + w, y, x + w, y + h); // right vertical
+      g.drawLine(x, y , x + w, y ); // bottom hor
    }
    
    @Override
