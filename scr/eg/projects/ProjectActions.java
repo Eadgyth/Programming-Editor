@@ -37,4 +37,14 @@ public interface ProjectActions extends Configurable {
    public default void build() {
       JOptions.warnMessage("This operation is not supprted");
    };
+   
+   /**
+    * Overridden to signify that {@link #runProject(String)} is called to run
+    * the project.
+    * @return if {@link #runProject(String)} is called to run the project.
+    * Default is false.
+    */
+   public default boolean isRunByFile() {
+      return false;
+   }
 }

@@ -123,8 +123,7 @@ public class CurrentProject {
          return;
       }
       ProjectActions prToFind = selProj.createProject(currExt, lang);
-      boolean isFound
-            =  prToFind != null
+      boolean isFound = prToFind != null
             && prToFind.retrieveProject(currDoc.dir());
       if (isFound) {
          if (!isProjectSet()) {   
@@ -134,7 +133,7 @@ public class CurrentProject {
             updateProjectSetting(current);
          }
          else {
-            if (selectFromList(currDoc.dir()) == null) {
+            if (selectFromList(currDoc.dir(), true) == null) {
                prToFind.addOkAction(e -> configureProject(prToFind));
                projList.add(prToFind);
                if (projList.size() == 2) {
@@ -166,11 +165,9 @@ public class CurrentProject {
             current.makeSetWinVisible(true);
          }      
          else {
-            ProjectActions fromList = selectFromList(currDoc.dir());
-            if (fromList != null) {
-               if (changeProject(fromList)) {
-                   current.makeSetWinVisible(true);
-               }
+            ProjectActions fromList = selectFromList(currDoc.dir(), true);
+            if (fromList != null && changeProject(fromList)) {
+               current.makeSetWinVisible(true);
             }
             else {
                createNewProject(true);
@@ -187,20 +184,11 @@ public class CurrentProject {
          createNewProject(false);
       }
       else {
-         ProjectActions test = null;
-         if (current.isInProject(currDoc.dir())) {
-            test = current;
-         }     
-         else {
-            ProjectActions fromList = selectFromList(currDoc.dir());
-            if (fromList != null) {
-               test = fromList;
-            }
-         }
+         ProjectActions test = selectFromList(currDoc.dir(), false);
          int res = 0;
          if (test != null) {
-            res = JOptions.confirmYesNo(currDoc.filename()
-                  + " belongs to project '" + projectName(test) + "."
+            res = JOptions.confirmYesNo("'" + currDoc.filename()
+                  + "' belongs to project '" + projectName(test) + "'."
                   + "\nStill set new project?");
          }
          if (res == 0) {
@@ -218,17 +206,12 @@ public class CurrentProject {
     * project it is asked to set up a new project.
     */
    public void changeProject() {
-      ProjectActions fromList = selectFromList(currDoc.dir());
-      if (fromList == current) {
-         JOptions.infoMessage(IS_IN_PROJ_MESSAGE);
+      ProjectActions fromList = selectFromList(currDoc.dir(), true);
+      if (fromList != null) {
+         changeProject(fromList);
       }
       else {
-         if (fromList != null) {
-            changeProject(fromList);
-         }
-         else {
-            createNewProject(true);
-         }   
+         createNewProject(true);
       }
    }      
 
@@ -318,7 +301,7 @@ public class CurrentProject {
       if (!isCurrent("Run")) {
          return;
       }
-      if ("HtmlActions".equals(current.getClass().getSimpleName())) {
+      if (current.isRunByFile()) {
          current.runProject(currDoc.filename());
       }
       else {
@@ -345,9 +328,9 @@ public class CurrentProject {
    //
    //--private methods
    //
-   
-   /**
-    * Creates a new project
+
+   /* 
+    * @param confirm  true to confirm in a dialog that a new project will be set
     */
    private void createNewProject(boolean confirm) {
       if (currDoc.filename().length() == 0) {
@@ -384,10 +367,10 @@ public class CurrentProject {
       }
    }
 
-   private ProjectActions selectFromList(String dir) {
+   private ProjectActions selectFromList(String dir, boolean excludeCurrent) {
       ProjectActions inList = null;
       for (ProjectActions p : projList) {
-         if (p.isInProject(dir) && p != current) {
+         if (p.isInProject(dir) && (!excludeCurrent || p != current)) {
             inList = p;
          }
       }

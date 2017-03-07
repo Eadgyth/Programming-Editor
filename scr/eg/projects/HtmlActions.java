@@ -28,6 +28,16 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    }
    
    /**
+    * Signifies that the project is run by passing an html file in
+    * {@link #runProject(String)}
+    * @return true
+    */
+   @Override
+   public boolean isRunByFile() {
+      return true;
+   }
+   
+   /**
     * Shows the html document in the default file browser
     * @param filename  the name of the html source file
     */
