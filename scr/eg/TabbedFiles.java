@@ -360,8 +360,7 @@ public class TabbedFiles implements Observer{
       }
       else {
          if (displSet.isShowTabs()) {
-            openIndex = tp.nTabs();
-            openNewFile(openIndex, file);           
+            openIndex = tp.nTabs(); 
          }
          else {
             if (!txtDoc[openIndex].isContentSaved()) {
@@ -369,10 +368,13 @@ public class TabbedFiles implements Observer{
                if (res == JOptionPane.YES_OPTION) {
                   save();
                }
+               else if (res == JOptionPane.CANCEL_OPTION) {
+                  return;
+               }
             }
             tp.removeTab(openIndex);
-            openNewFile(openIndex, file);
          }
+         openNewFile(openIndex, file);
       }
       addNewTab(txtDoc[openIndex].filename(),
                   edArea[openIndex].textPanel(), openIndex);
