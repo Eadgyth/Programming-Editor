@@ -87,6 +87,7 @@ class Coloring {
             flags = Syntax.PERL_FLAGS;
             isFlags = true;
             lineCmnt = "#";
+            isLineCmnt = true;
             isBlockCmnt = false;
             isStringLit = true;
             isBrackets = true;
