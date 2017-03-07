@@ -58,4 +58,7 @@ LICENSE: MIT, see LICENSE<br>
 <p>
 SCREENSHOT<br>
 Under Windows 10, setting the system look and feel<br>
-<img src="Screenshots/Windows10SystemLAF.png" width="600"/>
+<img src="Screenshots/Windows10SystemLAF.png" width="650"/>
+<p>
+Basic editor view<br>
+<img src="Screenshots/SimpleEditorView.png" width="500"/>
