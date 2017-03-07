@@ -1,5 +1,7 @@
 package eg;
 
+import java.awt.Component;
+
 //--Eadgyth--//
 import eg.ui.MainWin;
 import eg.ui.EditArea;
@@ -10,6 +12,8 @@ import eg.ui.menu.ViewMenu;
 import eg.ui.menu.ProjectMenu;
 import eg.ui.DisplaySettingWin;
 import eg.ui.filetree.FileTree;
+import eg.ui.TabbedPane;
+import eg.utils.JOptions;
 
 /**
  * The setting of the display and behavior of the main window
@@ -22,6 +26,7 @@ public class DisplaySetter {
    private final ProjectMenu prMenu;
    private final Toolbar tBar;
    private final FileTree fileTree;
+   private final TabbedPane tPane;
    private final DisplaySettingWin displSetWin = new DisplaySettingWin();
    private final Preferences prefs = new Preferences();
 
@@ -32,6 +37,7 @@ public class DisplaySetter {
    private boolean isShowLineNumbers;
    private boolean isShowToolbar;
    private boolean isShowStatusbar;
+   private boolean isShowTabs;
    private int selectedLafInd;
 
    /**
@@ -39,14 +45,17 @@ public class DisplaySetter {
     * @param menu  the reference to {@link Menu}
     * @param tBar  the reference to {@link Toolbar}
     * @param fileTree  the reference to {@link FileTree}
+    * @param tPane  the reference to {@link TabbedPane}
     */
-   public DisplaySetter(MainWin mw, Menu menu, Toolbar tBar, FileTree fileTree) {
+   public DisplaySetter(MainWin mw, Menu menu, Toolbar tBar,
+         FileTree fileTree, TabbedPane tPane) {
       this.mw = mw;
       this.vMenu = menu.getViewMenu();
       this.fMenu = menu.getFormatMenu();
       this.prMenu = menu.getProjectMenu();
       this.tBar = tBar;
       this.fileTree = fileTree;
+      this.tPane = tPane;
       prefs.readPrefs();
       isShowStatusbar = displSetWin.isShowStatusbar();
       isShowToolbar = displSetWin.isShowToolbar();
@@ -55,7 +64,10 @@ public class DisplaySetter {
       selectedLafInd = displSetWin.selectedLaf();
       displSetWin.okAct(e -> applySetWinOk());
       fileTree.closeAct(e -> setShowFileViewState(false));
-      mw.closeFunctPnlAct(e -> setShowFunctionState(false)); 
+      mw.closeFunctPnlAct(e -> setShowFunctionState(false));
+      isShowTabs = "show".equals(prefs.getProperty("showTabs"));
+      vMenu.selectTabsItm(isShowTabs);
+      tPane.showTabs(isShowTabs);
    }
 
    /**
@@ -134,6 +146,15 @@ public class DisplaySetter {
    public boolean isConsoleSelected() {
       return vMenu.isConsoleItmSelected();
    }
+   
+   /**
+    * If showing tabs (and openeing multiple files) is
+    * is selected
+    * @return if showing tabs is selected
+    */
+   public boolean isShowTabs() {
+      return isShowTabs;
+   }
 
    /**
     * Shows/hides the console panel and selects/deselects
@@ -163,6 +184,25 @@ public class DisplaySetter {
    public void setShowFunctionState(boolean show) {
       showFunction(show);
       vMenu.selectFunctionItm(show);
+   }
+   
+   /**
+    * Shows or hides the tab bar
+    * @param isTabs  true to show the tab bar
+    */
+   public void showTabs(boolean isTabs) {
+      if (!isTabs && tPane.nTabs() > 1) {
+         throw new IllegalStateException("More than one tab was added."
+               + "Cannot hide tab bar");
+      }
+      isShowTabs = isTabs;         
+      tPane.showTabs(isTabs);
+      String state = isTabs ? "show" : "hide";
+      prefs.storePrefs("showTabs", state);
+   }
+   
+   public void enableTabItm(boolean isEnabled) {
+      vMenu.enableTabItm(isEnabled);
    }
 
    /**
@@ -233,7 +273,6 @@ public class DisplaySetter {
          boolean isBuild, int projCount) {
       if (projCount == 1) {
          vMenu.enableFileView();
-         prMenu.enableInterlacedProjItm();
       }
       if (projCount == 2) {
          enableChangeProj();

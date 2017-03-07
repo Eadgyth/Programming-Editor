@@ -1,3 +1,4 @@
+
 package eg;
 
 import java.io.File;
@@ -155,12 +156,7 @@ public class CurrentProject {
     */
    public void openSettingsWindow() {
       if (!isProjectSet()) {
-         if (currDoc.filename().length() == 0) {
-            JOptions.titledInfoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
-         }
-         else {
-            createNewProject();
-         }
+         createNewProject(false);
       }
       else {
          boolean openCurrent
@@ -177,29 +173,41 @@ public class CurrentProject {
                }
             }
             else {
-               createNewProject();
+               createNewProject(true);
             }
          }
-      }       
+      }
    }
    
    /**
-    * Creates a project although the selected {@code TextDocument} belongs to the
-    * currently active project
-    * @throws IllegalArgumentException  if no project is set
+    * Creates a new project
     */
-   public void createInterlacedProject() {
+   public void newProject() {
       if (!isProjectSet()) {
-         throw new IllegalStateException("Method requires that a project is set");
-      }
-      boolean isInterlaced = current.isInProject(currDoc.dir());
-      if (isInterlaced) {
-         createNewProject();
+         createNewProject(false);
       }
       else {
-         JOptions.infoMessage("The file does not belong the active project");
-      }
-   }         
+         ProjectActions test = null;
+         if (current.isInProject(currDoc.dir())) {
+            test = current;
+         }     
+         else {
+            ProjectActions fromList = selectFromList(currDoc.dir());
+            if (fromList != null) {
+               test = fromList;
+            }
+         }
+         int res = 0;
+         if (test != null) {
+            res = JOptions.confirmYesNo(currDoc.filename()
+                  + " belongs to project '" + projectName(test) + "."
+                  + "\nStill set new project?");
+         }
+         if (res == 0) {
+            createNewProject(false);
+         }
+      }       
+  }         
 
    /**
     * Assigns to this current project the project from this {@code List} of
@@ -219,7 +227,7 @@ public class CurrentProject {
             changeProject(fromList);
          }
          else {
-            createNewProject();
+            createNewProject(true);
          }   
       }
    }      
@@ -341,14 +349,18 @@ public class CurrentProject {
    /**
     * Creates a new project
     */
-   private void createNewProject() {
+   private void createNewProject(boolean confirm) {
+      if (currDoc.filename().length() == 0) {
+         JOptions.titledInfoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
+         return;
+      }
       ProjectActions projNew = selProj.createProject(currExt, lang);
       if (projNew == null) {
          JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
       }
       else {    
          int result = 0;
-         if (isProjectSet()) {
+         if (confirm && isProjectSet()) {
             result = JOptions.confirmYesNo("Set new project ?");
          }
          if (result == 0) {
@@ -375,7 +387,7 @@ public class CurrentProject {
    private ProjectActions selectFromList(String dir) {
       ProjectActions inList = null;
       for (ProjectActions p : projList) {
-         if (p.isInProject(dir)) {
+         if (p.isInProject(dir) && p != current) {
             inList = p;
          }
       }

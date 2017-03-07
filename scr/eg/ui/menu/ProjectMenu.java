@@ -23,9 +23,8 @@ public class ProjectMenu {
    private final JMenuItem run        = new JMenuItem("Run", IconFiles.RUN_ICON);
    private final JMenuItem build      = new JMenuItem("Build");
    private final JMenuItem setProject = new JMenuItem("Project settings");
-   private final JMenuItem interlacedProj
-         = new JMenuItem("New settings for interlaced project");
-    private final JMenuItem changeProj
+   private final JMenuItem newProj    = new JMenuItem("New project");
+   private final JMenuItem changeProj
          = new JMenuItem("Change project", IconFiles.CHANGE_PROJ_ICON);
    
    ProjectMenu() {
@@ -40,7 +39,7 @@ public class ProjectMenu {
    public void registerAct(CurrentProject currProj) {
       setProject.addActionListener(e -> currProj.openSettingsWindow());
       changeProj.addActionListener(e -> currProj.changeProject());
-      interlacedProj.addActionListener(e -> currProj.createInterlacedProject());
+      newProj.addActionListener(e -> currProj.newProject());
       run.addActionListener(e -> currProj.runProj());
       build.addActionListener(e -> currProj.buildProj());
       SaveCompile.addActionListener(e -> currProj.saveAndCompile());
@@ -49,10 +48,6 @@ public class ProjectMenu {
    
    public void enableChangeProjItm() {
       changeProj.setEnabled(true);
-   }
-   
-   public void enableInterlacedProjItm() {
-      interlacedProj.setEnabled(true);
    }
 
    public void enableProjItms(boolean isCompile, boolean isRun, boolean isBuild) {
@@ -77,11 +72,10 @@ public class ProjectMenu {
       menu.add(build);
       build.setEnabled(false);
       menu.addSeparator();
+      menu.add(newProj);
       menu.add(setProject);
-      menu.add(interlacedProj);
       menu.add(changeProj);
       changeProj.setEnabled(false);
-      interlacedProj.setEnabled(false);
       menu.setMnemonic(KeyEvent.VK_P);
    }
    

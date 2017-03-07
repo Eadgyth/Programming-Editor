@@ -27,11 +27,13 @@ import eg.Constants;
 public class DisplaySettingWin {
 
    public final static String[] LAF_OPT = {"System", "Java default"};
+   public final static String[] TAB_POS_OPT = {"Top", "Bottom"};
 
    private final JFrame frame = new JFrame("View settings");
    private final Preferences prefs = new Preferences();
    
    private final JComboBox<String> selectLaf = new JComboBox<>(LAF_OPT);
+   private final JComboBox<String> tabPos    = new JComboBox<>(TAB_POS_OPT);
    private final JCheckBox checkLineNumbers  = new JCheckBox();
    private final JCheckBox checkToolbar      = new JCheckBox();
    private final JCheckBox checkStatusbar    = new JCheckBox();
@@ -83,7 +85,7 @@ public class DisplaySettingWin {
       allPanels.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       allPanels.add(setLineNumberPanel());
       allPanels.add(setToolbarPanel());
-      allPanels.add(setStatusBarPanel());      
+      allPanels.add(setStatusBarPanel());    
       allPanels.add(setLafPanel());
       allPanels.add(buttonsPanel());
       frame.getRootPane().setDefaultButton(okBt);
@@ -148,7 +150,7 @@ public class DisplaySettingWin {
       setLafPanel.add(lafLabel);
       setLafPanel.add(Box.createHorizontalGlue());
       JPanel holdComboBx = new JPanel(new FlowLayout());
-      setLafPanel.add(Box.createRigidArea(new Dimension(60, 0)));
+      setLafPanel.add(Box.createRigidArea(new Dimension(59, 0)));
       holdComboBx.add(selectLaf);
       setLafPanel.add(Box.createRigidArea(new Dimension(5, 0)));
       setLafPanel.add(holdComboBx);

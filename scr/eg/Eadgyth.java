@@ -1,7 +1,6 @@
 package eg;
 
 import java.util.Locale;
-
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -47,7 +46,7 @@ public class Eadgyth {
                                       tabPane.tabbedPane(), fileTree.fileTreePnl(),
                                       consPnl.consolePnl());
       DisplaySetter   displSet  = new DisplaySetter(mw, menu, tBar,
-                                      fileTree);
+                                      fileTree, tabPane);
       ProcessStarter  proc      = new ProcessStarter(consPnl);
       CurrentProject  currProj  = new CurrentProject(displSet, proc, consPnl, fileTree);
       Edit            edit      = new Edit();
@@ -103,16 +102,6 @@ public class Eadgyth {
       UIManager.put("MenuItem.font", Constants.SANSSERIF_PLAIN_12);
       UIManager.put("CheckBoxMenuItem.font", Constants.SANSSERIF_PLAIN_12);
       UIManager.put("SplitPaneDivider.border", new EmptyBorder(0, 0, 0, 0));
-      UIManager.getDefaults().put("TabbedPane.contentBorderInsets",
-            new Insets(0, 0, 0, 0));
-      UIManager.getDefaults().put("TabbedPane.selectedTabAreaInsets",
-            new Insets(0, 0, 0, 0));
-      if ("Metal".equals(UIManager.getLookAndFeel().getName())) {
-         UIManager.put("TabbedPane.selected", 
-               new javax.swing.plaf.ColorUIResource(Color.WHITE));
-         UIManager.put("TabbedPane.contentAreaColor",
-               new javax.swing.plaf.ColorUIResource(Color.WHITE));
-      }
       UIManager.put("Tree.rowHeight", 20);
    } 
 }

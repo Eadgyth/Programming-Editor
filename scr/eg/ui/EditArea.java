@@ -38,7 +38,7 @@ import eg.utils.FileUtils;
  */
 public final class EditArea {
 
-   private final static Color NUM_GRAY = new Color(100, 100, 100);
+   private final static Color NUM_GRAY = new Color(170, 170, 170);
    private final static LineBorder WHITE_BORDER
          = new LineBorder(Color.WHITE, 5);
 
@@ -91,7 +91,7 @@ public final class EditArea {
             
       this.font = font;
       this.fontSize = fontSize;
-      textPanel.setBorder(Constants.BORDER);
+      textPanel.setBorder(Constants.DARK_BORDER);
       initTextArea();
       initLineNrArea();
       initFont(font, fontSize);

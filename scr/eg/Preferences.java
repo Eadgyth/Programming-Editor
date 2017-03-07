@@ -37,6 +37,7 @@ public class Preferences {
       "statusbar",
       "language",
       "wordWrap",
+      "showTabs",
       "recentMain",
       "recentModule",
       "recentSourceDir",

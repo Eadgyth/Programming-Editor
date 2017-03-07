@@ -118,9 +118,14 @@ public class TabbedFiles implements Observer{
     * Opens a new 'unnamed' Tab to which no file is assigned
     */
    public final void newEmptyTab() {
-      edArea[tp.nTabs()] = createEditArea();
-      txtDoc[tp.nTabs()] = new TextDocument(edArea[tp.nTabs()], lang);
-      addNewTab("unnamed", edArea[tp.nTabs()].textPanel(), tp.nTabs());
+      if (tp.nTabs() == 1 && !displSet.isShowTabs()) {
+         tryClose();
+      }
+      else {
+         edArea[tp.nTabs()] = createEditArea();
+         txtDoc[tp.nTabs()] = new TextDocument(edArea[tp.nTabs()], lang);
+         addNewTab("unnamed", edArea[tp.nTabs()].textPanel(), tp.nTabs());
+      }
    }
    
    /**
@@ -354,13 +359,23 @@ public class TabbedFiles implements Observer{
          txtDoc[openIndex].openFile(file);
       }
       else {
-         openIndex = tp.nTabs();       
-         edArea[openIndex] = createEditArea();
-         txtDoc[openIndex] = new TextDocument(edArea[openIndex]);
-         txtDoc[openIndex].openFile(file);
+         if (displSet.isShowTabs()) {
+            openIndex = tp.nTabs();
+            openNewFile(openIndex, file);           
+         }
+         else {
+            if (!txtDoc[openIndex].isContentSaved()) {
+               int res = saveOrCloseOption(openIndex);
+               if (res == JOptionPane.YES_OPTION) {
+                  save();
+               }
+            }
+            tp.removeTab(openIndex);
+            openNewFile(openIndex, file);
+         }
       }
       addNewTab(txtDoc[openIndex].filename(),
-           edArea[openIndex].textPanel(), openIndex);
+                  edArea[openIndex].textPanel(), openIndex);
       displSet.displayFrameTitle(txtDoc[openIndex].filepath());         
       currProj.retrieveProject();
       prefs.storePrefs("recentPath", txtDoc[openIndex].dir());
@@ -382,6 +397,12 @@ public class TabbedFiles implements Observer{
       String font = fontSet.getFont();
       int fontSize = fontSet.getFontSize();
       return new EditArea(isWordWrap, isLineNr, font, fontSize);
+   }
+   
+   private void openNewFile(int index, File file) {
+      edArea[index] = createEditArea();
+      txtDoc[index] = new TextDocument(edArea[index]);
+      txtDoc[index].openFile(file);
    }
 
    private void addNewTab(String filename, JPanel pnl, int index) {
@@ -438,6 +459,7 @@ public class TabbedFiles implements Observer{
          docUpdate.updateDocument(iTab);
          currProj.setDocumentIndex(iTab);
          displSet.displayFrameTitle(txtDoc[iTab].filepath());
+         displSet.enableTabItm(tp.nTabs() == 1);
       }
    }
 }

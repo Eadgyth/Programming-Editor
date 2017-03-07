@@ -66,12 +66,12 @@
          <ol>
             <li>For a new project open a file or save a new file that has one of the file
                 extensions mentioned above.</li>
-            <li>Open the settings window by selecting 'Project' > 'Project settings'.</li>     
+            <li>Open the settings window by selecting 'Project' > 'New project'.</li>     
             <li>Enter the name of the main source file without extension. The main file does
                 not have to be the opened file but must exist.</li>
             <li>If the main file is part of a package (for Java) enter the package name in
                 the text field 'Package containing the main class'. If it is located in a
-                sub-package enter the path with normal file separators.</li>
+                sub-package enter the package path with normal file separators.</li>
             <li>If the directory that contains source files (or packages) is not supposed
                 to be the project's root (i.e. the working directory) but a sub-directory for
                 sources the name of this directory is entered in text field 'Name of sources
@@ -82,24 +82,24 @@
             <li>Click ok. If entries are correct, the project can be viewed in the 'Project
                 explorer' that is opened by selecting 'View' > 'Project explorer'.</li>
             <li>The field 'Name of project root' does not have to be filled. However, entering
-                a name enforces that determined root directory matches this name. The text field
-                anyway shows the name of the root when the settings window is newly opened or if
-                a previous project is <a href="#Retrieve">retrieved</a>. It must be cleared (or
-                modified) if the project root is to be changed.</li>
+                a name enforces that the determined root directory matches this name. The text
+                field anyway shows the name of the root when the settings window is newly opened
+                or if a previous project is <a href="#Retrieve">retrieved</a>. It must be cleared
+                (or modified) if the project root is to be changed.</li>
          </ol>
    
          <h4 id="ChangeProjects">Changing between projects</h4>
          <ul>
-            <li>Different projects may set during a session. A new project can be set by selecting
-               'Project' > 'Project settings' if a file that is not part of the currently active
-                project is in the selected tab.</li>
-            <li>A project inside the directory structure of an active project may be defined by
-                selecting 'Project' > 'New settings for interlaced project' if the file in the
-                selected tab belongs to a currently active project.</li>
+            <li>'Project' > 'New project' is selected to create a new project and to open a new 
+                settings window. If a file that belongs to an already set project is currently
+                selected, it still maybe proceeded to set a new project inside the directory 
+                structure of the present project.</li>
+            <li>'Project' > 'Project settings' opens the settings window of an already set project
+                if the selected file belongs to that project. Otherwise this selection has the same
+                effect as 'New project'.</li>
             <li>Changing between already set projects is done by selecting a file that is part of
                 the project to be set active and then selecting 'Project' > 'Change project' or,
-                to switch project and view or alter the settings, 'Project' > 'Project
-                settings'.</li>
+                to additionally view or modify the settings, 'Project' > 'Project settings'.</li>
          </ul>
    
          <h4 id="Retrieve">Retrieving projects</h4>
@@ -113,8 +113,9 @@
             <li>If 'Save eadconfig file' is selected in the settings window the configuration of the 
                 project is stored in such config file. This is saved in the project folder but can
                 be deleted at any time by unselecting the option to save it. A project is, in a way,
-                "marked" as one by the presence of the eadconfig file which merely means two things:<br>
+                "marked" as one by the presence of the eadconfig file which merely means three things:<br>
                 <ol>
+                   <li>The project is polluted with a foreign file.</li>
                    <li>If a file of a marked project is opened (or one is saved to that project) the
                       settings are loaded even if another project is active. Selecting 'Project' >
                       'Change project' can be used to change to that project or 'Project' > 'Project
@@ -135,7 +136,7 @@
                 settings windows. For example, a file with "wrong" extension but what is supposed to
                 belong to a Java project (some resources file, maybe) may be just selected. Opening
                 the settings window would show the "correct Java" options if the language was set to Java.
-                However, the file extension that cooresponds to a project type has always the priority</p>                   
+                However, the file extension that cooresponds to a project type has always the priority.</p>                   
          </ul>
    
          <h4 id="JavaProject">Testing Java code and packing a jar file</h4>

@@ -3,7 +3,7 @@ package eg.utils;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
-
+import javax.swing.border.MatteBorder;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -23,13 +23,14 @@ public class UiComponents {
       tb.setOpaque(false);
       tb.setBorder(null);
       tb.setFloatable(false);
+      //tb.setBorder(new MatteBorder(0, 0, 1, 0, eg.Constants.BORDER_GRAY));
       
       for (int i = 0; i < bts.length; i++) {
          if (i == bts.length - 1) {
             tb.add(Box.createHorizontalGlue());
          }
          tb.add(bts[i]);
-         bts[i].setBorder(new EmptyBorder(1, 5, 1, 5));
+         bts[i].setBorder(new EmptyBorder(2, 5, 2, 5));
          bts[i].setToolTipText(tooltips[i]);
          bts[i].setFocusable(false);
       }

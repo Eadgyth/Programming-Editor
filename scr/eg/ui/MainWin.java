@@ -2,6 +2,7 @@ package eg.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
@@ -25,7 +26,6 @@ import javax.swing.border.EmptyBorder;
 //--Eadgyth--//
 import eg.Constants;
 import eg.Preferences;
-
 
 /**
  * The main window
@@ -83,7 +83,7 @@ public class MainWin {
     */
    public void makeVisible() {
       frame.setVisible(true);
-   } 
+   }
 
    /**
     * Sets a busy or default cursor
@@ -120,8 +120,8 @@ public class MainWin {
    }
    
    /**
-    * Adds a component to this 'function panel' which is added to
-    * the right of this split area.
+    * Adds a component to this 'function panel' which is added to the right
+    * of this split area.
     * <p>
     * The 'function panel' has a border layout in whose center the
     * specified component is added. The specified title is shown in a panel

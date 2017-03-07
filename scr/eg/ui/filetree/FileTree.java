@@ -324,7 +324,8 @@ public class FileTree extends Observable {
    
    private boolean isAllowedFile(String fileStr) {
       boolean allowed = false;
-      String[] suffixes = {".java", ".txt", ".properties", ".html", ".pl", ".pm"};
+      String[] suffixes = {".bat", ".java", ".txt", ".properties",
+            ".html",".htm", ".pl", ".pm"};
       for (String s : suffixes) {
          if (fileStr.endsWith(s)) {
             allowed = true;

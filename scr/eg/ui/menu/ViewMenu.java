@@ -19,8 +19,10 @@ public class ViewMenu {
          = new JCheckBoxMenuItem("Project explorer");
    private final JCheckBoxMenuItem functionItm
          = new JCheckBoxMenuItem("Function panel");
+   private final JCheckBoxMenuItem tabItm
+         = new JCheckBoxMenuItem("Multiple files");
    private final JMenuItem openSettingsItm
-         = new JMenuItem("Other...");
+         = new JMenuItem("Other settings...");
 
    ViewMenu() {
       assembleMenu();
@@ -42,6 +44,8 @@ public class ViewMenu {
             displSet.showFileView(isFileViewItmSelected()));
       functionItm.addActionListener(e ->
             displSet.showFunction(isFunctionItmSelected()));
+      tabItm.addActionListener(e ->
+            displSet.showTabs(isTabItmSelected()));
       openSettingsItm.addActionListener(e ->
             displSet.makeViewSetWinVisible());
    }
@@ -68,6 +72,14 @@ public class ViewMenu {
     */
    public boolean isFunctionItmSelected() {
       return functionItm.getState();
+   }
+   
+   /**
+    * @return  if this menu item for showing tabs
+    * is selected
+    */
+   public boolean isTabItmSelected() {
+      return tabItm.getState();
    }
    
    /**
@@ -101,10 +113,29 @@ public class ViewMenu {
    }
    
    /**
+    * Sets the selection state of the checkbox menu item for showing the
+    * tabs
+    * @param select  true/false to set the menu item for showing the
+    * tabs selected/unselected
+    */
+   public void selectTabsItm(boolean select) {
+      tabItm.setState(select);
+   }
+   
+   /**
     * Enables the file view menu item
     */
    public void enableFileView() {
       fileViewItm.setEnabled(true);
+   }
+   
+   /**
+    * Enables the menu item for showing/hiding the tab bar
+    * @param isEnabled  true to set the menu item for showing
+    * or hiding the tab bar enabled 
+    */
+   public void enableTabItm(boolean isEnabled) {
+      tabItm.setEnabled(isEnabled);
    }
    
    private void assembleMenu() {
@@ -112,6 +143,8 @@ public class ViewMenu {
       menu.add(fileViewItm);
       fileViewItm.setEnabled(false);
       menu.add(functionItm);
+      menu.add(tabItm);
+      tabItm.setSelected(true);
       menu.addSeparator();
       menu.add(openSettingsItm);
       menu.setMnemonic(KeyEvent.VK_V);

@@ -32,9 +32,12 @@ import eg.Constants;
 public class TabbedPane { 
 
    private JTabbedPane tabbedPane;
+   private final UIForTab ui = new UIForTab();
+   private final EmptyUIForTab eUi = new EmptyUIForTab();
    
    /* The index of the tab the mouse moved over */
    private int iTabMouseOver = -1;
+   private boolean isShowTabs;   
    
    public TabbedPane() {
       initTab();
@@ -66,7 +69,19 @@ public class TabbedPane {
       tabPnl.add(titleLb);
       tabPnl.add(closeBt); 
       tabbedPane.setTabComponentAt(index, tabPnl);
+      showTabs(isShowTabs);
    }
+   
+   public void showTabs(boolean show) {
+      isShowTabs = show;
+      if (show) {
+         tabbedPane.setUI(ui);
+      }
+      else {
+         tabbedPane.setUI(eUi);
+      }
+   }
+         
    
    public void changeTabTitle(int index, String filename) {
       JPanel p = (JPanel) tabbedPane.getTabComponentAt(index);
@@ -82,10 +97,18 @@ public class TabbedPane {
       return tabbedPane.getTabCount();
    }
    
+   /**
+    * Returns the index of the selected tab
+    * @return  the index of the selected tab
+    */
    public int selectedIndex() {
       return tabbedPane.getSelectedIndex();
    }
    
+   /**
+    * selects the tab at the specified index
+    * @param index  the index of the tab that is selected
+    */
    public void selectTab(int index) {
       tabbedPane.setSelectedIndex(index);
    }
@@ -108,11 +131,9 @@ public class TabbedPane {
 
    private JTabbedPane initTab() {
       tabbedPane = new JTabbedPane();
-      tabbedPane.setUI(new UIForTab());
-      //tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+      tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
       tabbedPane.setBorder(null);
       tabbedPane.setFocusable(false);
-      //tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
       tabbedPane.addMouseMotionListener(mml);
       return tabbedPane;
    }
