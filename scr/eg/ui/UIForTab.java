@@ -17,20 +17,37 @@ class UIForTab extends BasicTabbedPaneUI {
    
    private final Insets borderInsets = new Insets(0, 0, 0, 0);
    
+   private boolean isShowTabs = true;
+   
+   void setShowTabs(boolean show) {
+      isShowTabs = show;
+   }
+   
    @Override
    protected int calculateMaxTabHeight(int tabPlacement) {
-      return 22;
+      if (isShowTabs) {
+         return 23;
+      }
+      else {
+         return 0;
+      }
    }
 
    @Override
    protected void paintTabBorder(Graphics g, int tabPlacement,
           int tabIndex, int x, int y, int w, int h, boolean isSelected) {
+             
+      if (!isShowTabs) {
+         return;
+      }
 
       y = 0;
       if (x < 0) {
          x = 0;
       }
       if (isSelected) {
+         g.setColor(eg.Constants.BORDER_GRAY);
+         g.drawLine(x + 1, y + 22, x + w - 1, y + 22);
          g.setColor(eg.Constants.BORDER_DARK_GRAY);
       }
       else {
@@ -44,6 +61,10 @@ class UIForTab extends BasicTabbedPaneUI {
    @Override
    protected void paintTabBackground(Graphics g, int tabPlacement,
        int tabIndex, int x, int y, int w, int h, boolean isSelected) {
+
+      if (!isShowTabs) {
+         return;
+      }
 
       y = 0;
       if (x < 0) {
@@ -68,7 +89,7 @@ class UIForTab extends BasicTabbedPaneUI {
    protected int getTabLabelShiftY(int tabPlacement, int tabIndex,
          boolean isSelected) {
       int maxHeight = super.calculateMaxTabHeight(tabPlacement);
-      return 21 - maxHeight;
+      return 0;
    }
      
    @Override

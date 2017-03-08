@@ -41,7 +41,7 @@ public class FileMenu {
    
    /**
     * Adds action listeners to this menu items
-    * @param tf  the {@link TabbedFiles}
+    * @param tf  the reference to {@link TabbedFiles}
     */
    public void registerAct(TabbedFiles tf) {
       newFileItm.addActionListener(e -> tf.newEmptyTab());

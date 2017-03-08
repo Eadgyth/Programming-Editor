@@ -80,8 +80,8 @@ public class Compile {
             errorInfo.add(
                   "The filepath of the JDK is not defined");
             consPnl.appendText(
-                  "ERROR:\nThe file path of the JDK is not defined"
-                  + " in'settings.properties'.");
+                  "<<ERROR:\nThe file path of the JDK is not defined"
+                  + " in'settings.properties'.>>");
             return;
          }
       }
@@ -111,7 +111,7 @@ public class Compile {
    
    private void output(DiagnosticCollector<JavaFileObject> diagnostics) {
       if (success) {
-         consPnl.appendText("Compilation successful");
+         consPnl.appendText("<<Compilation successful>>");
       }
       else {
          for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {

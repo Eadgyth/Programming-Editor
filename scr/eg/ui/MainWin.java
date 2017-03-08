@@ -144,11 +144,11 @@ public class MainWin {
    }
 
    /**
-    * Shows or hides the toolbar
-    * @param isShowToolbar  true to show the toolbar
+    * Shows/hides the toolbar
+    * @param show  true/false to show/hide the toolbar
     */
-   public void showToolbar(boolean isShowToolbar) {
-      if (isShowToolbar) {
+   public void showToolbar(boolean show) {
+      if (show) {
          allComponents.add(toolbar, BorderLayout.NORTH);
       }
       else {
@@ -158,11 +158,11 @@ public class MainWin {
    }
 
    /**
-    * Shows or hides the status bar
-    * @param isShowStatusbar  true to show the status bar
+    * Shows/hides the status bar
+    * @param show  true/false to show/hide the status bar
     */
-   public void showStatusbar(boolean isShowStatusbar) {
-      if (isShowStatusbar) {
+   public void showStatusbar(boolean show) {
+      if (show) {
          allComponents.add(statusBar, BorderLayout.SOUTH);
       }
       else {
@@ -172,66 +172,63 @@ public class MainWin {
    }
 
    /**
-    * Shows the console panel
+    * Shows/hides the console panel
+    * @param show  true/false to show/hide the console panel
     */
-   public void showConsole() {
-      splitVert.setDividerSize(6);
-      splitVert.setRightComponent(consolePnl);
-      if (dividerLocVert == 0) {
-         dividerLocVert = (int)(frame.getHeight() * 0.65);
+   public void showConsole(boolean show) {
+      if (show) {
+         splitVert.setDividerSize(6);
+         splitVert.setRightComponent(consolePnl);
+         if (dividerLocVert == 0) {
+            dividerLocVert = (int)(frame.getHeight() * 0.65);
+         }
+         splitVert.setDividerLocation(dividerLocVert);
       }
-      splitVert.setDividerLocation(dividerLocVert);
-   }
-
-   /**
-    * Hides the console panel
-    */
-   public void hideConsole() {
-      dividerLocVert = splitVert.getDividerLocation();
-      splitVert.setDividerSize(0);
-      splitVert.setRightComponent(null);
-   }
-
-   /**
-    * Shows the file explorer panel
-    */
-   public void showFileView() {
-      splitHor.setDividerSize(6);
-      splitHor.setLeftComponent(fileViewPnl);
-      if (dividerLocHor == 0) {
-         dividerLocHor = (int)(frame.getWidth() * 0.22);
+      else {
+         dividerLocVert = splitVert.getDividerLocation();
+         splitVert.setDividerSize(0);
+         splitVert.setRightComponent(null);
       }
-      splitHor.setDividerLocation(dividerLocHor);
    }
 
    /**
-    * Hides the file explorer panel
+    * Shows/hides the fileview panel
+    * @param show  true/false to show/hide the fileview panel
     */
-   public void hideFileView() {
-      dividerLocHor = splitHor.getDividerLocation();
-      splitHor.setDividerSize(0);
-      splitHor.setLeftComponent(null);
-   }
-
-   /**
-    * Shows the function panel
-    */
-   public void showFunctionPnl() {
-      splitHorAll.setDividerSize(6);
-      splitHorAll.setRightComponent(functionPnl);
-      if (dividerLocHorAll == 0) {
-         dividerLocHorAll = (int)(frame.getWidth() * 0.7);
+   public void showFileView(boolean show) {
+      if (show) {
+         splitHor.setDividerSize(6);
+         splitHor.setLeftComponent(fileViewPnl);
+         if (dividerLocHor == 0) {
+            dividerLocHor = (int)(frame.getWidth() * 0.22);
+         }
+         splitHor.setDividerLocation(dividerLocHor);
       }
-      splitHorAll.setDividerLocation(dividerLocHorAll);
+      else {
+         dividerLocHor = splitHor.getDividerLocation();
+         splitHor.setDividerSize(0);
+         splitHor.setLeftComponent(null);
+      }
    }
 
    /**
-    * Hides the function panel
+    * Shows/hides the function panel
+    * @param show  true/false to show/hide the function panel
     */
-   public void hideFunctionPnl() {
-      dividerLocHorAll = splitHorAll.getDividerLocation();
-      splitHorAll.setDividerSize(0);
-      splitHorAll.setRightComponent(null);
+   public void showFunctionPnl(boolean show) {
+      if (show) {
+         splitHorAll.setDividerSize(6);
+         splitHorAll.setRightComponent(functionPnl);
+         if (dividerLocHorAll == 0) {
+            dividerLocHorAll = (int)(frame.getWidth() * 0.7);
+         }
+         splitHorAll.setDividerLocation(dividerLocHorAll);
+      }
+      else {
+         dividerLocHorAll = splitHorAll.getDividerLocation();
+         splitHorAll.setDividerSize(0);
+         splitHorAll.setRightComponent(null);
+      }
    }
    
    //
@@ -306,7 +303,7 @@ public class MainWin {
       functTitlePnl.setLayout(new BoxLayout(functTitlePnl, BoxLayout.LINE_AXIS));
       functTitlePnl.add(functTitleLb);
       functTitleLb.setFont(Constants.SANSSERIF_PLAIN_12);
-      functionPnl.setBorder(Constants.BORDER);
+      functionPnl.setBorder(Constants.DARK_BORDER);
       closeFunctBt.setBorder(new EmptyBorder(3, 5, 3, 5));
       closeFunctBt.setContentAreaFilled(false);
       closeFunctBt.setToolTipText("Close function area");

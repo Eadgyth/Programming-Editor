@@ -165,12 +165,12 @@ public class ProcessStarter {
     * is entered in a dialog window
     */
    private void startNewCmd() {
-      consPnl.enableRunBt(false);
       String cmd = JOptions.dialogRes(
                "Run a system command in the working directory '"
                + workingDirName +"'",
                "Command", previousCmd);
       if (cmd != null && cmd.length() > 0) {
+         consPnl.enableRunBt(false);
          startProcess(cmd);
          previousCmd = cmd;
       }

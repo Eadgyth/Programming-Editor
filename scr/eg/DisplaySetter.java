@@ -31,7 +31,7 @@ public class DisplaySetter {
    private final Preferences prefs = new Preferences();
 
    private EditArea[] editArea;
-   private int editAreaIndex;
+   private EditArea currEdArea;
 
    private boolean isWordWrap;
    private boolean isShowLineNumbers;
@@ -79,16 +79,16 @@ public class DisplaySetter {
    }
 
   /**
-    * Sets the index of the {@code EditArea} array whose display is
-    * to be changed.
-    * <p> The method also selects/unselects the wordwrap menu
+    * Sets the {@code EditArea} at the specified index.
+    * <p>
+    * The method also selects/unselects the wordwrap menu
     * item depending on te state of the {@code EditArea} at the given
     * index
-    * @param index  the index of the array of {@link EditArea} objects
+    * @param index  the index of the {@link EditArea} element
     */
    public void setEditAreaIndex(int index) {
-      editAreaIndex = index;
-      fMenu.selectWordWrapItm(editArea[index].isWordWrap());
+      currEdArea = editArea[index];
+      fMenu.selectWordWrapItm(currEdArea.isWordWrap());
    }
 
    /**
@@ -96,6 +96,15 @@ public class DisplaySetter {
     */
    public void makeViewSetWinVisible() {
       displSetWin.makeViewSetWinVisible(true);
+   }
+   
+   /**
+    * If showing tabs (and openeing multiple files) is
+    * is selected
+    * @return if showing tabs is selected
+    */
+   public boolean isShowTabs() {
+      return isShowTabs;
    }
    
    /**
@@ -125,14 +134,14 @@ public class DisplaySetter {
    public void changeWordWrap(boolean isWordWrap) {
       this.isWordWrap = isWordWrap;
       if (isWordWrap) {
-         editArea[editAreaIndex].enableWordWrap();
+         currEdArea.enableWordWrap();
       }
       else {
          if (isShowLineNumbers) {
-            editArea[editAreaIndex].showLineNumbers();
+            currEdArea.showLineNumbers();
          }
          else {
-            editArea[editAreaIndex].hideLineNumbers();
+            currEdArea.hideLineNumbers();
          }
       }
       String state = isWordWrap ? "enabled" : "disabled";
@@ -148,18 +157,18 @@ public class DisplaySetter {
    }
    
    /**
-    * If showing tabs (and openeing multiple files) is
-    * is selected
-    * @return if showing tabs is selected
+    * Enabled/disabled the menu item to control visiblity of the tab bar
+    * @param isEnabled  true/false to enable/disable the menu item to
+    * control visiblity of the tab bar
     */
-   public boolean isShowTabs() {
-      return isShowTabs;
+   public void enableTabItm(boolean isEnabled) {
+      vMenu.enableTabItm(isEnabled);
    }
 
    /**
     * Shows/hides the console panel and selects/deselects
     * the checked menu item for the consel panel
-    * @param show  true to show the console panel
+    * @param show  true/false to show(hide the console panel
     */
    public void setShowConsoleState(boolean show) {
       showConsole(show);
@@ -179,7 +188,7 @@ public class DisplaySetter {
    /**
     * Shows/hides the function panel and selects/deselects
     * the checked menu item for showing the function panel
-    * @param show  true to show the function panel
+    * @param show  true/false to show/hide the function panel
     */
    public void setShowFunctionState(boolean show) {
       showFunction(show);
@@ -187,48 +196,30 @@ public class DisplaySetter {
    }
    
    /**
-    * Shows or hides the tab bar
-    * @param isTabs  true to show the tab bar
+    * Shows/hides the tab bar
+    * @param show  true/false to show/hide the tab bar
     */
-   public void showTabs(boolean isTabs) {
-      if (!isTabs && tPane.nTabs() > 1) {
-         throw new IllegalStateException("More than one tab was added."
-               + "Cannot hide tab bar");
-      }
-      isShowTabs = isTabs;         
-      tPane.showTabs(isTabs);
-      String state = isTabs ? "show" : "hide";
+   public void showTabs(boolean show) {       
+      tPane.showTabs(isShowTabs);
+      String state = isShowTabs ? "show" : "hide";
       prefs.storePrefs("showTabs", state);
-   }
-   
-   public void enableTabItm(boolean isEnabled) {
-      vMenu.enableTabItm(isEnabled);
+      this.isShowTabs = isShowTabs;
    }
 
    /**
     * Shows/hides the console panel
-    * @param show  true to show the console panel
+    * @param show  true/false to show/hide the console panel
     */
    public void showConsole(boolean show) {
-      if (show) {
-         mw.showConsole();
-      }
-      else {
-         mw.hideConsole();
-      }
+      mw.showConsole(show);
    }
 
    /**
     * Shows/hides the fileview panel
-    * @param show  true to show the fileview panel
+    * @param show  true/false to show/hide the fileview panel
     */
    public void showFileView(boolean show) {
-      if (show) {
-         mw.showFileView();
-      }
-      else {
-         mw.hideFileView();
-      }
+      mw.showFileView(show);
    }
 
    /**
@@ -236,12 +227,7 @@ public class DisplaySetter {
     * @param show  true to show the function panel
     */
    public void showFunction(boolean show) {
-      if (show) {
-         mw.showFunctionPnl();
-      }
-      else {
-         mw.hideFunctionPnl();
-      }
+      mw.showFunctionPnl(show);
    }
    
    /**

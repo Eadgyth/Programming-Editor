@@ -212,7 +212,7 @@ public class TabbedFiles implements Observer{
       }
       else {      
          txtDoc[iTab].saveFileAs(f);
-         currProj.setDocumentIndex(iTab);
+         currProj.selectDocument(iTab);
          currProj.retrieveProject();
          tp.changeTabTitle(iTab, txtDoc[iTab].filename());
          displSet.displayFrameTitle(txtDoc[iTab].filepath());
@@ -378,7 +378,8 @@ public class TabbedFiles implements Observer{
       }
       addNewTab(txtDoc[openIndex].filename(),
                   edArea[openIndex].textPanel(), openIndex);
-      displSet.displayFrameTitle(txtDoc[openIndex].filepath());         
+      displSet.displayFrameTitle(txtDoc[openIndex].filepath());
+      displSet.enableTabItm(tp.nTabs() == 1);        
       currProj.retrieveProject();
       prefs.storePrefs("recentPath", txtDoc[openIndex].dir());
    }
@@ -450,7 +451,8 @@ public class TabbedFiles implements Observer{
       }
       else { 
          newEmptyTab();
-      }     
+      }
+      displSet.enableTabItm(tp.nTabs() == 1);
    }
    
    private void changeTabEvent(ChangeEvent changeEvent) {
@@ -459,9 +461,8 @@ public class TabbedFiles implements Observer{
       if (iTab > -1) {
          txtDoc[iTab].requestFocus();
          docUpdate.updateDocument(iTab);
-         currProj.setDocumentIndex(iTab);
+         currProj.selectDocument(iTab);
          displSet.displayFrameTitle(txtDoc[iTab].filepath());
-         displSet.enableTabItm(tp.nTabs() == 1);
       }
    }
 }

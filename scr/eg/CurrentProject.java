@@ -1,4 +1,3 @@
-
 package eg;
 
 import java.io.File;
@@ -20,7 +19,7 @@ import eg.utils.JOptions;
 import eg.utils.FileUtils;
 
 /**
- * The managing of projects.
+ * The configuration and execution of actions of projects.
  * <p>
  * A project is represented by an object of type {@link ProjectActions} and
  * is configured and/or set active depending on the {@link TextDocument} that
@@ -64,17 +63,17 @@ public class CurrentProject {
    private String currExt;
    private Languages lang;
 
-   public CurrentProject(DisplaySetter displSet, ProcessStarter proc,
-         ConsolePanel consPnl, FileTree fileTree) {
+   public CurrentProject(DisplaySetter displSet, ConsolePanel consPnl,
+         FileTree fileTree) {
 
       this.displSet = displSet;
-      this.proc = proc;
       this.fileTree = fileTree;
+      proc = new ProcessStarter(consPnl);
       selProj = new SelectedProject(displSet, proc, consPnl);
    }
 
    /**
-    * Sets in this the array of {@code TextDocument}
+    * Sets the array of {@code TextDocument}
     * @param txtDoc  the array of {@link TextDocument}
     */
    public void setDocumentArr(TextDocument[] txtDoc) {
@@ -82,12 +81,11 @@ public class CurrentProject {
    }
 
    /**
-    * Selects the object of this array of {@code TextDocument} that is
-    * used to configure and/or set active a project
+    * Selects the object of this array of {@code TextDocument}
     * @param docIndex  the index of the element in this array of
     * {@link TextDocument}
     */
-   public void setDocumentIndex(int docIndex) {
+   public void selectDocument(int docIndex) {
       currDoc = txtDoc[docIndex];
       currExt = FileUtils.fileSuffix(currDoc.filename());
    }
@@ -110,13 +108,9 @@ public class CurrentProject {
    }
 
    /**
-    * Tries to assign to this current project a project which a configuration
-    * exists for in a local 'eadconfig' file or in the program's 'prefs' file.
-    * <p>
-    * Assignment of the project to this current project (setting the project
-    * active) will happen only if no other project was assigned before.
-    * However, if a local 'config' is found the project is always added to
-    * this list of configured projects.
+    * Assign to this current project a project which a configuration exists
+    * for in a local 'eadconfig' file or in the program's 'prefs' file
+    * @see eg.projects.ProjectConfig#retrieveProject(String)
     */
    public void retrieveProject() {
       if (isProjectSet() && current.isInProject(currDoc.dir())) {
@@ -150,8 +144,8 @@ public class CurrentProject {
     * a project.
     * <p>
     * Depending on the currently set {@link TextDocument} the opened window
-    * belongs to the current project, to one of this listed projects that were
-    * set before or to a newly created project.
+    * belongs to the current project, to one of this listed projects or to
+    * a newly created project.
     */
    public void openSettingsWindow() {
       if (!isProjectSet()) {
@@ -198,12 +192,13 @@ public class CurrentProject {
   }         
 
    /**
-    * Assigns to this current project the project from this {@code List} of
-    * configured projects which the currently selected {@code TextDocument}
+    * Sets active the project from this {@code List} of configured
+    * projects which the currently selected {@code TextDocument}
     * belongs to.
     * <p>
     * If the currently set {@code TextDocument} does not belong to a listed
-    * project it is asked to set up a new project.
+    * project or to the currently active project it is asked to set up a
+    * new project.
     */
    public void changeProject() {
       ProjectActions fromList = selectFromList(currDoc.dir(), true);
@@ -228,9 +223,9 @@ public class CurrentProject {
       }
    }
    
-  /**
-    * Saves the selected file in the current project and compiles all source files
-    * present in the project root directory
+   /**
+    * Saves the source file of the selected {@code TextDocument}
+    * and compiles the project
     */
    public void saveAndCompile() {
       if (!isCurrent("Compile")) {
@@ -254,11 +249,10 @@ public class CurrentProject {
          endCompilation();
       }
    }
-               
 
    /**
-    * Saves all open files in the current project and compiles all source files
-    * present in the project root directory
+    * Saves all open source files of the project directory and compiles the
+    * project
     */
    public void saveAllAndCompile() {
       if (!isCurrent("Compile")) {
@@ -292,10 +286,7 @@ public class CurrentProject {
    }
 
    /**
-    * Runs this project.
-    * <p>
-    * If the project type is html the currently selected html
-    * file is used
+    * Runs this project
     */
    public void runProj() {
       if (!isCurrent("Run")) {
@@ -332,7 +323,7 @@ public class CurrentProject {
    /* 
     * @param confirm  true to confirm in a dialog that a new project will be set
     */
-   private void createNewProject(boolean confirm) {
+   private void createNewProject(boolean needConfirm) {
       if (currDoc.filename().length() == 0) {
          JOptions.titledInfoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          return;
@@ -343,7 +334,7 @@ public class CurrentProject {
       }
       else {    
          int result = 0;
-         if (confirm && isProjectSet()) {
+         if (needConfirm && isProjectSet()) {
             result = JOptions.confirmYesNo("Set new project ?");
          }
          if (result == 0) {
@@ -402,8 +393,8 @@ public class CurrentProject {
    
    private boolean isFileToCompile(TextDocument td) {
        return td != null
-             && td.filename().endsWith(current.getSourceSuffix())
-             && current.isInProject(td.dir());
+                 && td.filename().endsWith(current.getSourceSuffix())
+                 && current.isInProject(td.dir());
    }
    
    private void endCompilation() {
@@ -418,7 +409,7 @@ public class CurrentProject {
       int res = 0;
       if (!useCurrentProj) {
          res = JOptions.confirmYesNo(NOT_IN_PROJ_MESSAGE
-               + "\n" + action + " '" + projectName(current) + "'?");
+             + "\n" + action + " '" + projectName(current) + "'?");
       }
       return useCurrentProj || res == 0;
    }

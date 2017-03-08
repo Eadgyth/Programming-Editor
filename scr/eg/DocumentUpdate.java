@@ -11,18 +11,18 @@ import eg.ui.EditArea;
  */
 public class DocumentUpdate {
 
-   private final DisplaySetter displSet;
    private final Edit edit;
+   private final DisplaySetter displSet;
    private final PluginStarter plugStart;
    
    private TextDocument[] txtDoc;
    private EditArea[] editArea;
  
-   public DocumentUpdate(DisplaySetter displSet, Edit edit,
+   public DocumentUpdate(Edit edit, DisplaySetter displSet,
          PluginStarter plugStart) {
 
-      this.displSet = displSet;
-      this.edit = edit;         
+      this.edit = edit;
+      this.displSet = displSet; 
       this.plugStart = plugStart;
    }
    

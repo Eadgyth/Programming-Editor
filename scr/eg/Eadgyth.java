@@ -35,9 +35,10 @@ public class Eadgyth {
    public static void main(String[] arg) {
       Locale.setDefault(Locale.US);
       uiManagerSettings();
-      TabbedPane      tabPane   = new TabbedPane();
       setLaf();
       FileUtils.emptyLog();
+      
+      TabbedPane      tabPane   = new TabbedPane();
       Toolbar         tBar      = new Toolbar();
       ConsolePanel    consPnl   = new ConsolePanel();   
       FileTree        fileTree  = new FileTree();
@@ -45,13 +46,11 @@ public class Eadgyth {
       MainWin         mw        = new MainWin(menu.menubar(), tBar.toolbar(),
                                       tabPane.tabbedPane(), fileTree.fileTreePnl(),
                                       consPnl.consolePnl());
-      DisplaySetter   displSet  = new DisplaySetter(mw, menu, tBar,
-                                      fileTree, tabPane);
-      ProcessStarter  proc      = new ProcessStarter(consPnl);
-      CurrentProject  currProj  = new CurrentProject(displSet, proc, consPnl, fileTree);
-      Edit            edit      = new Edit();
+      DisplaySetter   displSet  = new DisplaySetter(mw, menu, tBar, fileTree, tabPane);
+      CurrentProject  currProj  = new CurrentProject(displSet, consPnl, fileTree);
       PluginStarter   plugStart = new PluginStarter(mw);
-      DocumentUpdate  docUpdate = new DocumentUpdate(displSet, edit, plugStart);
+      Edit            edit      = new Edit();
+      DocumentUpdate  docUpdate = new DocumentUpdate(edit, displSet, plugStart);
       TabbedFiles     tabFiles  = new TabbedFiles(tabPane, displSet, currProj, docUpdate);
 
       WindowListener winListener = new WindowAdapter() {

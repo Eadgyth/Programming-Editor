@@ -4,14 +4,13 @@
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
       <title>Eadgyth help</title>
       <style>
-            *{
-                font-family: sans-serif;
-             }
+            *{ font-family: sans-serif; }
+            *{ font-size: 98%; }
          div {
              border: 30px white;
              margin-top: 50px;
              margin-bottom: 50px;
-             margin-right: 50px;
+             margin-right: 100px;
              margin-left: 30px;
          }      
       </style>
@@ -64,14 +63,15 @@
    
          <h4 id="Config">Configuring a project</h4>
          <ol>
-            <li>For a new project open a file or save a new file that has one of the file
-                extensions mentioned above.</li>
-            <li>Open the settings window by selecting 'Project' > 'New project'.</li>     
+            <li>Open a file or save a new file that has one of the above file extensions.</li>
+            <li>Open the settings window by selecting 'Project' > 'New project' (or
+                'Project settings' at this point, see
+                <a href="#ChangeProjects">Changing between projects</a>).</li>     
             <li>Enter the name of the main source file without extension. The main file does
-                not have to be the opened file but must exist.</li>
-            <li>If the main file is part of a package (for Java) enter the package name in
-                the text field 'Package containing the main class'. If it is located in a
-                sub-package enter the package path with normal file separators.</li>
+                not have to be the opened file but must exist. For HTML the name of any file
+                in a given directory maybe entered.</li>
+            <li>If the main file is part of a package (for Java) enter the package name (or
+                the package path) in the text field 'Package containing the main class'.</li>
             <li>If the directory that contains source files (or packages) is not supposed
                 to be the project's root (i.e. the working directory) but a sub-directory for
                 sources the name of this directory is entered in text field 'Name of sources
@@ -90,14 +90,16 @@
    
          <h4 id="ChangeProjects">Changing between projects</h4>
          <ul>
-            <li>'Project' > 'New project' is selected to create an additional project and to open a
-                blank settings window.</li>
-            <li>Selecting 'Project' > 'Project settings' opens the settings window of an already set
-                project if the selected file belongs to that project. Otherwise this selection has
-                the same effect as 'New project'.</li>
+            <li>'Project' > 'New project' is selected to create an additional project and to open
+                a blank settings window. The file that is supposed to be part of the new project
+                must be in the selected tab.</li>
             <li>Changing between already set projects is done by selecting a file that is part of
                 the project to be set active and then selecting 'Project' > 'Change project' or,
                 to additionally view or modify the settings, 'Project' > 'Project settings'.</li>
+            <li>Selecting 'Project' > 'Project settings' shows the settings of the currently active
+                project, asks to change project or has the same effect as 'New project' depending
+                on whether the selected file is part of the active project, of a non-active but set
+                project or no project.</li>
          </ul>
    
          <h4 id="Retrieve">Retrieving projects</h4>

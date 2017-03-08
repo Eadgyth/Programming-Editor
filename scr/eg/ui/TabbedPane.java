@@ -33,11 +33,9 @@ public class TabbedPane {
 
    private JTabbedPane tabbedPane;
    private final UIForTab ui = new UIForTab();
-   private final EmptyUIForTab eUi = new EmptyUIForTab();
    
    /* The index of the tab the mouse moved over */
    private int iTabMouseOver = -1;
-   private boolean isShowTabs;   
    
    public TabbedPane() {
       initTab();
@@ -69,17 +67,15 @@ public class TabbedPane {
       tabPnl.add(titleLb);
       tabPnl.add(closeBt); 
       tabbedPane.setTabComponentAt(index, tabPnl);
-      showTabs(isShowTabs);
    }
    
    public void showTabs(boolean show) {
-      isShowTabs = show;
-      if (show) {
-         tabbedPane.setUI(ui);
-      }
-      else {
-         tabbedPane.setUI(eUi);
-      }
+      if (!show && nTabs() > 1) {
+         throw new IllegalStateException("More than one tab was added."
+               + "Cannot hide tab bar");
+      }  
+      ui.setShowTabs(show);
+      tabbedPane.setUI(ui);
    }
          
    
@@ -132,6 +128,7 @@ public class TabbedPane {
    private JTabbedPane initTab() {
       tabbedPane = new JTabbedPane();
       tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+      tabbedPane.setUI(ui);
       tabbedPane.setBorder(null);
       tabbedPane.setFocusable(false);
       tabbedPane.addMouseMotionListener(mml);
