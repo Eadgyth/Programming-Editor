@@ -200,10 +200,10 @@ public class DisplaySetter {
     * @param show  true/false to show/hide the tab bar
     */
    public void showTabs(boolean show) {       
-      tPane.showTabs(isShowTabs);
-      String state = isShowTabs ? "show" : "hide";
+      tPane.showTabs(show);
+      String state = show ? "show" : "hide";
       prefs.storePrefs("showTabs", state);
-      this.isShowTabs = isShowTabs;
+      this.isShowTabs = show;
    }
 
    /**
