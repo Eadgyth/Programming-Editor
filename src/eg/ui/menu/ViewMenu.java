@@ -1,13 +1,11 @@
 package eg.ui.menu;
 
 import java.awt.event.KeyEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
-
-//--Eadgyth--//
-import eg.DisplaySetter;
 
 public class ViewMenu {
    
@@ -31,23 +29,45 @@ public class ViewMenu {
    JMenu getMenu() {
       return menu;
    }
-
+   
    /**
-    * Adds action listeners to this menu items which are handled
-    * by the {@code DisplaySetter} object
-    * @param displSet  the reference to {@link DisplaySetter}
+    * Adds handler for showing/hiding the console panel
+    * @param al  the {@code ActionListener}
     */
-   public void registerAct(DisplaySetter displSet) {
-      consoleItm.addActionListener(e ->
-            displSet.showConsole(isConsoleItmSelected()));
-      fileViewItm.addActionListener(e ->
-            displSet.showFileView(isFileViewItmSelected()));
-      functionItm.addActionListener(e ->
-            displSet.showFunction(isFunctionItmSelected()));
-      tabItm.addActionListener(e ->
-            displSet.showTabs(isTabItmSelected()));
-      openSettingsItm.addActionListener(e ->
-            displSet.makeViewSetWinVisible());
+   public void consoleItmAct(ActionListener al) {
+      consoleItm.addActionListener(al);
+   }
+   
+   /**
+    * Adds handler for showing/hiding the file view panel
+    * @param al  the {@code ActionListener}
+    */
+   public void fileViewItmAct(ActionListener al) {
+      fileViewItm.addActionListener(al);
+   }
+   
+   /**
+    * Adds handler for showing/hiding the function panel
+    * @param al  the {@code ActionListener}
+    */
+   public void functionItmAct(ActionListener al) {
+      functionItm.addActionListener(al);
+   }
+   
+   /**
+    * Adds handler for showing/hiding the tab bar
+    * @param al  the {@code ActionListener}
+    */
+   public void tabItmAct(ActionListener al) {
+      tabItm.addActionListener(al);
+   }
+   
+   /** 
+    * Adds handler for opening the window for the view seetings
+    * @param al  the {@code ActionListener}
+    */
+   public void openSettingWinItmAct(ActionListener al) {
+      openSettingsItm.addActionListener(al);
    }
    
    /**
@@ -79,51 +99,53 @@ public class ViewMenu {
     * is selected
     */
    public boolean isTabItmSelected() {
-      return tabItm.getState();
-   }
-   
-   /**
-    * Sets the selection state of the checkbox menu item for showing the
-    * console panel
-    * @param select  true/false to set the menu item for showing the
-    * console panel selected/unselected
-    */
-   public void selectConsoleItm(boolean select) {
-      consoleItm.setState(select);
+      return tabItm.isSelected();
    }
 
    /**
-    * Sets the selection state of the checkbox menu item for showing the
-    * file view panel
-    * @param select  true/false to set the menu item for showing the
-    * file view panel selected/unselected
+    * Performs the action added to the menu item to open/close the
+    * console panel if {@code select} is not equal to the current
+    * selection state of the item
+    * @param select  true/false to select/unselect the menu item
     */
-   public void selectFileViewItm(boolean select) {
-      fileViewItm.setState(select);
+   public void doConsoleItmAct(boolean select) {
+      if (select != consoleItm.isSelected()) {
+         consoleItm.doClick();
+      }
    }
 
    /**
-    * Sets the selection state of the checkbox menu item for showing the
-    * function panel
-    * @param select  true/false to set the menu item for showing the
-    * function panel selected/unselected
+    * Unselects the menu item for showing the file view and performs
+    * the action added to the item
     */
-   public void selectFunctionItm(boolean select) {
-      functionItm.setState(select);
+   public void doUnselectFileViewAct() {
+      if (fileViewItm.isSelected()) {
+          fileViewItm.doClick();
+       }
    }
-   
+
    /**
-    * Sets the selection state of the checkbox menu item for showing the
-    * tabs
-    * @param select  true/false to set the menu item for showing the
-    * tabs selected/unselected
+    * Performs the action added to the menu item to open/close the
+    * function panel if {@code select} is not equal to the current
+    * selection state of the item
+    * @param select  true/false to select/unselect the menu item
+    */
+   public void doFunctionItmAct(boolean select) {
+      if (select != functionItm.isSelected()) {
+         functionItm.doClick();
+      }
+   }
+
+   /**
+    * Sets the selection state of the menu item for showing the tab bar
+    * @param select  true/false to set the item selected/unselected
     */
    public void selectTabsItm(boolean select) {
-      tabItm.setState(select);
+      tabItm.setSelected(select);
    }
    
    /**
-    * Enables the file view menu item
+    * Enables the menu item for showing the fileview
     */
    public void enableFileView() {
       fileViewItm.setEnabled(true);
@@ -144,7 +166,6 @@ public class ViewMenu {
       fileViewItm.setEnabled(false);
       menu.add(functionItm);
       menu.add(tabItm);
-      tabItm.setSelected(true);
       menu.addSeparator();
       menu.add(openSettingsItm);
       menu.setMnemonic(KeyEvent.VK_V);

@@ -19,6 +19,7 @@ import javax.swing.event.ChangeListener;
 
 //--Eadgyth--//
 import eg.Constants;
+import eg.Preferences;
 
 /**
  * Defines a JTabbedPane with a (close) button in the tabs.
@@ -69,7 +70,7 @@ public class TabbedPane {
       tabbedPane.setTabComponentAt(index, tabPnl);
    }
    
-   public void showTabs(boolean show) {
+   public void showTabbar(boolean show) {
       if (!show && nTabs() > 1) {
          throw new IllegalStateException("More than one tab was added."
                + "Cannot hide tab bar");

@@ -395,7 +395,8 @@ public final class EditArea {
       lineNumPnlScroll.setViewportView(disabledWordwrapPnl);
       lineNumAreaScroll.setViewportView(lineArea);
       lineNumAreaScroll.setBorder(null);
-      lineNumAreaScroll.setBorder(new MatteBorder(0, 0, 0, 1, Constants.BORDER_GRAY));
+      lineNumAreaScroll.setBorder(new MatteBorder(0, 0, 0, 1,
+            Constants.BORDER_DARK_GRAY));
       //
       // link scrolling of line number area to text area
       lineNumAreaScroll.getVerticalScrollBar().setModel

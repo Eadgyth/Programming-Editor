@@ -26,6 +26,7 @@ import javax.swing.border.EmptyBorder;
 //--Eadgyth--//
 import eg.Constants;
 import eg.Preferences;
+import eg.ui.menu.*;
 
 /**
  * The main window
@@ -34,24 +35,23 @@ public class MainWin {
 
    private final static Cursor BUSY_CURSOR
          = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR );
-   private final static Cursor DEF_CURSOR = Cursor.getDefaultCursor();
+   private final static Cursor DEF_CURSOR
+         = Cursor.getDefaultCursor();
 
    private final JFrame frame = new JFrame();
    private final JPanel allComponents = new JPanel(new BorderLayout());
    private final JPanel statusBar = new JPanel();
    private final JLabel showProjectLb = new JLabel();
-
    private final JPanel functionPnl = new JPanel(new BorderLayout());
    private final JPanel functTitlePnl = new JPanel();
    private final JLabel functTitleLb = new JLabel(" No function selected");
    private final JButton closeFunctBt = new JButton(IconFiles.CLOSE_ICON);
-   
-   private final JMenuBar menubar;
+
+   private final Menu menu;
    private final JToolBar toolbar;
    private final JTabbedPane tabbedPane;
    private final JPanel fileViewPnl;
    private final JPanel consolePnl;
-
    private final Preferences prefs = new Preferences();
 
    private JSplitPane splitHorAll;
@@ -61,9 +61,9 @@ public class MainWin {
    private int dividerLocHorAll = 0;
    private int dividerLocHor = 0;
 
-   public MainWin(JMenuBar menubar, JToolBar toolbar, JTabbedPane tabbedPane,
+   public MainWin(Menu menu, JToolBar toolbar, JTabbedPane tabbedPane,
          JPanel fileViewPnl, JPanel consolePnl) {
-      this.menubar = menubar;
+      this.menu = menu;
       this.toolbar = toolbar;
       this.tabbedPane = tabbedPane;
       this.fileViewPnl = fileViewPnl;
@@ -74,6 +74,7 @@ public class MainWin {
       initStatusbar();
       initAllComponents();
       initFunctionPnl();
+      registerViewAct();
       initFrame();
       showProjectLb.setText("Project: not set");
    }
@@ -110,7 +111,7 @@ public class MainWin {
    public void displayFrameTitle(String title) {
       frame.setTitle(title);
    }
-   
+
    /**
     * Shows the name of a project in the status bar
     * @param projectName  the name of the project
@@ -118,7 +119,7 @@ public class MainWin {
    public void showProjectInfo(String projectName) {
       showProjectLb.setText("Project: " + projectName);
    }
-   
+
    /**
     * Adds a component to this 'function panel' which is added to the right
     * of this split area.
@@ -230,10 +231,6 @@ public class MainWin {
          splitHorAll.setRightComponent(null);
       }
    }
-   
-   //
-   //--Listeners
-   //
 
    /**
     * Adds a {@code WindowListener} to this JFrame
@@ -242,16 +239,7 @@ public class MainWin {
    public void winListen(WindowListener wl) {
       frame.addWindowListener(wl);
    }
-   
-   /**
-    * Add an {@code ActionListener} to the close button for
-    * this function panel
-    * @param al  the {@code ActionListener}
-    */
-   public void closeFunctPnlAct(ActionListener al) {
-      closeFunctBt.addActionListener(al);
-   }
-   
+
    //
    //--private methods
    //
@@ -265,7 +253,6 @@ public class MainWin {
    }
 
    private void initAllComponents() {
-      prefs.readPrefs();
       if ("show".equals(prefs.getProperty("toolbar"))) {
          allComponents.add(toolbar, BorderLayout.NORTH);
       }
@@ -273,7 +260,7 @@ public class MainWin {
       if ("show".equals(prefs.getProperty("statusbar"))) {
          allComponents.add(statusBar, BorderLayout.SOUTH);
       }
-      frame.setJMenuBar(menubar);
+      frame.setJMenuBar(menu.menubar());
    }      
 
    private void initSplitPane() {      
@@ -311,5 +298,13 @@ public class MainWin {
       functTitlePnl.add(Box.createHorizontalGlue());
       functTitlePnl.add(closeFunctBt);
       functionPnl.add(functTitlePnl, BorderLayout.NORTH);
-   }  
+   }
+
+   private void registerViewAct() {
+      ViewMenu vm = menu.getViewMenu();
+      closeFunctBt.addActionListener(e -> vm.doFunctionItmAct(false));
+      vm.consoleItmAct(e -> showConsole(vm.isConsoleItmSelected()));
+      vm.fileViewItmAct(e -> showFileView(vm.isFileViewItmSelected()));
+      vm.functionItmAct(e -> showFunctionPnl(vm.isFunctionItmSelected()));
+   }
 }

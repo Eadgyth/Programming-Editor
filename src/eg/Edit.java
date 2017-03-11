@@ -12,9 +12,7 @@ import javax.swing.JTextPane;
 import java.io.IOException;
 
 //--Eadgyth--//
-import eg.utils.JOptions;
-import eg.utils.Finder;
-import eg.utils.FileUtils;
+import eg.utils.*;
 import eg.document.TextDocument;
 
 /**
@@ -149,8 +147,8 @@ public class Edit {
       }
       txtDoc.enableTypeEdit(false);
       String[] selSplit = sel.split("\n");
-      /*
-       * count spaces at the beginning of selection */
+      //
+      // count spaces at the beginning of selection
       int countSpaces = 0;       
       for (int i = 0; i < selSplit[0].length(); i++) {
          if (selSplit[0].substring(i, i + 1).equals(" ")) {
@@ -161,8 +159,8 @@ public class Edit {
          }
       }
       int[] startOfLines = Finder.startOfLines(selSplit);
-      /*
-       * add an indent unit to empty lines or lines with too few spaces */
+      //
+      // add an indent unit to empty lines or lines with too few spaces */
       for (int i = 0; i < selSplit.length; i++) {         
          if (selSplit[i].length() == 0) {
             txtDoc.insertStr(start + startOfLines[i], indentUnit);
@@ -180,8 +178,8 @@ public class Edit {
             }
          } 
       }
-      /*
-       * renew selection */
+      //
+      // renew selection
       int startOfFirstLine = txtDoc.getText().lastIndexOf("\n", start);
       int startUpdate = start - indentLength + countSpaces;
       if (countSpaces != indentLength && startUpdate > startOfFirstLine) {

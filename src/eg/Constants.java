@@ -11,9 +11,9 @@ import javax.swing.border.LineBorder;
  */
 public class Constants {
 
-
     //
     // Colors
+
     /**
      * The gray color for borders */
     public final static Color BORDER_GRAY = new Color(150, 150, 150);

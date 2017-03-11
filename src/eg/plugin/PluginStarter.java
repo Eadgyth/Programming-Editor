@@ -33,14 +33,14 @@ public class PluginStarter {
  
    /**
     * Starts the ith plugin of listed plugins
-    * @param iPlugin  the ith plugin from a list of plugins
+    * @param ithPlugin  the ith plugin from a list of plugins
     * @throws IOException  if a plugin could not be loaded
     */
-   public void startPlugin(int iPlugin) throws IOException {
+   public void startPlugin(int ithPlugin) throws IOException {
       if (plugins == null ) {
          plugins = PluginLoader.loadPlugins(new File("./Plugins"));
       }
-      plugins.get(iPlugin).setEditorAccess(acc);
-      plugins.get(iPlugin).start();
+      plugins.get(ithPlugin).setEditorAccess(acc);
+      plugins.get(ithPlugin).start();
    }
 }

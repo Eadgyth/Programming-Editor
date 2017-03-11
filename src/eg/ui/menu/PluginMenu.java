@@ -12,14 +12,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 //--Eadgyth--//
-import eg.DisplaySetter;
 import eg.javatools.SearchFiles;
 import eg.plugin.PluginStarter;
 
 public class PluginMenu {
    
    private final JMenu menu          = new JMenu("Plugins");
-   private final JMenu allPlugsMenu  = new JMenu("Add in function panel");
+   private final JMenu allPlugsMenu  = new JMenu("Add to function panel");
    private JMenuItem[] selectPlugItm = null;
    
    PluginMenu() {    
@@ -40,11 +39,11 @@ public class PluginMenu {
       return menu;
    }
    
-   public void startPlugin(PluginStarter plugStart, DisplaySetter diplSet) {
+   public void startPlugin(PluginStarter plugStart, ViewMenu vMenu) {
       selectPlugAct((ActionEvent e) -> {
          try {
             plugStart.startPlugin(getPluginIndex(e));
-            diplSet.setShowFunctionState(true);
+            vMenu.doFunctionItmAct(true);
          }
          catch (IOException ioe) {
             System.out.println(ioe.getMessage());  

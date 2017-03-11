@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.awt.EventQueue;
 
 //--Eadgyth--//
-import eg.DisplaySetter;
+import eg.ProjectUpdate;
 import eg.console.*;
 import eg.javatools.*;
 import eg.utils.JOptions;
@@ -21,7 +21,7 @@ public final class JavaActions extends ProjectConfig
 
    private final static String F_SEP = File.separator;
 
-   private final DisplaySetter displSet;
+   private final ProjectUpdate update;
    private final Compile comp;
    private final CreateJar jar;
    private final ProcessStarter proc;
@@ -29,11 +29,11 @@ public final class JavaActions extends ProjectConfig
 
    private String startCommand = "";
 
-   JavaActions(DisplaySetter displSet, ProcessStarter proc,
+   JavaActions(ProjectUpdate update, ProcessStarter proc,
          ConsolePanel consPnl) {
 
       super(".java");
-      this.displSet = displSet;
+      this.update = update;
       this.proc = proc;
       this.consPnl = consPnl;
       comp = new Compile(consPnl);
@@ -81,7 +81,7 @@ public final class JavaActions extends ProjectConfig
             comp.compile(getProjectPath(), getExecutableDirName(),
                   getSourceDirName());            
             consPnl.setCaret(0);
-            if (!displSet.isConsoleSelected()) {
+            if (!update.isConsoleOpen()) {
                if (!comp.success()) {
                   int result = JOptions.confirmYesNo(
                         "Compilation of '"
@@ -89,7 +89,7 @@ public final class JavaActions extends ProjectConfig
                         + comp.getMessage() + "."
                         + "\nOpen console window to view messages?");
                   if (result == 0) {
-                     displSet.setShowConsoleState(true);
+                     update.openConsole();
                   }
                }
                else {
@@ -110,8 +110,8 @@ public final class JavaActions extends ProjectConfig
       if (!mainClassFileExists()) {
          return;
       }
-      if (!displSet.isConsoleSelected()) {
-         displSet.setShowConsoleState(true);
+      if (!update.isConsoleOpen()) {
+         update.openConsole();
       }
       proc.startProcess(startCommand);
    }
@@ -143,7 +143,7 @@ public final class JavaActions extends ProjectConfig
                }
                exists = jarFileExists(jarName);
             }
-            displSet.updateFileTree();
+            update.updateFileTree();
          }
          consPnl.appendText("<<Saved jar file named " + jarName + ">>\n");
          JOptions.infoMessage("Saved jar file named " + jarName);

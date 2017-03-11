@@ -3,7 +3,7 @@ package eg.projects;
 import java.io.File;
 
 //--Eadgyth--//
-import eg.DisplaySetter;
+import eg.ProjectUpdate;
 import eg.console.*;
 
 /**
@@ -11,14 +11,14 @@ import eg.console.*;
  */
 public final class PerlActions extends ProjectConfig implements ProjectActions {
    
-   private final DisplaySetter displSet;
+   private final ProjectUpdate update;
    private final ProcessStarter proc;
    
    private String startCommand = "";
    
-   PerlActions(DisplaySetter displSet, ProcessStarter proc) {
+   PerlActions(ProjectUpdate update, ProcessStarter proc) {
       super(".pl");
-      this.displSet = displSet;
+      this.update = update;
       this.proc = proc;
    }
    
@@ -57,8 +57,8 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void runProject() {
-      if (!displSet.isConsoleSelected()) {
-         displSet.setShowConsoleState(true);
+      if (!update.isConsoleOpen()) {
+         update.openConsole();
       }
       proc.startProcess(startCommand);
    }

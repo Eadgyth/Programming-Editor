@@ -52,9 +52,8 @@ public class CurrentProject {
          = "The following file could not be found anymore:";
 
    private final SelectedProject selProj;
-   private final DisplaySetter displSet;
+   private final ProjectUpdate update;
    private final ProcessStarter proc;
-   private final FileTree fileTree;
    private final List<ProjectActions> projList = new ArrayList<>();
 
    private ProjectActions current;
@@ -63,13 +62,10 @@ public class CurrentProject {
    private String currExt;
    private Languages lang;
 
-   public CurrentProject(DisplaySetter displSet, ConsolePanel consPnl,
-         FileTree fileTree) {
-
-      this.displSet = displSet;
-      this.fileTree = fileTree;
+   public CurrentProject(ProjectUpdate update, ConsolePanel consPnl) {
+      this.update = update;
       proc = new ProcessStarter(consPnl);
-      selProj = new SelectedProject(displSet, proc, consPnl);
+      selProj = new SelectedProject(update, proc, consPnl);
    }
 
    /**
@@ -116,27 +112,30 @@ public class CurrentProject {
       if (isProjectSet() && current.isInProject(currDoc.dir())) {
          return;
       }
-      ProjectActions prToFind = selProj.createProject(currExt, lang);
-      boolean isFound = prToFind != null
-            && prToFind.retrieveProject(currDoc.dir());
-      if (isFound) {
-         if (!isProjectSet()) {   
-            current = prToFind;
-            current.addOkAction(e -> configureProject(current)); 
-            projList.add(current); 
-            updateProjectSetting(current);
-         }
-         else {
-            if (selectFromList(currDoc.dir(), true) == null) {
-               prToFind.addOkAction(e -> configureProject(prToFind));
-               projList.add(prToFind);
-               if (projList.size() == 2) {
-                  displSet.enableChangeProj();
+      
+      EventQueue.invokeLater(() -> {
+         ProjectActions prToFind = selProj.createProject(currExt, lang);
+         boolean isFound = prToFind != null
+               && prToFind.retrieveProject(currDoc.dir());
+         if (isFound) {
+            if (!isProjectSet()) {   
+               current = prToFind;
+               current.addOkAction(e -> configureProject(current)); 
+               projList.add(current); 
+               updateProjectSetting(current);
+            }
+            else {
+               if (selectFromList(currDoc.dir(), true) == null) {
+                  prToFind.addOkAction(e -> configureProject(prToFind));
+                  projList.add(prToFind);
+                  if (projList.size() == 2) {
+                     update.enableChangeProj();
+                  }
+                  changeProject(prToFind);            
                }
-               EventQueue.invokeLater(() -> changeProject(prToFind));            
             }
          }
-      }
+      });
    }
 
    /**
@@ -171,7 +170,10 @@ public class CurrentProject {
    }
    
    /**
-    * Creates a new project
+    * Creates a new project.
+    * <p>
+    * If the the curently set {@link TextDocument} belongs to an already
+    * set project a dialog to confirm to proceed is shown.
     */
    public void newProject() {
       if (!isProjectSet()) {
@@ -219,7 +221,7 @@ public class CurrentProject {
     */
    public void updateFileTree(String path) {
       if (isProjectSet() && current.isInProject(path)) {
-         fileTree.updateTree();
+         update.updateFileTree();
       }
    }
    
@@ -232,7 +234,7 @@ public class CurrentProject {
          return;
       }
       try {
-        displSet.setBusyCursor(true);
+        update.setBusyCursor(true);
         if (isFileToCompile(currDoc)) {
             boolean exists = new File(currDoc.filepath()).exists();
             if (exists) {
@@ -260,7 +262,7 @@ public class CurrentProject {
       }
       StringBuilder missingFiles = new StringBuilder();
       try {
-         displSet.setBusyCursor(true);
+         update.setBusyCursor(true);
          for (int i = 0; i < txtDoc.length; i++) {
             if (isFileToCompile(txtDoc[i])) {
                boolean exists = new File(txtDoc[i].filepath()).exists();
@@ -308,11 +310,11 @@ public class CurrentProject {
          return;
       }
       try {
-         displSet.setBusyCursor(true);
+         update.setBusyCursor(true);
          current.build();
       }
       finally {
-         displSet.setBusyCursor(false);
+         update.setBusyCursor(false);
       }
    }
 
@@ -379,12 +381,12 @@ public class CurrentProject {
    }
 
    private void updateProjectSetting(ProjectActions projToSet) {
-      fileTree.setDeletableDirName(projToSet.getExecutableDirName());
+      update.setDeletableDirName(projToSet.getExecutableDirName());
       proc.addWorkingDir(projToSet.getProjectPath());
-      displSet.showProjectInfo(projectName(projToSet));
+      update.showProjectInfo(projectName(projToSet));
       selProj.enableActions(projToSet.getClass().getSimpleName(), projList.size());
       EventQueue.invokeLater(() -> 
-            fileTree.setProjectTree(projToSet.getProjectPath()));
+            update.setProjectTree(projToSet.getProjectPath()));
    }
    
    private String projectName(ProjectActions toName) {
@@ -399,8 +401,8 @@ public class CurrentProject {
    
    private void endCompilation() {
       EventQueue.invokeLater(() -> {
-         fileTree.updateTree();
-         displSet.setBusyCursor(false);
+         update.updateFileTree();
+         update.setBusyCursor(false);
       });
    }
    

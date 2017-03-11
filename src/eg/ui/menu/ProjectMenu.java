@@ -57,8 +57,8 @@ public class ProjectMenu {
       build.setEnabled(isBuild);
    }
    
-   public void setBuildKind(String kind) {
-      build.setText(kind);
+   public void setBuildLabel(String label) {
+      build.setText(label);
    }
 
    private void assembleMenu() {

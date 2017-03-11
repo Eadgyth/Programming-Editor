@@ -2,7 +2,7 @@ package eg.projects;
 
 import eg.console.*;
 import eg.Languages;
-import eg.DisplaySetter;
+import eg.ProjectUpdate;
 import eg.ui.filetree.FileTree;
 
 /**
@@ -10,13 +10,13 @@ import eg.ui.filetree.FileTree;
  */
 public class SelectedProject {
 
-   private final DisplaySetter displSet;
+   private final ProjectUpdate update;
    private final ProcessStarter proc;
    private final ConsolePanel consPnl;
 
-   public SelectedProject(DisplaySetter displSet, ProcessStarter proc,
+   public SelectedProject(ProjectUpdate update, ProcessStarter proc,
          ConsolePanel consPnl) {
-      this.displSet = displSet;
+      this.update = update;
       this.proc = proc;
       this.consPnl = consPnl;
    }
@@ -40,25 +40,25 @@ public class SelectedProject {
       ProjectActions newProj = null;
       switch (fileExt) {
          case "java":
-            newProj = new JavaActions(displSet, proc, consPnl);
+            newProj = new JavaActions(update, proc, consPnl);
             break;
          case "html": case "htm":
             newProj = new HtmlActions(fileExt);
             break;
          case "pl": case "pm":
-            newProj = new PerlActions(displSet, proc);
+            newProj = new PerlActions(update, proc);
             break;
       }
       if (newProj == null) {
          switch (lang) {
             case JAVA:
-               newProj = new JavaActions(displSet, proc, consPnl);
+               newProj = new JavaActions(update, proc, consPnl);
                break;
             case HTML:
                newProj = new HtmlActions("html");
                break;
             case PERL:
-               newProj = new PerlActions(displSet, proc);
+               newProj = new PerlActions(update, proc);
                break;
             case PLAIN_TEXT:
                if ("txt".equals(fileExt)) {
@@ -80,20 +80,21 @@ public class SelectedProject {
     * @param projCount  the number of already configured projects
     */
    public void enableActions(String className, int projCount) {
+      update.setBuildLabel("Build");
       switch (className) {
          case "JavaActions":
-            displSet.enableProjActions(true, true, true, projCount);
-            displSet.setBuildMenuItmText("Create jar");
+            update.enableProjActions(true, true, true, projCount);
+            update.setBuildLabel("Create jar");
             break;
          case "HtmlActions":
-            displSet.enableProjActions(false, true, false, projCount);
+            update.enableProjActions(false, true, false, projCount);
             break;
          case "PerlActions":
-            displSet.enableProjActions(false, true, false, projCount);
+            update.enableProjActions(false, true, false, projCount);
             break;
          case "TxtActions":
-            displSet.enableProjActions(false, false, false, projCount);
-            break;        
+            update.enableProjActions(false, false, false, projCount);
+            break;
       }
    }         
 }

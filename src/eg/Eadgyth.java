@@ -1,6 +1,7 @@
 package eg;
 
 import java.util.Locale;
+
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -20,6 +21,7 @@ import eg.ui.MainWin;
 import eg.ui.Toolbar;
 import eg.ui.TabbedPane;
 import eg.ui.menu.Menu;
+import eg.ui.ViewSettingWin;
 import eg.ui.filetree.FileTree;
 import eg.utils.FileUtils;
 import eg.plugin.PluginStarter;
@@ -38,41 +40,53 @@ public class Eadgyth {
       setLaf();
       FileUtils.emptyLog();
       
-      TabbedPane      tabPane   = new TabbedPane();
-      Toolbar         tBar      = new Toolbar();
-      ConsolePanel    consPnl   = new ConsolePanel();   
-      FileTree        fileTree  = new FileTree();
-      Menu            menu      = new Menu();
-      MainWin         mw        = new MainWin(menu.menubar(), tBar.toolbar(),
-                                      tabPane.tabbedPane(), fileTree.fileTreePnl(),
-                                      consPnl.consolePnl());
-      DisplaySetter   displSet  = new DisplaySetter(mw, menu, tBar, fileTree, tabPane);
-      CurrentProject  currProj  = new CurrentProject(displSet, consPnl, fileTree);
-      PluginStarter   plugStart = new PluginStarter(mw);
-      Edit            edit      = new Edit();
-      DocumentUpdate  docUpdate = new DocumentUpdate(edit, displSet, plugStart);
-      TabbedFiles     tabFiles  = new TabbedFiles(tabPane, displSet, currProj, docUpdate);
+      Toolbar         tBar       = new Toolbar();
+      ConsolePanel    consPnl    = new ConsolePanel();   
+      FileTree        fileTree   = new FileTree();
+      Menu            menu       = new Menu();
+      TabbedPane      tabPane    = new TabbedPane();
+      MainWin         mw         = new MainWin(menu, tBar.toolbar(),
+                                       tabPane.tabbedPane(), fileTree.fileTreePnl(),
+                                       consPnl.consolePnl());
+      ProjectUpdate   prUpdate   = new ProjectUpdate(mw, menu, tBar, fileTree);
+      ViewSettingWin  viewSetWin = new ViewSettingWin();
+      EditAreaView    edArView   = new EditAreaView(viewSetWin, menu.getFormatMenu());
+      ViewSetter      viewSet    = new ViewSetter(viewSetWin, mw, menu, tabPane);
+      CurrentProject  currProj   = new CurrentProject(prUpdate, consPnl);
+      PluginStarter   plugStart  = new PluginStarter(mw);
+      Edit            edit       = new Edit();
+      DocumentUpdate  docUpdate  = new DocumentUpdate(edit, edArView, plugStart);
+      TabbedFiles     tabFiles   = new TabbedFiles(tabPane, viewSet, edArView, currProj,
+                                       docUpdate);
 
       WindowListener winListener = new WindowAdapter() {
+
          @Override
          public void windowClosing(WindowEvent we) {
             tabFiles.tryExit();
          }
       };
-      mw.winListen(winListener);
-          
+
+      mw.winListen(winListener);         
       tBar.registerFileAct(tabFiles);
       tBar.registerProjectAct(currProj);
       tBar.registerEditAct(edit);
       menu.getFileMenu().registerAct(tabFiles);
       menu.getProjectMenu().registerAct(currProj);
       menu.getEditMenu().registerAct(edit, tabFiles);
-      menu.getFormatMenu().registerAct(tabFiles, displSet);
-      menu.getViewMenu().registerAct(displSet);
-      consPnl.closeAct(e -> displSet.setShowConsoleState(false));
+      menu.getFormatMenu().registerAct(tabFiles);
+      menu.getPluginMenu().startPlugin(plugStart, menu.getViewMenu());
+      menu.getViewMenu().openSettingWinItmAct(e ->
+            viewSetWin.makeVisible(true));
+      viewSetWin.okAct(e -> {
+         edArView.applySetWinOk();
+         viewSet.applySetWinOk();
+         viewSetWin.makeVisible(false);
+      });
+      consPnl.closeAct(e -> menu.getViewMenu().doConsoleItmAct(false));
+      fileTree.closeAct(e -> menu.getViewMenu().doUnselectFileViewAct());
       fileTree.addObserver(tabFiles);
-      menu.getPluginMenu().startPlugin(plugStart, displSet); 
-      
+     
       EventQueue.invokeLater(() -> {
          mw.makeVisible();
          tabFiles.focusInSelectedTab();

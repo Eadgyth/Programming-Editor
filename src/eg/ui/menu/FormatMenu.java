@@ -1,5 +1,6 @@
 package eg.ui.menu;
 
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JMenu;
@@ -8,7 +9,7 @@ import javax.swing.JCheckBoxMenuItem;
 
 //--Eadgyth--//
 import eg.TabbedFiles;
-import eg.DisplaySetter;
+import eg.EditAreaView;
 
 public class FormatMenu {
    
@@ -21,13 +22,19 @@ public class FormatMenu {
       assembleMenu();
    }
    
-   public void registerAct(TabbedFiles tb, DisplaySetter displSet) {
+   public void registerAct(TabbedFiles tb) {
       fontItm.addActionListener(e ->
             tb.makeFontSetWinVisible());
-      wordWrapItm.addActionListener(e ->
-            displSet.changeWordWrap(wordWrapItm.getState()));
    }
    
+   public void changeWordWrapAct(ActionListener al) {
+      wordWrapItm.addActionListener(al);
+   }
+   
+   public boolean isWordWrapItmSelected() {
+      return wordWrapItm.isSelected();
+   }
+  
    public void selectWordWrapItm(boolean select) {
       wordWrapItm.setState(select);
    }

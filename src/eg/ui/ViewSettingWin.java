@@ -24,7 +24,7 @@ import eg.Constants;
  * The frame that contains components to control the display of the
  * main window
  */
-public class DisplaySettingWin {
+public class ViewSettingWin {
 
    public final static String[] LAF_OPT = {"System", "Java default"};
    public final static String[] TAB_POS_OPT = {"Top", "Bottom"};
@@ -39,14 +39,18 @@ public class DisplaySettingWin {
    private final JCheckBox checkStatusbar    = new JCheckBox();
    private final JButton okBt                = new JButton("OK");
    
-   public DisplaySettingWin() {
+   public ViewSettingWin() {
       prefs.readPrefs();
       selectLaf.setSelectedItem(prefs.getProperty("LaF"));
       initFrame();
    }
    
-   public void makeViewSetWinVisible(boolean isVisible) {
+   public void makeVisible(boolean isVisible) {
       frame.setVisible(isVisible);
+   }
+   
+   public void okAct(ActionListener al) {
+      okBt.addActionListener(al);
    }
 
    public boolean isShowToolbar() {
@@ -63,10 +67,6 @@ public class DisplaySettingWin {
    
    public int selectedLaf() {
       return selectLaf.getSelectedIndex();
-   }
-   
-   public void okAct(ActionListener al) {
-      okBt.addActionListener(al);
    }
    
    private void initFrame() {
