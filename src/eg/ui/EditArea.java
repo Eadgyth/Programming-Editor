@@ -298,8 +298,8 @@ public final class EditArea {
       Font fontNew = new Font(font, Font.PLAIN, fontSize);
       lineArea.setFont(fontNew);
       textArea.setFont(fontNew);
-   }      
-   
+   }
+
    /**
     * Shows line numbers.
     * <p>
@@ -365,14 +365,13 @@ public final class EditArea {
    }
 
    private void initTextArea() {
-      textArea.setBorder(WHITE_BORDER);       
+      textArea.setBorder(WHITE_BORDER);
    }
 
    private void initLineNrArea() {
       lineArea.setBorder(WHITE_BORDER);
       lineArea.setEditable(false);
       lineArea.setFocusable(false);
-      lineArea.setBackground(Color.WHITE);
       DefaultCaret caretLine = (DefaultCaret) lineArea.getCaret();
       caretLine.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
    }
