@@ -43,7 +43,6 @@ public class EditMenu {
    private final JMenu     languageMenu    = new JMenu("Language");
    private final JCheckBoxMenuItem[] selectLangChBxItm
                                             = new JCheckBoxMenuItem[LANGUAGES.length];
-
    EditMenu() {
       assembleMenu();
       shortCuts();
@@ -75,8 +74,12 @@ public class EditMenu {
          if (e.getSource() == selectLangChBxItm[i]) {
             lang = Languages.values()[i];
             tf.setLanguage(lang);
+            selectLangChBxItm[i].setEnabled(false);
          }
-         else selectLangChBxItm[i].setState(false);
+         else {
+            selectLangChBxItm[i].setSelected(false);
+            selectLangChBxItm[i].setEnabled(true);
+         }
       }
    }
 
@@ -99,7 +102,8 @@ public class EditMenu {
          selectLangChBxItm[i] = new JCheckBoxMenuItem(LANGUAGES[i]);
          if (prefs.getProperty("language").equals(
                eg.Languages.values()[i].toString())) {
-            selectLangChBxItm[i].setState(true);
+            selectLangChBxItm[i].setSelected(true);
+            selectLangChBxItm[i].setEnabled(false);
          }
       }
       menu.add(languageMenu);
