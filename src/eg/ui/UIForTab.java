@@ -14,15 +14,15 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
  * aligns tabs at the left edge
  */
 class UIForTab extends BasicTabbedPaneUI {
-   
+
    private final Insets borderInsets = new Insets(0, 0, 0, 0);
-   
+
    private boolean isShowTabs = true;
-   
+
    void setShowTabs(boolean show) {
       isShowTabs = show;
    }
-   
+
    @Override
    protected int calculateMaxTabHeight(int tabPlacement) {
       if (isShowTabs) {
@@ -36,7 +36,7 @@ class UIForTab extends BasicTabbedPaneUI {
    @Override
    protected void paintTabBorder(Graphics g, int tabPlacement,
           int tabIndex, int x, int y, int w, int h, boolean isSelected) {
-             
+
       if (!isShowTabs) {
          return;
       }
@@ -57,7 +57,7 @@ class UIForTab extends BasicTabbedPaneUI {
       g.drawLine(x, y, x, y + h);         // left vertical
       g.drawLine(x + w, y, x + w, y + h); // right vertical
    }
-   
+
    @Override
    protected void paintTabBackground(Graphics g, int tabPlacement,
        int tabIndex, int x, int y, int w, int h, boolean isSelected) {
@@ -75,7 +75,7 @@ class UIForTab extends BasicTabbedPaneUI {
       shape.addPoint(x, y + h);
       shape.addPoint(x + w, y + h);
       shape.addPoint(x + w, y);
-      
+
       if (isSelected) {
          g.setColor(Color.WHITE);
       }
@@ -84,14 +84,13 @@ class UIForTab extends BasicTabbedPaneUI {
       }
       g.fillPolygon(shape);
    }
-   
+
    @Override
    protected int getTabLabelShiftY(int tabPlacement, int tabIndex,
          boolean isSelected) {
-      int maxHeight = super.calculateMaxTabHeight(tabPlacement);
       return 0;
    }
-     
+
    @Override
    protected void paintContentBorder(Graphics g, int tabPlacement,
          int selectedIndex) {
@@ -101,7 +100,7 @@ class UIForTab extends BasicTabbedPaneUI {
    protected Insets getContentBorderInsets(int tabPlacement) {
       return borderInsets;
    }
-   
+
    @Override
    protected Insets getTabAreaInsets(int tabPlacement) {
       return borderInsets;
