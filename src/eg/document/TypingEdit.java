@@ -80,6 +80,7 @@ class TypingEdit {
    }
 
    void setUpEditing(Languages language) {
+      restartUndo();
       if (Languages.PLAIN_TEXT == language) {
          editArea.allTextToBlack();
          enableTypeEdit(false);
@@ -175,6 +176,7 @@ class TypingEdit {
       String in = editArea.getDocText();
       updateRowNumber(in);
       if (!isTypeEdit) {
+         System.out.println("no type");
          return;
       }
       int newLineNr = rowNum.getCurrLineNr();
