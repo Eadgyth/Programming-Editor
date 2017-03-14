@@ -36,14 +36,10 @@ public class CurrentProject {
    private final String NO_FILE_IN_TAB_MESSAGE
          = "A project can be set after opening a file or"
          + " saving a new file.";
-
-   private final String IS_IN_PROJ_MESSAGE 
-         = "The selected file belongs to the"
-         + " currently active project.";
          
    private final String NOT_IN_PROJ_MESSAGE 
-         = "The selected file does not belong to the"
-         + " currently active project.";
+         = "The selected file is not in the root directory"
+         + " of the currently active project.";
 
    private final String WRONG_TYPE_MESSAGE
          = "No project can be defined for this file type.";
@@ -194,9 +190,8 @@ public class CurrentProject {
   }         
 
    /**
-    * Sets active the project from this {@code List} of configured
-    * projects which the currently selected {@code TextDocument}
-    * belongs to.
+    * Sets active the project from this {@code List} of configured projects
+    * which the currently selected {@code TextDocument} belongs to.
     * <p>
     * If the currently set {@code TextDocument} does not belong to a listed
     * project or to the currently active project it is asked to set up a
