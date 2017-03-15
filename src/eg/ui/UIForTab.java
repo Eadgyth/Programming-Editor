@@ -54,8 +54,8 @@ class UIForTab extends BasicTabbedPaneUI {
          g.setColor(eg.Constants.BORDER_LIGHT_GRAY);
       }
       g.drawLine(x, y , x + w, y );       // top hor
-      g.drawLine(x, y, x, y + h);         // left vertical
-      g.drawLine(x + w, y, x + w, y + h); // right vertical
+      g.drawLine(x, y, x, y + h - 1);         // left vertical
+      g.drawLine(x + w, y, x + w, y + h - 1); // right vertical
    }
 
    @Override

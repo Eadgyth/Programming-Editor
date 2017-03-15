@@ -100,7 +100,7 @@ public class CurrentProject {
    }
 
    /**
-    * Assign to this current project a project which a configuration exists
+    * Assigns to this current project a project which a configuration exists
     * for in a local 'eadconfig' file or in the program's 'prefs' file
     * @see eg.projects.ProjectConfig#retrieveProject(String)
     */
@@ -108,7 +108,6 @@ public class CurrentProject {
       if (isProjectSet() && current.isInProject(currDoc.dir())) {
          return;
       }
-      
       EventQueue.invokeLater(() -> {
          ProjectActions prToFind = selProj.createProject(currExt, lang);
          boolean isFound = prToFind != null
@@ -314,7 +313,7 @@ public class CurrentProject {
    }
 
    //
-   //--private methods
+   //--private methods--
    //
 
    /* 

@@ -7,24 +7,19 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 
-//--Eadgyth--//
-import eg.TabbedFiles;
-import eg.EditAreaView;
-
 public class FormatMenu {
    
    private final JMenu     menu     = new JMenu("Format");
-   private final JMenuItem fontItm   = new JMenuItem("Font ...");
+   private final JMenuItem fontItm  = new JMenuItem("Font ...");
    private final JCheckBoxMenuItem wordWrapItm
-                                  = new JCheckBoxMenuItem("Wordwrap");
+                                    = new JCheckBoxMenuItem("Wordwrap");
                              
    FormatMenu() {
       assembleMenu();
    }
    
-   public void registerAct(TabbedFiles tb) {
-      fontItm.addActionListener(e ->
-            tb.makeFontSetWinVisible());
+   public void fontAct(ActionListener al) {
+      fontItm.addActionListener(al);
    }
    
    public void changeWordWrapAct(ActionListener al) {

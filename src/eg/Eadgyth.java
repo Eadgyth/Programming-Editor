@@ -50,13 +50,13 @@ public class Eadgyth {
                                        consPnl.consolePnl());
       ProjectUpdate   prUpdate   = new ProjectUpdate(mw, menu, tBar, fileTree);
       ViewSettingWin  viewSetWin = new ViewSettingWin();
-      EditAreaView    edArView   = new EditAreaView(viewSetWin, menu.getFormatMenu());
+      EditAreaFormat  format     = new EditAreaFormat(viewSetWin, menu.getFormatMenu());
       ViewSetter      viewSet    = new ViewSetter(viewSetWin, mw, menu, tabPane);
       CurrentProject  currProj   = new CurrentProject(prUpdate, consPnl);
       PluginStarter   plugStart  = new PluginStarter(mw);
       Edit            edit       = new Edit();
-      DocumentUpdate  docUpdate  = new DocumentUpdate(edit, edArView, plugStart);
-      TabbedFiles     tabFiles   = new TabbedFiles(tabPane, viewSet, edArView, currProj,
+      DocumentUpdate  docUpdate  = new DocumentUpdate(edit, plugStart);
+      TabbedFiles     tabFiles   = new TabbedFiles(tabPane, viewSet, format, currProj,
                                        docUpdate);
 
       WindowListener winListener = new WindowAdapter() {
@@ -74,12 +74,11 @@ public class Eadgyth {
       menu.getFileMenu().registerAct(tabFiles);
       menu.getProjectMenu().registerAct(currProj);
       menu.getEditMenu().registerAct(edit, tabFiles);
-      menu.getFormatMenu().registerAct(tabFiles);
       menu.getPluginMenu().startPlugin(plugStart, menu.getViewMenu());
       menu.getViewMenu().openSettingWinItmAct(e ->
             viewSetWin.makeVisible(true));
       viewSetWin.okAct(e -> {
-         edArView.applySetWinOk();
+         format.applySetWinOk();
          viewSet.applySetWinOk();
          viewSetWin.makeVisible(false);
       });

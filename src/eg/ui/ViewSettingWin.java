@@ -27,17 +27,16 @@ import eg.Constants;
 public class ViewSettingWin {
 
    public final static String[] LAF_OPT = {"System", "Java default"};
-   public final static String[] TAB_POS_OPT = {"Top", "Bottom"};
+   public final static String[] BACKGR_COL_OPT = {"White", "Black"};
 
    private final JFrame frame = new JFrame("View settings");
    private final Preferences prefs = new Preferences();
    
-   private final JComboBox<String> selectLaf = new JComboBox<>(LAF_OPT);
-   private final JComboBox<String> tabPos    = new JComboBox<>(TAB_POS_OPT);
-   private final JCheckBox checkLineNumbers  = new JCheckBox();
-   private final JCheckBox checkToolbar      = new JCheckBox();
-   private final JCheckBox checkStatusbar    = new JCheckBox();
-   private final JButton okBt                = new JButton("OK");
+   private final JComboBox<String> selectLaf    = new JComboBox<>(LAF_OPT);
+   private final JCheckBox checkLineNumbers     = new JCheckBox();
+   private final JCheckBox checkToolbar         = new JCheckBox();
+   private final JCheckBox checkStatusbar       = new JCheckBox();
+   private final JButton   okBt                 = new JButton("OK");
    
    public ViewSettingWin() {
       prefs.readPrefs();
@@ -81,12 +80,12 @@ public class ViewSettingWin {
    }
    
    private JPanel allPanels() {
-      JPanel allPanels = new JPanel(new GridLayout(5,1));
+      JPanel allPanels = new JPanel(new GridLayout(5, 1));
       allPanels.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       allPanels.add(setLineNumberPanel());
       allPanels.add(setToolbarPanel());
-      allPanels.add(setStatusBarPanel());    
-      allPanels.add(setLafPanel());
+      allPanels.add(setStatusBarPanel());
+      allPanels.add(setLafPnl());
       allPanels.add(buttonsPanel());
       frame.getRootPane().setDefaultButton(okBt);
       
@@ -124,6 +123,10 @@ public class ViewSettingWin {
       return checkBxPnl(checkStatusbar, "Show status bar:");
    }
    
+   private JPanel setLafPnl() {
+      return comboBxPnl(selectLaf, "Look & feel (needs restarting Eadgyth):");
+   }
+
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
       JLabel label = new JLabel(title);
       label.setFont(Constants.SANSSERIF_BOLD_12);
@@ -138,23 +141,22 @@ public class ViewSettingWin {
       checkBxPnl.add(Box.createRigidArea(new Dimension(80, 0)));
       return checkBxPnl;
    }
-      
-   private JPanel setLafPanel() {      
-      JLabel lafLabel = new JLabel( 
-            "Look & feel (needs restarting Eadgyth):");
-      lafLabel.setFont(Constants.SANSSERIF_BOLD_12);
-      selectLaf.setFont(Constants.SANSSERIF_PLAIN_12);
+   
+   private JPanel comboBxPnl(JComboBox comboBox, String title) {      
+      JLabel lb = new JLabel(title);
+      lb.setFont(Constants.SANSSERIF_BOLD_12);
+      //lb.setFont(Constants.SANSSERIF_PLAIN_12);
 
-      JPanel setLafPanel = new JPanel();
-      setLafPanel.setLayout(new BoxLayout(setLafPanel, BoxLayout.LINE_AXIS));
-      setLafPanel.add(lafLabel);
-      setLafPanel.add(Box.createHorizontalGlue());
+      JPanel pnl = new JPanel();
+      pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
+      pnl.add(lb);
+      pnl.add(Box.createHorizontalGlue());
       JPanel holdComboBx = new JPanel(new FlowLayout());
-      setLafPanel.add(Box.createRigidArea(new Dimension(59, 0)));
-      holdComboBx.add(selectLaf);
-      setLafPanel.add(Box.createRigidArea(new Dimension(5, 0)));
-      setLafPanel.add(holdComboBx);
-      return setLafPanel;
+      pnl.add(Box.createRigidArea(new Dimension(59, 0)));
+      holdComboBx.add(comboBox);
+      pnl.add(Box.createRigidArea(new Dimension(5, 0)));
+      pnl.add(holdComboBx);
+      return pnl;
    }
    
    private JPanel buttonsPanel() {

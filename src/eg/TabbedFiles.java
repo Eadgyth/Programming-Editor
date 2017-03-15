@@ -28,14 +28,13 @@ import eg.ui.EditArea;
 public class TabbedFiles implements Observer{
 
    private final TextDocument[] txtDoc = new TextDocument[10];
-   private final EditArea[] edArea = new EditArea[10];
+   private final EditArea[] editArea = new EditArea[10];
    private final FileChooserOpen fo;
    private final FileChooserSave fs;
    private final Preferences prefs = new Preferences();   
    private final TabbedPane tp;
    private final ViewSetter viewSet;
-   private final EditAreaView edArView;
-   private final FontSetter fontSet;
+   private final EditAreaFormat format;
    private final DocumentUpdate docUpdate;
    private final ChangeListener changeListener;
    private final CurrentProject currProj;
@@ -45,29 +44,32 @@ public class TabbedFiles implements Observer{
    /* The index of the selected tab */
    private int iTab = 0;
    
-   public TabbedFiles(TabbedPane tp, ViewSetter viewSet, EditAreaView edArView,
+   public TabbedFiles(TabbedPane tp, ViewSetter viewSet, EditAreaFormat format,
          CurrentProject currProj, DocumentUpdate docUpdate) {
 
       this.tp = tp;
       this.viewSet = viewSet;
-      this.edArView = edArView;
+      this.format = format;
       this.docUpdate = docUpdate;
       this.currProj = currProj;
 
-      fontSet = new FontSetter(edArea);
-      docUpdate.setDocumentArrays(txtDoc, edArea);
+      docUpdate.setDocumentArrays(txtDoc);
+      currProj.setDocumentArr(txtDoc);
+      currProj.setLanguage(lang);
+      format.setEditAreaArr(editArea);
+      
+      prefs.readPrefs();
+      String recentDir = prefs.getProperty("recentPath");
+      fo = new FileChooserOpen(recentDir);
+      fs = new FileChooserSave(recentDir);
+      lang = Languages.valueOf(prefs.getProperty("language"));
+
+      newEmptyTab();
+      
       changeListener = (ChangeEvent changeEvent) -> {
          changeTabEvent(changeEvent);
       };
       tp.changeListen(changeListener);
-      prefs.readPrefs();
-      lang = Languages.valueOf(prefs.getProperty("language"));
-      currProj.setDocumentArr(txtDoc);
-      currProj.setLanguage(lang);
-      String recentDir = prefs.getProperty("recentPath");
-      fo = new FileChooserOpen(recentDir);
-      fs = new FileChooserSave(recentDir);
-      newEmptyTab();
    }
    
    /**
@@ -87,29 +89,6 @@ public class TabbedFiles implements Observer{
    }
 
    /**
-    * Returns this array of type {@code TextDocument}
-    * @return  this array of type {@link TextDocument}
-    */
-   public TextDocument[] getTextDocument() {
-      return txtDoc;
-   }
-   
-   /**
-    * Returns this array of type {@code EditArea}
-    * @return  this array of type {@link EditArea}
-    */
-   public EditArea[] getEditArea() {
-      return edArea;
-   }
-   
-   /**
-    * Makes the window of this {@code FontSetter} visible/invisible
-    */
-   public void makeFontSetWinVisible() {
-      fontSet.makeFontSetWinVisible();
-   }
-
-   /**
     * Sets the focus in the selected document
     */
    public void focusInSelectedTab() { 
@@ -124,9 +103,9 @@ public class TabbedFiles implements Observer{
          tryClose();
       }
       else {
-         edArea[tp.nTabs()] = createEditArea();
-         txtDoc[tp.nTabs()] = new TextDocument(edArea[tp.nTabs()], lang);
-         addNewTab("unnamed", edArea[tp.nTabs()].textPanel(), tp.nTabs());
+         editArea[tp.nTabs()] = format.createEditArea();
+         txtDoc[tp.nTabs()] = new TextDocument(editArea[tp.nTabs()], lang);
+         addNewTab("unnamed", editArea[tp.nTabs()].textPanel(), tp.nTabs());
       }
    }
    
@@ -257,7 +236,7 @@ public class TabbedFiles implements Observer{
     * Prints the text content of the selected document to a printer
     */
    public void print() {
-      edArea[iTab].print();
+      editArea[iTab].print();
    }
 
    /**
@@ -299,7 +278,7 @@ public class TabbedFiles implements Observer{
          }
          for (int i = 0; i < txtDoc.length; i++) {
             txtDoc[i] = null;
-            edArea[i] = null;
+            editArea[i] = null;
          }
          newEmptyTab();
       }
@@ -356,7 +335,7 @@ public class TabbedFiles implements Observer{
       
       int openIndex = 0;
       boolean isUnnamedBlank = txtDoc[openIndex].filename().length() == 0
-            && edArea[openIndex].getDocText().length() == 0;
+            && editArea[openIndex].getDocText().length() == 0;
       if (isUnnamedBlank && tp.nTabs() == 1) {
          txtDoc[openIndex].openFile(file);
       }
@@ -379,7 +358,7 @@ public class TabbedFiles implements Observer{
          openNewFile(openIndex, file);
       }
       addNewTab(txtDoc[openIndex].filename(),
-                  edArea[openIndex].textPanel(), openIndex);
+                  editArea[openIndex].textPanel(), openIndex);
       viewSet.displayFrameTitle(txtDoc[openIndex].filepath());
       currProj.retrieveProject();
       prefs.storePrefs("recentPath", txtDoc[openIndex].dir());
@@ -395,17 +374,9 @@ public class TabbedFiles implements Observer{
       return isFileOpen;
    }
    
-   private EditArea createEditArea() {
-      boolean isWordWrap = edArView.isWordWrap();
-      boolean isLineNr = edArView.isLineNumbers();
-      String font = fontSet.getFont();
-      int fontSize = fontSet.getFontSize();
-      return new EditArea(isWordWrap, isLineNr, font, fontSize);
-   }
-   
    private void openNewFile(int index, File file) {
-      edArea[index] = createEditArea();
-      txtDoc[index] = new TextDocument(edArea[index]);
+      editArea[index] = format.createEditArea();
+      txtDoc[index] = new TextDocument(editArea[index]);
       txtDoc[index].openFile(file);
    }
 
@@ -442,11 +413,11 @@ public class TabbedFiles implements Observer{
       tp.removeTab(iTab);
       for (int i = count; i < tp.nTabs(); i++) {
          txtDoc[i] = txtDoc[i + 1];
-         edArea[i] = edArea[i+1];
+         editArea[i] = editArea[i+1];
       }
       if (tp.nTabs() > 0) {
          txtDoc[tp.nTabs()] = null;
-         edArea[tp.nTabs()] = null;
+         editArea[tp.nTabs()] = null;
          int index = tp.selectedIndex();
          viewSet.displayFrameTitle(txtDoc[index].filepath());
       }
@@ -460,6 +431,7 @@ public class TabbedFiles implements Observer{
       iTab = sourceTb.getSelectedIndex();
       if (iTab > -1) {
          txtDoc[iTab].requestFocus();
+         format.setCurrEditArea(iTab);
          docUpdate.updateDocument(iTab);
          currProj.selectDocument(iTab);
          viewSet.displayFrameTitle(txtDoc[iTab].filepath());

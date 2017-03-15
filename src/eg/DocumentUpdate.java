@@ -12,17 +12,12 @@ import eg.ui.EditArea;
 public class DocumentUpdate {
 
    private final Edit edit;
-   private final EditAreaView edArView;
    private final PluginStarter plugStart;
    
    private TextDocument[] txtDoc;
-   private EditArea[] editArea;
  
-   public DocumentUpdate(Edit edit, EditAreaView edArView,
-         PluginStarter plugStart) {
-
+   public DocumentUpdate(Edit edit, PluginStarter plugStart) {
       this.edit = edit;
-      this.edArView = edArView; 
       this.plugStart = plugStart;
    }
    
@@ -30,12 +25,9 @@ public class DocumentUpdate {
     * Assigns the array of {@code TextDocument} and {@code EditArea} objects
     * and to this {@code DisplaySetter} the array of {@code EditArea} objects
     * @param txtDoc  the array of {@link TextDocument}
-    * @param editArea  the array of {@link EditArea}
     */
-   public void setDocumentArrays(TextDocument[] txtDoc, EditArea[] editArea) {
+   public void setDocumentArrays(TextDocument[] txtDoc) {
       this.txtDoc = txtDoc;
-      this.editArea = editArea;
-      edArView.setEditAreaArr(editArea);
    }
 
    /**
@@ -45,6 +37,5 @@ public class DocumentUpdate {
    public void updateDocument(int index) {
       edit.setTextDocument(txtDoc[index]);
       plugStart.setTextDocument(txtDoc[index]);
-      edArView.setEditAreaIndex(index);
    }
 }

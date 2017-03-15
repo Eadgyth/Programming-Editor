@@ -320,7 +320,7 @@ class Coloring {
       StyleConstants.setForeground(comSet, commentGreen);
       StyleConstants.setBold(comSet, false);
 
-      Color keyPink = new Color(230, 0, 110);
+      Color keyPink = new Color(230, 0, 90);
       StyleConstants.setForeground(keySet, keyPink);
       StyleConstants.setBold(keySet, false);
       
