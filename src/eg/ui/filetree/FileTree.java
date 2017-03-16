@@ -72,9 +72,9 @@ public class FileTree extends Observable {
    private DefaultMutableTreeNode root;
 
    private String projRoot = "";
-   private String pathHelper = "";
-   private List<TreePath> expanded = null;
+   private String currentRoot = "";
    private String deletableDir = "";
+   private List<TreePath> expanded = null;
 
    public FileTree() {
       ml = mouseListener;
@@ -121,7 +121,7 @@ public class FileTree extends Observable {
     */
    public void updateTree() {
       getExpandedNodes();
-      setNewTree(pathHelper);
+      setNewTree(currentRoot);
       setExpanded();
       fileTreePnl.repaint();
       fileTreePnl.revalidate();
@@ -144,7 +144,7 @@ public class FileTree extends Observable {
          if (tree != null) {
             holdTreePnl.remove(tree);
          }   
-         pathHelper = path;
+         currentRoot = path;
          if (path.equals(projRoot)) {
             upBt.setEnabled(false);
          }
@@ -207,9 +207,8 @@ public class FileTree extends Observable {
    }
 
    private void folderUp() {
-      String parent = new File(pathHelper).getParent();
-      String rootParent = new File(projRoot).getParent();
-      if (!rootParent.equals(parent)) {
+      String parent = new File(currentRoot).getParent();
+      if (!projRoot.equals(currentRoot)) {
          setNewTree(parent);
       }
       if (projRoot.equals(parent)) {
