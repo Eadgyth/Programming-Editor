@@ -35,12 +35,12 @@ public class ViewSetter {
     * @param menu  the reference to {@link Menu}
     * @param tabPane  the reference to {@link TabbedPane}
     */
-   public ViewSetter(ViewSettingWin viewSetWin, MainWin mw, Menu menu,
+   public ViewSetter(ViewSettingWin viewSetWin, MainWin mw,
          TabbedPane tabPane) {
 
       this.viewSetWin = viewSetWin;
       this.mw = mw;
-      this.menu = menu;
+      this.menu = mw.getMenu();
       this.tabPane = tabPane;
 
       isShowStatusbar = viewSetWin.isShowStatusbar();
@@ -56,7 +56,7 @@ public class ViewSetter {
    }
    
    /**
-    * If showing tabs (and openeing multiple files) is
+    * If showing tabs (and thus opening multiple files) is
     * is selected
     * @return if showing tabs is selected
     */

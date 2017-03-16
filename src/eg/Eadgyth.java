@@ -39,20 +39,14 @@ public class Eadgyth {
       uiManagerSettings();
       setLaf();
       FileUtils.emptyLog();
-      
-      Toolbar         tBar       = new Toolbar();
-      ConsolePanel    consPnl    = new ConsolePanel();   
-      FileTree        fileTree   = new FileTree();
-      Menu            menu       = new Menu();
+
       TabbedPane      tabPane    = new TabbedPane();
-      MainWin         mw         = new MainWin(menu, tBar.toolbar(),
-                                       tabPane.tabbedPane(), fileTree.fileTreePnl(),
-                                       consPnl.consolePnl());
-      ProjectUpdate   prUpdate   = new ProjectUpdate(mw, menu, tBar, fileTree);
+      MainWin         mw         = new MainWin(tabPane.tabbedPane());
+      ProjectUpdate   prUpdate   = new ProjectUpdate(mw);
       ViewSettingWin  viewSetWin = new ViewSettingWin();
-      EditAreaFormat  format     = new EditAreaFormat(viewSetWin, menu.getFormatMenu());
-      ViewSetter      viewSet    = new ViewSetter(viewSetWin, mw, menu, tabPane);
-      CurrentProject  currProj   = new CurrentProject(prUpdate, consPnl);
+      EditAreaFormat  format     = new EditAreaFormat(viewSetWin, mw.getMenu().getFormatMenu());
+      ViewSetter      viewSet    = new ViewSetter(viewSetWin, mw, tabPane);
+      CurrentProject  currProj   = new CurrentProject(prUpdate, mw.getConsole());
       PluginStarter   plugStart  = new PluginStarter(mw);
       Edit            edit       = new Edit();
       DocumentUpdate  docUpdate  = new DocumentUpdate(edit, plugStart);
@@ -66,32 +60,26 @@ public class Eadgyth {
             tabFiles.tryExit();
          }
       };
+      mw.winListen(winListener);
 
-      mw.winListen(winListener);         
-      tBar.registerFileAct(tabFiles);
-      tBar.registerProjectAct(currProj);
-      tBar.registerEditAct(edit);
-      menu.getFileMenu().registerAct(tabFiles);
-      menu.getProjectMenu().registerAct(currProj);
-      menu.getEditMenu().registerAct(edit, tabFiles);
-      menu.getPluginMenu().startPlugin(plugStart, menu.getViewMenu());
-      menu.getViewMenu().openSettingWinItmAct(e ->
+      mw.registerFileAct(tabFiles);
+      mw.registerProjectAct(currProj);
+      mw.registerEditAct(edit, tabFiles);
+      mw.registerPlugAct(plugStart);
+      mw.getMenu().getViewMenu().openSettingWinItmAct(e ->
             viewSetWin.makeVisible(true));
       viewSetWin.okAct(e -> {
          format.applySetWinOk();
          viewSet.applySetWinOk();
          viewSetWin.makeVisible(false);
       });
-      consPnl.closeAct(e -> menu.getViewMenu().doConsoleItmAct(false));
-      fileTree.closeAct(e -> menu.getViewMenu().doUnselectFileViewAct());
-      fileTree.addObserver(tabFiles);
-     
+
       EventQueue.invokeLater(() -> {
          mw.makeVisible();
          tabFiles.focusInSelectedTab();
       });
    }
-   
+
    private static void setLaf() {
       Preferences prefs = new Preferences();
       prefs.readPrefs();
@@ -107,7 +95,7 @@ public class Eadgyth {
          }
       }
    }
-   
+
    private static void uiManagerSettings() {
       UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
       UIManager.put("Menu.font", Constants.SANSSERIF_PLAIN_12);

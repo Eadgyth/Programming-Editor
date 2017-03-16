@@ -63,13 +63,13 @@ public class TabbedFiles implements Observer{
       fo = new FileChooserOpen(recentDir);
       fs = new FileChooserSave(recentDir);
       lang = Languages.valueOf(prefs.getProperty("language"));
-
-      newEmptyTab();
       
       changeListener = (ChangeEvent changeEvent) -> {
          changeTabEvent(changeEvent);
       };
       tp.changeListen(changeListener);
+      
+      newEmptyTab();
    }
    
    /**

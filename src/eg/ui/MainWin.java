@@ -26,7 +26,13 @@ import javax.swing.border.EmptyBorder;
 //--Eadgyth--//
 import eg.Constants;
 import eg.Preferences;
+import eg.TabbedFiles;
+import eg.CurrentProject;
+import eg.Edit;
 import eg.ui.menu.*;
+import eg.ui.filetree.FileTree;
+import eg.console.ConsolePanel;
+import eg.plugin.PluginStarter;
 
 /**
  * The main window
@@ -47,11 +53,11 @@ public class MainWin {
    private final JLabel functTitleLb = new JLabel(" No function selected");
    private final JButton closeFunctBt = new JButton(IconFiles.CLOSE_ICON);
 
-   private final Menu menu;
-   private final JToolBar toolbar;
+   private final Menu menu = new Menu();
+   private final Toolbar toolbar = new Toolbar();
    private final JTabbedPane tabbedPane;
-   private final JPanel fileViewPnl;
-   private final JPanel consolePnl;
+   private final FileTree fileTree = new FileTree();
+   private final ConsolePanel console = new ConsolePanel();
    private final Preferences prefs = new Preferences();
 
    private JSplitPane splitHorAll;
@@ -61,20 +67,15 @@ public class MainWin {
    private int dividerLocHorAll = 0;
    private int dividerLocHor = 0;
 
-   public MainWin(Menu menu, JToolBar toolbar, JTabbedPane tabbedPane,
-         JPanel fileViewPnl, JPanel consolePnl) {
-      this.menu = menu;
-      this.toolbar = toolbar;
+   public MainWin(JTabbedPane tabbedPane) {
       this.tabbedPane = tabbedPane;
-      this.fileViewPnl = fileViewPnl;
-      this.consolePnl = consolePnl;
 
       prefs.readPrefs();
       initSplitPane();
       initStatusbar();
       initAllComponents();
       initFunctionPnl();
-      registerViewAct();
+      registerAct();
       initFrame();
       showProjectLb.setText("Project: not set");
    }
@@ -85,6 +86,35 @@ public class MainWin {
    public void makeVisible() {
       frame.setVisible(true);
    }
+   
+   
+   /**
+    * @return  this {@link Menu}
+    */
+   public Menu getMenu() {
+      return menu;
+   }
+   
+   /**
+    * @return  this {@link Toolbar}
+    */
+   public Toolbar getToolbar() {
+      return toolbar;
+   }
+   
+   /**
+    * @return  this {@link FileTree}
+    */
+   public FileTree getFileTree() {
+      return fileTree;
+   }
+   
+   /**
+    * @return  this {@link ConsolePanel}
+    */
+    public ConsolePanel getConsole() {
+       return console;
+    }
 
    /**
     * Sets a busy or default cursor
@@ -150,10 +180,10 @@ public class MainWin {
     */
    public void showToolbar(boolean show) {
       if (show) {
-         allComponents.add(toolbar, BorderLayout.NORTH);
+         allComponents.add(toolbar.toolbar(), BorderLayout.NORTH);
       }
       else {
-         allComponents.remove(toolbar);
+         allComponents.remove(toolbar.toolbar());
       }
       allComponents.revalidate();
    }
@@ -179,7 +209,7 @@ public class MainWin {
    public void showConsole(boolean show) {
       if (show) {
          splitVert.setDividerSize(6);
-         splitVert.setRightComponent(consolePnl);
+         splitVert.setRightComponent(console.consolePnl());
          if (dividerLocVert == 0) {
             dividerLocVert = (int)(frame.getHeight() * 0.65);
          }
@@ -199,7 +229,7 @@ public class MainWin {
    public void showFileView(boolean show) {
       if (show) {
          splitHor.setDividerSize(6);
-         splitHor.setLeftComponent(fileViewPnl);
+         splitHor.setLeftComponent(fileTree.fileTreePnl());
          if (dividerLocHor == 0) {
             dividerLocHor = (int)(frame.getWidth() * 0.22);
          }
@@ -239,6 +269,42 @@ public class MainWin {
    public void winListen(WindowListener wl) {
       frame.addWindowListener(wl);
    }
+   
+   /**
+    * Registers handlers for file actions
+    * @param tf  the reference to {@link TabbedFiles}
+    */
+   public void registerFileAct(TabbedFiles tf) {
+      menu.getFileMenu().registerAct(tf);
+      toolbar.registerFileAct(tf);
+      fileTree.addObserver(tf);
+   }
+   
+   /**
+    * Registers handlers for project actions
+    * @param tf  the reference to {@link CurrentProject}
+    */
+   public void registerProjectAct(CurrentProject cp) {
+      menu.getProjectMenu().registerAct(cp);
+      toolbar.registerProjectAct(cp);
+   }
+   
+   /**
+    * Registers handlers for edit actions
+    * @param tf  the reference to {@link CurrentProject}
+    */
+   public void registerEditAct(Edit ed, TabbedFiles tf) {
+      toolbar.registerEditAct(ed);
+      menu.getEditMenu().registerAct(ed, tf);
+   }
+   
+   /**
+    * Registers handler for plugin actions
+    * @param plug  the reference to {@link PluginStarter}
+    */
+   public void registerPlugAct(PluginStarter plugSt) {
+       menu.getPluginMenu().startPlugin(plugSt, menu.getViewMenu());
+   }
 
    //
    //--private methods
@@ -254,7 +320,7 @@ public class MainWin {
 
    private void initAllComponents() {
       if ("show".equals(prefs.getProperty("toolbar"))) {
-         allComponents.add(toolbar, BorderLayout.NORTH);
+         allComponents.add(toolbar.toolbar(), BorderLayout.NORTH);
       }
       allComponents.add(splitHorAll, BorderLayout.CENTER);
       if ("show".equals(prefs.getProperty("statusbar"))) {
@@ -300,11 +366,13 @@ public class MainWin {
       functionPnl.add(functTitlePnl, BorderLayout.NORTH);
    }
 
-   private void registerViewAct() {
+   private void registerAct() {
       ViewMenu vm = menu.getViewMenu();
       closeFunctBt.addActionListener(e -> vm.doFunctionItmAct(false));
       vm.consoleItmAct(e -> showConsole(vm.isConsoleItmSelected()));
       vm.fileViewItmAct(e -> showFileView(vm.isFileViewItmSelected()));
-      vm.functionItmAct(e -> showFunctionPnl(vm.isFunctionItmSelected()));
+      vm.functionItmAct(e -> showFunctionPnl(vm.isFunctionItmSelected()));      
+      fileTree.closeAct(e -> menu.getViewMenu().doUnselectFileViewAct());     
+      console.closeAct(e -> menu.getViewMenu().doConsoleItmAct(false));
    }
 }

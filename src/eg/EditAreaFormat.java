@@ -6,8 +6,7 @@ import eg.ui.ViewSettingWin;
 import eg.ui.FontSettingWin;
 
 /**
- * Represents the formatting of the {@code EditArea} that is selected
- * at a time (wordwrap, display of line numbers, font).
+ * Represents the formatting of the {@code EditArea}.
  * <p>
  * The initial parameters are given by entries in the prefs file.
  */
@@ -111,6 +110,10 @@ public class EditAreaFormat {
          prefs.storePrefs("lineNumbers", state);
       }
    }
+   
+   //
+   //--private methods
+   //
 
    private void showHideLineNumbers() {
       for (EditArea ea : editArea) {
@@ -131,6 +134,7 @@ public class EditAreaFormat {
          if (ea != null) {
              ea.setFont(font);
              ea.setFontSize(fontSize);
+             ea.revalidateLineAreaWidth();
          }
       }
       fontSetWin.makeVisible(false);
