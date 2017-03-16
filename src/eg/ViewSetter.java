@@ -32,7 +32,6 @@ public class ViewSetter {
    /**
     * @param viewSetWin  the reference to {@link ViewSettingWin}
     * @param mw  the reference to {@link MainWin}
-    * @param menu  the reference to {@link Menu}
     * @param tabPane  the reference to {@link TabbedPane}
     */
    public ViewSetter(ViewSettingWin viewSetWin, MainWin mw,

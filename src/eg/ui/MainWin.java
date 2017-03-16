@@ -282,7 +282,7 @@ public class MainWin {
    
    /**
     * Registers handlers for project actions
-    * @param tf  the reference to {@link CurrentProject}
+    * @param cp  the reference to {@link CurrentProject}
     */
    public void registerProjectAct(CurrentProject cp) {
       menu.getProjectMenu().registerAct(cp);
@@ -291,6 +291,7 @@ public class MainWin {
    
    /**
     * Registers handlers for edit actions
+    * @param ed  the reference to {@link Edit}
     * @param tf  the reference to {@link CurrentProject}
     */
    public void registerEditAct(Edit ed, TabbedFiles tf) {
@@ -300,7 +301,7 @@ public class MainWin {
    
    /**
     * Registers handler for plugin actions
-    * @param plug  the reference to {@link PluginStarter}
+    * @param plugSt  the reference to {@link PluginStarter}
     */
    public void registerPlugAct(PluginStarter plugSt) {
        menu.getPluginMenu().startPlugin(plugSt, menu.getViewMenu());
