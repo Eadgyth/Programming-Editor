@@ -44,7 +44,7 @@ import eg.utils.FileUtils;
  * The display of a project's file system in a {@code JTree}. 
  */
 public class FileTree extends Observable {
-   
+
    private final static String F_SEP = File.separator;
 
    /*
@@ -66,7 +66,7 @@ public class FileTree extends Observable {
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
    private final PopupMenu popupDir  = new PopupMenu(PopupMenu.FOLDER_OPT);
    private final MouseListener ml;
-      
+
    private JTree tree = null;
    private DefaultTreeModel model;
    private DefaultMutableTreeNode root;
@@ -81,7 +81,7 @@ public class FileTree extends Observable {
       toolbar = createToolbar();
       initTreePanel();
    }
-   
+
    /**
     * Returns the reference to this panel that shows the file tree
     * and this toolbar
@@ -91,7 +91,7 @@ public class FileTree extends Observable {
    public JPanel fileTreePnl() {
       return fileTreePnl;
    }
-   
+
    /**
     * Sets the project's root directory and displays the file system at
     * this root if the root is not set before
@@ -103,7 +103,7 @@ public class FileTree extends Observable {
       }
       this.projRoot = projRoot;
    }
-   
+
    /**
     * Sets the filepath of the folder that can be deleted
     * @param dirName  the directory that can be deleted although it is
@@ -115,7 +115,7 @@ public class FileTree extends Observable {
       }
       deletableDir = dirName;
    }
-   
+
    /**
     * Creates a new tree at the currently shown root
     */
@@ -126,7 +126,7 @@ public class FileTree extends Observable {
       fileTreePnl.repaint();
       fileTreePnl.revalidate();
    }
-   
+
    /**
     * Adds an {@code ActionListener} to this close button
     * @param al  the {@code ActionListener}
@@ -134,11 +134,11 @@ public class FileTree extends Observable {
    public void closeAct(ActionListener al) {
       closeBt.addActionListener(al);
    }
-   
+
    //
    //--private methods--//
    //
-   
+
    private void setNewTree(String path) {
       if (path.length() > 0) {
          if (tree != null) {
@@ -151,7 +151,7 @@ public class FileTree extends Observable {
          setTree(path);
       }     
    }
-   
+
    private void setTree(String path) {
       root = new DefaultMutableTreeNode("root", true);
       model = new DefaultTreeModel(root);
@@ -161,7 +161,7 @@ public class FileTree extends Observable {
       fileTreePnl.repaint();
       fileTreePnl.revalidate();
    }
-   
+
    private void getFiles(DefaultMutableTreeNode node, File f) {
       if (f.isFile()) {
           DefaultMutableTreeNode child = new DefaultMutableTreeNode(f);
@@ -179,7 +179,7 @@ public class FileTree extends Observable {
           }
       }
    }
-   
+
    private File[] sortFoldersAndFiles(File[] fList) {
       List<File> allFiles = new ArrayList<>();
       List<File> files    = new ArrayList<>();
@@ -205,7 +205,7 @@ public class FileTree extends Observable {
       tree.expandRow(0);
       tree.addMouseListener(ml);
    }
-   
+
    private void folderUp() {
       String parent = new File(pathHelper).getParent();
       String rootParent = new File(projRoot).getParent();
@@ -216,12 +216,12 @@ public class FileTree extends Observable {
          upBt.setEnabled(false);
       }
    }
-   
+
    private void folderDown(String child) {
       setNewTree(child);
       upBt.setEnabled(true);
    }
-   
+
    private void showMenu(Component c, int x, int y) {
       int row = tree.getRowForLocation(x, y);
       tree.setSelectionRow(row);
@@ -233,7 +233,7 @@ public class FileTree extends Observable {
          popupDir.showMenu(c, x, y);
       }
    }
-   
+
    private void enableDelete() {
       File f = getSelectedFile();
       if (isInDeletableDir(f)
@@ -244,7 +244,7 @@ public class FileTree extends Observable {
          popupDir.enableDelete(false);
       }
    }
-   
+
    private void deleteFile() {
       DefaultMutableTreeNode selectedNode = getSelectedNode();
       File f = getSelectedFile();
@@ -280,12 +280,12 @@ public class FileTree extends Observable {
          }
       }
    }
-   
+
    private boolean isInDeletableDir(File file) {
       return file.toString().endsWith(F_SEP + deletableDir)
             || file.toString().contains(F_SEP + deletableDir + F_SEP);
    }      
-   
+
    private String deleteMessage(File f) {
       String message
             = "'" + f.getName() + "' will be permanently deleted!\n"
@@ -310,7 +310,7 @@ public class FileTree extends Observable {
          }
       }
    }
-   
+
    private void openFile(String fileStr) {
       if (isAllowedFile(fileStr)) {
          setChanged();
@@ -321,11 +321,11 @@ public class FileTree extends Observable {
                 "No function is associated with this file type");
       }
    }
-   
+
    private boolean isAllowedFile(String fileStr) {
       boolean allowed = false;
       String[] suffixes = {".bat", ".java", ".txt", ".properties",
-            ".html",".htm", ".pl", ".pm"};
+            ".html",".htm", "xml", ".pl", ".pm"};
       for (String s : suffixes) {
          if (fileStr.endsWith(s)) {
             allowed = true;
@@ -333,7 +333,7 @@ public class FileTree extends Observable {
       }
       return allowed;            
    }
-   
+
    private File getSelectedFile() {
       DefaultMutableTreeNode node =
             (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
@@ -343,11 +343,11 @@ public class FileTree extends Observable {
       }
       return (File) nodeInfo;
    }
-   
+
    private DefaultMutableTreeNode getSelectedNode() {
       return (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
    }
-  
+
    private DefaultMutableTreeNode searchNode(String nodeStr) {
       DefaultMutableTreeNode node;
       Enumeration e = root.breadthFirstEnumeration();
@@ -359,7 +359,7 @@ public class FileTree extends Observable {
       }
       return null;
    }
-   
+
    private void getExpandedNodes() {
       expanded = new ArrayList<>();
       for (int i = 0; i < tree.getRowCount(); i++) {
@@ -368,7 +368,7 @@ public class FileTree extends Observable {
          }
       }      
    }
-   
+
    private void setExpanded() {
       for (TreePath tp : expanded) {
          for (int i = 0; i < tree.getRowCount(); i++) { 
@@ -378,7 +378,7 @@ public class FileTree extends Observable {
          }
       }
    }
-   
+
    private void initTreePanel() {
       holdTreePnl.setLayout(new BorderLayout());
       scroll.setBorder(null);
@@ -406,18 +406,21 @@ public class FileTree extends Observable {
       };
       return eg.utils.UiComponents.toolbarLastBtRight(bts, tooltips);
    }
-   
+
    private final MouseListener mouseListener = new MouseAdapter() {
+
       @Override
       public void mouseClicked(MouseEvent e) {
-         if (SwingUtilities.isLeftMouseButton(e)) {
-            File f;
+         if (SwingUtilities.isRightMouseButton(e)) {
+            showMenu(e.getComponent(), e.getX(), e.getY());
+         }
+         else if (SwingUtilities.isLeftMouseButton(e)) {
             if (e.getClickCount() == 2) {
-               f = getSelectedFile();
+               File f = getSelectedFile();
                if (f != null ) {
                   String fStr = f.toString();
                   if (f.isFile()) {
-                     openFile(fStr); 
+                     openFile(fStr);
                   }
                   else {
                      folderDown(fStr);
@@ -425,13 +428,11 @@ public class FileTree extends Observable {
                }
             }
          }
-         if (SwingUtilities.isRightMouseButton(e)) {
-            showMenu(e.getComponent(), e.getX(), e.getY());
-        }
       }
    };
 
    private class TreeRenderer extends DefaultTreeCellRenderer {
+
       private final FileSystemView fsv = FileSystemView.getFileSystemView();
 
       @Override
