@@ -22,10 +22,9 @@ import eg.ui.TabbedPane;
 import eg.ui.EditArea;
 
 /**
- * Controls file operations that require knowledge of the opened tabs and 
- * the selected tab
+ * Controls file operations that require knowledge of the opened files
  */
-public class TabbedFiles implements Observer{
+public class TabbedFiles implements Observer {
 
    private final TextDocument[] txtDoc = new TextDocument[10];
    private final EditArea[] editArea = new EditArea[10];
@@ -36,13 +35,13 @@ public class TabbedFiles implements Observer{
    private final ViewSetter viewSet;
    private final EditAreaFormat format;
    private final DocumentUpdate docUpdate;
-   private final ChangeListener changeListener;
    private final CurrentProject currProj;
-   
-   private Languages lang;
+   private final ChangeListener changeListener;
 
    /* The index of the selected tab */
    private int iTab = 0;
+   
+   Languages lang;
    
    public TabbedFiles(TabbedPane tp, ViewSetter viewSet, EditAreaFormat format,
          CurrentProject currProj, DocumentUpdate docUpdate) {
@@ -55,20 +54,20 @@ public class TabbedFiles implements Observer{
 
       docUpdate.setDocumentArrays(txtDoc);
       currProj.setDocumentArr(txtDoc);
-      currProj.setLanguage(lang);
       format.setEditAreaArr(editArea);
       
       prefs.readPrefs();
+      lang = Languages.valueOf(prefs.getProperty("language"));
       String recentDir = prefs.getProperty("recentPath");
       fo = new FileChooserOpen(recentDir);
       fs = new FileChooserSave(recentDir);
-      lang = Languages.valueOf(prefs.getProperty("language"));
       
       changeListener = (ChangeEvent changeEvent) -> {
          changeTabEvent(changeEvent);
       };
       tp.changeListen(changeListener);
       
+      currProj.setLanguage(lang);
       newEmptyTab();
    }
    
@@ -77,7 +76,7 @@ public class TabbedFiles implements Observer{
     * @param lang  the language that has one of the constant
     * values in {@link Languages}
     */
-   public void setLanguage(Languages lang) {
+   public void changeLanguage(Languages lang) {
       this.lang = lang;
       currProj.setLanguage(lang);
       for (TextDocument t : txtDoc) {

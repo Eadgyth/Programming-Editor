@@ -73,7 +73,7 @@ public class EditMenu {
       for (int i = 0; i < selectLangChBxItm.length; i++) {
          if (e.getSource() == selectLangChBxItm[i]) {
             lang = Languages.values()[i];
-            tf.setLanguage(lang);
+            tf.changeLanguage(lang);
             selectLangChBxItm[i].setEnabled(false);
          }
          else {
