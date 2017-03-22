@@ -28,11 +28,16 @@ import java.awt.EventQueue;
 
 //--Eadgyth--//
 import eg.Languages;
+import eg.syntax.Colorable;
+import eg.syntax.JavaColoring;
+import eg.syntax.HtmlColoring;
+import eg.syntax.PerlColoring;
+import eg.syntax.Coloring;
 import eg.ui.EditArea;
 import eg.utils.FileUtils;
 import eg.utils.Finder;
 
-/**
+/*
  * Mediates the editing in the {@code EditArea} that shall happen during
  * typing.
  * <p>
@@ -78,24 +83,32 @@ class TypingEdit {
       this.isTypeEdit = isTypeEdit;
       col.enableSingleLines(isTypeEdit);
    }
-
-   void setUpEditing(Languages language) {
+   
+   void setUpEditing(Languages lang) {
       restartUndo();
-      if (Languages.PLAIN_TEXT == language) {
+      if (lang == Languages.PLAIN_TEXT) {
          editArea.allTextToBlack();
          enableTypeEdit(false);
          isIndent = false;
          autoInd.resetIndent();
       }
       else {
-         col.setUpColoring(language);
+         Colorable colorable = null;
+         switch(lang) {       
+            case JAVA:
+               colorable = new JavaColoring();
+               break;
+           case HTML:
+               colorable = new HtmlColoring();
+               break;
+           case PERL:
+               colorable = new PerlColoring();
+               break;
+         }
+         col.setColorable(colorable);
          colorAll();
          isIndent = true;
       }
-   }
-
-   void setKeywords(String[] keywords, boolean constrainWord) {
-      col.setKeywords(keywords, constrainWord);
    }
 
    void changeIndentUnit(String indentUnit) {

@@ -102,8 +102,7 @@ public final class TextDocument {
    }
 
    /**
-    * Assigns to this the specified file and displays the file
-    * content
+    * Assigns the specified file and displays the file content
     * @param file  the file whose content is displayed in this text
     * text area
     */
@@ -274,33 +273,6 @@ public final class TextDocument {
       }
    }
    
-   /**
-    * Colors in keyword color text elements specified by the array of search
-    * terms and turns on coloring during typing.
-    * <p>
-    * Returns with a warning if the current language is not plain text. 
-    * @param searchTerms  the array of Strings that contain search terms
-    * @param constrainWord  true to color only words
-    */
-   public void colorSearchedText(String[] searchTerms, boolean constrainWord) {
-      if (!isPlainText) {
-         JOptions.infoMessage("The coloring of text requires that the language"
-               + " is plain text");
-         return;
-      }      
-      if (searchTerms == null) {
-         throw new IllegalArgumentException("Param searchTerms is null");
-      }
-      for (String s : searchTerms) {
-         if (s.length() == 0) {
-            throw new IllegalArgumentException("Param searchTerms contains an"
-                  + " empty element");
-         }
-      }   
-      type.setKeywords(searchTerms, constrainWord);
-      type.colorAll();
-   }
-   
    //
    //----private methods----//
    //
@@ -361,7 +333,7 @@ public final class TextDocument {
          case "java":
            lang = Languages.JAVA;
            break;
-         case "html": case "htm":
+         case "html": case "htm": case "xml":
             lang = Languages.HTML;
             break;
          case "pl": case "pm":
