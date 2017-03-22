@@ -27,8 +27,8 @@ public class HtmlColoring implements Colorable {
    private final String blockCmntEnd = "-->";
 
    @Override
-   public void color(String in, String chunk, int posStart, Coloring col) {
-      if (!col.isInBlock(in, posStart, blockCmntStart, blockCmntEnd)) {
+   public void color(String in, String chunk, int pos, int posStart, Coloring col) {
+      if (!col.isInBlock(in, pos, blockCmntStart, blockCmntEnd)) {
          col.setCharAttrBlack(posStart, chunk.length());
          for (String b : BRACKETS) {
             col.brackets(chunk, b, posStart);
@@ -52,7 +52,7 @@ public class HtmlColoring implements Colorable {
                   && isTagEnd(in, key.length(), start)) {
                int startOffset = start - tagStartOffset;
                int length = key.length() + tagStartOffset;
-               col.setCharAttrKeyRed(startOffset + pos, length);
+               col.setCharAttrKeyBlue(startOffset + pos, length);
             }
          }  
          jump = 1; 

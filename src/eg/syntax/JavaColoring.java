@@ -32,8 +32,8 @@ public class JavaColoring implements Colorable {
    private final static String blockCmntEnd = "*/";
 
    @Override
-   public void color(String in, String chunk, int posStart, Coloring col) {
-      if (!col.isInBlock(in, posStart, blockCmntStart, blockCmntEnd)) {
+   public void color(String in, String chunk, int pos, int posStart, Coloring col) {
+      if (!col.isInBlock(in, pos, blockCmntStart, blockCmntEnd)) {
          col.setCharAttrBlack(posStart, chunk.length());
          for (String s : JAVA_ANNOTATIONS) {
             col.keysBlue(chunk, s, posStart, false);

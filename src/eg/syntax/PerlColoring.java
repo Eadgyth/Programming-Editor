@@ -39,10 +39,10 @@ public class PerlColoring implements Colorable {
    private final static String lineCmnt = "#";
    
    @Override
-   public void color(String in, String chunk, int posStart, Coloring col) {
+   public void color(String in, String chunk, int pos, int posStart, Coloring col) {
       col.setCharAttrBlack(posStart, chunk.length());
       for (String s : PERL_FLAGS) {
-         col.withFlag(chunk, s, posStart);
+         withFlag(chunk, s, posStart, col);
       }
       for (String s : PERL_KEYWORDS) {
          col.keysRed(chunk, s, posStart, true);
@@ -55,5 +55,18 @@ public class PerlColoring implements Colorable {
       }
       col.stringLiterals(chunk, posStart, null, null);
       col.lineComments(chunk, posStart, lineCmnt);
+   }
+   
+   private void withFlag(String in, String flag, int pos, Coloring col) {
+      int start = 0;
+      int jump = 0;
+      while (start != -1) {
+         start = in.indexOf(flag, start + jump);
+         if (start != -1 && SyntaxUtils.isWordStart(in, start)) {
+            int length = SyntaxUtils.wordLength(in.substring(start));
+            col.setCharAttrKeyBlue(start + pos, length);
+         }  
+         jump = 1; 
+      }
    }
 }

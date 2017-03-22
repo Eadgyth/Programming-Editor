@@ -10,6 +10,12 @@ import java.awt.Color;
 import eg.Languages;
 import eg.utils.Finder;
 
+/**
+ * The coloring of text using a {@code Colorable} that is selected based on
+ * the language.
+ * <p>
+ * Class provides some assumed general coloring methods.
+ */
 public class Coloring {
    
    private final SimpleAttributeSet keyRedSet  = new SimpleAttributeSet();
@@ -47,8 +53,8 @@ public class Coloring {
             colorable = new PerlColoring();
             break;
          default:
-            throw new IllegalArgumentException("'lang' is not"
-                  + " a coding language");
+            throw new IllegalArgumentException("No Colorable"
+                  + " is defined for " + lang);
       }
    }
    
@@ -71,7 +77,7 @@ public class Coloring {
     */
    public void color(String in, int pos) {
       if (colorable == null) {
-         throw new IllegalStateException("No Colorable is set");
+         throw new IllegalStateException("No Colorable is selected");
       }
       String chunk;
       int posStart = pos;
@@ -82,7 +88,7 @@ public class Coloring {
       else {
          chunk = in;
       }
-      colorable.color(in, chunk, posStart, this);
+      colorable.color(in, chunk, pos, posStart, this);
    }
    
    /**
@@ -136,26 +142,6 @@ public class Coloring {
    }
    
    /**
-    * Colors words that follow a flag (like $) but whose lengths is unknown
-    * in blue
-    * @param in  the text which may be a single line of the entire text
-    * @param  flag  the start signal for the word
-    * @param pos  the start pos of the text within the entire text
-    */
-   public void withFlag(String in, String flag, int pos) {
-      int start = 0;
-      int jump = 0;
-      while (start != -1) {
-         start = in.indexOf(flag, start + jump);
-         if (start != -1 && SyntaxUtils.isWordStart(in, start)) {
-            int length = SyntaxUtils.wordLength(in.substring(start));
-            doc.setCharacterAttributes(start + pos, length, keyBlueSet, false);
-         }  
-         jump = 1; 
-      }
-   }
-   
-   /**
     * Colors String literals
     * @param in  the text which may be a single line of the entire text
     * @param pos  the start pos of the text within the entire text
@@ -167,7 +153,8 @@ public class Coloring {
     * is not null
     */
    public void stringLiterals(String in, int pos, String blockStart,
-         String blockEnd) {   
+         String blockEnd) {
+
      if (!isSingleLines) {
          if (in.replaceAll("\n", "").length() > 0) {
             String[] chunkArr = in.split("\n");
@@ -219,7 +206,9 @@ public class Coloring {
     * @param blockCmntEnd  the String that represents the end signal for a
     * bloack
     */
-   public void blockComments(String in, String blockCmntStart, String blockCmntEnd) {    
+   public void blockComments(String in, String blockCmntStart,
+         String blockCmntEnd) {
+
       if (!isBlockCmnt) {
          return;
       }
