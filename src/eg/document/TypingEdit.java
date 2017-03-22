@@ -93,19 +93,7 @@ class TypingEdit {
          autoInd.resetIndent();
       }
       else {
-         Colorable colorable = null;
-         switch(lang) {       
-            case JAVA:
-               colorable = new JavaColoring();
-               break;
-           case HTML:
-               colorable = new HtmlColoring();
-               break;
-           case PERL:
-               colorable = new PerlColoring();
-               break;
-         }
-         col.setColorable(colorable);
+         col.selectColorable(lang);
          colorAll();
          isIndent = true;
       }

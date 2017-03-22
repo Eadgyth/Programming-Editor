@@ -31,11 +31,25 @@ public class Coloring {
    }
    
    /**
-    * Sets a Colorable
-    * @param colorable  an object of type {@link Colorable}
+    * Selects a Colorable object based on the language
+    * @param lang  the language which is one of the constants
+    * in {@link eg.Languages} but not PLAIN_TEXT
     */
-   public void setColorable(Colorable colorable) {
-      this.colorable = colorable;
+   public void selectColorable(Languages lang) {
+      switch(lang) {       
+         case JAVA:
+            colorable = new JavaColoring();
+            break;
+         case HTML:
+            colorable = new HtmlColoring();
+            break;
+         case PERL:
+            colorable = new PerlColoring();
+            break;
+         default:
+            throw new IllegalArgumentException("'lang' is not"
+                  + " a coding language");
+      }
    }
    
    /**
@@ -85,8 +99,8 @@ public class Coloring {
     * @param start  the position where the recolored text starts
     * @param length  the length of the text to be recolored
     */
-   public void setCharAttrKeyRed(int start, int length) {
-      doc.setCharacterAttributes(start, length, keyRedSet, false);
+   public void setCharAttrKeyBlue(int start, int length) {
+      doc.setCharacterAttributes(start, length, keyBlueSet, false);
    }
    
    /**
@@ -334,7 +348,7 @@ public class Coloring {
    }
    
    private void setStyles() {
-      Color commentGreen = new Color(90, 190, 90);
+      Color commentGreen = new Color(80, 190, 80);
       StyleConstants.setForeground(cmntSet, commentGreen);
       StyleConstants.setBold(cmntSet, false);
 
@@ -346,7 +360,7 @@ public class Coloring {
       StyleConstants.setForeground(keyBlueSet, keyBlue);
       StyleConstants.setBold(keyBlueSet, false);
 
-      Color bracketBlue = new Color(0,0, 255);
+      Color bracketBlue = new Color(60, 60, 255);
       StyleConstants.setForeground(brSet, bracketBlue);
       StyleConstants.setBold(brSet, true);
 
