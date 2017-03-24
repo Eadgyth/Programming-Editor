@@ -32,21 +32,23 @@ public class JavaColoring implements Colorable {
    private final static String blockCmntEnd = "*/";
 
    @Override
-   public void color(String in, String chunk, int pos, int posStart, Coloring col) {
-      if (!col.isInBlock(in, pos, blockCmntStart, blockCmntEnd)) {
-         col.setCharAttrBlack(posStart, chunk.length());
+   public void color(String allText, String toColor, int pos,
+         int posStart, Coloring col) {
+
+      if (!SyntaxUtils.isInBlock(allText, pos, blockCmntStart, blockCmntEnd)) {
+         col.setCharAttrBlack(posStart, toColor.length());
          for (String s : JAVA_ANNOTATIONS) {
-            col.keysBlue(chunk, s, posStart, false);
+            col.keysBlue(toColor, s, posStart, false);
          }
          for (String s : JAVA_KEYWORDS) {
-            col.keysRed(chunk, s, posStart, true);
+            col.keysRed(toColor, s, posStart, true);
          }
          for (String s : SyntaxUtils.BRACKETS) {
-            col.brackets(chunk, s, posStart);
+            col.brackets(toColor, s, posStart);
          }
-         col.stringLiterals(chunk, posStart, null, null);
-         col.lineComments(chunk, posStart, lineCmnt);
+         col.stringLiterals(toColor, posStart, null, null);
+         col.lineComments(toColor, posStart, lineCmnt);
       }
-      col.blockComments(in, blockCmntStart, blockCmntEnd);
+      col.blockComments(allText, blockCmntStart, blockCmntEnd);
    }
 }

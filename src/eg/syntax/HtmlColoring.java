@@ -21,41 +21,41 @@ public class HtmlColoring implements Colorable {
       "ul",
    };
    
-   private final static String[] BRACKETS = { "<", ">" };
-   
+   private final static String[] BRACKETS = { "<", ">" }; 
    private final String blockCmntStart = "<!--";
    private final String blockCmntEnd = "-->";
 
    @Override
-   public void color(String in, String chunk, int pos, int posStart, Coloring col) {
-      if (!col.isInBlock(in, pos, blockCmntStart, blockCmntEnd)) {
-         col.setCharAttrBlack(posStart, chunk.length());
+   public void color(String allText, String toColor, int pos,
+         int posStart, Coloring col) {
+
+      if (!SyntaxUtils.isInBlock(allText, pos, blockCmntStart, blockCmntEnd)) {
+         col.setCharAttrBlack(posStart, toColor.length());
          for (String b : BRACKETS) {
-            col.brackets(chunk, b, posStart);
+            col.brackets(toColor, b, posStart);
          }
          for (String s : HTML_TAGS) {
-            keyInTag(chunk, s, posStart, col);
+            keyInTag(toColor, s, posStart, col);
          }
-         col.stringLiterals(chunk, posStart, BRACKETS[0], BRACKETS[1]);
+         col.stringLiterals(toColor, posStart, BRACKETS[0], BRACKETS[1]);
       }    
-      col.blockComments(in, blockCmntStart, blockCmntEnd);
+      col.blockComments(allText, blockCmntStart, blockCmntEnd);
    }
 
-   private void keyInTag(String in, String key, int pos, Coloring col) {
+   private void keyInTag(String toColor, String key, int pos, Coloring col) {
       int start = 0;
-      int jump = 0;
       while (start != -1) {
-         start = in.indexOf(key, start + jump);
+         start = toColor.indexOf(key, start);
          if (start != -1) {
-            int tagStartOffset = tagStartOffset(in, start);
+            int tagStartOffset = tagStartOffset(toColor, start);
             if (tagStartOffset != -1
-                  && isTagEnd(in, key.length(), start)) {
+                  && isTagEnd(toColor, key.length(), start)) {
                int startOffset = start - tagStartOffset;
                int length = key.length() + tagStartOffset;
                col.setCharAttrKeyBlue(startOffset + pos, length);
             }
-         }  
-         jump = 1; 
+            start += key.length(); 
+         }
       }
    }
 

@@ -39,22 +39,24 @@ public class PerlColoring implements Colorable {
    private final static String lineCmnt = "#";
    
    @Override
-   public void color(String in, String chunk, int pos, int posStart, Coloring col) {
-      col.setCharAttrBlack(posStart, chunk.length());
+   public void color(String allText, String toColor, int pos,
+         int posStart, Coloring col) {
+
+      col.setCharAttrBlack(posStart, toColor.length());
       for (String s : PERL_FLAGS) {
-         withFlag(chunk, s, posStart, col);
+         withFlag(toColor, s, posStart, col);
       }
       for (String s : PERL_KEYWORDS) {
-         col.keysRed(chunk, s, posStart, true);
+         col.keysRed(toColor, s, posStart, true);
       }
       for (String s : PERL_OP) {
-         col.keysRed(chunk, s, posStart, false);
+         col.keysRed(toColor, s, posStart, false);
       }
       for (String b : SyntaxUtils.BRACKETS) {
-         col.brackets(chunk, b, posStart);
+         col.brackets(toColor, b, posStart);
       }
-      col.stringLiterals(chunk, posStart, null, null);
-      col.lineComments(chunk, posStart, lineCmnt);
+      col.stringLiterals(toColor, posStart, null, null);
+      col.lineComments(toColor, posStart, lineCmnt);
    }
    
    private void withFlag(String in, String flag, int pos, Coloring col) {

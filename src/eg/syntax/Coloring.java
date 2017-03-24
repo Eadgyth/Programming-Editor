@@ -11,10 +11,10 @@ import eg.Languages;
 import eg.utils.Finder;
 
 /**
- * The coloring of text using a {@code Colorable} that is selected based on
- * the language.
+ * The coloring of text using a selected {@code Colorable}.
  * <p>
- * Class provides some assumed general coloring methods.
+ * Class provides some assumed general syntax coloring methods that may be
+ * used by a {@link Colorable}
  */
 public class Coloring {
    
@@ -27,7 +27,7 @@ public class Coloring {
    private final StyledDocument doc;
 
    private boolean isBlockCmnt = true;
-   private boolean isSingleLines;
+   private boolean isCurrLine;
    private Colorable colorable;
    
    public Coloring(StyledDocument doc, SimpleAttributeSet normalSet) {
@@ -59,36 +59,41 @@ public class Coloring {
    }
    
    /**
-    * Enables to perform coloring in single lines, where possible
+    * Enables to perform coloring in the current line where a
+    * changes happen
     * @param isEnabled  true to enable to coloring in single lines
     */
-   public void enableSingleLines(boolean isEnabled) {
-      isSingleLines = isEnabled;
+   public void enableCurrentLine(boolean isEnabled) {
+      isCurrLine = isEnabled;
    }
    
    /**
     * Colors text.
     * <p>
     * Coloring is performed in single lines if enabled through
-    * {@link #enableSingleLines(boolean)}, otherwise the entire
-    * text is scanned.
-    * @param in  the text
-    * @param pos  the current caret position
+    * {@link #enableCurrentLine(boolean)}, otherwise the entire
+    * text is scanned. However, block comments are always colored
+    * using the entire text.
+    * <p>
+    * Calls {@link Colorable #color(String,String,int,int,this)}
+    * <p>
+    * @param allText  the entire text of the document
+    * @param pos  the pos within the entire text where a change happened
     */
-   public void color(String in, int pos) {
+   public void color(String allText, int pos) {
       if (colorable == null) {
          throw new IllegalStateException("No Colorable is selected");
       }
-      String chunk;
+      String toColor;
       int posStart = pos;
-      if (isSingleLines) {
-         chunk = Finder.currLine(in, pos);
-         posStart = Finder.lastReturn(in, pos) + 1;
+      if (isCurrLine) {
+         toColor = Finder.currLine(allText, pos);
+         posStart = Finder.lastReturn(allText, pos) + 1;
       }
       else {
-         chunk = in;
+         toColor = allText;
       }
-      colorable.color(in, chunk, pos, posStart, this);
+      colorable.color(allText, toColor, pos, posStart, this);
    }
    
    /**
@@ -101,7 +106,7 @@ public class Coloring {
    }
    
    /**
-    * Colors a portion of text in keyword red
+    * Colors a portion of text in keyword blue
     * @param start  the position where the recolored text starts
     * @param length  the length of the text to be recolored
     */
@@ -110,41 +115,41 @@ public class Coloring {
    }
    
    /**
-    * Colors keywords in red
-    * @param in  the text which may be a single line of the entire text
-    * @param key  the keywords
-    * @param pos  the start pos of the text within the entire text
+    * Searched and colors a keyword in red
+    * @param toColor  the text which may a portion from the entire text
+    * @param key  the keyword
+    * @param pos  the start position of '{@code toColor}' within the entire text
     * @param reqWord  if the keywords must be a word
     */
-   public void keysRed(String in, String key, int pos, boolean reqWord) {
-      words(in, key, keyRedSet, pos, reqWord);
+   public void keysRed(String toColor, String key, int pos, boolean reqWord) {
+      words(toColor, key, keyRedSet, pos, reqWord);
    }
    
    /**
-    * Colors keywords in blue
-    * @param in  the text which may be a single line of the entire text
-    * @param key  the keywords
-    * @param pos  the start pos of the text within the entire text
+    * Searched and colors a keyword in blue
+    * @param toColor  the text which may a portion from the entire text
+    * @param key  the keyword
+    * @param pos  the start position of '{@code toColor}' within the entire text
     * @param reqWord  if the keywords must be a word
     */
-   public void keysBlue(String in, String key, int pos, boolean reqWord) {
-      words(in, key, keyBlueSet, pos, reqWord);
+   public void keysBlue(String toColor, String key, int pos, boolean reqWord) {
+      words(toColor, key, keyBlueSet, pos, reqWord);
    }
    
    /**
     * Colors brackets in blue and bold
-    * @param in  the text which may be a single line of the entire text
+    * @param toColor  the text which may a portion from the entire text
     * @param bracket  the bracket
-    * @param pos  the start pos of the text within the entire text
+    * @param pos  the start position of '{@code toColor}' within the entire text
     */
-   public void brackets(String in, String bracket, int pos) {
-      words(in, bracket, brSet, pos, false);
+   public void brackets(String toColor, String bracket, int pos) {
+      words(toColor, bracket, brSet, pos, false);
    }
    
    /**
-    * Colors String literals
-    * @param in  the text which may be a single line of the entire text
-    * @param pos  the start pos of the text within the entire text
+    * Searched and colors string literals
+    * @param toColor  the text which may a portion from the entire text
+    * @param pos  the start position of '{@code toColor}' within the entire text
     * @param blockStart  the String that represents the start of a text block
     * where the String literal must be found in. Null to ignore any ocurrence
     * in a block
@@ -152,188 +157,175 @@ public class Coloring {
     * where the String literal must be found in. Not null if {@code blockStart}
     * is not null
     */
-   public void stringLiterals(String in, int pos, String blockStart,
+   public void stringLiterals(String toColor, int pos, String blockStart,
          String blockEnd) {
 
-     if (!isSingleLines) {
-         if (in.replaceAll("\n", "").length() > 0) {
-            String[] chunkArr = in.split("\n");
+      if (!isCurrLine) {
+         //
+         // split because string literals are not colored across lines
+         if (toColor.replaceAll("\n", "").length() > 0) {
+            String[] chunkArr = toColor.split("\n");
             int[] startOfLines = Finder.startOfLines(chunkArr);
             for (int i = 0; i < chunkArr.length; i++) {
-               stringLitChunk(chunkArr[i], startOfLines[i] + pos,
+               stringLitLine(chunkArr[i], startOfLines[i] + pos,
                       blockStart, blockEnd);
             }
          }
       }
       else {
-         stringLitChunk(in, pos, blockStart, blockEnd);
+         stringLitLine(toColor, pos, blockStart, blockEnd);
       }
    }
 
    /**
     * Colors line comments
-    * @param in  the text which may be a single line from the entire text
-    * @param pos  the start position of the text within the entire text
-    * @param lineCmnt  the String that represents the start of line comment
+    * @param toColor  the text which may a portion from the entire text
+    * @param pos  the start position of '{@code toColor}' within the entire text
+    * @param lineCmnt  the String that equals the start of a line comment
     */
-   public void lineComments(String in, int pos, String lineCmnt) {
+   public void lineComments(String toColor, int pos, String lineCmnt) {
       int start = 0;
-      int jump = 0;
       while (start != -1) {
-         start = in.indexOf(lineCmnt, start + jump);
-         if (start != -1 && !SyntaxUtils.isInQuotes(in, start, lineCmnt.length())) {
-            int lineEnd = in.indexOf("\n", start + 1);
-            int length;
-            if (lineEnd != -1) {
-               length = lineEnd - start;
+         start = toColor.indexOf(lineCmnt, start);
+         if (start != -1) {
+            if (!SyntaxUtils.isInQuotes(toColor, start, lineCmnt.length())) {
+               int lineEnd = toColor.indexOf("\n", start + 1);
+               int length;
+               if (lineEnd != -1) {
+                  length = lineEnd - start;
+               }
+               else {
+                  length = toColor.length() - start;
+               }
+               doc.setCharacterAttributes(start + pos, length,
+                     cmntSet, false);
             }
-            else {
-               length = in.length() - start;
-            }
-            doc.setCharacterAttributes(start + pos, length,
-                  cmntSet, false);
+            start += 1;
          }
-         jump = 1;
       }
    }
    
    /**
-    * Colors block comments but also recolors the text when a block is
-    * uncommented
-    * @param in  the entire text
-    * @param blockCmntStart  the String that represents the start signal for
+    * Colors block comments but also recolors portions of the text when
+    * a block is uncommented
+    * @param allText  the entire text
+    * @param blockStart  the String that represents the start signal for
     * a block
-    * @param blockCmntEnd  the String that represents the end signal for a
+    * @param blockEnd  the String that represents the end signal for a
     * bloack
     */
-   public void blockComments(String in, String blockCmntStart,
-         String blockCmntEnd) {
+    public void blockComments(String allText, String blockStart,
+          String blockEnd) {
 
       if (!isBlockCmnt) {
          return;
       }
 
       int start = 0;
-      int jump = 0;
       while (start != -1) {
-         start = in.indexOf(blockCmntStart, start + jump);
-         if (start != -1 && !SyntaxUtils.isInQuotes(in, start, blockCmntStart.length())) {
-            int end = SyntaxUtils.indNextBlockEnd(in, start + 1, blockCmntStart,
-                  blockCmntEnd);
-            if (end != -1) {
-               int length = end - start + blockCmntEnd.length();
-               if (isSingleLines) {
-                  uncommentBlock(in, end + blockCmntEnd.length(),
-                        blockCmntStart, blockCmntEnd);
-                  uncommentBlock(in, start + blockCmntStart.length(),
-                        blockCmntStart, blockCmntEnd);
+         start = allText.indexOf(blockStart, start);
+         if (start != -1) {
+            if (!SyntaxUtils.isInQuotes(allText, start, blockStart.length())) {
+               int end = SyntaxUtils.indNextBlockEnd(allText, start + 1, blockStart,
+                     blockEnd);
+               if (end != -1) {
+                  int length = end - start + blockEnd.length();
+                  uncommentBlock(allText, end + blockEnd.length(),
+                         blockStart, blockEnd);
+                  doc.setCharacterAttributes(start, length, cmntSet, false);
                }
-               doc.setCharacterAttributes(start, length, cmntSet, false);
-            }
-            else {
-               if (isSingleLines) {
-                  colSectionExBlock(in.substring(start), start);
-               } 
-            }
-         }
-         jump = 1;
-      }
-      if (isSingleLines) {
-         int firstEnd = in.indexOf(blockCmntEnd, 0);
-         if (firstEnd != -1 ) {
-            int firstStart = in.lastIndexOf(blockCmntStart, firstEnd);
-            if (firstStart == -1) {
-               colSectionExBlock(in.substring(0, firstEnd + 2), 0);
+               else {
+                  colSectionExBlock(allText.substring(start), start);
+               }
             } 
+            start += 1;
          }
       }
-   }
-   
-   /**
-    * Returns if the specified pos is found in a certain block of text
-    * @param in  the entire text
-    * @param pos  the position that may be found in a block of text
-    * @param blockStart  the String that defines the blocj start
-    * @param blockEnd  the String that defines the block end
-    * @return  if the specified pos is found in a certain block of text 
-    */
-   public boolean isInBlock(String in, int pos, String blockStart,
-         String blockEnd) {
-
-      int lastStart = SyntaxUtils.indLastBlockStart(in, pos, blockStart,
-            blockEnd);
-      int nextEnd   = SyntaxUtils.indNextBlockEnd(in, pos, blockStart,
-            blockEnd);
-      return lastStart != -1 & nextEnd != -1;
+      uncommentFirstBlock(allText, blockStart, blockEnd);
    }
    
    //
    //--private methods--
    //
    
-   private void words(String in, String key, SimpleAttributeSet set,
+   private void words(String toColor, String key, SimpleAttributeSet set,
          int pos, boolean reqWord) {
+
       int start = 0;
-      int jump = 0;
       while (start != -1) {
-         start = in.indexOf(key, start + jump);
+         start = toColor.indexOf(key, start);
          if (start != -1) {
-            boolean ok = !reqWord || SyntaxUtils.isWord(in, key, start);
+            boolean ok = !reqWord || SyntaxUtils.isWord(toColor, key, start);
             if (ok) {
                doc.setCharacterAttributes(start + pos, key.length(),
                      set, false);
             }
+            start += key.length(); 
          }  
-         jump = 1; 
       }
    }
    
-   private void stringLitChunk(String in, int pos, String blockStart,
+   private void stringLitLine(String line, int pos, String blockStart,
          String blockEnd) {
 
       int start = 0;
       int end = 0;
-      int jump = 0;
       while (start != -1 && end != -1) {
-         start = in.indexOf("\"", end + jump);
+         start = line.indexOf("\"", start);
          if (start != -1 ) {
-            end = in.indexOf("\"", start + 1);
+            end = line.indexOf("\"", start + 1);
             if (end != -1 ) {
                int length = end - start;
-               if (blockStart == null || 
-                  isInBlock(in, start, blockStart, blockEnd)) {
-                     doc.setCharacterAttributes(start + pos, length + 1,
-                           strLitSet, false );
+               boolean ok = blockStart == null
+                     || SyntaxUtils.isInBlock(line, start, blockStart, blockEnd);
+               if (ok) {
+                  doc.setCharacterAttributes(start + pos, length + 1,
+                        strLitSet, false );
                }
-            }    
+               start += length + 1;
+            } 
          }
-         jump = 1;
       }
    }
 
-   private void uncommentBlock(String in, int pos, String blockStart,
+   private void uncommentBlock(String allText, int pos, String blockStart,
          String blockEnd) {
-
-      int lastStart = SyntaxUtils.indLastBlockStart(in, pos, blockStart,
-            blockEnd);
-      int nextEnd   = SyntaxUtils.indNextBlockEnd(in, pos, blockStart,
-            blockEnd);
-      if (lastStart != -1 && nextEnd == -1) {
-         String toUncomment = in.substring(lastStart, pos + blockStart.length());
-         colSectionExBlock(toUncomment, lastStart);
+      
+      if (isCurrLine) {
+         int lastStart = SyntaxUtils.indLastBlockStart(allText, pos, blockStart,
+               blockEnd);
+         int nextEnd   = SyntaxUtils.indNextBlockEnd(allText, pos, blockStart,
+               blockEnd);
+         if (nextEnd != -1 && lastStart == -1) {
+            String toUncomment = allText.substring(pos, nextEnd + blockEnd.length());
+            colSectionExBlock(toUncomment, pos);
+         }
       }
-      else if (nextEnd != -1 && lastStart == -1) {
-         String toUncomment = in.substring(pos, nextEnd + blockEnd.length());
-         colSectionExBlock(toUncomment, pos);
+   }
+   
+   private void uncommentFirstBlock(String allText, String blockStart,
+         String blockEnd ) {
+            
+      if (isCurrLine) {
+         int firstEnd = allText.indexOf(blockEnd, 0);
+         if (firstEnd != -1
+               && !SyntaxUtils.isInQuotes(allText, firstEnd, blockStart.length())) {
+            int firstStart = allText.lastIndexOf(blockStart, firstEnd);
+            if (firstStart == -1) {
+               colSectionExBlock(allText.substring(0, firstEnd + 2), 0);
+            } 
+         }
       }
    }
 
-   private void colSectionExBlock(String section, int pos) {
-      enableSingleLines(false);
-      isBlockCmnt = false;
-      color(section, pos);
-      enableSingleLines(true);
-      isBlockCmnt = true;
+   private void colSectionExBlock(String section, int pos) {     
+      if (isCurrLine) {
+         enableCurrentLine(false);
+         isBlockCmnt = false;
+         color(section, pos);
+         enableCurrentLine(true);
+         isBlockCmnt = true;
+      }
    }
    
    private void setStyles() {
