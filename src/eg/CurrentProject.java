@@ -73,7 +73,8 @@ public class CurrentProject {
    }
 
    /**
-    * Selects the object of this array of {@code TextDocument}
+    * Selects an element from this array of {@code TextDocument}
+    *
     * @param docIndex  the index of the element in this array of
     * {@link TextDocument}
     */
@@ -84,7 +85,8 @@ public class CurrentProject {
 
    /**
     * Sets the current language
-    * @param lang  the language that is one of the constants in
+    *
+    * @param lang  the language that has one of the values in
     * {@link Languages}
     */   
    public void setLanguage(Languages lang) {
@@ -93,6 +95,7 @@ public class CurrentProject {
 
    /**
     * If at least one project has been created
+    *
     * @return  if at least one project has been created
     */
    public boolean isProjectSet() {
@@ -167,7 +170,7 @@ public class CurrentProject {
    /**
     * Creates a new project.
     * <p>
-    * If the the curently set {@link TextDocument} belongs to an already
+    * If the the currently set {@link TextDocument} belongs to an already
     * set project a dialog to confirm to proceed is shown.
     */
    public void newProject() {
@@ -288,12 +291,7 @@ public class CurrentProject {
       if (!isCurrent("Run")) {
          return;
       }
-      if (current.isRunByFile()) {
-         current.runProject(currDoc.filename());
-      }
-      else {
-         current.runProject();
-      }
+      current.runProject();
    }
 
    /**
