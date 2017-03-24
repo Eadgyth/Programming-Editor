@@ -35,14 +35,14 @@ public class HtmlColoring implements Colorable {
             col.brackets(toColor, b, posStart);
          }
          for (String s : HTML_TAGS) {
-            keyInTag(toColor, s, posStart, col);
+            tag(toColor, s, posStart, col);
          }
          col.stringLiterals(toColor, posStart, BRACKETS[0], BRACKETS[1]);
       }    
       col.blockComments(allText, blockCmntStart, blockCmntEnd);
    }
 
-   private void keyInTag(String toColor, String key, int pos, Coloring col) {
+   private void tag(String toColor, String key, int pos, Coloring col) {
       int start = 0;
       while (start != -1) {
          start = toColor.indexOf(key, start);

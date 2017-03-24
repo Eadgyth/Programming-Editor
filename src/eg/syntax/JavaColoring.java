@@ -38,10 +38,10 @@ public class JavaColoring implements Colorable {
       if (!SyntaxUtils.isInBlock(allText, pos, blockCmntStart, blockCmntEnd)) {
          col.setCharAttrBlack(posStart, toColor.length());
          for (String s : JAVA_ANNOTATIONS) {
-            col.keysBlue(toColor, s, posStart, false);
+            col.keywordBlue(toColor, s, posStart, false);
          }
          for (String s : JAVA_KEYWORDS) {
-            col.keysRed(toColor, s, posStart, true);
+            col.keywordRed(toColor, s, posStart, true);
          }
          for (String s : SyntaxUtils.BRACKETS) {
             col.brackets(toColor, s, posStart);

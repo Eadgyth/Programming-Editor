@@ -33,7 +33,7 @@ public class PerlColoring implements Colorable {
    };
    
    private final static String[] PERL_FLAGS = {
-      "$", "@"
+      "$", "@", "%"
    };
    
    private final static String lineCmnt = "#";
@@ -44,13 +44,13 @@ public class PerlColoring implements Colorable {
 
       col.setCharAttrBlack(posStart, toColor.length());
       for (String s : PERL_FLAGS) {
-         withFlag(toColor, s, posStart, col);
+         variable(toColor, s, posStart, col);
       }
       for (String s : PERL_KEYWORDS) {
-         col.keysRed(toColor, s, posStart, true);
+         col.keywordRed(toColor, s, posStart, true);
       }
       for (String s : PERL_OP) {
-         col.keysRed(toColor, s, posStart, false);
+         col.keywordRed(toColor, s, posStart, false);
       }
       for (String b : SyntaxUtils.BRACKETS) {
          col.brackets(toColor, b, posStart);
@@ -59,16 +59,27 @@ public class PerlColoring implements Colorable {
       col.lineComments(toColor, posStart, lineCmnt);
    }
    
-   private void withFlag(String in, String flag, int pos, Coloring col) {
+   private void variable(String in, String flag, int pos, Coloring col) {
       int start = 0;
       int jump = 0;
       while (start != -1) {
          start = in.indexOf(flag, start + jump);
          if (start != -1 && SyntaxUtils.isWordStart(in, start)) {
-            int length = SyntaxUtils.wordLength(in.substring(start));
+            int length = variableLength(in.substring(start));
             col.setCharAttrKeyBlue(start + pos, length);
          }  
          jump = 1; 
       }
+   }
+   
+   private int variableLength(String text) {      
+      char[] c = text.toCharArray();
+      int i = 1;
+      for (i = 1; i < c.length; i++) {                     
+         if (c[i] == ' ') {
+            break;
+         }
+      }
+      return i;
    }
 }

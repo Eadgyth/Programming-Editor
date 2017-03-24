@@ -12,9 +12,6 @@ import eg.utils.Finder;
 
 /**
  * The coloring of text using a selected {@code Colorable}.
- * <p>
- * Class provides some assumed general syntax coloring methods that may be
- * used by a {@link Colorable}
  */
 public class Coloring {
    
@@ -59,7 +56,7 @@ public class Coloring {
    }
    
    /**
-    * Enables to perform coloring in the current line where a
+    * Enables to perform coloring only in the current line where
     * changes happen
     * @param isEnabled  true to enable to coloring in single lines
     */
@@ -71,12 +68,12 @@ public class Coloring {
     * Colors text.
     * <p>
     * Coloring is performed in single lines if enabled through
-    * {@link #enableCurrentLine(boolean)}, otherwise the entire
-    * text is scanned. However, block comments are always colored
-    * using the entire text.
+    * {@link #enableCurrentLine(boolean)}, otherwise the entire text
+    * is scanned. However, block comments are always colored using
+    * the entire text.
     * <p>
     * Calls {@link Colorable #color(String,String,int,int,this)}
-    * <p>
+    *
     * @param allText  the entire text of the document
     * @param pos  the pos within the entire text where a change happened
     */
@@ -98,6 +95,7 @@ public class Coloring {
    
    /**
     * (Re-)colors a portion of text in black
+    *
     * @param start  the position where the recolored text starts
     * @param length  the length of the text to be recolored
     */
@@ -107,6 +105,7 @@ public class Coloring {
    
    /**
     * Colors a portion of text in keyword blue
+    *
     * @param start  the position where the recolored text starts
     * @param length  the length of the text to be recolored
     */
@@ -115,39 +114,43 @@ public class Coloring {
    }
    
    /**
-    * Searched and colors a keyword in red
+    * Searches and colors in red a keyword
+    *
     * @param toColor  the text which may a portion from the entire text
     * @param key  the keyword
     * @param pos  the start position of '{@code toColor}' within the entire text
-    * @param reqWord  if the keywords must be a word
+    * @param reqWord  if the keyword must be a word
     */
-   public void keysRed(String toColor, String key, int pos, boolean reqWord) {
-      words(toColor, key, keyRedSet, pos, reqWord);
+   public void keywordRed(String toColor, String key, int pos, boolean reqWord) {
+      string(toColor, key, keyRedSet, pos, reqWord);
    }
    
    /**
-    * Searched and colors a keyword in blue
+    * Searches and colors in blue a keyword
+    *
     * @param toColor  the text which may a portion from the entire text
     * @param key  the keyword
     * @param pos  the start position of '{@code toColor}' within the entire text
-    * @param reqWord  if the keywords must be a word
+    * @param reqWord  if the keyword must be a word
     */
-   public void keysBlue(String toColor, String key, int pos, boolean reqWord) {
-      words(toColor, key, keyBlueSet, pos, reqWord);
+   public void keywordBlue(String toColor, String key, int pos, boolean reqWord) {
+      string(toColor, key, keyBlueSet, pos, reqWord);
    }
    
    /**
-    * Colors brackets in blue and bold
+    * Searches a bracket and shows it in blue and bold
+    *
     * @param toColor  the text which may a portion from the entire text
     * @param bracket  the bracket
     * @param pos  the start position of '{@code toColor}' within the entire text
     */
    public void brackets(String toColor, String bracket, int pos) {
-      words(toColor, bracket, brSet, pos, false);
+      string(toColor, bracket, brSet, pos, false);
    }
    
    /**
-    * Searched and colors string literals
+    * Colors string literals in brown
+    *
     * @param toColor  the text which may a portion from the entire text
     * @param pos  the start position of '{@code toColor}' within the entire text
     * @param blockStart  the String that represents the start of a text block
@@ -178,7 +181,8 @@ public class Coloring {
    }
 
    /**
-    * Colors line comments
+    * Searches and colors commented lines in green
+    *
     * @param toColor  the text which may a portion from the entire text
     * @param pos  the start position of '{@code toColor}' within the entire text
     * @param lineCmnt  the String that equals the start of a line comment
@@ -188,7 +192,7 @@ public class Coloring {
       while (start != -1) {
          start = toColor.indexOf(lineCmnt, start);
          if (start != -1) {
-            if (!SyntaxUtils.isInQuotes(toColor, start, lineCmnt.length())) {
+            if (!SyntaxUtils.isInQuotes(toColor, start, lineCmnt)) {
                int lineEnd = toColor.indexOf("\n", start + 1);
                int length;
                if (lineEnd != -1) {
@@ -206,8 +210,8 @@ public class Coloring {
    }
    
    /**
-    * Colors block comments but also recolors portions of the text when
-    * a block is uncommented
+    * Searches and colors block comments in green
+    *
     * @param allText  the entire text
     * @param blockStart  the String that represents the start signal for
     * a block
@@ -220,19 +224,25 @@ public class Coloring {
       if (!isBlockCmnt) {
          return;
       }
-
+      //
+      // in case the very first block start is removed
+      uncommentFirstBlock(allText, blockStart, blockEnd);
+      //
+      // search for block starts
       int start = 0;
       while (start != -1) {
          start = allText.indexOf(blockStart, start);
          if (start != -1) {
-            if (!SyntaxUtils.isInQuotes(allText, start, blockStart.length())) {
-               int end = SyntaxUtils.indNextBlockEnd(allText, start + 1, blockStart,
-                     blockEnd);
+            if (!SyntaxUtils.isInQuotes(allText, start, blockStart)) {
+               int end = SyntaxUtils.indNextBlockEnd(allText, start + 1,
+                     blockStart, blockEnd);
                if (end != -1) {
                   int length = end - start + blockEnd.length();
+                  doc.setCharacterAttributes(start, length, cmntSet, false);
+                  //
+                  // in case a block start is removed
                   uncommentBlock(allText, end + blockEnd.length(),
                          blockStart, blockEnd);
-                  doc.setCharacterAttributes(start, length, cmntSet, false);
                }
                else {
                   colSectionExBlock(allText.substring(start), start);
@@ -241,26 +251,25 @@ public class Coloring {
             start += 1;
          }
       }
-      uncommentFirstBlock(allText, blockStart, blockEnd);
    }
    
    //
    //--private methods--
    //
    
-   private void words(String toColor, String key, SimpleAttributeSet set,
+   private void string(String toColor, String str, SimpleAttributeSet set,
          int pos, boolean reqWord) {
 
       int start = 0;
       while (start != -1) {
-         start = toColor.indexOf(key, start);
+         start = toColor.indexOf(str, start);
          if (start != -1) {
-            boolean ok = !reqWord || SyntaxUtils.isWord(toColor, key, start);
+            boolean ok = !reqWord || SyntaxUtils.isWord(toColor, str, start);
             if (ok) {
-               doc.setCharacterAttributes(start + pos, key.length(),
+               doc.setCharacterAttributes(start + pos, str.length(),
                      set, false);
             }
-            start += key.length(); 
+            start += str.length(); 
          }  
       }
    }
@@ -309,7 +318,7 @@ public class Coloring {
       if (isCurrLine) {
          int firstEnd = allText.indexOf(blockEnd, 0);
          if (firstEnd != -1
-               && !SyntaxUtils.isInQuotes(allText, firstEnd, blockStart.length())) {
+               && !SyntaxUtils.isInQuotes(allText, firstEnd, blockStart)) {
             int firstStart = allText.lastIndexOf(blockStart, firstEnd);
             if (firstStart == -1) {
                colSectionExBlock(allText.substring(0, firstEnd + 2), 0);
