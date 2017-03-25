@@ -44,7 +44,10 @@ public class JavaColoring implements Colorable {
             col.keywordRed(toColor, s, posStart, true);
          }
          for (String s : SyntaxUtils.BRACKETS) {
-            col.brackets(toColor, s, posStart);
+            col.bracket(toColor, s, posStart);
+         }
+         for (String s : SyntaxUtils.CURLY_BRACKETS) {
+            col.bracket(toColor, s, posStart);
          }
          col.stringLiterals(toColor, posStart, null, null);
          col.lineComments(toColor, posStart, lineCmnt);

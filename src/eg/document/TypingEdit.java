@@ -81,7 +81,7 @@ class TypingEdit {
 
    void enableTypeEdit(boolean isTypeEdit) {
       this.isTypeEdit = isTypeEdit;
-      col.enableCurrentLine(isTypeEdit);
+      col.enableTypeMode(isTypeEdit);
    }
    
    void setUpEditing(Languages lang) {

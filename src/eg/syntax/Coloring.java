@@ -19,14 +19,22 @@ public class Coloring {
    private final SimpleAttributeSet keyBlueSet = new SimpleAttributeSet();
    private final SimpleAttributeSet cmntSet    = new SimpleAttributeSet();
    private final SimpleAttributeSet brSet      = new SimpleAttributeSet();
+   private final SimpleAttributeSet brBlueSet  = new SimpleAttributeSet();
    private final SimpleAttributeSet strLitSet  = new SimpleAttributeSet();
    private final SimpleAttributeSet normalSet;  
    private final StyledDocument doc;
 
    private boolean isBlockCmnt = true;
-   private boolean isCurrLine;
+   private boolean isTypeMode;
    private Colorable colorable;
    
+   /**
+    * Creates a Coloring
+    *
+    * @param doc  the {@code StyledDocument} that is colored
+    * @param normalSet  the {@code SimpleAttributeSet} that represents the
+    * black and plain diplay of text
+    */
    public Coloring(StyledDocument doc, SimpleAttributeSet normalSet) {
       this.doc = doc;
       this.normalSet = normalSet;
@@ -56,21 +64,17 @@ public class Coloring {
    }
    
    /**
-    * Enables to perform coloring only in the current line where
-    * changes happen
+    * Enables to perform coloring only in the current line where changes
+    * happen (block comments not affected, though)
+    *
     * @param isEnabled  true to enable to coloring in single lines
     */
-   public void enableCurrentLine(boolean isEnabled) {
-      isCurrLine = isEnabled;
+   public void enableTypeMode(boolean isEnabled) {
+      isTypeMode = isEnabled;
    }
    
    /**
     * Colors text.
-    * <p>
-    * Coloring is performed in single lines if enabled through
-    * {@link #enableCurrentLine(boolean)}, otherwise the entire text
-    * is scanned. However, block comments are always colored using
-    * the entire text.
     * <p>
     * Calls {@link Colorable #color(String,String,int,int,this)}
     *
@@ -83,7 +87,7 @@ public class Coloring {
       }
       String toColor;
       int posStart = pos;
-      if (isCurrLine) {
+      if (isTypeMode) {
          toColor = Finder.currLine(allText, pos);
          posStart = Finder.lastReturn(allText, pos) + 1;
       }
@@ -138,14 +142,25 @@ public class Coloring {
    }
    
    /**
-    * Searches a bracket and shows it in blue and bold
+    * Searches a bracket and shows it in bold
     *
     * @param toColor  the text which may a portion from the entire text
     * @param bracket  the bracket
     * @param pos  the start position of '{@code toColor}' within the entire text
     */
-   public void brackets(String toColor, String bracket, int pos) {
+   public void bracket(String toColor, String bracket, int pos) {
       string(toColor, bracket, brSet, pos, false);
+   }
+   
+   /**
+    * Searches a bracket and shows it bold and blue
+    *
+    * @param toColor  the text which may a portion from the entire text
+    * @param bracket  the bracket
+    * @param pos  the start position of '{@code toColor}' within the entire text
+    */
+   public void bracketBlue(String toColor, String bracket, int pos) {
+      string(toColor, bracket, brBlueSet, pos, false);
    }
    
    /**
@@ -163,16 +178,14 @@ public class Coloring {
    public void stringLiterals(String toColor, int pos, String blockStart,
          String blockEnd) {
 
-      if (!isCurrLine) {
+      if (!isTypeMode && toColor.replaceAll("\n", "").length() > 0) {
          //
          // split because string literals are not colored across lines
-         if (toColor.replaceAll("\n", "").length() > 0) {
-            String[] chunkArr = toColor.split("\n");
-            int[] startOfLines = Finder.startOfLines(chunkArr);
-            for (int i = 0; i < chunkArr.length; i++) {
-               stringLitLine(chunkArr[i], startOfLines[i] + pos,
-                      blockStart, blockEnd);
-            }
+         String[] chunkArr = toColor.split("\n");
+         int[] startOfLines = Finder.startOfLines(chunkArr);
+         for (int i = 0; i < chunkArr.length; i++) {
+            stringLitLine(chunkArr[i], startOfLines[i] + pos,
+                   blockStart, blockEnd);
          }
       }
       else {
@@ -213,39 +226,32 @@ public class Coloring {
     * Searches and colors block comments in green
     *
     * @param allText  the entire text
-    * @param blockStart  the String that represents the start signal for
-    * a block
-    * @param blockEnd  the String that represents the end signal for a
-    * bloack
+    * @param blockStart  the String that represents the start signal for a block
+    * @param blockEnd  the String that represents the end signal for a block
     */
-    public void blockComments(String allText, String blockStart,
+   public void blockComments(String allText, String blockStart,
           String blockEnd) {
 
       if (!isBlockCmnt) {
          return;
       }
-      //
-      // in case the very first block start is removed
-      uncommentFirstBlock(allText, blockStart, blockEnd);
-      //
-      // search for block starts
-      int start = 0;
+     
+      removedFirstBlock(allText, blockStart, blockEnd);
+      int start = 0;      
       while (start != -1) {
          start = allText.indexOf(blockStart, start);
          if (start != -1) {
             if (!SyntaxUtils.isInQuotes(allText, start, blockStart)) {
-               int end = SyntaxUtils.indNextBlockEnd(allText, start + 1,
+               int end = SyntaxUtils.nextBlockEnd(allText, start + 1,
                      blockStart, blockEnd);
                if (end != -1) {
                   int length = end - start + blockEnd.length();
                   doc.setCharacterAttributes(start, length, cmntSet, false);
-                  //
-                  // in case a block start is removed
-                  uncommentBlock(allText, end + blockEnd.length(),
+                  removedBlockStart(allText, end + blockEnd.length(),
                          blockStart, blockEnd);
                }
                else {
-                  colSectionExBlock(allText.substring(start), start);
+                  removedBlockEnd(allText, start, blockStart);        
                }
             } 
             start += 1;
@@ -296,26 +302,11 @@ public class Coloring {
          }
       }
    }
-
-   private void uncommentBlock(String allText, int pos, String blockStart,
-         String blockEnd) {
-      
-      if (isCurrLine) {
-         int lastStart = SyntaxUtils.indLastBlockStart(allText, pos, blockStart,
-               blockEnd);
-         int nextEnd   = SyntaxUtils.indNextBlockEnd(allText, pos, blockStart,
-               blockEnd);
-         if (nextEnd != -1 && lastStart == -1) {
-            String toUncomment = allText.substring(pos, nextEnd + blockEnd.length());
-            colSectionExBlock(toUncomment, pos);
-         }
-      }
-   }
    
-   private void uncommentFirstBlock(String allText, String blockStart,
+   private void removedFirstBlock(String allText, String blockStart,
          String blockEnd ) {
             
-      if (isCurrLine) {
+      if (isTypeMode) {
          int firstEnd = allText.indexOf(blockEnd, 0);
          if (firstEnd != -1
                && !SyntaxUtils.isInQuotes(allText, firstEnd, blockStart)) {
@@ -327,12 +318,42 @@ public class Coloring {
       }
    }
 
+   private void removedBlockStart(String allText, int pos, String blockStart,
+         String blockEnd) {
+      
+      if (isTypeMode) {
+         int lastStart = SyntaxUtils.lastBlockStart(allText, pos, blockStart,
+               blockEnd);
+         int nextEnd   = SyntaxUtils.nextBlockEnd(allText, pos, blockStart,
+               blockEnd);
+         if (nextEnd != -1 && lastStart == -1) {
+            String toUncomment = allText.substring(pos, nextEnd + blockEnd.length());
+            colSectionExBlock(toUncomment, pos);
+         }
+      }
+   }
+   
+   private void removedBlockEnd(String allText, int pos, String blockStart) {
+      if (isTypeMode) {
+         int nextStart = allText.indexOf(blockStart, pos + 1);
+         while (nextStart != -1 && SyntaxUtils.isInQuotes(allText, nextStart, blockStart)) {
+            nextStart = allText.lastIndexOf(blockStart, nextStart + 1);
+         }
+         if (nextStart != -1) {
+            colSectionExBlock(allText.substring(pos, nextStart), pos);
+         }
+         else {
+            colSectionExBlock(allText.substring(pos), pos);
+         }
+      }
+   }
+
    private void colSectionExBlock(String section, int pos) {     
-      if (isCurrLine) {
-         enableCurrentLine(false);
+      if (isTypeMode) {
+         enableTypeMode(false);
          isBlockCmnt = false;
          color(section, pos);
-         enableCurrentLine(true);
+         enableTypeMode(true);
          isBlockCmnt = true;
       }
    }
@@ -351,7 +372,9 @@ public class Coloring {
       StyleConstants.setBold(keyBlueSet, false);
 
       Color bracketBlue = new Color(60, 60, 255);
-      StyleConstants.setForeground(brSet, bracketBlue);
+      StyleConstants.setForeground(brBlueSet, bracketBlue);
+      StyleConstants.setBold(brBlueSet, true);
+
       StyleConstants.setBold(brSet, true);
 
       Color strLitOrange = new Color(230, 140, 50);

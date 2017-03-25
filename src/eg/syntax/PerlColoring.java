@@ -53,7 +53,10 @@ public class PerlColoring implements Colorable {
          col.keywordRed(toColor, s, posStart, false);
       }
       for (String b : SyntaxUtils.BRACKETS) {
-         col.brackets(toColor, b, posStart);
+         col.bracket(toColor, b, posStart);
+      }
+      for (String s : SyntaxUtils.CURLY_BRACKETS) {
+         col.bracket(toColor, s, posStart);
       }
       col.stringLiterals(toColor, posStart, null, null);
       col.lineComments(toColor, posStart, lineCmnt);

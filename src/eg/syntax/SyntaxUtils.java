@@ -8,7 +8,11 @@ public class SyntaxUtils {
    private SyntaxUtils() {}
 
    public final static String[] BRACKETS = {
-      "(",")"
+      "(", ")",
+   };
+   
+   public final static String[] CURLY_BRACKETS = {
+      "{", "}",
    };
 
    /**
@@ -64,9 +68,9 @@ public class SyntaxUtils {
    public static boolean isInBlock(String text, int pos, String blockStart,
          String blockEnd) {
 
-      int lastStart = SyntaxUtils.indLastBlockStart(text, pos, blockStart,
+      int lastStart = SyntaxUtils.lastBlockStart(text, pos, blockStart,
             blockEnd);
-      int nextEnd = SyntaxUtils.indNextBlockEnd(text, pos, blockStart,
+      int nextEnd = SyntaxUtils.nextBlockEnd(text, pos, blockStart,
             blockEnd);
       return lastStart != -1 & nextEnd != -1;
    }
@@ -84,7 +88,7 @@ public class SyntaxUtils {
     * if no block start is found or a block end is closer to '{@code pos}'
     * than a block start
     */
-   public static int indLastBlockStart(String text, int pos, String blockStart,
+   public static int lastBlockStart(String text, int pos, String blockStart,
          String blockEnd) {
 
       int index = text.lastIndexOf(blockStart, pos);
@@ -102,19 +106,21 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the position of the next block end where block is a portion
-    * of text that is bordered by a block start and a block end signal.
+    * Returns the position of the next block end where block is a portion of
+    * text that is bordered by a block start and a block end signal.
     *
     * @param text  the text
     * @param pos  the position relative to which the next block end is
     * searched
     * @param blockStart  the String that signals the start of a block
     * @param blockEnd  the String that signals the end of a block
-    * @return the position of the next block after '{@code pos}'. -1 if
-    * the next block start is closer to '{@code pos}' than the block end
+    * @return the position of the next block end after '{@code pos}'. -1 if no
+    * end is found or the next block start is closer to '{@code pos}' than the
+    * block end
     */
-   public static int indNextBlockEnd(String text, int pos, String blockStart,
+   public static int nextBlockEnd(String text, int pos, String blockStart,
          String blockEnd) {
+
       int index = text.indexOf(blockEnd, pos);
       int indNextStart = text.indexOf(blockStart, pos);
 

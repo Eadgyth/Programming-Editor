@@ -31,8 +31,8 @@ public class HtmlColoring implements Colorable {
 
       if (!SyntaxUtils.isInBlock(allText, pos, blockCmntStart, blockCmntEnd)) {
          col.setCharAttrBlack(posStart, toColor.length());
-         for (String b : BRACKETS) {
-            col.brackets(toColor, b, posStart);
+         for (String s : BRACKETS) {
+            col.bracketBlue(toColor, s, posStart);
          }
          for (String s : HTML_TAGS) {
             tag(toColor, s, posStart, col);
