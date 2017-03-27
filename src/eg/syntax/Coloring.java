@@ -43,6 +43,7 @@ public class Coloring {
    
    /**
     * Selects a Colorable object based on the language
+    *
     * @param lang  the language which is one of the constants
     * in {@link eg.Languages} but not PLAIN_TEXT
     */
@@ -182,10 +183,10 @@ public class Coloring {
          //
          // split because string literals are not colored across lines
          String[] chunkArr = toColor.split("\n");
-         int[] startOfLines = Finder.startOfLines(chunkArr);
+         int sum = 0;
          for (int i = 0; i < chunkArr.length; i++) {
-            stringLitLine(chunkArr[i], startOfLines[i] + pos,
-                   blockStart, blockEnd);
+            stringLitLine(chunkArr[i], pos + sum, blockStart, blockEnd);
+            sum += chunkArr[i].length() + 1;
          }
       }
       else {
@@ -229,20 +230,21 @@ public class Coloring {
     * @param blockStart  the String that represents the start signal for a block
     * @param blockEnd  the String that represents the end signal for a block
     */
-   public void blockComments(String allText, String blockStart,
-          String blockEnd) {
-
+   public void blockComments(String allText, String blockStart, String blockEnd) {
       if (!isBlockCmnt) {
          return;
       }
      
       removedFirstBlock(allText, blockStart, blockEnd);
-      int start = 0;      
+      int start = 0;
+      int endChunk = allText.length();
+
       while (start != -1) {
          start = allText.indexOf(blockStart, start);
-         if (start != -1) {
+         int end = 0;
+         if (start != -1 && end <= endChunk) {
             if (!SyntaxUtils.isInQuotes(allText, start, blockStart)) {
-               int end = SyntaxUtils.nextBlockEnd(allText, start + 1,
+               end = SyntaxUtils.nextBlockEnd(allText, start + 1,
                      blockStart, blockEnd);
                if (end != -1) {
                   int length = end - start + blockEnd.length();
@@ -304,16 +306,13 @@ public class Coloring {
    }
    
    private void removedFirstBlock(String allText, String blockStart,
-         String blockEnd ) {
+         String blockEnd) {
             
       if (isTypeMode) {
-         int firstEnd = allText.indexOf(blockEnd, 0);
-         if (firstEnd != -1
-               && !SyntaxUtils.isInQuotes(allText, firstEnd, blockStart)) {
-            int firstStart = allText.lastIndexOf(blockStart, firstEnd);
-            if (firstStart == -1) {
-               colSectionExBlock(allText.substring(0, firstEnd + 2), 0);
-            } 
+         int firstEnd = SyntaxUtils.nextBlockEnd(allText, 0, blockStart,
+               blockEnd);
+         if (firstEnd != -1) {
+            colSectionExBlock(allText.substring(0, firstEnd + 2), 0);
          }
       }
    }

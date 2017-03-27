@@ -5,22 +5,6 @@ package eg.utils;
  */
 public class Finder {
 
-   /**
-    * @param in  the array of lines of a text
-    * @return  an array of start positions of the lines of a passed in
-    * text whose lines are splitted into an array 
-    */
-   public static int[] startOfLines(String[] in) {
-      int[] startOfLines = new int[in.length];
-      int startOfLine = 0;
-      startOfLines[0] = 0;
-      for (int i = 1; i < startOfLines.length; i++) {
-         startOfLine += in[i - 1].length();
-         startOfLines[i] = startOfLine + i; // +i to add the missing new lines
-      }   
-      return startOfLines;
-   }
-
    public static String currLine(String in, int pos) {
       int indLastReturn = Finder.lastReturn(in, pos);
       int indNextReturn = in.indexOf("\n", pos);
