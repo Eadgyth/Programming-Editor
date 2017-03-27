@@ -18,7 +18,7 @@ import eg.document.TextDocument;
 /**
  * The editing of the document in the selected tab by actions
  * that are invoked in the edit menu/toolbar except the language
- */ 
+ */
 public class Edit {
 
    /* Options for the numbers of white spaces in indentation unit */
@@ -42,12 +42,19 @@ public class Edit {
    }
 
    /**
-    * Selects the entire text
+    * Performs undo action
     */
-   public void selectAll() {
-      textArea.selectAll();
+   public void undo() {
+      txtDoc.undo();
    }
-   
+
+   /**
+    * performs redo action
+    */
+   public void redo() {
+      txtDoc.redo();
+   }
+
    /**
     * Cuts selected text and stores it to the system's clipboard
     */
@@ -91,6 +98,13 @@ public class Edit {
          textArea.setCaretPosition(pos - selection.length() + clipboard.length());
       }
       txtDoc.colorAll();
+   }
+
+   /**
+    * Selects the entire text
+    */
+   public void selectAll() {
+      textArea.selectAll();
    }
 
   /**
@@ -139,7 +153,7 @@ public class Edit {
       String sel = textArea.getSelectedText();
       if (sel == null) {
          return;
-      }      
+      }
       int start = textArea.getSelectionStart();
       String startingLine = Finder.currLine(txtDoc.getText(), start);
       if (!startingLine.startsWith(indentUnit)) {
@@ -149,7 +163,7 @@ public class Edit {
       String[] selSplit = sel.split("\n");
       //
       // count spaces at the beginning of selection
-      int countSpaces = 0;       
+      int countSpaces = 0;
       for (int i = 0; i < selSplit[0].length(); i++) {
          if (selSplit[0].substring(i, i + 1).equals(" ")) {
             countSpaces++;
@@ -161,7 +175,7 @@ public class Edit {
       int[] startOfLines = Finder.startOfLines(selSplit);
       //
       // add an indent unit to empty lines or lines with too few spaces */
-      for (int i = 0; i < selSplit.length; i++) {         
+      for (int i = 0; i < selSplit.length; i++) {
          if (selSplit[i].length() == 0) {
             txtDoc.insertStr(start + startOfLines[i], indentUnit);
             for (int j = i + 1; j < selSplit.length; j++) {
@@ -176,7 +190,7 @@ public class Edit {
                   startOfLines[j] += indentLength;
                }
             }
-         } 
+         }
       }
       //
       // renew selection
@@ -187,7 +201,7 @@ public class Edit {
          sel = textArea.getSelectedText();
          selSplit = sel.split("\\n");
          start = textArea.getSelectionStart();
-      }           
+      }
       startOfLines = Finder.startOfLines(selSplit);
       for (int i = 0; i < selSplit.length; i++) {
          txtDoc.removeStr(start + startOfLines[i] - i * indentLength,
@@ -197,37 +211,25 @@ public class Edit {
    }
 
    /**
-    * Clears residual spaces in otherwise empty lines
+    * Clears trailing spaces
     */
-   public void clearSpaces() {
+   public void clearTrailingSpaces() {
       txtDoc.enableTypeEdit(false);
       String allTxt = txtDoc.getText();
-      String[] allTxtArr = allTxt.split("\n");
-      int[] startOfLines = Finder.startOfLines(allTxtArr);
-      for (int i = 0; i < allTxtArr.length; i++) {
-         if (allTxtArr[i].matches("[\\s]+")) {
-            txtDoc.removeStr(startOfLines[i], allTxtArr[i].length());
-            for (int j = i + 1; j < startOfLines.length; j++) {
-               startOfLines[j] -= allTxtArr[i].length();
-            }
-         }
+      String[] allTextArr = allTxt.split("\n");
+      int sum = 0;
+      for (int i = 0; i < allTextArr.length; i++) {
+         int startOfSpaces = startOfTrailingSpaces(allTextArr[i]);
+         int spacesLength = allTextArr[i].length() - startOfSpaces;
+         txtDoc.removeStr(startOfSpaces + sum, spacesLength);
+         sum += startOfSpaces + 1;
       }
       txtDoc.enableTypeEdit(true);
    }
 
-   /**
-    * Performs undo action
-    */
-   public void undo() {
-      txtDoc.undo();
-   }
-
-   /**
-    * performs redo action
-    */
-   public void redo() {
-      txtDoc.redo();
-   }
+   //
+   //--private
+   //
 
    private String getClipboard() {
       String inClipboard = "";
@@ -235,11 +237,22 @@ public class Edit {
       Clipboard clipboard = toolkit.getSystemClipboard();
       DataFlavor flavor = DataFlavor.stringFlavor;
       try {
-         inClipboard = (String) clipboard.getData(flavor); 
+         inClipboard = (String) clipboard.getData(flavor);
       }
       catch (UnsupportedFlavorException | IOException e) {
          FileUtils.logStack(e);
       }
       return inClipboard;
+   }
+
+   private int startOfTrailingSpaces(String line) {
+      char[] c = line.toCharArray();
+      int i = 0;
+      for (i = c.length -1; i >= 0; i--) {
+         if (c[i] != ' ') {
+            break;
+         }
+      }
+      return i + 1;
    }
 }

@@ -26,7 +26,6 @@ public class EditMenu {
 
    private final Preferences prefs = new Preferences();
 
-    /* Edit */
    private final JMenu     menu            = new JMenu("Edit");
    private final JMenuItem undoItm         = new JMenuItem("Undo", IconFiles.UNDO_ICON);
    private final JMenuItem redoItm         = new JMenuItem("Redo", IconFiles.REDO_ICON);
@@ -39,7 +38,7 @@ public class EditMenu {
    private final JMenuItem outdentItm      = new JMenuItem("Indent selection less",
                                              IconFiles.OUTDENT_ICON);
    private final JMenuItem changeIndentItm = new JMenuItem("Indent/outdent length");
-   private final JMenuItem clearSpacesItm  = new JMenuItem("Clear spaces");
+   private final JMenuItem clearSpacesItm  = new JMenuItem("Clear trailing spaces");
    private final JMenu     languageMenu    = new JMenu("Language");
    private final JCheckBoxMenuItem[] selectLangChBxItm
                                             = new JCheckBoxMenuItem[LANGUAGES.length];
@@ -61,7 +60,7 @@ public class EditMenu {
       pasteItm.addActionListener(e -> edit.pasteText());   
       indentItm.addActionListener(e -> edit.indentSelection());
       outdentItm.addActionListener(e -> edit.outdentSelection());
-      clearSpacesItm.addActionListener(e -> edit.clearSpaces());
+      clearSpacesItm.addActionListener(e -> edit.clearTrailingSpaces());
       changeIndentItm.addActionListener(e -> edit.setNewIndentUnit());
       for (JCheckBoxMenuItem item : selectLangChBxItm) {
            item.addActionListener(e -> getNewLanguage(e, edit, tf));
