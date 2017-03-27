@@ -237,12 +237,11 @@ public class Coloring {
      
       removedFirstBlock(allText, blockStart, blockEnd);
       int start = 0;
-      int endChunk = allText.length();
 
       while (start != -1) {
          start = allText.indexOf(blockStart, start);
          int end = 0;
-         if (start != -1 && end <= endChunk) {
+         if (start != -1) {
             if (!SyntaxUtils.isInQuotes(allText, start, blockStart)) {
                end = SyntaxUtils.nextBlockEnd(allText, start + 1,
                      blockStart, blockEnd);
