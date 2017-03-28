@@ -32,6 +32,7 @@ public class Edit {
    /**
     * Sets the {@code TextDocument} that is edited and its current
     * indentation unit
+    *
     * @param txtDoc  the {@link TextDocument} that is edited
     */
    public void setTextDocument(TextDocument txtDoc) {
@@ -49,7 +50,7 @@ public class Edit {
    }
 
    /**
-    * performs redo action
+    * Performs redo action
     */
    public void redo() {
       txtDoc.redo();
@@ -78,24 +79,21 @@ public class Edit {
    }
 
    /**
-    * Pastes text stored in the clipboard and replaces selected
-    * text
+    * Pastes text stored in the clipboard and replaces selected text
     */
    public void pasteText() {
       txtDoc.enableTypeEdit(false);
-
       String clipboard = getClipboard();
-      String selection = textArea.getSelectedText();
+      String sel = textArea.getSelectedText();
       int pos = textArea.getCaretPosition();
-
-      if (selection == null) {
+      if (sel == null) {
          txtDoc.insertStr(pos, clipboard);
          textArea.setCaretPosition(pos + clipboard.length());
       }
       else {
-         txtDoc.removeStr(pos - selection.length(), selection.length());
-         txtDoc.insertStr(pos - selection.length(), clipboard);
-         textArea.setCaretPosition(pos - selection.length() + clipboard.length());
+         txtDoc.removeStr(pos - sel.length(), sel.length());
+         txtDoc.insertStr(pos - sel.length(), clipboard);
+         textArea.setCaretPosition(pos - sel.length() + clipboard.length());
       }
       txtDoc.colorAll();
    }
@@ -114,7 +112,7 @@ public class Edit {
       String selectedNumber = JOptions.comboBoxRes("Number of spaces:",
             "Indentation length", SPACE_NUMBER,
             String.valueOf(indentLength));
-      if (selectedNumber != null) {    // if not cancelled
+      if (selectedNumber != null) {
          indentLength = Integer.parseInt(selectedNumber);
          indentUnit = "";
          for (int i = 0; i < indentLength; i++) {
@@ -125,13 +123,14 @@ public class Edit {
    }
 
    /**
-    * Indents all lines of selected text by one indentation unit
+    * Indents selected text by one indentation unit
     */
    public void indentSelection()  {
       String sel = textArea.getSelectedText();
       if (sel == null) {
          return;
       }
+
       txtDoc.enableTypeEdit(false);
       String[] selArr = sel.split("\n");
       int start = textArea.getSelectionStart();
@@ -209,21 +208,10 @@ public class Edit {
       return inClipboard;
    }
 
-   private int[] startOfLines(String[] in) {
-      int[] startOfLines = new int[in.length];
-      int startOfLine = 0;
-      startOfLines[0] = 0;
-      for (int i = 1; i < startOfLines.length; i++) {
-         startOfLine += in[i - 1].length();
-         startOfLines[i] = startOfLine + i; // +i to add the missing new lines
-      }   
-      return startOfLines;
-   }
-
    private int startOfTrailingSpaces(String line) {
       char[] c = line.toCharArray();
       int i = 0;
-      for (i = c.length -1; i >= 0; i--) {
+      for (i = c.length - 1; i >= 0; i--) {
          if (c[i] != ' ') {
             break;
          }
