@@ -42,7 +42,8 @@ import eg.utils.Finder;
  * typing.
  * <p>
  * Methods are used in other classes that show line numbering, syntax
- * coloring, auto-indentation and undo/redo editing (the latter an inner class).
+ * coloring, auto-indentation and undo/redo editing (the latter an inner
+ * class).
  */
 class TypingEdit {
 
@@ -163,12 +164,12 @@ class TypingEdit {
       if (pos > 0 && isIndent) {
          autoInd.openBracketIndent(in, pos);
       }
+      if (typed != '\n') {
+         color(in, pos);
+      }
       EventQueue.invokeLater(() -> {
          if (isIndent) {
             autoInd.closeBracketIndent(in, pos);
-         }
-         if (typed != '\n') {
-            color(in, pos);
          }
       });
    }
@@ -177,12 +178,14 @@ class TypingEdit {
       String in = editArea.getDocText();
       updateRowNumber(in);
       if (!isTypeEdit) {
-         System.out.println("no type");
          return;
       }
       int newLineNr = rowNum.getCurrLineNr();
       if (previousLineNr < newLineNr) {
          colorAll();
+      }
+      else if (previousLineNr > newLineNr) {
+         //nothing
       }
       else {
          if (caret > 0) {
