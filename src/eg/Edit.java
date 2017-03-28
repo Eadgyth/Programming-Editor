@@ -152,59 +152,24 @@ public class Edit {
       if (sel == null) {
          return;
       }      
+
+      txtDoc.enableTypeEdit(false);
       int start = textArea.getSelectionStart();
       String startingLine = Finder.currLine(txtDoc.getText(), start);
-      if (!startingLine.startsWith(indentUnit)) {
-         return;
-      }
-      txtDoc.enableTypeEdit(false);
       String[] selArr = sel.split("\n");
-      //
-      // count spaces at the beginning of selection
-      int countSpaces = 0;       
-      for (int i = 0; i < selArr[0].length(); i++) {
-         if (selArr[0].substring(i, i + 1).equals(" ")) {
-            countSpaces++;
-         }
-         else {
-            break;
-         }
-      }
-      int[] startOfLines = Finder.startOfLines(selArr);
-      //
-      // add an indent unit to empty lines or lines with too few spaces */
-      for (int i = 0; i < selArr.length; i++) {         
-         if (selArr[i].length() == 0) {
-            txtDoc.insertStr(start + startOfLines[i], indentUnit);
-            for (int j = i + 1; j < selArr.length; j++) {
-               startOfLines[j] += indentLength;
+      start -= startingLine.length() - selArr[0].length();
+      selArr[0] = startingLine;
+      if (selArr[0].startsWith(" ") && isIndentConsistent(selArr)) {
+         int sum = 0;
+         for (int i = 0; i < selArr.length; i++) {
+            if (selArr[i].startsWith(indentUnit)) {
+               txtDoc.removeStr(start + sum, indentLength);
+               sum += (selArr[i].length() - indentLength) + 1;
+            }
+            else {
+               sum += selArr[i].length() + 1;
             }
          }
-         if (selArr[i].matches("[\\s]+")) {
-            int length = selArr[i].length();
-            if (length < indentLength) {
-               txtDoc.insertStr(start + startOfLines[i], indentUnit);
-               for (int j = i + 1; j < selArr.length; j++) {
-                  startOfLines[j] += indentLength;
-               }
-            }
-         } 
-      }
-      //
-      // renew selection
-      int startOfFirstLine = txtDoc.getText().lastIndexOf("\n", start);
-      int startUpdate = start - indentLength + countSpaces;
-      if (countSpaces != indentLength && startUpdate > startOfFirstLine) {
-         textArea.select(startUpdate, textArea.getSelectionEnd());
-         sel = textArea.getSelectedText();
-         selArr = sel.split("\n");
-         start = textArea.getSelectionStart();
-      }           
-      startOfLines = Finder.startOfLines(selArr);
-      int sum = 0;
-      for (int i = 0; i < selArr.length; i++) {
-         txtDoc.removeStr(start + startOfLines[i] - i * indentLength,
-               indentLength);
       }
       txtDoc.enableTypeEdit(true);
    }
@@ -264,5 +229,19 @@ public class Edit {
          }
       }
       return i + 1;
-   }    
+   }
+   
+   private boolean isIndentConsistent(String[] textArr) {
+      boolean isConsistent = true;
+      for (int i = 0; i < textArr.length; i++) {
+         if (!textArr[i].matches("[\\s]+") && !textArr[i].startsWith(indentUnit)) {
+            isConsistent = false;
+            break;
+         }   
+      }
+      if (!isConsistent) {
+         JOptions.warnMessage("The indentation is not consistent.");
+      }
+      return isConsistent;
+   }  
 }
