@@ -1,10 +1,10 @@
 # Java-Programming-Editor / Eadgyth
 A text editor written in Java. The goal is to help coding in Java (Perl, HTML included but less
-elaborated) rather simple projects, may be for home requirements, and to provide a simple but
-flexible setting up of projects.
+elaborated), for rather simple projects, may be for home requirements, and to provide a simple
+but flexible setting up of projects.
 <p>
 The program is extensible by plugins which have access to the editor field in a selected tab and
-by  implementing other types of projects using the interface intended for this purpose.
+by implementing other types of projects using the interface intended for this purpose.
 <p>
 REQUIREMENTS FOR TESTING <br>
 Running the program requires JAVA 8 (JRE 8). I did not have the opportunity to test
