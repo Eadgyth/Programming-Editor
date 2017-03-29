@@ -1,12 +1,14 @@
 # Java-Programming-Editor / Eadgyth
-A text editor written in Java that helps coding in Java (Perl, HTML included but less elaborated) and that features a simple but flexible setting of projects.
+A text editor written in Java. The goal is to help coding in Java (Perl, HTML included but less
+elaborated) to develop rather simple applications, may be for home requirements, and to provide 
+a simple but flexible setting up of projects.
 <p>
-The program is extensible by plugins which have access to the editor field in a selected tab and by 
-implementing other types of projects using the interface intended for this purpose.
+The program is extensible by plugins which have access to the editor field in a selected tab and
+by implementing other types of projects using the interface intended for this purpose.
 <p>
 REQUIREMENTS FOR TESTING <br>
-Running the program requires JAVA 8 (JRE 8). I did not have the opportunity to test
-the program on operating systems other than windows Vista, 7 and 10.<p>
+Running the program requires JAVA 8 (JRE 8). I did not have the opportunity to test the program
+on operating systems other than windows Vista, 7 and 10.<p>
 The program must be found in the same folder as the two .properties files and the Resources
 folder, just like in the 'EadgythProgram' folder in this repository.<p>
 Plugins must be stored in the folder 'Plugins' which must be found in the same folder as the
@@ -29,20 +31,21 @@ the corresponding font size in other programs (e.g. Editor in Windows).
 <br>
 <p>
 PROBLEMS <br>
-1) The undo/redo may may cause problems with regard to the syntax coloring. These problems
+1) The undo/redo may may cause problems in combination with the syntax coloring. These problems
 (which caused the text view to break when a linebreak right before a colored character is undone)
-seem to be circumvented (not solved) but it's not certain if that's true for all situations.<br>
-2) Unexpected rendering of the UI happened when the system look and feel was selected
-and the program was idling for a longer period of time (under Windows 10).<br>
+seem to be circumvented (not solved) but it's not certain if that's true for all situations.
+Also, the undo stack is emptied in some situations to work around the demage of the document.<br>
+2) Unexpected rendering of the UI happened when the system look and feel was selected and the
+program was idling for a longer period of time (under Windows 10).<br>
 <p>
 IDEA FOR FURTHER DEVELOPEMENT<br>
-1) To develop types of projects (for coding or other). A type of project is defined
-by the interface 'ProjectActions' in the 'projects' package.<br>
-2) To develop plugins that can do specialized work with text files. Presently, a
-plugin would implement the interface 'Pluggable' in the 'plugins' package. An implementing
-plugin receives a reference to EditorAccess class which provides a reference to the text
-area object (JTextPane) in the currently selected tab, methods to modify text and a method
-to add a graphical view in the main window.
+1) To develop types of projects (for coding or other). A type of project is defined by the
+interface 'ProjectActions' in the 'projects' package.<br>
+2) To develop plugins that can do specialized work with text files. Presently, a plugin would
+implement the interface 'Pluggable' in the 'plugins' package. An implementing plugin receives
+a reference to EditorAccess class which provides a reference to the text area object (JTextPane)
+in the currently selected tab, methods to modify text and a method to add a graphical view in the
+main window.
 <p>
 DOCUMENTATION <br>
 The javadoc of the program is found in this repository (Docs/Ead-JavaDoc).
