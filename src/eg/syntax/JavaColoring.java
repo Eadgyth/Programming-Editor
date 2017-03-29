@@ -5,7 +5,7 @@ import eg.utils.Finder;
 public class JavaColoring implements Colorable {
 
    private final static String[] JAVA_KEYWORDS = {
-     "abstract", "assert", 
+     "abstract", "assert",
      "break", "boolean", "Boolean", "byte",
      "catch", "case","const","continue", "class", "char",
      "default", "do", "double",
@@ -33,25 +33,25 @@ public class JavaColoring implements Colorable {
 
    @Override
    public void color(String allText, String toColor, int pos,
-         int posStart, Coloring col) {
+         int posStart, Lexer lex) {
 
       if (!SyntaxUtils.isInBlock(allText, pos, blockCmntStart, blockCmntEnd)) {
-         col.setCharAttrBlack(posStart, toColor.length());
+         lex.setCharAttrBlack(posStart, toColor.length());
          for (String s : JAVA_ANNOTATIONS) {
-            col.keywordBlue(toColor, s, posStart, false);
+            lex.keywordBlue(toColor, s, posStart, false);
          }
          for (String s : JAVA_KEYWORDS) {
-            col.keywordRed(toColor, s, posStart, true);
+            lex.keywordRed(toColor, s, posStart, true);
          }
          for (String s : SyntaxUtils.BRACKETS) {
-            col.bracket(toColor, s, posStart);
+            lex.bracketBlue(toColor, s, posStart);
          }
          for (String s : SyntaxUtils.CURLY_BRACKETS) {
-            col.bracket(toColor, s, posStart);
+            lex.bracket(toColor, s, posStart);
          }
-         col.stringLiterals(toColor, posStart, null, null);
-         col.lineComments(toColor, posStart, lineCmnt);
+         lex.stringLiterals(toColor, posStart, null, null);
+         lex.lineComments(toColor, posStart, lineCmnt);
       }
-      col.blockComments(allText, blockCmntStart, blockCmntEnd);
+      lex.blockComments(allText, blockCmntStart, blockCmntEnd);
    }
 }

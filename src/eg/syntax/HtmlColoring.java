@@ -27,22 +27,22 @@ public class HtmlColoring implements Colorable {
 
    @Override
    public void color(String allText, String toColor, int pos,
-         int posStart, Coloring col) {
+         int posStart, Lexer lex) {
 
       if (!SyntaxUtils.isInBlock(allText, pos, blockCmntStart, blockCmntEnd)) {
-         col.setCharAttrBlack(posStart, toColor.length());
+         lex.setCharAttrBlack(posStart, toColor.length());
          for (String s : BRACKETS) {
-            col.bracketBlue(toColor, s, posStart);
+            lex.bracketBlue(toColor, s, posStart);
          }
          for (String s : HTML_TAGS) {
-            tag(toColor, s, posStart, col);
+            tag(toColor, s, posStart, lex);
          }
-         col.stringLiterals(toColor, posStart, BRACKETS[0], BRACKETS[1]);
+         lex.stringLiterals(toColor, posStart, BRACKETS[0], BRACKETS[1]);
       }    
-      col.blockComments(allText, blockCmntStart, blockCmntEnd);
+      lex.blockComments(allText, blockCmntStart, blockCmntEnd);
    }
 
-   private void tag(String toColor, String key, int pos, Coloring col) {
+   private void tag(String toColor, String key, int pos, Lexer lex) {
       int start = 0;
       while (start != -1) {
          start = toColor.indexOf(key, start);
@@ -52,7 +52,7 @@ public class HtmlColoring implements Colorable {
                   && isTagEnd(toColor, key.length(), start)) {
                int startOffset = start - tagStartOffset;
                int length = key.length() + tagStartOffset;
-               col.setCharAttrKeyBlue(startOffset + pos, length);
+               lex.setCharAttrKeyBlue(startOffset + pos, length);
             }
             start += key.length(); 
          }

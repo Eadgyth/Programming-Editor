@@ -40,36 +40,36 @@ public class PerlColoring implements Colorable {
    
    @Override
    public void color(String allText, String toColor, int pos,
-         int posStart, Coloring col) {
+         int posStart, Lexer lex) {
 
-      col.setCharAttrBlack(posStart, toColor.length());
+      lex.setCharAttrBlack(posStart, toColor.length());
       for (String s : PERL_FLAGS) {
-         variable(toColor, s, posStart, col);
+         variable(toColor, s, posStart, lex);
       }
       for (String s : PERL_KEYWORDS) {
-         col.keywordRed(toColor, s, posStart, true);
+         lex.keywordRed(toColor, s, posStart, true);
       }
       for (String s : PERL_OP) {
-         col.keywordRed(toColor, s, posStart, false);
+         lex.keywordRed(toColor, s, posStart, false);
       }
       for (String b : SyntaxUtils.BRACKETS) {
-         col.bracket(toColor, b, posStart);
+         lex.bracketBlue(toColor, b, posStart);
       }
       for (String s : SyntaxUtils.CURLY_BRACKETS) {
-         col.bracket(toColor, s, posStart);
+         lex.bracket(toColor, s, posStart);
       }
-      col.stringLiterals(toColor, posStart, null, null);
-      col.lineComments(toColor, posStart, lineCmnt);
+      lex.stringLiterals(toColor, posStart, null, null);
+      lex.lineComments(toColor, posStart, lineCmnt);
    }
    
-   private void variable(String in, String flag, int pos, Coloring col) {
+   private void variable(String in, String flag, int pos, Lexer lex) {
       int start = 0;
       int jump = 0;
       while (start != -1) {
          start = in.indexOf(flag, start + jump);
          if (start != -1 && SyntaxUtils.isWordStart(in, start)) {
             int length = variableLength(in.substring(start));
-            col.setCharAttrKeyBlue(start + pos, length);
+            lex.setCharAttrKeyBlue(start + pos, length);
          }  
          jump = 1; 
       }
