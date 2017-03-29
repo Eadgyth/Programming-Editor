@@ -28,10 +28,7 @@ import java.awt.EventQueue;
 
 //--Eadgyth--//
 import eg.Languages;
-import eg.syntax.Colorable;
-import eg.syntax.JavaColoring;
-import eg.syntax.HtmlColoring;
-import eg.syntax.PerlColoring;
+import eg.syntax.Lexer;
 import eg.syntax.Coloring;
 import eg.ui.EditArea;
 import eg.utils.FileUtils;
@@ -51,13 +48,13 @@ class TypingEdit {
 
    private final EditArea editArea;
    private final UndoManager undomanager = new DocUndoManager();
+   private final Lexer lex;
    private final Coloring col;
    private final AutoIndent autoInd;
    private final RowNumbers rowNum;
 
    private boolean isDocListen = true; 
    private boolean isTypeEdit = false;
-   private boolean isIndent = false;
    private char typed = '\0';
    private int pos;
    private int caret;
@@ -71,7 +68,8 @@ class TypingEdit {
       undomanager.setLimit(1000);
       editArea.textArea().addCaretListener(new DocCaretListener());
 
-      col = new Coloring(editArea.getDoc(), editArea.getNormalSet());
+      lex = new Lexer(editArea.getDoc(), editArea.getNormalSet());
+      col = new Coloring(lex);
       rowNum = new RowNumbers(editArea);
       autoInd = new AutoIndent(editArea);
    }
@@ -82,7 +80,7 @@ class TypingEdit {
 
    void enableTypeEdit(boolean isTypeEdit) {
       this.isTypeEdit = isTypeEdit;
-      col.enableTypeMode(isTypeEdit);
+      lex.enableTypeMode(isTypeEdit);
    }
    
    void setUpEditing(Languages lang) {
@@ -90,13 +88,12 @@ class TypingEdit {
       if (lang == Languages.PLAIN_TEXT) {
          editArea.allTextToBlack();
          enableTypeEdit(false);
-         isIndent = false;
-         autoInd.resetIndent();
+         autoInd.enableIndent(false);
       }
       else {
          col.selectColorable(lang);
          colorAll();
-         isIndent = true;
+         autoInd.enableIndent(true);
       }
    }
 
@@ -120,11 +117,11 @@ class TypingEdit {
       enableTypeEdit(false);
       String all = editArea.getDocText();
       editArea.allTextToBlack();
-      col.color(all, 0);
+      lex.colorAll(all, 0);
       enableTypeEdit(true);
    }
 
-   void undo() {
+   synchronized void undo() {
       try {
          int previousLineNr = rowNum.getCurrLineNr();
          enableDocListen(false);
@@ -135,10 +132,10 @@ class TypingEdit {
       }
       catch (CannotUndoException e) {
          FileUtils.logStack(e);
-      }
+      }   
    }
 
-   void redo() {
+   synchronized void redo() {
       try {
          int previousLineNr = rowNum.getCurrLineNr();
          enableDocListen(false);
@@ -151,41 +148,29 @@ class TypingEdit {
          FileUtils.logStack(e);
       }
    }
-   
-   void restartUndo() {
-      undomanager.discardAllEdits();
-   }
 
    //
    //--private--//
    //
    
-   private void insertTextModify(String in, int pos) {
-      if (pos > 0 && isIndent) {
-         autoInd.openBracketIndent(in, pos);
-      }
-      if (typed != '\n') {
-         color(in, pos);
-      }
-      EventQueue.invokeLater(() -> {
-         if (isIndent) {
-            autoInd.closeBracketIndent(in, pos);
-         }
-      });
+   private synchronized void restartUndo() {
+      undomanager.discardAllEdits();
    }
    
-   private void updateAfterUndoRedo(int previousLineNr) {
+   private synchronized void updateAfterUndoRedo(int previousLineNr) {
       String in = editArea.getDocText();
       updateRowNumber(in);
       if (!isTypeEdit) {
          return;
       }
       int newLineNr = rowNum.getCurrLineNr();
-      if (previousLineNr < newLineNr) {
+      if (newLineNr > previousLineNr) {
          colorAll();
       }
-      else if (previousLineNr > newLineNr) {
-         //nothing
+      //
+      // switch off because redo multiline breaks document (no solutiuon)
+      else if (newLineNr < previousLineNr) {
+         restartUndo();
       }
       else {
          if (caret > 0) {
@@ -195,9 +180,9 @@ class TypingEdit {
       enableDocListen(true);
    }
 
-   private void color(String in, int pos) {
+   private synchronized void color(String in, int pos) {
       EventQueue.invokeLater(() -> {
-         col.color(in, pos);
+         lex.colorLine(in, pos);
       });
    }
 
@@ -212,7 +197,13 @@ class TypingEdit {
             typed = in.charAt(pos);
             updateRowNumber(in);
             if (isTypeEdit) {
-               insertTextModify(in, pos);
+               autoInd.setText(in);
+               if (typed != '\n') {
+                  color(in, pos);
+               }
+               EventQueue.invokeLater(() -> {
+                  autoInd.closeBracketIndent(pos);
+               });
             }
          }
       }
@@ -296,7 +287,7 @@ class TypingEdit {
       }
       
       @Override
-      public void discardAllEdits() {
+      public synchronized void discardAllEdits() {
          if (comp != null) {
             comp = null;
          }
