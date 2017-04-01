@@ -1,5 +1,6 @@
 package eg;
 
+import java.awt.EventQueue;
 import java.awt.Toolkit;
 
 import java.awt.datatransfer.Clipboard;
@@ -18,7 +19,7 @@ import eg.document.TextDocument;
 /**
  * The editing of the document in the selected tab by actions
  * that are invoked in the edit menu/toolbar except the language
- */ 
+ */
 public class Edit {
 
    /* Options for the numbers of white spaces in indentation unit */
@@ -91,11 +92,12 @@ public class Edit {
          textArea.setCaretPosition(pos + clipboard.length());
       }
       else {
-         txtDoc.removeStr(pos - sel.length(), sel.length());
-         txtDoc.insertStr(pos - sel.length(), clipboard);
-         textArea.setCaretPosition(pos - sel.length() + clipboard.length());
+         pos -= sel.length();
+         txtDoc.removeStr(pos, sel.length());
+         txtDoc.insertStr(pos, clipboard);
+         textArea.setCaretPosition(pos + clipboard.length());
       }
-      txtDoc.colorAll();
+      txtDoc.colorSection(clipboard, pos);
    }
 
    /**
@@ -105,9 +107,9 @@ public class Edit {
       textArea.selectAll();
    }
 
-  /**
-   * Sets a new indentation length
-   */
+   /**
+    * Sets a new indentation length
+    */
    public void setNewIndentUnit() {
       String selectedNumber = JOptions.comboBoxRes("Number of spaces:",
             "Indentation length", SPACE_NUMBER,
@@ -150,7 +152,7 @@ public class Edit {
       String sel = textArea.getSelectedText();
       if (sel == null) {
          return;
-      }      
+      }
 
       txtDoc.enableTypeEdit(false);
       int start = textArea.getSelectionStart();
@@ -183,7 +185,7 @@ public class Edit {
       int sum = 0;
       for (int i = 0; i < textArr.length; i++) {
          int startOfSpaces = startOfTrailingSpaces(textArr[i]);
-         int spacesLength = textArr[i].length() - startOfSpaces;       
+         int spacesLength = textArr[i].length() - startOfSpaces;
          txtDoc.removeStr(startOfSpaces + sum, spacesLength);
          sum += startOfSpaces + 1;
       }
@@ -200,7 +202,7 @@ public class Edit {
       Clipboard clipboard = toolkit.getSystemClipboard();
       DataFlavor flavor = DataFlavor.stringFlavor;
       try {
-         inClipboard = (String) clipboard.getData(flavor); 
+         inClipboard = (String) clipboard.getData(flavor);
       }
       catch (UnsupportedFlavorException | IOException e) {
          FileUtils.logStack(e);
@@ -218,18 +220,18 @@ public class Edit {
       }
       return i + 1;
    }
-   
+
    private boolean isIndentConsistent(String[] textArr) {
       boolean isConsistent = true;
       for (int i = 0; i < textArr.length; i++) {
          if (!textArr[i].matches("[\\s]+") && !textArr[i].startsWith(indentUnit)) {
             isConsistent = false;
             break;
-         }   
+         }
       }
       if (!isConsistent) {
          JOptions.warnMessage("The indentation is not consistent.");
       }
       return isConsistent;
-   }  
+   }
 }

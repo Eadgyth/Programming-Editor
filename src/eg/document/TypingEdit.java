@@ -62,16 +62,14 @@ class TypingEdit {
 
    TypingEdit(EditArea editArea) {
       this.editArea = editArea;
-
       editArea.getDoc().addDocumentListener(docListen);
       editArea.getDoc().addUndoableEditListener(undomanager);
       undomanager.setLimit(1000);
       editArea.textArea().addCaretListener(new DocCaretListener());
-
       lex = new Lexer(editArea.getDoc(), editArea.getNormalSet());
       col = new Coloring(lex);
       rowNum = new RowNumbers(editArea);
-      autoInd = new AutoIndent(editArea);
+      autoInd = new AutoIndent(editArea); 
    }
 
    void enableDocListen(boolean isDocListen) {
@@ -88,11 +86,12 @@ class TypingEdit {
       if (lang == Languages.PLAIN_TEXT) {
          editArea.allTextToBlack();
          enableTypeEdit(false);
+         lex.enableTypeMode(false);
          autoInd.enableIndent(false);
       }
       else {
          col.selectColorable(lang);
-         colorAll();
+         colorSection(editArea.getDocText(), null, 0);
          autoInd.enableIndent(true);
       }
    }
@@ -113,22 +112,29 @@ class TypingEdit {
       rowNum.updateRowNumber(content);
    }
 
-   void colorAll() {
+   void colorSection(String allText, String section, int posStart) {
       enableTypeEdit(false);
-      String all = editArea.getDocText();
-      editArea.allTextToBlack();
-      lex.colorAll(all, 0);
+      int length = 0;
+      if (section != null) {
+         length = section.length();
+         lex.enableTypeMode(true);
+      }
+      else {
+         length = allText.length();
+      }
+      editArea.textToBlack(length, posStart);
+      col.colorSection(allText, section, posStart);
       enableTypeEdit(true);
    }
 
    synchronized void undo() {
       try {
-         int previousLineNr = rowNum.getCurrLineNr();
+         int prevLineNr = rowNum.getCurrLineNr();
          enableDocListen(false);
          if (undomanager.canUndo()) {
             undomanager.undo();
          }
-         updateAfterUndoRedo(previousLineNr);
+         updateAfterUndoRedo(prevLineNr);
       }
       catch (CannotUndoException e) {
          FileUtils.logStack(e);
@@ -137,12 +143,12 @@ class TypingEdit {
 
    synchronized void redo() {
       try {
-         int previousLineNr = rowNum.getCurrLineNr();
+         int prevLineNr = rowNum.getCurrLineNr();
          enableDocListen(false);
          if (undomanager.canRedo()) {
             undomanager.redo();
          }
-         updateAfterUndoRedo(previousLineNr);
+         updateAfterUndoRedo(prevLineNr);
       }
       catch (CannotRedoException e) {
          FileUtils.logStack(e);
@@ -157,32 +163,32 @@ class TypingEdit {
       undomanager.discardAllEdits();
    }
    
-   private synchronized void updateAfterUndoRedo(int previousLineNr) {
-      String in = editArea.getDocText();
-      updateRowNumber(in);
+   private synchronized void updateAfterUndoRedo(int prevLineNr) { 
+      String allText = editArea.getDocText();
+      updateRowNumber(allText );
       if (!isTypeEdit) {
          return;
       }
       int newLineNr = rowNum.getCurrLineNr();
-      if (newLineNr > previousLineNr) {
-         colorAll();
+      if (newLineNr > prevLineNr) {
+         colorSection(allText, null, 0);
       }
       //
       // switch off because redo multiline breaks document (no solutiuon)
-      else if (newLineNr < previousLineNr) {
+      else if (newLineNr < prevLineNr) {
          restartUndo();
       }
       else {
          if (caret > 0) {
-            color(in, caret);
+            color(allText, caret);
          }
       }
       enableDocListen(true);
    }
 
-   private synchronized void color(String in, int pos) {
+   private synchronized void color(String allText, int pos) {
       EventQueue.invokeLater(() -> {
-         lex.colorLine(in, pos);
+         col.colorLine(allText, pos);
       });
    }
 
@@ -258,7 +264,7 @@ class TypingEdit {
       public synchronized void undoableEditHappened(UndoableEditEvent e) {
          if (!isDocListen) {
             return;
-         }        
+         }     
          if (!isChangeEvent) {
             addAnEdit(e.getEdit());
          }

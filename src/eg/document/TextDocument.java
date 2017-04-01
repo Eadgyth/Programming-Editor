@@ -56,9 +56,8 @@ public final class TextDocument {
    }
    
    /**
-    * Creates a TextDocument with a specified language.
-    * <p>
-    * The language is overridden when a file is assigned.
+    * Creates a TextDocument with a specified language
+    *
     * @param editArea  the reference to an {@link EditArea}
     * @param lang  the language that is one of the constants in
     * {@link Languages}
@@ -71,6 +70,7 @@ public final class TextDocument {
    
    /**
     * Returns this text area
+    *
     * @return  this text area which is of type {@link EditArea}
     */
     public JTextPane getTextArea() {
@@ -79,6 +79,7 @@ public final class TextDocument {
 
    /**
     * Returns the name of this file
+    *
     * @return  the String that represents the name of this file
     */
    public String filename() {
@@ -87,6 +88,7 @@ public final class TextDocument {
 
    /**
     * Returns the filepath of this file
+    *
     * @return  the String that represents the filepath of this file
     */
    public String filepath() {
@@ -95,6 +97,7 @@ public final class TextDocument {
 
    /**
     * Returns the directory of this file
+    *
     * @return  the String that represents the directory of this file
     */
    public String dir() {
@@ -102,9 +105,9 @@ public final class TextDocument {
    }
 
    /**
-    * Assigns the specified file and displays the file content
-    * @param file  the file whose content is displayed in this text
-    * text area
+    * Sets the specified file and displays the file content
+    *
+    * @param file  the file whose content is displayed in this text area
     */
    public void openFile(File file) {
       if (this.filepath().length() != 0) {
@@ -131,6 +134,7 @@ public final class TextDocument {
    /**
     * Saves the current content to the specified file but does not
     * assign the file to this
+    *
     * @param file  the file which the current content is saved to
     */
    public void saveCopy(File file) {
@@ -138,9 +142,10 @@ public final class TextDocument {
    }
 
    /**
-    * Assigns to this the specified file and saves the content of
-    * this text area to the specified file.
-    * @param file  the file which the current content is saved to
+    * Sets the specified file and saves the content of this text
+    * area the file
+    *
+    * @param file  the new file which the current content is saved to
     */
    public void saveFileAs(File file) {     
       assignFileStrings(file);
@@ -149,6 +154,8 @@ public final class TextDocument {
    }
 
    /**
+    * Returns if the content of this text area equals has been saved
+    *
     * @return  if the content of this text area equals the content 
     * since the last saving point
     */ 
@@ -157,6 +164,8 @@ public final class TextDocument {
    }
 
    /**
+    * Changes the indentation unit
+    *
     * @param indentUnit  the String that consists of a certain number of
     * white spaces
     */
@@ -169,19 +178,20 @@ public final class TextDocument {
       PREFS.storePrefs("indentUnit", type.getIndentUnit());
    }
    
-  /**
-    * Returns the currently set indentation unit
-    * @return the currently set indentation unit
+   /**
+    * Returns the current indentation unit
+    *
+    * @return the current indentation unit
     */
    public String getIndentUnit() {
       return type.getIndentUnit();
    }
 
    /**
-    * Enables/disables syntax/keywords coloring and auto-indentation.
+    * Enables/disables syntax coloring and auto-indentation
+    *
     * @param isEnabled  true to enable coloring and auto-indentation,
-    * false to disable. Enabling is possible if this language is not 
-    * plain text.
+    * false to disable. No effect if this language is plain text
     */
    public void enableTypeEdit(boolean isEnabled) {
       if (!isEnabled) {
@@ -206,11 +216,16 @@ public final class TextDocument {
    }
 
    /**
-    * Colors keyword/syntax of the entire text in this document.
+    * Colors a section of text which also may be the entire text
+    *
+    * @param section  a section of from the document. If null the entire
+    * text is colored
+    * @param posStart  the pos within the entire text where the section to
+    * be colored starts. Set to 0 if '{code section}' is null.
     */
-   public void colorAll() {
+   public void colorSection(String section, int posStart) {
       if (!isPlainText) {
-         type.colorAll();
+         type.colorSection(getText(), section, posStart);
       }
    }
 
