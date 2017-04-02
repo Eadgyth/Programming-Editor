@@ -1,13 +1,12 @@
 /**
  * This inner class {@code DocUndoManager} is based on
- * CompoundUndoManager class from JSyntaxPane found at 
+ * CompoundUndoManager class from JSyntaxPane found at
  * https://github.com/aymanhs/jsyntaxpane
  * Copyright 2008 Ayman Al-Sairafi
  * The separation of merged undo edits by time is replaced by
  * "undo-separators"
  */
 package eg.document;
-
 
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
@@ -53,7 +52,7 @@ class TypingEdit {
    private final AutoIndent autoInd;
    private final RowNumbers rowNum;
 
-   private boolean isDocListen = true; 
+   private boolean isDocListen = true;
    private boolean isTypeEdit = false;
    private char typed = '\0';
    private int pos;
@@ -69,7 +68,7 @@ class TypingEdit {
       lex = new Lexer(editArea.getDoc(), editArea.getNormalSet());
       col = new Coloring(lex);
       rowNum = new RowNumbers(editArea);
-      autoInd = new AutoIndent(editArea); 
+      autoInd = new AutoIndent(editArea);
    }
 
    void enableDocListen(boolean isDocListen) {
@@ -80,7 +79,7 @@ class TypingEdit {
       this.isTypeEdit = isTypeEdit;
       lex.enableTypeMode(isTypeEdit);
    }
-   
+
    void setUpEditing(Languages lang) {
       restartUndo();
       if (lang == Languages.PLAIN_TEXT) {
@@ -113,15 +112,32 @@ class TypingEdit {
    }
 
    void colorSection(String allText, String section, int posStart) {
-      enableTypeEdit(false);
       int length = 0;
       if (section != null) {
          length = section.length();
+         //
+         // include full lines
+         String[] sectionArr = section.split("\n");
+         String startingLine = Finder.currLine(allText, posStart);  
+         sectionArr[0] = startingLine;
+         if (sectionArr.length > 1) {
+            String endingLine = Finder.currLine(allText, posStart + length);
+            sectionArr[sectionArr.length - 1] = endingLine;
+         }
+         StringBuffer sb = new StringBuffer();
+         for (String s : sectionArr) {
+            sb.append(s);
+            sb.append("\n");
+         }
+         section = sb.toString();
+
+         posStart = Finder.lastReturn(allText, posStart) + 1;
          lex.enableTypeMode(true);
       }
       else {
          length = allText.length();
       }
+      enableTypeEdit(false);
       editArea.textToBlack(length, posStart);
       col.colorSection(allText, section, posStart);
       enableTypeEdit(true);
@@ -138,7 +154,7 @@ class TypingEdit {
       }
       catch (CannotUndoException e) {
          FileUtils.logStack(e);
-      }   
+      }
    }
 
    synchronized void redo() {
@@ -158,14 +174,14 @@ class TypingEdit {
    //
    //--private--//
    //
-   
+
    private synchronized void restartUndo() {
       undomanager.discardAllEdits();
    }
-   
-   private synchronized void updateAfterUndoRedo(int prevLineNr) { 
+
+   private synchronized void updateAfterUndoRedo(int prevLineNr) {
       String allText = editArea.getDocText();
-      updateRowNumber(allText );
+      updateRowNumber(allText);
       if (!isTypeEdit) {
          return;
       }
@@ -179,8 +195,8 @@ class TypingEdit {
          restartUndo();
       }
       else {
-         if (caret > 0) {
-            color(allText, caret);
+         if (pos > 0) {
+            color(allText, pos);
          }
       }
       enableDocListen(true);
@@ -196,10 +212,10 @@ class TypingEdit {
 
       @Override
       public void insertUpdate(DocumentEvent de) {
+         pos = de.getOffset();
          if (isDocListen) {
             isChangeEvent = false;
             String in = editArea.getDocText();
-            pos = de.getOffset();
             typed = in.charAt(pos);
             updateRowNumber(in);
             if (isTypeEdit) {
@@ -216,13 +232,13 @@ class TypingEdit {
 
       @Override
       public void removeUpdate(DocumentEvent de) {
+         pos = de.getOffset();
          if (isDocListen) {
             isChangeEvent = false;
             String in = editArea.getDocText();
             typed = '\0';
-            pos = de.getOffset();
             updateRowNumber(in);
-            if (isTypeEdit) {            
+            if (isTypeEdit) {
                color(in, pos);
             }
          }
@@ -235,9 +251,9 @@ class TypingEdit {
          }
       }
    };
-   
+
    private class DocCaretListener implements CaretListener {
-      
+
       int lastCaret;
       int lastPos;
 
@@ -259,14 +275,15 @@ class TypingEdit {
    private class DocUndoManager extends UndoManager implements UndoableEditListener {
 
       CompoundEdit comp = null;
- 
+
       @Override
       public synchronized void undoableEditHappened(UndoableEditEvent e) {
          if (!isDocListen) {
             return;
-         }     
+         }
+         UndoableEdit ed = e.getEdit();
          if (!isChangeEvent) {
-            addAnEdit(e.getEdit());
+            addAnEdit(ed);
          }
       }
 
@@ -291,7 +308,7 @@ class TypingEdit {
       public synchronized void redo() {
          super.redo();
       }
-      
+
       @Override
       public synchronized void discardAllEdits() {
          if (comp != null) {
@@ -299,7 +316,7 @@ class TypingEdit {
          }
          super.discardAllEdits();
       }
-      
+
       private synchronized void addAnEdit(UndoableEdit anEdit) {
          if (comp == null) {
             comp = new CompoundEdit();
@@ -312,7 +329,7 @@ class TypingEdit {
             comp.addEdit(anEdit);
          }
       }
-      
+
       private void commitCompound() {
          if (comp != null) {
             comp.end();

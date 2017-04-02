@@ -83,20 +83,16 @@ public class Edit {
     * Pastes text stored in the clipboard and replaces selected text
     */
    public void pasteText() {
-      txtDoc.enableTypeEdit(false);
+      txtDoc.enableTypeEdit(false); 
       String clipboard = getClipboard();
       String sel = textArea.getSelectedText();
       int pos = textArea.getCaretPosition();
-      if (sel == null) {
-         txtDoc.insertStr(pos, clipboard);
-         textArea.setCaretPosition(pos + clipboard.length());
-      }
-      else {
+      if (sel != null) {
          pos -= sel.length();
          txtDoc.removeStr(pos, sel.length());
-         txtDoc.insertStr(pos, clipboard);
-         textArea.setCaretPosition(pos + clipboard.length());
       }
+      txtDoc.insertStr(pos, clipboard);
+      //textArea.setCaretPosition(pos + clipboard.length());
       txtDoc.colorSection(clipboard, pos);
    }
 
