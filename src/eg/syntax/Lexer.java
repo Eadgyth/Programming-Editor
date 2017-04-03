@@ -243,7 +243,7 @@ public class Lexer {
             start += str.length();
          }
       }
-   }
+   } 
 
    private void quotedInLine(String line, int pos, String quoteSign,
          String blockStart, String blockEnd) {

@@ -56,29 +56,36 @@ public class Coloring {
     * text is scanned for block comments).
     *
     * @param allText  the entire text of the document
-    * @param section  a section of '{code allText}'. If null '{code allText}'
-    * is colored
+    * @param section  a section of '{code allText}' which may be multiline.
+    * null to color '{code allText}'
     * @param posStart  the pos within the entire text where the section to
     * be colored starts. Set to 0 if '{code section}' is null.
     */
    public void colorSection(String allText, String section, int posStart) {
+      int length = 0;
       if (section == null) {
+         length = allText.length();
          section = allText;
          posStart = 0;
          //int pos = posStart;
+      }
+      else {
+         length = section.length();
+         section = Finder.allLinesAtPos(allText, section, posStart);
+         posStart = Finder.lastReturn(allText, posStart) + 1;
       }
       lex.color(allText, section, posStart, posStart);
    }
 
    /**
-    * Colors the current line where a change happened (in any case the
-    * entire text is scanned for block comments).
+    * Colors the current line where a change happened (the entire text is
+    * scanned for block comments).
     *
     * @param allText  the entire text of the document
     * @param pos  the pos within the entire text where a change happened
     */
    public void colorLine(String allText, int pos) {
-      String toColor = Finder.currLine(allText, pos);
+      String toColor = Finder.lineAtPos(allText, pos);
       int posStart = Finder.lastReturn(allText, pos) + 1;
       lex.color(allText, toColor, pos, posStart);
    }

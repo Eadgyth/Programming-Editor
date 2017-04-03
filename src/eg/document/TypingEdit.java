@@ -54,7 +54,7 @@ class TypingEdit {
 
    private boolean isDocListen = true;
    private boolean isTypeEdit = false;
-   private char typed = '\0';
+   private char typed;
    private int pos;
    private int caret;
    private boolean isChangeEvent;
@@ -77,7 +77,6 @@ class TypingEdit {
 
    void enableTypeEdit(boolean isTypeEdit) {
       this.isTypeEdit = isTypeEdit;
-      lex.enableTypeMode(isTypeEdit);
    }
 
    void setUpEditing(Languages lang) {
@@ -112,34 +111,10 @@ class TypingEdit {
    }
 
    void colorSection(String allText, String section, int posStart) {
-      int length = 0;
-      if (section != null) {
-         length = section.length();
-         //
-         // include full lines
-         String[] sectionArr = section.split("\n");
-         String startingLine = Finder.currLine(allText, posStart);  
-         sectionArr[0] = startingLine;
-         if (sectionArr.length > 1) {
-            String endingLine = Finder.currLine(allText, posStart + length);
-            sectionArr[sectionArr.length - 1] = endingLine;
-         }
-         StringBuffer sb = new StringBuffer();
-         for (String s : sectionArr) {
-            sb.append(s);
-            sb.append("\n");
-         }
-         section = sb.toString();
-
-         posStart = Finder.lastReturn(allText, posStart) + 1;
-         lex.enableTypeMode(true);
-      }
-      else {
-         length = allText.length();
-      }
+      lex.enableTypeMode(section != null);
       enableTypeEdit(false);
-      editArea.textToBlack(length, posStart);
       col.colorSection(allText, section, posStart);
+      lex.enableTypeMode(true);
       enableTypeEdit(true);
    }
 
@@ -179,7 +154,7 @@ class TypingEdit {
       undomanager.discardAllEdits();
    }
 
-   private synchronized void updateAfterUndoRedo(int prevLineNr) {
+   private void updateAfterUndoRedo(int prevLineNr) {
       String allText = editArea.getDocText();
       updateRowNumber(allText);
       if (!isTypeEdit) {
@@ -195,8 +170,8 @@ class TypingEdit {
          restartUndo();
       }
       else {
-         if (pos > 0) {
-            color(allText, pos);
+         if (caret > 0) {
+            color(allText, caret);
          }
       }
       enableDocListen(true);
@@ -212,9 +187,9 @@ class TypingEdit {
 
       @Override
       public void insertUpdate(DocumentEvent de) {
-         pos = de.getOffset();
          if (isDocListen) {
             isChangeEvent = false;
+            pos = de.getOffset();
             String in = editArea.getDocText();
             typed = in.charAt(pos);
             updateRowNumber(in);
@@ -232,12 +207,12 @@ class TypingEdit {
 
       @Override
       public void removeUpdate(DocumentEvent de) {
-         pos = de.getOffset();
          if (isDocListen) {
             isChangeEvent = false;
             String in = editArea.getDocText();
             typed = '\0';
             updateRowNumber(in);
+            pos = de.getOffset();
             if (isTypeEdit) {
                color(in, pos);
             }

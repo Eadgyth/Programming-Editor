@@ -92,7 +92,6 @@ public class Edit {
          txtDoc.removeStr(pos, sel.length());
       }
       txtDoc.insertStr(pos, clipboard);
-      //textArea.setCaretPosition(pos + clipboard.length());
       txtDoc.colorSection(clipboard, pos);
    }
 
@@ -152,10 +151,10 @@ public class Edit {
 
       txtDoc.enableTypeEdit(false);
       int start = textArea.getSelectionStart();
-      String startingLine = Finder.currLine(txtDoc.getText(), start);
+      String firstLine = Finder.lineAtPos(txtDoc.getText(), start);
       String[] selArr = sel.split("\n");
-      start -= startingLine.length() - selArr[0].length();
-      selArr[0] = startingLine;
+      start -= firstLine.length() - selArr[0].length();
+      selArr[0] = firstLine;
       if (selArr[0].startsWith(" ") && isIndentConsistent(selArr)) {
          int sum = 0;
          for (int i = 0; i < selArr.length; i++) {
