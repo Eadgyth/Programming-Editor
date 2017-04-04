@@ -48,7 +48,7 @@ public class CurrentProject {
          = "The following file could not be found anymore:";
 
    private final SelectedProject selProj;
-   private final ProjectUpdate update;
+   private final ProjectUIUpdate update;
    private final ProcessStarter proc;
    private final List<ProjectActions> projList = new ArrayList<>();
 
@@ -58,7 +58,7 @@ public class CurrentProject {
    private String currExt;
    private Languages lang;
 
-   public CurrentProject(ProjectUpdate update, ConsolePanel consPnl) {
+   public CurrentProject(ProjectUIUpdate update, ConsolePanel consPnl) {
       this.update = update;
       proc = new ProcessStarter(consPnl);
       selProj = new SelectedProject(update, proc, consPnl);
@@ -210,10 +210,10 @@ public class CurrentProject {
    }      
 
    /**
-    * Updates the file tree of {@code FileTree} if the specified
-    * directory includes the project's root directory.
-    * @param path  the directory that may include the project's root
-    * directory
+    * Updates the file tree of {@code FileTree} if the specified directory
+    * includes the project's root directory.
+    *
+    * @param path  the directory that may include the project's root directory
     * See {@link FileTree#updateTree()}
     */
    public void updateFileTree(String path) {
@@ -377,8 +377,7 @@ public class CurrentProject {
       proc.addWorkingDir(projToSet.getProjectPath());
       update.showProjectInfo(projectName(projToSet));
       selProj.enableActions(projToSet.getClass().getSimpleName(), projList.size());
-      EventQueue.invokeLater(() -> 
-            update.setProjectTree(projToSet.getProjectPath()));
+      update.setProjectTree(projToSet.getProjectPath());
    }
    
    private String projectName(ProjectActions toName) {
