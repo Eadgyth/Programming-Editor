@@ -89,9 +89,11 @@ public class Edit {
       int pos = textArea.getCaretPosition();
       if (sel != null) {
          pos -= sel.length();
-         txtDoc.removeStr(pos, sel.length());
+         txtDoc.getTextArea().replaceSelection(clipboard);
       }
-      txtDoc.insertStr(pos, clipboard);
+      else {
+         txtDoc.insertStr(pos, clipboard);
+      }
       txtDoc.colorSection(clipboard, pos);
    }
 
@@ -219,7 +221,8 @@ public class Edit {
    private boolean isIndentConsistent(String[] textArr) {
       boolean isConsistent = true;
       for (int i = 0; i < textArr.length; i++) {
-         if (!textArr[i].matches("[\\s]+") && !textArr[i].startsWith(indentUnit)) {
+         if (textArr[i].length() > 0 && !textArr[i].matches("[\\s]+")
+               && !textArr[i].startsWith(indentUnit)) {
             isConsistent = false;
             break;
          }
