@@ -53,7 +53,7 @@ class TypingEdit {
    private final AutoIndent autoInd;
    private final LineNumbers lineNum;
 
-   private boolean isDocListen = true;
+   private boolean evaluateText = true;
    private boolean isTypeEdit = false;
    private char typed;
    private int eventType; //0: change, 1: insert, 2: remove
@@ -72,21 +72,24 @@ class TypingEdit {
       lineNum = new LineNumbers(editArea);
       autoInd = new AutoIndent(editArea);
    }
-   
+
    void setDefaultDoc() {
+      enableEvaluateText(false);
       editArea.setDefDoc();
       editArea.getDefDoc().addDocumentListener(docListen);
       editArea.getDoc().removeUndoableEditListener(undomanager);
    }
-   
+
    void setDoc() {
+      enableEvaluateText(true);
       editArea.setDoc();
       editArea.getDoc().addDocumentListener(docListen);
       editArea.getDoc().addUndoableEditListener(undomanager);
    }
 
-   void enableTypeEdit(boolean isTypeEdit) {
-      this.isTypeEdit = isTypeEdit;
+   void enableTypeEdit(boolean isEnabled) {
+      isTypeEdit = isEnabled;
+      lex.enableTypeMode(isEnabled);
    }
 
    void setUpEditing(Languages lang) {
@@ -121,17 +124,15 @@ class TypingEdit {
    }
 
    void colorSection(String allText, String section, int posStart) {
-      lex.enableTypeMode(false);
       enableTypeEdit(false);
       col.colorSection(allText, section, posStart);
-      lex.enableTypeMode(true);
       enableTypeEdit(true);
    }
 
    synchronized void undo() {
       try {
          int prevLineNr = lineNum.getCurrLineNr();
-         enableDocListen(false);
+         enableEvaluateText(false);
          if (undomanager.canUndo()) {
             undomanager.undo();
          }
@@ -145,7 +146,7 @@ class TypingEdit {
    synchronized void redo() {
       try {
          int prevLineNr = lineNum.getCurrLineNr();
-         enableDocListen(false);
+         enableEvaluateText(false);
          if (undomanager.canRedo()) {
             undomanager.redo();
          }
@@ -177,11 +178,11 @@ class TypingEdit {
             }
          }
       }
-      enableDocListen(true);
+      enableEvaluateText(true);
    }
-   
-   private void enableDocListen(boolean isDocListen) {
-      this.isDocListen = isDocListen;
+
+   private void enableEvaluateText(boolean enable) {
+      evaluateText = enable;
    }
 
    private void color(String allText, int pos) {
@@ -196,8 +197,8 @@ class TypingEdit {
       public void insertUpdate(DocumentEvent de) {
          pos = de.getOffset();
          eventType = 1;
-         changeLength = de.getLength();
-         if (isDocListen) {
+         if (evaluateText) {
+            changeLength = de.getLength();
             String in = editArea.getDocText();
             typed = in.charAt(pos);
             updateLineNumber(in);
@@ -217,8 +218,8 @@ class TypingEdit {
       public void removeUpdate(DocumentEvent de) {
          pos = de.getOffset();
          eventType = 2;
-         changeLength = - de.getLength();
-         if (isDocListen) {
+         if (evaluateText) {
+            changeLength = - de.getLength();
             typed = '\0';
             String in = editArea.getDocText();
             updateLineNumber(in);
@@ -230,7 +231,7 @@ class TypingEdit {
 
       @Override
       public void changedUpdate(DocumentEvent de) {
-         if (isDocListen) {
+         if (evaluateText) {
             eventType = 0;
          }
       }
@@ -264,7 +265,7 @@ class TypingEdit {
 
       @Override
       public synchronized void undoableEditHappened(UndoableEditEvent e) {
-         if (!isDocListen) {
+         if (!evaluateText) {
             return;
          }
          UndoableEdit ed = e.getEdit();
