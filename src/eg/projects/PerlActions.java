@@ -3,7 +3,7 @@ package eg.projects;
 import java.io.File;
 
 //--Eadgyth--//
-import eg.ProjectUpdate;
+import eg.ProjectUIUpdate;
 import eg.console.*;
 
 /**
@@ -11,12 +11,12 @@ import eg.console.*;
  */
 public final class PerlActions extends ProjectConfig implements ProjectActions {
    
-   private final ProjectUpdate update;
+   private final ProjectUIUpdate update;
    private final ProcessStarter proc;
    
    private String startCommand = "";
    
-   PerlActions(ProjectUpdate update, ProcessStarter proc) {
+   PerlActions(ProjectUIUpdate update, ProcessStarter proc) {
       super(".pl");
       this.update = update;
       this.proc = proc;

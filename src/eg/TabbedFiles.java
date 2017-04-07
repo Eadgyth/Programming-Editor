@@ -73,6 +73,7 @@ public class TabbedFiles implements Observer {
    
    /**
     * Sets the current language
+    *
     * @param lang  the language that has one of the constant
     * values in {@link Languages}
     */
@@ -109,7 +110,7 @@ public class TabbedFiles implements Observer {
    }
    
    /**
-    * Opens a file selected in {@code FileTree} in a new tab
+    * Opens a file selected in {@code FileTree}
     */
    @Override
    public void update(Observable o, Object arg) {
@@ -142,7 +143,7 @@ public class TabbedFiles implements Observer {
     * If the selected document is unnamed {@link #saveAs()} is used. 
     * <p>
     * 'Save-as-mode' also applies if a file has been assigned to the
-    * selected document but the file does not exists anymore.
+    * selected document but the file does not exist anymore.
     */
    public void save() {  
       if (txtDoc[iTab].filename().length() == 0 
@@ -179,7 +180,7 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Saves the text content of the selected document as new file that
+    * Saves the text content of the selected document as a new file that
     * is specified in the file chooser
     */
    public void saveAs() {
@@ -197,6 +198,7 @@ public class TabbedFiles implements Observer {
          tp.changeTabTitle(iTab, txtDoc[iTab].filename());
          viewSet.displayFrameTitle(txtDoc[iTab].filepath());
          prefs.storePrefs("recentPath", txtDoc[iTab].dir());
+         
          EventQueue.invokeLater(() ->
                currProj.updateFileTree(txtDoc[iTab].dir()));
       }
@@ -206,7 +208,7 @@ public class TabbedFiles implements Observer {
     * Saves a copy of the content in the selected document to the file
     * that is selected in the file chooser.
     * <p>
-    * Method does not change the file of the document in the tab
+    * Method does not change the file of the document in the tab.
     */
    public void saveCopy() {
       File f = fs.fileToSave(txtDoc[iTab].filepath());

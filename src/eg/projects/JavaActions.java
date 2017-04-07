@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.awt.EventQueue;
 
 //--Eadgyth--//
-import eg.ProjectUpdate;
+import eg.ProjectUIUpdate;
 import eg.console.*;
 import eg.javatools.*;
 import eg.utils.JOptions;
@@ -21,7 +21,7 @@ public final class JavaActions extends ProjectConfig
 
    private final static String F_SEP = File.separator;
 
-   private final ProjectUpdate update;
+   private final ProjectUIUpdate update;
    private final Compile comp;
    private final CreateJar jar;
    private final ProcessStarter proc;
@@ -29,7 +29,7 @@ public final class JavaActions extends ProjectConfig
 
    private String startCommand = "";
 
-   JavaActions(ProjectUpdate update, ProcessStarter proc,
+   JavaActions(ProjectUIUpdate update, ProcessStarter proc,
          ConsolePanel consPnl) {
 
       super(".java");

@@ -2,7 +2,7 @@ package eg.projects;
 
 import eg.console.*;
 import eg.Languages;
-import eg.ProjectUpdate;
+import eg.ProjectUIUpdate;
 import eg.ui.filetree.FileTree;
 
 /**
@@ -10,11 +10,11 @@ import eg.ui.filetree.FileTree;
  */
 public class SelectedProject {
 
-   private final ProjectUpdate update;
+   private final ProjectUIUpdate update;
    private final ProcessStarter proc;
    private final ConsolePanel consPnl;
 
-   public SelectedProject(ProjectUpdate update, ProcessStarter proc,
+   public SelectedProject(ProjectUIUpdate update, ProcessStarter proc,
          ConsolePanel consPnl) {
       this.update = update;
       this.proc = proc;
@@ -25,12 +25,10 @@ public class SelectedProject {
     * Returns an object of type {@code ProjectActions} and creates the
     * {@code SettingsWin} for the project.
     * <p>
-    * The first criterion to select a {@link ProjectActions} is the file
-    * extension. Only if no corresponding class is found the language
-    * is used.
-    * <p>
-    * @param fileExt  the file extension which a project is to be
-    * defined for
+    * The first criterion to select a {@link ProjectActions} is the file extension.
+    * Only if no corresponding class is found the language is used.
+    *
+    * @param fileExt  the file extension which a project is to be defined for
     * @param lang  the language which has a value from {@link Languages}
     * @return  an object of type {@link ProjectActions} or null if no
     * class exists that implements ProjectActions for the given file
@@ -76,6 +74,7 @@ public class SelectedProject {
    /**
     * Enables action components in the menu and toolbar depending on the
     * type of project
+    *
     * @param className  the name of the class of type {@link ProjectActions}
     * @param projCount  the number of already configured projects
     */

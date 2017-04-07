@@ -20,7 +20,7 @@ public class Constants {
     
     /**
      * The darker gray color for borders */
-    public final static Color BORDER_DARK_GRAY = new Color(120, 120, 120);
+    public final static Color BORDER_DARK_GRAY = new Color(100, 100, 100);
     
     /**
      * The light gray color for borders */

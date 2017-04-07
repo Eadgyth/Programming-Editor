@@ -137,7 +137,7 @@ public class Lexer {
    public void quoted(String toColor, int pos, String quoteSign,
          String blockStart, String blockEnd) {
 
-      if (Finder.countMotif(toColor, "\n") > 1) {
+      if (Finder.countLines(toColor) > 1) {
          //
          // split because string literals are not colored across lines
          String[] chunkArr = toColor.split("\n");

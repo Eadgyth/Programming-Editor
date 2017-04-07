@@ -2,7 +2,7 @@
  * This inner class {@code DocUndoManager} is based on
  * CompoundUndoManager class from JSyntaxPane found at
  * https://github.com/aymanhs/jsyntaxpane
- * Copyright 2008 Ayman Al-Sairafi
+ * (Copyright 2008 Ayman Al-Sairafi).
  * The separation of merged undo edits by time is replaced by
  * "undo-separators"
  */
@@ -22,6 +22,7 @@ import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.CannotRedoException;
 
 import javax.swing.JTextPane;
+import javax.swing.SwingWorker;
 
 import java.awt.EventQueue;
 
@@ -50,30 +51,38 @@ class TypingEdit {
    private final Lexer lex;
    private final Coloring col;
    private final AutoIndent autoInd;
-   private final RowNumbers rowNum;
+   private final LineNumbers lineNum;
 
    private boolean isDocListen = true;
    private boolean isTypeEdit = false;
    private char typed;
+   private int eventType; //0: change, 1: insert, 2: remove
    private int pos;
-   private int changeLength;
+   private int changeLength = 0;
    private int caret;
-   private boolean isChangeEvent;
 
    TypingEdit(EditArea editArea) {
       this.editArea = editArea;
       editArea.getDoc().addDocumentListener(docListen);
       editArea.getDoc().addUndoableEditListener(undomanager);
-      undomanager.setLimit(1000);
       editArea.textArea().addCaretListener(new UndoStopper());
+      undomanager.setLimit(1000);
       lex = new Lexer(editArea.getDoc(), editArea.getNormalSet());
       col = new Coloring(lex);
-      rowNum = new RowNumbers(editArea);
+      lineNum = new LineNumbers(editArea);
       autoInd = new AutoIndent(editArea);
    }
-
-   void enableDocListen(boolean isDocListen) {
-      this.isDocListen = isDocListen;
+   
+   void setDefaultDoc() {
+      editArea.setDefDoc();
+      editArea.getDefDoc().addDocumentListener(docListen);
+      editArea.getDoc().removeUndoableEditListener(undomanager);
+   }
+   
+   void setDoc() {
+      editArea.setDoc();
+      editArea.getDoc().addDocumentListener(docListen);
+      editArea.getDoc().addUndoableEditListener(undomanager);
    }
 
    void enableTypeEdit(boolean isTypeEdit) {
@@ -81,7 +90,7 @@ class TypingEdit {
    }
 
    void setUpEditing(Languages lang) {
-      restartUndo();
+      undomanager.discardAllEdits();
       if (lang == Languages.PLAIN_TEXT) {
          editArea.allTextToBlack();
          enableTypeEdit(false);
@@ -103,16 +112,16 @@ class TypingEdit {
       return autoInd.getIndentUnit();
    }
 
-   void addAllRowNumbers(String in) {
-      rowNum.addAllRowNumbers(in);
+   void addAllLineNumbers(String in) {
+      lineNum.addAllLineNumbers(in);
    }
 
-   void updateRowNumber(String content) {
-      rowNum.updateRowNumber(content);
+   void updateLineNumber(String content) {
+      lineNum.updateLineNumber(content);
    }
 
    void colorSection(String allText, String section, int posStart) {
-      lex.enableTypeMode(section != null);
+      lex.enableTypeMode(false);
       enableTypeEdit(false);
       col.colorSection(allText, section, posStart);
       lex.enableTypeMode(true);
@@ -121,7 +130,7 @@ class TypingEdit {
 
    synchronized void undo() {
       try {
-         int prevLineNr = rowNum.getCurrLineNr();
+         int prevLineNr = lineNum.getCurrLineNr();
          enableDocListen(false);
          if (undomanager.canUndo()) {
             undomanager.undo();
@@ -135,7 +144,7 @@ class TypingEdit {
 
    synchronized void redo() {
       try {
-         int prevLineNr = rowNum.getCurrLineNr();
+         int prevLineNr = lineNum.getCurrLineNr();
          enableDocListen(false);
          if (undomanager.canRedo()) {
             undomanager.redo();
@@ -148,37 +157,34 @@ class TypingEdit {
    }
 
    //
-   //--private--//
+   //--private methods/classes--//
    //
-
-   private synchronized void restartUndo() {
-      //System.out.println("restart");
-      undomanager.discardAllEdits();
-   }
 
    private void updateAfterUndoRedo(int prevLineNr) {
       String allText = editArea.getDocText();
-      updateRowNumber(allText);
+      updateLineNumber(allText);
       if (isTypeEdit) {
-         int newLineNr = rowNum.getCurrLineNr();
+         int newLineNr = lineNum.getCurrLineNr();
          if (newLineNr > prevLineNr) {
             colorSection(allText, null, 0);
          }
-         //
-         // switch off because redo multiline breaks document (no solutiuon)
          else if (newLineNr < prevLineNr) {
-            restartUndo();
+            undomanager.discardAllEdits();
          }
          else {
-            if (caret > 0) {
-               color(allText, caret);
+            if (pos > 0 & pos < allText.length()) {
+               color(allText, pos);
             }
          }
       }
       enableDocListen(true);
    }
+   
+   private void enableDocListen(boolean isDocListen) {
+      this.isDocListen = isDocListen;
+   }
 
-   private synchronized void color(String allText, int pos) {
+   private void color(String allText, int pos) {
       EventQueue.invokeLater(() -> {
          col.colorLine(allText, pos);
       });
@@ -188,13 +194,13 @@ class TypingEdit {
 
       @Override
       public void insertUpdate(DocumentEvent de) {
+         pos = de.getOffset();
+         eventType = 1;
+         changeLength = de.getLength();
          if (isDocListen) {
-            isChangeEvent = false;
-            pos = de.getOffset();
             String in = editArea.getDocText();
             typed = in.charAt(pos);
-            updateRowNumber(in);
-            changeLength = de.getLength();
+            updateLineNumber(in);
             if (isTypeEdit) {
                autoInd.setText(in);
                if (typed != '\n') {
@@ -209,13 +215,13 @@ class TypingEdit {
 
       @Override
       public void removeUpdate(DocumentEvent de) {
+         pos = de.getOffset();
+         eventType = 2;
+         changeLength = - de.getLength();
          if (isDocListen) {
-            isChangeEvent = false;
-            String in = editArea.getDocText();
-            pos = de.getOffset();
-            changeLength = de.getLength();
             typed = '\0';
-            updateRowNumber(in);
+            String in = editArea.getDocText();
+            updateLineNumber(in);
             if (isTypeEdit) {
                color(in, pos);
             }
@@ -225,33 +231,34 @@ class TypingEdit {
       @Override
       public void changedUpdate(DocumentEvent de) {
          if (isDocListen) {
-            isChangeEvent = true;
+            eventType = 0;
          }
       }
    };
 
    private class UndoStopper implements CaretListener {
 
-      int lastCaret;
-      int posCorr;
-
       @Override
       public void caretUpdate(CaretEvent ce) {
-         caret = ce.getDot();
-         posCorr = caret;
-         //System.out.println(caret + "   " + lastCaret);
-         //System.out.println(changeLength);
-         if (editArea.textArea().getSelectedText() != null) {
-            posCorr = editArea.textArea().getSelectionStart();
+         caret = editArea.shiftToSelectionStart(ce.getDot());
+         if (caret > 0) {
+            boolean isStop = true;
+            if (eventType == 1) {
+               isStop = caret - pos != 1 && caret - pos != changeLength;
+            }
+            else if (eventType == 2) {
+               isStop = caret - pos != 0 && caret - pos != changeLength;
+            }
+            if (isStop) {
+               undomanager.discardAllEdits();
+            }
          }
-         if (Math.abs(posCorr - lastCaret) != changeLength) {
-            restartUndo();
-         }
-         lastCaret = posCorr;
+         changeLength = 0;
       }
    }
 
-   private class DocUndoManager extends UndoManager implements UndoableEditListener {
+   private final class DocUndoManager extends UndoManager
+         implements UndoableEditListener {
 
       CompoundEdit comp = null;
 
@@ -261,7 +268,7 @@ class TypingEdit {
             return;
          }
          UndoableEdit ed = e.getEdit();
-         if (!isChangeEvent) {
+         if (eventType != 0) {
             addAnEdit(ed);
          }
       }
@@ -300,11 +307,7 @@ class TypingEdit {
          if (comp == null) {
             comp = new CompoundEdit();
          }
-         if (typed != '\0' & (isEditSeparator())) {
-            commitCompound();
-            super.addEdit(anEdit);
-         }
-         else if (typed == '\0') {
+         if ((typed != '\0' & isEditSeparator()) || typed == '\0') {
             commitCompound();
             super.addEdit(anEdit);
          }

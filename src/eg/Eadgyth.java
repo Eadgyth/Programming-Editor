@@ -42,7 +42,7 @@ public class Eadgyth {
 
       TabbedPane      tabPane    = new TabbedPane();
       MainWin         mw         = new MainWin(tabPane.tabbedPane());
-      ProjectUpdate   prUpdate   = new ProjectUpdate(mw);
+      ProjectUIUpdate prUpdate   = new ProjectUIUpdate(mw);
       ViewSettingWin  viewSetWin = new ViewSettingWin();
       EditAreaFormat  format     = new EditAreaFormat(viewSetWin, mw.getMenu().getFormatMenu());
       ViewSetter      viewSet    = new ViewSetter(viewSetWin, mw, tabPane);

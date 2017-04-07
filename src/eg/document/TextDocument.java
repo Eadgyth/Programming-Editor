@@ -45,16 +45,16 @@ public final class TextDocument {
     * Creates a TextDocument
     * @param editArea  the reference to the {@link EditArea}
     */
-   public TextDocument(EditArea editArea) {
+  public TextDocument(EditArea editArea) {
       this.editArea = editArea;
       this.textArea = editArea.textArea();
       type = new TypingEdit(editArea);
-      type.addAllRowNumbers(content);
+      type.addAllLineNumbers(content);
       PREFS.readPrefs();
       String indentUnit = PREFS.getProperty("indentUnit");
       changeIndentUnit(indentUnit);    
    }
-   
+
    /**
     * Creates a TextDocument with a specified language
     *
@@ -64,10 +64,9 @@ public final class TextDocument {
     */
    public TextDocument(EditArea editArea, Languages lang) {
       this(editArea);
-      isPlainText = Languages.PLAIN_TEXT == lang;
       type.setUpEditing(lang);
    }
-   
+
    /**
     * Returns this text area
     *
@@ -103,6 +102,10 @@ public final class TextDocument {
    public String dir() {
       return dir;
    }
+   
+   public boolean isCodingLanguage() {
+      return !isPlainText;
+   }
 
    /**
     * Sets the specified file and displays the file content
@@ -120,7 +123,7 @@ public final class TextDocument {
          displayFileContent();
          setLanguageBySuffix();
          setContent();
-         type.addAllRowNumbers(content);    
+         type.addAllLineNumbers(content);
       });
    }
 
@@ -130,7 +133,7 @@ public final class TextDocument {
    public void saveToFile() {
       saveToFile(docFile);
    }
-   
+
    /**
     * Saves the current content to the specified file but does not
     * assign the file to this
@@ -147,7 +150,7 @@ public final class TextDocument {
     *
     * @param file  the new file which the current content is saved to
     */
-   public void saveFileAs(File file) {     
+   public void saveFileAs(File file) {
       assignFileStrings(file);
       saveToFile(file);
       setLanguageBySuffix();
@@ -156,9 +159,9 @@ public final class TextDocument {
    /**
     * Returns if the content of this text area equals has been saved
     *
-    * @return  if the content of this text area equals the content 
+    * @return  if the content of this text area equals the content
     * since the last saving point
-    */ 
+    */
    public boolean isContentSaved() {
       return content.equals(editArea.getDocText());
    }
@@ -177,7 +180,7 @@ public final class TextDocument {
       type.changeIndentUnit(indentUnit);
       PREFS.storePrefs("indentUnit", type.getIndentUnit());
    }
-   
+
    /**
     * Returns the current indentation unit
     *
@@ -194,13 +197,8 @@ public final class TextDocument {
     * false to disable. No effect if this language is plain text
     */
    public void enableTypeEdit(boolean isEnabled) {
-      if (!isEnabled) {
+      if (!isPlainText) {
          type.enableTypeEdit(isEnabled);
-      }
-      else {
-         if (!isPlainText) {
-            type.enableTypeEdit(isEnabled);
-         }
       }
    }
 
@@ -242,7 +240,7 @@ public final class TextDocument {
    public void redo() {
       type.redo();
    }
-   
+
    /**
     * Returns the text in the document associated with this text area
     * @return  the text in the document associated with this text area
@@ -264,11 +262,11 @@ public final class TextDocument {
     * Removes text from this document
     * @param start  the position where text to be removed starts
     * @param length  the length of the text to be removed
-    */  
+    */
    public void removeStr(int start, int length) {
       editArea.removeStr(start, length);
    }
-   
+
    /**
     * Asks this text area to gain the focus
     */
@@ -287,17 +285,14 @@ public final class TextDocument {
          type.setUpEditing(lang);
       }
    }
-   
+
    //
    //----private methods----//
    //
 
    private void displayFileContent() {
-      type.enableDocListen(false);
+      type.setDefaultDoc();
       type.enableTypeEdit(false);
-      //
-      // Set text attributes later to speed up placing larger pieces of text
-      editArea.setBlankDoc();
       try (BufferedReader br = new BufferedReader(new FileReader(docFile))) {
          String line;
          while ((line = br.readLine()) != null) {
@@ -307,19 +302,19 @@ public final class TextDocument {
       catch (IOException e) {
          FileUtils.logStack(e);
       }
-      editArea.setDoc();
       if (editArea.getDocText().endsWith("\n")) {
          editArea.removeStr(getText().length() - 1, 1);
       }
-      type.enableDocListen(true);
+      type.setDoc();
+      type.enableTypeEdit(true);
    }
-   
+
    /**
     * Saves the current content to this file
     */
    private void saveToFile(File file) {
       setContent();
-      String[] lines = content.split("\n"); 
+      String[] lines = content.split("\n");
       try (FileWriter writer = new FileWriter(file)) {
          for (String s : lines) {
             writer.write(s + LINE_SEP);
@@ -329,7 +324,7 @@ public final class TextDocument {
          FileUtils.logStack(e);
       }
    }
-   
+
    private void setContent() {
       content = editArea.getDocText();
    }
@@ -343,7 +338,7 @@ public final class TextDocument {
 
    private void setLanguageBySuffix() {
       String suffix = FileUtils.fileSuffix(filename);
-      Languages lang;   
+      Languages lang;
       switch (suffix) {
          case "java":
            lang = Languages.JAVA;

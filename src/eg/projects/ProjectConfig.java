@@ -81,7 +81,7 @@ public abstract class ProjectConfig implements Configurable {
     * the settings window.
     * <p>
     * In the case of success the frame of [@link SettingsWin} is closed.
-    * <p>
+    *
     * @param dir  the directory that may be or include the project's root
     * folder
     * @return  if a project can be successfully configured based on entries
@@ -103,7 +103,7 @@ public abstract class ProjectConfig implements Configurable {
     * <p>
     * Method first looks for a config file and, if not present, in the
     * preferences file in the program folder.
-    * <p>
+    *
     * @param dir  the directory of a file that maybe part of the project 
     * @return  If a project configuration stored in 'config' or 'prefs'
     * can be retrieved
@@ -178,6 +178,7 @@ public abstract class ProjectConfig implements Configurable {
     * <p>
     * It is not specified what a 'module' is. In the case of a Java
     * project a module would be a package
+    *
     * @return  the name of the directory of a module.
     */ 
    protected String getModuleName() {
@@ -186,6 +187,7 @@ public abstract class ProjectConfig implements Configurable {
    
    /**
     * Returns the name of the directoy where source files are saved
+    *
     * @return  the name of the directoy where source files are saved
     */ 
    protected String getSourceDirName() {
@@ -194,6 +196,7 @@ public abstract class ProjectConfig implements Configurable {
 
    /**
     * Returns the name for a build
+    *
     * @return  the name for a build
     */ 
    protected String getBuildName() {
@@ -201,7 +204,8 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    /**
-    * Retunrns the String that contains arguments for a start script.
+    * Retunrns the String that contains arguments for a start script
+    *
     * @return  the String that contains arguments for a start command
     */ 
    protected String getArgs() {
@@ -210,6 +214,7 @@ public abstract class ProjectConfig implements Configurable {
    
    /**
     * If the main executable file exists
+    *
     * @param aSuffix  the extension of the project's executable file(s)
     * @return  if the main executable file exists
     */

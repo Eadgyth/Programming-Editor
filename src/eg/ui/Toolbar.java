@@ -41,7 +41,7 @@ public class Toolbar {
    }
    
    /**
-    * Adds ActionsListeners to the buttons for file actions
+    * Adds action handlers to the buttons for file actions
     * @param tf  the reference to the {@link TabbedFiles} object
     * that handles the file actions
     */
@@ -51,7 +51,7 @@ public class Toolbar {
    }
    
    /**
-    * Adds ActionsListeners to the buttons for project actions
+    * Adds action handlers to the buttons for project actions
     * @param currProj  the reference to the {@link CurrentProject}
     * object that handles the project actions
     */
@@ -62,7 +62,7 @@ public class Toolbar {
    }
    
    /**
-    * Adds ActionsListeners to the buttons for edit actions
+    * Adds action handlers to the buttons for edit actions
     * @param edit  the reference to the {@link Edit}
     * object that handles the edit actions
     */

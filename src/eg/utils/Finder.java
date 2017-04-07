@@ -8,70 +8,98 @@ public class Finder {
    /**
     * Returns the line which includes the specified position
     *
-    * @param text  the entire text
-    * @param pos  the pos that includes the searched line
+    * @param text  the text of the document
+    * @param pos  the pos that is in the searched line
     * @return  the line that includes '{@code pos}'
     */
    public static String lineAtPos(String text, int pos) {
-      int lastReturn = Finder.lastReturn(text, pos);
-      int nextReturn = Finder.nextReturn(text, pos);
-
-      if (lastReturn != -1) {
-         return text.substring(lastReturn + 1, nextReturn);
+      int lastNewline = Finder.lastNewline(text, pos);
+      int nextNewline = Finder.nextNewline(text, pos);
+      if (lastNewline != -1) {
+         return text.substring(lastNewline + 1, nextNewline);
       }
       else {
-         return text.substring(0, nextReturn);
+         return text.substring(0, nextNewline);
       }
    }
    
    /**
     * Returns the full lines of text which include the specified section
     *
-    * @param  text  the entire text
+    * @param  text  the text of the document
     * @param section  a section of the text
-    * @param pos  the position within the entire text where section starts
-    * @return the full lines of text which include the specified section
+    * @param pos  the position where '{code section}' starts
+    * @return  the full lines of text which include the specified section
     */
    public static String allLinesAtPos(String text, String section, int pos) {
+      String lines = null;
       String[] sectionArr = section.split("\n");
-      String firstLine = Finder.lineAtPos(text, pos);  
+      String firstLine = Finder.lineAtPos(text, pos);
       sectionArr[0] = firstLine;
       if (sectionArr.length > 1) {
          String lastLine = Finder.lineAtPos(text, pos + section.length());
          sectionArr[sectionArr.length - 1] = lastLine;
+         StringBuffer sb = new StringBuffer();
+         for (String s : sectionArr) {
+            sb.append(s);
+            sb.append("\n");
+         }
+         lines = sb.toString();
       }
-      StringBuffer sb = new StringBuffer();
-      for (String s : sectionArr) {
-         sb.append(s);
-         sb.append("\n");
+      else {
+         lines = firstLine;
       }
-      return sb.toString();
+      return lines;
    }
    
-   public static int lastReturn(String text, int pos) {
-       int lastReturn = text.lastIndexOf("\n", pos);
-       if (lastReturn == pos) {
-         lastReturn = text.lastIndexOf("\n", pos - 1);
+   /**
+    * Returns the position of the last newline before the specified
+    * position
+    *
+    * @param text  the text of the document
+    * @param pos  the position relative to which the last newline
+    * is searched
+    * @return  the position of the last newline character before '{@code pos}'
+    */
+   public static int lastNewline(String text, int pos) {
+      int i = text.lastIndexOf("\n", pos);
+      if (i == pos) {
+         i = text.lastIndexOf("\n", pos - 1);
       }
-      return lastReturn;
+      return i;
    }
    
-   public static int nextReturn(String text, int pos) {
-      int nextReturn = text.indexOf("\n", pos);
-      if (nextReturn == -1) {
-         nextReturn = text.length();
+   /**
+    * Returns the position of the next newline after the specified
+    * position
+    *
+    * @param text  the text of the document
+    * @param pos  the position relative to which the next newline
+    * is searched
+    * @return  the position of the next newline character
+    */
+   public static int nextNewline(String text, int pos) {
+      int i = text.indexOf("\n", pos);
+      if (i == -1) {
+         i = text.length();
       }
-      return nextReturn;
+      return i;
    }
 
-   public static int countMotif(String text, String motif) {
+   /**
+    * Returns the number of lines
+    *
+    * @param text  the text of the document
+    * @return  the number of lines in the document
+    */
+   public static int countLines(String text) {
       int count = 0;
-      int index = 0;
-      while (index != -1) {
-         index = text.indexOf(motif, index);
-         if (index != -1) {
+      int i = 0;
+      while (i != -1) {
+         i = text.indexOf("\n", i);
+         if (i != -1) {
             count++;
-            index++;
+            i++;
          }
       }
       return count;

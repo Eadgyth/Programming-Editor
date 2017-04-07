@@ -2,7 +2,6 @@ package eg.ui;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Dimension;
 
 import java.awt.event.ActionListener;
 
@@ -44,29 +43,66 @@ public class ViewSettingWin {
       initFrame();
    }
    
+   /**
+    * Makes this frame visible/unvisible
+    *
+    * @param isVisible  true/false to make this frame visible/unvisible
+    */
    public void makeVisible(boolean isVisible) {
       frame.setVisible(isVisible);
    }
    
+   /**
+    * Adds an action handler to this ok button
+    *
+    * @param al  the {@code ActionListener}
+    */
    public void okAct(ActionListener al) {
       okBt.addActionListener(al);
    }
 
+   /**
+    * Returns if showing the toolbar is selected in the corresponding
+    * checkbox
+    *
+    * @return if showing the toolbar is selected
+    */ 
    public boolean isShowToolbar() {
       return checkToolbar.isSelected();
    }
    
+   /**
+    * Returns if showing line numbers is selected in the corresponding
+    * checkbox
+    *
+    * @return if showing line numbers is selected
+    */ 
    public boolean isShowLineNumbers() {
       return checkLineNumbers.isSelected();
    }
    
+   /**
+    * Returns if showing the status bar is selected in the corresponding
+    * checkbox
+    *
+    * @return if showing the staus bar is selected
+    */ 
    public boolean isShowStatusbar() {
       return checkStatusbar.isSelected();
    }
    
+   /**
+    * Returns the index of combobox selection for the look and feel
+    *
+    * @return  the index of combobox selection for the look and feel
+    */ 
    public int selectedLaf() {
       return selectLaf.getSelectedIndex();
    }
+   
+   //
+   //--private methods
+   //
    
    private void initFrame() {
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -138,23 +174,19 @@ public class ViewSettingWin {
       checkBxPnl.add(label);
       checkBxPnl.add(Box.createHorizontalGlue());
       checkBxPnl.add(checkBox);
-      checkBxPnl.add(Box.createRigidArea(new Dimension(80, 0)));
       return checkBxPnl;
    }
    
    private JPanel comboBxPnl(JComboBox comboBox, String title) {      
       JLabel lb = new JLabel(title);
       lb.setFont(Constants.SANSSERIF_BOLD_12);
-      //lb.setFont(Constants.SANSSERIF_PLAIN_12);
 
       JPanel pnl = new JPanel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
       pnl.add(lb);
       pnl.add(Box.createHorizontalGlue());
       JPanel holdComboBx = new JPanel(new FlowLayout());
-      pnl.add(Box.createRigidArea(new Dimension(59, 0)));
       holdComboBx.add(comboBox);
-      pnl.add(Box.createRigidArea(new Dimension(5, 0)));
       pnl.add(holdComboBx);
       return pnl;
    }

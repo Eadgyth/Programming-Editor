@@ -6,8 +6,8 @@ import eg.document.TextDocument;
 import eg.ui.EditArea;
 
 /**
- * Class informs other objects which document is currently
- * selected in the tabs
+ * Class informs other objects which document is currently displayed in
+ * the main window
  */
 public class DocumentUpdate {
 

@@ -105,9 +105,10 @@ public class FileTree extends Observable {
    }
 
    /**
-    * Sets the filepath of the folder that can be deleted
-    * @param dirName  the directory that can be deleted although it is
-    * not empty. Maybe the empty String but not null
+    * Sets the name of the folder that can be deleted although it is
+    * not empty
+    * @param dirName  the name of the directory that can be deleted.
+    * Maybe the empty String but not null
     */
    public void setDeletableDirName(String dirName) {
       if (dirName == null) {
@@ -235,9 +236,8 @@ public class FileTree extends Observable {
 
    private void enableDelete() {
       File f = getSelectedFile();
-      if (isInDeletableDir(f)
-             || FileUtils.isFolderEmpty(f)) {
-          popupDir.enableDelete(true);
+      if (isInDeletableDir(f) || FileUtils.isFolderEmpty(f)) {
+         popupDir.enableDelete(true);
       }
       else {
          popupDir.enableDelete(false);

@@ -19,7 +19,7 @@ import eg.Constants;
 import eg.Preferences;
 
 /**
- * A frame that contains combo boxes to select font and font size
+ * A frame that contains combo boxes to change the font and font size
  */
 public class FontSettingWin {
 
@@ -33,10 +33,8 @@ public class FontSettingWin {
    };
 
    private final JFrame frame = new JFrame("Font");
-   private final JComboBox<String> selectFont
-                              = new JComboBox<>(FONTS);
-   private final JComboBox<String> selectSize
-                              = new JComboBox<>(FONT_SIZES);
+   private final JComboBox<String> selectFont = new JComboBox<>(FONTS);
+   private final JComboBox<String> selectSize = new JComboBox<>(FONT_SIZES);
    private final JButton okBt = new JButton("OK");
 
    private final Preferences prefs = new Preferences();
@@ -46,25 +44,51 @@ public class FontSettingWin {
       initFrame();
    }
 
+   /**
+    * Makes this frame visible/unvisible
+    *
+    * @param isVisible  true/false to make this frame visible/unvisible
+    */
    public void makeVisible(boolean isVisible) {
       frame.setVisible(isVisible);
    }
+   
+   /**
+    * Adds an action handler to this ok button
+    *
+    * @param al  the {@code ActionListener}
+    */
+   public void okAct(ActionListener al) {
+      okBt.addActionListener(al);
+   }
 
+   /**
+    * Returns the font selection in the corresponding combobox and
+    * and stores the selection to the preferences file
+    *
+    * @return the selected font
+    */
    public String fontComboBxRes() {
       String font = FONTS[selectFont.getSelectedIndex()];
       prefs.storePrefs("font", font);
       return font;
    }
 
+   /**
+    * Returns the font size selection in the corresponding combobox and
+    * and stores the selection to the preferences file
+    *
+    * @return the selected font
+    */
    public int sizeComboBxRes() {
       String size = FONT_SIZES[selectSize.getSelectedIndex()];
       prefs.storePrefs("fontSize", size);
       return Integer.parseInt(size);
    }
 
-   public void okAct(ActionListener al) {
-      okBt.addActionListener(al);
-   }
+   //
+   //--private methods
+   //
 
    private void initFrame() {
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

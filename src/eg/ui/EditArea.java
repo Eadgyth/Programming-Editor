@@ -47,6 +47,7 @@ public final class EditArea {
    private final JTextPane textArea = new JTextPane();
    private final SimpleAttributeSet normalSet = new SimpleAttributeSet();
    private final StyledDocument doc;
+   private final DefaultStyledDocument blank = new DefaultStyledDocument();
 
    private final JTextPane lineArea = new JTextPane();
    private final SimpleAttributeSet lineSet = new SimpleAttributeSet();
@@ -114,6 +115,7 @@ public final class EditArea {
    /**
     * Returns the JPanel that holds the area to edit text and, if
     * selected, the area showing line numbers
+    *
     * @return  the JPanel that holds the area to edit text and, if
     * selected the area showing line numbers
     */
@@ -133,8 +135,7 @@ public final class EditArea {
     * Associates this text area with a new {@code DefaultStyledDocument}
     * with no attributes
     */
-   public void setBlankDoc() {
-      Document blank = new DefaultStyledDocument();
+   public void setDefDoc() {
       textArea.setDocument(blank);
    }
    
@@ -143,6 +144,26 @@ public final class EditArea {
     */
    public void setDoc() {
       textArea.setDocument(doc);
+   }
+   
+   /**
+    * Returns the {@code StyledDocument} associated with this
+    * text area
+    * @return  the {@code StyledDocument} associated with this
+    * text area
+    */
+   public StyledDocument getDoc() {
+      return doc;
+   }
+   
+    /**
+    * Returns the {@code DefaultStyledDocument} associated with this
+    * text area
+    * @return  the {@code DefaultStyledDocument} associated with this
+    * text area
+    */
+   public DefaultStyledDocument getDefDoc() {
+      return blank;
    }
    
    /**
@@ -161,13 +182,19 @@ public final class EditArea {
    }
    
    /**
-    * Returns the {@code StyledDocument} associated with this
-    * text area
-    * @return  the {@code StyledDocument} associated with this
-    * text area
+    * Returns the selection start or the unchanged position if no text
+    * is selected
+    *
+    * @param caretPos  the position in the document which is
+    * expected to be the caret position
+    * @return  the position of the selection start if text is selected
+    * or 'caretPos' unchanged
     */
-   public StyledDocument getDoc() {
-      return doc;
+   public int shiftToSelectionStart(int caretPos) {
+      if (textArea.getSelectedText() != null) {
+         caretPos = textArea.getSelectionStart();
+      }
+      return caretPos;
    }
    
    /**
@@ -197,6 +224,7 @@ public final class EditArea {
    /**
     * (Re-)colors the text starting at the specified position and
     * spanning the specified length in the default color
+    *
     * @param length  the length of text that is colored in the
     * default color
     * @param pos  the position where the text to color starts
@@ -207,6 +235,7 @@ public final class EditArea {
    
    /**
     * Inserts text in this document
+    *
     * @param pos  the position where new text is inserted
     * @param toInsert  the String that contains the text to insert
     */

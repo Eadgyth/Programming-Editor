@@ -28,15 +28,13 @@ public class EditAreaFormat {
    public EditAreaFormat(ViewSettingWin viewSetWin, FormatMenu fMenu) {
       this.viewSetWin = viewSetWin;
       this.fMenu = fMenu;
-      //
-      // set fields
+
       isShowLineNr = viewSetWin.isShowLineNumbers();
       prefs.readPrefs();
       isWordWrap = "enabled".equals(prefs.getProperty("wordWrap"));
       font = fontSetWin.fontComboBxRes();
       fontSize = fontSetWin.sizeComboBxRes();
-      //
-      // add actions
+
       fMenu.changeWordWrapAct(e -> changeWordWrap());
       fMenu.fontAct(e -> fontSetWin.makeVisible(true));
       fontSetWin.okAct(e -> setFont());
@@ -44,6 +42,7 @@ public class EditAreaFormat {
    
    /**
     * Sets the array of type {@code EditArea}
+    *
     * @param editArea  the array of type {@link EditArea}
     */
    public void setEditAreaArr(EditArea[] editArea) {
@@ -53,6 +52,7 @@ public class EditAreaFormat {
    /** 
     * Returns a new {@code EditArea} that is initialized with the
     * current settings
+    *
     * @return  a new {@link EditArea} that is initialized with the
     * current settings
     */
@@ -66,6 +66,7 @@ public class EditAreaFormat {
     * The method also selects/unselects the wordwrap menu item
     * depending on the state of the {@code EditArea} at the specified
     * index
+    *
     * @param index  the index of the selected {@link EditArea} element
     */
    public void setCurrEditArea(int index) {
