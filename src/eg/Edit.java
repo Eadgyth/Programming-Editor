@@ -87,24 +87,17 @@ public class Edit {
       String clipboard = getClipboard();
       String sel = textArea.getSelectedText();
       int pos = textArea.getCaretPosition();
-      boolean ok = true;
       if (sel != null) {
-         ok = !sel.startsWith(" ");
          txtDoc.getTextArea().replaceSelection(clipboard);
+         txtDoc.enableTypeEdit(true);
+         if (txtDoc.isCodingLanguage()) {
+            System.out.println("Coloring is omitted when text is replaced");
+         }
       }
       else {
          txtDoc.insertStr(pos, clipboard);
-      }
-      if (ok) {
          txtDoc.colorSection(clipboard, pos);
       }
-      else {
-         txtDoc.enableTypeEdit(true);
-         if (txtDoc.isCodingLanguage()) {
-            System.out.println("Coloring omitted:"
-                  + " replaced text starts with spaces");
-         }
-      }      
    }
 
    /**
