@@ -188,7 +188,7 @@ public final class EditArea {
     * @param caretPos  the position in the document which is
     * expected to be the caret position
     * @return  the position of the selection start if text is selected
-    * or 'caretPos' unchanged
+    * or <code>caretPos</code> unchanged
     */
    public int shiftToSelectionStart(int caretPos) {
       if (textArea.getSelectedText() != null) {
@@ -200,6 +200,7 @@ public final class EditArea {
    /**
     * Returns this {@code SimpleAttributeSet} which represents the
     * "normal" text appearance in the text area
+    *
     * @return  this {@code SimpleAttributeSet} for this text area
     */
    public SimpleAttributeSet getNormalSet() {
@@ -208,6 +209,7 @@ public final class EditArea {
    
    /**
     * If wordwrap is enabled
+    *
     * @return  if wordwrap is enabled
     */
    public boolean isWordWrap() {
@@ -241,7 +243,7 @@ public final class EditArea {
     */
    public void insertStr(int pos, String toInsert) {
       try {
-         doc.insertString(pos, toInsert, normalSet);
+         doc.insertString(pos, toInsert, null);
       }
       catch (BadLocationException e) {
          FileUtils.logStack(e);

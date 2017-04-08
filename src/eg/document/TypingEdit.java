@@ -59,7 +59,6 @@ class TypingEdit {
    private int eventType; //0: change, 1: insert, 2: remove
    private int pos;
    private int changeLength = 0;
-   private int caret;
 
    TypingEdit(EditArea editArea) {
       this.editArea = editArea;
@@ -89,7 +88,6 @@ class TypingEdit {
 
    void enableTypeEdit(boolean isEnabled) {
       isTypeEdit = isEnabled;
-      lex.enableTypeMode(isEnabled);
    }
 
    void setUpEditing(Languages lang) {
@@ -97,7 +95,6 @@ class TypingEdit {
       if (lang == Languages.PLAIN_TEXT) {
          editArea.allTextToBlack();
          enableTypeEdit(false);
-         lex.enableTypeMode(false);
          autoInd.enableIndent(false);
       }
       else {
@@ -125,8 +122,10 @@ class TypingEdit {
 
    void colorSection(String allText, String section, int posStart) {
       enableTypeEdit(false);
+      lex.enableTypeMode(section != null);
       col.colorSection(allText, section, posStart);
       enableTypeEdit(true);
+      lex.enableTypeMode(true);
    }
 
    synchronized void undo() {
@@ -229,6 +228,7 @@ class TypingEdit {
          }
       }
 
+
       @Override
       public void changedUpdate(DocumentEvent de) {
          if (evaluateText) {
@@ -238,6 +238,8 @@ class TypingEdit {
    };
 
    private class UndoStopper implements CaretListener {
+      
+      int caret;
 
       @Override
       public void caretUpdate(CaretEvent ce) {

@@ -88,16 +88,11 @@ public class Edit {
       String sel = textArea.getSelectedText();
       int pos = textArea.getCaretPosition();
       if (sel != null) {
-         txtDoc.getTextArea().replaceSelection(clipboard);
-         txtDoc.enableTypeEdit(true);
-         if (txtDoc.isCodingLanguage()) {
-            System.out.println("Coloring is omitted when text is replaced");
-         }
+         pos -= sel.length();
+         txtDoc.removeStr(pos, sel.length());
       }
-      else {
-         txtDoc.insertStr(pos, clipboard);
-         txtDoc.colorSection(clipboard, pos);
-      }
+      txtDoc.insertStr(pos, clipboard);
+      txtDoc.colorSection(clipboard, pos);
    }
 
    /**
