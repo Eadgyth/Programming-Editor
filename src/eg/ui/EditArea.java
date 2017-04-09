@@ -113,37 +113,23 @@ public final class EditArea {
    }
    
    /**
-    * Returns the JPanel that holds the area to edit text and, if
-    * selected, the area showing line numbers
+    * Returns the JPanel that holds the area to edit text and
+    * the area showing line numbers
     *
     * @return  the JPanel that holds the area to edit text and, if
-    * selected the area showing line numbers
+    * selected, the area showing line numbers
     */
    public JPanel textPanel() {
       return textPanel;
    }
    
    /**
-    * Returns this text area in which text is edited
-    * @return  this text area
+    * Returns this <code>JTextPane</code> in which text is edited
+    *
+    * @return  this <code>JTextPane</code>
     */
    public JTextPane textArea() {
       return textArea;
-   }
-   
-   /**
-    * Associates this text area with a new {@code DefaultStyledDocument}
-    * with no attributes
-    */
-   public void setDefDoc() {
-      textArea.setDocument(blank);
-   }
-   
-   /**
-    * Associates this text area with this {@code StyledDocument}
-    */
-   public void setDoc() {
-      textArea.setDocument(doc);
    }
    
    /**
@@ -167,7 +153,42 @@ public final class EditArea {
    }
    
    /**
-    * Returns the text in this {@code StyledDocument}
+    * Associates this textArea with this {@code StyledDocument}
+    */
+   public void setDoc() {
+      textArea.setDocument(doc);
+   }
+   
+   /**
+    * Associates this textArea with this {@code DefaultStyledDocument}
+    * with no attributes
+    */
+   public void setDefDoc() {
+      textArea.setDocument(blank);
+   }
+   
+   /**
+    * Returns this {@code SimpleAttributeSet} which represents the
+    * "normal" text appearance in the text area
+    *
+    * @return  this {@code SimpleAttributeSet} for this text area
+    */
+   public SimpleAttributeSet getNormalSet() {
+      return normalSet;
+   }
+   
+   /**
+    * If wordwrap is enabled
+    *
+    * @return  if wordwrap is enabled
+    */
+   public boolean isWordWrap() {
+      return isWordWrap;
+   }
+   
+   /**
+    * Returns the text contained in this {@code StyledDocument}
+    *
     * @return  the text in this {@code StyledDocument}
     */
    public String getDocText() {
@@ -195,44 +216,6 @@ public final class EditArea {
          caretPos = textArea.getSelectionStart();
       }
       return caretPos;
-   }
-   
-   /**
-    * Returns this {@code SimpleAttributeSet} which represents the
-    * "normal" text appearance in the text area
-    *
-    * @return  this {@code SimpleAttributeSet} for this text area
-    */
-   public SimpleAttributeSet getNormalSet() {
-      return normalSet;
-   }
-   
-   /**
-    * If wordwrap is enabled
-    *
-    * @return  if wordwrap is enabled
-    */
-   public boolean isWordWrap() {
-      return isWordWrap;
-   }
-   
-   /**
-    * (Re-)colors the entire text in the default color
-    */
-   public void allTextToBlack() {
-      doc.setCharacterAttributes(0, getDocText().length(), normalSet, false);
-   }
-   
-   /**
-    * (Re-)colors the text starting at the specified position and
-    * spanning the specified length in the default color
-    *
-    * @param length  the length of text that is colored in the
-    * default color
-    * @param pos  the position where the text to color starts
-    */
-   public void textToBlack(int length, int pos) {
-      doc.setCharacterAttributes(pos, length, normalSet, false);
    }
    
    /**

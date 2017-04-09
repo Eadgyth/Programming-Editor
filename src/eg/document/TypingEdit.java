@@ -58,7 +58,7 @@ class TypingEdit {
    private char typed;
    private int eventType; //0: change, 1: insert, 2: remove
    private int pos;
-   private int changeLength = 0;
+   private int changeLength = 1;
 
    TypingEdit(EditArea editArea) {
       this.editArea = editArea;
@@ -93,7 +93,7 @@ class TypingEdit {
    void setUpEditing(Languages lang) {
       undomanager.discardAllEdits();
       if (lang == Languages.PLAIN_TEXT) {
-         editArea.allTextToBlack();
+         lex.setCharAttrBlack(0, editArea.getDocText().length());
          enableTypeEdit(false);
          autoInd.enableIndent(false);
       }
@@ -196,8 +196,8 @@ class TypingEdit {
       public void insertUpdate(DocumentEvent de) {
          pos = de.getOffset();
          eventType = 1;
+         changeLength = de.getLength();
          if (evaluateText) {
-            changeLength = de.getLength();
             String in = editArea.getDocText();
             typed = in.charAt(pos);
             updateLineNumber(in);
@@ -217,8 +217,8 @@ class TypingEdit {
       public void removeUpdate(DocumentEvent de) {
          pos = de.getOffset();
          eventType = 2;
+         changeLength = - de.getLength();
          if (evaluateText) {
-            changeLength = - de.getLength();
             typed = '\0';
             String in = editArea.getDocText();
             updateLineNumber(in);

@@ -65,6 +65,7 @@ public final class TextDocument {
    public TextDocument(EditArea editArea, Languages lang) {
       this(editArea);
       type.setUpEditing(lang);
+      isPlainText = Languages.PLAIN_TEXT == lang;
    }
 
    /**
@@ -203,17 +204,6 @@ public final class TextDocument {
    }
 
    /**
-    * (Re-)colors the text starting at the specified position and
-    * spanning the specified length in the default color.
-    * @param length  the length of text that is colored in the
-    * default color
-    * @param pos  the position where the text to color starts
-    */
-   public void textToBlack(int length, int pos) {
-      editArea.textToBlack(length, pos);
-   }
-
-   /**
     * Colors a section of text which also may be the entire text
     *
     * @param section  a section of from the document. If null the entire
@@ -251,6 +241,7 @@ public final class TextDocument {
 
    /**
     * Inserts text in this text area
+    *
     * @param pos  the position where new text is inserted
     * @param toInsert  the String that contains the text to insert
     */
@@ -260,6 +251,7 @@ public final class TextDocument {
 
    /**
     * Removes text from this document
+    *
     * @param start  the position where text to be removed starts
     * @param length  the length of the text to be removed
     */
