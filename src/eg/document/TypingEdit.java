@@ -43,20 +43,23 @@ import eg.utils.Finder;
  * class).
  */
 class TypingEdit {
-
+   
+   private final static int CHANGE_EVENT = 0;
+   private final static int INSERT_EVENT = 1;
+   private final static int REMOVE_EVENT = 2;
    private final static char[] UNDO_SEP = {' ', '(', ')', '{', '}', '\n'};
 
    private final EditArea editArea;
-   private final UndoManager undomanager = new DocUndoManager();
    private final Lexer lex;
    private final Coloring col;
    private final AutoIndent autoInd;
    private final LineNumbers lineNum;
+    private final UndoManager undomanager = new DocUndoManager();
 
    private boolean evaluateText = true;
    private boolean isTypeEdit = false;
    private char typed;
-   private int eventType; //0: change, 1: insert, 2: remove
+   private int eventType;
    private int pos;
    private int changeLength = 1;
 
@@ -72,20 +75,10 @@ class TypingEdit {
       autoInd = new AutoIndent(editArea);
    }
 
-   void setDefaultDoc() {
-      enableEvaluateText(false);
-      editArea.setDefDoc();
-      editArea.getDefDoc().addDocumentListener(docListen);
-      editArea.getDoc().removeUndoableEditListener(undomanager);
+   void enableEvaluateText(boolean isEnabled) {
+      evaluateText = isEnabled;
    }
-
-   void setDoc() {
-      enableEvaluateText(true);
-      editArea.setDoc();
-      editArea.getDoc().addDocumentListener(docListen);
-      editArea.getDoc().addUndoableEditListener(undomanager);
-   }
-
+   
    void enableTypeEdit(boolean isEnabled) {
       isTypeEdit = isEnabled;
    }
@@ -112,23 +105,23 @@ class TypingEdit {
       return autoInd.getIndentUnit();
    }
 
-   void addAllLineNumbers(String in) {
-      lineNum.addAllLineNumbers(in);
+   void addAllLineNumbers(String allText) {
+      lineNum.addAllLineNumbers(allText);
    }
 
-   void updateLineNumber(String content) {
-      lineNum.updateLineNumber(content);
+   void updateLineNumber(String allText) {
+      lineNum.updateLineNumber(allText);
    }
 
-   void colorSection(String allText, String section, int posStart) {
+   void colorSection(String allText, String section, int pos) {
       enableTypeEdit(false);
       lex.enableTypeMode(section != null);
-      col.colorSection(allText, section, posStart);
+      col.colorSection(allText, section, pos);
       enableTypeEdit(true);
       lex.enableTypeMode(true);
    }
 
-   synchronized void undo() {
+   void undo() {
       try {
          int prevLineNr = lineNum.getCurrLineNr();
          enableEvaluateText(false);
@@ -142,7 +135,7 @@ class TypingEdit {
       }
    }
 
-   synchronized void redo() {
+   void redo() {
       try {
          int prevLineNr = lineNum.getCurrLineNr();
          enableEvaluateText(false);
@@ -180,10 +173,6 @@ class TypingEdit {
       enableEvaluateText(true);
    }
 
-   private void enableEvaluateText(boolean enable) {
-      evaluateText = enable;
-   }
-
    private void color(String allText, int pos) {
       EventQueue.invokeLater(() -> {
          col.colorLine(allText, pos);
@@ -195,9 +184,9 @@ class TypingEdit {
       @Override
       public void insertUpdate(DocumentEvent de) {
          pos = de.getOffset();
-         eventType = 1;
-         changeLength = de.getLength();
+         eventType = INSERT_EVENT;
          if (evaluateText) {
+            changeLength = de.getLength();
             String in = editArea.getDocText();
             typed = in.charAt(pos);
             updateLineNumber(in);
@@ -216,9 +205,9 @@ class TypingEdit {
       @Override
       public void removeUpdate(DocumentEvent de) {
          pos = de.getOffset();
-         eventType = 2;
-         changeLength = - de.getLength();
+         eventType = REMOVE_EVENT;
          if (evaluateText) {
+            eventType = REMOVE_EVENT;
             typed = '\0';
             String in = editArea.getDocText();
             updateLineNumber(in);
@@ -228,17 +217,16 @@ class TypingEdit {
          }
       }
 
-
       @Override
       public void changedUpdate(DocumentEvent de) {
          if (evaluateText) {
-            eventType = 0;
+            eventType = CHANGE_EVENT;
          }
       }
    };
 
    private class UndoStopper implements CaretListener {
-      
+
       int caret;
 
       @Override
@@ -271,7 +259,7 @@ class TypingEdit {
             return;
          }
          UndoableEdit ed = e.getEdit();
-         if (eventType != 0) {
+         if (eventType != CHANGE_EVENT) {
             addAnEdit(ed);
          }
       }

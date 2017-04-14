@@ -47,7 +47,6 @@ public final class EditArea {
    private final JTextPane textArea = new JTextPane();
    private final SimpleAttributeSet normalSet = new SimpleAttributeSet();
    private final StyledDocument doc;
-   private final DefaultStyledDocument blank = new DefaultStyledDocument();
 
    private final JTextPane lineArea = new JTextPane();
    private final SimpleAttributeSet lineSet = new SimpleAttributeSet();
@@ -140,31 +139,6 @@ public final class EditArea {
     */
    public StyledDocument getDoc() {
       return doc;
-   }
-   
-    /**
-    * Returns the {@code DefaultStyledDocument} associated with this
-    * text area
-    * @return  the {@code DefaultStyledDocument} associated with this
-    * text area
-    */
-   public DefaultStyledDocument getDefDoc() {
-      return blank;
-   }
-   
-   /**
-    * Associates this textArea with this {@code StyledDocument}
-    */
-   public void setDoc() {
-      textArea.setDocument(doc);
-   }
-   
-   /**
-    * Associates this textArea with this {@code DefaultStyledDocument}
-    * with no attributes
-    */
-   public void setDefDoc() {
-      textArea.setDocument(blank);
    }
    
    /**

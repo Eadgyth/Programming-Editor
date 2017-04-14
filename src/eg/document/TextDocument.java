@@ -104,6 +104,11 @@ public final class TextDocument {
       return dir;
    }
    
+   /**
+    * If the set Language is any coding language, i.e. not plain text
+    *
+    * @return  the set Language is any coding language, i.e. not plain text
+    */
    public boolean isCodingLanguage() {
       return !isPlainText;
    }
@@ -116,7 +121,7 @@ public final class TextDocument {
    public void openFile(File file) {
       if (this.filepath().length() != 0) {
          throw new IllegalStateException(
-                 "Illegal attempt to assign a file to a "
+               "Illegal attempt to assign a file to a "
                + " TextDocument which a file was assigned to before");
       }
       assignFileStrings(file);
@@ -283,8 +288,7 @@ public final class TextDocument {
    //
 
    private void displayFileContent() {
-      type.setDefaultDoc();
-      type.enableTypeEdit(false);
+      type.enableEvaluateText(false);
       try (BufferedReader br = new BufferedReader(new FileReader(docFile))) {
          String line;
          while ((line = br.readLine()) != null) {
@@ -297,8 +301,8 @@ public final class TextDocument {
       if (editArea.getDocText().endsWith("\n")) {
          editArea.removeStr(getText().length() - 1, 1);
       }
-      type.setDoc();
-      type.enableTypeEdit(true);
+      editArea.textArea().setCaretPosition(0);
+      type.enableEvaluateText(true);
    }
 
    /**
