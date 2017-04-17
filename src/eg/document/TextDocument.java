@@ -4,10 +4,6 @@ import java.awt.EventQueue;
 
 import javax.swing.JTextPane;
 
-import javax.swing.text.Document;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.BadLocationException;
-
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -18,7 +14,6 @@ import java.io.IOException;
 import eg.Preferences;
 import eg.Languages;
 
-import eg.utils.JOptions;
 import eg.utils.FileUtils;
 import eg.ui.EditArea;
 
@@ -211,8 +206,8 @@ public final class TextDocument {
    /**
     * Colors a section of text which also may be the entire text
     *
-    * @param section  a section of from the document. If null the entire
-    * text is colored
+    * @param section  a section of from the document. Null to color the entire
+    * entire text
     * @param posStart  the pos within the entire text where the section to
     * be colored starts. Set to 0 if '{code section}' is null.
     */

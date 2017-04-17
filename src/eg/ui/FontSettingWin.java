@@ -2,6 +2,7 @@ package eg.ui;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GraphicsEnvironment;
 
 import java.awt.event.ActionListener;
 
@@ -23,24 +24,27 @@ import eg.Preferences;
  */
 public class FontSettingWin {
 
-   private final static String[] FONTS = {
+   /*private final static String[] FONTS = {
       "Arial", "Consolas", "Courier", "Courier New", "Lucida Console",
       "Lucida Sans Typewriter Regular", "Verdana"
-   };
+   };*/
 
    private final static String[] FONT_SIZES = {
       "10", "11", "12", "13", "14", "15", "16"
    };
 
    private final JFrame frame = new JFrame("Font");
-   private final JComboBox<String> selectFont = new JComboBox<>(FONTS);
+   private final JComboBox<String> selectFont;
    private final JComboBox<String> selectSize = new JComboBox<>(FONT_SIZES);
    private final JButton okBt = new JButton("OK");
-
    private final Preferences prefs = new Preferences();
+
+   private final String[] fonts;
 
    public FontSettingWin() {
       prefs.readPrefs();
+      fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+      selectFont = new JComboBox<>(fonts);
       initFrame();
    }
 
@@ -69,7 +73,7 @@ public class FontSettingWin {
     * @return the selected font
     */
    public String fontComboBxRes() {
-      String font = FONTS[selectFont.getSelectedIndex()];
+      String font = fonts[selectFont.getSelectedIndex()];
       prefs.storePrefs("font", font);
       return font;
    }

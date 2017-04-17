@@ -1,7 +1,5 @@
 package eg.syntax;
 
-import eg.utils.Finder;
-
 public class PerlColoring implements Colorable {
    
    final static String[] PERL_KEYWORDS = {
@@ -36,7 +34,7 @@ public class PerlColoring implements Colorable {
       "$", "@", "%"
    };
    
-   private final static String lineCmnt = "#";
+   private final static String LINE_CMNT = "#";
    
    @Override
    public void color(String allText, String toColor, int pos,
@@ -59,7 +57,7 @@ public class PerlColoring implements Colorable {
          lex.bracket(toColor, s, posStart);
       }
       lex.quoted(toColor, posStart, "\"", null, null);
-      lex.lineComments(toColor, posStart, lineCmnt);
+      lex.lineComments(toColor, posStart, LINE_CMNT);
    }
    
    private void variable(String in, String flag, int pos, Lexer lex) {

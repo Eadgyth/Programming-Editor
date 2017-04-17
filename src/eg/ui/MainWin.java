@@ -2,12 +2,8 @@ package eg.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
-import java.awt.Dimension;
-
-import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
 
 import javax.swing.Box;
@@ -16,10 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
-import javax.swing.JMenuBar;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
 
 import javax.swing.border.EmptyBorder;
 

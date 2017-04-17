@@ -1,7 +1,5 @@
 package eg.syntax;
 
-import eg.utils.Finder;
-
 public class JavaColoring implements Colorable {
 
    private final static String[] JAVA_KEYWORDS = {
@@ -27,15 +25,16 @@ public class JavaColoring implements Colorable {
       "@Override", "@Deprecated", "@SuppressWarnings", "@SafeVarargs"
    };
 
-   private final static String lineCmnt = "//";
-   private final static String blockCmntStart = "/*";
-   private final static String blockCmntEnd = "*/";
+   private final static String LINE_CMNT = "//";
+   private final static String BLOCK_CMNT_START = "/*";
+   private final static String BLOCK_CMNT_END = "*/";
 
    @Override
    public void color(String allText, String toColor, int pos,
          int posStart, Lexer lex) {
 
-      if (!SyntaxUtils.isInBlock(allText, pos, blockCmntStart, blockCmntEnd)) {
+      if (!SyntaxUtils.isInBlock(allText, pos, BLOCK_CMNT_START,
+              BLOCK_CMNT_END)) {
          lex.setCharAttrBlack(posStart, toColor.length());
          for (String s : JAVA_ANNOTATIONS) {
             lex.keywordBlue(toColor, s, posStart, false);
@@ -51,8 +50,8 @@ public class JavaColoring implements Colorable {
          }
          lex.quoted(toColor, posStart, "\'", null, null);
          lex.quoted(toColor, posStart, "\"", null, null);
-         lex.lineComments(toColor, posStart, lineCmnt);
+         lex.lineComments(toColor, posStart, LINE_CMNT);
       }
-      lex.blockComments(allText, blockCmntStart, blockCmntEnd);
+      lex.blockComments(allText, BLOCK_CMNT_START, BLOCK_CMNT_END);
    }
 }

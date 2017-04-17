@@ -345,7 +345,7 @@ public abstract class ProjectConfig implements Configurable {
          sb.append(moduleDir);
          sb.append(F_SEP);
       }
-      sb.append(mainFile  + suffix);
+      sb.append(mainFile + suffix);
       return sb.toString();
    }      
    

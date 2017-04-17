@@ -1,7 +1,5 @@
 package eg.syntax;
 
-import eg.utils.Finder;
-
 public class HtmlColoring implements Colorable {
    
    final static String[] HTML_TAGS = {
@@ -22,14 +20,15 @@ public class HtmlColoring implements Colorable {
    };
    
    private final static String[] BRACKETS = { "<", ">" }; 
-   private final String blockCmntStart = "<!--";
-   private final String blockCmntEnd = "-->";
+   private final static String BLOCK_CMNT_START = "<!--";
+   private final static String BLOCK_CMNT_END = "-->";
 
    @Override
    public void color(String allText, String toColor, int pos,
          int posStart, Lexer lex) {
 
-      if (!SyntaxUtils.isInBlock(allText, pos, blockCmntStart, blockCmntEnd)) {
+      if (!SyntaxUtils.isInBlock(allText, pos, BLOCK_CMNT_START,
+              BLOCK_CMNT_END)) {
          lex.setCharAttrBlack(posStart, toColor.length());
          for (String s : BRACKETS) {
             lex.bracketBlue(toColor, s, posStart);
@@ -39,7 +38,7 @@ public class HtmlColoring implements Colorable {
          }
          lex.quoted(toColor, posStart, "\"", BRACKETS[0], BRACKETS[1]);
       }    
-      lex.blockComments(allText, blockCmntStart, blockCmntEnd);
+      lex.blockComments(allText, BLOCK_CMNT_START, BLOCK_CMNT_END);
    }
 
    private void tag(String toColor, String key, int pos, Lexer lex) {

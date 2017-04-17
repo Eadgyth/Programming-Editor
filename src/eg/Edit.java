@@ -1,6 +1,5 @@
 package eg;
 
-import java.awt.EventQueue;
 import java.awt.Toolkit;
 
 import java.awt.datatransfer.Clipboard;
@@ -49,7 +48,7 @@ public class Edit {
    public void undo() {
       txtDoc.undo();
    }
-
+   
    /**
     * Performs redo action
     */
@@ -132,8 +131,8 @@ public class Edit {
       String[] selArr = sel.split("\n");
       int start = textArea.getSelectionStart();
       int sum = 0;
-      for (int i = 0; i < selArr.length; i++) {
-         int lineLength = selArr[i].length() + indentLength;
+      for (String s : selArr) {
+         int lineLength = s.length() + indentLength;
          txtDoc.insertStr(start + sum, indentUnit);
          sum += lineLength + 1;
       }
@@ -157,13 +156,12 @@ public class Edit {
       selArr[0] = firstLine;
       if (selArr[0].startsWith(" ") && isIndentConsistent(selArr)) {
          int sum = 0;
-         for (int i = 0; i < selArr.length; i++) {
-            if (selArr[i].startsWith(indentUnit)) {
+         for (String s : selArr) {
+            if (s.startsWith(indentUnit)) {
                txtDoc.removeStr(start + sum, indentLength);
-               sum += (selArr[i].length() - indentLength) + 1;
-            }
-            else {
-               sum += selArr[i].length() + 1;
+               sum += (s.length() - indentLength) + 1;
+            } else {
+               sum += s.length() + 1;
             }
          }
       }
@@ -178,9 +176,9 @@ public class Edit {
       String text = txtDoc.getText();
       String[] textArr = text.split("\n");
       int sum = 0;
-      for (int i = 0; i < textArr.length; i++) {
-         int startOfSpaces = startOfTrailingSpaces(textArr[i]);
-         int spacesLength = textArr[i].length() - startOfSpaces;
+      for (String s : textArr) {
+         int startOfSpaces = startOfTrailingSpaces(s);
+         int spacesLength = s.length() - startOfSpaces;
          txtDoc.removeStr(startOfSpaces + sum, spacesLength);
          sum += startOfSpaces + 1;
       }
@@ -218,9 +216,9 @@ public class Edit {
 
    private boolean isIndentConsistent(String[] textArr) {
       boolean isConsistent = true;
-      for (int i = 0; i < textArr.length; i++) {
-         if (textArr[i].length() > 0 && !textArr[i].matches("[\\s]+")
-               && !textArr[i].startsWith(indentUnit)) {
+      for (String s : textArr) {
+         if (!s.startsWith(indentUnit)
+                && s.length() > 0 && !s.matches("[\\s]+")) {
             isConsistent = false;
             break;
          }

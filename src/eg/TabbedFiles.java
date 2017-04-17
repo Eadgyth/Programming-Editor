@@ -38,9 +38,11 @@ public class TabbedFiles implements Observer {
    private final CurrentProject currProj;
    private final ChangeListener changeListener;
 
-   /* The index of the selected tab */
+   /**
+    * The index of the selected tab */
    private int iTab = 0;
-   
+   /**
+    * The language set in the Edit > Langugae menu */
    Languages lang;
    
    public TabbedFiles(TabbedPane tp, ViewSetter viewSet, EditAreaFormat format,
@@ -120,7 +122,6 @@ public class TabbedFiles implements Observer {
 
    /**
     * Opens a file that is selected in the file chooser.
-    * <p>
     * If a project is not yet defined it is tried to set active a
     * project 
     */
@@ -138,12 +139,10 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Saves the text content of the selected document.
-    * <p>
-    * If the selected document is unnamed {@link #saveAs()} is used. 
-    * <p>
-    * 'Save-as-mode' also applies if a file has been assigned to the
-    * selected document but the file does not exist anymore.
+    * Saves the text content in the selected tab. If the selected tab is
+    * unnamed {@link #saveAs()} is called. 
+    * <p>'Save-as-mode' also applies if the content of the document was read
+    * in from a file which, however, no longer exist.
     */
    public void save() {  
       if (txtDoc[iTab].filename().length() == 0 
@@ -156,9 +155,8 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Saves the text content in all tabs.
-    * <p>
-    * A warning is shown if files no longer exist.
+    * Saves the text content in all tabs. A warning is shown if any
+    * files no longer exist.
     */
    public void saveAll() {
       StringBuilder sb = new StringBuilder();
@@ -180,7 +178,7 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Saves the text content of the selected document as a new file that
+    * Saves the text content in the selected tab as a new file that
     * is specified in the file chooser
     */
    public void saveAs() {
@@ -198,7 +196,6 @@ public class TabbedFiles implements Observer {
          tp.changeTabTitle(iTab, txtDoc[iTab].filename());
          viewSet.displayFrameTitle(txtDoc[iTab].filepath());
          prefs.storePrefs("recentPath", txtDoc[iTab].dir());
-         
          EventQueue.invokeLater(() ->
                currProj.updateFileTree(txtDoc[iTab].dir()));
       }
@@ -207,8 +204,7 @@ public class TabbedFiles implements Observer {
    /**
     * Saves a copy of the content in the selected document to the file
     * that is selected in the file chooser.
-    * <p>
-    * Method does not change the file of the document in the tab.
+    * <p> Method does not change the file of the document in the tab.
     */
    public void saveCopy() {
       File f = fs.fileToSave(txtDoc[iTab].filepath());
@@ -229,20 +225,20 @@ public class TabbedFiles implements Observer {
       }
       if (!storable) {
          JOptions.warnMessage(txtDoc[iTab].filepath()
-               + "could not be replaces");
+               + "could not be replaced");
       }
    }      
    
    /**
-    * Prints the text content of the selected document to a printer
+    * Prints the text content in the selected tab to a printer
     */
    public void print() {
       editArea[iTab].print();
    }
 
    /**
-    * Closes a tab if the text content of its {@code TextDocument} is saved
-    * or asks if closing shall happen with or without saving
+    * Closes a tab if the text content is saved or asks the user if closing
+    * shall happen with or without saving
     */
    public void tryClose() {
       if (txtDoc[iTab].isContentSaved()) {

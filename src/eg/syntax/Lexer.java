@@ -142,10 +142,10 @@ public class Lexer {
          // split because string literals are not colored across lines
          String[] chunkArr = toColor.split("\n");
          int sum = 0;
-         for (int i = 0; i < chunkArr.length; i++) {
-            quotedInLine(chunkArr[i], pos + sum, quoteSign, blockStart, blockEnd);
-            sum += chunkArr[i].length() + 1;
-         }
+          for (String s : chunkArr) {
+              quotedInLine(s, pos + sum, quoteSign, blockStart, blockEnd);
+              sum += s.length() + 1;
+          }
       }
       else {
          quotedInLine(toColor, pos, quoteSign, blockStart, blockEnd);
@@ -218,9 +218,7 @@ public class Lexer {
       }
    }
    
-   void color(String allText, String toColor, int pos,
-         int posStart) {
-
+   void color(String allText, String toColor, int pos, int posStart) {
        colorable.color(allText, toColor, pos, posStart, this);
    }
 

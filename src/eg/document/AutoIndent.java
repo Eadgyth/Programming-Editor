@@ -4,11 +4,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyAdapter;
 
-import javax.swing.JTextPane;
-
-//--Eadgyth--//
-import eg.Preferences;
-import eg.utils.FileUtils;
 import eg.ui.EditArea;
 
 /**
@@ -77,7 +72,7 @@ class AutoIndent {
       String currIndent = "";
       //
       // -2 to skip the new return after pressing enter
-      int lineStart = -1;;
+      int lineStart = -1;
       if (pos > 1) {
          lineStart = in.lastIndexOf("\n", pos - 2);
       }

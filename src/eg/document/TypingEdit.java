@@ -21,9 +21,6 @@ import javax.swing.undo.UndoableEdit;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.CannotRedoException;
 
-import javax.swing.JTextPane;
-import javax.swing.SwingWorker;
-
 import java.awt.EventQueue;
 
 //--Eadgyth--//
@@ -32,7 +29,6 @@ import eg.syntax.Lexer;
 import eg.syntax.Coloring;
 import eg.ui.EditArea;
 import eg.utils.FileUtils;
-import eg.utils.Finder;
 
 /*
  * Mediates the editing in the {@code EditArea} that shall happen during
@@ -127,8 +123,9 @@ class TypingEdit {
          enableEvaluateText(false);
          if (undomanager.canUndo()) {
             undomanager.undo();
+            updateAfterUndoRedo(prevLineNr);
          }
-         updateAfterUndoRedo(prevLineNr);
+         enableEvaluateText(true);
       }
       catch (CannotUndoException e) {
          FileUtils.logStack(e);
@@ -141,8 +138,9 @@ class TypingEdit {
          enableEvaluateText(false);
          if (undomanager.canRedo()) {
             undomanager.redo();
+            updateAfterUndoRedo(prevLineNr);
          }
-         updateAfterUndoRedo(prevLineNr);
+         enableEvaluateText(true);
       }
       catch (CannotRedoException e) {
          FileUtils.logStack(e);
@@ -170,7 +168,6 @@ class TypingEdit {
             }
          }
       }
-      enableEvaluateText(true);
    }
 
    private void color(String allText, int pos) {
@@ -185,8 +182,8 @@ class TypingEdit {
       public void insertUpdate(DocumentEvent de) {
          pos = de.getOffset();
          eventType = INSERT_EVENT;
+         changeLength = de.getLength();
          if (evaluateText) {
-            changeLength = de.getLength();
             String in = editArea.getDocText();
             typed = in.charAt(pos);
             updateLineNumber(in);
@@ -206,8 +203,8 @@ class TypingEdit {
       public void removeUpdate(DocumentEvent de) {
          pos = de.getOffset();
          eventType = REMOVE_EVENT;
+         changeLength = - de.getLength();
          if (evaluateText) {
-            eventType = REMOVE_EVENT;
             typed = '\0';
             String in = editArea.getDocText();
             updateLineNumber(in);

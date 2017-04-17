@@ -6,8 +6,6 @@ import java.awt.Font;
 
 import java.awt.print.*;
 
-import java.awt.event.KeyListener;
-
 import javax.swing.JTextPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -16,8 +14,6 @@ import javax.swing.KeyStroke;
 
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Document;
 import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
@@ -33,8 +29,6 @@ import eg.utils.FileUtils;
 /**
  * Defines the editor view that contains the text area to edit text and the 
  * area that displays line numbers.
- * <p>
- * The text area ({@code JTextPane}) is associated with a {@code StyledDocument}.
  */
 public final class EditArea {
 

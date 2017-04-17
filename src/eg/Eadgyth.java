@@ -7,22 +7,16 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import javax.swing.border.EmptyBorder;
 
-import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Insets;
 
 import java.awt.event.WindowListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 //--Eadgyth--//
-import eg.console.*;
 import eg.ui.MainWin;
-import eg.ui.Toolbar;
 import eg.ui.TabbedPane;
-import eg.ui.menu.Menu;
 import eg.ui.ViewSettingWin;
-import eg.ui.filetree.FileTree;
 import eg.utils.FileUtils;
 import eg.plugin.PluginStarter;
 

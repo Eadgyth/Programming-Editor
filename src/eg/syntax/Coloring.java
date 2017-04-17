@@ -1,11 +1,5 @@
 package eg.syntax;
 
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyledDocument;
-import javax.swing.text.StyleConstants;
-
-import java.awt.Color;
-
 //--Eadgyth--//
 import eg.Languages;
 import eg.utils.Finder;
@@ -59,14 +53,11 @@ public class Coloring {
     * @param section  a section of '{code allText}' which may be multiline.
     * null to color '{code allText}'
     * @param pos  the pos within the entire text where the section starts.
-    * Set to 0 if '{code section}' is null.
     */
    public void colorSection(String allText, String section, int pos) {
       int posStart = 0;
       if (section == null) {
          section = allText;
-         posStart = 0;
-         pos = posStart;
       }
       else {
          section = Finder.allLinesAtPos(allText, section, pos);
