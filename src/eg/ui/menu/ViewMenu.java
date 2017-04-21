@@ -32,6 +32,7 @@ public class ViewMenu {
    
    /**
     * Adds handler for showing/hiding the console panel
+    *
     * @param al  the {@code ActionListener}
     */
    public void consoleItmAct(ActionListener al) {
@@ -40,6 +41,7 @@ public class ViewMenu {
    
    /**
     * Adds handler for showing/hiding the file view panel
+    *
     * @param al  the {@code ActionListener}
     */
    public void fileViewItmAct(ActionListener al) {
@@ -48,6 +50,7 @@ public class ViewMenu {
    
    /**
     * Adds handler for showing/hiding the function panel
+    *
     * @param al  the {@code ActionListener}
     */
    public void functionItmAct(ActionListener al) {
@@ -56,6 +59,7 @@ public class ViewMenu {
    
    /**
     * Adds handler for showing/hiding the tab bar
+    *
     * @param al  the {@code ActionListener}
     */
    public void tabItmAct(ActionListener al) {
@@ -64,6 +68,7 @@ public class ViewMenu {
    
    /** 
     * Adds handler for opening the window for the view seetings
+    *
     * @param al  the {@code ActionListener}
     */
    public void openSettingWinItmAct(ActionListener al) {
@@ -104,8 +109,8 @@ public class ViewMenu {
 
    /**
     * Performs the action added to the menu item to open/close the
-    * console panel if {@code select} is not equal to the current
-    * selection state of the item
+    * console panel
+    *
     * @param select  true/false to select/unselect the menu item
     */
    public void doConsoleItmAct(boolean select) {
@@ -126,8 +131,8 @@ public class ViewMenu {
 
    /**
     * Performs the action added to the menu item to open/close the
-    * function panel if {@code select} is not equal to the current
-    * selection state of the item
+    * function panel
+    *
     * @param select  true/false to select/unselect the menu item
     */
    public void doFunctionItmAct(boolean select) {

@@ -5,7 +5,7 @@ import java.awt.Component;
 //--Eadgyth--//
 import eg.ui.MainWin;
 import eg.ui.Toolbar;
-import eg.ui.menu.Menu;
+import eg.ui.menu.ViewMenu;
 import eg.ui.menu.FormatMenu;
 import eg.ui.menu.ViewMenu;
 import eg.ui.menu.ProjectMenu;
@@ -19,73 +19,68 @@ import eg.utils.JOptions;
 public class ViewSetter {
 
    private final MainWin mw;
-   private final Menu menu;
+   private final ViewMenu vMenu;
    private final TabbedPane tabPane;
    private final ViewSettingWin viewSetWin;
    private final Preferences prefs = new Preferences();
 
    private boolean isShowToolbar;
    private boolean isShowStatusbar;
-   private boolean isShowTabs;
    private int selectedLafInd;
 
-   /**
-    * @param viewSetWin  the reference to {@link ViewSettingWin}
-    * @param mw  the reference to {@link MainWin}
-    * @param tabPane  the reference to {@link TabbedPane}
-    */
-   public ViewSetter(ViewSettingWin viewSetWin, MainWin mw,
-         TabbedPane tabPane) {
-
+   public ViewSetter(ViewSettingWin viewSetWin, MainWin mw) {
       this.viewSetWin = viewSetWin;
       this.mw = mw;
-      this.menu = mw.getMenu();
-      this.tabPane = tabPane;
+      this.vMenu = mw.menu().viewMenu();
+      this.tabPane = mw.tabPane();
 
       isShowStatusbar = viewSetWin.isShowStatusbar();
+      mw.showStatusbar(isShowStatusbar);
       isShowToolbar = viewSetWin.isShowToolbar();
+      mw.showToolbar(isShowToolbar);
       selectedLafInd = viewSetWin.selectedLaf();
       
       prefs.readPrefs();
-      isShowTabs = "show".equals(prefs.getProperty("showTabs"));
-      menu.getViewMenu().selectTabsItm(isShowTabs);
+      boolean isShowTabs = "show".equals(prefs.getProperty("showTabs"));
+      vMenu.selectTabsItm(isShowTabs);
       tabPane.showTabbar(isShowTabs);
-      
       registerActions();
    }
    
    /**
-    * If showing tabs (and thus opening multiple files) is
-    * is selected
-    * @return if showing tabs is selected
+    * If showing the tab bar is selected in the view menu
+    *
+    * @return  if showing the tab bar is selected
     */
    public boolean isShowTabs() {
-      return isShowTabs;
+      return vMenu.isTabItmSelected();
    }
    
    /**
     * Enables/disables the menu item to control visiblity of the
     * tab bar
+    *
     * @param isEnabled  true/false to enable/disable the menu item for
     * controlling visiblity of the tab bar
     */
    public void enableTabItm(boolean isEnabled) {
-      menu.getViewMenu().enableTabItm(isEnabled);
+      vMenu.enableTabItm(isEnabled);
    }
    
    /**
     * Shows/hides the tab bar
+    *
     * @param show  true/false to show/hide the tab bar
     */
    public void showTabbar(boolean show) {       
       tabPane.showTabbar(show);
       String state = show ? "show" : "hide";
       prefs.storePrefs("showTabs", state);
-      this.isShowTabs = show;
    }
    
    /**
     * Displays text in the title bar of the main window (i.e., the file)
+    *
     * @param title  the text that is displayed in the title bar of the
     * main window
     */
@@ -102,30 +97,27 @@ public class ViewSetter {
       String state = null;
 
       show = viewSetWin.isShowToolbar();
-      if (isShowToolbar != show) {
+      if (show != isShowToolbar) {
          mw.showToolbar(show);
          isShowToolbar = show; 
          state = isShowToolbar ? "show" : "hide";
          prefs.storePrefs("toolbar", state);
       }
-
       show = viewSetWin.isShowStatusbar();
-      if (isShowStatusbar != show) {
+      if (show != isShowStatusbar) {
          mw.showStatusbar(show);
          isShowStatusbar = show;
          state = isShowStatusbar ? "show" : "hide";
          prefs.storePrefs("statusbar", state);
       }
-
       int index = viewSetWin.selectedLaf();
-      if (selectedLafInd != index) {
+      if (index != selectedLafInd) {
          selectedLafInd = index;
          prefs.storePrefs("LaF", ViewSettingWin.LAF_OPT[selectedLafInd]);
       }
    }
    
    private void registerActions() {
-      ViewMenu vm = menu.getViewMenu();
-      vm.tabItmAct(e -> showTabbar(vm.isTabItmSelected()));
+      vMenu.tabItmAct(e -> showTabbar(isShowTabs()));
    }      
 }

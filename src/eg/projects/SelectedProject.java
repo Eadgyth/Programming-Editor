@@ -3,6 +3,7 @@ package eg.projects;
 import eg.console.*;
 import eg.Languages;
 import eg.ProjectUIUpdate;
+import eg.ui.MainWin;
 import eg.ui.filetree.FileTree;
 
 /**
@@ -11,34 +12,34 @@ import eg.ui.filetree.FileTree;
 public class SelectedProject {
 
    private final ProjectUIUpdate update;
+   private final MainWin mw;
    private final ProcessStarter proc;
-   private final ConsolePanel consPnl;
+   private final ConsolePanel console;
 
-   public SelectedProject(ProjectUIUpdate update, ProcessStarter proc,
-         ConsolePanel consPnl) {
-      this.update = update;
+   public SelectedProject(MainWin mw, ProcessStarter proc,
+         ConsolePanel console) {
+
+      this.mw = mw;
       this.proc = proc;
-      this.consPnl = consPnl;
+      this.console = console;
+      update = new ProjectUIUpdate(mw);
    }
 
    /**
-    * Returns an object of type {@code ProjectActions} and creates the
-    * {@code SettingsWin} for the project.
-    * <p>
-    * The first criterion to select a {@link ProjectActions} is the file extension.
-    * Only if no corresponding class is found the language is used.
+    * Returns a {@code ProjectActions} and creates the {@code SettingsWin}
+    * for the project.
+    * <p>The first criterion to select a {@link ProjectActions} is the file
+    * extension. Only if no corresponding class is found the language is used.
     *
     * @param fileExt  the file extension which a project is to be defined for
     * @param lang  the language which has a value from {@link Languages}
-    * @return  an object of type {@link ProjectActions} or null if no
-    * class exists that implements ProjectActions for the given file
-    * extension.
+    * @return  an object of type {@link ProjectActions}
     */
    public ProjectActions createProject(String fileExt, Languages lang) {
       ProjectActions newProj = null;
       switch (fileExt) {
          case "java":
-            newProj = new JavaActions(update, proc, consPnl);
+            newProj = new JavaActions(update, proc, console);
             break;
          case "html": case "htm":
             newProj = new HtmlActions(fileExt);
@@ -50,7 +51,7 @@ public class SelectedProject {
       if (newProj == null) {
          switch (lang) {
             case JAVA:
-               newProj = new JavaActions(update, proc, consPnl);
+               newProj = new JavaActions(update, proc, console);
                break;
             case HTML:
                newProj = new HtmlActions("html");
@@ -73,27 +74,33 @@ public class SelectedProject {
    
    /**
     * Enables action components in the menu and toolbar depending on the
-    * type of project
+    * name of the class that implements {@code ProjectActions}
     *
-    * @param className  the name of the class of type {@link ProjectActions}
-    * @param projCount  the number of already configured projects
+    * @param className  the name of the class
     */
-   public void enableActions(String className, int projCount) {
-      update.setBuildLabel("Build");
+   public void enableActions(String className) {
+      mw.menu().projectMenu().setBuildLabel("Build");
       switch (className) {
          case "JavaActions":
-            update.enableProjActions(true, true, true, projCount);
-            update.setBuildLabel("Create jar");
+            enableProjActions(true, true, true);
+            mw.menu().projectMenu().setBuildLabel("Create jar");
             break;
          case "HtmlActions":
-            update.enableProjActions(false, true, false, projCount);
+            enableProjActions(false, true, false);
             break;
          case "PerlActions":
-            update.enableProjActions(false, true, false, projCount);
+            enableProjActions(false, true, false);
             break;
          case "TxtActions":
-            update.enableProjActions(false, false, false, projCount);
+            enableProjActions(false, false, false);
             break;
       }
-   }         
+   }
+   
+   private void enableProjActions(boolean isCompile, boolean isRun,
+         boolean isBuild) {
+
+      mw.menu().projectMenu().enableProjItms(isCompile, isRun, isBuild);
+      mw.toolbar().enableProjBts(isCompile, isRun);
+   }
 }

@@ -16,7 +16,9 @@ import java.awt.event.WindowEvent;
 //--Eadgyth--//
 import eg.ui.MainWin;
 import eg.ui.TabbedPane;
+import eg.ui.Toolbar;
 import eg.ui.ViewSettingWin;
+import eg.ui.menu.Menu;
 import eg.utils.FileUtils;
 import eg.plugin.PluginStarter;
 
@@ -34,33 +36,23 @@ public class Eadgyth {
       setLaf();
       FileUtils.emptyLog();
 
-      TabbedPane      tabPane    = new TabbedPane();
-      MainWin         mw         = new MainWin(tabPane.tabbedPane());
-      ProjectUIUpdate prUpdate   = new ProjectUIUpdate(mw);
+      MainWin         mw         = new MainWin();
+      CurrentProject  currProj   = new CurrentProject(mw);
+      PluginStarter   plugStart  = new PluginStarter(mw.functionPanel());
       ViewSettingWin  viewSetWin = new ViewSettingWin();
-      EditAreaFormat  format     = new EditAreaFormat(viewSetWin, mw.getMenu().getFormatMenu());
-      ViewSetter      viewSet    = new ViewSetter(viewSetWin, mw, tabPane);
-      CurrentProject  currProj   = new CurrentProject(prUpdate, mw.getConsole());
-      PluginStarter   plugStart  = new PluginStarter(mw);
+      EditAreaFormat  format     = new EditAreaFormat(viewSetWin, mw.menu().formatMenu());
+      ViewSetter      viewSet    = new ViewSetter(viewSetWin, mw);
       Edit            edit       = new Edit();
       DocumentUpdate  docUpdate  = new DocumentUpdate(edit, plugStart);
-      TabbedFiles     tabFiles   = new TabbedFiles(tabPane, viewSet, format, currProj,
+      TabbedFiles     tabFiles   = new TabbedFiles(mw.tabPane(), viewSet, format, currProj,
                                        docUpdate);
 
-      WindowListener winListener = new WindowAdapter() {
-
-         @Override
-         public void windowClosing(WindowEvent we) {
-            tabFiles.tryExit();
-         }
-      };
-      mw.winListen(winListener);
-
+      mw.winListen(tabFiles.closeWindow);
       mw.registerFileAct(tabFiles);
       mw.registerProjectAct(currProj);
       mw.registerEditAct(edit, tabFiles);
       mw.registerPlugAct(plugStart);
-      mw.getMenu().getViewMenu().openSettingWinItmAct(e ->
+      mw.menu().viewMenu().openSettingWinItmAct(e ->
             viewSetWin.makeVisible(true));
       viewSetWin.okAct(e -> {
          format.applySetWinOk();
@@ -73,23 +65,7 @@ public class Eadgyth {
          tabFiles.focusInSelectedTab();
       });
    }
-
-   private static void setLaf() {
-      Preferences prefs = new Preferences();
-      prefs.readPrefs();
-      if ("System".equals(prefs.getProperty("LaF"))) {
-         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-         } 
-         catch (ClassNotFoundException 
-              | IllegalAccessException 
-              | InstantiationException 
-              | UnsupportedLookAndFeelException e) {
-            FileUtils.logStack(e);
-         }
-      }
-   }
-
+   
    private static void uiManagerSettings() {
       UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
       UIManager.put("Menu.font", Constants.SANSSERIF_PLAIN_12);
@@ -97,5 +73,21 @@ public class Eadgyth {
       UIManager.put("CheckBoxMenuItem.font", Constants.SANSSERIF_PLAIN_12);
       UIManager.put("SplitPaneDivider.border", new EmptyBorder(0, 0, 0, 0));
       UIManager.put("Tree.rowHeight", 20);
-   } 
+   }
+
+   private static void setLaf() {
+      Preferences prefs = new Preferences();
+      prefs.readPrefs();
+      if ("System".equals(prefs.getProperty("LaF"))) {
+         try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+         }
+         catch (ClassNotFoundException
+              | IllegalAccessException
+              | InstantiationException
+              | UnsupportedLookAndFeelException e) {
+            FileUtils.logStack(e);
+         }
+      }
+   }
 }

@@ -9,6 +9,9 @@ import java.awt.EventQueue;
 
 //--Eadgyth--//
 import eg.console.*;
+import eg.ui.MainWin;
+import eg.ui.Toolbar;
+import eg.ui.menu.Menu;
 import eg.ui.filetree.FileTree;
 import eg.projects.ProjectActions;
 import eg.projects.SelectedProject;
@@ -47,8 +50,8 @@ public class CurrentProject {
    private final String FILES_NOT_FOUND_MESSAGE
          = "The following file could not be found anymore:";
 
+   private final MainWin mw;
    private final SelectedProject selProj;
-   private final ProjectUIUpdate update;
    private final ProcessStarter proc;
    private final List<ProjectActions> projList = new ArrayList<>();
 
@@ -58,10 +61,10 @@ public class CurrentProject {
    private String currExt;
    private Languages lang;
 
-   public CurrentProject(ProjectUIUpdate update, ConsolePanel consPnl) {
-      this.update = update;
-      proc = new ProcessStarter(consPnl);
-      selProj = new SelectedProject(update, proc, consPnl);
+   public CurrentProject(MainWin mw) {
+      this.mw = mw;
+      proc = new ProcessStarter(mw.console());
+      selProj = new SelectedProject(mw, proc, mw.console());
    }
 
    /**
@@ -126,9 +129,7 @@ public class CurrentProject {
                if (selectFromList(currDoc.dir(), true) == null) {
                   prToFind.addOkAction(e -> configureProject(prToFind));
                   projList.add(prToFind);
-                  if (projList.size() == 2) {
-                     update.enableChangeProj();
-                  }
+                  enableChangeProject();
                   changeProject(prToFind);            
                }
             }
@@ -182,7 +183,7 @@ public class CurrentProject {
          int res = 0;
          if (test != null) {
             res = JOptions.confirmYesNo("'" + currDoc.filename()
-                  + "' belongs to project '" + projectName(test) + "'."
+                  + "' belongs to project '" + test.getProjectName() + "'."
                   + "\nStill set new project?");
          }
          if (res == 0) {
@@ -218,7 +219,7 @@ public class CurrentProject {
     */
    public void updateFileTree(String path) {
       if (isProjectSet() && current.isInProject(path)) {
-         update.updateFileTree();
+         mw.fileTree().updateTree();
       }
    }
    
@@ -231,7 +232,7 @@ public class CurrentProject {
          return;
       }
       try {
-        update.setBusyCursor(true);
+        mw.setBusyCursor(true);
         if (isFileToCompile(currDoc)) {
             boolean exists = new File(currDoc.filepath()).exists();
             if (exists) {
@@ -259,7 +260,7 @@ public class CurrentProject {
       }
       StringBuilder missingFiles = new StringBuilder();
       try {
-         update.setBusyCursor(true);
+         mw.setBusyCursor(true);
          for (int i = 0; i < txtDoc.length; i++) {
             if (isFileToCompile(txtDoc[i])) {
                boolean exists = new File(txtDoc[i].filepath()).exists();
@@ -302,11 +303,11 @@ public class CurrentProject {
          return;
       }
       try {
-         update.setBusyCursor(true);
+         mw.setBusyCursor(true);
          current.build();
       }
       finally {
-         update.setBusyCursor(false);
+         mw.setBusyCursor(false);
       }
    }
 
@@ -314,9 +315,6 @@ public class CurrentProject {
    //--private methods--
    //
 
-   /* 
-    * @param confirm  true to confirm in a dialog that a new project will be set
-    */
    private void createNewProject(boolean needConfirm) {
       if (currDoc.filename().length() == 0) {
          JOptions.titledInfoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
@@ -340,7 +338,7 @@ public class CurrentProject {
 
    private boolean changeProject(ProjectActions toChangeTo) {
       int result = JOptions.confirmYesNo("Change to project '"
-                 + projectName(toChangeTo) + "' ?");
+                 + toChangeTo.getProjectName() + "' ?");
       if (result == 0) {
          current = toChangeTo;
          current.storeInPrefs();
@@ -373,15 +371,26 @@ public class CurrentProject {
    }
 
    private void updateProjectSetting(ProjectActions projToSet) {
-      update.setDeletableDirName(projToSet.getExecutableDirName());
+      mw.fileTree().setDeletableDirName(projToSet.getExecutableDirName());
       proc.addWorkingDir(projToSet.getProjectPath());
-      update.showProjectInfo(projectName(projToSet));
-      selProj.enableActions(projToSet.getClass().getSimpleName(), projList.size());
-      update.setProjectTree(projToSet.getProjectPath());
+      mw.showProjectInfo(projToSet.getProjectName());
+      enableActions(projToSet);
+      mw.fileTree().setProjectTree(projToSet.getProjectPath());
    }
    
-   private String projectName(ProjectActions toName) {
-      return new File(toName.getProjectPath()).getName();
+   private void enableActions(ProjectActions projToSet) {
+      if (projList.size() == 1) {
+         mw.menu().viewMenu().enableFileView();
+      }
+      enableChangeProject();
+      selProj.enableActions(projToSet.getClass().getSimpleName());
+   }
+   
+   private void enableChangeProject() {
+      if (projList.size() == 2) {
+         mw.menu().projectMenu().enableChangeProjItm();
+         mw.toolbar().enableChangeProjBt();
+      }
    }
    
    private boolean isFileToCompile(TextDocument td) {
@@ -392,8 +401,8 @@ public class CurrentProject {
    
    private void endCompilation() {
       EventQueue.invokeLater(() -> {
-         update.updateFileTree();
-         update.setBusyCursor(false);
+         mw.fileTree().updateTree();
+         mw.setBusyCursor(false);
       });
    }
    
@@ -402,7 +411,7 @@ public class CurrentProject {
       int res = 0;
       if (!useCurrentProj) {
          res = JOptions.confirmYesNo(NOT_IN_PROJ_MESSAGE
-             + "\n" + action + " '" + projectName(current) + "'?");
+             + "\n" + action + " " + current.getProjectName() + "?");
       }
       return useCurrentProj || res == 0;
    }

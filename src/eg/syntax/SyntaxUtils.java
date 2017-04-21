@@ -137,7 +137,7 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns if a given string is in double quotes within a text
+    * Returns if a given string is in double quotes
     *
     * @param text  the text
     * @param pos  the start position of the portion that may be in quotes

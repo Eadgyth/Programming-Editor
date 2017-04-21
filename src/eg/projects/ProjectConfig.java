@@ -125,6 +125,12 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    @Override
+   public String getProjectName() {
+      File f = new File(projectPath);
+      return f.getName();
+   }
+   
+   @Override
    public String getExecutableDirName() {
       return execDir;
    }
@@ -154,15 +160,6 @@ public abstract class ProjectConfig implements Configurable {
                + " is already set cannot be replaced.");
       }
       this.setWin = setWin;
-   }
-   
-   /**
-    * Returns the name of the project directory
-    * @return  the name of the project directory
-    */
-   protected String getProjectName() {
-      File f = new File(projectPath);
-      return f.getName();
    }
    
    /**

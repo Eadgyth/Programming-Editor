@@ -4,6 +4,9 @@ import java.util.Observer;
 import java.util.Observable;
 
 import java.awt.EventQueue;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JOptionPane;
@@ -292,12 +295,13 @@ public class TabbedFiles implements Observer {
          }
       }    
    }
-
+   
+   
    /**
     * Exits the program or selects the first tab whose text content is found
     * unsaved
     */
-   public void tryExit() {
+   public void exit() {
       int count = unsavedTab();
       if (count == tp.nTabs()) {
          System.exit(0);
@@ -307,14 +311,25 @@ public class TabbedFiles implements Observer {
          int res = saveOrCloseOption(count);
          if (res == JOptionPane.YES_OPTION) {
             save();
-            tryExit();
+            exit();
          }
          else if (res == JOptionPane.NO_OPTION) {
             close();
-            tryExit();
+            exit();
          }
       }
    }
+   
+   /**
+    * Calls {link #exit()} when the close window button is pressed
+    */
+   public WindowListener closeWindow = new WindowAdapter() {
+
+      @Override
+      public void windowClosing(WindowEvent we) {
+         exit();
+      }
+   };
 
    //
    //---private methods --//

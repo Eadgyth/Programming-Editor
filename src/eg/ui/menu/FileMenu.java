@@ -53,7 +53,7 @@ public class FileMenu {
       saveAsItm.addActionListener(e -> tf.saveAs());
       saveCopyItm.addActionListener(e -> tf.saveCopy());
       printItm.addActionListener(e -> tf.print());      
-      exitItm.addActionListener(e -> tf.tryExit());
+      exitItm.addActionListener(e -> tf.exit());
    }
    
    private void assembleMenu() {

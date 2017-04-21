@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 //--Eadgyth--//
-import eg.ui.MainWin;
+import eg.ui.FunctionPanel;
 import eg.document.TextDocument;
 
 /**
@@ -13,13 +13,13 @@ import eg.document.TextDocument;
  */
 public class PluginStarter {
    
-   private final MainWin mw;
+   private final FunctionPanel functPnl;
    private final EditorAccess acc;
    private List<Pluggable> plugins = null;
    
-   public PluginStarter(MainWin mw) {
-      this.mw = mw;
-      acc = new EditorAccess(mw);
+   public PluginStarter(FunctionPanel functPnl) {
+      this.functPnl = functPnl;
+      acc = new EditorAccess(functPnl);
    }
    
    /**

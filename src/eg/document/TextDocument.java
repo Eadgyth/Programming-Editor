@@ -232,7 +232,8 @@ public final class TextDocument {
    }
 
    /**
-    * Returns the text in the document associated with this text area
+    * Returns the text of the document
+    *
     * @return  the text in the document associated with this text area
     */
    public String getText() {
@@ -296,7 +297,7 @@ public final class TextDocument {
       if (editArea.getDocText().endsWith("\n")) {
          editArea.removeStr(getText().length() - 1, 1);
       }
-      editArea.textArea().setCaretPosition(0);
+      textArea.setCaretPosition(0);
       type.enableEvaluateText(true);
    }
 

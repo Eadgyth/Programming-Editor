@@ -3,7 +3,7 @@ package eg.plugin;
 import javax.swing.JTextPane;
 
 //--Eadgyth--//
-import eg.ui.MainWin;
+import eg.ui.FunctionPanel;
 import eg.document.TextDocument;
 
 /**
@@ -16,11 +16,11 @@ import eg.document.TextDocument;
  */
 public class EditorAccess {
    
-   MainWin mw;
+   FunctionPanel functPnl;
    TextDocument txtDoc;
 
-   EditorAccess(MainWin mw) {
-      this.mw = mw;
+   EditorAccess(FunctionPanel functPnl) {
+      this.functPnl = functPnl;
    }
    
    void setTextDocument(TextDocument txtDoc) {
@@ -28,22 +28,20 @@ public class EditorAccess {
    }
    
    /**
-    * Returns the {@code JTextPane} object that represents the current
-    * text area view
+    * Gets the {@code JTextPane} object that is currently viewed
     *
-    * @return  the {@code JTextPane} object that represents the current
-    * text area view
+    * @return  the {@code JTextPane} object
     */
    public JTextPane textArea() {
       return txtDoc.getTextArea();
    }
    
    /**
-    * Returns the text content in the currently viewed text area
+    * Gets the text in the currently viewed text area
     *
-    * @return  the text content in the currently viewed text area.
-    * The returned text is contained in the {@code StyledDocument}
-    * associated with the {@code JTextPane} that displays the text
+    * @return  the text in the currently viewed text area that is
+    * is contained in the {@code Document} associated with the
+    * {@code JTextPane} that displays the text
     */
    public String getText() {
       return txtDoc.getText();
@@ -81,9 +79,8 @@ public class EditorAccess {
     *
     * @param c  the {@code Component} that is added
     * @param title  the title for the function
-    * @see MainWin#addToFunctionPanel(java.awt.Component, String)
     */
    public void addToFunctionPanel(java.awt.Component c, String title) {
-      mw.addToFunctionPanel(c, title);
+      functPnl.addComponent(c, title);
    }
 }

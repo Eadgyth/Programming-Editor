@@ -38,12 +38,12 @@ public class Finder {
       sectionArr[0] = firstLine;
       if (sectionArr.length > 1) {
          String lastLine = Finder.lineAtPos(text, pos + section.length());
-         sectionArr[sectionArr.length - 1] = lastLine;
          StringBuffer sb = new StringBuffer();
-         for (String s : sectionArr) {
-            sb.append(s);
+         for (int i = 0; i < sectionArr.length - 1; i++) {
+            sb.append(sectionArr[i]);
             sb.append("\n");
          }
+         sb.append(lastLine);
          lines = sb.toString();
       }
       else {

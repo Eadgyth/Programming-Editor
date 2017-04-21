@@ -15,6 +15,8 @@ import javax.swing.event.UndoableEditListener;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 
+import javax.swing.event.DocumentEvent.EventType;
+
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoableEdit;
@@ -50,14 +52,14 @@ class TypingEdit {
    private final Coloring col;
    private final AutoIndent autoInd;
    private final LineNumbers lineNum;
-    private final UndoManager undomanager = new DocUndoManager();
+   private final UndoManager undomanager = new DocUndoManager();
 
    private boolean evaluateText = true;
    private boolean isTypeEdit = false;
    private char typed;
    private int eventType;
    private int pos;
-   private int changeLength = 1;
+   private int changeLength = 0;
 
    TypingEdit(EditArea editArea) {
       this.editArea = editArea;
@@ -70,7 +72,7 @@ class TypingEdit {
       lineNum = new LineNumbers(editArea);
       autoInd = new AutoIndent(editArea);
    }
-
+   
    void enableEvaluateText(boolean isEnabled) {
       evaluateText = isEnabled;
    }
@@ -123,9 +125,8 @@ class TypingEdit {
          enableEvaluateText(false);
          if (undomanager.canUndo()) {
             undomanager.undo();
-            updateAfterUndoRedo(prevLineNr);
          }
-         enableEvaluateText(true);
+         updateAfterUndoRedo(prevLineNr);
       }
       catch (CannotUndoException e) {
          FileUtils.logStack(e);
@@ -138,9 +139,8 @@ class TypingEdit {
          enableEvaluateText(false);
          if (undomanager.canRedo()) {
             undomanager.redo();
-            updateAfterUndoRedo(prevLineNr);
          }
-         enableEvaluateText(true);
+         updateAfterUndoRedo(prevLineNr);
       }
       catch (CannotRedoException e) {
          FileUtils.logStack(e);
@@ -161,6 +161,8 @@ class TypingEdit {
          }
          else if (newLineNr < prevLineNr) {
             undomanager.discardAllEdits();
+            System.out.println(
+                  "Undo/Redo disabled after removing multiline insertion");
          }
          else {
             if (pos > 0 & pos < allText.length()) {
@@ -168,6 +170,7 @@ class TypingEdit {
             }
          }
       }
+      enableEvaluateText(true);
    }
 
    private void color(String allText, int pos) {
@@ -184,13 +187,13 @@ class TypingEdit {
          eventType = INSERT_EVENT;
          changeLength = de.getLength();
          if (evaluateText) {
-            String in = editArea.getDocText();
-            typed = in.charAt(pos);
-            updateLineNumber(in);
+            String text = editArea.getDocText();
+            typed = text.charAt(pos);
+            updateLineNumber(text);
             if (isTypeEdit) {
-               autoInd.setText(in);
+               autoInd.setText(text);
                if (typed != '\n') {
-                  color(in, pos);
+                  color(text, pos);
                }
                EventQueue.invokeLater(() -> {
                   autoInd.closeBracketIndent(pos);
@@ -203,13 +206,12 @@ class TypingEdit {
       public void removeUpdate(DocumentEvent de) {
          pos = de.getOffset();
          eventType = REMOVE_EVENT;
-         changeLength = - de.getLength();
+         changeLength = -de.getLength();
          if (evaluateText) {
-            typed = '\0';
-            String in = editArea.getDocText();
-            updateLineNumber(in);
+            String text = editArea.getDocText();
+            updateLineNumber(text);
             if (isTypeEdit) {
-               color(in, pos);
+               color(text, pos);
             }
          }
       }
@@ -231,10 +233,10 @@ class TypingEdit {
          caret = editArea.shiftToSelectionStart(ce.getDot());
          if (caret > 0) {
             boolean isStop = true;
-            if (eventType == 1) {
+            if (eventType == INSERT_EVENT) {
                isStop = caret - pos != 1 && caret - pos != changeLength;
             }
-            else if (eventType == 2) {
+            else if (eventType == REMOVE_EVENT) {
                isStop = caret - pos != 0 && caret - pos != changeLength;
             }
             if (isStop) {
@@ -295,7 +297,7 @@ class TypingEdit {
          if (comp == null) {
             comp = new CompoundEdit();
          }
-         if ((typed != '\0' & isEditSeparator()) || typed == '\0') {
+         if ((eventType == INSERT_EVENT & isEditSeparator()) || eventType == REMOVE_EVENT) {
             commitCompound();
             super.addEdit(anEdit);
          }

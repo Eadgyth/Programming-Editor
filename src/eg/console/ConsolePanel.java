@@ -81,7 +81,8 @@ public class ConsolePanel {
    }
 
    /**
-    * Sets the specified text in this text area 
+    * Sets the specified text in this text area
+    *
     * @param text  the text that is set in this text area 
     */
    public void setText(String text) {    
@@ -90,6 +91,7 @@ public class ConsolePanel {
 
    /**
     * Adds the specified text to the text displayed in this text area
+    *
     * @param text  the text that is added to the text in this text
     * area
     */
@@ -100,6 +102,7 @@ public class ConsolePanel {
    /**
     * Adds an action listener to the button designated to closing
     * this console panel
+    *
     * @param al  the {@code ActionListener}
     */
    public void closeAct(ActionListener al) {

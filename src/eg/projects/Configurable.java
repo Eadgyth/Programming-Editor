@@ -74,6 +74,13 @@ public interface Configurable {
    public String getProjectPath();
    
    /**
+    * Returns the name of the project's root directory
+    *
+    * @return  the name of the project's root directory
+    */
+   public String getProjectName();
+   
+   /**
     * Returns the name of the directory where executable files are saved
     *
     * @return  the name of the directory where executable files are saved

@@ -1,19 +1,19 @@
 package eg;
 
-import eg.ui.menu.FormatMenu;
 import eg.ui.EditArea;
 import eg.ui.ViewSettingWin;
 import eg.ui.FontSettingWin;
+import eg.ui.menu.FormatMenu;
 
 /**
- * Represents the formatting of the {@code EditArea}.
- * <p>
- * The initial parameters are given by entries in the prefs file.
+ * The formatting (word wrap, font, showing line numbers) of the
+ * {@code EditArea}.
+ * <p>The initial parameters are given by entries in the prefs file.
  */
 public class EditAreaFormat {
    
-   private final FormatMenu fMenu;
    private final ViewSettingWin viewSetWin;
+   private final FormatMenu fMenu;
    private final FontSettingWin fontSetWin = new FontSettingWin();
    private final Preferences prefs = new Preferences();
 
@@ -28,15 +28,13 @@ public class EditAreaFormat {
    public EditAreaFormat(ViewSettingWin viewSetWin, FormatMenu fMenu) {
       this.viewSetWin = viewSetWin;
       this.fMenu = fMenu;
-
       isShowLineNr = viewSetWin.isShowLineNumbers();
       prefs.readPrefs();
       isWordWrap = "enabled".equals(prefs.getProperty("wordWrap"));
       font = fontSetWin.fontComboBxRes();
       fontSize = fontSetWin.sizeComboBxRes();
-
       fMenu.changeWordWrapAct(e -> changeWordWrap());
-      fMenu.fontAct(e -> fontSetWin.makeVisible(true));
+      fMenu.fontAct(e -> makeFontSetWinVisible());
       fontSetWin.okAct(e -> setFont());
    }
    
@@ -53,21 +51,18 @@ public class EditAreaFormat {
     * Returns a new {@code EditArea} that is initialized with the
     * current settings
     *
-    * @return  a new {@link EditArea} that is initialized with the
-    * current settings
+    * @return  a new {@link EditArea}
     */
    public EditArea createEditArea() {
       return new EditArea(isWordWrap, isShowLineNr, font, fontSize);
    }
 
   /**
-    * Selects an element from this array of {@code EditArea}.
-    * <p>
-    * The method also selects/unselects the wordwrap menu item
-    * depending on the state of the {@code EditArea} at the specified
-    * index
+    * Selects an element from this array of {@code EditArea} and
+    * selects/unselects the wordwrap menu item depending on the state
+    * of that element
     *
-    * @param index  the index of the selected {@link EditArea} element
+    * @param index  the index of the {@link EditArea} element
     */
    public void setCurrEditArea(int index) {
       currEdArea = editArea[index];
@@ -75,24 +70,18 @@ public class EditAreaFormat {
    }
    
    /**
-    * Changes the wordwrap state in the {@code EditArea} of the
-    * selected document
+    * Changes the wordwrap state of the selected {@code EditArea}
     */
    public void changeWordWrap() {
-      this.isWordWrap = fMenu.isWordWrapItmSelected();
+      isWordWrap = fMenu.isWordWrapItmSelected();
       if (isWordWrap) {
          currEdArea.enableWordWrap();
       }
       else {
-         if (isShowLineNr) {
-            currEdArea.showLineNumbers();
-         }
-         else {
-            currEdArea.hideLineNumbers();
-         }
+         showLineNumbers(currEdArea);
       }
       String state = isWordWrap ? "enabled" : "disabled";
-      prefs.storePrefs("wordWrap", state);  
+      prefs.storePrefs("wordWrap", state);
    }
 
    /**
@@ -100,31 +89,32 @@ public class EditAreaFormat {
     * line numbers
     */
    public void applySetWinOk() {
-      boolean show = false;
-      String state = null;
-   
-      show = viewSetWin.isShowLineNumbers();
+      boolean show = viewSetWin.isShowLineNumbers();
       if (isShowLineNr != show) {
          isShowLineNr = show;
-         showHideLineNumbers();
-         state = isShowLineNr ? "show" : "hide";
+         for (EditArea ea : editArea) {
+            if (ea != null && !ea.isWordWrap()) {
+               showLineNumbers(ea);
+            }
+         }
+         String state = isShowLineNr ? "show" : "hide";
          prefs.storePrefs("lineNumbers", state);
       }
+   }
+   
+   public void makeFontSetWinVisible() {
+      fontSetWin.makeVisible(true);
    }
    
    //
    //--private methods
    //
-
-   private void showHideLineNumbers() {
-      for (EditArea ea : editArea) {
-         if (ea != null && !ea.isWordWrap()) {
-            if (!isShowLineNr) {
-               ea.hideLineNumbers();
-            } else {
-               ea.showLineNumbers();
-            }
-         }
+   
+   private void showLineNumbers(EditArea ea) {
+      if (isShowLineNr) {
+         ea.showLineNumbers();
+      } else {
+         ea.hideLineNumbers();
       }
    }
    
@@ -133,8 +123,7 @@ public class EditAreaFormat {
       fontSize = fontSetWin.sizeComboBxRes();
       for (EditArea ea : editArea) {
          if (ea != null) {
-             ea.setFont(font);
-             ea.setFontSize(fontSize);
+             ea.setFont(font, fontSize);
              ea.revalidateLineAreaWidth();
          }
       }

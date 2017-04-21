@@ -29,27 +29,27 @@ public class Menu {
       return menuMain;
    }
    
-   public FileMenu getFileMenu() {
+   public FileMenu fileMenu() {
       return fileMenu;
    }
    
-   public EditMenu getEditMenu() {
+   public EditMenu editMenu() {
       return editMenu;
    }
    
-   public FormatMenu getFormatMenu() {
+   public FormatMenu formatMenu() {
       return formatMenu;
    }
    
-   public ViewMenu getViewMenu() {
+   public ViewMenu viewMenu() {
       return viewMenu;
    }
    
-   public PluginMenu getPluginMenu() {
+   public PluginMenu pluginMenu() {
       return plugMenu;
    }
    
-   public ProjectMenu getProjectMenu() {
+   public ProjectMenu projectMenu() {
       return projectMenu;
    }
 

@@ -5,7 +5,7 @@ import eg.ui.EditArea;
 import eg.utils.Finder;
 
 /**
- * The line numbering of the scrolled text area
+ * The line numbering
  */
 class LineNumbers {
 
@@ -24,7 +24,7 @@ class LineNumbers {
    void updateLineNumber(String in) {
       int nLines = Finder.countLines(in);
       if (nLines > currLineNr) {
-         addRowNumbers(currLineNr + 1, nLines);
+         addLineNumbers(currLineNr + 1, nLines);
       }
       else if (nLines < currLineNr) {
          replaceLineNr(nLines);
@@ -44,12 +44,12 @@ class LineNumbers {
    
    private void replaceLineNr(int nLines) {
       editArea.removeAllLineNumbers();
-      addRowNumbers(0, nLines);
+      addLineNumbers(0, nLines);
    }
    
-   private void addRowNumbers(int previousLines, int nLines) {
+   private void addLineNumbers(int previousLines, int nLines) {
       for (int i = previousLines; i <= nLines; i++) {
-         editArea.appendRowNumber(i + 1);
+         editArea.appendLineNumber(i + 1);
       }
       editArea.revalidateLineAreaWidth();
    }

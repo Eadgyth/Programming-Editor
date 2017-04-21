@@ -52,6 +52,7 @@ public class Toolbar {
    
    /**
     * Adds action handlers to the buttons for project actions
+    *
     * @param currProj  the reference to the {@link CurrentProject}
     * object that handles the project actions
     */
@@ -63,6 +64,7 @@ public class Toolbar {
    
    /**
     * Adds action handlers to the buttons for edit actions
+    *
     * @param edit  the reference to the {@link Edit}
     * object that handles the edit actions
     */
@@ -78,6 +80,7 @@ public class Toolbar {
    
    /**
     * Enabled/disabled buttons for project actions
+    *
     * @param isCompile  if compiling a project is enabled
     * @param isRun  if running a project is enabled
     */
@@ -105,8 +108,7 @@ public class Toolbar {
          undoBt, redoBt, cutBt, copyBt, pasteBt,
          indentBt, outdentBt,
          compileBt, runBt, changeProjBt
-      };
-                          
+      };                         
       String[] toolTips = new String[] {
          "Open file", "Save selected file",
          "Undo", "Redo", "Cut selection", "Copy selection",
@@ -114,8 +116,7 @@ public class Toolbar {
          "Indent selection more", "Indent selection less",
          "Save all opened source files and compile project", "Run project",
          "Change between projects"
-      };
-      
+      }; 
       for (int i = 0; i < bts.length; i++) {
          toolbar.add(bts[i]);
          if (i == 1 || i == 8) {

@@ -137,15 +137,15 @@ public class Lexer {
    public void quoted(String toColor, int pos, String quoteSign,
          String blockStart, String blockEnd) {
 
-      if (Finder.countLines(toColor) > 1) {
+      if (!isTypeMode & Finder.countLines(toColor) > 1) {
          //
          // split because string literals are not colored across lines
          String[] chunkArr = toColor.split("\n");
          int sum = 0;
-          for (String s : chunkArr) {
-              quotedInLine(s, pos + sum, quoteSign, blockStart, blockEnd);
-              sum += s.length() + 1;
-          }
+         for (String s : chunkArr) {
+            quotedInLine(s, pos + sum, quoteSign, blockStart, blockEnd);
+            sum += s.length() + 1;
+         }
       }
       else {
          quotedInLine(toColor, pos, quoteSign, blockStart, blockEnd);
@@ -217,7 +217,7 @@ public class Lexer {
          }
       }
    }
-   
+
    void color(String allText, String toColor, int pos, int posStart) {
        colorable.color(allText, toColor, pos, posStart, this);
    }
@@ -241,7 +241,7 @@ public class Lexer {
             start += str.length();
          }
       }
-   } 
+   }
 
    private void quotedInLine(String line, int pos, String quoteSign,
          String blockStart, String blockEnd) {
@@ -260,7 +260,7 @@ public class Lexer {
                      || SyntaxUtils.isInBlock(line, start, blockStart, blockEnd);
                if (ok) {
                   doc.setCharacterAttributes(start + pos, length + 1,
-                        strLitSet, false );
+                        strLitSet, false);
                }
                start += length + 1;
             }

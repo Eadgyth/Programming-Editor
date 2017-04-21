@@ -14,6 +14,7 @@ import javax.swing.KeyStroke;
 
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
@@ -27,7 +28,7 @@ import eg.Constants;
 import eg.utils.FileUtils;
 
 /**
- * Defines the editor view that contains the text area to edit text and the 
+ * Defines the editor view that contains the text area to edit text and the
  * area that displays line numbers.
  */
 public final class EditArea {
@@ -62,8 +63,6 @@ public final class EditArea {
          JScrollPane.VERTICAL_SCROLLBAR_NEVER,
          JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-   private String font;
-   private int fontSize;
    private boolean isWordWrap;
    private int scrollPos;
 
@@ -76,22 +75,19 @@ public final class EditArea {
     */
    public EditArea(boolean isWordWrap, boolean isLineNumbers,
          String font, int fontSize) {
-      
+
       this.doc = textArea.getStyledDocument();
       setDocStyle();
       this.lineDoc = lineArea.getStyledDocument();
       setLineDocStyle();
       removeShortCuts();
-            
-      this.font = font;
-      this.fontSize = fontSize;
       textPanel.setBorder(Constants.DARK_BORDER);
       initTextArea();
       initLineNrArea();
-      initFont(font, fontSize);
+      setFont(font, fontSize);
       initScrollLineNrArea();
       initScrollSimpleArea();
-      intitScrollWrapArea();   
+      intitScrollWrapArea();
       if (isWordWrap) {
          enableWordWrap();
       }
@@ -104,7 +100,7 @@ public final class EditArea {
          }
       }
    }
-   
+
    /**
     * Returns the JPanel that holds the area to edit text and
     * the area showing line numbers
@@ -115,7 +111,7 @@ public final class EditArea {
    public JPanel textPanel() {
       return textPanel;
    }
-   
+
    /**
     * Returns this <code>JTextPane</code> in which text is edited
     *
@@ -124,38 +120,37 @@ public final class EditArea {
    public JTextPane textArea() {
       return textArea;
    }
-   
+
    /**
     * Returns the {@code StyledDocument} associated with this
     * text area
+    *
     * @return  the {@code StyledDocument} associated with this
     * text area
     */
    public StyledDocument getDoc() {
       return doc;
    }
-   
+
    /**
     * Returns this {@code SimpleAttributeSet} which represents the
     * "normal" text appearance in the text area
     *
-    * @return  this {@code SimpleAttributeSet} for this text area
+    * @return  this {@code SimpleAttributeSet}
     */
    public SimpleAttributeSet getNormalSet() {
       return normalSet;
    }
-   
+
    /**
-    * If wordwrap is enabled
-    *
     * @return  if wordwrap is enabled
     */
    public boolean isWordWrap() {
       return isWordWrap;
    }
-   
+
    /**
-    * Returns the text contained in this {@code StyledDocument}
+    * Returns the text in this document
     *
     * @return  the text in this {@code StyledDocument}
     */
@@ -169,7 +164,7 @@ public final class EditArea {
       }
       return in;
    }
-   
+
    /**
     * Returns the selection start or the unchanged position if no text
     * is selected
@@ -185,7 +180,7 @@ public final class EditArea {
       }
       return caretPos;
    }
-   
+
    /**
     * Inserts text in this document
     *
@@ -200,9 +195,10 @@ public final class EditArea {
          FileUtils.logStack(e);
       }
    }
-   
+
    /**
     * Removes text from this document
+    *
     * @param start  the position where text to be removed starts
     * @param length  the length of the text to be removed
     */
@@ -214,12 +210,13 @@ public final class EditArea {
          FileUtils.logStack(e);
       }
    }
-   
+
    /**
     * Adds a line number
+    *
     * @param lineNr  the number to be added
     */
-   public void appendRowNumber(int lineNr) {
+   public void appendLineNumber(int lineNr) {
       try {
          lineDoc.insertString(lineDoc.getLength(),
                Integer.toString(lineNr) + "\n", lineSet);
@@ -228,7 +225,7 @@ public final class EditArea {
          FileUtils.logStack(e);
       }
    }
-   
+
    /**
     * Removes all line numbers
     */
@@ -240,7 +237,7 @@ public final class EditArea {
          FileUtils.logStack(e);
       }
    }
-   
+
    /**
     * Adapts the withs of the area showing line numbers
     */
@@ -248,7 +245,7 @@ public final class EditArea {
       textPanel.revalidate();
       textPanel.repaint();
    }
-   
+
    /**
     * Prints this document to a printer
     */
@@ -259,33 +256,21 @@ public final class EditArea {
          FileUtils.logStack(e);
       }
    }
-   
+
     /**
-    * Sets a new font size
+    * Sets a new font
+    *
+    * @param font  the String name for the new font
     * @param fontSize  the font size
     */
-   public void setFontSize(int fontSize) {
-      this.fontSize = fontSize;
+   public void setFont(String font, int fontSize) {
       Font fontNew = new Font(font, Font.PLAIN, fontSize);
       lineArea.setFont(fontNew);
       textArea.setFont(fontNew);
    }
 
    /**
-    * Sets a new font
-    * @param font  the String name for the new font
-    */
-   public void setFont(String font) {
-      this.font = font;
-      Font fontNew = new Font(font, Font.PLAIN, fontSize);
-      lineArea.setFont(fontNew);
-      textArea.setFont(fontNew);
-   }
-
-   /**
-    * Shows line numbers.
-    * <p>
-    * Invoking this method also annules wordwrap
+    * Shows line numbers. Invoking this method also annules wordwrap
     */
    public void showLineNumbers() {
       removeCenterComponent();
@@ -299,11 +284,9 @@ public final class EditArea {
       textPanel.revalidate();
       isWordWrap = false;
    }
-   
+
    /**
-    * Hides line numbers.
-    * <p>
-    * Invoking this method also annules wordwrap
+    * Hides line numbers. Invoking this method also annules wordwrap
     */
    public void hideLineNumbers() {
       textPanel.remove(lineNumAreaScroll);
@@ -317,12 +300,10 @@ public final class EditArea {
       textPanel.revalidate();
       isWordWrap = false;
    }
-   
+
    /**
-    * Enables wordwrap.
-    * <p>
-    * Invoking this method also hides the area that displays
-    * line numbers
+    * Enables wordwrap. Invoking this method also hides the area
+    * that displays line numbers
     */
    public void enableWordWrap() {
       textPanel.remove(lineNumAreaScroll);
@@ -335,16 +316,10 @@ public final class EditArea {
       textPanel.revalidate();
       isWordWrap = true;
    }
-   
+
    //
    //--private methods
    //
-
-   private void initFont(String font, int fontSize) {
-      Font newFont = new Font(font, Font.PLAIN, fontSize);
-      textArea.setFont(newFont);
-      lineArea.setFont(newFont);
-   }
 
    private void initTextArea() {
       textArea.setBorder(WHITE_BORDER);
@@ -357,13 +332,13 @@ public final class EditArea {
       DefaultCaret caretLine = (DefaultCaret) lineArea.getCaret();
       caretLine.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
    }
-   
+
    private void intitScrollWrapArea() {
       wrapPnlScoll.getVerticalScrollBar().setUnitIncrement(15);
       wrapPnlScoll.setBorder(null);
       wrapPnlScoll.setViewportView(enabledWordwrapPnl);
    }
-   
+
    private void initScrollSimpleArea() {
       noWrapPnlScroll.getVerticalScrollBar().setUnitIncrement(15);
       noWrapPnlScroll.setBorder(null);
@@ -383,7 +358,7 @@ public final class EditArea {
       lineNumAreaScroll.getVerticalScrollBar().setModel
             (lineNumPnlScroll.getVerticalScrollBar().getModel());
    }
-   
+
    private void removeCenterComponent() {
       BorderLayout layout = (BorderLayout) textPanel.getLayout();
       JScrollPane c = (JScrollPane) layout.getLayoutComponent(BorderLayout.CENTER);
@@ -392,28 +367,28 @@ public final class EditArea {
          textPanel.remove(c);
       }
    }
-   
+
    private void setScrollPos(JScrollPane pane) {
       JScrollBar bar = pane.getVerticalScrollBar();
       bar.setValue(scrollPos);
    }
-   
+
    private void setDocStyle() {
       StyleConstants.setForeground(normalSet, Color.BLACK);
       StyleConstants.setLineSpacing(normalSet, 0.2f);
       StyleConstants.setBold(normalSet, false);
       Element el = doc.getParagraphElement(0);
       doc.setParagraphAttributes(0, el.getEndOffset(), normalSet, false);
-   }  
-   
+   }
+
    private void setLineDocStyle() {
       StyleConstants.setForeground(lineSet, NUM_GRAY);
-      StyleConstants.setAlignment(lineSet, StyleConstants.ALIGN_RIGHT);     
+      StyleConstants.setAlignment(lineSet, StyleConstants.ALIGN_RIGHT);
       StyleConstants.setLineSpacing(lineSet, 0.2f);
       Element el = lineDoc.getParagraphElement(0);
       lineDoc.setParagraphAttributes(0, el.getEndOffset(), lineSet, false);
    }
-   
+
    private void removeShortCuts() {
       KeyStroke ksSelAll = KeyStroke.getKeyStroke("control pressed a");
       textArea.getInputMap().put(ksSelAll, "dummy");
