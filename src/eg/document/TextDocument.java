@@ -216,6 +216,19 @@ public final class TextDocument {
          type.colorSection(getText(), section, posStart);
       }
    }
+   
+   /**
+    * Pastes text and notifies whether text was replaced
+    *
+    * @param toInsert  the text to insert
+    * @param isReplaced  if selected text is replaced
+    */
+   public void replaceSelection(String toInsert, boolean isReplaced) {
+      textArea.replaceSelection(toInsert);
+      if (isReplaced) {
+         type.setReplaced();
+      }
+   }
 
    /**
     * Performs an undo action

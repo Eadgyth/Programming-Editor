@@ -56,6 +56,7 @@ class TypingEdit {
 
    private boolean evaluateText = true;
    private boolean isTypeEdit = false;
+   private boolean isReplaced = false;
    private char typed;
    private DocumentEvent.EventType event;
    private int pos;
@@ -118,6 +119,10 @@ class TypingEdit {
       enableTypeEdit(true);
       lex.enableTypeMode(true);
    }
+   
+   void setReplaced() {
+      isReplaced = true;
+   }
 
    synchronized void undo() {
       try {
@@ -159,8 +164,10 @@ class TypingEdit {
          if (newLineNr > prevLineNr) {
             colorSection(allText, null, 0);
          }
+         //
+         // to prevent demaging the document
          else if (newLineNr < prevLineNr) {
-            //nothing
+            undomanager.discardAllEdits();
          }
          else {
             if (pos > 0 & pos < allText.length()) {
@@ -204,12 +211,13 @@ class TypingEdit {
       public void removeUpdate(DocumentEvent de) {
          pos = de.getOffset();
          changeLength = -de.getLength();
-         if (changeLength < -1) {
-            undomanager.discardAllEdits();
-            System.out.println(
-                  "Undo/Redo disabled");
-         }
          event = de.getType();
+         //
+         // to prevent demaging the document
+         if (isTypeEdit && isReplaced && changeLength < -1) {
+            undomanager.discardAllEdits();
+            isReplaced = false;
+         }
          if (evaluateText) {
             String text = editArea.getDocText();
             updateLineNumber(text);

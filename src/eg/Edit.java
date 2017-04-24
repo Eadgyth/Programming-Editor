@@ -85,12 +85,8 @@ public class Edit {
       txtDoc.enableTypeEdit(false); 
       String clipboard = getClipboard();
       String sel = textArea.getSelectedText();
-      int pos = textArea.getCaretPosition();
-      if (sel != null) {
-         pos -= sel.length();
-         txtDoc.removeStr(pos, sel.length());
-      }
-      txtDoc.insertStr(pos, clipboard);
+      int pos = textArea.getSelectionStart();
+      txtDoc.replaceSelection(clipboard, sel != null);
       txtDoc.colorSection(clipboard, pos);
    }
 
