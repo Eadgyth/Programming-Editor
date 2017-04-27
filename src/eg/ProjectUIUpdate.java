@@ -1,38 +1,35 @@
 package eg;
 
-import eg.ui.MainWin;
-import eg.ui.menu.Menu;
+import eg.ui.menu.ViewMenu;
 import eg.ui.filetree.FileTree;
 
 /**
- * The settings of the view of the main window depending on project
- * actions and type of project
+ * Subset of methods to modify the view related to project actions
  */
 public class ProjectUIUpdate {
    
-   private final MainWin mw;
-   private final Menu menu;
+   private final ViewMenu vMenu;
    private final FileTree fileTree;
    
-   public ProjectUIUpdate(MainWin mw) {
-      this.mw = mw;
-      this.menu = mw.menu();
-      this.fileTree = mw.fileTree();
+   public ProjectUIUpdate(ViewMenu vMenu, FileTree fileTree) {
+      this.vMenu = vMenu;
+      this.fileTree = fileTree;
    }
    
    /**
     * If the console panel is open
+    *
     * @return  if the console is open
     */
    public boolean isConsoleOpen() {
-      return menu.viewMenu().isConsoleItmSelected();
+      return vMenu.isConsoleItmSelected();
    }
    
    /**
     * Shows the console panel
     */
    public void openConsole() {
-      menu.viewMenu().doConsoleItmAct(true);
+      vMenu.doConsoleItmAct(true);
    }
    
    /**
@@ -40,6 +37,6 @@ public class ProjectUIUpdate {
     * changed.
     */
    public void updateFileTree() {
-      mw.fileTree().updateTree();
+      fileTree.updateTree();
    }
 }

@@ -16,10 +16,12 @@ import java.awt.event.WindowEvent;
 //--Eadgyth--//
 import eg.ui.MainWin;
 import eg.ui.TabbedPane;
-import eg.ui.Toolbar;
 import eg.ui.ViewSettingWin;
+
 import eg.ui.menu.Menu;
+
 import eg.utils.FileUtils;
+
 import eg.plugin.PluginStarter;
 
 /**
@@ -44,8 +46,7 @@ public class Eadgyth {
       ViewSetter      viewSet    = new ViewSetter(viewSetWin, mw);
       Edit            edit       = new Edit();
       DocumentUpdate  docUpdate  = new DocumentUpdate(edit, plugStart);
-      TabbedFiles     tabFiles   = new TabbedFiles(mw.tabPane(), viewSet, format, currProj,
-                                       docUpdate);
+      TabbedFiles     tabFiles   = new TabbedFiles(mw, format, currProj, docUpdate);
 
       mw.winListen(tabFiles.closeWindow);
       mw.registerFileAct(tabFiles);

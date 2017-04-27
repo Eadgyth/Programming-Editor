@@ -58,6 +58,7 @@ public class ProcessStarter {
 
    /**
     * Adds to this the working directory for a started process
+    *
     * @param workingDir  the working directory for a started
     * process
     */
@@ -71,11 +72,11 @@ public class ProcessStarter {
    /**
     * Starts a process in this working directory.
     * Is not guaranteed to work in all situations.
+    *
     * @param cmd  the start command in which the arguments are separated
     * by single spaces
     */
    public void startProcess(String cmd) {
-      //System.out.println("Number of active threads: " + Thread.activeCount());
       apparentExitVal = 0;
       if (!isProcessEnded()) {
          return;
@@ -110,7 +111,8 @@ public class ProcessStarter {
    /**
     * Returns true if no process is currently running. A warning is shown if
     * a process is running
-    * @return  if the process has been terminated
+    *
+    * @return  if no process is currently running
     */
    public boolean isProcessEnded() {
       boolean isEnded = process == null;

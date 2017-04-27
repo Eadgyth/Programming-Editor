@@ -10,9 +10,6 @@ import java.awt.EventQueue;
 //--Eadgyth--//
 import eg.console.*;
 import eg.ui.MainWin;
-import eg.ui.Toolbar;
-import eg.ui.menu.Menu;
-import eg.ui.filetree.FileTree;
 import eg.projects.ProjectActions;
 import eg.projects.SelectedProject;
 
@@ -64,11 +61,13 @@ public class CurrentProject {
    public CurrentProject(MainWin mw) {
       this.mw = mw;
       proc = new ProcessStarter(mw.console());
-      selProj = new SelectedProject(mw, proc, mw.console());
+      ProjectUIUpdate update = new ProjectUIUpdate(mw.menu().viewMenu(), mw.fileTree());
+      selProj = new SelectedProject(update, proc, mw.console());
    }
 
    /**
     * Sets the array of {@code TextDocument}
+    *
     * @param txtDoc  the array of {@link TextDocument}
     */
    public void setDocumentArr(TextDocument[] txtDoc) {
@@ -78,11 +77,10 @@ public class CurrentProject {
    /**
     * Selects an element from this array of {@code TextDocument}
     *
-    * @param docIndex  the index of the element in this array of
-    * {@link TextDocument}
+    * @param index  the index of the array element
     */
-   public void selectDocument(int docIndex) {
-      currDoc = txtDoc[docIndex];
+   public void setCurrTextDocument(int index) {
+      currDoc = txtDoc[index];
       currExt = FileUtils.fileSuffix(currDoc.filename());
    }
 
@@ -140,10 +138,9 @@ public class CurrentProject {
    /**
     * Opens the window of the {@code SettingsWin} object that belongs to
     * a project.
-    * <p>
-    * Depending on the currently set {@link TextDocument} the opened window
-    * belongs to the current project, to one of this listed projects or to
-    * a newly created project.
+    * <p>Depending on the currently set {@link TextDocument} the opened
+    * window belongs to the current project, to one of this listed projects
+    * or to a newly created project.
     */
    public void openSettingsWindow() {
       if (!isProjectSet()) {
@@ -170,9 +167,8 @@ public class CurrentProject {
    
    /**
     * Creates a new project.
-    * <p>
-    * If the the currently set {@link TextDocument} belongs to an already
-    * set project a dialog to confirm to proceed is shown.
+    * <p>If the the currently set {@link TextDocument} belongs to an
+    * already set project a dialog to confirm to proceed is shown.
     */
    public void newProject() {
       if (!isProjectSet()) {
@@ -195,10 +191,9 @@ public class CurrentProject {
    /**
     * Sets active the project from this {@code List} of configured projects
     * which the currently selected {@code TextDocument} belongs to.
-    * <p>
-    * If the currently set {@code TextDocument} does not belong to a listed
-    * project or to the currently active project it is asked to set up a
-    * new project.
+    * <p>If the currently set {@code TextDocument} does not belong to a
+    * listed project or to the currently active project it is asked to set
+    * up a new project.
     */
    public void changeProject() {
       ProjectActions fromList = selectFromList(currDoc.dir(), true);
@@ -214,8 +209,8 @@ public class CurrentProject {
     * Updates the file tree of {@code FileTree} if the specified directory
     * includes the project's root directory.
     *
-    * @param path  the directory that may include the project's root directory
-    * See {@link FileTree#updateTree()}
+    * @param path  the directory that may include the project's root
+    * directory
     */
    public void updateFileTree(String path) {
       if (isProjectSet() && current.isInProject(path)) {
@@ -224,8 +219,8 @@ public class CurrentProject {
    }
    
    /**
-    * Saves the source file of the selected {@code TextDocument}
-    * and compiles the project
+    * Saves the source file of the selected {@code TextDocument} if it
+    * belongs the current project and compiles the project
     */
    public void saveAndCompile() {
       if (!isCurrent("Compile")) {
@@ -251,7 +246,7 @@ public class CurrentProject {
    }
 
    /**
-    * Saves all open source files of the project directory and compiles the
+    * Saves all open source files of the current project and compiles the
     * project
     */
    public void saveAllAndCompile() {
@@ -383,7 +378,7 @@ public class CurrentProject {
          mw.menu().viewMenu().enableFileView();
       }
       enableChangeProject();
-      selProj.enableActions(projToSet.getClass().getSimpleName());
+      selProj.enableActions(projToSet.getClass().getSimpleName(), mw);
    }
    
    private void enableChangeProject() {

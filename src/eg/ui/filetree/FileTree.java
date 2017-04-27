@@ -236,12 +236,8 @@ public class FileTree extends Observable {
 
    private void enableDelete() {
       File f = getSelectedFile();
-      if (isInDeletableDir(f) || FileUtils.isFolderEmpty(f)) {
-         popupDir.enableDelete(true);
-      }
-      else {
-         popupDir.enableDelete(false);
-      }
+      boolean deletable = isInDeletableDir(f) || FileUtils.isFolderEmpty(f);
+      popupDir.enableDelete(deletable);
    }
 
    private void deleteFile() {
@@ -269,7 +265,7 @@ public class FileTree extends Observable {
             success = FileUtils.deleteFolder(f);
          }
          else {
-            success = FileUtils.deleteEmptyFolder(f);
+            success = f.delete();
          }
          if (success) {
             model.removeNodeFromParent(selectedNode);
@@ -286,10 +282,7 @@ public class FileTree extends Observable {
    }      
 
    private String deleteMessage(File f) {
-      String message
-            = "'" + f.getName() + "' will be permanently deleted!\n"
-            + "Continue ?";
-      return message;
+      return f.getName() + " will be permanently deleted!\n Continue?";
    }
 
    private void newFolder() {

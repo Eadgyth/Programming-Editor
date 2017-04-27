@@ -4,7 +4,6 @@ import eg.console.*;
 import eg.Languages;
 import eg.ProjectUIUpdate;
 import eg.ui.MainWin;
-import eg.ui.filetree.FileTree;
 
 /**
  * The selection and creation of an object of type {@code ProjectActions}
@@ -12,17 +11,24 @@ import eg.ui.filetree.FileTree;
 public class SelectedProject {
 
    private final ProjectUIUpdate update;
-   private final MainWin mw;
    private final ProcessStarter proc;
    private final ConsolePanel console;
 
-   public SelectedProject(MainWin mw, ProcessStarter proc,
-         ConsolePanel console) {
+   /**
+    * Creates a <code>SelectedProject</code> and sets the references
+    * that may be used by <code>ProjectActions</code>
+    *
+    * @param update  the {@link ProjectUIUpdate}
+    * @param proc  the {@link ProcessStarter}
+    * @param console  the {@link ConsolePanel} tht is also shared
+    * by <code>ProcessStarter</code>
+    */
+   public SelectedProject(ProjectUIUpdate update,
+         ProcessStarter proc, ConsolePanel console) {
 
-      this.mw = mw;
+      this.update = update;
       this.proc = proc;
       this.console = console;
-      update = new ProjectUIUpdate(mw);
    }
 
    /**
@@ -77,28 +83,29 @@ public class SelectedProject {
     * name of the class that implements {@code ProjectActions}
     *
     * @param className  the name of the class
+    * @param mw  the {@link MainWin}
     */
-   public void enableActions(String className) {
+   public void enableActions(String className, MainWin mw) {
       mw.menu().projectMenu().setBuildLabel("Build");
       switch (className) {
          case "JavaActions":
-            enableProjActions(true, true, true);
+            enableProjActions(true, true, true, mw);
             mw.menu().projectMenu().setBuildLabel("Create jar");
             break;
          case "HtmlActions":
-            enableProjActions(false, true, false);
+            enableProjActions(false, true, false, mw);
             break;
          case "PerlActions":
-            enableProjActions(false, true, false);
+            enableProjActions(false, true, false, mw);
             break;
          case "TxtActions":
-            enableProjActions(false, false, false);
+            enableProjActions(false, false, false, mw);
             break;
       }
    }
    
    private void enableProjActions(boolean isCompile, boolean isRun,
-         boolean isBuild) {
+         boolean isBuild, MainWin mw) {
 
       mw.menu().projectMenu().enableProjItms(isCompile, isRun, isBuild);
       mw.toolbar().enableProjBts(isCompile, isRun);

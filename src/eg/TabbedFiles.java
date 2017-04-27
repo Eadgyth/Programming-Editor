@@ -112,7 +112,7 @@ public class TabbedFiles implements Observer {
    /**
     * Opens a new 'unnamed' tab
     */
-   public final void newEmptyTab() {
+   public void newEmptyTab() {
       int n = tabPane.nTabs();
       if (n == 1 && !vMenu.isTabItmSelected()) {
          tryClose();
@@ -139,23 +139,24 @@ public class TabbedFiles implements Observer {
     * project
     */
    public void openFileByChooser() {
-      File f = fo.chosenFile();
+      File f = fo.chosenFile();     
       if (f == null) {
          return;
-      }
+      }     
       if (!f.exists()) {
          JOptions.warnMessage(f.getName() + " was not found");
-         return;
       }
-     
-      open(f);
+      else {
+         open(f);
+      }
    }
 
    /**
-    * Saves the text content in the selected tab. If the selected tab is
-    * unnamed {@link #saveAs()} is called.
-    * <p>'Save-as-mode' also applies if the content of the document was read
-    * in from a file which, however, no longer exist.
+    * Saves the text content in the selected tab. {@link #saveAs()} is
+    * called if the selected tab is unnamed or if the content of the
+    * document was read in from a file which no longer exists.
+    *
+    * @return  if content was saved
     */
    public boolean save() {
       if (txtDoc[iTab].filename().length() == 0
@@ -163,8 +164,7 @@ public class TabbedFiles implements Observer {
          return saveAs();
       }
       else {
-         txtDoc[iTab].saveToFile();
-         return true;
+         return txtDoc[iTab].saveToFile();
       }
    }
 
@@ -194,26 +194,27 @@ public class TabbedFiles implements Observer {
    /**
     * Saves the text content in the selected tab as a new file that
     * is specified in the file chooser
+    *
+    * @return  if the content was saved
     */
    public boolean saveAs() {
       File f = fs.fileToSave(txtDoc[iTab].filepath());
-      if (f == null) {
-         return false;
-      }
-      if (f.exists()) {
+      boolean saved = f != null;
+      if (saved && f.exists()) {
          JOptions.warnMessage(f.getName() + " already exists");
-         return false;
+         saved = false;
       }
-
-      txtDoc[iTab].saveFileAs(f);
-      currProj.setCurrTextDocument(iTab);
-      currProj.retrieveProject();
-      tabPane.changeTabTitle(iTab, txtDoc[iTab].filename());
-      mw.displayFrameTitle(txtDoc[iTab].filepath());
-      prefs.storePrefs("recentPath", txtDoc[iTab].dir());
-      EventQueue.invokeLater(() ->
-            currProj.updateFileTree(txtDoc[iTab].dir()));
-      return true;
+      saved = saved && txtDoc[iTab].saveFileAs(f);
+      if (saved) {
+         currProj.setCurrTextDocument(iTab);
+         currProj.retrieveProject();
+         tabPane.changeTabTitle(iTab, txtDoc[iTab].filename());
+         mw.displayFrameTitle(txtDoc[iTab].filepath());
+         prefs.storePrefs("recentPath", txtDoc[iTab].dir());
+         EventQueue.invokeLater(() ->
+               currProj.updateFileTree(txtDoc[iTab].dir()));
+      }
+      return saved;
    }
 
    /**
@@ -354,35 +355,43 @@ public class TabbedFiles implements Observer {
       }
 
       int iOpen = 0;
+      boolean isSave = true;
       boolean isFirstUnnamedBlank
             =  tabPane.nTabs() == 1
             && txtDoc[iOpen].filename().length() == 0
             && editArea[iOpen].getDoc().getLength() == 0;
       if (isFirstUnnamedBlank) {
-         txtDoc[iOpen].openFile(file);
+         txtDoc[iOpen].openFile(file); // no new doc
       }
       else {
          if (vMenu.isTabItmSelected()) {
             iOpen = tabPane.nTabs();
-            openNewFile(iOpen, file);
          }
          else {
             if (!txtDoc[iOpen].isContentSaved()) {
                int res = saveOrCloseOption(iOpen);
                if (res == JOptionPane.YES_OPTION) {
-                  if (save()) {
-                     tabPane.removeTab(iOpen);
-                     openNewFile(iOpen, file);
-                  }
+                  isSave = save();
+               }
+               else if (res == JOptionPane.CANCEL_OPTION) {
+                  isSave = false;
                }
             }
+            if (isSave) {
+              tabPane.removeTab(iOpen);
+           } 
+         }
+         if (isSave) {
+            createDocument(iOpen, file);
+            addNewTab(txtDoc[iOpen].filename(),
+                  editArea[iOpen].textPanel(), iOpen);
          }
       }
-      addNewTab(txtDoc[iOpen].filename(),
-                  editArea[iOpen].textPanel(), iOpen);
-      mw.displayFrameTitle(txtDoc[iOpen].filepath());
-      currProj.retrieveProject();
-      prefs.storePrefs("recentPath", txtDoc[iOpen].dir());
+      if (isSave) {
+         mw.displayFrameTitle(txtDoc[iOpen].filepath());
+         currProj.retrieveProject();
+         prefs.storePrefs("recentPath", txtDoc[iOpen].dir());
+      }
    }
 
    private boolean isFileOpen(String fileToOpen) {
@@ -395,7 +404,7 @@ public class TabbedFiles implements Observer {
       return isFileOpen;
    }
 
-   private void openNewFile(int i, File file) {
+   private void createDocument(int i, File file) {
       editArea[i] = format.createEditArea();
       txtDoc[i] = new TextDocument(editArea[i]);
       txtDoc[i].openFile(file);

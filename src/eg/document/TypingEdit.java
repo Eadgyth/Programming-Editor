@@ -56,7 +56,6 @@ class TypingEdit {
 
    private boolean evaluateText = true;
    private boolean isTypeEdit = false;
-   private boolean isReplaced = false;
    private char typed;
    private DocumentEvent.EventType event;
    private int pos;
@@ -119,10 +118,6 @@ class TypingEdit {
       enableTypeEdit(true);
       lex.enableTypeMode(true);
    }
-   
-   void setReplaced() {
-      isReplaced = true;
-   }
 
    synchronized void undo() {
       try {
@@ -165,7 +160,7 @@ class TypingEdit {
             colorSection(allText, null, 0);
          }
          //
-         // to prevent demaging the document
+         // to prevent damage; problem not solved
          else if (newLineNr < prevLineNr) {
             undomanager.discardAllEdits();
          }
@@ -174,7 +169,7 @@ class TypingEdit {
                color(allText, pos);
             }
          }
-      } 
+      }
       enableEvaluateText(true);
    }
 
@@ -213,10 +208,9 @@ class TypingEdit {
          changeLength = -de.getLength();
          event = de.getType();
          //
-         // to prevent demaging the document
-         if (isTypeEdit && isReplaced && changeLength < -1) {
+         // to prevent damage; problem not solved
+         if (isTypeEdit &&  changeLength < -1) {
             undomanager.discardAllEdits();
-            isReplaced = false;
          }
          if (evaluateText) {
             String text = editArea.getDocText();
@@ -260,7 +254,7 @@ class TypingEdit {
          implements UndoableEditListener {
 
       CompoundEdit comp = null;
-
+ 
       @Override
       public synchronized void undoableEditHappened(UndoableEditEvent e) {
          if (!evaluateText) {
@@ -270,6 +264,8 @@ class TypingEdit {
          UndoableEdit ed = e.getEdit();
          if (!event.equals(DocumentEvent.EventType.CHANGE)) {
             addAnEdit(ed);
+         }
+         else {
          }
       }
 
@@ -307,8 +303,8 @@ class TypingEdit {
          if (comp == null) {
             comp = new CompoundEdit();
          }
-         if ((event.equals(DocumentEvent.EventType.INSERT) & isEditSeparator())
-            || event.equals(DocumentEvent.EventType.REMOVE)) {
+         
+         if (isEditSeparator() || event.equals(DocumentEvent.EventType.REMOVE)) {
             commitCompound();
             super.addEdit(anEdit);
          }

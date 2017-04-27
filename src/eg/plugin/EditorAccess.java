@@ -41,7 +41,7 @@ public class EditorAccess {
     *
     * @return  the text in the currently viewed text area that is
     * is contained in the {@code Document} associated with the
-    * {@code JTextPane} that displays the text
+    * {@code JTextPane}
     */
    public String getText() {
       return txtDoc.getText();

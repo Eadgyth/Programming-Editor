@@ -22,38 +22,42 @@ import eg.Constants;
 import eg.Preferences;
 
 /**
- * Defines a JTabbedPane with a (close) button in the tabs.
- * <p>
- * A button indended for closing tabs is passed in the method 
- * {@link #addNewTab(String, Component, JButton, int)}. The button
- * is expected to have an ActionListener added to it. To detect which
- * tab is selected for closing the method {@link #iTabMouseOver()}
- * is called.
+ * Defines a JTabbedPane with a close button in the tabs.
  */
-public class TabbedPane { 
+public class TabbedPane {
 
-   private JTabbedPane tabbedPane;
+   private final JTabbedPane tabbedPane = new JTabbedPane();
    private final UIForTab ui = new UIForTab();
-   
+
    /* The index of the tab the mouse moved over */
    private int iTabMouseOver = -1;
-   
+
    public TabbedPane() {
-      initTab();
+      init();
    }
-   
+
+   /**
+    * Returns this <code>JTabbedPane</code>
+    *
+    * @return this <code>JTabbedPane</code>
+    */
    public JTabbedPane tabbedPane() {
       return tabbedPane;
    }
 
    /**
+    * Adds a new tab
+    *
     * @param title  the title for the tab
     * @param toAdd  the added Component
-    * @param closeBt  the button displayed in the tab
-    * @param index  the tab index at which a component is added
+    * @param closeBt  the button displayed in the tab. An
+    * <code>ActionListener</code> is expected to have been added to the
+    * button
+    * @param index  the index of the tab where a component is added
     */
    public void addNewTab(String title, Component toAdd, JButton closeBt,
          int index) {
+
       tabbedPane.add(title, toAdd);
       selectTab(index);
       JPanel tabPnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -66,68 +70,74 @@ public class TabbedPane {
       closeBt.setContentAreaFilled(false);
       closeBt.setFocusable(false);
       tabPnl.add(titleLb);
-      tabPnl.add(closeBt); 
+      tabPnl.add(closeBt);
       tabbedPane.setTabComponentAt(index, tabPnl);
    }
-   
+
    public void showTabbar(boolean show) {
       if (!show && nTabs() > 1) {
          throw new IllegalStateException("More than one tab was added."
                + "Cannot hide tab bar");
-      }  
+      }
       ui.setShowTabs(show);
       tabbedPane.setUI(ui);
    }
-         
-   
+
    public void changeTabTitle(int index, String filename) {
       JPanel p = (JPanel) tabbedPane.getTabComponentAt(index);
       JLabel lb = (JLabel) p.getComponent(0);
       lb.setText(filename);
    }
-   
+
    /**
     * Returns the number of open tabs
+    *
     * @return  the number of open tabs
     */
    public int nTabs() {
       return tabbedPane.getTabCount();
    }
-   
+
    /**
-    * Returns the index of the selected tab
+    * Returns the index of the currently selected tab
+    *
     * @return  the index of the selected tab
     */
    public int selectedIndex() {
       return tabbedPane.getSelectedIndex();
    }
-   
+
    /**
-    * selects the tab at the specified index
+    * Selects the tab at the specified index
+    *
     * @param index  the index of the tab that is selected
     */
    public void selectTab(int index) {
       tabbedPane.setSelectedIndex(index);
    }
-   
+
    /**
     * Returns the index of the tab where the mouse was moved over
+    *
     * @return  the index of the tab where the mouse was moved over
     */
    public int iTabMouseOver() {
       return iTabMouseOver;
    }
-   
+
    public void removeTab(int index) {
       tabbedPane.remove(index);
    }
-   
+
    public void changeListen(ChangeListener cl) {
       tabbedPane.addChangeListener(cl);
    }
 
-   private JTabbedPane initTab() {
-      tabbedPane = new JTabbedPane();
+   //
+   //--private--//
+   //
+
+   private JTabbedPane init() {
       tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
       tabbedPane.setUI(ui);
       tabbedPane.setBorder(null);
@@ -135,7 +145,7 @@ public class TabbedPane {
       tabbedPane.addMouseMotionListener(mml);
       return tabbedPane;
    }
-   
+
    private final MouseMotionListener mml = new MouseMotionAdapter() {
       @Override
       public void mouseMoved(MouseEvent e) {
@@ -145,5 +155,5 @@ public class TabbedPane {
             iTabMouseOver = x;
          }
       }
-   }; 
+   };
 }

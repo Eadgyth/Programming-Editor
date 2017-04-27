@@ -18,7 +18,8 @@ import eg.utils.FileUtils;
 import eg.ui.EditArea;
 
 /**
- * Class represents the text document which a file can be assigned to
+ * Class represents the text document which a file and language
+ * can be assigned to
  */
 public final class TextDocument {
 
@@ -69,38 +70,38 @@ public final class TextDocument {
     * @return  this text area which is of type {@link EditArea}
     */
     public JTextPane getTextArea() {
-       return editArea.textArea();
+       return textArea;
     }
 
    /**
     * Returns the name of this file
     *
-    * @return  the String that represents the name of this file
+    * @return  the name of this file
     */
    public String filename() {
       return filename;
    }
 
    /**
-    * Returns the filepath of this file
+    * Returns the path of this file
     *
-    * @return  the String that represents the filepath of this file
+    * @return  the full path of this file
     */
    public String filepath() {
       return filepath;
    }
 
    /**
-    * Returns the directory of this file
+    * Returns the parent directory of this file
     *
-    * @return  the String that represents the directory of this file
+    * @return  the parent directory of this file
     */
    public String dir() {
       return dir;
    }
    
    /**
-    * If the set Language is any coding language, i.e. not plain text
+    * If the set Language is a coding language, i.e. not plain text
     *
     * @return  the set Language is any coding language, i.e. not plain text
     */
@@ -129,12 +130,26 @@ public final class TextDocument {
    }
 
    /**
-    * Saves the current content to this file
+    * Saves the current text content to this file
+    *
+    * @return  if the content was saved
     */
-   public void saveToFile() {
-      saveToFile(docFile);
+   public boolean saveToFile() {
+      return writeToFile(docFile);
    }
 
+   /**
+    * Sets the specified file and saves the current text content
+    *
+    * @param file  the new file
+    * @return  if the content was saved
+    */
+   public boolean saveFileAs(File file) {
+      assignFileStrings(file);
+      setLanguageBySuffix();
+      return writeToFile(file);
+   }
+   
    /**
     * Saves the current content to the specified file but does not
     * assign the file to this
@@ -142,26 +157,14 @@ public final class TextDocument {
     * @param file  the file which the current content is saved to
     */
    public void saveCopy(File file) {
-      saveToFile(file);
+      writeToFile(file);
    }
 
    /**
-    * Sets the specified file and saves the content of this text
-    * area the file
+    * Returns if the text content equals the content since the last
+    * saving point
     *
-    * @param file  the new file which the current content is saved to
-    */
-   public void saveFileAs(File file) {
-      assignFileStrings(file);
-      saveToFile(file);
-      setLanguageBySuffix();
-   }
-
-   /**
-    * Returns if the content of this text area equals has been saved
-    *
-    * @return  if the content of this text area equals the content
-    * since the last saving point
+    * @return  if the text content is saved
     */
    public boolean isContentSaved() {
       return content.equals(editArea.getDocText());
@@ -216,19 +219,6 @@ public final class TextDocument {
          type.colorSection(getText(), section, posStart);
       }
    }
-   
-   /**
-    * Pastes text and notifies whether text was replaced
-    *
-    * @param toInsert  the text to insert
-    * @param isReplaced  if selected text is replaced
-    */
-   public void replaceSelection(String toInsert, boolean isReplaced) {
-      textArea.replaceSelection(toInsert);
-      if (isReplaced) {
-         type.setReplaced();
-      }
-   }
 
    /**
     * Performs an undo action
@@ -245,7 +235,7 @@ public final class TextDocument {
    }
 
    /**
-    * Returns the text of the document
+    * Returns the text in the document
     *
     * @return  the text in the document associated with this text area
     */
@@ -282,6 +272,7 @@ public final class TextDocument {
 
    /**
     * Changes the language if no file has been set
+    *
     * @param lang  the language which has one of the constant values
     * in {@link eg.Languages}
     */
@@ -317,17 +308,20 @@ public final class TextDocument {
    /**
     * Saves the current content to this file
     */
-   private void saveToFile(File file) {
+   private boolean writeToFile(File file) {
+      boolean success = false;
       setContent();
       String[] lines = content.split("\n");
       try (FileWriter writer = new FileWriter(file)) {
          for (String s : lines) {
             writer.write(s + LINE_SEP);
          }
+         success = true;
       }
       catch(IOException e) {
          FileUtils.logStack(e);
       }
+      return success;
    }
 
    private void setContent() {

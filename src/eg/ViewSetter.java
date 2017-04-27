@@ -48,26 +48,6 @@ public class ViewSetter {
    }
    
    /**
-    * If showing the tab bar is selected in the view menu
-    *
-    * @return  if showing the tab bar is selected
-    */
-   public boolean isShowTabs() {
-      return vMenu.isTabItmSelected();
-   }
-   
-   /**
-    * Enables/disables the menu item to control visiblity of the
-    * tab bar
-    *
-    * @param isEnabled  true/false to enable/disable the menu item for
-    * controlling visiblity of the tab bar
-    */
-   public void enableTabItm(boolean isEnabled) {
-      vMenu.enableTabItm(isEnabled);
-   }
-   
-   /**
     * Shows/hides the tab bar
     *
     * @param show  true/false to show/hide the tab bar
@@ -77,20 +57,10 @@ public class ViewSetter {
       String state = show ? "show" : "hide";
       prefs.storePrefs("showTabs", state);
    }
-   
-   /**
-    * Displays text in the title bar of the main window (i.e., the file)
-    *
-    * @param title  the text that is displayed in the title bar of the
-    * main window
-    */
-   public void displayFrameTitle(String title) {
-      mw.displayFrameTitle(title);
-   }
 
    /**
-    * the selections in the {@link ViewSettingWin} to show the toolbar
-    * and the status bar and to change the LaF
+    * Applies the selections in {@link ViewSettingWin} to show or
+    * hide the toolbar and the status bar and to chnage the LaF
     */
    public void applySetWinOk() {
       boolean show = false;
@@ -118,6 +88,6 @@ public class ViewSetter {
    }
    
    private void registerActions() {
-      vMenu.tabItmAct(e -> showTabbar(isShowTabs()));
+      vMenu.tabItmAct(e -> showTabbar(vMenu.isTabItmSelected()));
    }      
 }

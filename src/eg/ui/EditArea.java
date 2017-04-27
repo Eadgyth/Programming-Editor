@@ -12,6 +12,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
 
+import javax.swing.event.DocumentListener;
+
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
@@ -209,7 +211,7 @@ public final class EditArea {
       catch (BadLocationException e) {
          FileUtils.logStack(e);
       }
-   }
+   }      
 
    /**
     * Adds a line number
@@ -375,7 +377,7 @@ public final class EditArea {
 
    private void setDocStyle() {
       StyleConstants.setForeground(normalSet, Color.BLACK);
-      StyleConstants.setLineSpacing(normalSet, 0.2f);
+      StyleConstants.setLineSpacing(normalSet, 0.25f);
       StyleConstants.setBold(normalSet, false);
       Element el = doc.getParagraphElement(0);
       doc.setParagraphAttributes(0, el.getEndOffset(), normalSet, false);
@@ -384,7 +386,7 @@ public final class EditArea {
    private void setLineDocStyle() {
       StyleConstants.setForeground(lineSet, NUM_GRAY);
       StyleConstants.setAlignment(lineSet, StyleConstants.ALIGN_RIGHT);
-      StyleConstants.setLineSpacing(lineSet, 0.2f);
+      StyleConstants.setLineSpacing(lineSet, 0.25f);
       Element el = lineDoc.getParagraphElement(0);
       lineDoc.setParagraphAttributes(0, el.getEndOffset(), lineSet, false);
    }

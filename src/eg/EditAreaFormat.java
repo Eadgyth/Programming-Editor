@@ -6,8 +6,10 @@ import eg.ui.FontSettingWin;
 import eg.ui.menu.FormatMenu;
 
 /**
- * The formatting (word wrap, font, showing line numbers) of the
- * {@code EditArea}.
+ * The formatting (word wrap, font, display of line numbers) for
+ * <code>EditArea</code> objects.
+ * <p>The font is applied to all objects, whereas wordwrap and the
+ * visibility line numbers is applied to the currently viewed editor
  * <p>The initial parameters are given by entries in the prefs file.
  */
 public class EditAreaFormat {
@@ -34,7 +36,7 @@ public class EditAreaFormat {
       font = fontSetWin.fontComboBxRes();
       fontSize = fontSetWin.sizeComboBxRes();
       fMenu.changeWordWrapAct(e -> changeWordWrap());
-      fMenu.fontAct(e -> makeFontSetWinVisible());
+      fMenu.fontAct(e -> fontSetWin.makeVisible(true));
       fontSetWin.okAct(e -> setFont());
    }
    
@@ -62,7 +64,7 @@ public class EditAreaFormat {
     * selects/unselects the wordwrap menu item depending on the state
     * of that element
     *
-    * @param index  the index of the {@link EditArea} element
+    * @param index  the index of the array element
     */
    public void setCurrEditArea(int index) {
       currEdArea = editArea[index];
@@ -70,7 +72,8 @@ public class EditAreaFormat {
    }
    
    /**
-    * Changes the wordwrap state of the selected {@code EditArea}
+    * Changes the wordwrap state of the {@code EditArea}
+    * selected by {@link #setCurrEditArea(int)}
     */
    public void changeWordWrap() {
       isWordWrap = fMenu.isWordWrapItmSelected();
@@ -85,7 +88,7 @@ public class EditAreaFormat {
    }
 
    /**
-    * Applies the selection in the {@link ViewSettingWin} to show/hide
+    * Applies the selection in the {@link ViewSettingWin} to show or hide
     * line numbers
     */
    public void applySetWinOk() {
@@ -100,10 +103,6 @@ public class EditAreaFormat {
          String state = isShowLineNr ? "show" : "hide";
          prefs.storePrefs("lineNumbers", state);
       }
-   }
-   
-   public void makeFontSetWinVisible() {
-      fontSetWin.makeVisible(true);
    }
    
    //

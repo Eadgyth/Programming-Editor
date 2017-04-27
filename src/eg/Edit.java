@@ -1,5 +1,7 @@
 package eg;
 
+import java.awt.EventQueue;
+
 import java.awt.Toolkit;
 
 import java.awt.datatransfer.Clipboard;
@@ -82,12 +84,15 @@ public class Edit {
     * Pastes text stored in the clipboard and replaces selected text
     */
    public void pasteText() {
+      txtDoc.enableTypeEdit(false);
       txtDoc.enableTypeEdit(false); 
       String clipboard = getClipboard();
       String sel = textArea.getSelectedText();
       int pos = textArea.getSelectionStart();
-      txtDoc.replaceSelection(clipboard, sel != null);
-      txtDoc.colorSection(clipboard, pos);
+      textArea.replaceSelection(clipboard);
+      txtDoc.enableTypeEdit(true);
+      EventQueue.invokeLater(() -> 
+         txtDoc.colorSection(clipboard, pos));
    }
 
    /**

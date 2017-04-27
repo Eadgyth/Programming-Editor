@@ -3,6 +3,8 @@ package eg.syntax;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.Style;
+import javax.swing.text.StyleContext;
 
 import java.awt.Color;
 
@@ -323,24 +325,32 @@ public class Lexer {
    private void setStyles() {
       Color commentGreen = new Color(80, 190, 80);
       StyleConstants.setForeground(cmntSet, commentGreen);
+      StyleConstants.setLineSpacing(cmntSet, 1.2f);
       StyleConstants.setBold(cmntSet, false);
 
       Color keyRed = new Color(230, 0, 90);
       StyleConstants.setForeground(keyRedSet, keyRed);
+      //StyleConstants.setLineSpacing(keyRedSet, 1.2f);   
       StyleConstants.setBold(keyRedSet, false);
 
       Color keyBlue = new Color(80, 80, 200);
       StyleConstants.setForeground(keyBlueSet, keyBlue);
+      //StyleConstants.setLineSpacing(keyBlueSet, 1.2f);
       StyleConstants.setBold(keyBlueSet, false);
 
       Color bracketBlue = new Color(20, 30, 255);
       StyleConstants.setForeground(brBlueSet, bracketBlue);
+      //StyleConstants.setLineSpacing(brBlueSet, 1.2f);
       StyleConstants.setBold(brBlueSet, true);
 
+      Color bracketGray = new Color(20, 30, 50);
+      StyleConstants.setForeground(brSet, bracketGray);
+      //StyleConstants.setLineSpacing(brSet, 1.2f);
       StyleConstants.setBold(brSet, true);
 
       Color strLitOrange = new Color(230, 140, 50);
       StyleConstants.setForeground(strLitSet, strLitOrange );
+      //StyleConstants.setLineSpacing(strLitSet, 1.2f);
       StyleConstants.setBold(strLitSet, false);
    }
 }

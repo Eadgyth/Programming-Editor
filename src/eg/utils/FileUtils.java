@@ -24,6 +24,7 @@ public class FileUtils {
    
    /**
     * Deletes a folder
+    *
     * @param dir  the directory to be deleted
     * @return  true if the directory has been deleted
     */
@@ -35,19 +36,6 @@ public class FileUtils {
          }
       }
       return ret && dir.delete();
-   }
-   
-   /**
-    * Deletes a folder if it does not contain data
-    * @param dir  the directory to be deleted
-    * @return  true if the directory has been deleted
-    */ 
-   public static boolean deleteEmptyFolder(File dir) {
-      boolean ret = false;
-      if (isFolderEmpty(dir)) {
-         ret = dir.delete();
-      }
-      return ret;
    }
    
    /**
