@@ -330,7 +330,7 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Calls {link #exit()} when the close window button is pressed
+    * Calls {@link #exit()} when the close window button is pressed
     */
    public WindowListener closeWindow = new WindowAdapter() {
 
@@ -362,6 +362,7 @@ public class TabbedFiles implements Observer {
             && editArea[iOpen].getDoc().getLength() == 0;
       if (isFirstUnnamedBlank) {
          txtDoc[iOpen].openFile(file); // no new doc
+         tabPane.changeTabTitle(0, txtDoc[0].filename());
       }
       else {
          if (vMenu.isTabItmSelected()) {
@@ -378,7 +379,7 @@ public class TabbedFiles implements Observer {
                }
             }
             if (isSave) {
-              tabPane.removeTab(iOpen);
+              tabPane.removeTab(0);
            } 
          }
          if (isSave) {
