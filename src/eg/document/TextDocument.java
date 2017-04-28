@@ -209,10 +209,10 @@ public final class TextDocument {
    /**
     * Colors a section of text which also may be the entire text
     *
-    * @param section  a section of from the document. Null to color the entire
+    * @param section  a section of the document. Null to color the entire
     * entire text
     * @param posStart  the pos within the entire text where the section to
-    * be colored starts. Set to 0 if '{code section}' is null.
+    * be colored starts. Is 0 if '{code section}' is null.
     */
    public void colorSection(String section, int posStart) {
       if (!isPlainText) {
@@ -309,19 +309,18 @@ public final class TextDocument {
     * Saves the current content to this file
     */
    private boolean writeToFile(File file) {
-      boolean success = false;
       setContent();
       String[] lines = content.split("\n");
       try (FileWriter writer = new FileWriter(file)) {
          for (String s : lines) {
             writer.write(s + LINE_SEP);
          }
-         success = true;
+         return true;
       }
       catch(IOException e) {
          FileUtils.logStack(e);
       }
-      return success;
+      return false;
    }
 
    private void setContent() {

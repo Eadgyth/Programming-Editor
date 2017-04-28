@@ -42,7 +42,7 @@ public final class EditArea {
    private final JPanel textPanel = new JPanel(new BorderLayout());
 
    private final JTextPane textArea = new JTextPane();
-   private final SimpleAttributeSet normalSet = new SimpleAttributeSet();
+   private final SimpleAttributeSet set = new SimpleAttributeSet();
    private final StyledDocument doc;
 
    private final JTextPane lineArea = new JTextPane();
@@ -132,16 +132,6 @@ public final class EditArea {
     */
    public StyledDocument getDoc() {
       return doc;
-   }
-
-   /**
-    * Returns this {@code SimpleAttributeSet} which represents the
-    * "normal" text appearance in the text area
-    *
-    * @return  this {@code SimpleAttributeSet}
-    */
-   public SimpleAttributeSet getNormalSet() {
-      return normalSet;
    }
 
    /**
@@ -376,11 +366,9 @@ public final class EditArea {
    }
 
    private void setDocStyle() {
-      StyleConstants.setForeground(normalSet, Color.BLACK);
-      StyleConstants.setLineSpacing(normalSet, 0.25f);
-      StyleConstants.setBold(normalSet, false);
+      StyleConstants.setLineSpacing(set, 0.25f);
       Element el = doc.getParagraphElement(0);
-      doc.setParagraphAttributes(0, el.getEndOffset(), normalSet, false);
+      doc.setParagraphAttributes(0, el.getEndOffset(), set, false);
    }
 
    private void setLineDocStyle() {

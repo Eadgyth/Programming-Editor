@@ -6,11 +6,9 @@ import java.awt.event.ActionListener;
  * The interface to configure a project.
  * <p>
  * 'Configuration' means to define the directory structure of a project by
- * entries in a settings window.
- * <p>
+ * entries in a settings window.<br>
  * A project configuration can be saved to a preferences file so that this
- * project may be retrieved.
- * <p>
+ * project may be retrieved.<br>
  * {@code Configurable} is made to be used with {@link ProjectConfig} which
  * works with {@link SettingsWin} as the class that defines a settings window.
  */
@@ -31,10 +29,10 @@ public interface Configurable {
    /**
     * Makes this settings window visible/invisible
     *
-    * @param enable  true to make the window for project settings visible,
-    * false to make it invisible
+    * @param isVisible  true to make the window visible, false to make
+    * it invisible
     */
-   public void makeSetWinVisible(boolean enable);
+   public void makeSetWinVisible(boolean isVisible);
    
    /**
     * If a project can be successfully configured based on the entries in
@@ -42,8 +40,7 @@ public interface Configurable {
     *
     * @param dir  the directory that may be or include the project's root
     * folder
-    * @return  if a project can be successfully configured based on entries
-    * in this settings window
+    * @return  if a project can be successfully configured
     */
    public boolean configureProject(String dir);
    

@@ -50,7 +50,7 @@ public class JavaColoring implements Colorable {
          }
          lex.quoted(toColor, posStart, "\'", null, null);
          lex.quoted(toColor, posStart, "\"", null, null);
-         lex.lineComments(toColor, posStart, LINE_CMNT);
+         lex.lineComments(toColor, posStart, LINE_CMNT);   
       }
       lex.blockComments(allText, BLOCK_CMNT_START, BLOCK_CMNT_END);
    }

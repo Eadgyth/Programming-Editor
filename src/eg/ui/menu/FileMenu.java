@@ -46,11 +46,11 @@ public class FileMenu {
    public void registerAct(TabbedFiles tf) {
       newFileItm.addActionListener(e -> tf.newEmptyTab());
       openItm.addActionListener(e -> tf.openFileByChooser());
-      closeItm.addActionListener(e -> tf.tryClose());
-      closeAllItm.addActionListener(e -> tf.tryCloseAll());
-      saveItm.addActionListener(e -> tf.save());     
+      closeItm.addActionListener(e -> tf.close());
+      closeAllItm.addActionListener(e -> tf.closeAll());
+      saveItm.addActionListener(e -> tf.save(true));     
       saveAllItm.addActionListener(e -> tf.saveAll());
-      saveAsItm.addActionListener(e -> tf.saveAs());
+      saveAsItm.addActionListener(e -> tf.saveAs(true));
       saveCopyItm.addActionListener(e -> tf.saveCopy());
       printItm.addActionListener(e -> tf.print());      
       exitItm.addActionListener(e -> tf.exit());

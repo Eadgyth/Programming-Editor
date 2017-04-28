@@ -21,8 +21,8 @@ import eg.utils.JOptions;
  * sub-directories are specified the root would be the parent of the relative path
  * given by the named sub-directories that point to the project file. The relative
  * path to the project file has the order 'sourcesDirName'/'moduleName' if names
- * for both of these properties are specified. The name of the root may be specified
- * to enforce that a root directory with this name is found.
+ * for both of these properties are specified. The name of the root may be entered
+ * to require that the determined root directory has this name.
  * <p>
  * It can be queried if any directory, not just the directory of the specified
  * project file, is found in the project's root folder.
@@ -77,10 +77,7 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    /**
-    * If a project can be successfully configured based on the entries in
-    * the settings window.
-    * <p>
-    * In the case of success the frame of [@link SettingsWin} is closed.
+    * {@inheritDoc}.
     *
     * @param dir  the directory that may be or include the project's root
     * folder
@@ -98,15 +95,9 @@ public abstract class ProjectConfig implements Configurable {
    }
    
    /**
-    * If a project configuration stored in 'config' or 'prefs' can be
-    * retrieved.
-    * <p>
-    * Method first looks for a config file and, if not present, in the
+    * {@inheritDoc}
+    * <p> Method first looks for a config file and, if not present, in the
     * preferences file in the program folder.
-    *
-    * @param dir  the directory of a file that maybe part of the project 
-    * @return  If a project configuration stored in 'config' or 'prefs'
-    * can be retrieved
     */
    @Override
    public boolean retrieveProject(String dir) {
@@ -116,7 +107,7 @@ public abstract class ProjectConfig implements Configurable {
 
    @Override
    public boolean isInProject(String path) {
-      return findRootInPath(path, PREFS).length() > 0;
+      return isRootInPath(path, projectPath);
    }
    
    @Override
@@ -227,83 +218,63 @@ public abstract class ProjectConfig implements Configurable {
    //
 
    private void findSavedProject(String path) {
-      Preferences props = null;
       //
-      // firstly look if there is a eadconfig file...
+      // first look if there is a eadconfig file
       String root = findRootByFile(path, Preferences.CONFIG_FILE);
+      boolean found = root.length() > 0;
       if (root.length() > 0) {
-         props = CONFIG;
-         props.readConfig(root);
+         CONFIG.readConfig(root);
          setWin.setSaveConfigSelected(true);
+         configProjectByProps(root, CONFIG);
       }
       //
-      // ... if not successful look if the dir includes the project root
+      // look if the path includes the project root
       // stored in prefs
       else {
-         props = PREFS;
-         props.readPrefs();
+         PREFS.readPrefs();
          setWin.setSaveConfigSelected(false);
-         root = findRootInPath(path, props);
-      }
-      //
-      // read in props and set text fields in this SettingsWin  
-      if (root.length() > 0) {        
-         configProjectByProps(root, props);
+         root = PREFS.getProperty("recentProject");
+         if (isRootInPath(path, root)) {
+             configProjectByProps(root, PREFS);
+         }
       }
    }
    
    /**
-    * Tries to find the project root in the specified path by
+    * Tries to find the project root within the specified path by
     * looking for an existing file that is a child of this root.
-    * 'file' may be a file or itself a (relative) path
+    * <code>file</code> may be a file or a (relative) path
     */
    private String findRootByFile(String path, String file) {
-      File searched = new File(path);
-      String relToRootStr = F_SEP + file;
-      String existingPath = path + relToRootStr;
-      boolean exists = new File(existingPath).exists();
-      while(!exists) {
-         if (searched.getParentFile() == null) {
-            searched = null;
-            break;
+      File projPath = new File(path);
+      String relToRoot = F_SEP + file;
+      String existingPath = null;
+      while (projPath != null) {
+         existingPath = projPath.getPath() + relToRoot;
+         if (new File(existingPath).exists()) {
+            return projPath.getPath();
          }
-         searched     = new File(searched.getParent());
-         existingPath = searched.getPath() + relToRootStr;
-         exists       = new File(existingPath).exists();
+         projPath = projPath.getParentFile();
       }
-      if (searched == null) {
-         return "";
-      }
-      else {
-         return searched.getPath();
-      }
+      return "";
    }
 
-   private String findRootInPath(String path, Preferences props) {
-      File searched = new File(path);
-      File project;
-      if (projectPath.length() > 0) {
-         project = new File(projectPath);
+   /**
+    * If path is (sub-) child of the project path
+    */
+   private boolean isRootInPath(String path, String projPath) {
+      File child = new File(path);
+      File root = new File(projPath);
+      while(child != null) {
+         if (child.equals(root)) {
+            return true;
+         } 
+         child = child.getParentFile();
       }
-      else {
-         project = new File(props.getProperty("recentProject"));
-      }
-      String searchedStr = searched.getPath();
-      String projStr = project.getPath();
-      boolean isEqual = projStr.equals(searchedStr);
-      while(!isEqual) {
-         if (searched.getParentFile() == null) {
-            searchedStr = "";
-            break;
-         }       
-         searched    = new File(searched.getParent());
-         searchedStr = searched.getPath();
-         isEqual     = projStr.equals(searchedStr);
-      }
-      return searchedStr;     
+      return false;
    }
    
-   private void configProjectByProps(String previousRoot, Preferences props) {
+   private void configProjectByProps(String root, Preferences props) {
       mainFile = props.getProperty("recentMain");
       setWin.displayFile(mainFile);
       
@@ -319,9 +290,9 @@ public abstract class ProjectConfig implements Configurable {
       buildName = props.getProperty("recentBuildName");
       setWin.displayBuildName(buildName);
       
-      File fToTest = new File(previousRoot + F_SEP + pathRelToRoot(false));     
+      File fToTest = new File(root + F_SEP + pathRelToRoot(false));     
       if (fToTest.exists()) {
-         projectPath = previousRoot;
+         projectPath = root;
          setWin.displayProjDirName(getProjectName());
          if (props == CONFIG) {
             storeInPrefs();

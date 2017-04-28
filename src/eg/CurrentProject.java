@@ -81,7 +81,7 @@ public class CurrentProject {
     */
    public void setCurrTextDocument(int index) {
       currDoc = txtDoc[index];
-      currExt = FileUtils.fileSuffix(currDoc.filename());
+      currExt = FileUtils.fileSuffix(currDoc.filename());      
    }
 
    /**
@@ -117,7 +117,7 @@ public class CurrentProject {
          boolean isFound = prToFind != null
                && prToFind.retrieveProject(currDoc.dir());
          if (isFound) {
-            if (!isProjectSet()) {   
+            if (!isProjectSet()) {
                current = prToFind;
                current.addOkAction(e -> configureProject(current)); 
                projList.add(current); 
@@ -201,6 +201,7 @@ public class CurrentProject {
          changeProject(fromList);
       }
       else {
+         
          createNewProject(true);
       }
    }      
@@ -332,7 +333,7 @@ public class CurrentProject {
    }
 
    private boolean changeProject(ProjectActions toChangeTo) {
-      int result = JOptions.confirmYesNo("Change to project '"
+      int result = JOptions.confirmYesNo("Set active project '"
                  + toChangeTo.getProjectName() + "' ?");
       if (result == 0) {
          current = toChangeTo;

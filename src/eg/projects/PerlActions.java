@@ -34,6 +34,10 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
       setSettingsWin(setWin);
    }
    
+   /**
+    * {@inheritDoc}
+    * <p>Creates the start command to run the Perl script
+    */
    @Override
    public boolean configureProject(String dir) {
       boolean success = super.configureProject(dir);
@@ -43,6 +47,10 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
       return success;
    }
 
+   /**
+    * {@inheritDoc}
+    * Creates the start command to run the Perl script
+    */
    @Override
    public boolean retrieveProject(String dir) {
       boolean success = super.retrieveProject(dir);
@@ -51,9 +59,9 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
       }
       return success;
    }
-   
+
    /**
-    * Runs the script in the console panel
+    * Runs the Perl script and shows output in the console panel
     */
    @Override
    public void runProject() {

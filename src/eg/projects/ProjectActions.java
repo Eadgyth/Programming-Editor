@@ -9,8 +9,6 @@ public interface ProjectActions extends Configurable {
    
    /**
     * Compiles source files
-    * @throws UnsupportedOperationException  if compiling sources
-    * is not implemented
     */
    public default void compile() {
       throw new UnsupportedOperationException(
@@ -19,8 +17,6 @@ public interface ProjectActions extends Configurable {
    
    /**
     * Runs a project
-    * @throws UnsupportedOperationException  if running the project
-    * is not implemented
     */
    public default void runProject() {
       throw new UnsupportedOperationException(
@@ -30,8 +26,6 @@ public interface ProjectActions extends Configurable {
    /**
     * Creates a build of a project, where it is not specified what
     * 'build' is
-    * @throws UnsupportedOperationException  if creating a build
-    * is not implemented
     */
    public default void build() {
       throw new UnsupportedOperationException(

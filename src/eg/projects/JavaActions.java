@@ -55,6 +55,10 @@ public final class JavaActions extends ProjectConfig
        setSettingsWin(setWin);
    }
    
+   /**
+    * {@inheritDoc}.
+    * Creates the start command to run the java project
+    */
    @Override
    public boolean configureProject(String dir) {
       boolean success = super.configureProject(dir);
@@ -64,6 +68,10 @@ public final class JavaActions extends ProjectConfig
       return success;
    }
 
+   /**
+    * {@inheritDoc}.
+    * Creates the start command to run the java project
+    */
    @Override
    public boolean retrieveProject(String dir) {
       boolean success = super.retrieveProject(dir);
@@ -73,6 +81,9 @@ public final class JavaActions extends ProjectConfig
       return success;
    }
    
+   /**
+    * Compiles java files and shows error messages in the console panel
+    */
    @Override                                                                        
    public void compile() {      
       consPnl.setText("<<Compile " + getProjectName() + ">>\n");
@@ -103,7 +114,7 @@ public final class JavaActions extends ProjectConfig
    }
 
    /**
-    * Runs the Java program in the console panel
+    * Runs the project and shows output in the console panel
     */
    @Override
    public void runProject() {

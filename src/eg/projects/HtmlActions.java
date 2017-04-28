@@ -28,6 +28,10 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
       setSettingsWin(setWin);
    }
    
+   /**
+    * {@inheritDoc}.
+    * Creates the path for the html file to show it in a fil browser
+    */
    @Override
    public boolean configureProject(String dir) {
       boolean success = super.configureProject(dir);
@@ -37,6 +41,10 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
       return success;
    }
 
+   /**
+    * {@inheritDoc}.
+    * Creates the path for the html file to show it in a fil browser
+    */
    @Override
    public boolean retrieveProject(String dir) {
       boolean success = super.retrieveProject(dir);

@@ -39,7 +39,7 @@ import eg.utils.FileUtils;
  * Mediates the editing in the {@code EditArea} that shall happen during
  * typing.
  * <p>
- * Methods are used in other classes that show line numbering, syntax
+ * Methods from other classes that show line numbering, do syntax
  * coloring, auto-indentation and undo/redo editing (the latter an inner
  * class).
  */
@@ -67,7 +67,7 @@ class TypingEdit {
       editArea.getDoc().addUndoableEditListener(undomanager);
       editArea.textArea().addCaretListener(new UndoStopper());
       undomanager.setLimit(1000);
-      lex = new Lexer(editArea.getDoc(), editArea.getNormalSet());
+      lex = new Lexer(editArea.getDoc());
       col = new Coloring(lex);
       lineNum = new LineNumbers(editArea);
       autoInd = new AutoIndent(editArea);
@@ -162,7 +162,7 @@ class TypingEdit {
          //
          // to prevent damage; problem not solved
          else if (newLineNr < prevLineNr) {
-            undomanager.discardAllEdits();
+            //undomanager.discardAllEdits();
          }
          else {
             if (pos > 0 & pos < allText.length()) {
@@ -208,7 +208,7 @@ class TypingEdit {
          changeLength = -de.getLength();
          event = de.getType();
          //
-         // to prevent damage; problem not solved
+         // to prevent damage when undoing deleted text
          if (isTypeEdit &&  changeLength < -1) {
             undomanager.discardAllEdits();
          }

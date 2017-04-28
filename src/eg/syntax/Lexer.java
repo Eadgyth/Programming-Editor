@@ -18,7 +18,7 @@ public class Lexer {
    private final SimpleAttributeSet brSet      = new SimpleAttributeSet();
    private final SimpleAttributeSet brBlueSet  = new SimpleAttributeSet();
    private final SimpleAttributeSet strLitSet  = new SimpleAttributeSet();
-   private final SimpleAttributeSet normalSet;
+   private final SimpleAttributeSet normalSet  = new SimpleAttributeSet();;
    private final StyledDocument doc;
 
    private Colorable colorable;
@@ -29,12 +29,9 @@ public class Lexer {
     * Creates a Lexer
     *
     * @param doc  the {@code StyledDocument} that is colored
-    * @param normalSet  the {@code SimpleAttributeSet} that represents the
-    * black and plain display of text
     */
-   public Lexer(StyledDocument doc, SimpleAttributeSet normalSet) {
+   public Lexer(StyledDocument doc) {
       this.doc = doc;
-      this.normalSet = normalSet;
       setStyles();
    }
 
@@ -323,34 +320,31 @@ public class Lexer {
    }
 
    private void setStyles() {
+      StyleConstants.setForeground(normalSet, Color.BLACK); 
+      StyleConstants.setBold(normalSet, false);
+
       Color commentGreen = new Color(80, 190, 80);
       StyleConstants.setForeground(cmntSet, commentGreen);
-      StyleConstants.setLineSpacing(cmntSet, 1.2f);
       StyleConstants.setBold(cmntSet, false);
 
       Color keyRed = new Color(230, 0, 90);
       StyleConstants.setForeground(keyRedSet, keyRed);
-      //StyleConstants.setLineSpacing(keyRedSet, 1.2f);   
       StyleConstants.setBold(keyRedSet, false);
 
       Color keyBlue = new Color(80, 80, 200);
       StyleConstants.setForeground(keyBlueSet, keyBlue);
-      //StyleConstants.setLineSpacing(keyBlueSet, 1.2f);
       StyleConstants.setBold(keyBlueSet, false);
 
       Color bracketBlue = new Color(20, 30, 255);
       StyleConstants.setForeground(brBlueSet, bracketBlue);
-      //StyleConstants.setLineSpacing(brBlueSet, 1.2f);
       StyleConstants.setBold(brBlueSet, true);
 
       Color bracketGray = new Color(20, 30, 50);
       StyleConstants.setForeground(brSet, bracketGray);
-      //StyleConstants.setLineSpacing(brSet, 1.2f);
       StyleConstants.setBold(brSet, true);
 
       Color strLitOrange = new Color(230, 140, 50);
       StyleConstants.setForeground(strLitSet, strLitOrange );
-      //StyleConstants.setLineSpacing(strLitSet, 1.2f);
       StyleConstants.setBold(strLitSet, false);
    }
 }

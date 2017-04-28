@@ -115,7 +115,7 @@ public class TabbedFiles implements Observer {
    public void newEmptyTab() {
       int n = tabPane.nTabs();
       if (n == 1 && !vMenu.isTabItmSelected()) {
-         tryClose();
+         close();
       }
       else {
          editArea[n] = format.createEditArea();
@@ -152,16 +152,18 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Saves the text content in the selected tab. {@link #saveAs()} is
-    * called if the selected tab is unnamed or if the content of the
-    * document was read in from a file which no longer exists.
+    * Saves the text content in the selected tab. {@link #saveAs(boolean)}
+    * is called if the selected tab is unnamed or if the content was read in
+    * from a file which no longer exists.
     *
-    * @return  if content was saved
+    * @param replaceInTab  if a newly saved file is shown in the selected tab
+    * and applied to define a project
+    * @return  if the content was saved
     */
-   public boolean save() {
+   public boolean save(boolean replaceInTab) {
       if (txtDoc[iTab].filename().length() == 0
             || !new File(txtDoc[iTab].filepath()).exists()) {
-         return saveAs();
+         return saveAs(replaceInTab);
       }
       else {
          return txtDoc[iTab].saveToFile();
@@ -195,26 +197,27 @@ public class TabbedFiles implements Observer {
     * Saves the text content in the selected tab as a new file that
     * is specified in the file chooser
     *
+    * @param replaceInTab  if the new file is shown in the selected tab
+    * and applied to define a project
     * @return  if the content was saved
     */
-   public boolean saveAs() {
+   public boolean saveAs(boolean replaceInTab) {
       File f = fs.fileToSave(txtDoc[iTab].filepath());
-      boolean saved = f != null;
-      if (saved && f.exists()) {
+      boolean isSave = f != null;
+      if (isSave && f.exists()) {
          JOptions.warnMessage(f.getName() + " already exists");
-         saved = false;
+         isSave = false;
       }
-      saved = saved && txtDoc[iTab].saveFileAs(f);
-      if (saved) {
-         currProj.setCurrTextDocument(iTab);
-         currProj.retrieveProject();
+      isSave = isSave && txtDoc[iTab].saveFileAs(f);
+      if (isSave && replaceInTab) {
+         setProject(iTab);
          tabPane.changeTabTitle(iTab, txtDoc[iTab].filename());
          mw.displayFrameTitle(txtDoc[iTab].filepath());
          prefs.storePrefs("recentPath", txtDoc[iTab].dir());
          EventQueue.invokeLater(() ->
                currProj.updateFileTree(txtDoc[iTab].dir()));
       }
-      return saved;
+      return isSave;
    }
 
    /**
@@ -256,20 +259,20 @@ public class TabbedFiles implements Observer {
     * Closes a tab if the text content is saved or asks if closing
     * shall happen with or without saving
     */
-   public void tryClose() {
+   public void close() {
       if (txtDoc[iTab].isContentSaved()) {
-         close();
+         removeTab();
       }
       else {
          tabPane.selectTab(iTab);
          int res = saveOrCloseOption(iTab);
          if (res == JOptionPane.YES_OPTION) {
-            if (save()) {
-               close();
+            if (save(false)) {
+               removeTab();
             }
          }
          else if (res == JOptionPane.NO_OPTION) {
-            close();
+            removeTab();
          }
       }
    }
@@ -278,7 +281,7 @@ public class TabbedFiles implements Observer {
     * Closes all tabs or selects the first tab whose text content is found
     * unsaved
     */
-   public void tryCloseAll() {
+   public void closeAll() {
       int count = unsavedTab();
       if (count == tabPane.nTabs()) {
          while(tabPane.nTabs() > 0) {
@@ -294,13 +297,13 @@ public class TabbedFiles implements Observer {
          tabPane.selectTab(count);
          int res = saveOrCloseOption(count);
          if (res == JOptionPane.YES_OPTION) {
-            if (save()) {
-               tryCloseAll();
+            if (save(false)) {
+               closeAll();
             }
          }
          else if (res == JOptionPane.NO_OPTION) {
-            close();
-            tryCloseAll();
+            removeTab();
+            closeAll();
          }
       }
    }
@@ -318,7 +321,7 @@ public class TabbedFiles implements Observer {
          tabPane.selectTab(count);
          int res = saveOrCloseOption(count);
          if (res == JOptionPane.YES_OPTION) {
-            if (save()) {
+            if (save(false)) {
                exit();
             }
          }
@@ -344,9 +347,9 @@ public class TabbedFiles implements Observer {
    //---private methods --//
    //
 
-   private void open(File file) {
-      if (isFileOpen(file.toString())) {
-         JOptions.warnMessage(file.getName() + " is open");
+   private void open(File f) {
+      if (isFileOpen(f.toString())) {
+         JOptions.warnMessage(f.getName() + " is open");
          return;
       }
       if (tabPane.nTabs() == txtDoc.length) {
@@ -355,42 +358,31 @@ public class TabbedFiles implements Observer {
       }
 
       int iOpen = 0;
-      boolean isSave = true;
-      boolean isFirstUnnamedBlank
+      boolean isOpenable
             =  tabPane.nTabs() == 1
             && txtDoc[iOpen].filename().length() == 0
             && editArea[iOpen].getDoc().getLength() == 0;
-      if (isFirstUnnamedBlank) {
-         txtDoc[iOpen].openFile(file); // no new doc
-         tabPane.changeTabTitle(0, txtDoc[0].filename());
+      if (isOpenable) {
+         txtDoc[iOpen].openFile(f); // no new doc
+         tabPane.changeTabTitle(iOpen, txtDoc[iOpen].filename());
       }
       else {
          if (vMenu.isTabItmSelected()) {
             iOpen = tabPane.nTabs();
+            isOpenable = true;
          }
          else {
-            if (!txtDoc[iOpen].isContentSaved()) {
-               int res = saveOrCloseOption(iOpen);
-               if (res == JOptionPane.YES_OPTION) {
-                  isSave = save();
-               }
-               else if (res == JOptionPane.CANCEL_OPTION) {
-                  isSave = false;
-               }
-            }
-            if (isSave) {
-              tabPane.removeTab(0);
-           } 
+            isOpenable = saveAndRemoveFirstTab();
          }
-         if (isSave) {
-            createDocument(iOpen, file);
+         if (isOpenable) {
+            createDocument(iOpen, f);
             addNewTab(txtDoc[iOpen].filename(),
                   editArea[iOpen].textPanel(), iOpen);
          }
       }
-      if (isSave) {
+      if (isOpenable) {
+         setProject(iOpen);
          mw.displayFrameTitle(txtDoc[iOpen].filepath());
-         currProj.retrieveProject();
          prefs.storePrefs("recentPath", txtDoc[iOpen].dir());
       }
    }
@@ -405,10 +397,10 @@ public class TabbedFiles implements Observer {
       return isFileOpen;
    }
 
-   private void createDocument(int i, File file) {
+   private void createDocument(int i, File f) {
       editArea[i] = format.createEditArea();
       txtDoc[i] = new TextDocument(editArea[i]);
-      txtDoc[i].openFile(file);
+      txtDoc[i].openFile(f);
    }
 
    private void addNewTab(String filename, JPanel pnl, int i) {
@@ -416,8 +408,13 @@ public class TabbedFiles implements Observer {
       tabPane.addNewTab(filename, pnl, closeBt, i);
       closeBt.addActionListener(e -> {
          iTab = tabPane.iTabMouseOver();
-         tryClose();
+         close();
       });
+   }
+   
+   private void setProject(int i) {
+      currProj.setCurrTextDocument(i);
+      currProj.retrieveProject();
    }
 
    private int saveOrCloseOption(int i) {
@@ -438,8 +435,25 @@ public class TabbedFiles implements Observer {
       }
       return count;
    }
+   
+   private boolean saveAndRemoveFirstTab() {
+      boolean remove = true;
+      if (!txtDoc[0].isContentSaved()) {
+         int res = saveOrCloseOption(0);
+         if (res == JOptionPane.YES_OPTION) {
+            remove = save(false);
+         }
+         else if (res == JOptionPane.CANCEL_OPTION) {
+            remove = false;
+         }
+      }
+      if (remove) {
+        tabPane.removeTab(0);
+      }
+      return remove;
+   }
 
-   private void close() {
+   private void removeTab() {
       int count = iTab; // remember the index of the tab that will be removed
       tabPane.removeTab(iTab);
       for (int i = count; i < tabPane.nTabs(); i++) {
