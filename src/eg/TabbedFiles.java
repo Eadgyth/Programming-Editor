@@ -30,7 +30,7 @@ import eg.ui.EditArea;
 import eg.ui.menu.ViewMenu;
 
 /**
- * Controls operations that require knowledge of the documents in
+ * The operations that require knowledge of the documents in
  * the tabs
  */
 public class TabbedFiles implements Observer {
@@ -210,7 +210,7 @@ public class TabbedFiles implements Observer {
       }
       isSave = isSave && txtDoc[iTab].saveFileAs(f);
       if (isSave && replaceInTab) {
-         setProject(iTab);
+         currProj.retrieveProject();
          tabPane.changeTabTitle(iTab, txtDoc[iTab].filename());
          mw.displayFrameTitle(txtDoc[iTab].filepath());
          prefs.storePrefs("recentPath", txtDoc[iTab].dir());
@@ -234,7 +234,7 @@ public class TabbedFiles implements Observer {
       boolean storable = true;
       if (f.exists()) {
          res = JOptions.confirmYesNo(f.getName() + " already exists.\n"
-               + " Replace file?");
+               + "Replace file?");
          if (res == 0) {
             storable = f.delete();
          }
@@ -326,7 +326,7 @@ public class TabbedFiles implements Observer {
             }
          }
          else if (res == JOptionPane.NO_OPTION) {
-            close();
+            removeTab();
             exit();
          }
       }
@@ -381,7 +381,8 @@ public class TabbedFiles implements Observer {
          }
       }
       if (isOpenable) {
-         setProject(iOpen);
+         currProj.setCurrTextDocument(iOpen);
+         currProj.retrieveProject();
          mw.displayFrameTitle(txtDoc[iOpen].filepath());
          prefs.storePrefs("recentPath", txtDoc[iOpen].dir());
       }
@@ -410,11 +411,6 @@ public class TabbedFiles implements Observer {
          iTab = tabPane.iTabMouseOver();
          close();
       });
-   }
-   
-   private void setProject(int i) {
-      currProj.setCurrTextDocument(i);
-      currProj.retrieveProject();
    }
 
    private int saveOrCloseOption(int i) {
@@ -458,13 +454,13 @@ public class TabbedFiles implements Observer {
       tabPane.removeTab(iTab);
       for (int i = count; i < tabPane.nTabs(); i++) {
          txtDoc[i] = txtDoc[i + 1];
-         editArea[i] = editArea[i+1];
+         editArea[i] = editArea[i + 1];
       }
       if (tabPane.nTabs() > 0) {
          txtDoc[tabPane.nTabs()] = null;
          editArea[tabPane.nTabs()] = null;
-         int index = tabPane.selectedIndex();
-         mw.displayFrameTitle(txtDoc[index].filepath());
+         int iSelect = tabPane.selectedIndex();
+         mw.displayFrameTitle(txtDoc[iSelect].filepath());
       }
       else {
          newEmptyTab();
