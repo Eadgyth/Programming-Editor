@@ -169,7 +169,6 @@ public class TabbedFiles implements Observer {
          return saveAs(update);
       }
       else {
-         System.out.println("saved");
          return txtDoc[iTab].saveToFile();
       }
    }
