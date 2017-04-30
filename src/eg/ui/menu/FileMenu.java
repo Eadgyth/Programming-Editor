@@ -41,6 +41,7 @@ public class FileMenu {
    
    /**
     * Adds action listeners to this menu items
+    *
     * @param tf  the reference to {@link TabbedFiles}
     */
    public void registerAct(TabbedFiles tf) {
