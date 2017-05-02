@@ -2,26 +2,20 @@ package eg;
 
 import java.util.Locale;
 
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
-import javax.swing.border.EmptyBorder;
-
 import java.awt.EventQueue;
-
 import java.awt.event.WindowListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.EmptyBorder;
+
 //--Eadgyth--//
 import eg.ui.MainWin;
-import eg.ui.TabbedPane;
 import eg.ui.ViewSettingWin;
-
 import eg.ui.menu.Menu;
-
 import eg.utils.FileUtils;
-
 import eg.plugin.PluginStarter;
 
 /**

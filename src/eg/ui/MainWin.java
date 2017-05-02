@@ -27,6 +27,7 @@ import eg.ui.menu.*;
 import eg.ui.filetree.FileTree;
 import eg.console.ConsolePanel;
 import eg.plugin.PluginStarter;
+import eg.utils.UiComponents;
 
 /**
  * The main window
@@ -44,7 +45,7 @@ public class MainWin {
 
    private final Menu menu = new Menu();
    private final Toolbar toolbar = new Toolbar();
-   private final TabbedPane tabPane = new TabbedPane();
+   private final ExtTabbedPane tabPane = UiComponents.extTabbedPane();
    private final FileTree fileTree = new FileTree();
    private final ConsolePanel console = new ConsolePanel();
    private final FunctionPanel functPnl = new FunctionPanel();
@@ -87,11 +88,11 @@ public class MainWin {
    }
 
    /**
-    * Gets this TabbedPane
+    * Gets this <code>ExtTabbedPane</code>
     *
-    * @return  this {@link TabbedPane}
+    * @return  this {@link ExtTabbedPane}
     */
-   public TabbedPane tabPane() {
+   public ExtTabbedPane tabPane() {
       return tabPane;
    }
 
@@ -319,7 +320,7 @@ public class MainWin {
 
    private void initSplitPane() {
       splitHor = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
-           null, tabPane.tabbedPane());
+           null, tabPane);
       splitHor.setDividerSize(0);
       splitHor.setBorder(null);
       splitVert = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true,

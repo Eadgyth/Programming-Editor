@@ -10,7 +10,7 @@ import eg.ui.menu.FormatMenu;
 import eg.ui.menu.ViewMenu;
 import eg.ui.menu.ProjectMenu;
 import eg.ui.ViewSettingWin;
-import eg.ui.TabbedPane;
+import eg.ui.ExtTabbedPane;
 import eg.utils.JOptions;
 
 /**
@@ -20,7 +20,7 @@ public class ViewSetter {
 
    private final MainWin mw;
    private final ViewMenu vMenu;
-   private final TabbedPane tabPane;
+   private final ExtTabbedPane tabPane;
    private final ViewSettingWin viewSetWin;
    private final Preferences prefs = new Preferences();
 

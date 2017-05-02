@@ -45,9 +45,9 @@ public class FileMenu {
     * @param tf  the reference to {@link TabbedFiles}
     */
    public void registerAct(TabbedFiles tf) {
-      newFileItm.addActionListener(e -> tf.newEmptyTab());
+      newFileItm.addActionListener(e -> tf.createEmptyTab());
       openItm.addActionListener(e -> tf.openFileByChooser());
-      closeItm.addActionListener(e -> tf.close());
+      closeItm.addActionListener(e -> tf.close(true));
       closeAllItm.addActionListener(e -> tf.closeAll());
       saveItm.addActionListener(e -> tf.save(true));     
       saveAllItm.addActionListener(e -> tf.saveAll());

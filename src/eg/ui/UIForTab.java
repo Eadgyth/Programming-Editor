@@ -10,16 +10,23 @@ import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 /**
- * Makes tabs rectengular, selected tab white, unselected tabs "normal" gray,
- * aligns tabs at the left edge, removes insets
+ * A slighly modified appearance of the JTabbedPane (tested for Metal and Windows
+ * LaFs). The tab bar is made visible or hidden depending on the value passed in
+ * {@link #setShowTabs(boolean)}
  */
-class UIForTab extends BasicTabbedPaneUI {
+public class UIForTab extends BasicTabbedPaneUI {
 
    private final Insets borderInsets = new Insets(0, 0, 0, 0);
 
    private boolean isShowTabs = true;
 
-   void setShowTabs(boolean show) {
+   /**
+    * Controls if the tab bar is visible when this UI is set for the
+    * tab pane
+    *
+    * @param show  true/false to show/hide the tab bar
+    */
+   public void setShowTabs(boolean show) {
       isShowTabs = show;
    }
 
@@ -88,6 +95,7 @@ class UIForTab extends BasicTabbedPaneUI {
    @Override
    protected int getTabLabelShiftY(int tabPlacement, int tabIndex,
          boolean isSelected) {
+
       return 0;
    }
 
