@@ -2,6 +2,7 @@ package eg.ui;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Font;
 
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseMotionAdapter;
@@ -12,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 
-import javax.swing.border.MatteBorder;
 import javax.swing.border.EmptyBorder;
 
 import javax.swing.event.ChangeListener;
@@ -21,16 +21,30 @@ import javax.swing.plaf.TabbedPaneUI;
 
 //--Eadgyth--//
 import eg.Constants;
-import eg.Preferences;
 
 /**
  * A JTabbedPane with a close button in the tabs, the possibility
- * to show and hide the tab bar and somewhat changed tab appearance
+ * to show and hide the tab bar and a somewhat changed tab appearance
+ * @see ExtTabbedPaneUI
  */
 public class ExtTabbedPane extends JTabbedPane {
 
-   private UIForTab ui = new UIForTab();
+   private final static FlowLayout FLOW_LAYOUT_LEFT
+         = new FlowLayout(FlowLayout.LEFT, 0, 0);
+   private final static EmptyBorder EMPTY_BORDER
+         = new EmptyBorder(0, 0, 0, 0);
+   private final static int FONT_SIZE = 11;
+   private final static Font VERDANA_PLAIN
+         = new Font("Verdana", Font.PLAIN, FONT_SIZE);
+
+   private ExtTabbedPaneUI ui = new ExtTabbedPaneUI();
    private int iTabMouseOver = -1;
+   
+   public ExtTabbedPane() {
+      ui.setHeight(FONT_SIZE);
+      super.setUI(ui);
+      addMouseMotionListener(mml);
+   }
    
    /**
     * Show or hides the tab bar
@@ -47,42 +61,33 @@ public class ExtTabbedPane extends JTabbedPane {
       ui.setShowTabs(show);
       super.setUI(ui);
    }
-   
-   /**
-    * Sets this <code>MouseMotionListener</code> which determines
-    * the index of the tab where the moue was moved over
-    */
-   public void setMouseMotionListener() {
-      addMouseMotionListener(mml);
-   }
 
    /**
     * Adds a new tab
     *
     * @param title  the title for the tab
-    * @param toAdd  the added Component
+    * @param c  the component to be displayed when this tab is clicked
     * @param closeBt  the button displayed in the tab. An
     * <code>ActionListener</code> is expected to have been added to the
     * button
     * @param index  the index of the tab where a component is added
     */
-   public void addTab(String title, Component toAdd, JButton closeBt,
+   public void addTab(String title, Component c, JButton closeBt,
          int index) {
 
-      add(title, toAdd);
-      setSelectedIndex(index);
-      JPanel tabPnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+      addTab(null, c);
+      JPanel tabPnl = new JPanel(FLOW_LAYOUT_LEFT);
       tabPnl.setOpaque(false);
       JLabel titleLb = new JLabel(title);
-      titleLb.setFont(Constants.VERDANA_PLAIN_11);
-      closeBt.setIcon(IconFiles.CLOSE_ICON);
-      closeBt.setBorder(new EmptyBorder(0, 0, 0, 0));
+      titleLb.setFont(VERDANA_PLAIN);
+      closeBt.setBorder(EMPTY_BORDER);
       closeBt.setBorderPainted(false);
       closeBt.setContentAreaFilled(false);
       closeBt.setFocusable(false);
       tabPnl.add(titleLb);
       tabPnl.add(closeBt);
       setTabComponentAt(index, tabPnl);
+      setSelectedIndex(index);
    }
    
    /**
@@ -94,22 +99,30 @@ public class ExtTabbedPane extends JTabbedPane {
       return iTabMouseOver;
    }
 
-   @Override
-   public void setTitleAt(int index, String title) {
+   /**
+    * Changes the title for the tab at the specified index.
+    * Used instead of <code>setTitleAt()</code> in parent class if
+    * tabs are added through
+    * {@link #addTab(String, Component, JButton, int)}
+    *
+    * @param index  the index of the tab where the title is set
+    * @param title  the tiltle
+    */
+   public void changeTitle(int index, String title) {
       JPanel p = (JPanel) getTabComponentAt(index);
       JLabel lb = (JLabel) p.getComponent(0);
       lb.setText(title);
    }
 
    /**
-    * Disabled
+    * No effect
     */
    @Override
    public void setTabPlacement(int tabPlacement) {
    }
 
    /**
-    * Disabled
+    * No effect
     */
    @Override
    public void setUI(TabbedPaneUI ui) {

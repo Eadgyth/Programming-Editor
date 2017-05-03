@@ -3,17 +3,21 @@ package eg.utils;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
+import javax.swing.JTabbedPane;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.EmptyBorder;
 
+import eg.ui.ExtTabbedPane;
+
 /**
- * Static method(s) to create UI components
+ * Static methods to create customized UI components
  */
 public class UiComponents {
 
    /**
     * Creates a toolbar with the last button (intended for a close button)
     * aligned at the right
+    *
     * @param bts  the array of JButtons added to the toolbar
     * @param tooltips  the array of tooltips for the buttons
     * @return  a new {@code JToolBar}
@@ -23,7 +27,6 @@ public class UiComponents {
       tb.setOpaque(false);
       tb.setBorder(null);
       tb.setFloatable(false);
-      //tb.setBorder(new MatteBorder(0, 0, 1, 0, eg.Constants.BORDER_GRAY));
       
       for (int i = 0; i < bts.length; i++) {
          if (i == bts.length - 1) {
@@ -35,5 +38,19 @@ public class UiComponents {
          bts[i].setFocusable(false);
       }
       return tb;
+   }
+   
+   /**
+    * Creates an <code>ExtTabbedPane</code> that is
+    * scrollable, unfocusable and has no border
+    *
+    * @return  a new {@link ExtTabbedPane}
+    */
+   public static ExtTabbedPane extTabbedPane() {
+      ExtTabbedPane tabPane = new ExtTabbedPane();
+      tabPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+      tabPane.setBorder(null);
+      tabPane.setFocusable(false);
+      return tabPane;
    }
 }

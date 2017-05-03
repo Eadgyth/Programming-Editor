@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JTabbedPane;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import javax.swing.event.ChangeEvent;
@@ -210,10 +211,8 @@ public class TabbedFiles implements Observer {
       }
       isSave = isSave && txtDoc[iTab].saveFileAs(f);
       if (isSave && update) {
-         currProj.retrieveProject();
-         tabPane.setTitleAt(iTab, txtDoc[iTab].filename());
-         mw.displayFrameTitle(txtDoc[iTab].filepath());
-         prefs.storePrefs("recentPath", txtDoc[iTab].dir());
+         updateForFile(iTab);
+         tabPane.changeTitle(iTab, txtDoc[iTab].filename());
          EventQueue.invokeLater(() ->
                currProj.updateFileTree(txtDoc[iTab].dir()));
       }
@@ -368,7 +367,7 @@ public class TabbedFiles implements Observer {
             && editArea[iOpen].getDoc().getLength() == 0;
       if (isOpenable) {
          txtDoc[iOpen].openFile(f); // no new doc
-         tabPane.setTitleAt(iOpen, txtDoc[iOpen].filename());
+         tabPane.changeTitle(iOpen, txtDoc[iOpen].filename());
       }
       else {
          if (vMenu.isTabItmSelected()) {
@@ -387,9 +386,7 @@ public class TabbedFiles implements Observer {
       }
       if (isOpenable) {
          currProj.setCurrTextDocument(iOpen);
-         currProj.retrieveProject();
-         mw.displayFrameTitle(txtDoc[iOpen].filepath());
-         prefs.storePrefs("recentPath", txtDoc[iOpen].dir());
+         updateForFile(iOpen);
       }
    }
 
@@ -410,12 +407,18 @@ public class TabbedFiles implements Observer {
    }
 
    private void addNewTab(String filename, JPanel pnl, int i) {
-      JButton closeBt = new JButton();
+      JButton closeBt = new JButton(eg.ui.IconFiles.CLOSE_ICON);
       tabPane.addTab(filename, pnl, closeBt, i);
       closeBt.addActionListener(e -> {
          iTab = tabPane.iTabMouseOver();
          close(true);
       });
+   }
+   
+   private void updateForFile(int i) {
+      currProj.retrieveProject();
+      mw.displayFrameTitle(txtDoc[i].filepath());
+      prefs.storePrefs("recentPath", txtDoc[i].dir());
    }
 
    private int saveOrCloseOption(int i) {
