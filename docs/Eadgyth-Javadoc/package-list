@@ -8,4 +8,5 @@ eg.syntax
 eg.ui
 eg.ui.filetree
 eg.ui.menu
+eg.ui.tabpane
 eg.utils
