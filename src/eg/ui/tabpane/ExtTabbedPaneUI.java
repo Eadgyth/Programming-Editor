@@ -1,4 +1,4 @@
-package eg.ui;
+package eg.ui.tabpane;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -15,11 +15,12 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
  * <p>The background of a selected tab is white; other tabs are in 'normal'
  * gray.<br>
  * The border of a selected tab is in darker gray.<br>
- * The tab height is set to 12 points plus the font size and the selected
- * tab is not elevated (windows).<br>
+ * The tab height is set to 11 points plus the font size and the selected
+ * tab is not elevated.<br>
  * Tabs are rectangular and aligned at the left edge.<br>
  * The content area insets are set to zero and a content border is not
- * painted.<br>
+ * painted. The tab area insets are zero except for the lower end where the
+ * inset value is one point when the tab bar is visible.<br>
  * The tab bar is visible or hidden depending on the value passed in
  * {@link #setShowTabs(boolean)}.
  */
@@ -33,6 +34,7 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
 
    private boolean isShowTabs = true;
    private int tabHeight;
+   private int xOffset = 0;
    
    /**
     * Sets the height of the tabs
@@ -70,6 +72,7 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
       if (!isShowTabs) {
          return;
       }
+
       y = 0;
       if (tabIndex == 0 && x != 0) {
         w = w + x;
@@ -95,8 +98,8 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
 
       y = 0;
       if (tabIndex == 0 && x != 0) {
-         w = w + x;
-         x = 0;
+        w = w + x;
+        x = 0;
       }
       Polygon shape = new Polygon(); 
       shape.addPoint(x, y);

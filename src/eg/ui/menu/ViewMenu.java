@@ -80,7 +80,7 @@ public class ViewMenu {
     * is selected
     */
    public boolean isConsoleItmSelected() {
-      return consoleItm.getState();
+      return consoleItm.isSelected();
    }
 
    /**
@@ -88,7 +88,7 @@ public class ViewMenu {
     * is selected
     */
    public boolean isFileViewItmSelected() {
-      return fileViewItm.getState();
+      return fileViewItm.isSelected();
    }
 
    /**

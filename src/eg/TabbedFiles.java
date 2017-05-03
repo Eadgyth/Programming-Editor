@@ -451,8 +451,8 @@ public class TabbedFiles implements Observer {
       if (n > 0) {
          txtDoc[n] = null;
          editArea[n] = null;
-         int iSelect = tabPane.getSelectedIndex();
-         mw.displayFrameTitle(txtDoc[iSelect].filepath());
+         iTab = tabPane.getSelectedIndex();
+         mw.displayFrameTitle(txtDoc[iTab].filepath());
       }
    }
 

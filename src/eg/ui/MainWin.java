@@ -25,6 +25,7 @@ import eg.Edit;
 import eg.EditAreaFormat;
 import eg.ui.menu.*;
 import eg.ui.filetree.FileTree;
+import eg.ui.tabpane.ExtTabbedPane;
 import eg.console.ConsolePanel;
 import eg.plugin.PluginStarter;
 import eg.utils.UiComponents;

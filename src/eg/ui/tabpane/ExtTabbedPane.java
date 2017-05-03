@@ -1,4 +1,4 @@
-package eg.ui;
+package eg.ui.tabpane;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -19,27 +19,29 @@ import javax.swing.event.ChangeListener;
 
 import javax.swing.plaf.TabbedPaneUI;
 
-//--Eadgyth--//
-import eg.Constants;
-
 /**
  * A JTabbedPane with a close button in the tabs, the possibility
  * to show and hide the tab bar and a somewhat changed tab appearance
- * @see ExtTabbedPaneUI
  */
 public class ExtTabbedPane extends JTabbedPane {
 
    private final static FlowLayout FLOW_LAYOUT_LEFT
-         = new FlowLayout(FlowLayout.LEFT, 0, 0);
+                        = new FlowLayout(FlowLayout.LEFT, 0, 0);
    private final static EmptyBorder EMPTY_BORDER
-         = new EmptyBorder(0, 0, 0, 0);
+                        = new EmptyBorder(0, 0, 0, 0);
    private final static int FONT_SIZE = 11;
    private final static Font VERDANA_PLAIN
-         = new Font("Verdana", Font.PLAIN, FONT_SIZE);
+                        = new Font("Verdana", Font.PLAIN, FONT_SIZE);
 
    private ExtTabbedPaneUI ui = new ExtTabbedPaneUI();
    private int iTabMouseOver = -1;
    
+   /**
+    * Creates an <code>ExtTabbedPane</code> using the parameterless
+    * constructor of the superclass (tab placement at the top) and
+    * sets this <code>ExtTappedPaneUI</code>.
+    * @see ExtTabbedPaneUI
+    */
    public ExtTabbedPane() {
       ui.setHeight(FONT_SIZE);
       super.setUI(ui);
