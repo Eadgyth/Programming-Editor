@@ -70,7 +70,6 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
       if (!isShowTabs) {
          return;
       }
-      System.out.println(x);
       y = 0;
       if (tabIndex == 0 && x != 0) {
         w = w + x;
