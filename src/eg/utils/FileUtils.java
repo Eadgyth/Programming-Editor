@@ -23,7 +23,7 @@ public class FileUtils {
    }
    
    /**
-    * Deletes a folder
+    * Deletes a folder and its content
     *
     * @param dir  the directory to be deleted
     * @return  true if the directory has been deleted
@@ -31,7 +31,7 @@ public class FileUtils {
    public static boolean deleteFolder(File dir) {
       boolean ret = true;
       if (dir.isDirectory()){
-         for (File f : dir.listFiles()){
+         for (File f : dir.listFiles()) {
             ret = ret && FileUtils.deleteFolder(f);
          }
       }
@@ -40,6 +40,7 @@ public class FileUtils {
    
    /**
     * If the specified directory is empty
+    *
     * @param dir  the directory
     * @return  if dir is empty
     */
@@ -51,15 +52,15 @@ public class FileUtils {
    /**
     * Appends to the file 'log.txt' the stack trace of
     * an exception and shows a warning in a dialog window.
-    * <p>
-    * The "log" file is saved in the program's directory.
+    * <p>The "log" file is saved in the program's directory.
+    *
     * @param e  an {@code Exception}
     */
    public static void logStack(Exception e) { 
       File logFile = new File("log.txt");
       try (PrintWriter pw = new PrintWriter(new FileOutputStream(logFile, true))) {
          e.printStackTrace(pw);
-         JOptions.warnMessage(e.getMessage() + "\nSee log.txt file");
+         JOptions.warnMessage("Exception:\nSee log.txt file");
       }
       catch(IOException ioe) {
          throw new RuntimeException(
