@@ -34,7 +34,6 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
 
    private boolean isShowTabs = true;
    private int tabHeight;
-   private int xOffset = 0;
    
    /**
     * Sets the height of the tabs
