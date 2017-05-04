@@ -25,13 +25,12 @@ import eg.utils.JOptions;
 import eg.document.TextDocument;
 
 import eg.ui.MainWin;
-import eg.ui.ExtTabbedPane;
 import eg.ui.EditArea;
-
+import eg.ui.tabpane.ExtTabbedPane;
 import eg.ui.menu.ViewMenu;
 
 /**
- * The operations that require knowledge of the documents in
+ * The control of operations that require knowledge of the documents in
  * the tabs
  */
 public class TabbedFiles implements Observer {
@@ -47,7 +46,6 @@ public class TabbedFiles implements Observer {
    private final EditAreaFormat format;
    private final DocumentUpdate docUpdate;
    private final CurrentProject currProj;
-   private final ChangeListener changeListener;
 
    /*
     * The index of the selected tab */
@@ -70,7 +68,6 @@ public class TabbedFiles implements Observer {
       docUpdate.setDocumentArrays(txtDoc);
       currProj.setDocumentArr(txtDoc);
       format.setEditAreaArr(editArea);
-
       prefs.readPrefs();
       lang = Languages.valueOf(prefs.getProperty("language"));
       currProj.setLanguage(lang);
@@ -78,10 +75,19 @@ public class TabbedFiles implements Observer {
       fo = new FileChooserOpen(recentDir);
       fs = new FileChooserSave(recentDir);
 
-      changeListener = (ChangeEvent changeEvent) -> {
-         changeTabEvent(changeEvent);
-      };
-      tabPane.addChangeListener(changeListener);
+      tabPane.addChangeListener(new ChangeListener() {
+         @Override
+         public void stateChanged(ChangeEvent ce) {
+            changeTabEvent(ce);
+         }
+      });
+      
+      mw.winListen(new WindowAdapter() {
+         @Override
+         public void windowClosing(WindowEvent we) {
+            exit();
+         }
+      });         
 
       createEmptyTab();
    }
@@ -113,7 +119,7 @@ public class TabbedFiles implements Observer {
    /**
     * Opens a new 'unnamed' tab
     */
-   public void createEmptyTab() {
+   public final void createEmptyTab() {
       boolean ok = true;
       if (nTabs() == 1 && !vMenu.isTabItmSelected()) {
          close(false);
@@ -122,12 +128,12 @@ public class TabbedFiles implements Observer {
       if (ok) {
          editArea[nTabs()] = format.createEditArea();
          txtDoc[nTabs()] = new TextDocument(editArea[nTabs()], lang);
-         addNewTab("unnamed", editArea[nTabs()].textPanel(), nTabs());
+         addNewTab("unnamed", editArea[nTabs()].textPanel());
       }
    }
 
    /**
-    * Opens a file selected in {@code FileTree}
+    * Opens a file selected in <code>FileTree</code>
     */
    @Override
    public void update(Observable o, Object arg) {
@@ -154,13 +160,15 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Saves the text content in the selected tab. {@link #saveAs(boolean)}
-    * is called if the selected tab is unnamed or if the content was read in
-    * from a file which no longer exists.
+    * Saves the text content in the selected tab.
+    * <p>{@link #saveAs(boolean)} is called if the selected tab is
+    * unnamed or if the content was read in from a file that no
+    * longer exists.
     *
-    * @param update  if view and project settings are updated when a new file
-    * is saved
-    * @return  if the content was saved
+    * @param update   if the view (e.g. tab title, file view) is
+    * updated and it is tried to retrieve a project in the case a
+    * new file is saved
+    * @return  if the content was saved.
     */
    public boolean save(boolean update) {
       if (txtDoc[iTab].filename().length() == 0
@@ -199,7 +207,8 @@ public class TabbedFiles implements Observer {
     * Saves the text content in the selected tab as a new file that
     * is specified in the file chooser
     *
-    * @param update  if view and project settings are updated
+    * @param update  if the view (e.g. tab title, file view) is
+    * updated and it is tried to retrieve a project
     * @return  if the content was saved
     */
    public boolean saveAs(boolean update) {
@@ -327,17 +336,6 @@ public class TabbedFiles implements Observer {
          }
       }
    }
-
-   /**
-    * Calls {@link #exit()} when the close window button is pressed
-    */
-   public WindowListener closeWindow = new WindowAdapter() {
-
-      @Override
-      public void windowClosing(WindowEvent we) {
-         exit();
-      }
-   };
    
    /**
     * Prints the text content in the selected tab to a printer
@@ -380,8 +378,7 @@ public class TabbedFiles implements Observer {
          }
          if (isOpenable) {
             createDocument(iOpen, f);
-            addNewTab(txtDoc[iOpen].filename(),
-                  editArea[iOpen].textPanel(), iOpen);
+            addNewTab(txtDoc[iOpen].filename(), editArea[iOpen].textPanel());
          }
       }
       if (isOpenable) {
@@ -406,9 +403,9 @@ public class TabbedFiles implements Observer {
       txtDoc[i].openFile(f);
    }
 
-   private void addNewTab(String filename, JPanel pnl, int i) {
+   private void addNewTab(String filename, JPanel pnl) {
       JButton closeBt = new JButton(eg.ui.IconFiles.CLOSE_ICON);
-      tabPane.addTab(filename, pnl, closeBt, i);
+      tabPane.addTab(filename, pnl, closeBt);
       closeBt.addActionListener(e -> {
          iTab = tabPane.iTabMouseOver();
          close(true);

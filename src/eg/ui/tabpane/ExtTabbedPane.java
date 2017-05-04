@@ -21,7 +21,8 @@ import javax.swing.plaf.TabbedPaneUI;
 
 /**
  * A JTabbedPane with a close button in the tabs, the possibility
- * to show and hide the tab bar and a somewhat changed tab appearance
+ * to show and hide the tab bar and a somewhat changed tab appearance.
+ * The tab placement is restricted to be at the top, however.
  */
 public class ExtTabbedPane extends JTabbedPane {
 
@@ -33,14 +34,14 @@ public class ExtTabbedPane extends JTabbedPane {
    private final static Font VERDANA_PLAIN
                         = new Font("Verdana", Font.PLAIN, FONT_SIZE);
 
-   private ExtTabbedPaneUI ui = new ExtTabbedPaneUI();
+   private final ExtTabbedPaneUI ui = new ExtTabbedPaneUI();
+
    private int iTabMouseOver = -1;
    
    /**
     * Creates an <code>ExtTabbedPane</code> using the parameterless
     * constructor of the superclass (tab placement at the top) and
-    * sets this <code>ExtTappedPaneUI</code>.
-    * @see ExtTabbedPaneUI
+    * sets this {@link ExtTabbedPaneUI}
     */
    public ExtTabbedPane() {
       ui.setHeight(FONT_SIZE);
@@ -49,34 +50,32 @@ public class ExtTabbedPane extends JTabbedPane {
    }
    
    /**
-    * Show or hides the tab bar
+    * Show or hides the tab bar. Hiding requires that only ony tab is
+    * displayed.
     *
     * @param show  true/false to show/hide the tanbar
-    * @throws IllegalStateException  if <code>show</code> is false when
-    * two or more tabs are open
     */
    public void showTabbar(boolean show) {
       if (!show && getTabCount() > 1) {
-         throw new IllegalStateException("Cannot hide tab bar"
-               + " when two or more tabs are added");
+         throw new IllegalStateException("Hiding tabs is illegal"
+               + " when the number of tabs is bigger than one");
       }
       ui.setShowTabs(show);
-      super.setUI(ui);
+      updateUI();
    }
 
    /**
     * Adds a new tab
     *
     * @param title  the title for the tab
-    * @param c  the component to be displayed when this tab is clicked
+    * @param c  the component to be displayed when the tab is selected
     * @param closeBt  the button displayed in the tab. An
     * <code>ActionListener</code> is expected to have been added to the
     * button
-    * @param index  the index of the tab where a component is added
     */
-   public void addTab(String title, Component c, JButton closeBt,
-         int index) {
+   public void addTab(String title, Component c, JButton closeBt) {
 
+      int index = getTabCount();
       addTab(null, c);
       JPanel tabPnl = new JPanel(FLOW_LAYOUT_LEFT);
       tabPnl.setOpaque(false);
@@ -105,7 +104,7 @@ public class ExtTabbedPane extends JTabbedPane {
     * Changes the title for the tab at the specified index.
     * Used instead of <code>setTitleAt()</code> in parent class if
     * tabs are added through
-    * {@link #addTab(String, Component, JButton, int)}
+    * {@link #addTab(String, Component, JButton)}
     *
     * @param index  the index of the tab where the title is set
     * @param title  the tiltle
@@ -116,18 +115,23 @@ public class ExtTabbedPane extends JTabbedPane {
       lb.setText(title);
    }
 
-   /**
-    * No effect
-    */
    @Override
-   public void setTabPlacement(int tabPlacement) {
+   public void updateUI() {
+       super.setUI(ui);
    }
-
+   
    /**
-    * No effect
+    * No effect. The UI object is set in this class
     */
    @Override
    public void setUI(TabbedPaneUI ui) {
+   }
+   
+   /**
+    * No effect. The placement must remain at the top
+    */
+   @Override
+   public void setTabPlacement(int tabPlacement) {
    }
    
    //

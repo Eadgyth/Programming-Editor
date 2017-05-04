@@ -3,9 +3,6 @@ package eg;
 import java.util.Locale;
 
 import java.awt.EventQueue;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -42,7 +39,6 @@ public class Eadgyth {
       DocumentUpdate  docUpdate  = new DocumentUpdate(edit, plugStart);
       TabbedFiles     tabFiles   = new TabbedFiles(mw, format, currProj, docUpdate);
 
-      mw.winListen(tabFiles.closeWindow);
       mw.registerFileAct(tabFiles);
       mw.registerProjectAct(currProj);
       mw.registerEditAct(edit, tabFiles);
