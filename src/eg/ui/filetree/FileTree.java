@@ -300,7 +300,7 @@ public class FileTree extends Observable {
    }
 
    private void openFile(String fileStr) {
-      if (isAllowedFile(fileStr)) {
+      if (isSupportedFile(fileStr)) {
          setChanged();
          notifyObservers(fileStr);
       }
@@ -310,7 +310,7 @@ public class FileTree extends Observable {
       }
    }
 
-   private boolean isAllowedFile(String fileStr) {
+   private boolean isSupportedFile(String fileStr) {
       boolean allowed = false;
       for (String s : Constants.SUFFIXES) {
          if (fileStr.endsWith(s)) {
@@ -433,14 +433,9 @@ public class FileTree extends Observable {
         if (value instanceof DefaultMutableTreeNode) {
            value = ((DefaultMutableTreeNode) value).getUserObject();
            if (value instanceof File) {
-              File file = (File) value;
-              if (file.isFile()) {
-                 setIcon(fsv.getSystemIcon(file));
-                 setText(file.getName());
-              } else {
-                 setIcon(fsv.getSystemIcon(file));
-                 setText(file.getName());
-              }
+              File f = (File) value;
+              setIcon(fsv.getSystemIcon(f));
+              setText(f.getName());
            }
         }
         return this;
