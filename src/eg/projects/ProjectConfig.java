@@ -31,15 +31,15 @@ import eg.utils.JOptions;
  * optionally in a 'config' file that is saved in the  project's root folder.
  */
 public abstract class ProjectConfig implements Configurable {
-   
+
    private final static Preferences PREFS = new Preferences();
    private final static Preferences CONFIG = new Preferences();
    private final static String F_SEP = File.separator;
 
    private final String suffix;
-   
+
    private SettingsWin setWin = null;
-   private String projTestName = "";  
+   private String projTestName = "";
    private String projectPath = "";
    private String mainFile = "";
    private String moduleDir = "";
@@ -47,7 +47,7 @@ public abstract class ProjectConfig implements Configurable {
    private String sourceDir = "";
    private String args = "";
    private String buildName = "";
-   
+
    /**
     * @param suffix  the file extension that represents the type of project.
     * Includes the dot (e.g. .java)
@@ -55,7 +55,7 @@ public abstract class ProjectConfig implements Configurable {
    protected ProjectConfig(String suffix) {
       this.suffix = suffix;
    }
-   
+
    /**
     * Creates a {@code SettingsWin} with the basic content.
     * @see SettingsWin#basicWindow(String)
@@ -70,22 +70,14 @@ public abstract class ProjectConfig implements Configurable {
    public void addOkAction(ActionListener al) {
       setWin.okAct(al);
    }
-   
+
    @Override
    public void makeSetWinVisible(boolean isVisible) {
       setWin.makeVisible(isVisible);
    }
-   
-   /**
-    * {@inheritDoc}.
-    *
-    * @param dir  the directory that may be or include the project's root
-    * folder
-    * @return  if a project can be successfully configured based on entries
-    * in this settings window
-    */
+
    @Override
-   public boolean configureProject(String dir) {   
+   public boolean configureProject(String dir) {
       projectPath = findRootByFile(dir, pathRelToRoot(true));
       boolean success = storeInputs();
       if (success) {
@@ -93,11 +85,12 @@ public abstract class ProjectConfig implements Configurable {
       }
       return success;
    }
-   
+
    /**
     * {@inheritDoc}
-    * <p> Method first looks for a config file and, if not present, in the
-    * preferences file in the program folder.
+    * <p>Method first looks for an 'eadconfig' file in <code>dir</code> or in
+    * parents of it and, if not present, in the preferences file in the program
+    * folder.
     */
    @Override
    public boolean retrieveProject(String dir) {
@@ -106,31 +99,31 @@ public abstract class ProjectConfig implements Configurable {
    }
 
    @Override
-   public boolean isInProject(String path) {
-      return isRootInPath(path, projectPath);
+   public boolean isInProject(String dir) {
+      return isRootInPath(dir, projectPath);
    }
-   
+
    @Override
    public String getProjectPath() {
       return projectPath;
    }
-   
+
    @Override
    public String getProjectName() {
       File f = new File(projectPath);
       return f.getName();
    }
-   
+
    @Override
    public String getExecutableDirName() {
       return execDir;
    }
-   
+
    @Override
    public String getSourceSuffix() {
       return suffix;
    }
-   
+
    @Override
    public void storeInPrefs() {
       PREFS.storePrefs("recentProject", projectPath);
@@ -140,7 +133,7 @@ public abstract class ProjectConfig implements Configurable {
       PREFS.storePrefs("recentExecDir", execDir);
       PREFS.storePrefs("recentBuildName", buildName);
    }
-   
+
    /**
     * Sets this {@code SettingsWin}
     * @param setWin  the new {@link SettingsWin}
@@ -152,32 +145,30 @@ public abstract class ProjectConfig implements Configurable {
       }
       this.setWin = setWin;
    }
-   
+
    /**
     * Returns the the name of the project's main file
+    *
     * @return  the name of project's main file
-    */ 
+    */
    protected String getMainFile() {
       return mainFile;
    }
 
    /**
     * Returns the name of the directory of a module.
-    * <p>
-    * It is not specified what a 'module' is. In the case of a Java
-    * project a module would be a package
     *
-    * @return  the name of the directory of a module.
-    */ 
+    * @return  the name of the directory
+    */
    protected String getModuleName() {
       return moduleDir;
    }
-   
+
    /**
     * Returns the name of the directoy where source files are saved
     *
-    * @return  the name of the directoy where source files are saved
-    */ 
+    * @return  the name of the directory
+    */
    protected String getSourceDirName() {
       return sourceDir;
    }
@@ -186,33 +177,32 @@ public abstract class ProjectConfig implements Configurable {
     * Returns the name for a build
     *
     * @return  the name for a build
-    */ 
+    */
    protected String getBuildName() {
       return buildName;
    }
-   
+
    /**
-    * Retunrns the String that contains arguments for a start script
+    * Returns the arguments for a start script
     *
-    * @return  the String that contains arguments for a start command
-    */ 
+    * @return  the arguments for a start command
+    */
    protected String getArgs() {
       return args;
    }
-   
+
    /**
     * If the main executable file exists
     *
     * @param aSuffix  the extension of the project's executable file(s)
     * @return  if the main executable file exists
     */
-   protected boolean mainExecFileExists(String aSuffix) { 
-      File target
-            = new File(projectPath + F_SEP + execDir + F_SEP + moduleDir
+   protected boolean mainExecFileExists(String aSuffix) {
+      File f = new File(projectPath + F_SEP + execDir + F_SEP + moduleDir
             + F_SEP + mainFile + aSuffix);
-      return target.exists();
+      return f.exists();
    }
-   
+
    //
    //--private--//
    //
@@ -228,8 +218,7 @@ public abstract class ProjectConfig implements Configurable {
          configProjectByProps(root, CONFIG);
       }
       //
-      // look if the path includes the project root
-      // stored in prefs
+      // look if the path includes the project root stored in prefs
       else {
          PREFS.readPrefs();
          setWin.setSaveConfigSelected(false);
@@ -239,7 +228,7 @@ public abstract class ProjectConfig implements Configurable {
          }
       }
    }
-   
+
    /**
     * Tries to find the project root within the specified path by
     * looking for an existing file that is a child of this root.
@@ -268,29 +257,29 @@ public abstract class ProjectConfig implements Configurable {
       while(child != null) {
          if (child.equals(root)) {
             return true;
-         } 
+         }
          child = child.getParentFile();
       }
       return false;
    }
-   
+
    private void configProjectByProps(String root, Preferences props) {
       mainFile = props.getProperty("recentMain");
       setWin.displayFile(mainFile);
-      
+
       moduleDir = props.getProperty("recentModule");
       setWin.displayModule(moduleDir);
-      
+
       sourceDir = props.getProperty("recentSourceDir");
       setWin.displaySourcesDir(sourceDir);
-      
+
       execDir = props.getProperty("recentExecDir");
       setWin.displayExecDir(execDir);
 
       buildName = props.getProperty("recentBuildName");
       setWin.displayBuildName(buildName);
-      
-      File fToTest = new File(root + F_SEP + pathRelToRoot(false));     
+
+      File fToTest = new File(root + F_SEP + pathRelToRoot(false));
       if (fToTest.exists()) {
          projectPath = root;
          setWin.displayProjDirName(getProjectName());
@@ -299,7 +288,7 @@ public abstract class ProjectConfig implements Configurable {
          }
       }
    }
-   
+
    private String pathRelToRoot(boolean bySetWin) {
       if (bySetWin) {
          getTextFieldsInput();
@@ -315,10 +304,10 @@ public abstract class ProjectConfig implements Configurable {
       }
       sb.append(mainFile + suffix);
       return sb.toString();
-   }      
-   
+   }
+
    private void getTextFieldsInput() {
-      projTestName = setWin.projDirNameInput();         
+      projTestName = setWin.projDirNameInput();
       mainFile = setWin.projectFileNameInput();
       moduleDir = setWin.moduleNameInput();
       sourceDir = setWin.sourcesDirNameInput();
@@ -326,7 +315,7 @@ public abstract class ProjectConfig implements Configurable {
       args = setWin.argsInput();
       buildName = setWin.buildNameInput();
    }
-   
+
    private boolean storeInputs() {
       boolean canStore = projectPath.length() > 0;
       if (canStore && projTestName.length() == 0) {
@@ -337,10 +326,10 @@ public abstract class ProjectConfig implements Configurable {
       }
       if (!canStore) {
          JOptions.warnMessageToFront(
-               "An entry in the 'Structure' panel is incorrect");  
+               "An entry in the 'Structure' panel is incorrect");
       }
       else {
-         storeInPrefs();   
+         storeInPrefs();
          if (setWin.isSaveConfig()) {
             CONFIG.storeConfig("recentMain", mainFile, projectPath);
             CONFIG.storeConfig("recentModule", moduleDir, projectPath);
@@ -349,9 +338,8 @@ public abstract class ProjectConfig implements Configurable {
             CONFIG.storeConfig("recentBuildName", buildName, projectPath);
          }
          else {
-            File configFile;
-            configFile = new File(projectPath + F_SEP
-                     + Preferences.CONFIG_FILE);
+            File configFile = new File(projectPath + F_SEP
+                  + Preferences.CONFIG_FILE);
             if (configFile.exists()) {
                int res = JOptions.confirmYesNo(
                        "Save 'eadconfig' is disabled."
