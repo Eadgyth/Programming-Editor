@@ -43,7 +43,7 @@ public class FileChooser {
    }
    
     /**
-    * Returns a <code>File</code> a file to save
+    * Returns a <code>File</code> to save
     *
     * @param presetFile  the file that is preselected and shown in
     * the  file text field. The empty String or null to not show a
