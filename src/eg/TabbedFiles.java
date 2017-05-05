@@ -4,14 +4,12 @@ import java.util.Observer;
 import java.util.Observable;
 
 import java.awt.EventQueue;
-import java.awt.event.WindowListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import javax.swing.event.ChangeEvent;
@@ -37,8 +35,7 @@ public class TabbedFiles implements Observer {
 
    private final TextDocument[] txtDoc = new TextDocument[10];
    private final EditArea[] editArea = new EditArea[10];
-   private final FileChooserOpen fo;
-   private final FileChooserSave fs;
+   private final FileChooser fc;
    private final Preferences prefs = new Preferences();
    private final MainWin mw;
    private final ExtTabbedPane tabPane;
@@ -53,7 +50,7 @@ public class TabbedFiles implements Observer {
 
    /*
     * The language read from prefs or set in the Edit>Langugae menu */
-   Languages lang;
+   private Languages lang;
 
    public TabbedFiles(MainWin mw, EditAreaFormat format,
          CurrentProject currProj, DocumentUpdate docUpdate) {
@@ -72,8 +69,7 @@ public class TabbedFiles implements Observer {
       lang = Languages.valueOf(prefs.getProperty("language"));
       currProj.setLanguage(lang);
       String recentDir = prefs.getProperty("recentPath");
-      fo = new FileChooserOpen(recentDir);
-      fs = new FileChooserSave(recentDir);
+      fc = new FileChooser(recentDir);
 
       tabPane.addChangeListener(new ChangeListener() {
          @Override
@@ -147,7 +143,7 @@ public class TabbedFiles implements Observer {
     * project
     */
    public void openFileByChooser() {
-      File f = fo.chosenFile();     
+      File f = fc.fileToOpen();     
       if (f == null) {
          return;
       }     
@@ -212,7 +208,7 @@ public class TabbedFiles implements Observer {
     * @return  if the content was saved
     */
    public boolean saveAs(boolean update) {
-      File f = fs.fileToSave(txtDoc[iTab].filepath());
+      File f = fc.fileToSave(txtDoc[iTab].filepath());
       boolean isSave = f != null;
       if (isSave && f.exists()) {
          JOptions.warnMessage(f.getName() + " already exists");
@@ -234,7 +230,7 @@ public class TabbedFiles implements Observer {
     * <p> Method does not change the file of the document in the tab.
     */
    public void saveCopy() {
-      File f = fs.fileToSave(txtDoc[iTab].filepath());
+      File f = fc.fileToSave(txtDoc[iTab].filepath());
       if (f == null) {
          return;
       }
@@ -382,7 +378,6 @@ public class TabbedFiles implements Observer {
          }
       }
       if (isOpenable) {
-         currProj.setCurrTextDocument(iOpen);
          updateForFile(iOpen);
       }
    }
@@ -413,6 +408,7 @@ public class TabbedFiles implements Observer {
    }
    
    private void updateForFile(int i) {
+      currProj.setCurrTextDocument(i);
       currProj.retrieveProject();
       mw.displayFrameTitle(txtDoc[i].filepath());
       prefs.storePrefs("recentPath", txtDoc[i].dir());
