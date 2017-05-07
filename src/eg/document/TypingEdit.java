@@ -162,7 +162,7 @@ class TypingEdit {
          //
          // to prevent damage; problem not solved
          else if (newLineNr < prevLineNr) {
-            //undomanager.discardAllEdits();
+            undomanager.discardAllEdits();
          }
          else {
             if (pos > 0 & pos < allText.length()) {
