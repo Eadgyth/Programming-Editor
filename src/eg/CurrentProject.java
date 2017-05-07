@@ -40,9 +40,14 @@ public class CurrentProject {
    private final String NOT_IN_PROJ_MESSAGE 
          = "The selected file is not in the root directory"
          + " of the currently active project.";
+         
+   private final String ASK_FOR_LANG
+         = "Set new project defined by the selected language";
 
    private final String WRONG_TYPE_MESSAGE
-         = "No project can be defined for this file type.";
+         = "A project is not defined for this file.\n"
+         + "If the file is part of a project the associated language"
+         + " must be selected in the Edit menu";
          
    private final String FILES_NOT_FOUND_MESSAGE
          = "The following file could not be found anymore:";
@@ -113,22 +118,35 @@ public class CurrentProject {
          return;
       }
       EventQueue.invokeLater(() -> {
-         ProjectActions prToFind = selProj.createProject(currExt, lang);
+         ProjectActions prToFind = selProj.createProjectByExt(currExt);
+             
          boolean isFound = prToFind != null
                && prToFind.retrieveProject(currDoc.dir());
+               
+         if (prToFind == null) {
+            for (Languages l : Languages.values()) {
+               prToFind = selProj.createProjectByLang(l);
+               isFound = prToFind != null
+                     && prToFind.retrieveProject(currDoc.dir());
+               if (isFound) {
+                  break;
+               }
+            }
+         }
          if (isFound) {
+            ProjectActions prFin = prToFind;
             if (!isProjectSet()) {
-               current = prToFind;
+               current = prFin;
                current.addOkAction(e -> configureProject(current)); 
                projList.add(current); 
                updateProjectSetting(current);
             }
             else {
                if (selectFromList(currDoc.dir(), true) == null) {
-                  prToFind.addOkAction(e -> configureProject(prToFind));
-                  projList.add(prToFind);
+                  prFin.addOkAction(e -> configureProject(prFin));
+                  projList.add(prFin);
                   enableChangeProject();
-                  changeProject(prToFind);            
+                  changeProject(prFin);            
                }
             }
          }
@@ -316,18 +334,27 @@ public class CurrentProject {
          JOptions.titledInfoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          return;
       }
-      ProjectActions projNew = selProj.createProject(currExt, lang);
+      ProjectActions projNew = selProj.createProjectByExt(currExt);
       if (projNew == null) {
-         JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
-      }
-      else {    
-         int result = 0;
-         if (needConfirm && isProjectSet()) {
-            result = JOptions.confirmYesNo("Set new project ?");
+         if (lang != Languages.PLAIN_TEXT) {
+            int res = JOptions.confirmYesNo(ASK_FOR_LANG + " (" + lang + ") ?");
+            if (res == 0) {
+               projNew = selProj.createProjectByLang(lang);
+            }
          }
-         if (result == 0) {
-            projNew.makeSetWinVisible(true);
-            projNew.addOkAction(e -> configureProject(projNew));
+         else {
+            JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
+         }
+      }
+      if (projNew != null) {
+         ProjectActions prFin = projNew;   
+         int res = 0;
+         if (needConfirm && isProjectSet()) {
+            res = JOptions.confirmYesNo("Set new project ?");
+         }
+         if (res == 0) {
+            prFin.makeSetWinVisible(true);
+            prFin.addOkAction(e -> configureProject(prFin));
          }
       }
    }

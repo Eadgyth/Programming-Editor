@@ -32,16 +32,13 @@ public class SelectedProject {
    }
 
    /**
-    * Returns a {@code ProjectActions} and creates the {@code SettingsWin}
-    * for the project.
-    * <p>The first criterion to select a {@link ProjectActions} is the file
-    * extension. Only if no corresponding class is found the language is used.
+    * Returns a {@code ProjectActions} based on the file extension and
+    * creates the {@code SettingsWin} for the project.
     *
     * @param fileExt  the file extension which a project is to be defined for
-    * @param lang  the language which has a value from {@link Languages}
     * @return  an object of type {@link ProjectActions}
     */
-   public ProjectActions createProject(String fileExt, Languages lang) {
+   public ProjectActions createProjectByExt(String fileExt) {
       ProjectActions newProj = null;
       switch (fileExt) {
          case "java":
@@ -54,9 +51,23 @@ public class SelectedProject {
             newProj = new PerlActions(update, proc);
             break;
       }
-      if (newProj == null) {
-         switch (lang) {
-            case JAVA:
+      if (newProj != null) {
+         newProj.createSettingsWin();
+      }
+      return newProj;
+   }
+   
+   /**
+    * Returns a {@code ProjectActions} based on the specified language and
+    * creates the {@code SettingsWin} for the project.
+    *
+    * @param lang  the language which has a value from {@link Languages}
+    * @return  an object of type {@link ProjectActions}
+    */
+   public ProjectActions createProjectByLang(Languages lang) {
+      ProjectActions newProj = null;
+      switch (lang) {
+         case JAVA:
                newProj = new JavaActions(update, proc, console);
                break;
             case HTML:
@@ -65,19 +76,13 @@ public class SelectedProject {
             case PERL:
                newProj = new PerlActions(update, proc);
                break;
-            case PLAIN_TEXT:
-               if ("txt".equals(fileExt)) {
-                  newProj = new TxtActions();
-               }
-               break;
-         }
       }
       if (newProj != null) {
          newProj.createSettingsWin();
       }
       return newProj;
    }
-   
+
    /**
     * Enables action components in the menu and toolbar depending on the
     * name of the class that implements {@code ProjectActions}
