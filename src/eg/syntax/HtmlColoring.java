@@ -2,11 +2,14 @@ package eg.syntax;
 
 public class HtmlColoring implements Colorable {
    
+   // incomplete
    final static String[] HTML_TAGS = {
       "a", "area", "applet",
-      "b", "br", "body", "button",
-      "div",
+      "b", "blockquote", "body", "bold", "button", "br",
+      "code", "col",
+      "data", "div",
       "em",
+      "font",
       "head", "html", "hr",
       "h1", "h2", "h3", "h4", "h5", "h6",
       "i", "img",
@@ -17,6 +20,19 @@ public class HtmlColoring implements Colorable {
       "script", "style",
       "table",  "textarea", "title",
       "ul",
+   };
+   
+   // incomplete
+   final static String[] HTML_Attr = {
+      "align",
+      "bgcolor",
+      "class",
+      "height", "href",
+      "id",
+      "style",
+      "title",
+      "valign", "value",
+      "width"
    };
    
    private final static String[] BRACKETS = { "<", ">" }; 
@@ -30,8 +46,8 @@ public class HtmlColoring implements Colorable {
       if (!SyntaxUtils.isInBlock(allText, pos, BLOCK_CMNT_START,
               BLOCK_CMNT_END)) {
          lex.setCharAttrBlack(posStart, toColor.length());
-         for (String s : BRACKETS) {
-            lex.bracketBlue(toColor, s, posStart);
+         for (String s : HTML_Attr) {
+            lex.keywordRed(toColor, s, posStart, true);
          }
          for (String s : HTML_TAGS) {
             tag(toColor, s, posStart, lex);
@@ -68,9 +84,9 @@ public class HtmlColoring implements Colorable {
       }
       if (offset == -1 && pos > 1) {
          char c1 = in.charAt(pos - 2);
-         char c2 = in.charAt(pos - 1);
+         char c2 = in.charAt(pos - 1);            
          if (c2 == '/' && c1 == '<') {
-            offset = 1;
+            offset = 0;
          }
       }
       return offset;

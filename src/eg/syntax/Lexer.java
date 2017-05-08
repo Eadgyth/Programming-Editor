@@ -331,7 +331,7 @@ public class Lexer {
       StyleConstants.setForeground(keyRedSet, keyRed);
       StyleConstants.setBold(keyRedSet, false);
 
-      Color keyBlue = new Color(80, 80, 200);
+      Color keyBlue = new Color(80, 80, 230);
       StyleConstants.setForeground(keyBlueSet, keyBlue);
       StyleConstants.setBold(keyBlueSet, false);
 
