@@ -12,7 +12,7 @@
              margin-bottom: 50px;
              margin-right: 100px;
              margin-left: 30px;
-         }      
+         }
       </style>
    </head>
    <body>
@@ -21,7 +21,7 @@
          <p>... please help: if really somebody gave the program a try a message about
             problems is welcome at
             <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a>.</p>
-   
+
          <h3>Content</h3>
          <ul>
             <li><a href="#Requirements">Requirements</a><br></li>
@@ -36,37 +36,37 @@
             <li><a href="#Console">Using the console</a></li>
             <li><a href="#Explorer">Using the project explorer</a></li>
          </ul>
-   
+
          <hr>
-   
-         <!--Requirements--> 
+
+         <!--Requirements-->
          <h3 id="Requirements">Requirements</h3>
          <p>See <a href="https://github.com/Eadgyth/Java-Programming-Editor/blob/master/README.md">
             README</a></p>
          <p>For a programming project the computer is set up in the same way as if any
             text editor is used for coding and the tested program would be run from a command
             interpreter. Presently, programming projects can be defined for Java and Perl.</p>
-   
+
          <hr>
-   
+
          <!--Run project-->
          <h3 id="RunProject">Running a project</h3>
-   
+
          <h4 id="ProjectTypes">Types of projects</h4>
          <p>The following types of projects may be defined and would be recognized based
-            on the file extension:</p> 
+            on the file extension or the language selected in the Edit menu:</p>
          <ol>
-            <li><a href="#JavaProject">Java</a> (file extension is .java) 
+            <li><a href="#JavaProject">Java</a> (file extension is .java)
             <li><a href="#PerlProject">Perl</a> (file extension is .pl, .pm)
             <li><a href="#HtmlProject">HTML</a> (file extension is .html, .htm)
          </ol>
-   
+
          <h4 id="Config">Configuring a project</h4>
          <ol>
             <li>Open a file or save a new file that has one of the above file extensions.</li>
             <li>Open the settings window by selecting 'Project' > 'New project' (or
                 'Project settings' at this point, see
-                <a href="#ChangeProjects">Changing between projects</a>).</li>     
+                <a href="#ChangeProjects">Changing between projects</a>).</li>
             <li>Enter the name of the main source file without extension. The main file does
                 not have to be the opened file but must exist. For HTML the name of any file
                 in a given directory maybe entered.</li>
@@ -76,7 +76,7 @@
                 to be the project's root (i.e. the working directory) but a sub-directory for
                 sources the name of this directory is entered in text field 'Name of sources
                 directory'.</li>
-            <li>A separate destination directory for compiled files (for Java) maybe entered 
+            <li>A separate destination directory for compiled files (for Java) maybe entered
                 in the text field 'Name of executables directory'. This folder will be created
                 during compilation in the root directoy.</li>
             <li>Click ok. If entries are correct, the project can be viewed in the 'Project
@@ -85,60 +85,56 @@
                 a name enforces that the determined root directory matches this name. The text
                 field anyway shows the name of the root when the settings window is newly opened
                 or if a previous project is <a href="#Retrieve">retrieved</a>. It must be cleared
-                (or modified) if the project root is to be changed.</li>
+                (or modified) if an existing project root is to be changed.</li>
          </ol>
-   
+
          <h4 id="ChangeProjects">Changing between projects</h4>
          <ul>
             <li>'Project' > 'New project' is selected to create an additional project and to open
                 a blank settings window. The file that is supposed to be part of the new project
-                must be in the selected tab.</li>
+                and must be in the selected tab.</li>
             <li>Changing between already set projects is done by selecting a file that is part of
                 the project to be set active and then selecting 'Project' > 'Change project' or,
                 to additionally view or modify the settings, 'Project' > 'Project settings'.</li>
-            <li>Selecting 'Project' > 'Project settings' shows the settings of the currently active
-                project, asks to change project or has the same effect as 'New project' depending
+            <li>Selecting 'Project' > 'Project settings' may show the settings of the currently
+                active project, ask to change project to show the settings of the project which is
+                changed to or may have the same effect as 'New project'. This depends, respectively,
                 on whether the selected file is part of the active project, of a non-active but set
-                project or no project.</li>
+                project or of no project.</li>
          </ul>
-   
+
          <h4 id="Retrieve">Retrieving projects</h4>
          <ul>
             <li>The project that was active when the program was closed the last time is retrieved
-                and set active when a file of that project is opened (or one is newly saved to
-                that project) and no other project is already active. The extension of the file must
-                correspond with the type of project (See <a href="#ProjectTypes">Types of projects</a>).
-                The extension may be different if and only if the language is set correspondingly
-                under 'Edit' > 'Language'.</li>
-            <li>If 'Save eadconfig file' is selected in the settings window the configuration of the 
+                and set active when a file of that project is opened (or a new file is saved to
+                that project) and no other project is already active.</li>
+            <li>If 'Save eadconfig file' is selected in the settings window the configuration of the
                 project is stored in such config file. This is saved in the project folder but can
                 be deleted at any time by unselecting the option to save it. A project is, in a way,
                 "marked" as one by the presence of the eadconfig file which merely means three things:<br>
                 <ol>
-                   <li>The project is polluted with a foreign file.</li>
                    <li>If a file of a marked project is opened (or one is saved to that project) the
                       settings are loaded even if another project is active. Selecting 'Project' >
-                      'Change project' can be used to change to that project or 'Project' > 'Project
-                      settings' to additionally view or alter the retrieved settings.</li>
+                      'Change project' can be used to change to that project. 'Project' > 'Project
+                      settings' is selected to additionally view or alter the retrieved settings.</li>
                    <li>A marked project is directly set active if a file of that project is opened and
                       no other project is active even though that project was not necessarily active
                       lastly when the program was closed.</li>
-                </ol>   
+                </ol>
          </ul>
-   
+
          <h4 id="Language">Setting the language</h4>
          <ul>
-            <li>The language defines the syntax coloring which firstly depends on the extension of the
-                file that is opened or newly saved (for the file types .java, .pl, .pm, and .html).</li>
-            <li>Setting the language by selecting 'Edit' > 'Language' takes effect only in unnamed
-                tabs.</li>
+            <li>The language can be selected in Edit menu ('Edit' > 'Languages'}.</li>
+            <li>The set language defines the syntax coloring only in unnamed tabs. Otherwise the
+                the file extension defines the coloring.</li>
             <li>Setting the language may also determine which input options are shown in the project
-                settings windows. For example, a file with "wrong" extension but what is supposed to
-                belong to a Java project (some resources file, maybe) may be just selected. Opening
-                the settings window would show the "correct Java" options if the language was set to Java.
-                However, the file extension that cooresponds to a project type has always the priority.</p>                   
+                settings window when a new project is set. For example, a file with "wrong" extension
+                but what is supposed to belong to a Java project (some resources file, maybe) may be
+                in the selected tab. Selecting 'Project' > 'New Project' would show the correct
+                options for Java if the language was set to Java.</li>
          </ul>
-   
+
          <h4 id="JavaProject">Testing Java code and packing a jar file</h4>
          <ol>
             <li>Compile the source file(s) using 'Save open files and compile' in
@@ -159,7 +155,7 @@
                 in the settings window. If no name is given the jar name is the same as the name of
                 the main class. Note that presently only class files can be bundled in a jar.</li>
          </ol>
-   
+
          <h4 id="PerlProject">Testing a Perl script</h4>
          <ol>
             <li>Save changes to the script and select 'Run' in the 'Project'
@@ -170,22 +166,22 @@
                 precisely it's printed only after inputs were made). The output would be shown as
                 expected (as far as tested) if the autoflushing of Perl's STDOUT is turned on in the
                 script itself. The other possibilty is, of course, to start the command line/terminal
-                of the OS to test the script (see <a href="#Console">Using the console</a>).
+                of the OS to test the script (see <a href="#Console">Using the console</a>).</li>
             <li>Arguments for a start script may be entered in the text field 'Arguments'
                 (separated by single spaces) in the settings window ('Project' > 'Project settings').</li>
-            <li>The syntax coloring for Perl is presently very basic.</li>
+            <li>The syntax coloring for Perl is presently very basic and incomplete.</li>
          </ol>
-   
+
          <h4 id="HtmlProject">Viewing HTML code in a web browser</h4>
          <ol>
             <li>Save changes to the file and select 'Run' in the 'Project' menu to view the html file in
                 the default web browser. Any file in the root folder, not just the project file specified
                 in the settings window, can be viewed.</li>
-            <li>As for Perl code, the syntax coloring is presently rudimentary.</li>
+            <li>As for Perl, the syntax coloring is presently rudimentary.</li>
          </ol>
-   
+
          <hr>
-   
+
          <!--Console-->
          <h3 id="Console">Using the console</h3>
          <p>The console area shall show messages after compilation of a project and the output of
@@ -202,7 +198,7 @@
          <p>Hint: using the command to start 'THE' terminal (in Windows this would be
             cmd.exe /c start) presets the working directory for the terminal to the project's root
             directory.
-   
+
          <h4>To run a system command...</h4>
          <ol>
             <li>Open the console panel in the menu 'View'.</li>
@@ -211,16 +207,16 @@
             <li>To run a previous command press the '>' button; to change a command open
                 the command dialog again by clicking 'Cmd...'.</li>
          </ol>
-   
+
          <h4>Further options</h4>
          <ul>
             <li>A new instance of Eadgyth can be run from the console by pressing the button with
                 the Eadgyth icon in the toolbar of the console panel. One reason to do this would
                 be to view the output when a plugin is tested.</li>
          </ul>
-   
+
          <hr>
-   
+
          <!--File explorer-->
          <h3 id="Explorer">Using the project explorer</h3>
          <p>The project explorer can be opened by selecting 'View' > 'Project explorer' once a
