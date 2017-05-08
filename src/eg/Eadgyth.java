@@ -53,7 +53,7 @@ public class Eadgyth {
 
       EventQueue.invokeLater(() -> {
          mw.makeVisible();
-         tabFiles.focusInSelectedTab();
+         tabFiles.createEmptyTab();
       });
    }
    

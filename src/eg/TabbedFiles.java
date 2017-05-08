@@ -77,15 +77,13 @@ public class TabbedFiles implements Observer {
             changeTabEvent(ce);
          }
       });
-      
+
       mw.winListen(new WindowAdapter() {
          @Override
          public void windowClosing(WindowEvent we) {
             exit();
          }
-      });         
-
-      createEmptyTab();
+      });
    }
 
    /**
@@ -106,16 +104,9 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Sets the focus in the selected document
-    */
-   public void focusInSelectedTab() {
-      txtDoc[iTab].requestFocus();
-   }
-
-   /**
     * Opens a new 'unnamed' tab
     */
-   public final void createEmptyTab() {
+   public void createEmptyTab() {
       boolean ok = true;
       if (nTabs() == 1 && !vMenu.isTabItmSelected()) {
          close(false);
@@ -143,10 +134,10 @@ public class TabbedFiles implements Observer {
     * project
     */
    public void openFileByChooser() {
-      File f = fc.fileToOpen();     
+      File f = fc.fileToOpen();
       if (f == null) {
          return;
-      }     
+      }
       if (!f.exists()) {
          JOptions.warnMessage(f.getName() + " was not found");
       }
@@ -332,7 +323,7 @@ public class TabbedFiles implements Observer {
          }
       }
    }
-   
+
    /**
     * Prints the text content in the selected tab to a printer
     */
@@ -406,7 +397,7 @@ public class TabbedFiles implements Observer {
          close(true);
       });
    }
-   
+
    private void updateForFile(int i) {
       currProj.setCurrTextDocument(i);
       currProj.retrieveProject();
@@ -453,7 +444,7 @@ public class TabbedFiles implements Observer {
       JTabbedPane sourceTb = (JTabbedPane) changeEvent.getSource();
       iTab = sourceTb.getSelectedIndex();
       if (iTab > -1) {
-         focusInSelectedTab();
+         txtDoc[iTab].requestFocus();
          format.setCurrEditArea(iTab);
          docUpdate.updateDocument(iTab);
          currProj.setCurrTextDocument(iTab);
@@ -461,7 +452,7 @@ public class TabbedFiles implements Observer {
          vMenu.enableTabItm(nTabs() == 1);
       }
    }
-   
+
    private int nTabs() {
       return tabPane.getTabCount();
    }
