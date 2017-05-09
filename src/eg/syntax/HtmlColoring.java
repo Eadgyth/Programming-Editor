@@ -1,7 +1,7 @@
 package eg.syntax;
 
 public class HtmlColoring implements Colorable {
-   
+
    // incomplete
    final static String[] HTML_TAGS = {
       "a", "area", "applet",
@@ -21,7 +21,7 @@ public class HtmlColoring implements Colorable {
       "table",  "textarea", "title",
       "ul",
    };
-   
+
    // incomplete
    final static String[] HTML_Attr = {
       "align",
@@ -34,8 +34,8 @@ public class HtmlColoring implements Colorable {
       "valign", "value",
       "width"
    };
-   
-   private final static String[] BRACKETS = { "<", ">" }; 
+
+   private final static String[] BRACKETS = { "<", ">" };
    private final static String BLOCK_CMNT_START = "<!--";
    private final static String BLOCK_CMNT_END = "-->";
 
@@ -53,50 +53,42 @@ public class HtmlColoring implements Colorable {
             tag(toColor, s, posStart, lex);
          }
          lex.quoted(toColor, posStart, "\"", BRACKETS[0], BRACKETS[1]);
-      }    
+      }
       lex.blockComments(allText, BLOCK_CMNT_START, BLOCK_CMNT_END);
    }
 
    private void tag(String toColor, String key, int pos, Lexer lex) {
       int start = 0;
       while (start != -1) {
-         start = toColor.indexOf(key, start);
+         start = toColor.toLowerCase().indexOf(key, start);
          if (start != -1) {
-            int tagStartOffset = tagStartOffset(toColor, start);
-            if (tagStartOffset != -1
+            if (isTagStart(toColor, start)
                   && isTagEnd(toColor, key.length(), start)) {
-               int startOffset = start - tagStartOffset;
-               int length = key.length() + tagStartOffset;
-               lex.setCharAttrKeyBlue(startOffset + pos, length);
+               lex.setCharAttrKeyBlue(start + pos, key.length());
             }
-            start += key.length(); 
+            start += key.length();
          }
       }
    }
 
-   private int tagStartOffset(String in, int pos) {
-      int offset = -1;
+   private boolean isTagStart(String text, int pos) {
+      boolean isTagStart = false;
       if (pos > 0) {
-         char c = in.charAt(pos - 1);
-         if (c == '<') {
-            offset = 0;
-         }
+         char c = text.charAt(pos - 1);
+         isTagStart = c == '<';
       }
-      if (offset == -1 && pos > 1) {
-         char c1 = in.charAt(pos - 2);
-         char c2 = in.charAt(pos - 1);            
-         if (c2 == '/' && c1 == '<') {
-            offset = 0;
-         }
+      if (!isTagStart && pos > 1) {
+         char c1 = text.charAt(pos - 2);
+         char c2 = text.charAt(pos - 1);
+         isTagStart = c2 == '/' && c1 == '<';
       }
-      return offset;
+      return isTagStart;
    }
 
-   private boolean isTagEnd(String in, int length, int pos) {
+   private boolean isTagEnd(String text, int length, int pos) {
       int endPos = pos + length;
-      String end = "";   
-      if (in.length() > endPos) {
-         char c = in.charAt(endPos);
+      if (text.length() > endPos) {
+         char c = text.charAt(endPos);
          return c == '>' || c == ' ';
       }
       else {
