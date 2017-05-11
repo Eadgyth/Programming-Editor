@@ -52,7 +52,7 @@ public class HtmlColoring implements Colorable {
          for (String s : HTML_TAGS) {
             tag(toColor, s, posStart, lex);
          }
-         lex.quoted(toColor, posStart, "\"", BRACKETS[0], BRACKETS[1]);
+         lex.quotedLineWise(toColor, posStart, "\"", BRACKETS[0], BRACKETS[1], null);
       }
       lex.blockComments(allText, BLOCK_CMNT_START, BLOCK_CMNT_END);
    }

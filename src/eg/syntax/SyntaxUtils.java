@@ -153,8 +153,27 @@ public class SyntaxUtils {
       }
       return isInQuotes;
    }
+   
+   /**
+    * Returns if the character before the specified position is a
+    * backslash
+    *
+    * @param text  the text
+    * @param pos  the position that may be preceded by a backslash
+    * @return  if the character before <code>pos</code> is a backslash. False
+    * also if it is preceeded by backslash itself
+    */
+   public static boolean isEscaped(String text, int pos) {
+      if (pos > 0) {
+         return text.substring(pos - 1, pos).equals("\\")
+               && !isEscaped(text, pos - 1);
+      }
+      else {
+         return false;
+      }
+   }
 
-   public static boolean isLetterOrDigit(char c) {
+   private static boolean isLetterOrDigit(char c) {
       return Character.isLetter(c) || Character.isDigit(c);
    }
 }

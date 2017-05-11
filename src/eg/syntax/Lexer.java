@@ -79,7 +79,8 @@ public class Lexer {
     *
     * @param toColor  the text of the document or a section thereof
     * @param key  the keyword
-    * @param pos  the start position of '{@code toColor}' within the entire text
+    * @param pos  the start position of '{@code toColor}' within the
+    * entire text
     * @param reqWord  if the keyword must be a word
     */
    public void keywordRed(String toColor, String key, int pos, boolean reqWord) {
@@ -91,7 +92,8 @@ public class Lexer {
     *
     * @param toColor  the text of the document or a section thereof
     * @param key  the keyword
-    * @param pos  the start position of '{@code toColor}' within the entire text
+    * @param pos  the start position of '{@code toColor}' within the
+    * entire text
     * @param reqWord  if the keyword must be a word
     */
    public void keywordBlue(String toColor, String key, int pos, boolean reqWord) {
@@ -103,7 +105,8 @@ public class Lexer {
     *
     * @param toColor  the text of the document or a section thereof
     * @param bracket  the bracket
-    * @param pos  the start position of '{@code toColor}' within the entire text
+    * @param pos  the start position of '{@code toColor}' within the
+    * entire text
     */
    public void bracket(String toColor, String bracket, int pos) {
       string(toColor, bracket, brSet, pos, false);
@@ -114,27 +117,33 @@ public class Lexer {
     *
     * @param toColor  the text of the document or a section thereof
     * @param bracket  the bracket
-    * @param pos  the start position of '{@code toColor}' within the entire text
+    * @param pos  the start position of '{@code toColor}' within the
+    * entire text
     */
    public void bracketBlue(String toColor, String bracket, int pos) {
       string(toColor, bracket, brBlueSet, pos, false);
    }
 
    /**
-    * Colors string literals in brown
+    * Searches and colors in brown string literals where a quoted 
+    * section does not span several lines
     *
     * @param toColor  the text of the document or a section thereof
-    * @param pos  the start position of '{@code toColor}' within the entire text
-    * @param quoteSign  the quote sign, i.e either single or double quote
-    * @param blockStart  the String that represents the start of a text block
-    * where the String literal must be found in. Null to ignore any ocurrence
-    * in a block
+    * @param pos  the start position of <code>toColor</code> within the
+    * entire text
+    * @param quoteMark  the quotation mark, i.e either single or double
+    * quote
+    * @param blockStart  the String that represents the start of a  text
+    * block where the String literal must be found in. Null to
+    * ignore any ocurrence in a block
     * @param blockEnd  the String that represents the end of a text block
-    * where the String literal must be found in. Not null if '{@code blockStart}'
-    * is not null
+    * where the String literal must be found in. Not null if
+    * '{@code blockStart}'
+    * @param escape  the escape character to skip the quote sign is not
+    * null
     */
-   public void quoted(String toColor, int pos, String quoteSign,
-         String blockStart, String blockEnd) {
+   public void quotedLineWise(String toColor, int pos, String quoteMark,
+         String blockStart, String blockEnd, String escape) {
 
       if (!isTypeMode & Finder.countLines(toColor) > 1) {
          //
@@ -142,12 +151,12 @@ public class Lexer {
          String[] chunkArr = toColor.split("\n");
          int sum = 0;
          for (String s : chunkArr) {
-            quotedInLine(s, pos + sum, quoteSign, blockStart, blockEnd);
+            quoted(s, pos + sum, quoteMark, blockStart, blockEnd, escape);
             sum += s.length() + 1;
          }
       }
       else {
-         quotedInLine(toColor, pos, quoteSign, blockStart, blockEnd);
+         quoted(toColor, pos, quoteMark, blockStart, blockEnd, escape);
       }
    }
 
@@ -155,8 +164,10 @@ public class Lexer {
     * Searches line comments and colors commented lines in green
     *
     * @param toColor  the text of the document or a section thereof
-    * @param pos  the start position of '{@code toColor}' within the entire text
-    * @param lineCmnt  the String that equals the start of a line comment
+    * @param pos  the start position of '{@code toColor}' within the
+    * entire text
+    * @param lineCmnt  the String that equals the start of a line
+    * comment
     */
    public void lineComments(String toColor, int pos, String lineCmnt) {
       int start = 0;
@@ -184,10 +195,14 @@ public class Lexer {
     * Searches and colors block comments in green
     *
     * @param allText  the entire text
-    * @param blockStart  the String that represents the start signal for a block
-    * @param blockEnd  the String that represents the end signal for a block
+    * @param blockStart  the String that represents the start signal
+    * for a block
+    * @param blockEnd  the String that represents the end signal for
+    * a block
     */
-   public void blockComments(String allText, String blockStart, String blockEnd) {
+   public void blockComments(String allText, String blockStart,
+         String blockEnd) {
+
       if (!isBlockCmnt) {
          return;
       }
@@ -242,21 +257,28 @@ public class Lexer {
       }
    }
 
-   private void quotedInLine(String line, int pos, String quoteSign,
-         String blockStart, String blockEnd) {
+   private void quoted(String toColor, int pos, String quoteMark,
+         String blockStart, String blockEnd, String escape) {
 
       int start = 0;
       int lastStart;
       int end = 0;
       while (start != -1 && end != -1) {
-         start = line.indexOf(quoteSign, start);
-         if (start != -1 ) {
-            end = line.indexOf(quoteSign, start + 1);
+         start = toColor.indexOf(quoteMark, start);
+         while (escape != null && SyntaxUtils.isEscaped(toColor, start)) {
+            start = toColor.indexOf(quoteMark, start + 1);
+         }
+         if (start != -1) {
+            end = toColor.indexOf(quoteMark, start + 1);
+            while (escape != null && SyntaxUtils.isEscaped(toColor, end)) {
+               end = toColor.indexOf(quoteMark, end + 1);
+            }
             int length = 0;
             if (end != -1 ) {
                length = end - start;
-               boolean ok = blockStart == null
-                     || SyntaxUtils.isInBlock(line, start, blockStart, blockEnd);
+               boolean ok
+                     = blockStart == null
+                     || SyntaxUtils.isInBlock(toColor, start, blockStart, blockEnd);
                if (ok) {
                   doc.setCharacterAttributes(start + pos, length + 1,
                         strLitSet, false);
@@ -320,7 +342,7 @@ public class Lexer {
    }
 
    private void setStyles() {
-      StyleConstants.setForeground(normalSet, Color.BLACK); 
+      StyleConstants.setForeground(normalSet, Color.BLACK);
       StyleConstants.setBold(normalSet, false);
 
       Color commentGreen = new Color(80, 190, 80);

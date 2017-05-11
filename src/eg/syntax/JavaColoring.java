@@ -48,8 +48,8 @@ public class JavaColoring implements Colorable {
          for (String s : SyntaxUtils.CURLY_BRACKETS) {
             lex.bracket(toColor, s, posStart);
          }
-         lex.quoted(toColor, posStart, "\'", null, null);
-         lex.quoted(toColor, posStart, "\"", null, null);
+         lex.quotedLineWise(toColor, posStart, "\'", null, null, "\\");
+         lex.quotedLineWise(toColor, posStart, "\"", null, null, "\\");
          lex.lineComments(toColor, posStart, LINE_CMNT);   
       }
       lex.blockComments(allText, BLOCK_CMNT_START, BLOCK_CMNT_END);
