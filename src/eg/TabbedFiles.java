@@ -185,7 +185,7 @@ public class TabbedFiles implements Observer {
          }
       }
       if (sb.length() > 0) {
-         sb.insert(0, "These files were not found:\n");
+         sb.insert(0, "These files could not be found:\n");
          JOptions.warnMessage(sb.toString());
       }
    }
@@ -218,7 +218,7 @@ public class TabbedFiles implements Observer {
    /**
     * Saves a copy of the content in the selected document to the file
     * that is selected in the file chooser.
-    * <p> Method does not change the file of the document in the tab.
+    * <p> Method does not change the file of the document.
     */
    public void saveCopy() {
       File f = fc.fileToSave(txtDoc[iTab].filepath());
@@ -351,7 +351,7 @@ public class TabbedFiles implements Observer {
             && txtDoc[iOpen].filename().length() == 0
             && editArea[iOpen].getDoc().getLength() == 0;
       if (isOpenable) {
-         txtDoc[iOpen].openFile(f); // no new doc
+         openFile(iOpen, f); // no new doc
          tabPane.changeTitle(iOpen, txtDoc[iOpen].filename());
       }
       else {
@@ -386,8 +386,18 @@ public class TabbedFiles implements Observer {
    private void createDocument(int i, File f) {
       editArea[i] = format.createEditArea();
       txtDoc[i] = new TextDocument(editArea[i]);
-      txtDoc[i].openFile(f);
+      openFile(i, f);
    }
+   
+   private void openFile(int i, File f) {
+      try {
+         mw.setBusyCursor(true);
+         txtDoc[i].openFile(f);
+      }
+      finally {
+         EventQueue.invokeLater(() -> mw.setBusyCursor(false));
+      }
+   }     
 
    private void addNewTab(String filename, JPanel pnl) {
       JButton closeBt = new JButton(eg.ui.IconFiles.CLOSE_ICON);
