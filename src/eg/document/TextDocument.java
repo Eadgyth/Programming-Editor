@@ -48,7 +48,7 @@ public final class TextDocument {
       type.addAllLineNumbers(content);
       PREFS.readPrefs();
       String indentUnit = PREFS.getProperty("indentUnit");
-      changeIndentUnit(indentUnit);    
+      setIndentUnit(indentUnit);    
    }
 
    /**
@@ -121,12 +121,10 @@ public final class TextDocument {
                + " TextDocument which a file was assigned to before");
       }
       assignFileStrings(file);
-      EventQueue.invokeLater(() -> {
-         displayFileContent();
-         setLanguageBySuffix();
-         setContent();
-         type.addAllLineNumbers(content);
-      });
+      displayFileContent();
+      setLanguageBySuffix();
+      setContent();
+      type.addAllLineNumbers(content);
    }
 
    /**
@@ -171,17 +169,17 @@ public final class TextDocument {
    }
 
    /**
-    * Changes the indentation unit
+    * Sets the indentation unit
     *
     * @param indentUnit  the String that consists of a certain number of
     * white spaces
     */
-   public void changeIndentUnit(String indentUnit) {
+   public void setIndentUnit(String indentUnit) {
       if (indentUnit == null || !indentUnit.matches("[\\s]+")) {
          throw new IllegalArgumentException("Argument indentUnit is"
                + " incorrect");
       }
-      type.changeIndentUnit(indentUnit);
+      type.setIndentUnit(indentUnit);
       PREFS.storePrefs("indentUnit", type.getIndentUnit());
    }
 
