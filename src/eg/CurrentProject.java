@@ -9,6 +9,7 @@ import java.awt.EventQueue;
 
 //--Eadgyth--//
 import eg.console.*;
+import eg.Languages;
 import eg.ui.MainWin;
 import eg.projects.ProjectActions;
 import eg.projects.SelectedProject;
@@ -37,17 +38,13 @@ public class CurrentProject {
          = "A project can be set after opening a file or"
          + " saving a new file.";
          
-   private final String NOT_IN_PROJ_MESSAGE 
+   private final String NOT_IN_PROJ_MESSAGE
          = "The selected file is not in the root directory"
          + " of the currently active project.";
-         
-   private final String ASK_FOR_LANG
-         = "Set new project defined by the selected language";
 
    private final String WRONG_TYPE_MESSAGE
-         = "A project is not defined for this file.\n"
-         + "If the file is part of a project the associated language"
-         + " must be selected in the Edit menu";
+         = "A project is not defined for the selected file.\n"
+         + "Select the language if the file is part of a project.";
          
    private final String FILES_NOT_FOUND_MESSAGE
          = "The following file could not be found anymore:";
@@ -61,12 +58,12 @@ public class CurrentProject {
    private TextDocument[] txtDoc;
    private TextDocument currDoc;
    private String currExt;
-   private Languages lang;
 
    public CurrentProject(MainWin mw) {
       this.mw = mw;
       proc = new ProcessStarter(mw.console());
-      ProjectUIUpdate update = new ProjectUIUpdate(mw.menu().viewMenu(), mw.fileTree());
+      ProjectUIUpdate update = new ProjectUIUpdate(mw.menu().viewMenu(),
+            mw.fileTree());
       selProj = new SelectedProject(update, proc, mw.console());
    }
 
@@ -87,25 +84,6 @@ public class CurrentProject {
    public void setCurrTextDocument(int index) {
       currDoc = txtDoc[index];
       currExt = FileUtils.fileSuffix(currDoc.filename());      
-   }
-
-   /**
-    * Sets the current language
-    *
-    * @param lang  the language that has one of the values in
-    * {@link Languages}
-    */   
-   public void setLanguage(Languages lang) {
-      this.lang = lang;
-   }
-
-   /**
-    * If at least one project has been created
-    *
-    * @return  if at least one project has been created
-    */
-   public boolean isProjectSet() {
-      return current != null;
    }
 
    /**
@@ -219,7 +197,6 @@ public class CurrentProject {
          changeProject(fromList);
       }
       else {
-         
          createNewProject(true);
       }
    }      
@@ -336,14 +313,9 @@ public class CurrentProject {
       }
       ProjectActions projNew = selProj.createProjectByExt(currExt);
       if (projNew == null) {
-         if (lang != Languages.PLAIN_TEXT) {
-            int res = JOptions.confirmYesNo(ASK_FOR_LANG + " (" + lang + ") ?");
-            if (res == 0) {
-               projNew = selProj.createProjectByLang(lang);
-            }
-         }
-         else {
-            JOptions.titledInfoMessage(WRONG_TYPE_MESSAGE, "Note");
+         Languages lang = selectLanguage();
+         if (lang != null) {
+            projNew = selProj.createProjectByLang(lang);
          }
       }
       if (projNew != null) {
@@ -357,6 +329,17 @@ public class CurrentProject {
             prFin.addOkAction(e -> configureProject(prFin));
          }
       }
+   }
+
+   private Languages selectLanguage() {
+      String selectedLang = JOptions.comboBoxRes(WRONG_TYPE_MESSAGE,
+            "Type of project", Languages.displayArrWithoutPlain(),
+            currDoc.language().toString());
+      return Languages.langByDisplay(selectedLang);
+   }
+   
+   private boolean isProjectSet() {
+      return current != null;
    }
 
    private boolean changeProject(ProjectActions toChangeTo) {
@@ -418,8 +401,8 @@ public class CurrentProject {
    
    private boolean isFileToCompile(TextDocument td) {
        return td != null
-                 && td.filename().endsWith(current.getSourceSuffix())
-                 && current.isInProject(td.dir());
+             && td.filename().endsWith(current.getSourceSuffix())
+             && current.isInProject(td.dir());
    }
    
    private void endCompilation() {

@@ -26,6 +26,7 @@ import eg.ui.MainWin;
 import eg.ui.EditArea;
 import eg.ui.tabpane.ExtTabbedPane;
 import eg.ui.menu.ViewMenu;
+import eg.ui.menu.EditMenu;
 
 /**
  * The control of operations that require knowledge of the documents in
@@ -40,6 +41,7 @@ public class TabbedFiles implements Observer {
    private final MainWin mw;
    private final ExtTabbedPane tabPane;
    private final ViewMenu vMenu;
+   private final EditMenu eMenu;
    private final EditAreaFormat format;
    private final DocumentUpdate docUpdate;
    private final CurrentProject currProj;
@@ -58,6 +60,7 @@ public class TabbedFiles implements Observer {
       this.mw = mw;
       tabPane = mw.tabPane();
       vMenu = mw.menu().viewMenu();
+      eMenu = mw.menu().editMenu();
       this.format = format;
       this.docUpdate = docUpdate;
       this.currProj = currProj;
@@ -67,7 +70,6 @@ public class TabbedFiles implements Observer {
       format.setEditAreaArr(editArea);
       prefs.readPrefs();
       lang = Languages.valueOf(prefs.getProperty("language"));
-      currProj.setLanguage(lang);
       String recentDir = prefs.getProperty("recentPath");
       fc = new FileChooser(recentDir);
 
@@ -94,13 +96,7 @@ public class TabbedFiles implements Observer {
     */
    public void changeLanguage(Languages lang) {
       this.lang = lang;
-      currProj.setLanguage(lang);
-      for (TextDocument t : txtDoc) {
-         if (t != null) {
-            t.changeLanguage(lang); // no effect if a file is assigned
-         }
-      }
-      prefs.storePrefs("language", lang.toString());
+      txtDoc[iTab].changeLanguage(lang); // no effect if a file is assigned
    }
 
    /**
@@ -307,6 +303,7 @@ public class TabbedFiles implements Observer {
    public void exit() {
       int count = unsavedTab();
       if (count == nTabs()) {
+         prefs.storePrefs("language", lang.toString());
          System.exit(0);
       }
       else {
@@ -411,6 +408,7 @@ public class TabbedFiles implements Observer {
    private void updateForFile(int i) {
       currProj.setCurrTextDocument(i);
       currProj.retrieveProject();
+      eMenu.lockLanguagesItms(txtDoc[i].language());
       mw.displayFrameTitle(txtDoc[i].filepath());
       prefs.storePrefs("recentPath", txtDoc[i].dir());
    }
@@ -460,6 +458,12 @@ public class TabbedFiles implements Observer {
          currProj.setCurrTextDocument(iTab);
          mw.displayFrameTitle(txtDoc[iTab].filepath());
          vMenu.enableTabItm(nTabs() == 1);
+         if (txtDoc[iTab].filename().length() == 0) {
+            eMenu.setLanguagesItms(txtDoc[iTab].language());
+         }
+         else {
+            eMenu.lockLanguagesItms(txtDoc[iTab].language());
+         }
       }
    }
 

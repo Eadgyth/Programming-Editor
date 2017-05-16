@@ -20,7 +20,7 @@ import eg.ui.IconFiles;
 
 public class EditMenu {
 
-   private final static String[] LANGUAGES = {
+   public final static String[] LANGUAGES = {
       "Plain text", "Java", "HTML", "Perl"
    };
 
@@ -65,6 +65,31 @@ public class EditMenu {
       for (JCheckBoxMenuItem item : selectLangChBxItm) {
            item.addActionListener(e -> getNewLanguage(e, edit, tf));
        }
+   }
+   
+   public void lockLanguagesItms(Languages lang) {
+      for (int i = 0; i < selectLangChBxItm.length; i++) {
+         selectLangChBxItm[i].setEnabled(false);
+         if (lang == Languages.values()[i]) {
+            selectLangChBxItm[i].setSelected(true);
+         }
+         else {
+            selectLangChBxItm[i].setSelected(false);
+         }
+      }
+   }
+   
+   public void setLanguagesItms(Languages lang) {
+      for (int i = 0; i < selectLangChBxItm.length; i++) {
+         if (lang == Languages.values()[i]) {
+            selectLangChBxItm[i].setEnabled(false);
+            selectLangChBxItm[i].setSelected(true);
+         }
+         else {
+            selectLangChBxItm[i].setEnabled(true);
+            selectLangChBxItm[i].setSelected(false);
+         }
+      }     
    }
 
    private void getNewLanguage(ActionEvent e, Edit edit, TabbedFiles tf) {
