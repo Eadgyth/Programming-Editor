@@ -14,10 +14,10 @@ class AutoIndent {
    private final EditArea editArea;
 
    private String indentUnit;
-   private int indentLength;  
+   private int indentLength;
    private String indent = "";
    private boolean isActive;
-   private String in = "";
+   private String text = "";
 
    AutoIndent(EditArea editArea) {
       this.editArea = editArea;
@@ -29,7 +29,7 @@ class AutoIndent {
       isActive = isEnabled;
    }
 
-   void changeIndentUnit(String indentUnit) {
+   void setIndentUnit(String indentUnit) {
       this.indentUnit = indentUnit;
       indentLength = indentUnit.length();
    }
@@ -37,22 +37,22 @@ class AutoIndent {
    String getIndentUnit() {
       return indentUnit;
    }
-   
+
    void setText(String text) {
-      in = text;
+      this.text = text;
    }
 
    void closeBracketIndent(int pos) {
       if (pos > 2) {
-         String atPos = in.substring(pos, pos + 1);
+         String atPos = text.substring(pos, pos + 1);
          if ("}".equals(atPos)) {
-            if (in.substring(pos - indentLength, pos).equals(indentUnit)) {   
+            if (text.substring(pos - indentLength, pos).equals(indentUnit)) {
                editArea.removeStr(pos - indentLength, indentLength);
-            }   
+            }
          }
       }
    }
-   
+
    //
    //--private
    //
@@ -60,7 +60,7 @@ class AutoIndent {
    private void setCurrentIndent(int pos) {
       String currIndent = currentIndent(pos);
       if (pos > 1) {
-         String atPrevPos = in.substring(pos - 2, pos - 1);
+         String atPrevPos = text.substring(pos - 2, pos - 1);
          if (atPrevPos.equals("{")) {
             currIndent += indentUnit;
          }
@@ -74,17 +74,17 @@ class AutoIndent {
       // -2 to skip the new return after pressing enter
       int lineStart = -1;
       if (pos > 1) {
-         lineStart = in.lastIndexOf("\n", pos - 2);
+         lineStart = text.lastIndexOf("\n", pos - 2);
       }
       if (pos > 1) {
-         char[] line = in.substring(lineStart + 1, pos).toCharArray();
+         char[] line = text.substring(lineStart + 1, pos).toCharArray();
          for (int i = 0; i < line.length && line[i] == ' '; i++) {
             currIndent += " ";
          }
       }
       return currIndent;
    }
-   
+
    KeyListener listener = new KeyAdapter() {
       //
       // Detecting enter pressed makes sure that that
@@ -106,7 +106,7 @@ class AutoIndent {
          int key = e.getKeyCode();
          if (isActive && isEnter && key == KeyEvent.VK_ENTER) {
             setCurrentIndent(pos);
-            editArea.insertStr(pos, indent);            
+            editArea.insertStr(pos, indent);
          }
          isEnter = false;
       }

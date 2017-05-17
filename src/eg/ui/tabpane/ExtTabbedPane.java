@@ -74,7 +74,6 @@ public class ExtTabbedPane extends JTabbedPane {
     * button
     */
    public void addTab(String title, Component c, JButton closeBt) {
-
       int index = getTabCount();
       addTab(null, c);
       JPanel tabPnl = new JPanel(FLOW_LAYOUT_LEFT);
@@ -82,7 +81,6 @@ public class ExtTabbedPane extends JTabbedPane {
       JLabel titleLb = new JLabel(title);
       titleLb.setFont(VERDANA_PLAIN);
       closeBt.setBorder(EMPTY_BORDER);
-      closeBt.setBorderPainted(false);
       closeBt.setContentAreaFilled(false);
       closeBt.setFocusable(false);
       tabPnl.add(titleLb);
@@ -115,6 +113,9 @@ public class ExtTabbedPane extends JTabbedPane {
       lb.setText(title);
    }
 
+   /**
+    * Sets this UI
+    */
    @Override
    public void updateUI() {
        super.setUI(ui);

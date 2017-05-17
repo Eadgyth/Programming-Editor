@@ -174,7 +174,7 @@ public class ConsolePanel {
          "Clear the console",
          "Close the console"
       };
-      return UiComponents.toolbarLastBtRight(bts, tooltips);
+      return UiComponents.lastBtRightToolbar(bts, tooltips);
    }
 
    private void clearAct() {

@@ -45,8 +45,7 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
    }
 
    /**
-    * Controls if the tab bar is visible when this UI is set for the
-    * tab pane
+    * Controls if the tab bar is visible.
     *
     * @param show  true/false to show/hide the tab bar
     */
@@ -81,7 +80,7 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
       if (isSelected) {
          g.setColor(BORDER_DARK_GRAY);
       }
-      g.drawLine(x, y , x + w, y );
+      g.drawLine(x, y , x + w, y);
       g.drawLine(x, y, x, y + h);
       g.drawLine(x + w, y, x + w, y + h);
       g.drawLine(x, y + tabHeight, x + w, y + tabHeight);
@@ -105,7 +104,6 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
       shape.addPoint(x, y + h);
       shape.addPoint(x + w, y + h);
       shape.addPoint(x + w, y);
-
       if (isSelected) {
          g.setColor(Color.WHITE);
       }

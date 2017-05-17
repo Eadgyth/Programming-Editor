@@ -36,7 +36,7 @@ public interface Configurable {
    
    /**
     * If a project can be successfully configured based on the entries in
-    * the settings window
+    * the settings window.
     *
     * @param dir  the directory that may be or include the project's root
     * folder
@@ -45,7 +45,7 @@ public interface Configurable {
    public boolean configureProject(String dir);
    
    /**
-    * If a project stored in a preferences file can be retrieved
+    * If a project stored in a preferences file can be retrieved.
     *
     * @param dir  the directory of a file that maybe part of a stored
     * project 

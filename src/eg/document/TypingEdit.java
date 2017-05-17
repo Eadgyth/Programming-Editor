@@ -14,7 +14,6 @@ import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
-
 import javax.swing.event.DocumentEvent.EventType;
 
 import javax.swing.undo.UndoManager;
@@ -22,6 +21,7 @@ import javax.swing.undo.CompoundEdit;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
 import javax.swing.text.AttributeSet;
+
 import javax.swing.undo.UndoableEdit;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.CannotRedoException;
@@ -95,8 +95,8 @@ class TypingEdit {
       }
    }
 
-   void changeIndentUnit(String indentUnit) {
-      autoInd.changeIndentUnit(indentUnit);
+   void setIndentUnit(String indentUnit) {
+      autoInd.setIndentUnit(indentUnit);
    }
 
    String getIndentUnit() {
@@ -209,7 +209,7 @@ class TypingEdit {
          event = de.getType();
          //
          // to prevent damage when undoing deleted text
-         if (isTypeEdit &&  changeLength < -1) {
+         if (isTypeEdit && changeLength < -1) {
             undomanager.discardAllEdits();
          }
          if (evaluateText) {
@@ -218,7 +218,7 @@ class TypingEdit {
             if (isTypeEdit) {
                color(text, pos);
             }
-         }
+         } 
       }
 
       @Override
@@ -260,12 +260,9 @@ class TypingEdit {
          if (!evaluateText) {
             return;
          }
-
-         UndoableEdit ed = e.getEdit();
+     
          if (!event.equals(DocumentEvent.EventType.CHANGE)) {
-            addAnEdit(ed);
-         }
-         else {
+            addAnEdit(e.getEdit());
          }
       }
 

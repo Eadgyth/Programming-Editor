@@ -5,16 +5,19 @@ import eg.Languages;
 import eg.utils.Finder;
 
 /**
- * The coloring of text using a selected {@code Colorable}.
+ * The coloring of either chunks of text (which also maybe the entire text)
+ * or single lines using a <code>Coloring</code> selected based on the
+ * language
  */
 public class Coloring {
    
    private final Lexer lex;
    
    /**
-    * Creates a Coloring
+    * Creates a <code>Coloring</code>
     *
-    * @param lex  the {@link Lexer}
+    * @param lex  the <code>Lexer</code> which a <code>Colorable</code>
+    * can assigned to
     */
    public Coloring(Lexer lex) {
       this.lex = lex;

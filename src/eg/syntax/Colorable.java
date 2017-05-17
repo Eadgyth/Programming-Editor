@@ -1,5 +1,7 @@
 package eg.syntax;
 
+import javax.swing.text.StyledDocument;
+
 /**
  * The interface to color text
  */

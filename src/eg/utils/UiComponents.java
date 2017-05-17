@@ -4,10 +4,10 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.JTabbedPane;
-import javax.swing.border.MatteBorder;
 import javax.swing.border.EmptyBorder;
 
-import eg.ui.ExtTabbedPane;
+//--Eadgyth--//
+import eg.ui.tabpane.ExtTabbedPane;
 
 /**
  * Static methods to create customized UI components
@@ -15,14 +15,15 @@ import eg.ui.ExtTabbedPane;
 public class UiComponents {
 
    /**
-    * Creates a toolbar with the last button (intended for a close button)
-    * aligned at the right
+    * Creates a <code>JToolBar</code> with the last button (intended for a
+    * close button) aligned at the right. The toolbar is not opaque, has
+    * no border and is not floatable
     *
     * @param bts  the array of JButtons added to the toolbar
     * @param tooltips  the array of tooltips for the buttons
-    * @return  a new {@code JToolBar}
+    * @return  a new <code>JToolBar</code>
     */
-   public static JToolBar toolbarLastBtRight(JButton[] bts, String[] tooltips) {
+   public static JToolBar lastBtRightToolbar(JButton[] bts, String[] tooltips) {
       JToolBar tb = new JToolBar(JToolBar.HORIZONTAL);
       tb.setOpaque(false);
       tb.setBorder(null);

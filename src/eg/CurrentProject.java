@@ -332,8 +332,12 @@ public class CurrentProject {
    }
 
    private Languages selectLanguage() {
+      String[] langArr = new String[3];
+      for (int i = 0; i < 3; i++) {
+         langArr[i] = Languages.values()[i + 1].display();
+      }
       String selectedLang = JOptions.comboBoxRes(WRONG_TYPE_MESSAGE,
-            "Type of project", Languages.displayArrWithoutPlain(),
+            "Type of project", langArr,
             currDoc.language().toString());
       return Languages.langByDisplay(selectedLang);
    }

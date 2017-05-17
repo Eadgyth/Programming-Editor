@@ -68,14 +68,14 @@ public class SelectedProject {
       ProjectActions newProj = null;
       switch (lang) {
          case JAVA:
-               newProj = new JavaActions(update, proc, console);
-               break;
-            case HTML:
-               newProj = new HtmlActions("html");
-               break;
-            case PERL:
-               newProj = new PerlActions(update, proc);
-               break;
+            newProj = new JavaActions(update, proc, console);
+            break;
+         case HTML:
+            newProj = new HtmlActions("html");
+            break;
+         case PERL:
+            newProj = new PerlActions(update, proc);
+            break;
       }
       if (newProj != null) {
          newProj.createSettingsWin();

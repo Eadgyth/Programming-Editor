@@ -116,7 +116,7 @@ public class Edit {
             indentUnit += " ";
          }
       }
-      txtDoc.changeIndentUnit(indentUnit);
+      txtDoc.setIndentUnit(indentUnit);
    }
 
    /**

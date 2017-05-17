@@ -51,9 +51,10 @@ public class JOptions {
    
    public static String comboBoxRes(String message, String title,
          String[] options, String currentVal) {
+
       String res = (String)JOptionPane.showInputDialog(
            null, message, title, JOptionPane.PLAIN_MESSAGE, null,
-           options, currentVal );        
+           options, currentVal);        
       return res;
    }
 

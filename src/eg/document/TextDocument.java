@@ -35,6 +35,7 @@ public final class TextDocument {
    private String filepath = "";
    private String dir = "";
    private String content = "";
+   private Languages lang;
    boolean isPlainText = false;
 
    /**
@@ -61,6 +62,7 @@ public final class TextDocument {
    public TextDocument(EditArea editArea, Languages lang) {
       this(editArea);
       type.setUpEditing(lang);
+      this.lang = lang;
       isPlainText = Languages.PLAIN_TEXT == lang;
    }
 
@@ -108,20 +110,27 @@ public final class TextDocument {
    public boolean isCodingLanguage() {
       return !isPlainText;
    }
+   
+   /**
+    * Returns this language
+    *
+    * @return  this language which has a constant value in {@link Languages}
+    */
+   public Languages language() {
+      return lang;
+   }
 
    /**
-    * Sets the specified file and displays the file content
+    * Sets the specified file and displays the file content.
     *
-    * @param file  the file whose content is displayed in this text area
+    * @param f  the file whose content is displayed in this text area
     */
-   public void openFile(File file) {
+   public void openFile(File f) {
       if (this.filepath().length() != 0) {
-         throw new IllegalStateException(
-               "Illegal attempt to assign a file to a "
-               + " TextDocument which a file was assigned to before");
+         throw new IllegalStateException("A file has been assigned already");
       }
-      assignFileStrings(file);
-      displayFileContent();
+      assignFileStrings(f);
+      displayFileContent(f);
       setLanguageBySuffix();
       setContent();
       type.addAllLineNumbers(content);
@@ -139,23 +148,23 @@ public final class TextDocument {
    /**
     * Sets the specified file and saves the current text content
     *
-    * @param file  the new file
+    * @param f  the new file
     * @return  if the content was saved
     */
-   public boolean saveFileAs(File file) {
-      assignFileStrings(file);
+   public boolean saveFileAs(File f) {
+      assignFileStrings(f);
       setLanguageBySuffix();
-      return writeToFile(file);
+      return writeToFile(f);
    }
    
    /**
     * Saves the current content to the specified file but does not
     * assign the file to this
     *
-    * @param file  the file which the current content is saved to
+    * @param f  the file which the current content is saved to
     */
-   public void saveCopy(File file) {
-      writeToFile(file);
+   public void saveCopy(File f) {
+      writeToFile(f);
    }
 
    /**
@@ -176,8 +185,8 @@ public final class TextDocument {
     */
    public void setIndentUnit(String indentUnit) {
       if (indentUnit == null || !indentUnit.matches("[\\s]+")) {
-         throw new IllegalArgumentException("Argument indentUnit is"
-               + " incorrect");
+         throw new IllegalArgumentException(
+               "Argument indentUnit is incorrect");
       }
       type.setIndentUnit(indentUnit);
       PREFS.storePrefs("indentUnit", type.getIndentUnit());
@@ -276,6 +285,7 @@ public final class TextDocument {
     */
    public void changeLanguage(Languages lang) {
       if (filename.length() == 0) {
+         this.lang = lang;
          isPlainText = Languages.PLAIN_TEXT == lang;
          type.setUpEditing(lang);
       }
@@ -285,9 +295,9 @@ public final class TextDocument {
    //----private methods----//
    //
 
-   private void displayFileContent() {
+   private void displayFileContent(File f) {
       type.enableEvaluateText(false);
-      try (BufferedReader br = new BufferedReader(new FileReader(docFile))) {
+      try (BufferedReader br = new BufferedReader(new FileReader(f))) {
          String line;
          while ((line = br.readLine()) != null) {
             insertStr(editArea.getDocText().length(), line + "\n");
@@ -306,10 +316,10 @@ public final class TextDocument {
    /**
     * Saves the current content to this file
     */
-   private boolean writeToFile(File file) {
+   private boolean writeToFile(File f) {
       setContent();
       String[] lines = content.split("\n");
-      try (FileWriter writer = new FileWriter(file)) {
+      try (FileWriter writer = new FileWriter(f)) {
          for (String s : lines) {
             writer.write(s + LINE_SEP);
          }
@@ -325,16 +335,16 @@ public final class TextDocument {
       content = editArea.getDocText();
    }
 
-   private void assignFileStrings(File filepath) {
-      docFile = filepath;
-      filename = filepath.getName();
-      this.filepath = filepath.toString();
-      dir = filepath.getParent();
+   private void assignFileStrings(File f) {
+      docFile = f;
+      filename = f.getName();
+      this.filepath = f.toString();
+      dir = f.getParent();
    }
 
    private void setLanguageBySuffix() {
       String suffix = FileUtils.fileSuffix(filename);
-      Languages lang;
+      //Languages lang;
       switch (suffix) {
          case "java":
            lang = Languages.JAVA;

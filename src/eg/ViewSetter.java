@@ -10,7 +10,7 @@ import eg.ui.menu.FormatMenu;
 import eg.ui.menu.ViewMenu;
 import eg.ui.menu.ProjectMenu;
 import eg.ui.ViewSettingWin;
-import eg.ui.ExtTabbedPane;
+import eg.ui.tabpane.ExtTabbedPane;
 import eg.utils.JOptions;
 
 /**

@@ -49,8 +49,7 @@ public final class EditArea {
    private final SimpleAttributeSet lineSet = new SimpleAttributeSet();
    private final StyledDocument lineDoc;
 
-   private final JPanel disabledWordwrapPnl
-         = new JPanel(new BorderLayout());
+   private final JPanel disabledWordwrapPnl = new JPanel(new BorderLayout());
    private final JPanel enabledWordwrapPnl = new JPanel();
    private final JScrollPane wrapPnlScoll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -71,16 +70,16 @@ public final class EditArea {
    /**
     * @param isWordWrap  true to enable wordwrap
     * @param isLineNumbers  true to show line numbering. Is effectless if
-    * {@code isWordWrap} is true
-    * @param font  the String name for the initial font
+    * wordwrap is enabled
+    * @param font  the name of the initial font
     * @param fontSize  the size of the initial font
     */
    public EditArea(boolean isWordWrap, boolean isLineNumbers,
          String font, int fontSize) {
 
-      this.doc = textArea.getStyledDocument();
+      doc = textArea.getStyledDocument();
       setDocStyle();
-      this.lineDoc = lineArea.getStyledDocument();
+      lineDoc = lineArea.getStyledDocument();
       setLineDocStyle();
       removeShortCuts();
       textPanel.setBorder(Constants.DARK_BORDER);
@@ -107,8 +106,8 @@ public final class EditArea {
     * Returns the JPanel that holds the area to edit text and
     * the area showing line numbers
     *
-    * @return  the JPanel that holds the area to edit text and, if
-    * selected, the area showing line numbers
+    * @return  the JPanel that holds the area to edit text and
+    * the area showing line numbers
     */
    public JPanel textPanel() {
       return textPanel;
@@ -144,7 +143,7 @@ public final class EditArea {
    /**
     * Returns the text in this document
     *
-    * @return  the text in this {@code StyledDocument}
+    * @return  the entire text in this <code>StyledDocument</code>
     */
    public String getDocText() {
       String in = null;
@@ -161,8 +160,8 @@ public final class EditArea {
     * Returns the selection start or the unchanged position if no text
     * is selected
     *
-    * @param caretPos  the position in the document which is
-    * expected to be the caret position
+    * @param caretPos  the position in the document which is expected
+    * to be the caret position
     * @return  the position of the selection start if text is selected
     * or <code>caretPos</code> unchanged
     */
@@ -252,7 +251,7 @@ public final class EditArea {
     /**
     * Sets a new font
     *
-    * @param font  the String name for the new font
+    * @param font  the name of the font
     * @param fontSize  the font size
     */
    public void setFont(String font, int fontSize) {

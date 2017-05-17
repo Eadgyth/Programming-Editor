@@ -1,7 +1,7 @@
 package eg.syntax;
 
 public class HtmlColoring implements Colorable {
-
+   
    // incomplete
    final static String[] HTML_TAGS = {
       "a", "area", "applet",

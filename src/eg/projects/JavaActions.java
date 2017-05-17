@@ -56,7 +56,7 @@ public final class JavaActions extends ProjectConfig
    }
    
    /**
-    * {@inheritDoc}.
+    * {@inheritDoc}
     * Creates the start command to run the java project
     */
    @Override
@@ -69,7 +69,7 @@ public final class JavaActions extends ProjectConfig
    }
 
    /**
-    * {@inheritDoc}.
+    * {@inheritDoc}
     * Creates the start command to run the java project
     */
    @Override
@@ -83,6 +83,7 @@ public final class JavaActions extends ProjectConfig
    
    /**
     * Compiles java files and shows error messages in the console panel
+    * or the first error in a dialog if the console is not set visible
     */
    @Override                                                                        
    public void compile() {      

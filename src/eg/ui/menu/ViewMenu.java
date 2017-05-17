@@ -76,7 +76,10 @@ public class ViewMenu {
    }
    
    /**
-    * @return  if this checkbox menu item for showing the console
+    * Returns if this menu item for showing the console is
+    * selected
+    *
+    * @return  if this menu item for showing the console
     * is selected
     */
    public boolean isConsoleItmSelected() {
@@ -84,7 +87,10 @@ public class ViewMenu {
    }
 
    /**
-    * @return  if this checkbox menu item for showing the file explorer
+    * Returns if this menu item for showing the file explorer
+    * is selected
+    *
+    * @return  if this menu item for showing the file explorer
     * is selected
     */
    public boolean isFileViewItmSelected() {
@@ -92,14 +98,19 @@ public class ViewMenu {
    }
 
    /**
-    * @return  if this checkbox menu item for showing the function panel
+    * Returns if this menu item for showing the function panel
+    * is selected
+    *
+    * @return  if this menu item for showing the function panel
     * is selected
     */
    public boolean isFunctionItmSelected() {
-      return functionItm.getState();
+      return functionItm.isSelected();
    }
    
    /**
+    * Returns if this menu item for showing the tabs is selected
+    *
     * @return  if this menu item for showing tabs
     * is selected
     */
@@ -143,6 +154,7 @@ public class ViewMenu {
 
    /**
     * Sets the selection state of the menu item for showing the tab bar
+    *
     * @param select  true/false to set the item selected/unselected
     */
    public void selectTabsItm(boolean select) {
@@ -158,6 +170,7 @@ public class ViewMenu {
    
    /**
     * Enables the menu item for showing/hiding the tab bar
+    *
     * @param isEnabled  true to set the menu item for showing
     * or hiding the tab bar enabled 
     */

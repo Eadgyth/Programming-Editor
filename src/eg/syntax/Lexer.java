@@ -10,6 +10,9 @@ import java.awt.Color;
 
 import eg.utils.Finder;
 
+/**
+ * The search and coloring of different syntax elements
+ */
 public class Lexer {
 
    private final SimpleAttributeSet keyRedSet  = new SimpleAttributeSet();
@@ -28,7 +31,8 @@ public class Lexer {
    /**
     * Creates a Lexer
     *
-    * @param doc  the {@code StyledDocument} that is colored
+    * @param doc  the <code>StyledDocument</code> that contains
+    * the text to color
     */
    public Lexer(StyledDocument doc) {
       this.doc = doc;
@@ -45,33 +49,16 @@ public class Lexer {
    }
 
    /**
-    * Controls multiline corrections, particularly the uncommenting of
-    * block comments, when only a line or section of text is scanned
+    * Enables type mode.
+    * If enabled, coloring may take place in sections (single lines)
+    * of the document taking into account, however, corrections that 
+    * need multiline analysis (primarily commenting/uncommenting of
+    * block comments).
     *
     * @param isEnabled  true to enable type mode
     */
    public void enableTypeMode(boolean isEnabled) {
       this.isTypeMode = isEnabled;
-   }
-
-   /**
-    * (Re-)colors a section of text in black
-    *
-    * @param start  the position where the recolored text starts
-    * @param length  the length of the text to be recolored
-    */
-   public void setCharAttrBlack(int start, int length) {
-      doc.setCharacterAttributes(start, length, normalSet, false);
-   }
-
-   /**
-    * Colors a portion of text in keyword blue
-    *
-    * @param start  the position where the recolored text starts
-    * @param length  the length of the text to be recolored
-    */
-   public void setCharAttrKeyBlue(int start, int length) {
-      doc.setCharacterAttributes(start, length, keyBlueSet, false);
    }
 
    /**
@@ -101,7 +88,7 @@ public class Lexer {
    }
 
    /**
-    * Searches a bracket and shows it in bold
+    * Searches a bracket and displays it in bold
     *
     * @param toColor  the text of the document or a section thereof
     * @param bracket  the bracket
@@ -113,7 +100,7 @@ public class Lexer {
    }
 
    /**
-    * Searches a bracket and shows it bold and blue
+    * Searches a bracket and displays it bold and blue
     *
     * @param toColor  the text of the document or a section thereof
     * @param bracket  the bracket
@@ -125,7 +112,7 @@ public class Lexer {
    }
 
    /**
-    * Searches and colors in brown string literals where a quoted 
+    * Searches and colors in brown quoted text where a quoted 
     * section does not span several lines
     *
     * @param toColor  the text of the document or a section thereof
@@ -133,7 +120,7 @@ public class Lexer {
     * entire text
     * @param quoteMark  the quotation mark, i.e either single or double
     * quote
-    * @param blockStart  the String that represents the start of a  text
+    * @param blockStart  the String that represents the start of a text
     * block where the String literal must be found in. Null to
     * ignore any ocurrence in a block
     * @param blockEnd  the String that represents the end of a text block
@@ -161,7 +148,7 @@ public class Lexer {
    }
 
    /**
-    * Searches line comments and colors commented lines in green
+    * Searches and colors in green line comments
     *
     * @param toColor  the text of the document or a section thereof
     * @param pos  the start position of '{@code toColor}' within the
@@ -174,9 +161,9 @@ public class Lexer {
       while (start != -1) {
          start = toColor.indexOf(lineCmnt, start);
          if (start != -1) {
+            int length = 0;
             if (!SyntaxUtils.isInQuotes(toColor, start, lineCmnt)) {
                int lineEnd = toColor.indexOf("\n", start + 1);
-               int length;
                if (lineEnd != -1) {
                   length = lineEnd - start;
                }
@@ -186,22 +173,19 @@ public class Lexer {
                doc.setCharacterAttributes(start + pos, length,
                      cmntSet, false);
             }
-            start += 1;
+            start += length + 1;
          }
       }
    }
 
-   /**
-    * Searches and colors block comments in green
+   /*
+    * Searches and colors in green block comments
     *
     * @param allText  the entire text
-    * @param blockStart  the String that represents the start signal
-    * for a block
-    * @param blockEnd  the String that represents the end signal for
-    * a block
+    * @param blockStart  the String that represents the start signal for a block
+    * @param blockEnd  the String that represents the end signal for a block
     */
-   public void blockComments(String allText, String blockStart,
-         String blockEnd) {
+   public void blockComments(String allText, String blockStart, String blockEnd) {
 
       if (!isBlockCmnt) {
          return;
@@ -214,11 +198,12 @@ public class Lexer {
          start = allText.indexOf(blockStart, start);
          int end = 0;
          if (start != -1) {
+            int length = 0;
             if (!SyntaxUtils.isInQuotes(allText, start, blockStart)) {
                end = SyntaxUtils.nextBlockEnd(allText, start + 1,
                      blockStart, blockEnd);
                if (end != -1) {
-                  int length = end - start + blockEnd.length();
+                  length = end - start + blockEnd.length();
                   doc.setCharacterAttributes(start, length, cmntSet, false);
                   removedBlockStart(allText, end + blockEnd.length(),
                          blockStart, blockEnd);
@@ -227,9 +212,39 @@ public class Lexer {
                   removedBlockEnd(allText, start, blockStart);
                }
             }
-            start += 1;
+            start += length + 1;
          }
       }
+   }
+   
+   /**
+    * (Re-)colors a section of text in black
+    *
+    * @param start  the position where the recolored text starts
+    * @param length  the length of the text to be recolored
+    */
+   public void setCharAttrBlack(int start, int length) {
+      doc.setCharacterAttributes(start, length, normalSet, false);
+   }
+
+   /**
+    * Colors a portion of text in keyword blue
+    *
+    * @param start  the position where the recolored text starts
+    * @param length  the length of the text to be recolored
+    */
+   public void setCharAttrKeyBlue(int start, int length) {
+      doc.setCharacterAttributes(start, length, keyBlueSet, false);
+   }
+   
+   /**
+    * Colors a portion of text in keyword red
+    *
+    * @param start  the position where the recolored text starts
+    * @param length  the length of the text to be recolored
+    */
+   public void setCharAttrKeyRed(int start, int length) {
+      doc.setCharacterAttributes(start, length, keyRedSet, false);
    }
 
    void color(String allText, String toColor, int pos, int posStart) {
@@ -249,8 +264,7 @@ public class Lexer {
          if (start != -1) {
             boolean ok = !reqWord || SyntaxUtils.isWord(toColor, str, start);
             if (ok) {
-               doc.setCharacterAttributes(start + pos, str.length(),
-                     set, false);
+               doc.setCharacterAttributes(start + pos, str.length(), set, false);
             }
             start += str.length();
          }
@@ -275,13 +289,12 @@ public class Lexer {
             }
             int length = 0;
             if (end != -1 ) {
-               length = end - start;
+               length = end - start + 1;
                boolean ok
                      = blockStart == null
                      || SyntaxUtils.isInBlock(toColor, start, blockStart, blockEnd);
                if (ok) {
-                  doc.setCharacterAttributes(start + pos, length + 1,
-                        strLitSet, false);
+                  doc.setCharacterAttributes(start + pos, length, strLitSet, false);
                }
                start += length + 1;
             }

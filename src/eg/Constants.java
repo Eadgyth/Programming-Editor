@@ -55,4 +55,12 @@ public class Constants {
      * The font verdana, plain, size 11 pt */
     public final static Font VERDANA_PLAIN_11
           = new Font("Verdana", Font.PLAIN, 11);
+          
+    // Strings
+    //
+    
+    /**
+     * Extensions of files that can be opened */
+    public final static String[] SUFFIXES = {".bat", ".java", ".txt", ".properties",
+            ".html", ".htm", "xml", ".pl", ".pm"};
 }

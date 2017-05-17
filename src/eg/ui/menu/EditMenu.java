@@ -20,10 +20,6 @@ import eg.ui.IconFiles;
 
 public class EditMenu {
 
-   public final static String[] LANGUAGES = {
-      "Plain text", "Java", "HTML", "Perl"
-   };
-
    private final Preferences prefs = new Preferences();
 
    private final JMenu     menu            = new JMenu("Edit");
@@ -41,7 +37,7 @@ public class EditMenu {
    private final JMenuItem clearSpacesItm  = new JMenuItem("Clear trailing spaces");
    private final JMenu     languageMenu    = new JMenu("Language");
    private final JCheckBoxMenuItem[] selectLangChBxItm
-                                            = new JCheckBoxMenuItem[LANGUAGES.length];
+                                            = new JCheckBoxMenuItem[Languages.values().length];
    EditMenu() {
       assembleMenu();
       shortCuts();
@@ -123,7 +119,7 @@ public class EditMenu {
       menu.addSeparator();
       prefs.readPrefs();
       for (int i = 0; i < selectLangChBxItm.length; i++) {
-         selectLangChBxItm[i] = new JCheckBoxMenuItem(LANGUAGES[i]);
+         selectLangChBxItm[i] = new JCheckBoxMenuItem(Languages.values()[i].display());
          if (prefs.getProperty("language").equals(
                eg.Languages.values()[i].toString())) {
             selectLangChBxItm[i].setSelected(true);

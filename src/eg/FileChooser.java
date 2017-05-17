@@ -33,37 +33,36 @@ public class FileChooser {
     * or the chooser window was closed
     */
    public File fileToOpen() {
-      File chosenFile = null;
+      File f = null;
       int res = chOpen.showOpenDialog(frame);
       if (res == JFileChooser.APPROVE_OPTION) {
-         chosenFile = chOpen.getSelectedFile();
-         chOpen.setCurrentDirectory(chosenFile.getParentFile());  
+         f = chOpen.getSelectedFile();
+         chOpen.setCurrentDirectory(f.getParentFile());  
       }
-      return chosenFile;
+      return f;
    }
    
     /**
-    * Returns a <code>File</code> to save
+    * Returns a <code>File</code> a file to save
     *
-    * @param presetFile  the file that is preselected and shown in
-    * the  file text field. The empty String or null to not show a
-    * preset file
+    * @param presetFile  the filename that is preselected and shown
+    * in the file text field. The empty String or null to not show a
+    * preset filename
     * @return  a <code>File</code> or null if cancel was clicked
     * or the chooser window was closed
     */  
    public File fileToSave(String presetFile) {
-      File fileToSave = null;
-
+      File f = null;
       if (presetFile != null && presetFile.length() > 0) {
          File toSet = new File(presetFile);
          chSave.setSelectedFile(toSet);
       }
       int res = chSave.showSaveDialog(frame);  
       if (res == JFileChooser.APPROVE_OPTION) {
-         fileToSave = chSave.getSelectedFile();
-         chSave.setCurrentDirectory(fileToSave.getParentFile()); 
+         f = chSave.getSelectedFile();
+         chSave.setCurrentDirectory(f.getParentFile()); 
       }
-      return fileToSave;
+      return f;
    }
 
    private void initChooserOpen(String startingDir) {
@@ -76,17 +75,17 @@ public class FileChooser {
             "txt", "java", "pl", "pm", "properties",
             "html", "htm", "xml", "bat"));
       chOpen.setFileSelectionMode(JFileChooser.FILES_ONLY); 
-      setFileView(chOpen);
+      setIcons(chOpen);
    }
    
    private void initChooserSave(String startingDir) {
       chSave = new JFileChooser(startingDir);
       chSave.setAcceptAllFileFilterUsed(true);
       chSave.setDialogTitle("Save as");
-      setFileView(chSave);
+      setIcons(chSave);
    }
    
-   private void setFileView(JFileChooser ch) {
+   private void setIcons(JFileChooser ch) {
       if ("Metal".equals(UIManager.getLookAndFeel().getName())) {
          ch.setFileView(new FileView() {
             @Override
