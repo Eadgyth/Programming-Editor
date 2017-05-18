@@ -41,10 +41,12 @@ public class CurrentProject {
    private final String NOT_IN_PROJ_MESSAGE
          = "The selected file is not in the root directory"
          + " of the currently active project.";
-
+   /* 
+    * Formatted for display in a JLabel */
    private final String WRONG_TYPE_MESSAGE
-         = "A project is not defined for the selected file.\n"
-         + "Select the language if the file is part of a project.";
+         = "<html>No type of project is defined for the selected file.<br>"
+         + "Select the type of project if the file belongs to a project with a"
+         + "  known source file:<html>";
          
    private final String FILES_NOT_FOUND_MESSAGE
          = "The following file could not be found anymore:";
@@ -53,11 +55,15 @@ public class CurrentProject {
    private final SelectedProject selProj;
    private final ProcessStarter proc;
    private final List<ProjectActions> projList = new ArrayList<>();
+   /*
+    * The display values for the languages in which plain text is excluded */
+   private final String[] langArr = new String[Languages.values().length - 1];
 
    private ProjectActions current;
    private TextDocument[] txtDoc;
    private TextDocument currDoc;
    private String currExt;
+   private String currLanguage;
 
    public CurrentProject(MainWin mw) {
       this.mw = mw;
@@ -65,6 +71,9 @@ public class CurrentProject {
       ProjectUIUpdate update = new ProjectUIUpdate(mw.menu().viewMenu(),
             mw.fileTree());
       selProj = new SelectedProject(update, proc, mw.console());
+      for (int i = 0; i < 3; i++) {
+         langArr[i] = Languages.values()[i + 1].display();
+      }
    }
 
    /**
@@ -74,6 +83,21 @@ public class CurrentProject {
     */
    public void setDocumentArr(TextDocument[] txtDoc) {
       this.txtDoc = txtDoc;
+   }
+   
+   /**
+    * Sets the display value for the language. If the language is
+    * <code>PLAIN_TEXT</code> the display value for Java is set.
+    *
+    * @param lang  the language which has a value from in {@link Languages}
+    */
+   public void setLanguageName(Languages lang) {
+      if (lang == Languages.PLAIN_TEXT) {
+         currLanguage = Languages.JAVA.display();
+      }
+      else {
+         currLanguage = lang.display();
+      }
    }
 
    /**
@@ -87,8 +111,9 @@ public class CurrentProject {
    }
 
    /**
-    * Assigns to this current project a project which a configuration exists
-    * for in a local 'eadconfig' file or in the program's 'prefs' file
+    * Assigns to this current project a project which a configuration
+    * exists for in a local 'eadconfig' file or in the program's 'prefs'
+    * file
     * @see eg.projects.ProjectConfig#retrieveProject(String)
     */
    public void retrieveProject() {
@@ -332,14 +357,10 @@ public class CurrentProject {
    }
 
    private Languages selectLanguage() {
-      String[] langArr = new String[3];
-      for (int i = 0; i < 3; i++) {
-         langArr[i] = Languages.values()[i + 1].display();
-      }
-      String selectedLang = JOptions.comboBoxRes(WRONG_TYPE_MESSAGE,
-            "Type of project", langArr,
-            currDoc.language().toString());
-      return Languages.langByDisplay(selectedLang);
+      String selLang = JOptions.comboBoxRes(WRONG_TYPE_MESSAGE,
+            "Type of project", langArr, currLanguage.toString());
+     
+      return Languages.languageByDisplay(selLang);
    }
    
    private boolean isProjectSet() {
