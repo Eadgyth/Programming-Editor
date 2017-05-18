@@ -70,6 +70,7 @@ public class TabbedFiles implements Observer {
       format.setEditAreaArr(editArea);
       prefs.readPrefs();
       lang = Languages.valueOf(prefs.getProperty("language"));
+      currProj.setLanguageName(lang);
       String recentDir = prefs.getProperty("recentPath");
       fc = new FileChooser(recentDir);
 
@@ -96,6 +97,7 @@ public class TabbedFiles implements Observer {
     */
    public void changeLanguage(Languages lang) {
       this.lang = lang;
+      currProj.setLanguageName(lang);
       txtDoc[iTab].changeLanguage(lang); // no effect if a file is assigned
    }
 
