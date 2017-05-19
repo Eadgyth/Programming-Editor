@@ -18,7 +18,7 @@ public class ViewMenu {
    private final JCheckBoxMenuItem functionItm
          = new JCheckBoxMenuItem("Function panel");
    private final JCheckBoxMenuItem tabItm
-         = new JCheckBoxMenuItem("Multiple files");
+         = new JCheckBoxMenuItem("Files in tabs");
    private final JMenuItem openSettingsItm
          = new JMenuItem("Other settings...");
 
