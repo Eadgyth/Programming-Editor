@@ -15,7 +15,7 @@ import javax.swing.border.EmptyBorder;
 
 /**
  * Different static methods to show messages or prompts using
- * {@code JOptionPane}
+ * <code>JOptionPane</code>
  */
 public class JOptions {
 
@@ -62,26 +62,26 @@ public class JOptions {
     * Returns the text in the selected item of the <code>JComboBox</code>
     * in the dialog
     *
-    * @param message  the message for the dialog (shown in <code>JLabel</code>)
+    * @param message  the message for the dialog (shown in <code>JLabel</code>).
+    * The message should be one-line
     * @param title  the title for the dialog
     * @param options  the array of options shown in the combo box
     * @param initOption  the option that is initially selected
     *
     * @return  the text in the selected item of the <code>JComboBox</code>
+    * or null if the dialog is closed or cancel is clicked
     */
    public static String comboBoxRes(String message, String title,
          String[] options, String initOption) {
 
       JComboBox cBox = new JComboBox(options);
       cBox.setSelectedItem(initOption);
-      JPanel pnl = new JPanel(new GridLayout(2, 1));
-      JLabel lb = new JLabel(message, javax.swing.SwingConstants.CENTER);
-      lb.setBorder(new EmptyBorder(5, 5, 5, 5));
+      JPanel pnl = new JPanel();
+      JLabel lb = new JLabel(message);
       pnl.add(lb);
       JPanel holdCBox = new JPanel(new FlowLayout(FlowLayout.CENTER));
       holdCBox.add(cBox);
       pnl.add(holdCBox);
-      pnl.setBorder(eg.Constants.DARK_BORDER);
       int res = JOptionPane.showConfirmDialog(null,
             pnl, title, JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.PLAIN_MESSAGE);

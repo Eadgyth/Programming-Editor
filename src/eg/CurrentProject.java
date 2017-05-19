@@ -29,7 +29,7 @@ import eg.utils.FileUtils;
  * Several configured projects are stored in a {@code List} of projects. Any
  * of these can be (re-) activated depending on the currently set
  * {@link TextDocument}
- */ 
+ */
 public class CurrentProject {
 
    private final static String F_SEP = File.separator;
@@ -37,17 +37,15 @@ public class CurrentProject {
    private final String NO_FILE_IN_TAB_MESSAGE
          = "A project can be set after opening a file or"
          + " saving a new file.";
-         
+
    private final String NOT_IN_PROJ_MESSAGE
          = "The selected file is not in the root directory"
          + " of the currently active project.";
-   /* 
-    * Formatted for display in a JLabel */
+
    private final String WRONG_TYPE_MESSAGE
-         = "<html>No type of project is defined for the selected file.<br>"
-         + "Select the type of project if the file belongs to a project with a"
-         + "  known source file:<html>";
-         
+         = "The selected file does not specify a project type."
+         + " Select a language if it belongs to project:";
+
    private final String FILES_NOT_FOUND_MESSAGE
          = "The following file could not be found anymore:";
 
@@ -84,7 +82,7 @@ public class CurrentProject {
    public void setDocumentArr(TextDocument[] txtDoc) {
       this.txtDoc = txtDoc;
    }
-   
+
    /**
     * Sets the display value for the language. If the language is
     * <code>PLAIN_TEXT</code> the display value for Java is set.
@@ -107,7 +105,7 @@ public class CurrentProject {
     */
    public void setCurrTextDocument(int index) {
       currDoc = txtDoc[index];
-      currExt = FileUtils.fileSuffix(currDoc.filename());      
+      currExt = FileUtils.fileSuffix(currDoc.filename());
    }
 
    /**
@@ -122,10 +120,8 @@ public class CurrentProject {
       }
       EventQueue.invokeLater(() -> {
          ProjectActions prToFind = selProj.createProjectByExt(currExt);
-             
          boolean isFound = prToFind != null
                && prToFind.retrieveProject(currDoc.dir());
-               
          if (prToFind == null) {
             for (Languages l : Languages.values()) {
                prToFind = selProj.createProjectByLang(l);
@@ -140,8 +136,8 @@ public class CurrentProject {
             ProjectActions prFin = prToFind;
             if (!isProjectSet()) {
                current = prFin;
-               current.addOkAction(e -> configureProject(current)); 
-               projList.add(current); 
+               current.addOkAction(e -> configureProject(current));
+               projList.add(current);
                updateProjectSetting(current);
             }
             else {
@@ -149,7 +145,7 @@ public class CurrentProject {
                   prFin.addOkAction(e -> configureProject(prFin));
                   projList.add(prFin);
                   enableChangeProject();
-                  changeProject(prFin);            
+                  changeProject(prFin);
                }
             }
          }
@@ -159,9 +155,9 @@ public class CurrentProject {
    /**
     * Opens the window of the {@code SettingsWin} object that belongs to
     * a project.
-    * <p>Depending on the currently set {@link TextDocument} the opened
-    * window belongs to the current project, to one of this listed projects
-    * or to a newly created project.
+    * <p>Depending on the currently set {@link TextDocument} the opened window
+    * belongs to the current project, to one of this listed projects or to a
+    * newly created project.
     */
    public void openSettingsWindow() {
       if (!isProjectSet()) {
@@ -173,7 +169,7 @@ public class CurrentProject {
               || current.isInProject(currDoc.dir());
          if (openCurrent) {
             current.makeSetWinVisible(true);
-         }      
+         }
          else {
             ProjectActions fromList = selectFromList(currDoc.dir(), true);
             if (fromList != null && changeProject(fromList)) {
@@ -185,11 +181,11 @@ public class CurrentProject {
          }
       }
    }
-   
+
    /**
     * Creates a new project.
-    * <p>If the the currently set {@link TextDocument} belongs to an
-    * already set project a dialog to confirm to proceed is shown.
+    * <p>If the the currently set {@link TextDocument} belongs to an already
+    * set project a dialog to confirm to proceed is shown.
     */
    public void newProject() {
       if (!isProjectSet()) {
@@ -199,22 +195,22 @@ public class CurrentProject {
          ProjectActions test = selectFromList(currDoc.dir(), false);
          int res = 0;
          if (test != null) {
-            res = JOptions.confirmYesNo("'" + currDoc.filename()
-                  + "' belongs to project '" + test.getProjectName() + "'."
+            res = JOptions.confirmYesNo(currDoc.filename()
+                  + " belongs to the current project "
+                  + test.getProjectName() + "."
                   + "\nStill set new project?");
          }
          if (res == 0) {
             createNewProject(false);
          }
-      }       
-  }         
+      }
+  }
 
    /**
     * Sets active the project from this {@code List} of configured projects
     * which the currently selected {@code TextDocument} belongs to.
-    * <p>If the currently set {@code TextDocument} does not belong to a
-    * listed project or to the currently active project it is asked to set
-    * up a new project.
+    * <p>If the set {@code TextDocument} does not belong to a listed project
+    * or to the currently active project it is asked to set up a new project.
     */
    public void changeProject() {
       ProjectActions fromList = selectFromList(currDoc.dir(), true);
@@ -224,7 +220,7 @@ public class CurrentProject {
       else {
          createNewProject(true);
       }
-   }      
+   }
 
    /**
     * Updates the file tree of {@code FileTree} if the specified directory
@@ -238,7 +234,7 @@ public class CurrentProject {
          mw.fileTree().updateTree();
       }
    }
-   
+
    /**
     * Saves the source file of the selected {@code TextDocument} if it
     * belongs the current project and compiles the project
@@ -288,14 +284,14 @@ public class CurrentProject {
                   missingFiles.append(txtDoc[i].filename());
                }
             }
-         }  
+         }
          if (missingFiles.length() == 0) {
             current.compile();
          }
          else {
             JOptions.warnMessage(FILES_NOT_FOUND_MESSAGE + missingFiles);
          }
-      }   
+      }
       finally {
          endCompilation();
       }
@@ -344,7 +340,7 @@ public class CurrentProject {
          }
       }
       if (projNew != null) {
-         ProjectActions prFin = projNew;   
+         ProjectActions prFin = projNew;
          int res = 0;
          if (needConfirm && isProjectSet()) {
             res = JOptions.confirmYesNo("Set new project ?");
@@ -359,10 +355,10 @@ public class CurrentProject {
    private Languages selectLanguage() {
       String selLang = JOptions.comboBoxRes(WRONG_TYPE_MESSAGE,
             "Type of project", langArr, currLanguage.toString());
-     
+
       return Languages.languageByDisplay(selLang);
    }
-   
+
    private boolean isProjectSet() {
       return current != null;
    }
@@ -408,7 +404,7 @@ public class CurrentProject {
       enableActions(projToSet);
       mw.fileTree().setProjectTree(projToSet.getProjectPath());
    }
-   
+
    private void enableActions(ProjectActions projToSet) {
       if (projList.size() == 1) {
          mw.menu().viewMenu().enableFileView();
@@ -416,27 +412,27 @@ public class CurrentProject {
       enableChangeProject();
       selProj.enableActions(projToSet.getClass().getSimpleName(), mw);
    }
-   
+
    private void enableChangeProject() {
       if (projList.size() == 2) {
          mw.menu().projectMenu().enableChangeProjItm();
          mw.toolbar().enableChangeProjBt();
       }
    }
-   
+
    private boolean isFileToCompile(TextDocument td) {
        return td != null
              && td.filename().endsWith(current.getSourceSuffix())
              && current.isInProject(td.dir());
    }
-   
+
    private void endCompilation() {
       EventQueue.invokeLater(() -> {
          mw.fileTree().updateTree();
          mw.setBusyCursor(false);
       });
    }
-   
+
    private boolean isCurrent(String action) {
       boolean useCurrentProj = current.isInProject(currDoc.dir());
       int res = 0;
