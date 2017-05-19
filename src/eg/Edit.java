@@ -106,7 +106,7 @@ public class Edit {
     * Sets a new indentation length
     */
    public void setNewIndentUnit() {
-      String selectedNumber = JOptions.comboBoxRes("Number of spaces:",
+      String selectedNumber = JOptions.comboBoxRes("Select the number of spaces:",
             "Indentation length", SPACE_NUMBER,
             String.valueOf(indentLength));
       if (selectedNumber != null) {
@@ -115,8 +115,8 @@ public class Edit {
          for (int i = 0; i < indentLength; i++) {
             indentUnit += " ";
          }
+         txtDoc.setIndentUnit(indentUnit);
       }
-      txtDoc.setIndentUnit(indentUnit);
    }
 
    /**
