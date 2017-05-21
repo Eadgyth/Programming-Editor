@@ -35,16 +35,19 @@ public class CurrentProject {
    private final static String F_SEP = File.separator;
 
    private final String NO_FILE_IN_TAB_MESSAGE
-         = "A project can be set after opening a file or"
-         + " saving a new file.";
+         = "A project can be set after a file was opened or"
+         + " a newly saved.";
 
    private final String NOT_IN_PROJ_MESSAGE
          = "The selected file is not in the root directory"
          + " of the currently active project.";
-
+   /*
+    * Formatted for use in a JLabel */
    private final String WRONG_TYPE_MESSAGE
-         = "The selected file does not specify a project type."
-         + " Select a language if it belongs to project:";
+         = "<html>"
+         + "The selected file does not define a type of project.<br>"
+         + "Select a category if the file belongs to a project:"
+         + "</html>";
 
    private final String FILES_NOT_FOUND_MESSAGE
          = "The following file could not be found anymore:";
@@ -69,7 +72,7 @@ public class CurrentProject {
       ProjectUIUpdate update = new ProjectUIUpdate(mw.menu().viewMenu(),
             mw.fileTree());
       selProj = new SelectedProject(update, proc, mw.console());
-      for (int i = 0; i < 3; i++) {
+      for (int i = 0; i < Languages.values().length - 1; i++) {
          langArr[i] = Languages.values()[i + 1].display();
       }
    }
@@ -354,7 +357,7 @@ public class CurrentProject {
 
    private Languages selectLanguage() {
       String selLang = JOptions.comboBoxRes(WRONG_TYPE_MESSAGE,
-            "Type of project", langArr, currLanguage.toString());
+            "Type of project", langArr, currLanguage.toString(), true);
 
       return Languages.languageByDisplay(selLang);
    }

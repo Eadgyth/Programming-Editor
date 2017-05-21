@@ -11,8 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JFrame;
 
-import javax.swing.border.EmptyBorder;
-
 /**
  * Different static methods to show messages or prompts using
  * <code>JOptionPane</code>
@@ -38,14 +36,14 @@ public class JOptions {
       final JDialog dialog = new JDialog();
       dialog.setAlwaysOnTop(true);
       JOptionPane.showMessageDialog(dialog, message, "",
-            JOptionPane.WARNING_MESSAGE );
+            JOptionPane.WARNING_MESSAGE);
    }
    
    public static int confirmYesNoCancel(String message) {
       final JDialog dialog = new JDialog();
       dialog.setAlwaysOnTop(true);
       int result = JOptionPane.showConfirmDialog(dialog, message, "",
-            JOptionPane.YES_NO_CANCEL_OPTION );
+            JOptionPane.YES_NO_CANCEL_OPTION);
       return result;
    }
    
@@ -62,30 +60,33 @@ public class JOptions {
     * Returns the text in the selected item of the <code>JComboBox</code>
     * in the dialog
     *
-    * @param message  the message for the dialog (shown in <code>JLabel</code>).
-    * The message should be one-line
+    * @param message  the message for the dialog (shown in <code>JLabel</code>)
     * @param title  the title for the dialog
     * @param options  the array of options shown in the combo box
     * @param initOption  the option that is initially selected
-    *
+    * @param isQuestion  true to show a question icon, false to show no icon
     * @return  the text in the selected item of the <code>JComboBox</code>
     * or null if the dialog is closed or cancel is clicked
     */
    public static String comboBoxRes(String message, String title,
-         String[] options, String initOption) {
+         String[] options, String initOption, boolean isQuestion) {
 
       JComboBox cBox = new JComboBox(options);
       cBox.setSelectedItem(initOption);
-      JPanel pnl = new JPanel();
+      cBox.setFont(eg.Constants.SANSSERIF_PLAIN_12);
+      JPanel pnl = new JPanel(new GridLayout(2, 1));
       JLabel lb = new JLabel(message);
+      lb.setBorder(eg.Constants.EMPTY_BORDER);
       pnl.add(lb);
-      JPanel holdCBox = new JPanel(new FlowLayout(FlowLayout.CENTER));
+      JPanel holdCBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
       holdCBox.add(cBox);
       pnl.add(holdCBox);
+      int messageType = JOptionPane.PLAIN_MESSAGE;
+      if (isQuestion) {
+         messageType = JOptionPane.QUESTION_MESSAGE;
+      }
       int res = JOptionPane.showConfirmDialog(null,
-            pnl, title, JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE);
-
+            pnl, title, JOptionPane.OK_CANCEL_OPTION, messageType);
       if (res == JOptionPane.YES_OPTION) {
          return options[cBox.getSelectedIndex()];
       }
@@ -93,7 +94,6 @@ public class JOptions {
          return null;
       }     
    }
-      
 
    /**
     * Returns the text entered in the text field in the dialog
