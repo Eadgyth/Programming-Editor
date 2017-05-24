@@ -108,7 +108,7 @@ public class Edit {
    public void setNewIndentUnit() {
       String selectedNumber = JOptions.comboBoxRes("Select the number of spaces:",
             "Indentation length", SPACE_NUMBER,
-            String.valueOf(indentLength));
+            String.valueOf(indentLength), false);
       if (selectedNumber != null) {
          indentLength = Integer.parseInt(selectedNumber);
          indentUnit = "";

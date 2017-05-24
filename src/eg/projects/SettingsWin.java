@@ -327,7 +327,7 @@ public class SettingsWin {
  
       JLabel projDirLb = new JLabel("Name of project root (input not rqd.):");
       projPnl.add(holdLbAndTf(projDirLb, projDirTf));
-      projPnl.add(checkBxPnl(saveConfig, "Save 'eadconfig' file"));
+      projPnl.add(checkBxPnl(saveConfig, "Store settings in 'eadconfig' file"));
 
       projPnl.setBorder(titledBorder("Structure"));  
       return projPnl;
@@ -379,8 +379,7 @@ public class SettingsWin {
    
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
       JLabel label = new JLabel(title);
-      label.setFont(Constants.SANSSERIF_BOLD_12);
-      
+      label.setFont(Constants.SANSSERIF_BOLD_12);      
       JPanel checkBxPnl = new JPanel(); 
       checkBxPnl.setLayout(new BoxLayout(checkBxPnl, BoxLayout.LINE_AXIS));
       checkBox.setHorizontalTextPosition(JCheckBox.LEFT);

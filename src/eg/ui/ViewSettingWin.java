@@ -180,6 +180,7 @@ public class ViewSettingWin {
    private JPanel comboBxPnl(JComboBox comboBox, String title) {      
       JLabel lb = new JLabel(title);
       lb.setFont(Constants.SANSSERIF_BOLD_12);
+      comboBox.setFont(Constants.SANSSERIF_PLAIN_12);
 
       JPanel pnl = new JPanel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));

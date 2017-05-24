@@ -278,7 +278,7 @@ public class FileTree extends Observable {
    }
 
    private String deleteMessage(File f) {
-      return f.getName() + " will be permanently deleted!\n Continue?";
+      return f.getName() + " will be permanently deleted!\nContinue?";
    }
 
    private void newFolder() {

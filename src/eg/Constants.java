@@ -5,6 +5,7 @@ import java.awt.Color;
 
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Holds different static values
@@ -25,10 +26,6 @@ public class Constants {
     /**
      * The light gray color for borders */
     public final static Color BORDER_LIGHT_GRAY = new Color(210, 210, 210);
-    
-    /**
-     * The blue color for borders */
-    public final static Color BORDER_BLUE = new Color(50, 150, 210);
 
     // Borders
     //
@@ -40,6 +37,10 @@ public class Constants {
      * The  line border with dark gray color */
     public final static Border DARK_BORDER = new LineBorder(BORDER_DARK_GRAY, 1);  
 
+    /**
+     * Empty border with thickness 5 pt */
+    public final static Border EMPTY_BORDER = new EmptyBorder(5, 5, 5, 5);
+  
     // Fonts
     //
 

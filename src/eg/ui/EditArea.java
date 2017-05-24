@@ -22,6 +22,10 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants;
 
+import java.awt.event.FocusListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 
@@ -100,6 +104,13 @@ public final class EditArea {
             hideLineNumbers();
          }
       }
+      
+      textArea.addFocusListener(new FocusAdapter() {
+         @Override
+         public void focusLost(FocusEvent fe) {
+            textArea.getCaret().setSelectionVisible(true);
+         }
+      });
    }
 
    /**

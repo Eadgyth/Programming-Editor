@@ -60,7 +60,8 @@ public class FileUtils {
       File logFile = new File("log.txt");
       try (PrintWriter pw = new PrintWriter(new FileOutputStream(logFile, true))) {
          e.printStackTrace(pw);
-         JOptions.warnMessage("Exception:\nSee log.txt file");
+         JOptions.errorMessage("Error:\n" + e.getMessage()
+         + ".\nSee log.txt file");
       }
       catch(IOException ioe) {
          throw new RuntimeException(

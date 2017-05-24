@@ -118,7 +118,7 @@ public class CurrentProject {
     * @see eg.projects.ProjectConfig#retrieveProject(String)
     */
    public void retrieveProject() {
-      if (isProjectSet() && current.isInProject(currDoc.dir())) {
+      if (current != null && current.isInProject(currDoc.dir())) {
          return;
       }
       EventQueue.invokeLater(() -> {
@@ -137,7 +137,7 @@ public class CurrentProject {
          }
          if (isFound) {
             ProjectActions prFin = prToFind;
-            if (!isProjectSet()) {
+            if (current == null) {
                current = prFin;
                current.addOkAction(e -> configureProject(current));
                projList.add(current);
@@ -163,7 +163,7 @@ public class CurrentProject {
     * newly created project.
     */
    public void openSettingsWindow() {
-      if (!isProjectSet()) {
+      if (current == null) {
          createNewProject(false);
       }
       else {
@@ -191,7 +191,7 @@ public class CurrentProject {
     * set project a dialog to confirm to proceed is shown.
     */
    public void newProject() {
-      if (!isProjectSet()) {
+      if (current == null) {
          createNewProject(false);
       }
       else {
@@ -233,7 +233,7 @@ public class CurrentProject {
     * directory
     */
    public void updateFileTree(String path) {
-      if (isProjectSet() && current.isInProject(path)) {
+      if (current != null && current.isInProject(path)) {
          mw.fileTree().updateTree();
       }
    }
@@ -345,7 +345,7 @@ public class CurrentProject {
       if (projNew != null) {
          ProjectActions prFin = projNew;
          int res = 0;
-         if (needConfirm && isProjectSet()) {
+         if (needConfirm && current != null) {
             res = JOptions.confirmYesNo("Set new project ?");
          }
          if (res == 0) {
@@ -360,10 +360,6 @@ public class CurrentProject {
             "Type of project", langArr, currLanguage.toString(), true);
 
       return Languages.languageByDisplay(selLang);
-   }
-
-   private boolean isProjectSet() {
-      return current != null;
    }
 
    private boolean changeProject(ProjectActions toChangeTo) {

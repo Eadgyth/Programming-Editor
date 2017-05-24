@@ -32,9 +32,13 @@ import eg.utils.JOptions;
  */
 public abstract class ProjectConfig implements Configurable {
 
-   private final static Preferences PREFS = new Preferences();
-   private final static Preferences CONFIG = new Preferences();
    private final static String F_SEP = File.separator;
+   /*
+    * Used to read prefs from the program's Prefs file */
+   private final static Preferences PREFS = new Preferences();
+   /*
+    * Used to read prefs from an 'eadconfig' file that may be saved in a project */
+   private final static Preferences CONFIG = new Preferences();
 
    private final String suffix;
 
@@ -342,13 +346,13 @@ public abstract class ProjectConfig implements Configurable {
                   + Preferences.CONFIG_FILE);
             if (configFile.exists()) {
                int res = JOptions.confirmYesNo(
-                       "Save 'eadconfig' is disabled."
-                     + " Remove the config file from project?");
+                       "Saving the 'eadconfig' is disabled."
+                     + " Remove the config file?");
                if (res == 0) {
                   boolean success = configFile.delete();
                   if (!success) {
                      JOptions.warnMessage(
-                           "Deleting the 'config' file failed");
+                           "Deleting the 'eadconfig' file failed");
                   }
                }
                else {

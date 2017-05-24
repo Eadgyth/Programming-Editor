@@ -15,8 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 
-import javax.swing.border.EmptyBorder;
-
 //--Eadgyth--//
 import eg.Constants;
 import eg.TabbedFiles;

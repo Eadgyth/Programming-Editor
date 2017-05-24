@@ -49,7 +49,6 @@ public class TabbedFiles implements Observer {
    /*
     * The index of the selected tab */
    private int iTab = 0;
-
    /*
     * The language read from prefs or set in the Edit>Langugae menu */
    private Languages lang;

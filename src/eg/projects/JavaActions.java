@@ -96,18 +96,18 @@ public final class JavaActions extends ProjectConfig
             if (!update.isConsoleOpen()) {
                if (!comp.success()) {
                   int result = JOptions.confirmYesNo(
-                        "Compilation of '"
-                        + getProjectName() + "' failed.\n"
+                        "Compilation of the project"
+                        + getProjectName() + " failed.\n"
                         + comp.getMessage() + "."
-                        + "\nOpen console window to view messages?");
+                        + "\nOpen the console window to view messages?");
                   if (result == 0) {
                      update.openConsole();
                   }
                }
                else {
                   JOptions.infoMessage(
-                        "Successfully compiled '"
-                        + getProjectName() + "'.");
+                        "Successfully compiled the project "
+                        + getProjectName() + ".");
                }
             }
          }
