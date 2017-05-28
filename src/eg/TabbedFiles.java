@@ -150,9 +150,8 @@ public class TabbedFiles implements Observer {
     * longer exists.
     *
     * @param update   if the view (e.g. tab title, file view) is
-    * updated and it is tried to retrieve a project in the case a
-    * new file is saved
-    * @return  if the content was saved.
+    * updated and it is tried to retrieve a project
+    * @return  if the text content was saved
     */
    public boolean save(boolean update) {
       if (txtDoc[iTab].filename().length() == 0
@@ -193,7 +192,7 @@ public class TabbedFiles implements Observer {
     *
     * @param update  if the view (e.g. tab title, file view) is
     * updated and it is tried to retrieve a project
-    * @return  if the content was saved
+    * @return  if the text content was saved
     */
    public boolean saveAs(boolean update) {
       File f = fc.fileToSave(txtDoc[iTab].filepath());
@@ -273,12 +272,12 @@ public class TabbedFiles implements Observer {
    public void closeAll() {
       int count = unsavedTab();
       if (count == nTabs()) {
-         while(tabPane.getTabCount() > 0) {
-            tabPane.removeTabAt(iTab);
-         }
-         for (int i = 0; i < txtDoc.length; i++) {
+         int i = count - 1;
+         while(i > -1) {     
+            tabPane.removeTabAt(i);
             txtDoc[i] = null;
             editArea[i] = null;
+            i--;
          }
          createEmptyTab();
       }
@@ -409,7 +408,7 @@ public class TabbedFiles implements Observer {
    private void updateForFile(int i) {
       currProj.setCurrTextDocument(i);
       currProj.retrieveProject();
-      eMenu.lockLanguagesItms(txtDoc[i].language());
+      eMenu.setLanguagesItms(txtDoc[i].language(), false);
       mw.displayFrameTitle(txtDoc[i].filepath());
       prefs.storePrefs("recentPath", txtDoc[i].dir());
    }
@@ -459,12 +458,8 @@ public class TabbedFiles implements Observer {
          currProj.setCurrTextDocument(iTab);
          mw.displayFrameTitle(txtDoc[iTab].filepath());
          vMenu.enableTabItm(nTabs() == 1);
-         if (txtDoc[iTab].filename().length() == 0) {
-            eMenu.setLanguagesItms(txtDoc[iTab].language());
-         }
-         else {
-            eMenu.lockLanguagesItms(txtDoc[iTab].language());
-         }
+         eMenu.setLanguagesItms(txtDoc[iTab].language(),
+               txtDoc[iTab].filename().length() == 0);
       }
    }
 

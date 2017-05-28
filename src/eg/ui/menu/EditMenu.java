@@ -47,13 +47,33 @@ public class EditMenu {
       return menu;
    }
 
+   /**
+    * Sets the selection state of the menu items for the language
+    *
+    * @param lang  the language that has one of the constant values in
+    * {@link Languages}
+    * @param enableSelection  true to enable non-selected items to be selectable
+    */
+   public void setLanguagesItms(Languages lang, boolean enableSelection) {
+      for (int i = 0; i < selectLangChBxItm.length; i++) {
+         if (lang == Languages.values()[i]) {
+            selectLangChBxItm[i].setEnabled(false);
+            selectLangChBxItm[i].setSelected(true);
+         }
+         else {
+            selectLangChBxItm[i].setEnabled(enableSelection);
+            selectLangChBxItm[i].setSelected(false);
+         }
+      }
+   }
+
    public void registerAct(Edit edit, TabbedFiles tf) {
       undoItm.addActionListener(e -> edit.undo());
       redoItm.addActionListener(e -> edit.redo());
       selectAllItm.addActionListener(e -> edit.selectAll());
       cutItm.addActionListener(e -> edit.cut());
-      copyItm.addActionListener(e -> edit.setClipboard());  
-      pasteItm.addActionListener(e -> edit.pasteText());   
+      copyItm.addActionListener(e -> edit.setClipboard());
+      pasteItm.addActionListener(e -> edit.pasteText());
       indentItm.addActionListener(e -> edit.indentSelection());
       outdentItm.addActionListener(e -> edit.outdentSelection());
       clearSpacesItm.addActionListener(e -> edit.clearTrailingSpaces());
@@ -62,31 +82,10 @@ public class EditMenu {
            item.addActionListener(e -> getNewLanguage(e, edit, tf));
        }
    }
-   
-   public void lockLanguagesItms(Languages lang) {
-      for (int i = 0; i < selectLangChBxItm.length; i++) {
-         selectLangChBxItm[i].setEnabled(false);
-         if (lang == Languages.values()[i]) {
-            selectLangChBxItm[i].setSelected(true);
-         }
-         else {
-            selectLangChBxItm[i].setSelected(false);
-         }
-      }
-   }
-   
-   public void setLanguagesItms(Languages lang) {
-      for (int i = 0; i < selectLangChBxItm.length; i++) {
-         if (lang == Languages.values()[i]) {
-            selectLangChBxItm[i].setEnabled(false);
-            selectLangChBxItm[i].setSelected(true);
-         }
-         else {
-            selectLangChBxItm[i].setEnabled(true);
-            selectLangChBxItm[i].setSelected(false);
-         }
-      }     
-   }
+
+   //
+   //--private methods--
+   //
 
    private void getNewLanguage(ActionEvent e, Edit edit, TabbedFiles tf) {
       Languages lang = null;
