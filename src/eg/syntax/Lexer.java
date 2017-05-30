@@ -14,6 +14,8 @@ import eg.utils.Finder;
  * The search and coloring of different syntax elements
  */
 public class Lexer {
+   
+   private String toColor = "";
 
    private final SimpleAttributeSet keyRedSet  = new SimpleAttributeSet();
    private final SimpleAttributeSet keyBlueSet = new SimpleAttributeSet();
@@ -53,7 +55,7 @@ public class Lexer {
     * If enabled, coloring may take place in sections (single lines)
     * of the document taking into account, however, corrections that 
     * need multiline analysis (primarily commenting/uncommenting of
-    * block comments).
+    * block comments but so far not string literals).
     *
     * @param isEnabled  true to enable type mode
     */
@@ -113,7 +115,8 @@ public class Lexer {
 
    /**
     * Searches and colors in brown quoted text where a quoted 
-    * section does not span several lines
+    * section does not span several lines (A method for a quoted
+    * block of text is still missing!).
     *
     * @param toColor  the text of the document or a section thereof
     * @param pos  the start position of <code>toColor</code> within the
@@ -185,7 +188,8 @@ public class Lexer {
     * @param blockStart  the String that represents the start signal for a block
     * @param blockEnd  the String that represents the end signal for a block
     */
-   public void blockComments(String allText, String blockStart, String blockEnd) {
+   public void blockComments(String allText, String blockStart,
+         String blockEnd) {
 
       if (!isBlockCmnt) {
          return;
@@ -279,8 +283,10 @@ public class Lexer {
       int end = 0;
       while (start != -1 && end != -1) {
          start = toColor.indexOf(quoteMark, start);
-         while (escape != null && SyntaxUtils.isEscaped(toColor, start)) {
-            start = toColor.indexOf(quoteMark, start + 1);
+         if (escape != null) {
+            while (SyntaxUtils.isEscaped(toColor, start)) {
+               start = toColor.indexOf(quoteMark, start + 1);
+            }
          }
          if (start != -1) {
             end = toColor.indexOf(quoteMark, start + 1);
@@ -288,11 +294,14 @@ public class Lexer {
                end = toColor.indexOf(quoteMark, end + 1);
             }
             int length = 0;
-            if (end != -1 ) {
+            if (end != -1) {
                length = end - start + 1;
-               boolean ok
-                     = blockStart == null
+               boolean ok = blockStart == null
                      || SyntaxUtils.isInBlock(toColor, start, blockStart, blockEnd);
+               if (quoteMark.equals("\'")) {
+                  ok = !SyntaxUtils.isInBlock(toColor, start, "\"", "\"")
+                        && !SyntaxUtils.isInBlock(toColor, end, "\"", "\"");
+               }
                if (ok) {
                   doc.setCharacterAttributes(start + pos, length, strLitSet, false);
                }
