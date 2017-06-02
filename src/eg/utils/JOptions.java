@@ -50,6 +50,7 @@ public class JOptions {
     * <code>JOptionPane</code>.
     * The dialog is set to be always on top and has focus.
     *
+    * @param message  the message for the dialog
     * @return  the integer that is the Yes, the No or the Cancel option
     * as specified in <code>JOptionPane</code>
     */
@@ -66,6 +67,7 @@ public class JOptions {
     * or the No option as specified in <code>JOptionPane</code>.
     * The dialog is set to be always on top and has focus.
     *
+    * @param message  the message for the dialog
     * @return  the integer that is either the Yes or the No option
     * specified in <code>JOptionPane</code>
     */

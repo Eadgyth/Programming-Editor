@@ -96,7 +96,7 @@ public final class JavaActions extends ProjectConfig
             if (!update.isConsoleOpen()) {
                if (!comp.success()) {
                   int result = JOptions.confirmYesNo(
-                        "Compilation of the project"
+                        "Compilation of the project "
                         + getProjectName() + " failed.\n"
                         + comp.getMessage() + "."
                         + "\nOpen the console window to view messages?");

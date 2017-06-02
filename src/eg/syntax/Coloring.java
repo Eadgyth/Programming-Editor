@@ -17,7 +17,7 @@ public class Coloring {
     * Creates a <code>Coloring</code>
     *
     * @param lex  the <code>Lexer</code> which a <code>Colorable</code>
-    * can assigned to
+    * must be assigned to through {@link #selectColorable(Languages)}
     */
    public Coloring(Lexer lex) {
       this.lex = lex;
@@ -27,7 +27,7 @@ public class Coloring {
     * Selects a {@link Colorable} based on the language
     *
     * @param lang  the language which is one of the constants
-    * in {@link eg.Languages} but not PLAIN_TEXT
+    * in {@link Languages} but not PLAIN_TEXT
     */
    public void selectColorable(Languages lang) {
       Colorable colorable = null;
@@ -53,9 +53,9 @@ public class Coloring {
     * text is scanned for block comments).
     *
     * @param allText  the entire text of the document
-    * @param section  a section of '{code allText}' which may be multiline.
-    * null to color '{code allText}'
-    * @param pos  the pos within the entire text where the section starts.
+    * @param section  a section of <code>allText</code>. If null
+    * <code>allText</code> is assigned
+    * @param pos  the pos within the document where a change happened.
     */
    public void colorSection(String allText, String section, int pos) {
       int posStart = 0;
@@ -66,7 +66,8 @@ public class Coloring {
          section = Finder.allLinesAtPos(allText, section, pos);
          posStart = Finder.lastNewline(allText, pos) + 1;
       }
-      lex.color(allText, section, pos, posStart);
+      lex.setTextToColor(allText, section, pos, posStart);
+      lex.color();
    }
 
    /**
@@ -74,11 +75,12 @@ public class Coloring {
     * scanned for block comments).
     *
     * @param allText  the entire text of the document
-    * @param pos  the pos within the entire text where a change happened
+    * @param pos  the pos within document where a change happened
     */
    public void colorLine(String allText, int pos) {
       String toColor = Finder.lineAtPos(allText, pos);
-      int posStart = Finder.lastNewline(allText, pos) + 1;      
-      lex.color(allText, toColor, pos, posStart);
+      int posStart = Finder.lastNewline(allText, pos) + 1;
+      lex.setTextToColor(allText, toColor, pos, posStart);      
+      lex.color();
    }
 }

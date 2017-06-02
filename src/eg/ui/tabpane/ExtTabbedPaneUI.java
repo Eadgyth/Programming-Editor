@@ -45,7 +45,7 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
    }
 
    /**
-    * Controls if the tab bar is visible.
+    * Controls if the tab bar is visible when this ui is updated.
     *
     * @param show  true/false to show/hide the tab bar
     */

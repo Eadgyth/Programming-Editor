@@ -46,7 +46,7 @@ public class CurrentProject {
    private final String WRONG_TYPE_MESSAGE
          = "<html>"
          + "The selected file does not define a type of project.<br>"
-         + "Select a category if the file belongs to a project:"
+         + "Select a project category if the file belongs to a project:"
          + "</html>";
 
    private final String FILES_NOT_FOUND_MESSAGE
@@ -113,14 +113,15 @@ public class CurrentProject {
 
    /**
     * Assigns to this current project a project which a configuration
-    * exists for in a local 'eadconfig' file or in the program's 'prefs'
-    * file
+    * exists for in an 'eadconfig' file saved in the project's directory
+    * or in the program's 'prefs' file
     * @see eg.projects.ProjectConfig#retrieveProject(String)
     */
    public void retrieveProject() {
       if (current != null && current.isInProject(currDoc.dir())) {
          return;
       }
+
       EventQueue.invokeLater(() -> {
          ProjectActions prToFind = selProj.createProjectByExt(currExt);
          boolean isFound = prToFind != null
@@ -158,9 +159,9 @@ public class CurrentProject {
    /**
     * Opens the window of the {@code SettingsWin} object that belongs to
     * a project.
-    * <p>Depending on the currently set {@link TextDocument} the opened window
-    * belongs to the current project, to one of this listed projects or to a
-    * newly created project.
+    * <p>Depending on the currently set {@link TextDocument} the opened
+    * window belongs to the current project, to one of this listed projects
+    * or to a newly created project.
     */
    public void openSettingsWindow() {
       if (current == null) {
@@ -199,7 +200,7 @@ public class CurrentProject {
          int res = 0;
          if (test != null) {
             res = JOptions.confirmYesNo(currDoc.filename()
-                  + " belongs to the current project "
+                  + "\nThe file belongs the project "
                   + test.getProjectName() + "."
                   + "\nStill set new project?");
          }
@@ -210,9 +211,9 @@ public class CurrentProject {
   }
 
    /**
-    * Sets active the project from this {@code List} of configured projects
-    * which the currently selected {@code TextDocument} belongs to.
-    * <p>If the set {@code TextDocument} does not belong to a listed project
+    * Sets active the project from this <code>List</code> of configured
+    * projects which the currently selected {@code TextDocument} belongs to.
+    * <p>If the set {@link TextDocument} does not belong to a listed project
     * or to the currently active project it is asked to set up a new project.
     */
    public void changeProject() {
@@ -226,8 +227,8 @@ public class CurrentProject {
    }
 
    /**
-    * Updates the file tree of {@code FileTree} if the specified directory
-    * includes the project's root directory.
+    * Updates the file tree if the specified path includes the
+    * project's root directory.
     *
     * @param path  the directory that may include the project's root
     * directory
@@ -246,6 +247,7 @@ public class CurrentProject {
       if (!isCurrent("Compile")) {
          return;
       }
+
       try {
         mw.setBusyCursor(true);
         if (isFileToCompile(currDoc)) {
@@ -256,7 +258,7 @@ public class CurrentProject {
             }
             else {
                JOptions.warnMessage(currDoc.filename()
-                     + " could not be found anymore");
+                     + ":\nThe file could not be found anymore");
             }
          }
       }
@@ -273,9 +275,10 @@ public class CurrentProject {
       if (!isCurrent("Compile")) {
          return;
       }
-      StringBuilder missingFiles = new StringBuilder();
+
       try {
          mw.setBusyCursor(true);
+         StringBuilder missingFiles = new StringBuilder();
          for (int i = 0; i < txtDoc.length; i++) {
             if (isFileToCompile(txtDoc[i])) {
                boolean exists = new File(txtDoc[i].filepath()).exists();
@@ -327,7 +330,7 @@ public class CurrentProject {
    }
 
    //
-   //--private methods--
+   //--private methods--//
    //
 
    private void createNewProject(boolean needConfirm) {
@@ -363,8 +366,8 @@ public class CurrentProject {
    }
 
    private boolean changeProject(ProjectActions toChangeTo) {
-      int result = JOptions.confirmYesNo("Set active project '"
-                 + toChangeTo.getProjectName() + "' ?");
+      int result = JOptions.confirmYesNo("Set active the project "
+                 + toChangeTo.getProjectName() + "?");
       if (result == 0) {
          current = toChangeTo;
          current.storeInPrefs();
@@ -398,7 +401,7 @@ public class CurrentProject {
 
    private void updateProjectSetting(ProjectActions projToSet) {
       mw.fileTree().setDeletableDirName(projToSet.getExecutableDirName());
-      proc.addWorkingDir(projToSet.getProjectPath());
+      proc.setWorkingDir(projToSet.getProjectPath());
       mw.showProjectInfo(projToSet.getProjectName());
       enableActions(projToSet);
       mw.fileTree().setProjectTree(projToSet.getProjectPath());

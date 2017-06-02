@@ -30,28 +30,27 @@ public class JavaColoring implements Colorable {
    private final static String BLOCK_CMNT_END = "*/";
 
    @Override
-   public void color(String allText, String toColor, int pos,
-         int posStart, Lexer lex) {
+   public void color(Lexer lex) {
 
-      if (!SyntaxUtils.isInBlock(allText, pos, BLOCK_CMNT_START,
-              BLOCK_CMNT_END)) {
-         lex.setCharAttrBlack(posStart, toColor.length());
+      if (!lex.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
+
+         lex.setCharAttrBlack();
          for (String s : JAVA_ANNOTATIONS) {
-            lex.keywordBlue(toColor, s, posStart, false);
+            lex.keywordBlue(s, false);
          }
          for (String s : JAVA_KEYWORDS) {
-            lex.keywordRed(toColor, s, posStart, true);
+            lex.keywordRed(s, true);
          }
          for (String s : SyntaxUtils.BRACKETS) {
-            lex.bracketBlue(toColor, s, posStart);
+            lex.bracketBlue(s);
          }
          for (String s : SyntaxUtils.CURLY_BRACKETS) {
-            lex.bracket(toColor, s, posStart);
+            lex.bracket(s);
          }
-         lex.quotedLineWise(toColor, posStart, "\'", null, null, "\\");
-         lex.quotedLineWise(toColor, posStart, "\"", null, null, "\\");
-         lex.lineComments(toColor, posStart, LINE_CMNT);   
+         lex.quotedLineWise("\'", null, null, "\\");
+         lex.quotedLineWise("\"", null, null, "\\");
+         lex.lineComments(LINE_CMNT);   
       }
-      lex.blockComments(allText, BLOCK_CMNT_START, BLOCK_CMNT_END);
+      lex.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
    }
 }

@@ -57,12 +57,12 @@ public class ProcessStarter {
    }
 
    /**
-    * Adds to this the working directory for a started process
+    * Sets the working directory
     *
-    * @param workingDir  the working directory for a started
-    * process
+    * @param workingDir  the working directory which a process is
+    * started in
     */
-   public void addWorkingDir(String workingDir) {
+   public void setWorkingDir(String workingDir) {
       this.workingDir = workingDir;
       File f = new File(workingDir);
       this.workingDirName = f.getName();
@@ -168,9 +168,9 @@ public class ProcessStarter {
     */
    private void startNewCmd() {
       String cmd = JOptions.dialogRes(
-               "Run a system command in the working directory '"
-               + workingDirName +"'",
-               "Command", previousCmd);
+               "Enter a system command that is executed in the current"
+               + " working directory " + workingDirName + ".",
+               "Run", previousCmd);
       if (cmd != null && cmd.length() > 0) {
          consPnl.enableRunBt(false);
          startProcess(cmd);

@@ -84,7 +84,7 @@ class TypingEdit {
    void setUpEditing(Languages lang) {
       undomanager.discardAllEdits();
       if (lang == Languages.PLAIN_TEXT) {
-         lex.setCharAttrBlack(0, editArea.getDocText().length());
+         lex.setAllCharAttrBlack();
          enableTypeEdit(false);
          autoInd.enableIndent(false);
       }

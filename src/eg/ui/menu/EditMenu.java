@@ -20,8 +20,6 @@ import eg.ui.IconFiles;
 
 public class EditMenu {
 
-   private final Preferences prefs = new Preferences();
-
    private final JMenu     menu            = new JMenu("Edit");
    private final JMenuItem undoItm         = new JMenuItem("Undo", IconFiles.UNDO_ICON);
    private final JMenuItem redoItm         = new JMenuItem("Redo", IconFiles.REDO_ICON);
@@ -37,7 +35,10 @@ public class EditMenu {
    private final JMenuItem clearSpacesItm  = new JMenuItem("Clear trailing spaces");
    private final JMenu     languageMenu    = new JMenu("Language");
    private final JCheckBoxMenuItem[] selectLangChBxItm
-                                            = new JCheckBoxMenuItem[Languages.values().length];
+                                           = new JCheckBoxMenuItem[Languages.values().length];
+                                            
+   private final Preferences prefs = new Preferences();
+
    EditMenu() {
       assembleMenu();
       shortCuts();
@@ -84,7 +85,7 @@ public class EditMenu {
    }
 
    //
-   //--private methods--
+   //--private methods--//
    //
 
    private void getNewLanguage(ActionEvent e, Edit edit, TabbedFiles tf) {

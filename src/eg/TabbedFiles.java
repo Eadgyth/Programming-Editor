@@ -136,7 +136,7 @@ public class TabbedFiles implements Observer {
          return;
       }
       if (!f.exists()) {
-         JOptions.warnMessage(f.getName() + " was not found");
+         JOptions.warnMessage(f.getName() + "\nThe file was not found.");
       }
       else {
          open(f);
@@ -198,7 +198,7 @@ public class TabbedFiles implements Observer {
       File f = fc.fileToSave(txtDoc[iTab].filepath());
       boolean isSave = f != null;
       if (isSave && f.exists()) {
-         JOptions.warnMessage(f.getName() + " already exists");
+         JOptions.warnMessage(f.getName() + "\nThe file already exists.");
          isSave = false;
       }
       isSave = isSave && txtDoc[iTab].saveFileAs(f);
@@ -224,8 +224,8 @@ public class TabbedFiles implements Observer {
       int res = 0;
       boolean storable = true;
       if (f.exists()) {
-         res = JOptions.confirmYesNo(f.getName() + " already exists.\n"
-               + "Replace file?");
+         res = JOptions.confirmYesNo(f.getName()
+               + "\nThe file already exists. Replace file?");
          if (res == 0) {
             storable = f.delete();
          }
@@ -235,7 +235,7 @@ public class TabbedFiles implements Observer {
       }
       if (!storable) {
          JOptions.warnMessage(txtDoc[iTab].filepath()
-               + "could not be replaced");
+               + "could not be replaced.");
       }
    }
 
@@ -329,12 +329,12 @@ public class TabbedFiles implements Observer {
    }
 
    //
-   //---private methods --//
+   //--private methods--//
    //
 
    private void open(File f) {
       if (isFileOpen(f.toString())) {
-         JOptions.warnMessage(f.getName() + " is open");
+         JOptions.warnMessage(f.getName() + ":\nThe file is already open.");
          return;
       }
       if (nTabs() == txtDoc.length) {

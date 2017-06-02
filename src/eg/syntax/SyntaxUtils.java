@@ -54,26 +54,6 @@ public class SyntaxUtils {
          return true;
       }
    }
-   
-   /**
-    * Returns if the specified pos is found in a block of text that is
-    * delimited by given start and end signals
-    *
-    * @param text  the text
-    * @param pos  the position that may be found in a block of text
-    * @param blockStart  the String that defines the block start
-    * @param blockEnd  the String that defines the block end
-    * @return  if the specified pos is found in a certain block of text 
-    */
-   public static boolean isInBlock(String text, int pos, String blockStart,
-         String blockEnd) {
-
-      int lastStart = SyntaxUtils.lastBlockStart(text, pos, blockStart,
-            blockEnd);
-      int nextEnd = SyntaxUtils.nextBlockEnd(text, pos, blockStart,
-            blockEnd);
-      return lastStart != -1 & nextEnd != -1;
-   }
 
    /**
     * Returns the position of the last block start where block is a portion
@@ -103,6 +83,26 @@ public class SyntaxUtils {
          index = -1;
       }
       return index;
+   }
+   
+   /**
+    * Returns if this pos is found in a block of text that is delimited
+    * by given start and end signals
+    *
+    * @param text  the text
+    * @param pos  the position that maybe found in a block
+    * @param blockStart  the String that defines the block start
+    * @param blockEnd  the String that defines the block end
+    * @return  if the specified pos is found in a certain block of text 
+    */
+   public static boolean isInBlock(String text, int pos, String blockStart,
+         String blockEnd) {
+
+      int lastStart = SyntaxUtils.lastBlockStart(text, pos, blockStart,
+            blockEnd);
+      int nextEnd = SyntaxUtils.nextBlockEnd(text, pos, blockStart,
+            blockEnd);
+      return lastStart != -1 & nextEnd != -1;
    }
 
    /**
