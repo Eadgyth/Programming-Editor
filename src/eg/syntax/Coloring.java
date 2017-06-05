@@ -6,7 +6,7 @@ import eg.utils.Finder;
 
 /**
  * The coloring of either chunks of text (which also maybe the entire text)
- * or single lines using a <code>Coloring</code> selected based on the
+ * or single lines using a <code>Colorable</code> selected based on the
  * language
  */
 public class Coloring {
