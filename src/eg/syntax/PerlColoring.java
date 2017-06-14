@@ -54,7 +54,7 @@ public class PerlColoring implements Colorable {
       for (String s : SyntaxUtils.CURLY_BRACKETS) {
          lex.bracket(s);
       }
-      lex.quotedLineWise("\"", null, null, "\\");
+      lex.quotedLineWise("\"", "\\");
       lex.lineComments(LINE_CMNT);
    }
 }

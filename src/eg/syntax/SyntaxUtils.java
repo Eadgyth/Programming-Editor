@@ -17,8 +17,7 @@ public class SyntaxUtils {
 
    /**
     * Returns if the specified word is a word.
-    * <p>
-    * A word is considered as such if it does not adjoin to a letter
+    * A word is considered as one if it does not adjoin to a letter
     * or a digit at the left and/or right end.
     *
     * @param text  the text which the word is part of
@@ -42,7 +41,7 @@ public class SyntaxUtils {
       }
    }
 
-  public static boolean isWordEnd(String text, String word, int pos) {
+   public static boolean isWordEnd(String text, String word, int pos) {
       int length = word.length();
       int endPos = pos + length;
       String end = "";   
@@ -53,36 +52,6 @@ public class SyntaxUtils {
       else {
          return true;
       }
-   }
-
-   /**
-    * Returns the position of the last block start where block is a portion
-    * of text that is bordered by a block start and a block end signal.
-    *
-    * @param text  the text
-    * @param pos  the position relative to which the last block start is
-    * searched
-    * @param blockStart  the String that signals the start of a block
-    * @param blockEnd  the String that signals the end of a block
-    * @return  the position of the last block start before '{@code pos}'. -1
-    * if no block start is found or a block end is closer to '{@code pos}'
-    * than a block start
-    */
-   public static int lastBlockStart(String text, int pos, String blockStart,
-         String blockEnd) {
-
-      int index = text.lastIndexOf(blockStart, pos);
-      int indLastEnd = text.lastIndexOf(blockEnd, pos - 1);
-      while (index != -1 && isInQuotes(text, index, blockStart)) {
-         index = text.lastIndexOf(blockStart, index - 1);
-      }
-      while (indLastEnd != -1 && isInQuotes(text, indLastEnd, blockEnd)) {
-         indLastEnd = text.lastIndexOf(blockEnd, indLastEnd - 1);
-      }
-      if (index < indLastEnd) {
-         index = -1;
-      }
-      return index;
    }
    
    /**
@@ -106,6 +75,36 @@ public class SyntaxUtils {
    }
 
    /**
+    * Returns the position of the last block start where block is a portion
+    * of text that is bordered by a block start and a block end signal.
+    *
+    * @param text  the text
+    * @param pos  the position relative to which the last block start is
+    * searched
+    * @param blockStart  the String that signals the start of a block
+    * @param blockEnd  the String that signals the end of a block
+    * @return  the position of the last block start before '{@code pos}'. -1
+    * if no block start is found or a block end is closer to '{@code pos}'
+    * than a block start
+    */
+   public static int lastBlockStart(String text, int pos, String blockStart,
+         String blockEnd) {
+
+      int lastStart = text.lastIndexOf(blockStart, pos);
+      int lastEnd = text.lastIndexOf(blockEnd, pos - 1);
+      while (lastStart != -1 && isInQuotes(text, lastStart, blockStart)) {
+         lastStart = text.lastIndexOf(blockStart, lastStart - 1);
+      }
+      while (lastEnd != -1 && isInQuotes(text, lastEnd, blockEnd)) {
+         lastEnd = text.lastIndexOf(blockEnd, lastEnd - 1);
+      }
+      if (lastStart < lastEnd) {
+         lastStart = -1;
+      }
+      return lastStart;
+   }
+
+   /**
     * Returns the position of the next block end where block is a portion of
     * text that is bordered by a block start and a block end signal.
     *
@@ -121,19 +120,18 @@ public class SyntaxUtils {
    public static int nextBlockEnd(String text, int pos, String blockStart,
          String blockEnd) {
 
-      int index = text.indexOf(blockEnd, pos);
-      int indNextStart = text.indexOf(blockStart, pos);
-
-      while (index != -1 && isInQuotes(text, index, blockEnd)) {
-         index = text.indexOf(blockEnd, index + 1);
+      int nextEnd = text.indexOf(blockEnd, pos);
+      int nextStart = text.indexOf(blockStart, pos);
+      while (nextEnd != -1 && isInQuotes(text, nextEnd, blockEnd)) {
+         nextEnd = text.indexOf(blockEnd, nextEnd + 1);
       }
-      while (indNextStart != -1 && isInQuotes(text, indNextStart, blockStart)) {
-         indNextStart = text.indexOf(blockStart, indNextStart + 1);
+      while (nextStart != -1 && isInQuotes(text, nextStart, blockStart)) {
+         nextStart = text.indexOf(blockStart, nextStart + 1);
       }
-      if (index > indNextStart & indNextStart != -1) {
-         index = -1;
+      if (nextEnd > nextStart & nextStart != -1) {
+         nextEnd = -1;
       }
-      return index;
+      return nextEnd;
    }
 
    /**
@@ -153,16 +151,7 @@ public class SyntaxUtils {
       }
       return isInQuotes;
    }
-   
-   /**
-    * Returns if the character before the specified position is a
-    * backslash
-    *
-    * @param text  the text
-    * @param pos  the position that may be preceded by a backslash
-    * @return  if the character before <code>pos</code> is a backslash. False
-    * also if it is preceeded by backslash itself
-    */
+
    public static boolean isEscaped(String text, int pos) {
       if (pos > 0) {
          return text.substring(pos - 1, pos).equals("\\")
@@ -171,6 +160,53 @@ public class SyntaxUtils {
       else {
          return false;
       }
+   }
+   
+   public static boolean isTagStart(String text, int pos) {
+      boolean isTagStart = false;
+      if (pos > 0) {
+         char c = text.charAt(pos - 1);
+         isTagStart = c == '<';
+      }
+      if (!isTagStart && pos > 1) {
+         char c1 = text.charAt(pos - 2);
+         char c2 = text.charAt(pos - 1);
+         isTagStart = c2 == '/' && c1 == '<';
+      }
+      return isTagStart;
+   }
+
+   public static boolean isTagEnd(String text, int length, int pos) {
+      int endPos = pos + length;
+      if (text.length() > endPos) {
+         char c = text.charAt(endPos);
+         return c == '>' || c == ' ';
+      }
+      else {
+         return true;
+      }
+   }
+   
+   public static boolean isOutsideQuote(String text, int pos) {
+      char[] c = text.toCharArray();
+      int count = 0;
+      for (int i = 0; i < pos; i++) {
+         if (c[i] == '\"') {
+            count++;
+         }
+      }
+      return count % 2 == 0;
+   }
+
+   public static int endOfWord(String text) {
+      char[] c = text.toCharArray();
+      int i = 1;
+      for (i = 1; i < c.length; i++) {
+         if (c[i] == ' ') {
+            break;
+         }
+      }
+      return i;
    }
 
    private static boolean isLetterOrDigit(char c) {

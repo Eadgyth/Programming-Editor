@@ -3,7 +3,7 @@ package eg.syntax;
 public class HtmlColoring implements Colorable {
    
    // incomplete
-   final static String[] HTML_TAGS = {
+   final static String[] TAGS = {
       "a", "area", "applet",
       "b", "blockquote", "body", "bold", "button", "br",
       "code", "col",
@@ -23,7 +23,7 @@ public class HtmlColoring implements Colorable {
    };
 
    // incomplete
-   final static String[] HTML_Attr = {
+   final static String[] Attr = {
       "align",
       "bgcolor",
       "class",
@@ -41,17 +41,18 @@ public class HtmlColoring implements Colorable {
 
    @Override
    public void color(Lexer lex) {
-
       if (!lex.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
-
          lex.setCharAttrBlack();
-         for (String s : HTML_Attr) {
-            lex.keywordRed(s, true);
+         if (!lex.isTypeMode() || lex.isInBlock(BRACKETS[0], BRACKETS[1])) {
+            for (String s : Attr) {
+               lex.keywordRed(s, true);
+            }
+            for (String s : TAGS) {
+               lex.tag(s);
+            }
+            lex.quotedLineWise("\"", null);
+            lex.quotedLineWise("\'", null);
          }
-         for (String s : HTML_TAGS) {
-            lex.tag(s);
-         }
-         lex.quotedLineWise("\"", BRACKETS[0], BRACKETS[1], null);
       }
       lex.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
    }
