@@ -114,7 +114,7 @@ public class CurrentProject {
    /**
     * Assigns to this current project a project which a configuration
     * exists for in an 'eadconfig' file saved in the project's directory
-    * or in the program's 'prefs' file
+    * or in the program's prefs file
     * @see eg.projects.ProjectConfig#retrieveProject(String)
     */
    public void retrieveProject() {
@@ -201,7 +201,7 @@ public class CurrentProject {
          if (test != null) {
             res = JOptions.confirmYesNo(currDoc.filename()
                   + "\nThe file belongs the project "
-                  + test.getProjectName() + "."
+                  + "'" + test.getProjectName() + "'."
                   + "\nStill set new project?");
          }
          if (res == 0) {
@@ -366,8 +366,8 @@ public class CurrentProject {
    }
 
    private boolean changeProject(ProjectActions toChangeTo) {
-      int result = JOptions.confirmYesNo("Set active the project "
-                 + toChangeTo.getProjectName() + "?");
+      int result = JOptions.confirmYesNo("Set active the project '"
+                 + toChangeTo.getProjectName() + "'?");
       if (result == 0) {
          current = toChangeTo;
          current.storeInPrefs();
