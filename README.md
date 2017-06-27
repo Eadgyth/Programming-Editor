@@ -46,9 +46,6 @@ a reference to EditorAccess class which provides a reference to the text area ob
 in the currently selected tab, methods to modify text and a method to add a graphical view in the
 main window.
 <p>
-DOCUMENTATION <br>
-The javadoc of the program is found in this repository (Docs/Ead-JavaDoc).
-<p>
 CONTACT<br>
 Malte Bussiek<br>
 m.bussiek@web.de<br>
