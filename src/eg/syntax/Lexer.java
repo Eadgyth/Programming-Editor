@@ -8,7 +8,7 @@ import javax.swing.text.StyleContext;
 
 import java.awt.Color;
 
-//--Eadgyth
+//--Eadgyth--//
 import eg.utils.Finder;
 
 /**
@@ -146,21 +146,28 @@ public class Lexer {
    }
 
    /**
-    * Searches and colors in blue variables that start and are identified
-    * by a sign (like $ in Perl)
+    * Searches and colors in blue variables that start with a sign
+    * (like $ in Perl)
     *
-    * @param sign  the character that marks that a word is variable
+    * @param sign  the character that marks a variable
+    * @param end  the array of characters that mark the end of the
+    * variable
     */
-   public void signedVariable(String sign) {
+   public void signedVariable(String sign,  char[] end) {
       int start = 0;
       while (start != -1) {
          start = toColor.indexOf(sign, start);
          int length = 0;
-         if (start != -1 && SyntaxUtils.isWordStart(toColor, start)) {
-            length = SyntaxUtils.endOfWord(toColor.substring(start));
-            setCharAttrKeyBlue(start + posStart, length);
+         if (start != -1) {
+            if (SyntaxUtils.isWordStart(toColor, start)) {
+               length = varLength(start, end);
+               setCharAttrKeyBlue(start + posStart, length);
+               start += length;
+            }
+            else {
+               start++;
+            }
          }
-         start += length;
       }
    }
 
@@ -176,6 +183,7 @@ public class Lexer {
          if (start != -1) {
             if (SyntaxUtils.isTagStart(toColor, start)
                   && SyntaxUtils.isTagEnd(toColor, key.length(), start)) {
+
                setCharAttrKeyBlue(start + posStart, key.length());
             }
             start += key.length();
@@ -190,11 +198,11 @@ public class Lexer {
     *
     * @param quoteMark  the quotation mark, i.e either single or double
     * quote
-    * @param escape  the escape character to skip the quote sign. May be
-    * null to not evaluate an escape character
+    * @param escape  whether the escape character to skip the quote sign
+    * is taken into account
     */
-   public void quotedLineWise(String quoteMark, String escape) {
-      if (!isTypeMode & Finder.countLines(toColor) > 1) {
+   public void quotedLineWise(String quoteMark, boolean escape) {
+      if (Finder.countLines(toColor) > 1) {
          //
          // split because string literals are not colored across lines
          String[] chunkArr = toColor.split("\n");
@@ -214,14 +222,23 @@ public class Lexer {
     *
     * @param lineCmnt  the String that represents the start of a line
     * comment
+    * @param exception  the character that disables the line comment
+    * when it precedes <code>lineCmt</code>
     */
-   public void lineComments(String lineCmnt) {
+   public void lineComments(String lineCmnt, char exception) {
       int start = 0;
+      boolean isException = false;
       while (start != -1) {
          start = toColor.indexOf(lineCmnt, start);
          if (start != -1) {
+            if (exception != '\0' && start > 0) {
+               isException = false;
+               isException = toColor.charAt(start - 1) == exception;
+            }
             int length = 0;
-            if (!SyntaxUtils.isInQuotes(toColor, start, lineCmnt)) {
+            if (!isException 
+                  && !SyntaxUtils.isInQuotes(toColor, start, lineCmnt.length())) {
+
                int lineEnd = toColor.indexOf("\n", start + 1);
                if (lineEnd != -1) {
                   length = lineEnd - start;
@@ -232,7 +249,7 @@ public class Lexer {
                doc.setCharacterAttributes(start + posStart, length,
                      cmntSet, false);
             }
-            if (isTypeMode) {
+            if (isTypeMode && !isException) {
                break;
             }
             else {
@@ -261,7 +278,7 @@ public class Lexer {
          int end = 0;
          if (start != -1) {
             int length = 0;
-            if (!SyntaxUtils.isInQuotes(allText, start, blockStart)) {
+            if (!SyntaxUtils.isInQuotes(allText, start, blockStart.length())) {
                end = SyntaxUtils.nextBlockEnd(allText, start + 1,
                      blockStart, blockEnd);
                if (end != -1) {
@@ -288,7 +305,11 @@ public class Lexer {
     * @return  if this pos is found in a certain block of text
     */
    public boolean isInBlock(String blockStart, String blockEnd) {
-      return SyntaxUtils.isInBlock(allText, pos, blockStart, blockEnd);
+      int lastStart = SyntaxUtils.lastBlockStart(allText, pos, blockStart,
+            blockEnd);
+      int nextEnd = SyntaxUtils.nextBlockEnd(allText, pos, blockStart,
+            blockEnd);
+      return lastStart != -1 & nextEnd != -1;
    }
 
    //
@@ -308,7 +329,7 @@ public class Lexer {
       while (start != -1) {
          start = toColor.indexOf(str, start);
          if (start != -1) {
-            boolean ok = !reqWord || SyntaxUtils.isWord(toColor, str, start);
+            boolean ok = !reqWord || SyntaxUtils.isWord(toColor, start, str.length());
             if (ok) {
                doc.setCharacterAttributes(start + posStart, str.length(), set, false);
             }
@@ -318,42 +339,41 @@ public class Lexer {
    }
 
    private void quoted(String toColor, int posStart, String quoteMark,
-         String escape) {
+         boolean escape) {
 
       int start = 0;
       int end = 0;
-      final boolean singleQuote = quoteMark.equals("\'");
-      boolean permitted = true;
+
       while (start != -1 && end != -1) {
          start = toColor.indexOf(quoteMark, start);
-         if (escape != null) {
+         if (escape) {
             while (SyntaxUtils.isEscaped(toColor, start)) {
                start = toColor.indexOf(quoteMark, start + 1);
             }
          }
          if (start != -1) {
             end = toColor.indexOf(quoteMark, start + 1);
-            if (escape != null) {
+            if (escape) {
                while (SyntaxUtils.isEscaped(toColor, end)) {
                   end = toColor.indexOf(quoteMark, end + 1);
                }
             }
             int length = 0;
+            boolean ok = true;
             if (end != -1) {
-               if (singleQuote) {
-                  permitted = SyntaxUtils.isOutsideQuote(toColor, start)
-                       & SyntaxUtils.isOutsideQuote(toColor, end);
+               if (quoteMark.equals("\'")) {
+                  ok = SyntaxUtils.isOutsideQuote(toColor, start);
                }
-               if (permitted) {
-               length = end - start + 1;
-               doc.setCharacterAttributes(start + posStart, length, strLitSet, false);
+               if (ok) {
+                  length = end - start + 1;
+                  doc.setCharacterAttributes(start + posStart, length, strLitSet, false);
                }
                start += length + 1;
             }
          }
       }
    }
-
+   
    private void removedFirstBlockStart(String allText, String blockStart,
          String blockEnd) {
 
@@ -385,7 +405,7 @@ public class Lexer {
       if (isTypeMode) {
          int nextStart = allText.indexOf(blockStart, pos + 1);
          while (nextStart != -1 && SyntaxUtils.isInQuotes(allText, nextStart,
-                blockStart)) {
+                blockStart.length())) {
             nextStart = allText.lastIndexOf(blockStart, nextStart + 1);
          }
          if (nextStart != -1) {
@@ -403,6 +423,29 @@ public class Lexer {
 
    private void setCharAttrKeyRed(int start, int length) {
       doc.setCharacterAttributes(start, length, keyRedSet, false);
+   }
+   
+   private int varLength(int pos, char[] end) {
+      boolean found = false;      
+      int i;
+      for (i = pos + 1; i < toColor.length() && !found; i++) {                     
+         for (int j = 0; j < end.length; j++) {
+            if (i == pos + 1) {
+               if (toColor.charAt(i) == ' ') {
+                  found = true;
+                  break;
+               }
+            }
+            else {
+               if (toColor.charAt(i) == end[j]) {
+                  found = true;
+                  i--;
+                  break;
+               }
+            }
+         }
+      }
+      return i - pos;
    }
 
    private void colSectionExBlock(String allText, String section, int pos) {

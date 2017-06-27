@@ -35,7 +35,7 @@ import eg.syntax.Coloring;
 import eg.ui.EditArea;
 import eg.utils.FileUtils;
 
-/*
+/**
  * Mediates the editing in the {@code EditArea} that shall happen during
  * typing.
  * <p>

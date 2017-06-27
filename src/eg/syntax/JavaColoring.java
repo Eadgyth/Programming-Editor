@@ -1,5 +1,8 @@
 package eg.syntax;
 
+/**
+ * Syntax coloring for Java
+ */
 public class JavaColoring implements Colorable {
 
    private final static String[] JAVA_KEYWORDS = {
@@ -31,7 +34,6 @@ public class JavaColoring implements Colorable {
 
    @Override
    public void color(Lexer lex) {
-
       if (!lex.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
 
          lex.setCharAttrBlack();
@@ -44,12 +46,12 @@ public class JavaColoring implements Colorable {
          for (String s : SyntaxUtils.BRACKETS) {
             lex.bracketBlue(s);
          }
-         for (String s : SyntaxUtils.CURLY_BRACKETS) {
+         for (String s : SyntaxUtils.BRACES) {
             lex.bracket(s);
          }
-         lex.quotedLineWise("\'", "\\");
-         lex.quotedLineWise("\"", "\\");
-         lex.lineComments(LINE_CMNT);   
+         lex.quotedLineWise("\'", true);
+         lex.quotedLineWise("\"", true);
+         lex.lineComments(LINE_CMNT, '\0');   
       }
       lex.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
    }

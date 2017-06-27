@@ -2,18 +2,24 @@ package eg.syntax;
 
 public class PerlColoring implements Colorable {
    
+   private final static char[] END_OF_VAR = {
+      ' ', '\\', '(', ')', ';', '='
+   };
+   
    final static String[] PERL_KEYWORDS = {
-      "cmp", "continue", "CORE",
+      "cmp", "chomp", "continue", "CORE", "cos",
       "do",
       "else", "elsif", "eq", "exp",
       "for", "foreach",
-      "if",
+      "int", "if",
       "lock",
+      "my",
       "no",
-      "package",
-      "sub",
+      "package", "print",
+      "rand",
+      "sin", "sqrt", "sub", "substr",
       "unless", "until",
-      "while",      
+      "while",     
    };
    
    final static String[] PERL_OP = {
@@ -40,7 +46,7 @@ public class PerlColoring implements Colorable {
    public void color(Lexer lex) {
       lex.setCharAttrBlack();
       for (String s : PERL_SIGNS) {
-         lex.signedVariable(s);
+         lex.signedVariable(s, END_OF_VAR);
       }
       for (String s : PERL_KEYWORDS) {
          lex.keywordRed(s, true);
@@ -49,12 +55,13 @@ public class PerlColoring implements Colorable {
          lex.keywordRed(s, false);
       }
       for (String s : SyntaxUtils.BRACKETS) {
-         lex.bracketBlue(s);
-      }
-      for (String s : SyntaxUtils.CURLY_BRACKETS) {
          lex.bracket(s);
       }
-      lex.quotedLineWise("\"", "\\");
-      lex.lineComments(LINE_CMNT);
+      for (String s : SyntaxUtils.BRACES) {
+         lex.bracket(s);
+      }
+      lex.quotedLineWise("\'", true);
+      lex.quotedLineWise("\"", true);
+      lex.lineComments(LINE_CMNT, '$');
    }
 }

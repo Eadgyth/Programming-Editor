@@ -50,8 +50,8 @@ public class HtmlColoring implements Colorable {
             for (String s : TAGS) {
                lex.tag(s);
             }
-            lex.quotedLineWise("\"", null);
-            lex.quotedLineWise("\'", null);
+            lex.quotedLineWise("\"", false);
+            lex.quotedLineWise("\'", false);
          }
       }
       lex.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);

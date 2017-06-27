@@ -80,7 +80,7 @@ public class Coloring {
    public void colorLine(String allText, int pos) {
       String toColor = Finder.lineAtPos(allText, pos);
       int posStart = Finder.lastNewline(allText, pos) + 1;
-      lex.setTextToColor(allText, toColor, pos, posStart);      
+      lex.setTextToColor(allText, toColor, pos, posStart);
       lex.color();
    }
 }

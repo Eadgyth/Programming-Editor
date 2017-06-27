@@ -11,26 +11,38 @@ public class SyntaxUtils {
       "(", ")",
    };
    
-   public final static String[] CURLY_BRACKETS = {
+   public final static String[] BRACES = {
       "{", "}",
    };
 
    /**
-    * Returns if the specified word is a word.
-    * A word is considered as one if it does not adjoin to a letter
-    * or a digit at the left and/or right end.
+    * Returns if the portion of text starting at the specified
+    * position and spanning the specified length does not adjoin
+    * to a letter or a digit at one or both ends.
     *
-    * @param text  the text which the word is part of
-    * @param word  the word that may be a word
-    * @param pos  the position where the word starts
-    * @return  if the word does not adjoin to a letter or a digit
+    * @param text  the text
+    * @param pos  the position that may be a the start of a word
+    * @param length  the length of the portion of text that may be 
+    * word
+    * @return  if the portion of text starting at the specified
+    * position and spanning the specified length does not adjoin
+    * to a letter or a digit.
     */
-   public static boolean isWord(String text, String word, int pos) {
+   public static boolean isWord(String text, int pos, int length) {
       boolean startMatches = isWordStart(text, pos);
-      boolean endMatches   = isWordEnd(text, word, pos);
+      boolean endMatches   = isWordEnd(text, pos + length);
       return startMatches && endMatches;
    }
 
+   /**
+    * Returns if the character preceding the specified position is
+    * not a letter or a digit
+    *
+    * @param text  the text
+    * @param pos  the position that may be a the start of a word
+    * @return  if the character preceding <code>pos</code> is
+    * not a letter or a digit
+    */
    public static boolean isWordStart(String text, int pos) {
       if (pos > 0) {
          char c = text.charAt(pos - 1);
@@ -41,37 +53,23 @@ public class SyntaxUtils {
       }
    }
 
-   public static boolean isWordEnd(String text, String word, int pos) {
-      int length = word.length();
-      int endPos = pos + length;
-      String end = "";   
-      if (text.length() > endPos) {
-         char c = text.charAt(endPos);
+   /**
+    * Returns if the character following the <code>pos</code> is
+    * not a letter or a digit
+    *
+    * @param text  the text
+    * @param pos  the position that may be a the end of a word
+    * @return  if the character following the <code>pos</code> is
+    * not a letter or a digit
+    */
+   public static boolean isWordEnd(String text, int pos) {
+      if (text.length() > pos) {
+         char c = text.charAt(pos);
          return !isLetterOrDigit(c);
       }
       else {
          return true;
       }
-   }
-   
-   /**
-    * Returns if this pos is found in a block of text that is delimited
-    * by given start and end signals
-    *
-    * @param text  the text
-    * @param pos  the position that maybe found in a block
-    * @param blockStart  the String that defines the block start
-    * @param blockEnd  the String that defines the block end
-    * @return  if the specified pos is found in a certain block of text 
-    */
-   public static boolean isInBlock(String text, int pos, String blockStart,
-         String blockEnd) {
-
-      int lastStart = SyntaxUtils.lastBlockStart(text, pos, blockStart,
-            blockEnd);
-      int nextEnd = SyntaxUtils.nextBlockEnd(text, pos, blockStart,
-            blockEnd);
-      return lastStart != -1 & nextEnd != -1;
    }
 
    /**
@@ -92,10 +90,10 @@ public class SyntaxUtils {
 
       int lastStart = text.lastIndexOf(blockStart, pos);
       int lastEnd = text.lastIndexOf(blockEnd, pos - 1);
-      while (lastStart != -1 && isInQuotes(text, lastStart, blockStart)) {
+      while (lastStart != -1 && isInQuotes(text, lastStart, blockStart.length())) {
          lastStart = text.lastIndexOf(blockStart, lastStart - 1);
       }
-      while (lastEnd != -1 && isInQuotes(text, lastEnd, blockEnd)) {
+      while (lastEnd != -1 && isInQuotes(text, lastEnd, blockEnd.length())) {
          lastEnd = text.lastIndexOf(blockEnd, lastEnd - 1);
       }
       if (lastStart < lastEnd) {
@@ -105,27 +103,26 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the position of the next block end where block is a portion of
-    * text that is bordered by a block start and a block end signal.
-    *
+    * Returns the position of the next block end. -1 if the a block start
+    * is found before an end
+    * 
     * @param text  the text
     * @param pos  the position relative to which the next block end is
     * searched
     * @param blockStart  the String that signals the start of a block
     * @param blockEnd  the String that signals the end of a block
-    * @return the position of the next block end after '{@code pos}'. -1 if no
-    * end is found or the next block start is closer to '{@code pos}' than the
-    * block end
+    * @return the position of the next block end. -1 if the a block start is
+    * found before an end
     */
    public static int nextBlockEnd(String text, int pos, String blockStart,
          String blockEnd) {
 
       int nextEnd = text.indexOf(blockEnd, pos);
       int nextStart = text.indexOf(blockStart, pos);
-      while (nextEnd != -1 && isInQuotes(text, nextEnd, blockEnd)) {
+      while (nextEnd != -1 && isInQuotes(text, nextEnd, blockEnd.length())) {
          nextEnd = text.indexOf(blockEnd, nextEnd + 1);
       }
-      while (nextStart != -1 && isInQuotes(text, nextStart, blockStart)) {
+      while (nextStart != -1 && isInQuotes(text, nextStart, blockStart.length())) {
          nextStart = text.indexOf(blockStart, nextStart + 1);
       }
       if (nextEnd > nextStart & nextStart != -1) {
@@ -135,27 +132,30 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns if a given string is in double quotes
+    * Returns if the portion of text starting at the specified
+    * position and spanning the specified length is surrounded by
+    * double quotes
     *
     * @param text  the text
-    * @param pos  the start position of the portion that may be in quotes
-    * @param str  the string that may be in quotes
-    * @return  if the specified string is in double quotes
+    * @param pos  the start position of the portion that may be in
+    * quotes
+    * @param length  the of the portion that may be in quotes
+    * @return  if the portion of text starting at <code>pos</code>
+    * and spanning <code>length</code> is surrounded by double quotes
     */
-   public static boolean isInQuotes(String text, int pos, String str) {
+   public static boolean isInQuotes(String text, int pos, int length) {
       boolean isInQuotes = false;
-      int endPos = pos + str.length();
+      int endPos = pos + length;
       if (pos > 0 & text.length() > endPos) {
-         isInQuotes = text.substring(pos - 1, pos).equals("\"")
-                    & text.substring(endPos, endPos + 1).equals("\"");
+         isInQuotes = text.charAt(pos - 1) == '\"'
+               & text.charAt(endPos) == '\"';
       }
       return isInQuotes;
    }
 
    public static boolean isEscaped(String text, int pos) {
       if (pos > 0) {
-         return text.substring(pos - 1, pos).equals("\\")
-               && !isEscaped(text, pos - 1);
+         return text.charAt(pos - 1) == '\\' && !isEscaped(text, pos - 1);
       }
       else {
          return false;
@@ -188,25 +188,16 @@ public class SyntaxUtils {
    }
    
    public static boolean isOutsideQuote(String text, int pos) {
-      char[] c = text.toCharArray();
       int count = 0;
-      for (int i = 0; i < pos; i++) {
-         if (c[i] == '\"') {
+      int i = 0;
+      while (i < pos && i != -1) {
+         i = text.indexOf("\"", i);
+         if (i != -1) {
             count++;
+            i++;
          }
       }
-      return count % 2 == 0;
-   }
-
-   public static int endOfWord(String text) {
-      char[] c = text.toCharArray();
-      int i = 1;
-      for (i = 1; i < c.length; i++) {
-         if (c[i] == ' ') {
-            break;
-         }
-      }
-      return i;
+      return count % 2 == 0 || count <= 1;
    }
 
    private static boolean isLetterOrDigit(char c) {

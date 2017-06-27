@@ -85,7 +85,6 @@ public class Edit {
     */
    public void pasteText() {
       txtDoc.enableTypeEdit(false);
-      txtDoc.enableTypeEdit(false); 
       String clipboard = getClipboard();
       String sel = textArea.getSelectedText();
       int pos = textArea.getSelectionStart();
