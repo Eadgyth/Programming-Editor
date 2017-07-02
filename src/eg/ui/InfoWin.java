@@ -17,42 +17,45 @@ import java.awt.Font;
  */
 public class InfoWin {
 
-   JFrame infoWin = new JFrame("About Eadgyth");
-   JPanel okButton = new JPanel(new FlowLayout());
-   JPanel text = new JPanel(new GridLayout(4,1));
-   JPanel combine = new JPanel(new BorderLayout());
+   private final static Font TITLE_FONT = new Font("Verdana", Font.BOLD, 14);
+   private final static String INFO
+         = "<html>"
+         + "Version 1.0 beta<br>"
+         + "Malte Bussiek, m.bussiek@web.de"
+         + "</html>";
 
-   JButton closeInfo = new JButton("OK");
-   JLabel title = new JLabel("Eadgyth");
-   Font font = new Font("Verdana", Font.BOLD, 15);
-   JLabel version = new JLabel("Version 1.0 Beta");
-   JLabel author = new JLabel("Malte Bussiek, m.bussiek@web.de");
+   private final JFrame frame  = new JFrame("About Eadgyth");
+   private final JPanel okButton = new JPanel(new FlowLayout());
+   private final JPanel text     = new JPanel(new GridLayout(2, 1));
+   private final JPanel combine  = new JPanel(new BorderLayout());
+   private final JButton closeBt = new JButton("OK");
+   private final JLabel titleLb  = new JLabel("Eadgyth");
+   private final JLabel infoLb   = new JLabel(INFO);
 
    public InfoWin() {  
-      title.setFont(font);
-      closeInfo.setFocusPainted(false);
+      titleLb.setFont(TITLE_FONT);
+      closeBt.setFocusPainted(false);
 
-      okButton.add(closeInfo);
+      okButton.add(closeBt);
       
       text.setBackground(Color.white);
-      text.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-      text.add(title);
-      text.add(version);
-      text.add(author);
+      text.setBorder(eg.Constants.EMPTY_BORDER);
+      text.add(titleLb);
+      text.add(infoLb);
 
-      combine.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+      combine.setBorder(eg.Constants.EMPTY_BORDER);
       combine.add(text, BorderLayout.CENTER);
       combine.add(okButton, BorderLayout.SOUTH);
             
-      infoWin.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      infoWin.pack();
-      infoWin.setResizable(false);
-      infoWin.setLocation(650, 100);
-      infoWin.setSize(300,200);
-      infoWin.setContentPane(combine);
-      infoWin.setIconImage(IconFiles.EADGYTH_ICON.getImage());
-      infoWin.setVisible(true);
+      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      frame.pack();
+      frame.setResizable(false);
+      frame.setLocation(650, 100);
+      frame.setSize(300, 150);
+      frame.setContentPane(combine);
+      frame.setIconImage(IconFiles.EADGYTH_ICON.getImage());
+      frame.setVisible(true);
 
-      closeInfo.addActionListener(e -> infoWin.setVisible(false));  
+      closeBt.addActionListener(e -> frame.setVisible(false));  
    }
 }

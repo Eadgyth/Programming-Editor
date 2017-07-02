@@ -49,8 +49,8 @@ public class JavaColoring implements Colorable {
          for (String s : SyntaxUtils.BRACES) {
             lex.bracket(s);
          }
-         lex.quotedLineWise("\'", true);
-         lex.quotedLineWise("\"", true);
+         lex.quotedLineWise("\'", true, false);
+         lex.quotedLineWise("\"", true, false);
          lex.lineComments(LINE_CMNT, '\0');   
       }
       lex.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);

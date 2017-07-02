@@ -72,7 +72,7 @@ public class Coloring {
 
    /**
     * Colors the current line where a change happened (the entire text is
-    * scanned for block comments).
+    * scanned for block comments though).
     *
     * @param allText  the entire text of the document
     * @param pos  the pos within document where a change happened

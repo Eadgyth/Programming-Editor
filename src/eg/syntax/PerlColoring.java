@@ -60,8 +60,8 @@ public class PerlColoring implements Colorable {
       for (String s : SyntaxUtils.BRACES) {
          lex.bracket(s);
       }
-      lex.quotedLineWise("\'", true);
-      lex.quotedLineWise("\"", true);
+      lex.quotedLineWise("\'", true, false);
+      lex.quotedLineWise("\"", true, false);
       lex.lineComments(LINE_CMNT, '$');
    }
 }

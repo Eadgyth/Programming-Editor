@@ -8,11 +8,11 @@ public class SyntaxUtils {
    private SyntaxUtils() {}
 
    public final static String[] BRACKETS = {
-      "(", ")",
+      "(", ")"
    };
-   
+
    public final static String[] BRACES = {
-      "{", "}",
+      "{", "}"
    };
 
    /**
@@ -22,7 +22,7 @@ public class SyntaxUtils {
     *
     * @param text  the text
     * @param pos  the position that may be a the start of a word
-    * @param length  the length of the portion of text that may be 
+    * @param length  the length of the portion of text that may be
     * word
     * @return  if the portion of text starting at the specified
     * position and spanning the specified length does not adjoin
@@ -105,7 +105,7 @@ public class SyntaxUtils {
    /**
     * Returns the position of the next block end. -1 if the a block start
     * is found before an end
-    * 
+    *
     * @param text  the text
     * @param pos  the position relative to which the next block end is
     * searched
@@ -161,7 +161,7 @@ public class SyntaxUtils {
          return false;
       }
    }
-   
+
    public static boolean isTagStart(String text, int pos) {
       boolean isTagStart = false;
       if (pos > 0) {
@@ -186,7 +186,7 @@ public class SyntaxUtils {
          return true;
       }
    }
-   
+
    public static boolean isOutsideQuote(String text, int pos) {
       int count = 0;
       int i = 0;

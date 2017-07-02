@@ -53,7 +53,7 @@ public class ExtTabbedPane extends JTabbedPane {
     * Show or hides the tab bar. Hiding requires that only ony tab is
     * displayed.
     *
-    * @param show  true/false to show/hide the tanbar
+    * @param show  true/false to show/hide the tabbar
     */
    public void showTabbar(boolean show) {
       if (!show && getTabCount() > 1) {
@@ -100,9 +100,8 @@ public class ExtTabbedPane extends JTabbedPane {
 
    /**
     * Changes the title for the tab at the specified index.
-    * Used instead of <code>setTitleAt()</code> in parent class if
-    * tabs are added through
-    * {@link #addTab(String, Component, JButton)}
+    * Used instead of <code>setTitleAt()</code> in parent class if tabs
+    * are added through {@link #addTab(String, Component, JButton)}
     *
     * @param index  the index of the tab where the title is set
     * @param title  the tiltle

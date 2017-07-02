@@ -174,46 +174,67 @@ public class Lexer {
    /**
     * Searches and colors in blue a html tag
     *
-    * @param key  the keyword that is part of a tag
+    * @param tag  the tag
     */
-   public void tag(String key) {
+   public void htmlTag(String tag) {
       int start = 0;
       while (start != -1) {
-         start = toColor.toLowerCase().indexOf(key, start);
+         start = toColor.toLowerCase().indexOf(tag, start);
          if (start != -1) {
             if (SyntaxUtils.isTagStart(toColor, start)
-                  && SyntaxUtils.isTagEnd(toColor, key.length(), start)) {
-
-               setCharAttrKeyBlue(start + posStart, key.length());
+                  && SyntaxUtils.isTagEnd(toColor, tag.length(), start)) {
+ 
+               setCharAttrKeyBlue(start + posStart, tag.length());
             }
-            start += key.length();
+            start += tag.length();
+         }
+      }
+   }
+   
+   /**
+    * Searched and colors an html attribute
+    *
+    * @param attr  the attribute 
+    */
+   public void htmlAttr(String attr) {
+      int start = 0;
+      while (start != -1) {
+         start = toColor.indexOf(attr, start);
+         if (start != -1) {
+            int absStart = start + posStart;
+            boolean ok = (SyntaxUtils.isWord(toColor, start, attr.length())
+                  & isInBlock("<", ">", absStart))
+                  && !SyntaxUtils.isTagStart(toColor, start);
+            if (ok) {
+               setCharAttrKeyRed(absStart, attr.length());
+            }
+            start += attr.length();
          }
       }
    }
 
    /**
-    * Searches and colors in brown quoted text where a quoted section
-    * does not span several lines (a method for a quoted block of text
-    * is still missing!).
+    * Searches and colors in brown quoted text
     *
     * @param quoteMark  the quotation mark, i.e either single or double
     * quote
     * @param escape  whether the escape character to skip the quote sign
     * is taken into account
+    * @param isInHtmlTag  whether the quotation is in an html tag
     */
-   public void quotedLineWise(String quoteMark, boolean escape) {
+   public void quotedLineWise(String quoteMark, boolean escape, boolean isInHtmlTag) {
       if (Finder.countLines(toColor) > 1) {
          //
          // split because string literals are not colored across lines
          String[] chunkArr = toColor.split("\n");
          int sum = 0;
          for (String s : chunkArr) {
-            quoted(s, posStart + sum, quoteMark, escape);
+            quoted(s, posStart + sum, quoteMark, escape, isInHtmlTag);
             sum += s.length() + 1;
          }
       }
       else {
-         quoted(toColor, posStart, quoteMark, escape);
+         quoted(toColor, posStart, quoteMark, escape, isInHtmlTag);
       }
    }
 
@@ -223,7 +244,8 @@ public class Lexer {
     * @param lineCmnt  the String that represents the start of a line
     * comment
     * @param exception  the character that disables the line comment
-    * when it precedes <code>lineCmt</code>
+    * when it precedes <code>lineCmt</code>. The null character to skip
+    * any exception
     */
    public void lineComments(String lineCmnt, char exception) {
       int start = 0;
@@ -305,11 +327,7 @@ public class Lexer {
     * @return  if this pos is found in a certain block of text
     */
    public boolean isInBlock(String blockStart, String blockEnd) {
-      int lastStart = SyntaxUtils.lastBlockStart(allText, pos, blockStart,
-            blockEnd);
-      int nextEnd = SyntaxUtils.nextBlockEnd(allText, pos, blockStart,
-            blockEnd);
-      return lastStart != -1 & nextEnd != -1;
+      return isInBlock(blockStart, blockEnd, pos);
    }
 
    //
@@ -339,11 +357,10 @@ public class Lexer {
    }
 
    private void quoted(String toColor, int posStart, String quoteMark,
-         boolean escape) {
+         boolean escape, boolean isInHtmlTag) {
 
       int start = 0;
       int end = 0;
-
       while (start != -1 && end != -1) {
          start = toColor.indexOf(quoteMark, start);
          if (escape) {
@@ -359,10 +376,10 @@ public class Lexer {
                }
             }
             int length = 0;
-            boolean ok = true;
+            boolean ok = !isInHtmlTag || isInBlock("<", ">", start + posStart);
             if (end != -1) {
                if (quoteMark.equals("\'")) {
-                  ok = SyntaxUtils.isOutsideQuote(toColor, start);
+                  ok = ok && SyntaxUtils.isOutsideQuote(toColor, start);
                }
                if (ok) {
                   length = end - start + 1;
@@ -372,6 +389,14 @@ public class Lexer {
             }
          }
       }
+   }
+   
+   private boolean isInBlock(String blockStart, String blockEnd, int pos) {
+      int lastStart = SyntaxUtils.lastBlockStart(allText, pos, blockStart,
+            blockEnd);
+      int nextEnd = SyntaxUtils.nextBlockEnd(allText, pos, blockStart,
+            blockEnd);
+      return lastStart != -1 & nextEnd != -1;
    }
    
    private void removedFirstBlockStart(String allText, String blockStart,
