@@ -152,14 +152,17 @@ public class SyntaxUtils {
       }
       return isInQuotes;
    }
+   
+   public static int nextNotEscaped(String text, String toSearch,
+         boolean escape, int pos) {
 
-   public static boolean isEscaped(String text, int pos) {
-      if (pos > 0) {
-         return text.charAt(pos - 1) == '\\' && !isEscaped(text, pos - 1);
+      int index = text.indexOf(toSearch, pos);
+      if (escape) {
+         while (SyntaxUtils.isEscaped(text, index)) {
+            index = text.indexOf(toSearch, index + 1);
+         }
       }
-      else {
-         return false;
-      }
+      return index;
    }
 
    public static boolean isTagStart(String text, int pos) {
@@ -187,20 +190,38 @@ public class SyntaxUtils {
       }
    }
 
-   public static boolean isOutsideQuote(String text, int pos) {
+   public static boolean isNotQuoted(String text, int pos) {
       int count = 0;
       int i = 0;
       while (i < pos && i != -1) {
          i = text.indexOf("\"", i);
          if (i != -1) {
-            count++;
+            if (!isEscaped(text, i)) {
+               count++;
+            }
+            if (i >= pos) {
+               count--;
+            }
             i++;
          }
       }
-      return count % 2 == 0 || count <= 1;
+      return count <= 1 || count % 2 == 0;
    }
+   
+   //
+   //--private methods--/
+   //
 
    private static boolean isLetterOrDigit(char c) {
       return Character.isLetter(c) || Character.isDigit(c);
+   }
+   
+   private static boolean isEscaped(String text, int pos) {
+      if (pos > 0) {
+         return text.charAt(pos - 1) == '\\' && !isEscaped(text, pos - 1);
+      }
+      else {
+         return false;
+      }
    }
 }

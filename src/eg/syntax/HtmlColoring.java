@@ -26,11 +26,13 @@ public class HtmlColoring implements Colorable {
    private final static String[] Attr = {
       "align",
       "bgcolor",
-      "class",
+      "class",  "cols",
       "height", "href",
       "id",
+      "onclick",
+      "rows",
       "style",
-      "title",
+      "title",  "type",
       "valign", "value",
       "width"
    };
