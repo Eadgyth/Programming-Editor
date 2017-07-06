@@ -26,13 +26,10 @@ import javax.swing.plaf.TabbedPaneUI;
  */
 public class ExtTabbedPane extends JTabbedPane {
 
-   private final static FlowLayout FLOW_LAYOUT_LEFT
-                        = new FlowLayout(FlowLayout.LEFT, 0, 0);
-   private final static EmptyBorder EMPTY_BORDER
-                        = new EmptyBorder(0, 0, 0, 0);
+   private final static FlowLayout FLOW_LAYOUT_LEFT = new FlowLayout(FlowLayout.LEFT, 0, 0);
+   private final static EmptyBorder EMPTY_BORDER = new EmptyBorder(0, 0, 0, 0);
    private final static int FONT_SIZE = 11;
-   private final static Font VERDANA_PLAIN
-                        = new Font("Verdana", Font.PLAIN, FONT_SIZE);
+   private final static Font VERDANA_PLAIN = new Font("Verdana", Font.PLAIN, FONT_SIZE);
 
    private final ExtTabbedPaneUI ui = new ExtTabbedPaneUI();
 
