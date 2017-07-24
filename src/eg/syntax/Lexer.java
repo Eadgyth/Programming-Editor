@@ -20,7 +20,7 @@ public class Lexer {
    private final SimpleAttributeSet keyBlueSet = new SimpleAttributeSet();
    private final SimpleAttributeSet cmntSet    = new SimpleAttributeSet();
    private final SimpleAttributeSet brSet      = new SimpleAttributeSet();
-   private final SimpleAttributeSet brBlueSet  = new SimpleAttributeSet();
+   private final SimpleAttributeSet blueBoldSet  = new SimpleAttributeSet();
    private final SimpleAttributeSet strLitSet  = new SimpleAttributeSet();
    private final SimpleAttributeSet normalSet  = new SimpleAttributeSet();
    private final SimpleAttributeSet htmlValSet = new SimpleAttributeSet();
@@ -134,7 +134,7 @@ public class Lexer {
     * @param bracket  the bracket
     */
    public void bracketBlue(String bracket) {
-      string(bracket, brBlueSet, false);
+      string(bracket, blueBoldSet, false);
    }
 
    /**
@@ -176,7 +176,7 @@ public class Lexer {
             if (SyntaxUtils.isTagStart(toColor, start)
                   && SyntaxUtils.isTagEnd(toColor, tag.length(), start)) {
  
-               setCharAttrKeyBlue(start + posStart, tag.length());
+               setCharAttrBlueBold(start + posStart, tag.length());
             }
             start += tag.length();
          }
@@ -206,27 +206,26 @@ public class Lexer {
    }
 
    /**
-    * Searches and colors in brown quoted text
+    * Searches and colors in brown quoted text. The quote mark is ignored
+    * if a backslash precedes it
     *
     * @param quoteMark  the quotation mark, i.e either single or double
     * quote
-    * @param escape  whether the escape character to skip the quote sign
-    * is taken into account
-    * @param isInHtmlTag  whether the quotation is in an html tag
+    * @param isHtml  if the quotation is evaluated in a html file
     */
-   public void quotedLineWise(String quoteMark, boolean escape, boolean isHtml) {
+   public void quotedLineWise(String quoteMark, boolean isHtml) {
       if (Finder.countLines(toColor) > 1) {
          //
          // split because string literals are not colored across lines
          String[] chunkArr = toColor.split("\n");
          int sum = 0;
          for (String s : chunkArr) {
-            quoted(s, posStart + sum, quoteMark, escape, isHtml);
+            quoted(s, posStart + sum, quoteMark, isHtml);
             sum += s.length() + 1;
          }
       }
       else {
-         quoted(toColor, posStart, quoteMark, escape, isHtml);
+         quoted(toColor, posStart, quoteMark, isHtml);
       }
    }
 
@@ -349,7 +348,7 @@ public class Lexer {
    }
 
    private void quoted(String toColor, int posStart, String quoteMark,
-         boolean escape, boolean isHtml) {
+         boolean isHtml) {
 
       boolean isSingleQuote = quoteMark.equals("\'");
       boolean notQuoted = true;
@@ -357,15 +356,15 @@ public class Lexer {
       int end = 0;
       int length = 0;
       while (start != -1 && end != -1) {
-         start = SyntaxUtils.nextNotEscaped(toColor, quoteMark, escape, start);
+         start = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start);
          if (start != -1) {
             if (isSingleQuote) {
                notQuoted = SyntaxUtils.isNotQuoted(toColor, start);
             }
-            end = SyntaxUtils.nextNotEscaped(toColor, quoteMark, escape, start + 1);
+            end = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start + 1);
             if (end != -1) {
-               if (notQuoted & isSingleQuote) {
-                  notQuoted = SyntaxUtils.isNotQuoted(toColor, end);
+               if (isSingleQuote) {
+                  notQuoted = notQuoted && SyntaxUtils.isNotQuoted(toColor, end);
                }
                length = end - start + 1;
                if (notQuoted) {
@@ -441,6 +440,10 @@ public class Lexer {
    private void setCharAttrKeyBlue(int start, int length) {
       doc.setCharacterAttributes(start, length, keyBlueSet, false);
    }
+   
+   private void setCharAttrBlueBold(int start, int length) {
+      doc.setCharacterAttributes(start, length, blueBoldSet, false);
+   }
 
    private void setCharAttrKeyRed(int start, int length) {
       doc.setCharacterAttributes(start, length, keyRedSet, false);
@@ -496,9 +499,9 @@ public class Lexer {
       StyleConstants.setForeground(keyBlueSet, keyBlue);
       StyleConstants.setBold(keyBlueSet, false);
 
-      Color bracketBlue = new Color(20, 30, 255);
-      StyleConstants.setForeground(brBlueSet, bracketBlue);
-      StyleConstants.setBold(brBlueSet, true);
+      Color blueBold = new Color(20, 30, 255);
+      StyleConstants.setForeground(blueBoldSet, blueBold);
+      StyleConstants.setBold(blueBoldSet, true);
 
       Color bracketGray = new Color(20, 30, 50);
       StyleConstants.setForeground(brSet, bracketGray);
