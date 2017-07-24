@@ -27,6 +27,7 @@ import eg.ui.EditArea;
 import eg.ui.tabpane.ExtTabbedPane;
 import eg.ui.menu.ViewMenu;
 import eg.ui.menu.EditMenu;
+import eg.ui.menu.FileMenu;
 
 /**
  * The control of operations that require knowledge of the documents in
@@ -42,6 +43,7 @@ public class TabbedFiles implements Observer {
    private final ExtTabbedPane tabPane;
    private final ViewMenu vMenu;
    private final EditMenu eMenu;
+   private final FileMenu fMenu;
    private final EditAreaFormat format;
    private final DocumentUpdate docUpdate;
    private final CurrentProject currProj;
@@ -60,6 +62,7 @@ public class TabbedFiles implements Observer {
       tabPane = mw.tabPane();
       vMenu = mw.menu().viewMenu();
       eMenu = mw.menu().editMenu();
+      fMenu = mw.menu().fileMenu();
       this.format = format;
       this.docUpdate = docUpdate;
       this.currProj = currProj;
@@ -458,6 +461,7 @@ public class TabbedFiles implements Observer {
          currProj.setCurrTextDocument(iTab);
          mw.displayFrameTitle(txtDoc[iTab].filepath());
          vMenu.enableTabItm(nTabs() == 1);
+         fMenu.enableCloseAllItm(nTabs() > 1);
          eMenu.setLanguagesItms(txtDoc[iTab].language(),
                txtDoc[iTab].filename().length() == 0);
       }

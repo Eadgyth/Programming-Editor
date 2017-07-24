@@ -57,6 +57,16 @@ public class FileMenu {
       exitItm.addActionListener(e -> tf.exit());
    }
    
+   /**
+    * Enables the menu item for closing all open files
+    *
+    * @param isEnabled  true to set the menu item for for closing
+    * all open files
+    */
+   public void enableCloseAllItm(boolean isEnabled) {
+      closeAllItm.setEnabled(isEnabled);
+   }
+   
    private void assembleMenu() {
       menu.add(newFileItm);
       menu.add(openItm);
