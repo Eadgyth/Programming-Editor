@@ -16,14 +16,22 @@ import eg.utils.Finder;
  */
 public class Lexer {
 
-   private final SimpleAttributeSet keyRedSet  = new SimpleAttributeSet();
-   private final SimpleAttributeSet keyBlueSet = new SimpleAttributeSet();
-   private final SimpleAttributeSet cmntSet    = new SimpleAttributeSet();
-   private final SimpleAttributeSet brSet      = new SimpleAttributeSet();
-   private final SimpleAttributeSet blueBoldSet  = new SimpleAttributeSet();
-   private final SimpleAttributeSet strLitSet  = new SimpleAttributeSet();
-   private final SimpleAttributeSet normalSet  = new SimpleAttributeSet();
-   private final SimpleAttributeSet htmlValSet = new SimpleAttributeSet();
+   private final static Color BLUE   = new Color(20, 30, 255);
+   private final static Color RED    = new Color(230, 0, 80);
+   private final static Color GREEN  = new Color(80, 190, 80);
+   private final static Color GRAY   = new Color(30, 30, 30);
+   private final static Color PURPLE = new Color(180, 30, 220);
+   private final static Color ORANGE = new Color(220, 100, 75);
+
+   private final SimpleAttributeSet normalSet      = new SimpleAttributeSet();
+   private final SimpleAttributeSet redPlainSet    = new SimpleAttributeSet();
+   private final SimpleAttributeSet bluePlainSet   = new SimpleAttributeSet();
+   private final SimpleAttributeSet blueBoldSet    = new SimpleAttributeSet();
+   private final SimpleAttributeSet greenPlainSet  = new SimpleAttributeSet();
+   private final SimpleAttributeSet grayBoldSet    = new SimpleAttributeSet();
+   private final SimpleAttributeSet orangePlainSet = new SimpleAttributeSet();
+   private final SimpleAttributeSet purplePlainSet = new SimpleAttributeSet();
+
    private final StyledDocument doc;
 
    private Colorable colorable;
@@ -33,6 +41,9 @@ public class Lexer {
    private int posStart;
    private boolean isBlockCmnt = true;
    private boolean isTypeMode = false;
+   /*
+    * to assign any of the named sets */
+   private SimpleAttributeSet arbSet;
 
    /**
     * Creates a Lexer
@@ -58,7 +69,7 @@ public class Lexer {
     * Sets the text to be colored
     *
     * @param allText  the entire text of the document
-    * @param toColor  the text section that is to be colored
+    * @param toColor  the line or lines to be colored
     * @param pos  the pos within the document where a change happened
     * @param posStart  the pos within the document where
     * <code>toColor</code> starts
@@ -89,148 +100,138 @@ public class Lexer {
     * (Re-)colors in black this section of text that is to be colored
     */
    public void setCharAttrBlack() {
-      doc.setCharacterAttributes(posStart, toColor.length(), normalSet, false);
+      setCharAttr(posStart, toColor.length(), normalSet);
    }
 
    /**
     * (Re-)colors in black the entire text
     */
    public void setAllCharAttrBlack() {
-      doc.setCharacterAttributes(0, doc.getLength(), normalSet, false);
+      setCharAttr(0, doc.getLength(), normalSet);
    }
 
    /**
-    * Searches and colors in red a keyword
+    * Searches and colors keywords in red
     *
-    * @param key  the keyword
+    * @param keys  the array of keywords
     * @param reqWord  if the keyword must be a word
     */
-   public void keywordRed(String key, boolean reqWord) {
-      string(key, keyRedSet, reqWord);
+   public void keywordsRed(String[] keys, boolean reqWord) {
+      for (String s : keys) {
+         key(s, redPlainSet, reqWord);
+      }
    }
 
    /**
-    * Searches and colors in blue a keyword
+    * Searches and colors keywords in blue
     *
-    * @param key  the keyword
+    * @param keys  the array of keywords
     * @param reqWord  if the keyword must be a word
     */
-   public void keywordBlue(String key, boolean reqWord) {
-      string(key, keyBlueSet, reqWord);
+   public void keywordsBlue(String[] keys, boolean reqWord) {
+      for (String s : keys) {
+         key(s, bluePlainSet, reqWord);
+      }
    }
 
    /**
-    * Searches a bracket and displays it in bold
-    *
-    * @param bracket  the bracket
-    */
-   public void bracket(String bracket) {
-      string(bracket, brSet, false);
-   }
-
-   /**
-    * Searches a bracket and displays it in bold and blue
-    *
-    * @param bracket  the bracket
-    */
-   public void bracketBlue(String bracket) {
-      string(bracket, blueBoldSet, false);
-   }
-
-   /**
-    * Searches and colors in blue variables that start with a sign
+    * Searches and colors variables that start with a sign in blue
     * (like $ in Perl)
     *
-    * @param sign  the character that marks a variable
-    * @param end  the array of characters that mark the end of the
+    * @param signs  the array of characters that marks a variable
+    * @param endChars  the array of characters that mark the end of the
     * variable
     */
-   public void signedVariable(String sign,  char[] end) {
-      int start = 0;
-      while (start != -1) {
-         start = toColor.indexOf(sign, start);
-         int length = 0;
-         if (start != -1) {
-            if (SyntaxUtils.isWordStart(toColor, start)) {
-               length = varLength(start, end);
-               setCharAttrKeyBlue(start + posStart, length);
-               start += length;
-            }
-            else {
-               start++;
-            }
-         }
+   public void signedKeywordsBlue(String[] signs, char[] endChars) {
+      for (String s : signs) {
+         signedVariable(s, endChars);
       }
    }
 
    /**
-    * Searches and colors in blue a html tag
+    * Searches and colors html tags in blue
     *
-    * @param tag  the tag
+    * @param tags  the array of tags
     */
-   public void htmlTag(String tag) {
-      int start = 0;
-      while (start != -1) {
-         start = toColor.toLowerCase().indexOf(tag, start);
-         if (start != -1) {
-            if (SyntaxUtils.isTagStart(toColor, start)
-                  && SyntaxUtils.isTagEnd(toColor, tag.length(), start)) {
- 
-               setCharAttrBlueBold(start + posStart, tag.length());
-            }
-            start += tag.length();
-         }
-      }
-   }
-   
-   /**
-    * Searched and colors an html attribute
-    *
-    * @param attr  the attribute 
-    */
-   public void htmlAttr(String attr) {
-      int start = 0;
-      while (start != -1) {
-         start = toColor.indexOf(attr, start);
-         if (start != -1) {
-            int absStart = start + posStart;
-            boolean ok = (SyntaxUtils.isWord(toColor, start, attr.length())
-                  & isInBlock("<", ">", absStart))
-                  && !SyntaxUtils.isTagStart(toColor, start);
-            if (ok) {
-               setCharAttrKeyRed(absStart, attr.length());
-            }
-            start += attr.length();
-         }
+   public void htmlTags(String[] tags) {
+      for (String s : tags) {
+         htmlTag(s);
       }
    }
 
    /**
-    * Searches and colors in brown quoted text. The quote mark is ignored
+    * Searched and colors html attributes in red
+    *
+    * @param attributes  the array of attributes
+    */
+   public void htmlAttributes(String[] attributes) {
+       for (String s : attributes) {
+          htmlAttr(s);
+       }
+   }
+
+   /**
+    * Searches the braces and displays them in bold gray
+    */
+   public void bracesGray() {
+      key("{", grayBoldSet, false);
+      key("}", grayBoldSet, false);
+   }
+
+   /**
+    * Searches the brackets and displays them in bold blue
+    */
+   public void bracketsBlue() {
+      key("(", blueBoldSet, false);
+      key(")", blueBoldSet, false);
+   }
+
+   /**
+    * Searches and colors quoted text in orange. The quote mark is ignored
     * if a backslash precedes it
-    *
-    * @param quoteMark  the quotation mark, i.e either single or double
-    * quote
-    * @param isHtml  if the quotation is evaluated in a html file
     */
-   public void quotedLineWise(String quoteMark, boolean isHtml) {
-      if (Finder.countLines(toColor) > 1) {
+   public void quotedLineWise() {
+      if (Finder.isMultiline(toColor)) {
          //
          // split because string literals are not colored across lines
          String[] chunkArr = toColor.split("\n");
          int sum = 0;
          for (String s : chunkArr) {
-            quoted(s, posStart + sum, quoteMark, isHtml);
+            quoted(s, posStart + sum, "\"");
+            quoted(s, posStart + sum, "\'");
             sum += s.length() + 1;
          }
       }
       else {
-         quoted(toColor, posStart, quoteMark, isHtml);
+         quoted(toColor, posStart, "\"");
+         quoted(toColor, posStart, "\'");
       }
    }
 
    /**
-    * Searches and colors in green line comments
+    * Searches and colors quoted text in a html document. The quote
+    * mark is ignored if a backslash precedes it
+    */
+   public void quotedLineWiseHtml() {
+      if (Finder.isMultiline(toColor)) {
+         //
+         // split because string literals are not colored across lines
+         String[] chunkArr = toColor.split("\n");
+         int sum = 0;
+         for (String s : chunkArr) {
+            htmlQuoted(s, posStart + sum, "\"");
+            htmlQuoted(s, posStart + sum, "\'");
+            sum += s.length() + 1;
+         }
+      }
+      else {
+         htmlQuoted(toColor, posStart, "\"");
+         htmlQuoted(toColor, posStart, "\'");
+      }
+   }
+
+   /**
+    * Searches and colors line comments in green
     *
     * @param lineCmnt  the String that represents the start of a line
     * comment
@@ -249,7 +250,7 @@ public class Lexer {
                isException = toColor.charAt(start - 1) == exception;
             }
             int length = 0;
-            if (!isException 
+            if (!isException
                   && !SyntaxUtils.isInQuotes(toColor, start, lineCmnt.length())) {
 
                int lineEnd = toColor.indexOf("\n", start + 1);
@@ -259,15 +260,9 @@ public class Lexer {
                else {
                   length = toColor.length() - start;
                }
-               doc.setCharacterAttributes(start + posStart, length,
-                     cmntSet, false);
+               setCharAttr(start + posStart, length, greenPlainSet);
             }
-            if (isTypeMode && !isException) {
-               break;
-            }
-            else {
-               start += length + 1;
-            }
+            start += length + 1;
          }
       }
    }
@@ -282,21 +277,20 @@ public class Lexer {
       if (!isBlockCmnt) {
          return;
       }
-
       removedFirstBlockStart(allText, blockStart, blockEnd);
-
       int start = 0;
+      int length = 0;
       while (start != -1) {
          start = allText.indexOf(blockStart, start);
          int end = 0;
          if (start != -1) {
-            int length = 0;
+            length = 0;
             if (!SyntaxUtils.isInQuotes(allText, start, blockStart.length())) {
                end = SyntaxUtils.nextBlockEnd(allText, start + 1,
                      blockStart, blockEnd);
                if (end != -1) {
                   length = end - start + blockEnd.length();
-                  doc.setCharacterAttributes(start, length, cmntSet, false);
+                  setCharAttr(start, length, greenPlainSet);
                   removedBlockStart(allText, end + blockEnd.length(),
                          blockStart, blockEnd);
                }
@@ -322,7 +316,7 @@ public class Lexer {
    }
 
    //
-   //--used in this package or in this class--
+   //--used in this package and in this class--
    //
 
    void color() {
@@ -333,23 +327,21 @@ public class Lexer {
    //--private methods--
    //
 
-   private void string(String str, SimpleAttributeSet set, boolean reqWord) {
+   private void key(String str, SimpleAttributeSet set, boolean reqWord) {
       int start = 0;
       while (start != -1) {
          start = toColor.indexOf(str, start);
          if (start != -1) {
             boolean ok = !reqWord || SyntaxUtils.isWord(toColor, start, str.length());
             if (ok) {
-               doc.setCharacterAttributes(start + posStart, str.length(), set, false);
+               setCharAttr(start + posStart, str.length(), set);
             }
             start += str.length();
          }
       }
    }
 
-   private void quoted(String toColor, int posStart, String quoteMark,
-         boolean isHtml) {
-
+   private void htmlQuoted(String toColor, int posStart, String quoteMark) {
       boolean isSingleQuote = quoteMark.equals("\'");
       boolean notQuoted = true;
       int start = 0;
@@ -368,32 +360,97 @@ public class Lexer {
                }
                length = end - start + 1;
                if (notQuoted) {
-                  if (!isHtml) {
-                     doc.setCharacterAttributes(start + posStart, length, strLitSet, false);
+                  int absStart = start + posStart;
+                  if (isInBlock("<", ">", absStart)) {
+                     arbSet = purplePlainSet;
                   }
-                  else {
-                     if (isInBlock("<", ">", start + posStart)) {
-                        doc.setCharacterAttributes(start + posStart, length, htmlValSet, false);
-                     }
-                     else if (isInBlock("<script>", "</script>", start + posStart)) {
-                        doc.setCharacterAttributes(start + posStart, length, strLitSet, false);
-                     }
+                  else if (isInBlock("<script>", "</script>", absStart)) {
+                     arbSet = orangePlainSet;
                   }
+                  setCharAttr(absStart, length, arbSet);
                }
                start += length + 1;
             }
          }
       }
    }
-   
-   private boolean isInBlock(String blockStart, String blockEnd, int pos) {
-      int lastStart = SyntaxUtils.lastBlockStart(allText, pos, blockStart,
-            blockEnd);
-      int nextEnd = SyntaxUtils.nextBlockEnd(allText, pos, blockStart,
-            blockEnd);
-      return lastStart != -1 & nextEnd != -1;
+
+   private void quoted(String toColor, int posStart, String quoteMark) {
+      boolean isSingleQuote = quoteMark.equals("\'");
+      boolean notQuoted = true;
+      int start = 0;
+      int end = 0;
+      int length = 0;
+      while (start != -1 && end != -1) {
+         start = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start);
+         if (start != -1) {
+            if (isSingleQuote) {
+               notQuoted = SyntaxUtils.isNotQuoted(toColor, start);
+            }
+            end = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start + 1);
+            if (end != -1) {
+               if (isSingleQuote) {
+                  notQuoted = notQuoted && SyntaxUtils.isNotQuoted(toColor, end);
+               }
+               length = end - start + 1;
+               if (notQuoted) {
+                  int absStart = start + posStart;
+                  setCharAttr(absStart, length, orangePlainSet);
+               }
+               start += length + 1;
+            }
+         }
+      }
    }
-   
+
+   private void htmlTag(String tag) {
+      int start = 0;
+      while (start != -1) {
+         start = toColor.toLowerCase().indexOf(tag, start);
+         if (start != -1) {
+            if (SyntaxUtils.isHtmlTag(toColor, start, start + tag.length())) {
+               setCharAttr(start + posStart, tag.length(), blueBoldSet);
+            }
+            start += tag.length();
+         }
+      }
+   }
+
+   private void htmlAttr(String attr) {
+      int start = 0;
+      while (start != -1) {
+         start = toColor.indexOf(attr, start);
+         if (start != -1) {
+            int absStart = start + posStart;
+            boolean ok = (SyntaxUtils.isWord(toColor, start, attr.length())
+                  & isInBlock("<", ">", absStart))
+                  && !SyntaxUtils.isTagStart(toColor, start);
+            if (ok) {
+               setCharAttr(absStart, attr.length(), redPlainSet);
+            }
+            start += attr.length();
+         }
+      }
+   }
+
+   private void signedVariable(String sign,  char[] endChars) {
+      int start = 0;
+      while (start != -1) {
+         start = toColor.indexOf(sign, start);
+         int length = 0;
+         if (start != -1) {
+            if (SyntaxUtils.isWordStart(toColor, start)) {
+               length = SyntaxUtils.wordLength(toColor, start, endChars);
+               setCharAttr(start + posStart, length, bluePlainSet);
+               start += length;
+            }
+            else {
+               start++;
+            }
+         }
+      }
+   }
+
    private void removedFirstBlockStart(String allText, String blockStart,
          String blockEnd) {
 
@@ -437,41 +494,6 @@ public class Lexer {
       }
    }
 
-   private void setCharAttrKeyBlue(int start, int length) {
-      doc.setCharacterAttributes(start, length, keyBlueSet, false);
-   }
-   
-   private void setCharAttrBlueBold(int start, int length) {
-      doc.setCharacterAttributes(start, length, blueBoldSet, false);
-   }
-
-   private void setCharAttrKeyRed(int start, int length) {
-      doc.setCharacterAttributes(start, length, keyRedSet, false);
-   }
-   
-   private int varLength(int pos, char[] end) {
-      boolean found = false;      
-      int i;
-      for (i = pos + 1; i < toColor.length() && !found; i++) {                     
-         for (int j = 0; j < end.length; j++) {
-            if (i == pos + 1) {
-               if (toColor.charAt(i) == ' ') {
-                  found = true;
-                  break;
-               }
-            }
-            else {
-               if (toColor.charAt(i) == end[j]) {
-                  found = true;
-                  i--;
-                  break;
-               }
-            }
-         }
-      }
-      return i - pos;
-   }
-
    private void colSectionExBlock(String allText, String section, int pos) {
       if (isTypeMode) {
          enableTypeMode(false);
@@ -483,36 +505,41 @@ public class Lexer {
       }
    }
 
+   private boolean isInBlock(String blockStart, String blockEnd, int pos) {
+      int lastStart = SyntaxUtils.lastBlockStart(allText, pos, blockStart,
+            blockEnd);
+      int nextEnd = SyntaxUtils.nextBlockEnd(allText, pos, blockStart,
+            blockEnd);
+      return lastStart != -1 & nextEnd != -1;
+   }
+
+   private void setCharAttr(int start, int length, SimpleAttributeSet set) {
+      doc.setCharacterAttributes(start, length, set, false);
+   }
+
    private void setStyles() {
       StyleConstants.setForeground(normalSet, Color.BLACK);
       StyleConstants.setBold(normalSet, false);
 
-      Color commentGreen = new Color(80, 190, 80);
-      StyleConstants.setForeground(cmntSet, commentGreen);
-      StyleConstants.setBold(cmntSet, false);
+      StyleConstants.setForeground(redPlainSet, RED);
+      StyleConstants.setBold(redPlainSet, false);
 
-      Color keyRed = new Color(230, 0, 90);
-      StyleConstants.setForeground(keyRedSet, keyRed);
-      StyleConstants.setBold(keyRedSet, false);
+      StyleConstants.setForeground(bluePlainSet, BLUE);
+      StyleConstants.setBold(bluePlainSet, false);
 
-      Color keyBlue = new Color(80, 80, 230);
-      StyleConstants.setForeground(keyBlueSet, keyBlue);
-      StyleConstants.setBold(keyBlueSet, false);
-
-      Color blueBold = new Color(20, 30, 255);
-      StyleConstants.setForeground(blueBoldSet, blueBold);
+      StyleConstants.setForeground(blueBoldSet, BLUE);
       StyleConstants.setBold(blueBoldSet, true);
 
-      Color bracketGray = new Color(20, 30, 50);
-      StyleConstants.setForeground(brSet, bracketGray);
-      StyleConstants.setBold(brSet, true);
+      StyleConstants.setForeground(greenPlainSet, GREEN);
+      StyleConstants.setBold(greenPlainSet, false);
 
-      Color strLitOrange = new Color(230, 140, 50);
-      StyleConstants.setForeground(strLitSet, strLitOrange );
-      StyleConstants.setBold(strLitSet, false);
+      StyleConstants.setForeground(purplePlainSet, PURPLE);
+      StyleConstants.setBold(purplePlainSet, false);
 
-      Color htmlValPurple = new Color(148, 0, 211);
-      StyleConstants.setForeground(htmlValSet, htmlValPurple);
-      StyleConstants.setBold(htmlValSet, false);
+      StyleConstants.setForeground(grayBoldSet, GRAY);
+      StyleConstants.setBold(grayBoldSet, true);
+
+      StyleConstants.setForeground(orangePlainSet, ORANGE);
+      StyleConstants.setBold(orangePlainSet, false);
    }
 }

@@ -223,7 +223,7 @@ public final class TextDocument {
     */
    public void colorSection(String section, int posStart) {
       if (!isPlainText) {
-         type.colorSection(getText(), section, posStart);
+         type.colorMultipleLines(getText(), section, posStart);
       }
    }
 

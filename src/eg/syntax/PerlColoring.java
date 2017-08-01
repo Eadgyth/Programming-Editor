@@ -45,23 +45,11 @@ public class PerlColoring implements Colorable {
    @Override
    public void color(Lexer lex) {
       lex.setCharAttrBlack();
-      for (String s : PERL_SIGNS) {
-         lex.signedVariable(s, END_OF_VAR);
-      }
-      for (String s : PERL_KEYWORDS) {
-         lex.keywordRed(s, true);
-      }
-      for (String s : PERL_OP) {
-         lex.keywordRed(s, false);
-      }
-      for (String s : SyntaxUtils.BRACKETS) {
-         lex.bracket(s);
-      }
-      for (String s : SyntaxUtils.BRACES) {
-         lex.bracket(s);
-      }
-      lex.quotedLineWise("\'", true, false);
-      lex.quotedLineWise("\"", true, false);
+      lex.signedKeywordsBlue(PERL_SIGNS, END_OF_VAR);
+      lex.keywordsRed(PERL_KEYWORDS, true);
+      lex.keywordsRed(PERL_OP, false);
+      lex.bracesGray();
+      lex.quotedLineWise();
       lex.lineComments(LINE_CMNT, '$');
    }
 }

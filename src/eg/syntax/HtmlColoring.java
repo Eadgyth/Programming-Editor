@@ -23,10 +23,10 @@ public class HtmlColoring implements Colorable {
    };
 
    // incomplete
-   private final static String[] Attr = {
+   private final static String[] ATTRIBUTES = {
       "align",
       "bgcolor",
-      "class",  "cols",
+      "class",  "cols", "content",
       "height", "href",
       "id",
       "onclick",
@@ -44,14 +44,9 @@ public class HtmlColoring implements Colorable {
    public void color(Lexer lex) {
       if (!lex.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
          lex.setCharAttrBlack();
-         for (String s : TAGS) {
-            lex.htmlTag(s);
-         }
-         for (String s : Attr) {
-            lex.htmlAttr(s);
-         }
-         lex.quotedLineWise("\'", true, true);
-         lex.quotedLineWise("\"", true, true);
+         lex.htmlTags(TAGS);
+         lex.htmlAttributes(ATTRIBUTES);
+         lex.quotedLineWiseHtml();
       }
       lex.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
    }

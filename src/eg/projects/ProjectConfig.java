@@ -140,6 +140,7 @@ public abstract class ProjectConfig implements Configurable {
 
    /**
     * Sets this {@code SettingsWin}
+    *
     * @param setWin  the new {@link SettingsWin}
     */
    protected void setSettingsWin(SettingsWin setWin) {
@@ -216,7 +217,7 @@ public abstract class ProjectConfig implements Configurable {
       // first look if there is a eadconfig file
       String root = findRootByFile(path, Preferences.CONFIG_FILE);
       boolean found = root.length() > 0;
-      if (root.length() > 0) {
+      if (found) {
          CONFIG.readConfig(root);
          setWin.setSaveConfigSelected(true);
          configProjectByProps(root, CONFIG);

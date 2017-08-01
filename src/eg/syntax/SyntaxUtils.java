@@ -7,14 +7,6 @@ public class SyntaxUtils {
 
    private SyntaxUtils() {}
 
-   public final static String[] BRACKETS = {
-      "(", ")"
-   };
-
-   public final static String[] BRACES = {
-      "{", "}"
-   };
-
    /**
     * Returns if the portion of text starting at the specified
     * position and spanning the specified length does not adjoin
@@ -132,13 +124,11 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns if the portion of text starting at the specified
-    * position and spanning the specified length is surrounded by
-    * double quotes
+    * Returns if the portion of text starting at the specified position
+    * and spanning the specified length is surrounded by double quotes
     *
     * @param text  the text
-    * @param pos  the start position of the portion that may be in
-    * quotes
+    * @param pos  the start position of the portion that may be in quotes
     * @param length  the of the portion that may be in quotes
     * @return  if the portion of text starting at <code>pos</code>
     * and spanning <code>length</code> is surrounded by double quotes
@@ -153,59 +143,115 @@ public class SyntaxUtils {
       return isInQuotes;
    }
    
-   public static int nextNotEscaped(String text, String toSearch,
-         boolean escape, int pos) {
-
+   /**
+    * Returns the position of the specified String <code>toSearch</code>
+    * that is not preceded with a backslash
+    *
+    * @param text  the text
+    * @param toSearch  the String to seach
+    * @param pos  the position within <code>text</code> where the search
+    * starts
+    * @return  the position of <code>toSearch</code> that is not preceded
+    * with a backslash
+    */
+   public static int nextNotEscaped(String text, String toSearch, int pos) {
       int index = text.indexOf(toSearch, pos);
-      if (escape) {
-         while (SyntaxUtils.isEscaped(text, index)) {
-            index = text.indexOf(toSearch, index + 1);
-         }
+      while (SyntaxUtils.isEscaped(text, index)) {
+         index = text.indexOf(toSearch, index + 1);
       }
       return index;
    }
+   
+   /**
+    * Returns if the portion of text between the specified start and end
+    * positions is an html tag
+    *
+    * @param text  the text
+    * @param start  the start position of the tag keyword
+    * @param end  the end position of the tag keyword
+    * @return  if the portion of text between <code>start</code> and
+    * <code>end</code> is an html tag
+    */
+   public static boolean isHtmlTag(String text, int start, int end) {
+      return isTagStart(text, start) && isTagEnd(text, end);
+   }
 
-   public static boolean isTagStart(String text, int pos) {
+   public static boolean isTagStart(String text, int start) {
       boolean isTagStart = false;
-      if (pos > 0) {
-         char c = text.charAt(pos - 1);
-         isTagStart = c == '<';
+      if (start > 0) {
+         isTagStart = text.charAt(start - 1) == '<';
       }
-      if (!isTagStart && pos > 1) {
-         char c1 = text.charAt(pos - 2);
-         char c2 = text.charAt(pos - 1);
-         isTagStart = c2 == '/' && c1 == '<';
+      if (!isTagStart && start > 1) {
+         isTagStart = text.charAt(start - 1) == '/'
+               && text.charAt(start - 2) == '<';
       }
       return isTagStart;
    }
 
-   public static boolean isTagEnd(String text, int length, int pos) {
-      int endPos = pos + length;
-      if (text.length() > endPos) {
-         char c = text.charAt(endPos);
+   public static boolean isTagEnd(String text, int end) {
+      if (text.length() > end) {
+         char c = text.charAt(end);
          return c == '>' || c == ' ';
       }
       else {
          return true;
       }
    }
+   
+   /**
+    * Returns the length of a word that starts at the specified
+    * position and ends at one of the characters saved in
+    * <code>endChars</code>
+    *
+    * @param text  the text
+    * @param pos   the position where the word starts
+    * @param endChars  the array of characters that mark the end of the word
+    * @return  the length of the word
+    */
+   public static int wordLength(String text, int pos, char[] endChars) {
+      boolean found = false;
+      int i;
+      for (i = pos + 1; i < text.length() && !found; i++) {
+         for (int j = 0; j < endChars.length; j++) {
+            if (i == pos + 1) {
+               if (text.charAt(i) == ' ') {
+                  found = true;
+                  break;
+               }
+            }
+            else {
+               if (text.charAt(i) == endChars[j]) {
+                  found = true;
+                  i--;
+                  break;
+               }
+            }
+         }
+      }
+      return i - pos;
+   }
 
    public static boolean isNotQuoted(String text, int pos) {
       int count = 0;
       int i = 0;
-      while (i < pos && i != -1) {
+      while (i != -1) {
          i = text.indexOf("\"", i);
          if (i != -1) {
             if (!isEscaped(text, i)) {
                count++;
             }
-            if (i >= pos) {
-               count--;
+            if (i > pos) {
+               break;
             }
             i++;
          }
       }
-      return count <= 1 || count % 2 == 0;
+      if (pos < i) {
+         return (count - 1) % 2 == 0;
+      }
+      else {
+         return count <= 1 || count % 2 == 0;
+      }
    }
    
    //

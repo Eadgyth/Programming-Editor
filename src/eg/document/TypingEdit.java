@@ -90,7 +90,7 @@ class TypingEdit {
       }
       else {
          col.selectColorable(lang);
-         colorSection(editArea.getDocText(), null, 0);
+         colorMultipleLines(editArea.getDocText(), null, 0);
          autoInd.enableIndent(true);
       }
    }
@@ -111,10 +111,10 @@ class TypingEdit {
       lineNum.updateLineNumber(allText);
    }
 
-   void colorSection(String allText, String section, int pos) {
+   void colorMultipleLines(String allText, String section, int pos) {
       enableTypeEdit(false);
       lex.enableTypeMode(section != null);
-      col.colorSection(allText, section, pos);
+      col.colorMultipleLines(allText, section, pos);
       enableTypeEdit(true);
       lex.enableTypeMode(true);
    }
@@ -157,7 +157,7 @@ class TypingEdit {
       if (isTypeEdit) {
          int newLineNr = lineNum.getCurrLineNr();
          if (newLineNr > prevLineNr) {
-            colorSection(allText, null, 0);
+            colorMultipleLines(allText, null, 0);
          }
          //
          // to prevent damage; problem not solved

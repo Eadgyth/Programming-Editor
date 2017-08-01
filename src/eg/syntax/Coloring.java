@@ -16,15 +16,15 @@ public class Coloring {
    /**
     * Creates a <code>Coloring</code>
     *
-    * @param lex  the <code>Lexer</code> which a <code>Colorable</code>
-    * must be assigned to through {@link #selectColorable(Languages)}
+    * @param lex  the {@link Lexer} object
     */
    public Coloring(Lexer lex) {
       this.lex = lex;
    }
    
    /**
-    * Selects a {@link Colorable} based on the language
+    * Selects a {@link Colorable} based on the language and assigns
+    * it to this <code>Lexer</code>
     *
     * @param lang  the language which is one of the constants
     * in {@link Languages} but not PLAIN_TEXT
@@ -50,20 +50,23 @@ public class Coloring {
    
    /**
     * Colors a subset of lines or the entire text (in any case the entire
-    * text is scanned for block comments).
+    * text is scanned for block comments). To scan the entire text
+    * <code>section</code> is equal to <code>allText</code> or null.
     *
     * @param allText  the entire text of the document
     * @param section  a section of <code>allText</code>. If null
-    * <code>allText</code> is assigned
+    * <code>allText</code> is used. If it does not start at a line start or
+    * does not end at line end the full lines are built
     * @param pos  the pos within the document where a change happened.
     */
-   public void colorSection(String allText, String section, int pos) {
+   public void colorMultipleLines(String allText, String section, int pos) {
       int posStart = 0;
       if (section == null) {
          section = allText;
       }
       else {
          section = Finder.allLinesAtPos(allText, section, pos);
+         System.out.println(section);
          posStart = Finder.lastNewline(allText, pos) + 1;
       }
       lex.setTextToColor(allText, section, pos, posStart);
