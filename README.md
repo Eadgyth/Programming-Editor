@@ -17,7 +17,8 @@ To compile the program the source files (packages) must be placed in a directory
 includes the ".properties" files and the 'Resources' folder
 <p>
 A guide how to configure a project and some other info is found in
-<a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/EadgythProgram/Resources/Help.htmlHelp.html">Help.html</a>.
+<a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/EadgythProgram/Resources/Help.html">Help.html</a>.
+This file is also addressable from the 'Help' menu in the program.
 <p>
 The javadoc documentation is found in this repo and also can be viewed
 <a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/javadoc/index.html">here</a>.
