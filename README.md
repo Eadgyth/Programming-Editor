@@ -16,7 +16,8 @@ program. Plugins currently must be available as single jar files.<p>
 To compile the program the source files (packages) must be placed in a directory that also
 includes the ".properties" files and the 'Resources' folder
 <p>
-A guide how to configure a project and some other info is found in <a href="https://rawgit.com/Eadgyth/Java-Programming-Editormaster/EadgythProgram/Resources/Help.htmlHelp.html">Help.html></a>.
+A guide how to configure a project and some other info is found in
+<a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/EadgythProgram/Resources/Help.htmlHelp.html">Help.html</a>.
 <p>
 The javadoc documentation is found in this repo and also can be viewed
 <a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/javadoc/index.html">here</a>.
