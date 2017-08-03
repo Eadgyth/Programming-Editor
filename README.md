@@ -18,7 +18,8 @@ includes the ".properties" files and the 'Resources' folder.<p>
 A guide how to configure a project and some other info is found in the Resources
 folder (Help.html) and is adressable from the '?' menu. 
 <p>
-https://rawgit.com/Eadgyth/Java-Programming-Editor/master/javadoc/index.html
+
+<a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/javadoc/index.html">javadoc</a>
 LIMITATIONS <br> 
 1) Running an interactive (console) program that then requires writing to this process is not
 guaranteed to work in the console panel of the program. Interactive programs in Java seem to
