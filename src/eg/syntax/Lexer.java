@@ -21,7 +21,7 @@ public class Lexer {
    private final static Color GREEN  = new Color(80, 190, 80);
    private final static Color GRAY   = new Color(30, 30, 30);
    private final static Color PURPLE = new Color(180, 30, 220);
-   private final static Color ORANGE = new Color(220, 100, 75);
+   private final static Color ORANGE = new Color(255, 127, 20);
 
    private final SimpleAttributeSet normalSet      = new SimpleAttributeSet();
    private final SimpleAttributeSet redPlainSet    = new SimpleAttributeSet();
@@ -41,9 +41,6 @@ public class Lexer {
    private int posStart;
    private boolean isBlockCmnt = true;
    private boolean isTypeMode = false;
-   /*
-    * to assign any of the named sets */
-   private SimpleAttributeSet arbSet;
 
    /**
     * Creates a Lexer
@@ -362,12 +359,11 @@ public class Lexer {
                if (notQuoted) {
                   int absStart = start + posStart;
                   if (isInBlock("<", ">", absStart)) {
-                     arbSet = purplePlainSet;
+                     setCharAttr(absStart, length, purplePlainSet);
                   }
                   else if (isInBlock("<script>", "</script>", absStart)) {
-                     arbSet = orangePlainSet;
+                     setCharAttr(absStart, length, orangePlainSet); 
                   }
-                  setCharAttr(absStart, length, arbSet);
                }
                start += length + 1;
             }
