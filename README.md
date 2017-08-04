@@ -6,7 +6,7 @@ language is Java (Perl and HTML included but less elaborated).
 The program is extensible by plugins which have access to the editor field in a selected tab and
 by implementing other types of projects using the interface intended for this purpose.
 <p>
-REQUIREMENTS FOR TESTING <br>
+REQUIREMENTS FOR TESTING AND COMPILATION<br>
 Running the program requires JAVA 8 (JRE 8). I did not have the opportunity to test the program
 on operating systems other than windows Vista, 7 and 10.<p>
 The program must be found in the same folder as the two .properties files and the Resources
@@ -16,11 +16,12 @@ program. Plugins currently must be available as single jar files.<p>
 To compile the program the source files (packages) must be placed in a directory that also
 includes the ".properties" files and the 'Resources' folder
 <p>
+DOCUMENTATION<br>
 A guide how to configure a project and some other info is found in
 <a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/EadgythProgram/Resources/Help.html">Help.html</a>.
 This file is also addressable from the 'Help' menu in the program.
 <p>
-The javadoc documentation is found in this repo and also can be viewed
+The javadoc is found in this repo and also can be viewed
 <a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/javadoc/index.html">here</a>.
 <p>
 LIMITATIONS <br> 
