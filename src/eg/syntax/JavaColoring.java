@@ -29,12 +29,10 @@ public class JavaColoring implements Colorable {
    };
 
    private final static String LINE_CMNT = "//";
-   private final static String BLOCK_CMNT_START = "/*";
-   private final static String BLOCK_CMNT_END = "*/";
 
    @Override
    public void color(Lexer lex) {
-      if (!lex.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
+      if (!lex.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
          lex.setCharAttrBlack();
          lex.keywordsBlue(JAVA_ANNOTATIONS, false);
          lex.keywordsRed(JAVA_KEYWORDS, true);
@@ -43,6 +41,6 @@ public class JavaColoring implements Colorable {
          lex.quotedLineWise();
          lex.lineComments(LINE_CMNT, '\0');   
       }
-      lex.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
+      lex.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
    }
 }

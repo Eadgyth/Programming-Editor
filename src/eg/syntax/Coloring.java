@@ -38,6 +38,9 @@ public class Coloring {
          case HTML:
             colorable = new HtmlColoring();
             break;
+         case JAVASCRIPT:
+            colorable = new JavascriptColoring();
+            break;
          case PERL:
             colorable = new PerlColoring();
             break;
@@ -66,7 +69,6 @@ public class Coloring {
       }
       else {
          section = Finder.allLinesAtPos(allText, section, pos);
-         System.out.println(section);
          posStart = Finder.lastNewline(allText, pos) + 1;
       }
       lex.setTextToColor(allText, section, pos, posStart);

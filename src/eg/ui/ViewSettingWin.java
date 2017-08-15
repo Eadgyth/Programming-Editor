@@ -31,11 +31,12 @@ public class ViewSettingWin {
    private final JFrame frame = new JFrame("View settings");
    private final Preferences prefs = new Preferences();
    
-   private final JComboBox<String> selectLaf    = new JComboBox<>(LAF_OPT);
-   private final JCheckBox checkLineNumbers     = new JCheckBox();
-   private final JCheckBox checkToolbar         = new JCheckBox();
-   private final JCheckBox checkStatusbar       = new JCheckBox();
-   private final JButton   okBt                 = new JButton("OK");
+   private final JComboBox<String> selectLaf = new JComboBox<>(LAF_OPT);
+   private final JCheckBox checkLineNumbers  = new JCheckBox();
+   private final JCheckBox checkToolbar      = new JCheckBox();
+   private final JCheckBox checkStatusbar    = new JCheckBox();
+   private final JCheckBox checkIconSize     = new JCheckBox();
+   private final JButton   okBt              = new JButton("OK");
    
    public ViewSettingWin() {
       prefs.readPrefs();
@@ -82,13 +83,21 @@ public class ViewSettingWin {
    }
    
    /**
-    * Returns if showing the status bar is selected in the corresponding
-    * checkbox
+    * Returns if showing the status bar is selected
     *
     * @return if showing the staus bar is selected
     */ 
    public boolean isShowStatusbar() {
       return checkStatusbar.isSelected();
+   }
+   
+   /**
+    * Returns if showing large icons is selected
+    *
+    * @return  if showing large icons is selected
+    */
+   public boolean isLargeIcons() {
+      return checkIconSize.isSelected();
    }
    
    /**
@@ -116,11 +125,12 @@ public class ViewSettingWin {
    }
    
    private JPanel allPanels() {
-      JPanel allPanels = new JPanel(new GridLayout(5, 1));
+      JPanel allPanels = new JPanel(new GridLayout(6, 1));
       allPanels.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       allPanels.add(setLineNumberPanel());
       allPanels.add(setToolbarPanel());
       allPanels.add(setStatusBarPanel());
+      allPanels.add(setIconSizePanel());
       allPanels.add(setLafPnl());
       allPanels.add(buttonsPanel());
       frame.getRootPane().setDefaultButton(okBt);
@@ -159,13 +169,23 @@ public class ViewSettingWin {
       return checkBxPnl(checkStatusbar, "Show status bar:");
    }
    
+   private JPanel setIconSizePanel() {
+      if ("large".equals(prefs.getProperty("iconSize"))) {
+         checkIconSize.setSelected(true);
+      }
+      else {
+         checkIconSize.setSelected(false);
+      }      
+      return checkBxPnl(checkIconSize, "Show large Icons (needs restarting Eadgyth):");
+   }
+   
    private JPanel setLafPnl() {
       return comboBxPnl(selectLaf, "Look & feel (needs restarting Eadgyth):");
    }
 
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
       JLabel label = new JLabel(title);
-      label.setFont(Constants.SANSSERIF_BOLD_12);
+      label.setFont(Constants.SANSSERIF_BOLD_9);
       JPanel holdCheckBx = new JPanel(new FlowLayout(FlowLayout.LEFT));
       
       JPanel checkBxPnl = new JPanel(); 
@@ -179,8 +199,8 @@ public class ViewSettingWin {
    
    private JPanel comboBxPnl(JComboBox comboBox, String title) {      
       JLabel lb = new JLabel(title);
-      lb.setFont(Constants.SANSSERIF_BOLD_12);
-      comboBox.setFont(Constants.SANSSERIF_PLAIN_12);
+      lb.setFont(Constants.SANSSERIF_BOLD_9);
+      comboBox.setFont(Constants.SANSSERIF_PLAIN_9);
 
       JPanel pnl = new JPanel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));

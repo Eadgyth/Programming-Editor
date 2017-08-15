@@ -29,7 +29,8 @@ import eg.Constants;
  */
 public class SettingsWin {
 
-   private final static Dimension DIM_TF = new Dimension(300, 22);
+   private final static Dimension DIM_TF
+         = new Dimension(300, (int) (18 * Constants.SCREEN_RES_RATIO));
    private final static Dimension DIM_SPACER = new Dimension(0, 20);
 
    private final JFrame frame = new JFrame("Eadgyth - Project settings");
@@ -362,8 +363,8 @@ public class SettingsWin {
 
    private JPanel holdLbAndTf(JLabel lb, JTextField tf) {
       JPanel holdPnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-      lb.setFont(eg.Constants.SANSSERIF_BOLD_12);
-      tf.setFont(eg.Constants.SANSSERIF_PLAIN_12);
+      lb.setFont(eg.Constants.SANSSERIF_BOLD_9);
+      tf.setFont(eg.Constants.SANSSERIF_PLAIN_9);
       tf.setPreferredSize(DIM_TF);
       holdPnl.add(lb);
       holdPnl.add(tf);
@@ -373,13 +374,13 @@ public class SettingsWin {
    private TitledBorder titledBorder(String title) {
       TitledBorder tBorder = BorderFactory.createTitledBorder
             (new LineBorder(Color.BLACK, 1), title);
-      tBorder.setTitleFont(eg.Constants.VERDANA_PLAIN_11);
+      tBorder.setTitleFont(eg.Constants.VERDANA_PLAIN_8);
       return tBorder;
    }
    
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
       JLabel label = new JLabel(title);
-      label.setFont(Constants.SANSSERIF_BOLD_12);      
+      label.setFont(Constants.SANSSERIF_BOLD_9);      
       JPanel checkBxPnl = new JPanel(); 
       checkBxPnl.setLayout(new BoxLayout(checkBxPnl, BoxLayout.LINE_AXIS));
       checkBox.setHorizontalTextPosition(JCheckBox.LEFT);

@@ -351,6 +351,9 @@ public final class TextDocument {
          case "html": case "htm": case "xml":
             lang = Languages.HTML;
             break;
+         case "js":
+            lang = Languages.JAVASCRIPT;
+            break;
          case "pl": case "pm":
             lang = Languages.PERL;
             break;

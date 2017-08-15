@@ -63,7 +63,7 @@ public class FunctionPanel {
    private void initPanel() {
       titlePnl.setLayout(new BoxLayout(titlePnl, BoxLayout.LINE_AXIS));
       titlePnl.add(titleLb);
-      titleLb.setFont(Constants.SANSSERIF_PLAIN_12);
+      titleLb.setFont(Constants.SANSSERIF_PLAIN_9);
       closeBt.setBorder(new EmptyBorder(3, 5, 3, 5));
       closeBt.setContentAreaFilled(false);
       closeBt.setToolTipText("Close function area");

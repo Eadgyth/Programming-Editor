@@ -6,7 +6,7 @@ package eg.syntax;
 public interface Colorable {
    
    /**
-    * Colors text.
+    * Colors text
     *
     * @param lex  the reference to {@link Lexer}
     */

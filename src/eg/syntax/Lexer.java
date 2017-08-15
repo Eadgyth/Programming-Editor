@@ -17,11 +17,11 @@ import eg.utils.Finder;
 public class Lexer {
 
    private final static Color BLUE   = new Color(20, 30, 255);
-   private final static Color RED    = new Color(230, 0, 80);
+   private final static Color RED    = new Color(240, 0, 50);
    private final static Color GREEN  = new Color(80, 190, 80);
    private final static Color GRAY   = new Color(30, 30, 30);
    private final static Color PURPLE = new Color(180, 30, 220);
-   private final static Color ORANGE = new Color(255, 127, 20);
+   private final static Color ORANGE = new Color(230, 102, 0);
 
    private final SimpleAttributeSet normalSet      = new SimpleAttributeSet();
    private final SimpleAttributeSet redPlainSet    = new SimpleAttributeSet();
@@ -479,7 +479,7 @@ public class Lexer {
          int nextStart = allText.indexOf(blockStart, pos + 1);
          while (nextStart != -1 && SyntaxUtils.isInQuotes(allText, nextStart,
                 blockStart.length())) {
-            nextStart = allText.lastIndexOf(blockStart, nextStart + 1);
+            nextStart = allText.indexOf(blockStart, nextStart + 1);
          }
          if (nextStart != -1) {
             colSectionExBlock(allText, allText.substring(pos, nextStart), pos);

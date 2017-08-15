@@ -266,7 +266,7 @@ public final class EditArea {
     * @param fontSize  the font size
     */
    public void setFont(String font, int fontSize) {
-      Font fontNew = new Font(font, Font.PLAIN, fontSize);
+      Font fontNew = new Font(font, Font.PLAIN, (int) (fontSize * eg.Constants.SCREEN_RES_RATIO));
       lineArea.setFont(fontNew);
       textArea.setFont(fontNew);
    }

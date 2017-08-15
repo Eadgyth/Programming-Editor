@@ -3,7 +3,9 @@ package eg.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 import java.awt.event.WindowListener;
 
 import javax.swing.Box;
@@ -313,8 +315,9 @@ public class MainWin {
       frame.add(splitHorAll, BorderLayout.CENTER);
       frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
       frame.setIconImage(IconFiles.EADGYTH_ICON.getImage());
-      frame.setLocation(175, 25);
-      frame.setSize(900, 650);
+      frame.setLocation(5, 5);
+      Dimension screen = Constants.SCREEN_SIZE;
+      frame.setSize(screen.width - screen.width/3, screen.height - screen.height/4);
    }
 
    private void initSplitPane() {
@@ -335,7 +338,7 @@ public class MainWin {
    }
 
    private void initStatusbar() {
-      showProjectLb.setFont(Constants.VERDANA_PLAIN_11);
+      showProjectLb.setFont(Constants.VERDANA_PLAIN_8);
       statusBar.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
       statusBar.add(showProjectLb);
       showProjectLb.setText("Project: not set");

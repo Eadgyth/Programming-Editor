@@ -49,7 +49,7 @@ public class ConsolePanel {
       scroll.setViewportView(area);
       scroll.setBorder(null);
       area.setBorder(new LineBorder(Color.WHITE, 5));
-      area.setFont(Constants.VERDANA_PLAIN_11);
+      area.setFont(Constants.VERDANA_PLAIN_8);
       area.setForeground(areaFontColor);
       area.setEditable(false);
 

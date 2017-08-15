@@ -8,6 +8,7 @@ public enum Languages {
    PLAIN_TEXT("Plain text"),
    JAVA("Java"),
    HTML("Html"),
+   JAVASCRIPT("Javascript"),
    PERL("Perl");
    
    private String display;

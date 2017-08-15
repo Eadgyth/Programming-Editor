@@ -38,6 +38,7 @@ public class Preferences {
       "language",
       "wordWrap",
       "showTabs",
+      "iconSize",
       "recentMain",
       "recentModule",
       "recentSourceDir",

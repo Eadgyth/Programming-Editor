@@ -28,8 +28,6 @@ public class ExtTabbedPane extends JTabbedPane {
 
    private final static FlowLayout FLOW_LAYOUT_LEFT = new FlowLayout(FlowLayout.LEFT, 0, 0);
    private final static EmptyBorder EMPTY_BORDER = new EmptyBorder(0, 0, 0, 0);
-   private final static int FONT_SIZE = 11;
-   private final static Font VERDANA_PLAIN = new Font("Verdana", Font.PLAIN, FONT_SIZE);
 
    private final ExtTabbedPaneUI ui = new ExtTabbedPaneUI();
 
@@ -41,7 +39,7 @@ public class ExtTabbedPane extends JTabbedPane {
     * sets this {@link ExtTabbedPaneUI}
     */
    public ExtTabbedPane() {
-      ui.setHeight(FONT_SIZE);
+      ui.setHeight((int) (eg.Constants.SCREEN_RES_RATIO * 16));
       super.setUI(ui);
       addMouseMotionListener(mml);
    }
@@ -76,7 +74,7 @@ public class ExtTabbedPane extends JTabbedPane {
       JPanel tabPnl = new JPanel(FLOW_LAYOUT_LEFT);
       tabPnl.setOpaque(false);
       JLabel titleLb = new JLabel(title);
-      titleLb.setFont(VERDANA_PLAIN);
+      titleLb.setFont(eg.Constants.VERDANA_PLAIN_8);
       closeBt.setBorder(EMPTY_BORDER);
       closeBt.setContentAreaFilled(false);
       closeBt.setFocusable(false);

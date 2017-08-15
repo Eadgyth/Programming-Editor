@@ -97,7 +97,7 @@ public class JOptions {
 
       JComboBox cBox = new JComboBox(options);
       cBox.setSelectedItem(initOption);
-      cBox.setFont(eg.Constants.SANSSERIF_PLAIN_12);
+      cBox.setFont(eg.Constants.SANSSERIF_PLAIN_9);
       JPanel pnl = new JPanel(new GridLayout(2, 1));
       JLabel lb = new JLabel(message);
       lb.setBorder(eg.Constants.EMPTY_BORDER);

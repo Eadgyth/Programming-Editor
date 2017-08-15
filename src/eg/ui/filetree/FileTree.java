@@ -170,7 +170,7 @@ public class FileTree extends Observable {
    private void initTree() {
       tree = new JTree(model);
       tree.setRootVisible(false);
-      tree.setFont(Constants.VERDANA_PLAIN_11);
+      tree.setFont(Constants.SANSSERIF_PLAIN_9);
       tree.setBorder(new LineBorder(Color.WHITE, 5));
       tree.setCellRenderer(new TreeRenderer());
       tree.setToggleClickCount(0);

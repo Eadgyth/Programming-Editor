@@ -1,13 +1,20 @@
 package eg.syntax;
 
-/**
+/*
  * Static methods to search for text elements
  */
 public class SyntaxUtils {
 
    private SyntaxUtils() {}
-
+   
    /**
+    * The "slash-star" block comment start */
+   public final static String BLOCK_CMNT_START = "/*";
+   /**
+    * The "star-slash" block comment end */
+   public final static String BLOCK_CMNT_END = "*/";
+
+   /*
     * Returns if the portion of text starting at the specified
     * position and spanning the specified length does not adjoin
     * to a letter or a digit at one or both ends.

@@ -24,13 +24,8 @@ import eg.Preferences;
  */
 public class FontSettingWin {
 
-   /*private final static String[] FONTS = {
-      "Arial", "Consolas", "Courier", "Courier New", "Lucida Console",
-      "Lucida Sans Typewriter Regular", "Verdana"
-   };*/
-
    private final static String[] FONT_SIZES = {
-      "10", "11", "12", "13", "14", "15", "16"
+      "8", "9", "10", "11", "12", "13", "14", "15", "16", "18", "20"
    };
 
    private final JFrame frame = new JFrame("Font");
@@ -99,7 +94,7 @@ public class FontSettingWin {
       frame.setResizable(false);
       frame.setLocation(550, 100);
       frame.setContentPane(combinedPnl());
-      frame.setSize(400, 120);
+      frame.pack();
       frame.setVisible(false);
       frame.setAlwaysOnTop(true);
       frame.setIconImage(IconFiles.EADGYTH_ICON.getImage());
@@ -109,11 +104,11 @@ public class FontSettingWin {
       JPanel twoComboBx = new JPanel();
       twoComboBx.setLayout(new BoxLayout(twoComboBx, BoxLayout.LINE_AXIS));
       twoComboBx.add(fontPnl());
-      twoComboBx.add(Box.createHorizontalGlue());
+      twoComboBx.add(Box.createRigidArea(new Dimension(10, 0)));
       twoComboBx.add(sizePnl());
-      twoComboBx.setPreferredSize(new Dimension(380, 20));
 
-      JPanel combined = new JPanel(new FlowLayout());
+      JPanel combined = new JPanel();
+      combined.setLayout(new BoxLayout(combined, BoxLayout.Y_AXIS));
       combined.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       combined.add(twoComboBx);
       combined.add(buttonPnl());
@@ -132,9 +127,9 @@ public class FontSettingWin {
 
    private JPanel comboBoxPnl(JComboBox<String> comboBox, String title) {
       comboBox.setFocusable(false);
-      comboBox.setFont(Constants.VERDANA_PLAIN_11);
+      comboBox.setFont(Constants.VERDANA_PLAIN_8);
       JLabel titleLb = new JLabel(title);
-      titleLb.setFont(Constants.SANSSERIF_BOLD_12);
+      titleLb.setFont(Constants.SANSSERIF_BOLD_9);
       JPanel comboBoxPnl = new JPanel();
       comboBoxPnl.setLayout(new BoxLayout(comboBoxPnl, BoxLayout.LINE_AXIS));
       comboBoxPnl.add(titleLb);

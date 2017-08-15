@@ -109,8 +109,8 @@ public class ProcessStarter {
    }
 
    /**
-    * Returns true if no process is currently running. A warning is shown if
-    * a process is running
+    * Returns true if no process is currently running. A warning is
+    * otherwise
     *
     * @return  if no process is currently running
     */
@@ -118,13 +118,14 @@ public class ProcessStarter {
       boolean isEnded = process == null;
       if (!isEnded) {
          JOptions.warnMessage(
-               "A currently running process must be quit first");
+               "A process is currently running."
+               + " The process must be quit to start a new process.");
       }
       return isEnded;
    }
 
    //
-   //--private--//
+   // private
    //
 
    private void sendOutput(PrintWriter out) {

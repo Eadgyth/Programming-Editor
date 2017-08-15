@@ -3,25 +3,42 @@ package eg.ui;
 import java.io.File;
 import javax.swing.ImageIcon;
 
-/**
+import eg.Preferences;
+
+/*
  * Static ImageIcons for buttons etc.
  * <p>
  * Next to a few home-made icons
- * the majority is from the Tango Desctop Project; see
- * <a href="http://tango.freedesktop.org/Tango_Icon_Library">Tango Project</a> 
+ * the majority is from the Tango Desktop Project; see
+ * <a href="http://tango.freedesktop.org/Tango_Icon_Library">Tango Project</a>
  */
 public class IconFiles {
 
    private final static String F_SEP = File.separator;
-    
-   private final static String PROGRAM_DIR
-         = System.getProperty("user.dir");
-   private final static String TANGO_DIR
+   private final static String PROGRAM_DIR = System.getProperty("user.dir");
+   private final static String TANGO_DIR;
+   private final static String EAD_DIR;
+   
+   static {
+      Preferences prefs = new Preferences();
+      prefs.readPrefs();
+      if ("large".equals(prefs.getProperty("iconSize"))) {
+         TANGO_DIR
          = PROGRAM_DIR + F_SEP + "Resources"
-         + F_SEP + "Tango" + F_SEP;
-   private final static String EAD_DIR
+         + F_SEP + "Tango" + F_SEP + "large" + F_SEP;
+         EAD_DIR
          = PROGRAM_DIR + F_SEP + "Resources"
-         + F_SEP + "EadIcons" + F_SEP;
+         + F_SEP + "EadIcons" + F_SEP + "large" + F_SEP;
+      }
+      else {
+         TANGO_DIR
+         = PROGRAM_DIR + F_SEP + "Resources"
+         + F_SEP + "Tango" + F_SEP + "small" + F_SEP;
+         EAD_DIR
+         = PROGRAM_DIR + F_SEP + "Resources"
+         + F_SEP + "EadIcons" + F_SEP + "small" + F_SEP;
+      }
+   }
 
    // Tango icons
    public final static ImageIcon OPEN_ICON
@@ -50,8 +67,8 @@ public class IconFiles {
          = new ImageIcon(TANGO_DIR + "edit-clear.png");
    public final static ImageIcon REFRESH_ICON
          = new ImageIcon(TANGO_DIR + "view-refresh.png");
-         
-   // Eadgyth icons, drawn for this project
+
+   // Eadgyth icons
    public final static ImageIcon CHANGE_PROJ_ICON
          = new ImageIcon(EAD_DIR + "changeProj.png" );
    public final static ImageIcon RUN_ICON

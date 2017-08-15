@@ -38,10 +38,10 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
    /**
     * Sets the height of the tabs
     *
-    * @param fontSize  the font size
+    * @param height  the height
     */
-   public void setHeight(int fontSize) {
-      tabHeight = fontSize + 11;
+   public void setHeight(int height) {
+      tabHeight = height;
    }
 
    /**
