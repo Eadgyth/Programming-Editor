@@ -26,21 +26,22 @@ import eg.Constants;
 public class ViewSettingWin {
 
    public final static String[] LAF_OPT = {"System", "Java default"};
-   public final static String[] BACKGR_COL_OPT = {"White", "Black"};
+   public final static String[] ICON_SIZES = {"16 x 16", "22 x 22"};
 
    private final JFrame frame = new JFrame("View settings");
    private final Preferences prefs = new Preferences();
    
-   private final JComboBox<String> selectLaf = new JComboBox<>(LAF_OPT);
-   private final JCheckBox checkLineNumbers  = new JCheckBox();
-   private final JCheckBox checkToolbar      = new JCheckBox();
-   private final JCheckBox checkStatusbar    = new JCheckBox();
-   private final JCheckBox checkIconSize     = new JCheckBox();
-   private final JButton   okBt              = new JButton("OK");
+   private final JCheckBox checkLineNumbers       = new JCheckBox();
+   private final JCheckBox checkToolbar           = new JCheckBox();
+   private final JCheckBox checkStatusbar         = new JCheckBox();
+   private final JComboBox<String> selectLaf      = new JComboBox<>(LAF_OPT);
+   private final JComboBox<String> selectIconSize = new JComboBox<>(ICON_SIZES);
+   private final JButton   okBt                   = new JButton("OK");
    
    public ViewSettingWin() {
       prefs.readPrefs();
       selectLaf.setSelectedItem(prefs.getProperty("LaF"));
+      selectIconSize.setSelectedItem(prefs.getProperty("iconSize"));
       initFrame();
    }
    
@@ -92,12 +93,12 @@ public class ViewSettingWin {
    }
    
    /**
-    * Returns if showing large icons is selected
+    * Returns the index of combobox selection for the icon size
     *
-    * @return  if showing large icons is selected
-    */
-   public boolean isLargeIcons() {
-      return checkIconSize.isSelected();
+    * @return  the index of combobox selection for the icon size
+    */ 
+   public int selectedIconSize() {
+      return selectIconSize.getSelectedIndex();
    }
    
    /**
@@ -130,7 +131,7 @@ public class ViewSettingWin {
       allPanels.add(setLineNumberPanel());
       allPanels.add(setToolbarPanel());
       allPanels.add(setStatusBarPanel());
-      allPanels.add(setIconSizePanel());
+      allPanels.add(setIconSizePnl());
       allPanels.add(setLafPnl());
       allPanels.add(buttonsPanel());
       frame.getRootPane().setDefaultButton(okBt);
@@ -169,14 +170,8 @@ public class ViewSettingWin {
       return checkBxPnl(checkStatusbar, "Show status bar:");
    }
    
-   private JPanel setIconSizePanel() {
-      if ("large".equals(prefs.getProperty("iconSize"))) {
-         checkIconSize.setSelected(true);
-      }
-      else {
-         checkIconSize.setSelected(false);
-      }      
-      return checkBxPnl(checkIconSize, "Show large Icons (needs restarting Eadgyth):");
+   private JPanel setIconSizePnl() {
+      return comboBxPnl(selectIconSize, "Size of icons (needs restarting Eadgyth):");
    }
    
    private JPanel setLafPnl() {
@@ -206,7 +201,7 @@ public class ViewSettingWin {
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
       pnl.add(lb);
       pnl.add(Box.createHorizontalGlue());
-      JPanel holdComboBx = new JPanel(new FlowLayout());
+      JPanel holdComboBx = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       holdComboBx.add(comboBox);
       pnl.add(holdComboBx);
       return pnl;

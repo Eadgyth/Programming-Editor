@@ -15,28 +15,21 @@ import eg.Preferences;
 public class IconFiles {
 
    private final static String F_SEP = File.separator;
-   private final static String PROGRAM_DIR = System.getProperty("user.dir");
+   private final static String ICONS_DIR
+         = System.getProperty("user.dir") + F_SEP + "Resources" + F_SEP;
    private final static String TANGO_DIR;
    private final static String EAD_DIR;
    
    static {
       Preferences prefs = new Preferences();
       prefs.readPrefs();
-      if ("large".equals(prefs.getProperty("iconSize"))) {
-         TANGO_DIR
-         = PROGRAM_DIR + F_SEP + "Resources"
-         + F_SEP + "Tango" + F_SEP + "large" + F_SEP;
-         EAD_DIR
-         = PROGRAM_DIR + F_SEP + "Resources"
-         + F_SEP + "EadIcons" + F_SEP + "large" + F_SEP;
+      if ("22 x 22".equals(prefs.getProperty("iconSize"))) {
+         TANGO_DIR = ICONS_DIR + "Tango" + F_SEP + "large" + F_SEP;
+         EAD_DIR = ICONS_DIR + "EadIcons" + F_SEP + "large" + F_SEP;
       }
       else {
-         TANGO_DIR
-         = PROGRAM_DIR + F_SEP + "Resources"
-         + F_SEP + "Tango" + F_SEP + "small" + F_SEP;
-         EAD_DIR
-         = PROGRAM_DIR + F_SEP + "Resources"
-         + F_SEP + "EadIcons" + F_SEP + "small" + F_SEP;
+         TANGO_DIR = ICONS_DIR + "Tango" + F_SEP + "small" + F_SEP;
+         EAD_DIR = ICONS_DIR + "EadIcons" + F_SEP + "small" + F_SEP;
       }
    }
 

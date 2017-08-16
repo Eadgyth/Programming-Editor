@@ -26,7 +26,7 @@ public class ViewSetter {
 
    private boolean isShowToolbar;
    private boolean isShowStatusbar;
-   private boolean isLargeIcons;
+   private int selectedIconSizeInd;
    private int selectedLafInd;
 
    public ViewSetter(ViewSettingWin viewSetWin, MainWin mw) {
@@ -39,7 +39,7 @@ public class ViewSetter {
       mw.showStatusbar(isShowStatusbar);
       isShowToolbar = viewSetWin.isShowToolbar();
       mw.showToolbar(isShowToolbar);
-      isLargeIcons = viewSetWin.isLargeIcons();
+      selectedIconSizeInd = viewSetWin.selectedIconSize();
       selectedLafInd = viewSetWin.selectedLaf();
       
       prefs.readPrefs();
@@ -66,6 +66,7 @@ public class ViewSetter {
     */
    public void applySetWinOk() {
       boolean show = false;
+      int index = 0;
       String state = null;
 
       show = viewSetWin.isShowToolbar();
@@ -82,13 +83,12 @@ public class ViewSetter {
          state = isShowStatusbar ? "show" : "hide";
          prefs.storePrefs("statusbar", state);
       }
-      show = viewSetWin.isLargeIcons();
-      if (show != isLargeIcons) {
-         isLargeIcons = show;
-         state = isLargeIcons ? "large" : "small";
-         prefs.storePrefs("iconSize", state);
+      index = viewSetWin.selectedIconSize();
+      if (index != selectedIconSizeInd) {
+         selectedIconSizeInd = index;
+         prefs.storePrefs("iconSize", ViewSettingWin.ICON_SIZES[selectedIconSizeInd]);
       }
-      int index = viewSetWin.selectedLaf();
+      index = viewSetWin.selectedLaf();
       if (index != selectedLafInd) {
          selectedLafInd = index;
          prefs.storePrefs("LaF", ViewSettingWin.LAF_OPT[selectedLafInd]);
