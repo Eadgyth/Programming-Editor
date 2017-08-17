@@ -114,8 +114,8 @@ public class Toolbar {
          "Undo", "Redo", "Cut selection", "Copy selection",
          "Paste",
          "Indent selection more", "Indent selection less",
-         "Save all opened source files and compile project", "Run project",
-         "Change between projects"
+         "Save all opened source files of active project and compile",
+         "Run project", "Change between projects"
       }; 
       for (int i = 0; i < bts.length; i++) {
          toolbar.add(bts[i]);
