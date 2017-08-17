@@ -71,5 +71,5 @@ public class IconFiles {
    public final static ImageIcon COMPILE_ICON
          = new ImageIcon(EAD_DIR + "compile.png");
    public final static ImageIcon EADGYTH_ICON
-         = new ImageIcon(EAD_DIR + "EadgythIcon.png");
+         = new ImageIcon(ICONS_DIR + "EadIcons" + F_SEP + "EadgythIcon.png");
 }
