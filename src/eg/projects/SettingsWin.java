@@ -415,7 +415,7 @@ public class SettingsWin {
       frame.setLocation(550, 100);
       frame.setVisible(false);
       frame.setAlwaysOnTop(true);
-      frame.setIconImage(IconFiles.EADGYTH_ICON.getImage());
+      frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
       frame.getContentPane().add(combineAll());
       frame.pack();
    }

@@ -97,7 +97,7 @@ public class FontSettingWin {
       frame.pack();
       frame.setVisible(false);
       frame.setAlwaysOnTop(true);
-      frame.setIconImage(IconFiles.EADGYTH_ICON.getImage());
+      frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
    }
 
    private JPanel combinedPnl() {

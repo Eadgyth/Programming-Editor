@@ -6,10 +6,10 @@ package eg;
 public enum Languages {
 
    PLAIN_TEXT("Plain text"),
-   JAVA("Java"),
-   HTML("Html"),
    JAVASCRIPT("Javascript"),
-   PERL("Perl");
+   JAVA("Java"),
+   PERL("Perl"),
+   HTML("Html");
    
    private String display;
    

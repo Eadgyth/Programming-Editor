@@ -70,6 +70,9 @@ public class IconFiles {
          = new ImageIcon(EAD_DIR + "runCons.png" );
    public final static ImageIcon COMPILE_ICON
          = new ImageIcon(EAD_DIR + "compile.png");
-   public final static ImageIcon EADGYTH_ICON
-         = new ImageIcon(ICONS_DIR + "EadIcons" + F_SEP + "EadgythIcon.png");
+   public final static ImageIcon EADGYTH_ICON_16
+         = new ImageIcon(ICONS_DIR + "EadIcons" + F_SEP
+         + "small" + F_SEP + "EadgythIcon.png");
+   public final static ImageIcon EADGYTH_ICON_SET
+         = new ImageIcon(EAD_DIR + F_SEP + "EadgythIcon.png");
 }

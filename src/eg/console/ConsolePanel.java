@@ -36,7 +36,7 @@ public class ConsolePanel {
 
    private final JButton   setCmdBt   = new JButton("Cmd...");
    private final JButton   runBt      = new JButton(IconFiles.RUN_CMD_ICON);
-   private final JButton   runEadBt   = new JButton(IconFiles.EADGYTH_ICON);
+   private final JButton   runEadBt   = new JButton(IconFiles.EADGYTH_ICON_SET);
    private final JButton   stopBt     = new JButton(IconFiles.STOP_PROCESS_ICON);
    private final JButton   clearBt    = new JButton(IconFiles.CLEAR_ICON);
    private final JButton   closeBt    = new JButton(IconFiles.CLOSE_ICON);

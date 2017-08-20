@@ -243,7 +243,6 @@ public class Lexer {
          start = toColor.indexOf(lineCmnt, start);
          if (start != -1) {
             if (exception != '\0' && start > 0) {
-               isException = false;
                isException = toColor.charAt(start - 1) == exception;
             }
             int length = 0;
@@ -362,7 +361,7 @@ public class Lexer {
                      setCharAttr(absStart, length, purplePlainSet);
                   }
                   else if (isInBlock("<script>", "</script>", absStart)) {
-                     setCharAttr(absStart, length, orangePlainSet); 
+                     setCharAttr(absStart, length, orangePlainSet);
                   }
                }
                start += length + 1;

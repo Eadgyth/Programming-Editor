@@ -19,7 +19,7 @@ public class Constants {
    //
 
    /**
-    * The dimension of the screen */
+    * The screen size */
    public final static Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
 
    /**

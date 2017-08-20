@@ -314,7 +314,7 @@ public class MainWin {
       frame.setJMenuBar(menu.menubar());
       frame.add(splitHorAll, BorderLayout.CENTER);
       frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-      frame.setIconImage(IconFiles.EADGYTH_ICON.getImage());
+      frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
       frame.setLocation(5, 5);
       Dimension screen = Constants.SCREEN_SIZE;
       frame.setSize(screen.width - screen.width/3, screen.height - screen.height/4);

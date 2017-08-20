@@ -53,7 +53,7 @@ public class InfoWin {
       frame.setLocation(650, 100);
       frame.setSize(300, 150);
       frame.setContentPane(combine);
-      frame.setIconImage(IconFiles.EADGYTH_ICON.getImage());
+      frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
       frame.setVisible(true);
 
       closeBt.addActionListener(e -> frame.setVisible(false));  

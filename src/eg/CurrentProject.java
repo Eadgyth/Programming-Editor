@@ -58,7 +58,7 @@ public class CurrentProject {
    private final List<ProjectActions> projList = new ArrayList<>();
    /*
     * The display values for the languages in which plain text is excluded */
-   private final String[] langArr = new String[Languages.values().length - 1];
+   private final String[] langArr = new String[Languages.values().length - 2];
 
    private ProjectActions current;
    private TextDocument[] txtDoc;
@@ -72,8 +72,8 @@ public class CurrentProject {
       ProjectUIUpdate update = new ProjectUIUpdate(mw.menu().viewMenu(),
             mw.fileTree());
       selProj = new SelectedProject(update, proc, mw.console());
-      for (int i = 0; i < Languages.values().length - 1; i++) {
-         langArr[i] = Languages.values()[i + 1].display();
+      for (int i = 0; i < Languages.values().length - 2; i++) {
+         langArr[i] = Languages.values()[i + 2].display();
       }
    }
 
