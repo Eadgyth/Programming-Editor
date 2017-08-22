@@ -226,6 +226,13 @@ public final class TextDocument {
          type.colorMultipleLines(getText(), section, posStart);
       }
    }
+   
+   /**
+    * Discards all edits from the undo stack
+    */
+   public void discardEdits() {
+      type.discardEdits();
+   }
 
    /**
     * Performs an undo action

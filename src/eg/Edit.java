@@ -50,7 +50,7 @@ public class Edit {
    public void undo() {
       txtDoc.undo();
    }
-   
+
    /**
     * Performs redo action
     */
@@ -84,14 +84,26 @@ public class Edit {
     * Pastes text stored in the clipboard and replaces selected text
     */
    public void pasteText() {
-      txtDoc.enableTypeEdit(false);
       String clipboard = getClipboard();
       String sel = textArea.getSelectedText();
       int pos = textArea.getSelectionStart();
-      textArea.replaceSelection(clipboard);
-      txtDoc.enableTypeEdit(true);
-      EventQueue.invokeLater(() -> 
-         txtDoc.colorSection(clipboard, pos));
+      int ok = 0;
+      if (txtDoc.isCodingLanguage() && sel != null) {
+         ok = JOptions.confirmYesNo(
+               "Undoing replaced text is not supported.\nContinue ?");
+      }
+      if (ok == 0) {
+         if (sel != null) {
+            txtDoc.removeStr(pos, sel.length());
+            txtDoc.discardEdits();
+         }
+         txtDoc.enableTypeEdit(false);
+         txtDoc.insertStr(pos, clipboard); 
+         EventQueue.invokeLater(() -> {
+            txtDoc.colorSection(clipboard, pos);
+            txtDoc.enableTypeEdit(true);
+         });
+      }
    }
 
    /**
@@ -186,7 +198,7 @@ public class Edit {
    }
 
    //
-   //--private
+   //--private--//
    //
 
    private String getClipboard() {

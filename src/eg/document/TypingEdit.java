@@ -60,6 +60,7 @@ class TypingEdit {
    private DocumentEvent.EventType event;
    private int pos;
    private int changeLength = 0;
+   private int changeLength2 = 0;
 
    TypingEdit(EditArea editArea) {
       this.editArea = editArea;
@@ -118,6 +119,10 @@ class TypingEdit {
       enableTypeEdit(true);
       lex.enableTypeMode(true);
    }
+   
+   void discardEdits() {
+      undomanager.discardAllEdits();
+   }
 
    synchronized void undo() {
       try {
@@ -159,11 +164,6 @@ class TypingEdit {
          if (newLineNr > prevLineNr) {
             colorMultipleLines(allText, null, 0);
          }
-         //
-         // to prevent damage; problem not solved
-         else if (newLineNr < prevLineNr) {
-            undomanager.discardAllEdits();
-         }
          else {
             if (pos > 0 & pos < allText.length()) {
                color(allText, pos);
@@ -174,9 +174,9 @@ class TypingEdit {
    }
 
    private void color(String allText, int pos) {
-      EventQueue.invokeLater(() -> {
-         col.colorLine(allText, pos);
-      });
+      EventQueue.invokeLater(() ->
+         col.colorLine(allText, pos)
+      );
    }
 
    private final DocumentListener docListen = new DocumentListener() {
@@ -184,7 +184,8 @@ class TypingEdit {
       @Override
       public void insertUpdate(DocumentEvent de) {
          pos = de.getOffset();
-         changeLength = de.getLength();     
+         changeLength = de.getLength();
+         changeLength2 = de.getLength();
          event = de.getType();
          if (evaluateText) {
             String text = editArea.getDocText();
@@ -206,19 +207,15 @@ class TypingEdit {
       public void removeUpdate(DocumentEvent de) {
          pos = de.getOffset();
          changeLength = -de.getLength();
+         changeLength2 = de.getLength();
          event = de.getType();
-         //
-         // to prevent damage when undoing deleted text
-         if (isTypeEdit && changeLength < -1) {
-            undomanager.discardAllEdits();
-         }
          if (evaluateText) {
             String text = editArea.getDocText();
             updateLineNumber(text);
             if (isTypeEdit) {
                color(text, pos);
             }
-         } 
+         }
       }
 
       @Override
@@ -254,13 +251,13 @@ class TypingEdit {
          implements UndoableEditListener {
 
       CompoundEdit comp = null;
- 
+
       @Override
       public synchronized void undoableEditHappened(UndoableEditEvent e) {
          if (!evaluateText) {
             return;
          }
-     
+         
          if (!event.equals(DocumentEvent.EventType.CHANGE)) {
             addAnEdit(e.getEdit());
          }
@@ -300,10 +297,9 @@ class TypingEdit {
          if (comp == null) {
             comp = new CompoundEdit();
          }
-         
-         if (isEditSeparator() || event.equals(DocumentEvent.EventType.REMOVE)) {
+         if (changeLength2 == 1 && isEditSeparator()) {
             commitCompound();
-            super.addEdit(anEdit);
+            super.addEdit(anEdit); // the separator is separate edit
          }
          else {
             comp.addEdit(anEdit);
