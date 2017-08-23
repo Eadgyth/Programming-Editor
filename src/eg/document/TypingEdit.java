@@ -4,7 +4,10 @@
  * https://github.com/aymanhs/jsyntaxpane
  * (Copyright 2008 Ayman Al-Sairafi).
  * The separation of merged undo edits by time is replaced by
- * "undo-separators"
+ * "undo-separators". The undo does not work in the case that
+ * text with different styles is copied into a place where
+ * previoulsly text was deleted. This leads (often) to an exception
+ * in GlyphView.
  */
 package eg.document;
 
@@ -59,8 +62,8 @@ class TypingEdit {
    private char typed;
    private DocumentEvent.EventType event;
    private int pos;
-   private int changeLength = 0;
-   private int changeLength2 = 0;
+   private int changeLengthTemp = 0; // reset to 0 in caretUpdate()
+   private int changeLengthAbs = 0;
 
    TypingEdit(EditArea editArea) {
       this.editArea = editArea;
@@ -184,8 +187,8 @@ class TypingEdit {
       @Override
       public void insertUpdate(DocumentEvent de) {
          pos = de.getOffset();
-         changeLength = de.getLength();
-         changeLength2 = de.getLength();
+         changeLengthTemp = de.getLength();
+         changeLengthAbs = de.getLength();
          event = de.getType();
          if (evaluateText) {
             String text = editArea.getDocText();
@@ -206,8 +209,8 @@ class TypingEdit {
       @Override
       public void removeUpdate(DocumentEvent de) {
          pos = de.getOffset();
-         changeLength = -de.getLength();
-         changeLength2 = de.getLength();
+         changeLengthTemp = -de.getLength();
+         changeLengthAbs = de.getLength();
          event = de.getType();
          if (evaluateText) {
             String text = editArea.getDocText();
@@ -232,18 +235,18 @@ class TypingEdit {
       public void caretUpdate(CaretEvent ce) {
          caret = editArea.shiftToSelectionStart(ce.getDot());
          if (caret > 0) {
-            boolean isStop = true;
+            boolean isStop = caret - pos != changeLengthTemp;
             if (event.equals(DocumentEvent.EventType.INSERT)) {
-               isStop = caret - pos != 1 && caret - pos != changeLength;
+               isStop = isStop && caret - pos != 1;
             }
             else if (event.equals(DocumentEvent.EventType.REMOVE)) {
-               isStop = caret - pos != 0 && caret - pos != changeLength;
+               isStop = isStop && caret - pos != 0;
             }
             if (isStop) {
-               undomanager.discardAllEdits();
+               discardEdits();
             }
          }
-         changeLength = 0;
+         changeLengthTemp = 0;
       }
    }
 
@@ -297,7 +300,7 @@ class TypingEdit {
          if (comp == null) {
             comp = new CompoundEdit();
          }
-         if (changeLength2 == 1 && isEditSeparator()) {
+         if (changeLengthAbs == 1 & isEditSeparator() || changeLengthAbs > 1) {
             commitCompound();
             super.addEdit(anEdit); // the separator is separate edit
          }

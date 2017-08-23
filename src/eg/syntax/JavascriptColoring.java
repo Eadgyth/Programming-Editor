@@ -3,7 +3,7 @@ package eg.syntax;
 public class JavascriptColoring implements Colorable {
    
    // incomplete
-   private final static String[] KEYWORDS = {
+   public final static String[] JS_KEYWORDS = {
       "else",
       "if",
       "function",
@@ -14,7 +14,7 @@ public class JavascriptColoring implements Colorable {
    public void color(Lexer lex) {
       if (!lex.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
          lex.setCharAttrBlack();
-         lex.keywordsRed(KEYWORDS, true);
+         lex.keywordsRed(JS_KEYWORDS, true);
          lex.quotedLineWise();
       }
       lex.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);

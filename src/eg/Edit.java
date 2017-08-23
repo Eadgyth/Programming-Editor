@@ -87,18 +87,15 @@ public class Edit {
       String clipboard = getClipboard();
       String sel = textArea.getSelectedText();
       int pos = textArea.getSelectionStart();
-      int ok = 0;
-      if (txtDoc.isCodingLanguage() && sel != null) {
-         ok = JOptions.confirmYesNo(
-               "Undoing replaced text is not supported.\nContinue ?");
+      if (sel != null) {
+         txtDoc.removeStr(pos, sel.length());
       }
-      if (ok == 0) {
-         if (sel != null) {
-            txtDoc.removeStr(pos, sel.length());
-            txtDoc.discardEdits();
-         }
+      txtDoc.insertStr(pos, clipboard); 
+      if (txtDoc.isCodingLanguage()) {
+         //
+         // clean because replacing colored text can cause demage
+         txtDoc.discardEdits();
          txtDoc.enableTypeEdit(false);
-         txtDoc.insertStr(pos, clipboard); 
          EventQueue.invokeLater(() -> {
             txtDoc.colorSection(clipboard, pos);
             txtDoc.enableTypeEdit(true);

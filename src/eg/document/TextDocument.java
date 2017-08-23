@@ -227,9 +227,6 @@ public final class TextDocument {
       }
    }
    
-   /**
-    * Discards all edits from the undo stack
-    */
    public void discardEdits() {
       type.discardEdits();
    }
