@@ -13,6 +13,9 @@ public class SyntaxUtils {
    /**
     * The "star-slash" block comment end */
    public final static String BLOCK_CMNT_END = "*/";
+   /**
+    * The "slash-slash" line comment start */
+   public final static String LINE_CMNT = "//";
 
    /*
     * Returns if the portion of text starting at the specified

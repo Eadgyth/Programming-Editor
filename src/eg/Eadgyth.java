@@ -1,6 +1,6 @@
 package eg;
 
-import java.util.Locale;
+import java .util.Locale;
 
 import java.awt.EventQueue;
 

@@ -143,6 +143,10 @@ public final class EditArea {
    public StyledDocument getDoc() {
       return doc;
    }
+   
+   public SimpleAttributeSet getAttrSet() {
+      return set;
+   }
 
    /**
     * @return  if wordwrap is enabled
@@ -157,30 +161,14 @@ public final class EditArea {
     * @return  the entire text in this <code>StyledDocument</code>
     */
    public String getDocText() {
-      String in = null;
+      String text = null;
       try {
-         in = doc.getText(0, doc.getLength());
+         text = doc.getText(0, doc.getLength());
       }
       catch (BadLocationException e) {
          FileUtils.logStack(e);
       }
-      return in;
-   }
-
-   /**
-    * Returns the selection start or the unchanged position if no text
-    * is selected
-    *
-    * @param caretPos  the position in the document which is expected
-    * to be the caret position
-    * @return  the position of the selection start if text is selected
-    * or <code>caretPos</code> unchanged
-    */
-   public int shiftToSelectionStart(int caretPos) {
-      if (textArea.getSelectedText() != null) {
-         caretPos = textArea.getSelectionStart();
-      }
-      return caretPos;
+      return text;
    }
 
    /**
@@ -376,6 +364,8 @@ public final class EditArea {
    }
 
    private void setDocStyle() {
+      StyleConstants.setForeground(set, Color.BLACK);
+      StyleConstants.setBold(set, false);
       StyleConstants.setLineSpacing(set, 0.25f);
       Element el = doc.getParagraphElement(0);
       doc.setParagraphAttributes(0, el.getEndOffset(), set, false);

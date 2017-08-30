@@ -28,8 +28,6 @@ public class JavaColoring implements Colorable {
       "@Override", "@Deprecated", "@SuppressWarnings", "@SafeVarargs"
    };
 
-   private final static String LINE_CMNT = "//";
-
    @Override
    public void color(Lexer lex) {
       if (!lex.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
@@ -38,8 +36,8 @@ public class JavaColoring implements Colorable {
          lex.keywordsRed(JAVA_KEYWORDS, true);
          lex.bracketsBlue();
          lex.bracesGray();
-         lex.quotedLineWise();
-         lex.lineComments(LINE_CMNT, '\0');   
+         lex.quotedText();
+         lex.lineComments(SyntaxUtils.LINE_CMNT, '\0');   
       }
       lex.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
    }

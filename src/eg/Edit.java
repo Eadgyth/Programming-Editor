@@ -87,20 +87,17 @@ public class Edit {
       String clipboard = getClipboard();
       String sel = textArea.getSelectedText();
       int pos = textArea.getSelectionStart();
+      txtDoc.enableTypeEdit(false);
       if (sel != null) {
          txtDoc.removeStr(pos, sel.length());
       }
-      txtDoc.insertStr(pos, clipboard); 
-      if (txtDoc.isCodingLanguage()) {
-         //
-         // clean because replacing colored text can cause demage
-         txtDoc.discardEdits();
-         txtDoc.enableTypeEdit(false);
-         EventQueue.invokeLater(() -> {
+      EventQueue.invokeLater(() -> {
+         txtDoc.insertStr(pos, clipboard);
+         if (txtDoc.isCodingLanguage()) {
             txtDoc.colorSection(clipboard, pos);
             txtDoc.enableTypeEdit(true);
-         });
-      }
+         }
+      });
    }
 
    /**
@@ -114,9 +111,12 @@ public class Edit {
     * Sets a new indentation length
     */
    public void setNewIndentUnit() {
-      String selectedNumber = JOptions.comboBoxRes("Select the number of spaces:",
-            "Indentation length", SPACE_NUMBER,
+      String selectedNumber = JOptions.comboBoxRes(
+            "Select the number of spaces:",
+            "Indentation length",
+            SPACE_NUMBER,
             String.valueOf(indentLength), false);
+
       if (selectedNumber != null) {
          indentLength = Integer.parseInt(selectedNumber);
          indentUnit = "";

@@ -218,17 +218,13 @@ public final class TextDocument {
     *
     * @param section  a section of the document. Null to color the entire
     * entire text
-    * @param posStart  the pos within the entire text where the section to
+    * @param pos  the pos within the entire text where the section to
     * be colored starts. Is 0 if '{code section}' is null.
     */
-   public void colorSection(String section, int posStart) {
+   public void colorSection(String section, int pos) {
       if (!isPlainText) {
-         type.colorMultipleLines(getText(), section, posStart);
+         type.colorMultipleLines(section, pos);
       }
-   }
-   
-   public void discardEdits() {
-      type.discardEdits();
    }
 
    /**
@@ -300,7 +296,7 @@ public final class TextDocument {
    //
 
    private void displayFileContent(File f) {
-      type.enableEvaluateText(false);
+      type.enableUndoableEdit(false);
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
          String line;
          while ((line = br.readLine()) != null) {
@@ -314,7 +310,7 @@ public final class TextDocument {
          editArea.removeStr(getText().length() - 1, 1);
       }
       textArea.setCaretPosition(0);
-      type.enableEvaluateText(true);
+      type.enableUndoableEdit(true);
    }
 
    /**

@@ -8,6 +8,9 @@ import javax.swing.text.StyleContext;
 
 import java.awt.Color;
 
+import java.util.List;
+import java.util.ArrayList;
+
 //--Eadgyth--//
 import eg.utils.Finder;
 
@@ -20,10 +23,11 @@ public class Lexer {
    private final static Color RED    = new Color(240, 0, 50);
    private final static Color GREEN  = new Color(80, 190, 80);
    private final static Color GRAY   = new Color(30, 30, 30);
-   private final static Color PURPLE = new Color(180, 30, 220);
+   private final static Color PURPLE = new Color(150, 30, 250);
    private final static Color ORANGE = new Color(230, 102, 0);
 
-   private final SimpleAttributeSet normalSet      = new SimpleAttributeSet();
+   private final SimpleAttributeSet normalSet;
+   
    private final SimpleAttributeSet redPlainSet    = new SimpleAttributeSet();
    private final SimpleAttributeSet bluePlainSet   = new SimpleAttributeSet();
    private final SimpleAttributeSet blueBoldSet    = new SimpleAttributeSet();
@@ -41,15 +45,20 @@ public class Lexer {
    private int posStart;
    private boolean isBlockCmnt = true;
    private boolean isTypeMode = false;
+   private List<Integer> scanStarts = new ArrayList<>();
+   private List<Integer> scanEnds = new ArrayList<>();
 
    /**
     * Creates a Lexer
     *
     * @param doc  the <code>StyledDocument</code> that contains
     * the text to color
+    * @param set  the <code>SimpleAttributeSet</code> that has the
+    * normal (black, plain) style
     */
-   public Lexer(StyledDocument doc) {
+   public Lexer(StyledDocument doc, SimpleAttributeSet set) {
       this.doc = doc;
+      normalSet = set;
       setStyles();
    }
 
@@ -79,6 +88,7 @@ public class Lexer {
       this.pos = pos;
       this.posStart = posStart;
    }
+      
 
    /**
     * Enables type mode.
@@ -157,13 +167,17 @@ public class Lexer {
    }
 
    /**
-    * Searched and colors html attributes in red
+    * Searched and colors keywords in red in a html document
     *
-    * @param attributes  the array of attributes
+    * @param keys  the array of keywords
+    * @param blockStart  the String that represents the start of a block
+    * where the keyword must be found in
+    * @param blockEnd  the String that represents the end of a block
+    * where the keyword must be found in
     */
-   public void htmlAttributes(String[] attributes) {
-       for (String s : attributes) {
-          htmlAttr(s);
+   public void htmlKeywords(String[] keys, String blockStart, String blockEnd) {
+       for (String s : keys) {
+          htmlKeyword(s, blockStart, blockEnd);
        }
    }
 
@@ -187,43 +201,34 @@ public class Lexer {
     * Searches and colors quoted text in orange. The quote mark is ignored
     * if a backslash precedes it
     */
-   public void quotedLineWise() {
-      if (Finder.isMultiline(toColor)) {
-         //
-         // split because string literals are not colored across lines
-         String[] chunkArr = toColor.split("\n");
-         int sum = 0;
-         for (String s : chunkArr) {
-            quoted(s, posStart + sum, "\"");
-            quoted(s, posStart + sum, "\'");
-            sum += s.length() + 1;
-         }
-      }
-      else {
-         quoted(toColor, posStart, "\"");
-         quoted(toColor, posStart, "\'");
-      }
+   public void quotedText() {
+      quotedLineWise(false);
    }
 
    /**
-    * Searches and colors quoted text in a html document. The quote
+    * Searches and colors quoted text in a html document, separating between
+    * values of attributes and quotes text in script parts. The quote
     * mark is ignored if a backslash precedes it
     */
-   public void quotedLineWiseHtml() {
+   public void quotedTextHtml() {
+      quotedLineWise(true);
+   }
+   
+   private void quotedLineWise(boolean isHtml) {
       if (Finder.isMultiline(toColor)) {
          //
          // split because string literals are not colored across lines
          String[] chunkArr = toColor.split("\n");
          int sum = 0;
          for (String s : chunkArr) {
-            htmlQuoted(s, posStart + sum, "\"");
-            htmlQuoted(s, posStart + sum, "\'");
+            quoted(s, posStart + sum, "\"", isHtml);
+            quoted(s, posStart + sum, "\'", isHtml);
             sum += s.length() + 1;
          }
       }
       else {
-         htmlQuoted(toColor, posStart, "\"");
-         htmlQuoted(toColor, posStart, "\'");
+         quoted(toColor, posStart, "\"", isHtml);
+         quoted(toColor, posStart, "\'", isHtml);
       }
    }
 
@@ -237,30 +242,15 @@ public class Lexer {
     * any exception
     */
    public void lineComments(String lineCmnt, char exception) {
-      int start = 0;
-      boolean isException = false;
-      while (start != -1) {
-         start = toColor.indexOf(lineCmnt, start);
-         if (start != -1) {
-            if (exception != '\0' && start > 0) {
-               isException = toColor.charAt(start - 1) == exception;
-            }
-            int length = 0;
-            if (!isException
-                  && !SyntaxUtils.isInQuotes(toColor, start, lineCmnt.length())) {
-
-               int lineEnd = toColor.indexOf("\n", start + 1);
-               if (lineEnd != -1) {
-                  length = lineEnd - start;
-               }
-               else {
-                  length = toColor.length() - start;
-               }
-               setCharAttr(start + posStart, length, greenPlainSet);
-            }
-            start += length + 1;
-         }
-      }
+      lineComments(lineCmnt, exception, false);
+   }
+    
+   /**
+    * Searches and colors line comments in green in javascript section
+    * of an html document
+    */
+   public void lineCommentsJavascriptInHtml() {
+      lineComments("//", '\0', true);
    }
 
    /**
@@ -312,7 +302,7 @@ public class Lexer {
    }
 
    //
-   //--used in this package and in this class--
+   //--used in this package and in this class--//
    //
 
    void color() {
@@ -320,7 +310,7 @@ public class Lexer {
    }
 
    //
-   //--private methods--
+   //--private methods--//
    //
 
    private void key(String str, SimpleAttributeSet set, boolean reqWord) {
@@ -336,8 +326,25 @@ public class Lexer {
          }
       }
    }
+   
+   private void htmlKeyword(String keyword, String blockStart, String blockEnd) {
+      int start = 0;
+      while (start != -1) {
+         start = toColor.indexOf(keyword, start);
+         if (start != -1) {
+            int absStart = start + posStart;
+            boolean ok = (SyntaxUtils.isWord(toColor, start, keyword.length())
+                  & isInBlock(blockStart, blockEnd, absStart))
+                  && !SyntaxUtils.isTagStart(toColor, start);
+            if (ok) {
+               setCharAttr(absStart, keyword.length(), redPlainSet);
+            }
+            start += keyword.length();
+         }
+      }
+   }
 
-   private void htmlQuoted(String toColor, int posStart, String quoteMark) {
+   private void quoted(String toColor, int lineStart, String quoteMark, boolean isHtml) {
       boolean isSingleQuote = quoteMark.equals("\'");
       boolean notQuoted = true;
       int start = 0;
@@ -356,47 +363,29 @@ public class Lexer {
                }
                length = end - start + 1;
                if (notQuoted) {
-                  int absStart = start + posStart;
-                  if (isInBlock("<", ">", absStart)) {
-                     setCharAttr(absStart, length, purplePlainSet);
-                  }
-                  else if (isInBlock("<script>", "</script>", absStart)) {
-                     setCharAttr(absStart, length, orangePlainSet);
-                  }
+                  setQuoteAttr(start, lineStart, length, isHtml);
                }
                start += length + 1;
             }
          }
       }
    }
-
-   private void quoted(String toColor, int posStart, String quoteMark) {
-      boolean isSingleQuote = quoteMark.equals("\'");
-      boolean notQuoted = true;
-      int start = 0;
-      int end = 0;
-      int length = 0;
-      while (start != -1 && end != -1) {
-         start = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start);
-         if (start != -1) {
-            if (isSingleQuote) {
-               notQuoted = SyntaxUtils.isNotQuoted(toColor, start);
-            }
-            end = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start + 1);
-            if (end != -1) {
-               if (isSingleQuote) {
-                  notQuoted = notQuoted && SyntaxUtils.isNotQuoted(toColor, end);
-               }
-               length = end - start + 1;
-               if (notQuoted) {
-                  int absStart = start + posStart;
-                  setCharAttr(absStart, length, orangePlainSet);
-               }
-               start += length + 1;
-            }
+   
+   private void setQuoteAttr(int pos, int lineStart, int length, boolean isHtml) {
+      int absStart = pos + lineStart;
+      if (isHtml) {
+         if (isInBlock("<", ">", absStart)) {
+            setCharAttr(absStart, length, purplePlainSet);
+         }
+         else if (isInBlock("<script>", "</script>", absStart)) {
+            setCharAttr(absStart, length, orangePlainSet);
          }
       }
-   }
+      else {
+         setCharAttr(absStart, length, orangePlainSet);
+      }
+  } 
+      
 
    private void htmlTag(String tag) {
       int start = 0;
@@ -407,23 +396,6 @@ public class Lexer {
                setCharAttr(start + posStart, tag.length(), blueBoldSet);
             }
             start += tag.length();
-         }
-      }
-   }
-
-   private void htmlAttr(String attr) {
-      int start = 0;
-      while (start != -1) {
-         start = toColor.indexOf(attr, start);
-         if (start != -1) {
-            int absStart = start + posStart;
-            boolean ok = (SyntaxUtils.isWord(toColor, start, attr.length())
-                  & isInBlock("<", ">", absStart))
-                  && !SyntaxUtils.isTagStart(toColor, start);
-            if (ok) {
-               setCharAttr(absStart, attr.length(), redPlainSet);
-            }
-            start += attr.length();
          }
       }
    }
@@ -442,6 +414,35 @@ public class Lexer {
             else {
                start++;
             }
+         }
+      }
+   }
+   
+   private void lineComments(String lineCmnt, char exception, boolean isHtml) {
+      final boolean isException = exception != '\0';
+      boolean ok = true;
+      int start = 0;
+      while (start != -1) {
+         start = toColor.indexOf(lineCmnt, start);
+         if (start != -1) {
+            if (isException && start > 0) {
+               ok = toColor.charAt(start - 1) != exception;
+            }
+            if (isHtml) {
+               ok = ok && isInBlock("<script>", "</script>", start + posStart);
+            }
+            int length = 0;
+            if (ok && !SyntaxUtils.isInQuotes(toColor, start, lineCmnt.length())) {
+               int lineEnd = toColor.indexOf("\n", start + 1);
+               if (lineEnd != -1) {
+                  length = lineEnd - start;
+               }
+               else {
+                  length = toColor.length() - start;
+               }
+               setCharAttr(start + posStart, length, greenPlainSet);
+            }
+            start += length + 1;
          }
       }
    }
@@ -513,8 +514,6 @@ public class Lexer {
    }
 
    private void setStyles() {
-      StyleConstants.setForeground(normalSet, Color.BLACK);
-      StyleConstants.setBold(normalSet, false);
 
       StyleConstants.setForeground(redPlainSet, RED);
       StyleConstants.setBold(redPlainSet, false);

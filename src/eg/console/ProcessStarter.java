@@ -170,7 +170,7 @@ public class ProcessStarter {
    private void startNewCmd() {
       String cmd = JOptions.dialogRes(
                "Enter a system command that is executed in the current"
-               + " working directory " + workingDirName + ".",
+               + " working directory (" + workingDirName + ")",
                "Run", previousCmd);
       if (cmd != null && cmd.length() > 0) {
          consPnl.enableRunBt(false);

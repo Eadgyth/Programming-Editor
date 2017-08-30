@@ -49,7 +49,7 @@ public class PerlColoring implements Colorable {
       lex.keywordsRed(PERL_KEYWORDS, true);
       lex.keywordsRed(PERL_OP, false);
       lex.bracesGray();
-      lex.quotedLineWise();
+      lex.quotedText();
       lex.lineComments(LINE_CMNT, '$');
    }
 }
