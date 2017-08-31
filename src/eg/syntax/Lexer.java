@@ -215,7 +215,7 @@ public class Lexer {
    }
    
    private void quotedLineWise(boolean isHtml) {
-      if (Finder.isMultiline(toColor)) {
+      if (toColor.indexOf("\n") != -1) {
          //
          // split because string literals are not colored across lines
          String[] chunkArr = toColor.split("\n");

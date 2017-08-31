@@ -43,6 +43,7 @@ class TypingEdit {
    private boolean isTypeEdit = false;
    private String text = "";
    private int pos;
+   private String change = "";
    private int changeLength = 0; // reset to 0 in caretUpdate()
    private DocumentEvent.EventType event;
 
@@ -58,7 +59,6 @@ class TypingEdit {
 
    void enableUndoableEdit(boolean isEnabled) {
       isUndoable = isEnabled;
-      text = editArea.getDocText();
    }
 
    void enableTypeEdit(boolean isEnabled) {
@@ -126,20 +126,12 @@ class TypingEdit {
    //
 
    private void updateAfterUndoRedo(int prevLineNr) {
-      text = editArea.getDocText();
-      updateLineNumber(text);
-      if (isTypeEdit) {
-         int lineNr = lineNum.getCurrLineNr();
-         if (lineNr != prevLineNr) {
-            colorMultipleLines(null, 0);
-         }
-         else {
-            color();
-         }
+      if (isTypeEdit && !change.equals("\n")) {
+         colorMultipleLines(change, pos);
       }
    }
 
-   void color() {
+   private void color() {
       EventQueue.invokeLater(() ->
          col.colorLine(text, pos)
       );
@@ -152,10 +144,11 @@ class TypingEdit {
          event = de.getType();
          pos = de.getOffset();
          changeLength = de.getLength();
+         text = editArea.getDocText();
+         change = text.substring(pos, pos + de.getLength());
+         updateLineNumber(text);
          if (isUndoable) {
-            text = editArea.getDocText();
-            undo.addAnEdit(text.substring(pos, pos + de.getLength()));
-            updateLineNumber(text);
+            undo.addAnEdit();
             if (isTypeEdit) {
                autoInd.setText(text);
                color();
@@ -171,10 +164,11 @@ class TypingEdit {
          event = de.getType();
          pos = de.getOffset();
          changeLength = -de.getLength();
+         change = text.substring(pos, pos + de.getLength());
+         text = editArea.getDocText();
+         updateLineNumber(text);
          if (isUndoable) {
-            undo.addAnEdit(text.substring(pos, pos + de.getLength()));
-            text = editArea.getDocText();
-            updateLineNumber(text);
+            undo.addAnEdit();
             if (isTypeEdit) {
                color();
             }
@@ -189,18 +183,16 @@ class TypingEdit {
 
    private class UndoStopper implements CaretListener {
 
-      int caret;
-
       @Override
       public void caretUpdate(CaretEvent ce) {
-         caret = editArea.textArea().getSelectionStart();
+         int caret = editArea.textArea().getSelectionStart();
          if (caret > 0) {
-            boolean isStop = caret - pos != changeLength;
+            boolean isStop = isStop = caret - pos != changeLength;
             if (event.equals(DocumentEvent.EventType.INSERT)) {
                isStop = isStop && caret - pos != 1;
             }
             else if (event.equals(DocumentEvent.EventType.REMOVE)) {
-               isStop = isStop && caret - pos != 0;
+               isStop = caret - pos != 0;
             }
             if (isStop) {
                undo.discardEdits();
@@ -217,18 +209,28 @@ class TypingEdit {
       List<Boolean> types = new ArrayList<>();
       int index = -1;
       
-      void addAnEdit(String changedText) {
+      void addAnEdit() {
          if (index == -1) {
             discardEdits();
          }
-         edits.add(changedText);
+         else if (index < edits.size() - 1) {
+            for (int i = edits.size() - 1; i > index
+                  && !"\n".equals(edits.get(i)); i--) {
+
+               edits.remove(i);
+               positions.remove(i);
+               types.remove(i);
+            }
+         }
+         edits.add(change);
          positions.add(pos);
          types.add(event.equals(DocumentEvent.EventType.INSERT));
          index = edits.size() - 1;
+         
       }         
 
       boolean canUndo() {           
-         return edits.size() > 0; 
+         return edits.size() > 0 && index > -1; 
       }
 
       boolean canRedo() {
@@ -245,6 +247,10 @@ class TypingEdit {
                editArea.insertStr(positions.get(index),
                      edits.get(index));
             }
+            if (index > 0 && "\n".equals(edits.get(index - 1))) {
+               index--;
+               break;
+            }
             index--;
          }
       }
@@ -259,9 +265,12 @@ class TypingEdit {
                editArea.insertStr(positions.get(index + 1),
                      edits.get(index + 1));
             }
+            if ("\n".equals(edits.get(index + 1))) {
+               index++;
+               break;
+            }
             index++;
          }
-         discardEdits();
       }
 
       void discardEdits() {

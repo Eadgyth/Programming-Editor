@@ -85,22 +85,6 @@ public class Finder {
       }
       return i;
    }
-   
-   public static boolean isMultiline(String text) {
-      int count = 0;
-      int i = 0;
-      while (i != -1) {
-         i = text.indexOf("\n", i);
-         if (i != -1) {
-            count++;
-            i++;
-         }
-         if (count == 2) {
-            break;
-         }
-      }
-      return count > 1;
-   }
 
    /**
     * Returns the number of lines
