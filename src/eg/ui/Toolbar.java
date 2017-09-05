@@ -79,7 +79,7 @@ public class Toolbar {
    }
    
    /**
-    * Enabled/disabled buttons for project actions
+    * Enables/disables buttons for project actions
     *
     * @param isCompile  if compiling a project is enabled
     * @param isRun  if running a project is enabled

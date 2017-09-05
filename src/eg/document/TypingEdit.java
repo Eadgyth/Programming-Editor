@@ -26,7 +26,7 @@ import eg.utils.FileUtils;
  * Mediates the editing in the {@code EditArea} that shall happen during
  * typing.
  * <p>
- * Uses methods from other classes that show line numbering, do syntax
+ * Uses methods from classes that show line numbering, do syntax
  * coloring, auto-indentation and undo/redo editing (the latter in this inner
  * class).
  */
@@ -39,26 +39,44 @@ class TypingEdit {
    private final LineNumbers lineNum;
    private final UndoRedo undo = new UndoRedo();
 
+   private boolean isDocListen = true;
    private boolean isUndoable = true;
    private boolean isTypeEdit = false;
    private String text = "";
-   private int pos;
+   private int pos = 0;
    private String change = "";
-   private int changeLength = 0; // reset to 0 in caretUpdate()
    private DocumentEvent.EventType event;
 
    TypingEdit(EditArea editArea) {
       this.editArea = editArea;
-      editArea.getDoc().addDocumentListener(docListen);
-      editArea.textArea().addCaretListener(new UndoStopper());
       lex = new Lexer(editArea.getDoc(), editArea.getAttrSet());
       col = new Coloring(lex);
       lineNum = new LineNumbers(editArea);
       autoInd = new AutoIndent(editArea);
+      
+      editArea.getDoc().addDocumentListener(docListen);
+      editArea.textArea().addCaretListener(new CaretListener() {
+         @Override
+         public void caretUpdate(CaretEvent ce) {
+            if (text.length() > 0) {
+               if (event.equals(DocumentEvent.EventType.CHANGE)) {
+                  undo.markBreak();
+               }
+            }
+         }
+      });
+   }
+   
+   String getText() {
+      return text;
    }
 
-   void enableUndoableEdit(boolean isEnabled) {
-      isUndoable = isEnabled;
+   void enableDocListen(boolean isEnabled) {
+      isDocListen = isEnabled;
+      if (isEnabled) {
+         text = editArea.getDocText();
+         lineNum.addAllLineNumbers(text);
+      }
    }
 
    void enableTypeEdit(boolean isEnabled) {
@@ -87,14 +105,6 @@ class TypingEdit {
       return autoInd.getIndentUnit();
    }
 
-   void addAllLineNumbers(String allText) {
-      lineNum.addAllLineNumbers(allText);
-   }
-
-   void updateLineNumber(String allText) {
-      lineNum.updateLineNumber(allText);
-   }
-
    void colorMultipleLines(String section, int pos) {
       lex.enableTypeMode(section != null);
       col.colorMultipleLines(text, section, pos);
@@ -102,53 +112,45 @@ class TypingEdit {
    }
 
    void undo() {
-      int prevLineNr = lineNum.getCurrLineNr();
-      enableUndoableEdit(false);
+      isUndoable = false;
       if (undo.canUndo()) {
          undo.undo();
-         updateAfterUndoRedo(prevLineNr);
+         updateAfterUndoRedo();
       }
-      enableUndoableEdit(true);
+      isUndoable = true;
    }
 
    void redo() {
-      int prevLineNr = lineNum.getCurrLineNr();
-      enableUndoableEdit(false);
+      isUndoable = false;
       if (undo.canRedo()) {
          undo.redo();
-         updateAfterUndoRedo(prevLineNr);
+         updateAfterUndoRedo();
       }
-      enableUndoableEdit(true);
+      isUndoable = true;
    }
 
    //
    //--private methods/classes--//
    //
 
-   private void updateAfterUndoRedo(int prevLineNr) {
-      if (isTypeEdit && !change.equals("\n")) {
+   private void updateAfterUndoRedo() {
+      if (isTypeEdit) {
          colorMultipleLines(change, pos);
       }
-   }
-
-   private void color() {
-      EventQueue.invokeLater(() ->
-         col.colorLine(text, pos)
-      );
    }
 
    private final DocumentListener docListen = new DocumentListener() {
 
       @Override
       public void insertUpdate(DocumentEvent de) {
-         event = de.getType();
+         if (!isDocListen) {
+            return;
+         }
          pos = de.getOffset();
-         changeLength = de.getLength();
-         text = editArea.getDocText();
+         assignChange(de);
          change = text.substring(pos, pos + de.getLength());
-         updateLineNumber(text);
          if (isUndoable) {
-            undo.addAnEdit();
+            undo.addEdit();
             if (isTypeEdit) {
                autoInd.setText(text);
                color();
@@ -161,14 +163,14 @@ class TypingEdit {
 
       @Override
       public void removeUpdate(DocumentEvent de) {
-         event = de.getType();
+         if (!isDocListen) {
+            return;
+         }
          pos = de.getOffset();
-         changeLength = -de.getLength();
          change = text.substring(pos, pos + de.getLength());
-         text = editArea.getDocText();
-         updateLineNumber(text);
+         assignChange(de);
          if (isUndoable) {
-            undo.addAnEdit();
+            undo.addEdit();
             if (isTypeEdit) {
                color();
             }
@@ -179,105 +181,123 @@ class TypingEdit {
       public void changedUpdate(DocumentEvent de) {
          event = de.getType();
       }
-   };
-
-   private class UndoStopper implements CaretListener {
-
-      @Override
-      public void caretUpdate(CaretEvent ce) {
-         int caret = editArea.textArea().getSelectionStart();
-         if (caret > 0) {
-            boolean isStop = isStop = caret - pos != changeLength;
-            if (event.equals(DocumentEvent.EventType.INSERT)) {
-               isStop = isStop && caret - pos != 1;
-            }
-            else if (event.equals(DocumentEvent.EventType.REMOVE)) {
-               isStop = caret - pos != 0;
-            }
-            if (isStop) {
-               undo.discardEdits();
-            }
-         }
-         changeLength = 0;
+      
+      private void assignChange(DocumentEvent de) {
+         event = de.getType();
+         text = editArea.getDocText();
+         lineNum.updateLineNumber(text);
       }
-   }
+      
+      private void color() {
+         EventQueue.invokeLater(() -> col.colorLine(text, pos));
+      }
+   };
 
    private final class UndoRedo {
 
       List<String> edits = new ArrayList<>();
       List<Integer> positions = new ArrayList<>();
-      List<Boolean> types = new ArrayList<>();
-      int index = -1;
-      
-      void addAnEdit() {
-         if (index == -1) {
-            discardEdits();
-         }
-         else if (index < edits.size() - 1) {
-            for (int i = edits.size() - 1; i > index
-                  && !"\n".equals(edits.get(i)); i--) {
+      List<Boolean> isInsert = new ArrayList<>();
+      List<Integer> breaks = new ArrayList<>();
+      boolean isBreak = false;
+      int iEdits = -1;
+      int iBreaks = -1;
 
-               edits.remove(i);
-               positions.remove(i);
-               types.remove(i);
-            }
-         }
+      void addEdit() {
+         trim();
          edits.add(change);
          positions.add(pos);
-         types.add(event.equals(DocumentEvent.EventType.INSERT));
-         index = edits.size() - 1;
-         
-      }         
+         isInsert.add(event.equals(DocumentEvent.EventType.INSERT));
+         iEdits = edits.size() - 1;
+         if (isBreak) {
+            addBreakpoint();
+         }
+         if ("\n".equals(change)) {
+            isBreak = true;
+         }
+         iBreaks = breaks.size() - 1;
+      }
 
-      boolean canUndo() {           
-         return edits.size() > 0 && index > -1; 
+      boolean canUndo() {
+         return edits.size() > 0 && iEdits > -1;
       }
 
       boolean canRedo() {
-         return edits.size() > 0 && index < edits.size() - 1;
+         return edits.size() > 0 && iEdits < edits.size() - 1;
       }
 
       void undo() {
-         while (index > -1) {
-            if (types.get(index)) {
-               editArea.removeStr(positions.get(index),
-                     edits.get(index).length());
+         int nextPos = 0;
+         while (iEdits > -1) {
+            if (isInsert.get(iEdits)) {
+               nextPos = positions.get(iEdits);
+               editArea.removeStr(nextPos, edits.get(iEdits).length());
             }
             else {
-               editArea.insertStr(positions.get(index),
-                     edits.get(index));
+               nextPos = positions.get(iEdits) + edits.get(iEdits).length();
+               editArea.insertStr(positions.get(iEdits), edits.get(iEdits));
             }
-            if (index > 0 && "\n".equals(edits.get(index - 1))) {
-               index--;
-               break;
+            iEdits--;
+            if (iBreaks > -1) {
+               if (iEdits == breaks.get(iBreaks)) {
+                  iBreaks--;
+                  break;
+               }
             }
-            index--;
          }
+         if (iEdits == -1) {
+            iBreaks--;
+         }
+         editArea.textArea().setCaretPosition(nextPos);
       }
 
       void redo() {
-         while (index < edits.size() - 1) {
-            if (!types.get(index + 1)) {
-               editArea.removeStr(positions.get(index + 1),
-                     edits.get(index + 1).length());
+         int nextPos = 0;
+         while (iEdits < edits.size() - 1) {
+            int next = iEdits + 1;
+            if (isInsert.get(next)) {
+               nextPos = positions.get(next) + edits.get(next).length();
+               editArea.insertStr(positions.get(next), edits.get(next));
             }
             else {
-               editArea.insertStr(positions.get(index + 1),
-                     edits.get(index + 1));
+               nextPos = positions.get(next);
+               editArea.removeStr(nextPos, edits.get(next).length());
             }
-            if ("\n".equals(edits.get(index + 1))) {
-               index++;
-               break;
+            iEdits++;
+            if (iBreaks + 2 < breaks.size()) {
+               if (next == breaks.get(iBreaks + 2)) {
+                  iBreaks++;
+                  break;
+               }
             }
-            index++;
          }
+         if (iEdits == edits.size() - 1) {
+            iBreaks++;
+         }
+         editArea.textArea().setCaretPosition(nextPos);
+      }
+      
+      void markBreak() {
+         isBreak = true;
       }
 
-      void discardEdits() {
-         edits.clear();
-         positions.clear();
-         types.clear();
-         index = -1;
+      private void addBreakpoint() {
+         breaks.add(iEdits - 1);
+         iBreaks = breaks.size() - 1;
+         isBreak = false;
+      }
+
+      private void trim() {
+         if (iEdits < edits.size() - 1) {
+            for (int i = edits.size() - 1; i > iEdits; i--) {
+               edits.remove(i);
+               positions.remove(i);
+               isInsert.remove(i);
+            }
+            for (int i = breaks.size() - 1; i > iBreaks + 1; i--) {
+               breaks.remove(i);
+            }
+         }
       }
    }
 }

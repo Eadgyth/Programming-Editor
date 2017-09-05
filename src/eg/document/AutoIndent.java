@@ -54,7 +54,7 @@ class AutoIndent {
    }
 
    //
-   //--private
+   //--private--//
    //
 
    private void setCurrentIndent(int pos) {
@@ -87,9 +87,9 @@ class AutoIndent {
 
    KeyListener listener = new KeyAdapter() {
       //
-      // Detecting enter pressed makes sure that that
-      // pressing enter in another window does inactivate
-      // the insertString method in keyReleased
+      // Detecting enter pressed makes sure that pressing
+      // enter in another window does inactivate the
+      // insertString method in keyReleased
       boolean isEnter = false;
 
       @Override

@@ -36,7 +36,6 @@ public final class TextDocument {
    private String dir = "";
    private String content = "";
    private Languages lang;
-   boolean isPlainText = false;
 
    /**
     * Creates a TextDocument
@@ -46,7 +45,6 @@ public final class TextDocument {
       this.editArea = editArea;
       this.textArea = editArea.textArea();
       type = new TypingEdit(editArea);
-      type.addAllLineNumbers(content);
       PREFS.readPrefs();
       String indentUnit = PREFS.getProperty("indentUnit");
       setIndentUnit(indentUnit);    
@@ -63,7 +61,6 @@ public final class TextDocument {
       this(editArea);
       type.setUpEditing(lang);
       this.lang = lang;
-      isPlainText = Languages.PLAIN_TEXT == lang;
    }
 
    /**
@@ -108,7 +105,7 @@ public final class TextDocument {
     * @return  the set Language is any coding language, i.e. not plain text
     */
    public boolean isCodingLanguage() {
-      return !isPlainText;
+      return Languages.PLAIN_TEXT != lang;
    }
    
    /**
@@ -129,11 +126,10 @@ public final class TextDocument {
       if (this.filepath().length() != 0) {
          throw new IllegalStateException("A file has been assigned already");
       }
-      assignFileStrings(f);
+      assignFile(f);
       displayFileContent(f);
       setLanguageBySuffix();
       setContent();
-      type.addAllLineNumbers(content);
    }
 
    /**
@@ -152,7 +148,7 @@ public final class TextDocument {
     * @return  if the content was saved
     */
    public boolean saveFileAs(File f) {
-      assignFileStrings(f);
+      assignFile(f);
       setLanguageBySuffix();
       return writeToFile(f);
    }
@@ -174,7 +170,7 @@ public final class TextDocument {
     * @return  if the text content is saved
     */
    public boolean isContentSaved() {
-      return content.equals(editArea.getDocText());
+      return content.equals(type.getText());
    }
 
    /**
@@ -208,7 +204,7 @@ public final class TextDocument {
     * false to disable. No effect if this language is plain text
     */
    public void enableTypeEdit(boolean isEnabled) {
-      if (!isPlainText) {
+      if (Languages.PLAIN_TEXT != lang) {
          type.enableTypeEdit(isEnabled);
       }
    }
@@ -222,7 +218,7 @@ public final class TextDocument {
     * be colored starts. Is 0 if '{code section}' is null.
     */
    public void colorSection(String section, int pos) {
-      if (!isPlainText) {
+      if (Languages.PLAIN_TEXT != lang) {
          type.colorMultipleLines(section, pos);
       }
    }
@@ -244,10 +240,10 @@ public final class TextDocument {
    /**
     * Returns the text in the document
     *
-    * @return  the text in the document associated with this text area
+    * @return  the text in the document
     */
    public String getText() {
-      return editArea.getDocText();
+      return type.getText();
    }
 
    /**
@@ -286,7 +282,6 @@ public final class TextDocument {
    public void changeLanguage(Languages lang) {
       if (filename.length() == 0) {
          this.lang = lang;
-         isPlainText = Languages.PLAIN_TEXT == lang;
          type.setUpEditing(lang);
       }
    }
@@ -296,21 +291,26 @@ public final class TextDocument {
    //
 
    private void displayFileContent(File f) {
-      type.enableUndoableEdit(false);
+      type.enableDocListen(false);
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
-         String line;
-         while ((line = br.readLine()) != null) {
-            insertStr(editArea.getDocText().length(), line + "\n");
+         String line = br.readLine();
+         String nextLine = br.readLine();
+         while (null != line) {            
+            if (null == nextLine) {
+               insertStr(editArea.getDocText().length(), line);
+            }
+            else {
+               insertStr(editArea.getDocText().length(), line + "\n");
+            }
+            line = nextLine;
+            nextLine = br.readLine();
          }
       }
       catch (IOException e) {
          FileUtils.logStack(e);
       }
-      if (editArea.getDocText().endsWith("\n")) {
-         editArea.removeStr(getText().length() - 1, 1);
-      }
       textArea.setCaretPosition(0);
-      type.enableUndoableEdit(true);
+      type.enableDocListen(true);
    }
 
    /**
@@ -332,13 +332,13 @@ public final class TextDocument {
    }
 
    private void setContent() {
-      content = editArea.getDocText();
+      content = type.getText();
    }
 
-   private void assignFileStrings(File f) {
+   private void assignFile(File f) {
       docFile = f;
       filename = f.getName();
-      this.filepath = f.toString();
+      filepath = f.toString();
       dir = f.getParent();
    }
 
@@ -360,7 +360,6 @@ public final class TextDocument {
          default:
             lang = Languages.PLAIN_TEXT;
       }
-      isPlainText = Languages.PLAIN_TEXT == lang;
       type.setUpEditing(lang);
    }
 }

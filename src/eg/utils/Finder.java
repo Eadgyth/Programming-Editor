@@ -35,8 +35,8 @@ public class Finder {
       String lines = null;
       String[] sectionArr = section.split("\n");
       String firstLine = Finder.lineAtPos(text, pos);
-      sectionArr[0] = firstLine;
-      if (sectionArr.length > 1) {
+      if (sectionArr.length > 0 && sectionArr.length > 1) {
+         sectionArr[0] = firstLine;
          String lastLine = Finder.lineAtPos(text, pos + section.length());
          StringBuffer sb = new StringBuffer();
          for (int i = 0; i < sectionArr.length - 1; i++) {

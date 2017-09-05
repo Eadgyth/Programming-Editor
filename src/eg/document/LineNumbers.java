@@ -15,6 +15,7 @@ class LineNumbers {
 
    LineNumbers(EditArea editArea) {
       this.editArea = editArea;
+      editArea.appendLineNumber(1);
    }
 
    int getCurrLineNr() {
@@ -41,12 +42,12 @@ class LineNumbers {
    //
    //----private methods----//
    //
-   
+
    private void replaceLineNr(int nLines) {
       editArea.removeAllLineNumbers();
       addLineNumbers(0, nLines);
    }
-   
+
    private void addLineNumbers(int previousLines, int nLines) {
       for (int i = previousLines; i <= nLines; i++) {
          editArea.appendLineNumber(i + 1);
