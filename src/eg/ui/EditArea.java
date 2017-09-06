@@ -12,8 +12,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
 
-import javax.swing.event.DocumentListener;
-
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
@@ -144,6 +142,11 @@ public final class EditArea {
       return doc;
    }
    
+   /**
+    * Returns the "normal" (black, plain) style
+    *
+    * @return  the black, plain style
+    */
    public SimpleAttributeSet getAttrSet() {
       return set;
    }
@@ -254,7 +257,8 @@ public final class EditArea {
     * @param fontSize  the font size
     */
    public void setFont(String font, int fontSize) {
-      Font fontNew = new Font(font, Font.PLAIN, (int) (fontSize * eg.Constants.SCREEN_RES_RATIO));
+      Font fontNew = new Font(font, Font.PLAIN,
+            (int) (fontSize * eg.Constants.SCREEN_RES_RATIO));
       lineArea.setFont(fontNew);
       textArea.setFont(fontNew);
    }
