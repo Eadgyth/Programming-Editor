@@ -197,107 +197,132 @@ class TypingEdit {
 
       List<String> edits = new ArrayList<>();
       List<Integer> positions = new ArrayList<>();
-      List<Boolean> isInsert = new ArrayList<>();
-      List<Integer> breaks = new ArrayList<>();
+      List<Boolean> eventTypes = new ArrayList<>();
+      List<Integer> breakpoints = new ArrayList<>();
       boolean isBreak = false;
-      int iEdits = -1;
-      int iBreaks = -1;
+      int iEd = -1;
+      int iBr = -1;
 
       void addEdit() {
          trim();
          edits.add(change);
          positions.add(pos);
-         isInsert.add(event.equals(DocumentEvent.EventType.INSERT));
-         iEdits = edits.size() - 1;
+         eventTypes.add(event.equals(DocumentEvent.EventType.INSERT));
+         iEd = edits.size() - 1;
          if (isBreak) {
             addBreakpoint();
+            isBreak = false;
          }
          if ("\n".equals(change)) {
             isBreak = true;
          }
-         iBreaks = breaks.size() - 1;
+         else {
+            if (iEd > 0) {
+               if (isInsert(iEd) != isInsert(iEd - 1)) {
+                  addBreakpoint();
+               }
+            }
+         }
+         iBr = breakpoints.size() - 1;
       }
 
       boolean canUndo() {
-         return edits.size() > 0 && iEdits > -1;
+         return edits.size() > 0 && iEd > -1;
       }
 
       boolean canRedo() {
-         return edits.size() > 0 && iEdits < edits.size() - 1;
+         return edits.size() > 0 && iEd < edits.size() - 1;
       }
 
       void undo() {
          int nextPos = 0;
-         while (iEdits > -1) {
-            if (isInsert.get(iEdits)) {
-               nextPos = positions.get(iEdits);
-               editArea.removeStr(nextPos, edits.get(iEdits).length());
+         while (iEd > -1) {
+            if (isInsert(iEd)) {
+               nextPos = pos(iEd);
+               editArea.removeStr(nextPos, edit(iEd).length());
             }
             else {
-               nextPos = positions.get(iEdits) + edits.get(iEdits).length();
-               editArea.insertStr(positions.get(iEdits), edits.get(iEdits));
+               nextPos = pos(iEd) + edit(iEd).length();
+               editArea.insertStr(pos(iEd), edit(iEd));
             }
-            iEdits--;
-            if (iBreaks > -1) {
-               if (iEdits == breaks.get(iBreaks)) {
-                  iBreaks--;
+            iEd--;
+            if (iBr > -1) {
+               if (iEd == breakPt(iBr)) {
+                  iBr--;
                   break;
                }
             }
          }
-         if (iEdits == -1) {
-            iBreaks--;
+         if (iEd == -1) {
+            iBr--;
          }
          editArea.textArea().setCaretPosition(nextPos);
       }
 
       void redo() {
          int nextPos = 0;
-         while (iEdits < edits.size() - 1) {
-            int next = iEdits + 1;
-            if (isInsert.get(next)) {
-               nextPos = positions.get(next) + edits.get(next).length();
-               editArea.insertStr(positions.get(next), edits.get(next));
+         while (iEd < edits.size() - 1) {
+            int nextEd = iEd + 1;
+            if (isInsert(nextEd)) {
+               nextPos = pos(nextEd) + edit(nextEd).length();
+               editArea.insertStr(pos(nextEd), edit(nextEd));
             }
             else {
-               nextPos = positions.get(next);
-               editArea.removeStr(nextPos, edits.get(next).length());
+               nextPos = pos(nextEd);
+               editArea.removeStr(nextPos, edit(nextEd).length());
             }
-            iEdits++;
-            if (iBreaks + 2 < breaks.size()) {
-               if (next == breaks.get(iBreaks + 2)) {
-                  iBreaks++;
+            iEd++;
+            if (iBr + 2 < breakpoints.size()) {
+               if (nextEd == breakPt(iBr + 2)) {
+                  iBr++;
                   break;
                }
             }
          }
-         if (iEdits == edits.size() - 1) {
-            iBreaks++;
+         if (iEd == edits.size() - 1) {
+            iBr++;
          }
          editArea.textArea().setCaretPosition(nextPos);
       }
       
       void markBreak() {
-         isBreak = true;
+         if (edits.size() > 0) {
+            isBreak = true;
+         }
       }
-
+      
       private void addBreakpoint() {
-         breaks.add(iEdits - 1);
-         iBreaks = breaks.size() - 1;
-         isBreak = false;
+         breakpoints.add(iEd - 1);
+         iBr = breakpoints.size() - 1;
       }
 
       private void trim() {
-         if (iEdits < edits.size() - 1) {
-            for (int i = edits.size() - 1; i > iEdits; i--) {
+         if (iEd < edits.size() - 1) {
+            for (int i = edits.size() - 1; i > iEd; i--) {
                edits.remove(i);
                positions.remove(i);
-               isInsert.remove(i);
+               eventTypes.remove(i);
             }
-            for (int i = breaks.size() - 1; i > iBreaks + 1; i--) {
-               breaks.remove(i);
+            for (int i = breakpoints.size() - 1; i > iBr + 1; i--) {
+               breakpoints.remove(i);
             }
          }
+      }
+      
+      private int pos(int i) {
+         return positions.get(i);
+      }
+      
+      private String edit(int i) {
+         return edits.get(i);
+      }
+      
+      private boolean isInsert(int i) {
+         return eventTypes.get(i);
+      }
+      
+      private int breakPt(int i) {
+         return breakpoints.get(i);
       }
    }
 }
