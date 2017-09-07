@@ -164,9 +164,9 @@ public class SettingsWin {
    }
    
    /**
-    * Returns the input in the text field for the name of the project
-    * @return  the input in the text field for the name of the project
+    * Returns the input in the text field for the name of a project
     * file
+    * @return  the the name of a project file
     */
    public String projectFileNameInput() {
       return fileTf.getText();
@@ -174,8 +174,8 @@ public class SettingsWin {
 
    /**
     * Returns the input in the text field for the name of a module/package
-    * @return  the input in the text field for the name of a module/package
-     */
+    * @return  the name of a module/package
+    */
    public String moduleNameInput() {
       return moduleTf.getText();
    }
@@ -183,8 +183,7 @@ public class SettingsWin {
    /**
     * Returns the input in the text field for the name of a directory for
     * source files
-    * @return  the input in the text field for the name of a directory for
-    * source files
+    * @return  the name of a directory for source files
     */
    public String sourcesDirNameInput() {
       return sourcesDirTf.getText();
@@ -193,8 +192,7 @@ public class SettingsWin {
    /**
     * Returns the input in the text field for the name of a directory for
     * executables
-    * @return  the input in the text field for the name of a directory for
-    * executables
+    * @return  the name of a directory for executables
     */
    public String execDirNameInput() {
       return execDirTf.getText();
@@ -203,8 +201,7 @@ public class SettingsWin {
    /**
     * Returns the input in the text field for the name of a project root
     * directory
-    * @return  the input in the text field for the name of a project root
-    * directory
+    * @return  the name of a project root directory
     */
    public String projDirNameInput() {
       return projDirTf.getText();
@@ -212,7 +209,7 @@ public class SettingsWin {
 
    /**
     * Returns the input in the text field for arguments
-    * @return  the input in the text field for arguments
+    * @return  the arguments
     */
    public String argsInput() {
       return argsTf.getText();
@@ -220,22 +217,24 @@ public class SettingsWin {
 
    /**
     * Returns the input in the text field for a name of a build
-    * @return  the input in the text field for a name of a build
+    * @return  a name of a build
     */
    public String buildNameInput() {
       return buildTf.getText();
    }
 
    /**
-    * Shows in the corresponding text field the name of the project file
-    * @param fileName  te name of the main file of a project
+    * Shows in the corresponding text field the name of the main project
+    * file
+    * @param fileName  the name of the main project
     */
    public void displayFile(String fileName) {
       fileTf.setText(fileName);
    }
 
    /**
-    * Shows in the corresponding text field the name of a module/package
+    * Shows in the corresponding text field the name of a
+    * module/package/namespace
     * @param moduleName  the name of a module/package/namespace
     */
    public void displayModule(String moduleName) {
@@ -261,9 +260,9 @@ public class SettingsWin {
    }
    
    /**
-    * Shows in the corresponding text field the name of the directory
-    * where executables are saved
-    * @param in  the name of the directory for executable files
+    * Shows in the corresponding text field the name of the project's
+    * root directory
+    * @param in  the name of the the project's root directory
     */
    public void displayProjDirName(String in) {
       projDirTf.setText(in);
@@ -292,6 +291,8 @@ public class SettingsWin {
    public void setSaveConfigSelected(boolean isSelected) {
       saveConfig.setSelected(isSelected);
    }
+   
+   //--private--//
 
    private JPanel structurePanel() {
       int gridSize = 3;

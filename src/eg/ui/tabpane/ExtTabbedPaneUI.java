@@ -14,8 +14,7 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
  * the tab bar.
  * <p>The background of a selected tab is white; other tabs are in 'normal'
  * gray.<br>
- * The border of a selected tab is in darker gray.<br>
- * The tab height is set to 11 points plus the font size and the selected
+ * The tab height can be defined in {@link #setHeight(int)} and the selected
  * tab is not elevated.<br>
  * Tabs are rectangular and aligned at the left edge.<br>
  * The content area insets are set to zero and a content border is not
@@ -32,10 +31,10 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
    private final static Insets CONTENT_INSETS = new Insets(0, 0, 0, 0);
 
    private boolean isShowTabs = true;
-   private int tabHeight;
+   private int tabHeight = 20;
    
    /**
-    * Sets the height of the tabs
+    * Sets the height of the tabs. Default is 20 pt.
     *
     * @param height  the height
     */

@@ -93,8 +93,8 @@ public abstract class ProjectConfig implements Configurable {
    /**
     * {@inheritDoc}
     * <p>Method first looks for an 'eadconfig' file in <code>dir</code> or in
-    * parents of it and, if not present, in the preferences file in the program
-    * folder.
+    * parents of it and, if this is not present, in the preferences file in
+    * the program folder.
     */
    @Override
    public boolean retrieveProject(String dir) {
@@ -254,7 +254,7 @@ public abstract class ProjectConfig implements Configurable {
    }
 
    /**
-    * If path is (sub-) child of the project path
+    * If path is (sub-)child of the project path
     */
    private boolean isRootInPath(String path, String projPath) {
       File child = new File(path);
@@ -268,6 +268,9 @@ public abstract class ProjectConfig implements Configurable {
       return false;
    }
 
+   /**
+    * Configures project using entries in properties file
+    */
    private void configProjectByProps(String root, Preferences props) {
       mainFile = props.getProperty("recentMain");
       setWin.displayFile(mainFile);
@@ -294,6 +297,10 @@ public abstract class ProjectConfig implements Configurable {
       }
    }
 
+   /**
+    * The file path to the main project file relative to the
+    * project's root
+    */
    private String pathRelToRoot(boolean bySetWin) {
       if (bySetWin) {
          getTextFieldsInput();
