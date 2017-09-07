@@ -262,18 +262,19 @@ class TypingEdit {
       void redo() {
          int nextPos = 0;
          while (iEd < edits.size() - 1) {
-            int nextEd = iEd + 1;
-            if (isInsert(nextEd)) {
-               nextPos = pos(nextEd) + edit(nextEd).length();
-               editArea.insertStr(pos(nextEd), edit(nextEd));
+            int iNext = iEd + 1;
+            if (isInsert(iNext)) {
+               nextPos = pos(iNext) + edit(iNext).length();
+               editArea.insertStr(pos(iNext), edit(iNext));
             }
             else {
-               nextPos = pos(nextEd);
-               editArea.removeStr(nextPos, edit(nextEd).length());
+               nextPos = pos(iNext);
+               editArea.removeStr(nextPos, edit(iNext).length());
             }
             iEd++;
-            if (iBr + 2 < breakpoints.size()) {
-               if (nextEd == breakPt(iBr + 2)) {
+            int iBrAhead = iBr + 2;
+            if (iBrAhead < breakpoints.size()) {
+               if (iNext == breakPt(iBrAhead)) {
                   iBr++;
                   break;
                }
