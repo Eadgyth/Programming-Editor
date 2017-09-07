@@ -191,7 +191,8 @@ public class TabbedFiles implements Observer {
 
    /**
     * Saves the text content in the selected tab as a new file that
-    * is specified in the file chooser
+    * is specified in the file chooser or asks to replace the file
+    * if it exists
     *
     * @param update  if the view (e.g. tab title, file view) is
     * updated and it is tried to retrieve a project
@@ -200,16 +201,21 @@ public class TabbedFiles implements Observer {
    public boolean saveAs(boolean update) {
       File f = fc.fileToSave(txtDoc[iTab].filepath());
       boolean isSave = f != null;
-      if (isSave && f.exists()) {
-         JOptions.warnMessage(f.getName() + "\nThe file already exists.");
-         isSave = false;
+      if (f.exists()) {
+         int res = JOptions.confirmYesNo(f.getName()
+               + "\nThe file already exists. Replace file?");
+         if (res == 0) {
+            isSave = isSave && txtDoc[iTab].saveToFile();
+         }
       }
-      isSave = isSave && txtDoc[iTab].saveFileAs(f);
-      if (isSave && update) {
-         updateForFile(iTab);
-         tabPane.changeTitle(iTab, txtDoc[iTab].filename());
-         EventQueue.invokeLater(() ->
-               currProj.updateFileTree(txtDoc[iTab].dir()));
+      else {
+         isSave = isSave && txtDoc[iTab].saveFileAs(f);
+         if (isSave && update) {
+            updateForFile(iTab);
+            tabPane.changeTitle(iTab, txtDoc[iTab].filename());
+            EventQueue.invokeLater(() ->
+                  currProj.updateFileTree(txtDoc[iTab].dir()));
+         }
       }
       return isSave;
    }
@@ -225,20 +231,12 @@ public class TabbedFiles implements Observer {
          return;
       }
       int res = 0;
-      boolean storable = true;
       if (f.exists()) {
          res = JOptions.confirmYesNo(f.getName()
                + "\nThe file already exists. Replace file?");
-         if (res == 0) {
-            storable = f.delete();
-         }
       }
-      if (res == 0 & storable) {
+      if (res == 0) {
          txtDoc[iTab].saveCopy(f);
-      }
-      if (!storable) {
-         JOptions.warnMessage(txtDoc[iTab].filepath()
-               + "could not be replaced.");
       }
    }
 
