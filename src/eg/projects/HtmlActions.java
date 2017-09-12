@@ -69,7 +69,10 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
       }
    }
    
-   private void setHtmlFile() {      
+   //--private--//
+   
+   private void setHtmlFile() {
+      
       htmlFile = new File(getProjectPath() + F_SEP
             + getModuleName() + F_SEP + getMainFile() + super.getSourceSuffix());
    }
