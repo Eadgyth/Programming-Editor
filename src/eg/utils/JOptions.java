@@ -87,7 +87,7 @@ public class JOptions {
     * @param message  the message for the dialog
     * @param title  the title for the dialog
     * @param options  the array of options shown in the combo box
-    * @param initOption  the option that is initially selected
+    * @param initOption  the option that is initially selected.
     * @param isQuestion  true to show a question icon, false to show no icon
     * @return  the text in the selected item of the <code>JComboBox</code>
     * or null if ok wasn't clicked
@@ -96,7 +96,9 @@ public class JOptions {
          String[] options, String initOption, boolean isQuestion) {
 
       JComboBox cBox = new JComboBox(options);
-      cBox.setSelectedItem(initOption);
+      if (initOption != null) {
+         cBox.setSelectedItem(initOption);
+      }
       cBox.setFont(eg.Constants.SANSSERIF_PLAIN_9);
       JPanel pnl = new JPanel(new GridLayout(2, 1));
       JLabel lb = new JLabel(message);
@@ -105,10 +107,14 @@ public class JOptions {
       JPanel holdCBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
       holdCBox.add(cBox);
       pnl.add(holdCBox);
-      int messageType = JOptionPane.PLAIN_MESSAGE;
+      int messageType;
       if (isQuestion) {
          messageType = JOptionPane.QUESTION_MESSAGE;
       }
+      else {
+         messageType = JOptionPane.PLAIN_MESSAGE;
+      }
+
       int res = JOptionPane.showConfirmDialog(null, pnl, title,
             JOptionPane.OK_CANCEL_OPTION, messageType);
       if (res == JOptionPane.YES_OPTION) {
