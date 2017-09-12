@@ -39,7 +39,8 @@ public final class TextDocument {
 
    /**
     * Creates a TextDocument
-    * @param editArea  the reference to the {@link EditArea}
+    *
+    * @param editArea  a new {@link EditArea}
     */
   public TextDocument(EditArea editArea) {
       this.editArea = editArea;
@@ -53,7 +54,7 @@ public final class TextDocument {
    /**
     * Creates a TextDocument with a specified language
     *
-    * @param editArea  the reference to an {@link EditArea}
+    * @param editArea  a new {@link EditArea}
     * @param lang  the language that is one of the constants in
     * {@link Languages}
     */
@@ -64,16 +65,17 @@ public final class TextDocument {
    }
 
    /**
-    * Returns this text area
+    * Returns the text area of this <code>EditArea</code>
     *
-    * @return  this text area which is of type {@link EditArea}
+    * @return  the text area this {@link EditArea}
     */
-    public JTextPane getTextArea() {
+    public JTextPane textArea() {
        return textArea;
     }
 
    /**
-    * Returns the name of this file
+    * Returns the name of this file or the emtpy string of no file
+    * has been assinged
     *
     * @return  the name of this file
     */
@@ -82,7 +84,8 @@ public final class TextDocument {
    }
 
    /**
-    * Returns the path of this file
+    * Returns the path of this file or the empty string of no file
+    * has been assinged
     *
     * @return  the full path of this file
     */
@@ -91,7 +94,8 @@ public final class TextDocument {
    }
 
    /**
-    * Returns the parent directory of this file
+    * Returns the parent directory of this file or the empty string
+    * of no file has been assinged
     *
     * @return  the parent directory of this file
     */
@@ -164,10 +168,10 @@ public final class TextDocument {
    }
 
    /**
-    * Returns if the text content equals the content since the last
+    * Returns if the text equals the content since the last
     * saving point
     *
-    * @return  if the text content is saved
+    * @return  if the current text is saved
     */
    public boolean isContentSaved() {
       return content.equals(type.getText());
