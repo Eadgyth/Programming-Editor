@@ -9,6 +9,16 @@ import eg.ui.MainWin;
  * The selection and creation of an object of type {@code ProjectActions}
  */
 public class SelectedProject {
+   
+   /**
+    * The names for possible project types. The names are the
+    * display values of the corresponding constants in {@link eg.Languages}
+    */
+   public String[] projectTypes = {
+      Languages.HTML.display(),
+      Languages.JAVA.display(),
+      Languages.PERL.display()
+   };
 
    private final ProjectUIUpdate update;
    private final ProcessStarter proc;
@@ -61,19 +71,20 @@ public class SelectedProject {
     * Returns a {@code ProjectActions} based on the specified language and
     * creates the {@code SettingsWin} for the project.
     *
-    * @param lang  the language which has a value from {@link Languages}
+    * @param projectType the type of project which has a value from
+    * {@link projectTypes}
     * @return  an object of type {@link ProjectActions}
     */
-   public ProjectActions createProjectByLang(Languages lang) {
+   public ProjectActions createProjectByType(String projectType) {
       ProjectActions newProj = null;
-      switch (lang) {
-         case JAVA:
+      switch (projectType) {
+         case "Java":
             newProj = new JavaActions(update, proc, console);
             break;
-         case HTML:
+         case "Html":
             newProj = new HtmlActions("html");
             break;
-         case PERL:
+         case "Perl":
             newProj = new PerlActions(update, proc);
             break;
       }

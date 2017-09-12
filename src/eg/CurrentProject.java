@@ -36,7 +36,7 @@ public class CurrentProject {
 
    private final String NO_FILE_IN_TAB_MESSAGE
          = "A project can be set after a file was opened or"
-         + " a newly saved.";
+         + " newly saved.";
 
    private final String NOT_IN_PROJ_MESSAGE
          = "The selected file is not in the root directory"
@@ -45,8 +45,8 @@ public class CurrentProject {
     * Formatted for use in a JLabel */
    private final String WRONG_TYPE_MESSAGE
          = "<html>"
-         + "The selected file does not define a type of project.<br>"
-         + "Select a project category if the file belongs to a project:"
+         + "The selected file does not specify a project category.<br>"
+         + "If the file belongs to a project select a category:"
          + "</html>";
 
    private final String FILES_NOT_FOUND_MESSAGE
@@ -57,14 +57,13 @@ public class CurrentProject {
    private final ProcessStarter proc;
    private final List<ProjectActions> projList = new ArrayList<>();
    /*
-    * The display values for the languages in which plain text is excluded */
-   private final String[] langArr = new String[Languages.values().length - 2];
-
+    * Options for a Comobox*/
+   private final String[] projectOptions;
+   
    private ProjectActions current;
    private TextDocument[] txtDoc;
    private TextDocument currDoc;
    private String currExt;
-   private String currLanguage;
 
    public CurrentProject(MainWin mw) {
       this.mw = mw;
@@ -72,8 +71,10 @@ public class CurrentProject {
       ProjectUIUpdate update = new ProjectUIUpdate(mw.menu().viewMenu(),
             mw.fileTree());
       selProj = new SelectedProject(update, proc, mw.console());
-      for (int i = 0; i < Languages.values().length - 2; i++) {
-         langArr[i] = Languages.values()[i + 2].display();
+      projectOptions = new String[selProj.projectTypes.length + 1];
+      projectOptions[0] = "Categories...";
+      for (int i = 0; i < selProj.projectTypes.length; i++) {
+         projectOptions[i + 1] = selProj.projectTypes[i];
       }
    }
 
@@ -84,21 +85,6 @@ public class CurrentProject {
     */
    public void setDocumentArr(TextDocument[] txtDoc) {
       this.txtDoc = txtDoc;
-   }
-
-   /**
-    * Sets the display value for the language. If the language is
-    * <code>PLAIN_TEXT</code> the display value for Java is set.
-    *
-    * @param lang  the language which has a value from in {@link Languages}
-    */
-   public void setLanguageName(Languages lang) {
-      if (lang == Languages.PLAIN_TEXT) {
-         currLanguage = Languages.JAVA.display();
-      }
-      else {
-         currLanguage = lang.display();
-      }
    }
 
    /**
@@ -127,8 +113,8 @@ public class CurrentProject {
          boolean isFound = prToFind != null
                && prToFind.retrieveProject(currDoc.dir());
          if (prToFind == null) {
-            for (Languages l : Languages.values()) {
-               prToFind = selProj.createProjectByLang(l);
+            for (String opt : selProj.projectTypes) {
+               prToFind = selProj.createProjectByType(opt);
                isFound = prToFind != null
                      && prToFind.retrieveProject(currDoc.dir());
                if (isFound) {
@@ -340,9 +326,10 @@ public class CurrentProject {
       }
       ProjectActions projNew = selProj.createProjectByExt(currExt);
       if (projNew == null) {
-         Languages lang = selectLanguage();
-         if (lang != null) {
-            projNew = selProj.createProjectByLang(lang);
+         String selType = JOptions.comboBoxRes(WRONG_TYPE_MESSAGE,
+               "Project category", projectOptions, null, true);
+         if (selType != null && !selType.equals(projectOptions[0])) {
+            projNew = selProj.createProjectByType(selType);
          }
       }
       if (projNew != null) {
@@ -356,13 +343,6 @@ public class CurrentProject {
             prFin.addOkAction(e -> configureProject(prFin));
          }
       }
-   }
-
-   private Languages selectLanguage() {
-      String selLang = JOptions.comboBoxRes(WRONG_TYPE_MESSAGE,
-            "Type of project", langArr, currLanguage.toString(), true);
-
-      return Languages.languageByDisplay(selLang);
    }
 
    private boolean changeProject(ProjectActions toChangeTo) {
