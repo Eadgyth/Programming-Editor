@@ -72,7 +72,6 @@ public class TabbedFiles implements Observer {
       format.setEditAreaArr(editArea);
       prefs.readPrefs();
       lang = Languages.valueOf(prefs.getProperty("language"));
-      currProj.setLanguageName(lang);
       String recentDir = prefs.getProperty("recentPath");
       fc = new FileChooser(recentDir);
 
@@ -99,8 +98,7 @@ public class TabbedFiles implements Observer {
     */
    public void changeLanguage(Languages lang) {
       this.lang = lang;
-      currProj.setLanguageName(lang);
-      txtDoc[iTab].changeLanguage(lang); // no effect if a file is assigned
+      txtDoc[iTab].changeLanguage(lang); // no effect if a file is already assigned
    }
 
    /**
@@ -202,9 +200,7 @@ public class TabbedFiles implements Observer {
       File f = fc.fileToSave(txtDoc[iTab].filepath());
       boolean isSave = f != null;
       if (f.exists()) {
-         int res = JOptions.confirmYesNo(f.getName()
-               + "\nThe file already exists. Replace file?");
-         if (res == 0) {
+         if (0 == replaceOption(f)) {
             isSave = isSave && txtDoc[iTab].saveToFile();
          }
       }
@@ -232,8 +228,7 @@ public class TabbedFiles implements Observer {
       }
       int res = 0;
       if (f.exists()) {
-         res = JOptions.confirmYesNo(f.getName()
-               + "\nThe file already exists. Replace file?");
+         res = replaceOption(f);
       }
       if (res == 0) {
          txtDoc[iTab].saveCopy(f);
@@ -264,6 +259,7 @@ public class TabbedFiles implements Observer {
             createEmptyTab();
          }
       }
+      vMenu.enableTabItm(nTabs() == 1);
    }
 
    /**
@@ -281,6 +277,7 @@ public class TabbedFiles implements Observer {
             i--;
          }
          createEmptyTab();
+         vMenu.enableTabItm(true);
       }
       else {
          tabPane.setSelectedIndex(count);
@@ -412,6 +409,7 @@ public class TabbedFiles implements Observer {
       eMenu.setLanguagesItms(txtDoc[i].language(), false);
       mw.displayFrameTitle(txtDoc[i].filepath());
       prefs.storePrefs("recentPath", txtDoc[i].dir());
+      vMenu.enableTabItm(nTabs() == 1);
    }
 
    private int saveOrCloseOption(int i) {
@@ -421,6 +419,11 @@ public class TabbedFiles implements Observer {
       }
       return JOptions.confirmYesNoCancel
             ("Save changes in " + filename + " ?");
+   }
+   
+   private int replaceOption(File f) {
+      return JOptions.confirmYesNo(f.getName()
+             + "\nThe file already exists. Replace file?");
    }
 
    private int unsavedTab() {
@@ -458,8 +461,6 @@ public class TabbedFiles implements Observer {
          docUpdate.updateDocument(iTab);
          currProj.setCurrTextDocument(iTab);
          mw.displayFrameTitle(txtDoc[iTab].filepath());
-         vMenu.enableTabItm(nTabs() == 1);
-         fMenu.enableCloseAllItm(nTabs() > 1);
          eMenu.setLanguagesItms(txtDoc[iTab].language(),
                txtDoc[iTab].filename().length() == 0);
       }
