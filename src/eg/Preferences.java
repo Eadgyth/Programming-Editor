@@ -114,7 +114,7 @@ public class Preferences {
     */
    public void storePrefs(String propToUpdate, String newValue) {
       readPrefs();
-      String[] allValues = new String[CONFIG_KEYS.length + PREFS_KEYS.length];
+      String[] allValues = new String[PREFS_KEYS.length];
       for (int i = 0; i < PREFS_KEYS.length; i++) {
          allValues[i] = prop.getProperty(PREFS_KEYS[i]);
       }
