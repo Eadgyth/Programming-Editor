@@ -12,8 +12,8 @@ import javax.swing.text.AttributeSet;
 
 import java.awt.EventQueue;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 //--Eadgyth--//
 import eg.Languages;
@@ -55,6 +55,7 @@ class TypingEdit {
       autoInd = new AutoIndent(editArea);
       
       editArea.getDoc().addDocumentListener(docListen);
+
       editArea.textArea().addCaretListener(new CaretListener() {
          @Override
          public void caretUpdate(CaretEvent ce) {
@@ -146,8 +147,9 @@ class TypingEdit {
          if (!isDocListen) {
             return;
          }
+         event = de.getType();
          pos = de.getOffset();
-         assignChange(de);
+         textUpdate();
          change = text.substring(pos, pos + de.getLength());
          if (isUndoable) {
             undo.addEdit();
@@ -166,9 +168,10 @@ class TypingEdit {
          if (!isDocListen) {
             return;
          }
+         event = de.getType();
          pos = de.getOffset();
          change = text.substring(pos, pos + de.getLength());
-         assignChange(de);
+         textUpdate();
          if (isUndoable) {
             undo.addEdit();
             if (isTypeEdit) {
@@ -182,8 +185,7 @@ class TypingEdit {
          event = de.getType();
       }
       
-      private void assignChange(DocumentEvent de) {
-         event = de.getType();
+      private void textUpdate() {
          text = editArea.getDocText();
          lineNum.updateLineNumber(text);
       }
@@ -195,9 +197,9 @@ class TypingEdit {
 
    private final class UndoRedo {
 
-      List<String> edits = new ArrayList<>();
-      List<Integer> positions = new ArrayList<>();
-      List<Boolean> eventTypes = new ArrayList<>();
+      List<String> edits = new ArrayList<>(500);
+      List<Integer> positions = new ArrayList<>(500);
+      List<Boolean> eventTypes = new ArrayList<>(500);
       List<Integer> breakpoints = new ArrayList<>();
       boolean isBreak = false;
       int iEd = -1;
