@@ -13,14 +13,14 @@ public class DocumentUpdate {
 
    private final Edit edit;
    private final PluginStarter plugStart;
-   
+
    private TextDocument[] txtDoc;
- 
+
    public DocumentUpdate(Edit edit, PluginStarter plugStart) {
       this.edit = edit;
       this.plugStart = plugStart;
    }
-   
+
    /**
     * Assigns the array of {@code TextDocument} and {@code EditArea} objects
     * and to this {@code DisplaySetter} the array of {@code EditArea} objects

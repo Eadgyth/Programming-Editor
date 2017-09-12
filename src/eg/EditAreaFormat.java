@@ -30,6 +30,7 @@ public class EditAreaFormat {
    public EditAreaFormat(ViewSettingWin viewSetWin, FormatMenu fMenu) {
       this.viewSetWin = viewSetWin;
       this.fMenu = fMenu;
+
       isShowLineNr = viewSetWin.isShowLineNumbers();
       prefs.readPrefs();
       isWordWrap = "enabled".equals(prefs.getProperty("wordWrap"));

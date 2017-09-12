@@ -28,12 +28,13 @@ public class EditorAccess {
    }
    
    /**
-    * Gets the {@code JTextPane} object that is currently viewed
+    * Returns the currently opened or selected text area
+    * which is of type <code>JTextPane</code>
     *
-    * @return  the {@code JTextPane} object
+    * @return  the currently opened or selected text area
     */
    public JTextPane textArea() {
-      return txtDoc.getTextArea();
+      return txtDoc.textArea();
    }
    
    /**

@@ -26,7 +26,7 @@ public class FileMenu {
                                          IconFiles.SAVE_ICON);
    private final JMenuItem saveAllItm  = new JMenuItem("Save all");
    private final JMenuItem saveAsItm   = new JMenuItem("Save as ...");
-   private final JMenuItem saveCopyItm = new JMenuItem("Save copy ...");
+   private final JMenuItem saveCopyItm = new JMenuItem("Save copy as ...");
    private final JMenuItem printItm    = new JMenuItem("Print...");
    private final JMenuItem exitItm     = new JMenuItem("Exit");
    
@@ -55,16 +55,6 @@ public class FileMenu {
       saveCopyItm.addActionListener(e -> tf.saveCopy());
       printItm.addActionListener(e -> tf.print());      
       exitItm.addActionListener(e -> tf.exit());
-   }
-   
-   /**
-    * Enables the menu item for closing all open files
-    *
-    * @param isEnabled  true to set the menu item for for closing
-    * all open files
-    */
-   public void enableCloseAllItm(boolean isEnabled) {
-      closeAllItm.setEnabled(isEnabled);
    }
    
    private void assembleMenu() {

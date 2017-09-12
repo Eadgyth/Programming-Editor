@@ -30,9 +30,9 @@ public class FunctionPanel {
    }
    
    /**
-    * Adds a <code>Component</code>.
-    * <p> The 'function' panel has a <code>BorderLayout</code>. The title
-    * is shown in the north and the added component in the center. Any
+    * Adds a <code>Component</code> to this JPanel.
+    * <p> The panel has a <code>BorderLayout</code>. The title is
+    * shown in the north and the added component in the center. Any
     * previously added component is removed.
     *
     * @param c  the Component that is added
