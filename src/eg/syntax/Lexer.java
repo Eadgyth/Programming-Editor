@@ -11,9 +11,6 @@ import java.awt.Color;
 import java.util.List;
 import java.util.ArrayList;
 
-//--Eadgyth--//
-import eg.utils.Finder;
-
 /**
  * The search and coloring of different syntax elements
  */

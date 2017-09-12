@@ -6,10 +6,10 @@ package eg;
 public enum Languages {
 
    PLAIN_TEXT("Plain text"),
-   JAVASCRIPT("Javascript"),
+   HTML("Html"),
    JAVA("Java"),
-   PERL("Perl"),
-   HTML("Html");
+   JAVASCRIPT("Javascript"),
+   PERL("Perl");
    
    private String display;
    
@@ -25,23 +25,5 @@ public enum Languages {
     */
    public String display() {
       return display;
-   }
-   
-   /**
-    * Returns the language constant that is associated with the
-    * specified display value
-    *
-    * @param display  the display value for the language constant
-    * @return  the language constant with the specified display value
-    */
-   public static Languages languageByDisplay(String display) {
-      Languages lang = null;
-      for (Languages l : Languages.values()) {
-         if (l.display().equals(display)) {
-            lang = l;
-            break;
-         }
-      }
-      return lang;
    }
 }

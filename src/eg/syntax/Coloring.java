@@ -2,7 +2,7 @@ package eg.syntax;
 
 //--Eadgyth--//
 import eg.Languages;
-import eg.utils.Finder;
+import eg.utils.LinesFinder;
 
 /**
  * The coloring of either chunks of text (which also maybe the entire text)
@@ -68,8 +68,8 @@ public class Coloring {
          section = allText;
       }
       else {
-         section = Finder.allLinesAtPos(allText, section, pos);
-         posStart = Finder.lastNewline(allText, pos) + 1;
+         section = LinesFinder.allLinesAtPos(allText, section, pos);
+         posStart = LinesFinder.lastNewline(allText, pos) + 1;
       }
       lex.setTextToColor(allText, section, pos, posStart);
       lex.color();
@@ -83,8 +83,8 @@ public class Coloring {
     * @param pos  the pos within document where a change happened
     */
    public void colorLine(String allText, int pos) {
-      String toColor = Finder.lineAtPos(allText, pos);
-      int posStart = Finder.lastNewline(allText, pos) + 1;
+      String toColor = LinesFinder.lineAtPos(allText, pos);
+      int posStart = LinesFinder.lastNewline(allText, pos) + 1;
       lex.setTextToColor(allText, toColor, pos, posStart);
       lex.color();
    }

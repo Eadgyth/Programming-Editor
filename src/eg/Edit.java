@@ -39,7 +39,7 @@ public class Edit {
     */
    public void setTextDocument(TextDocument txtDoc) {
       this.txtDoc  = txtDoc;
-      this.textArea = txtDoc.getTextArea();
+      this.textArea = txtDoc.textArea();
       indentUnit = txtDoc.getIndentUnit();
       indentLength = indentUnit.length();
    }
@@ -159,7 +159,7 @@ public class Edit {
 
       txtDoc.enableTypeEdit(false);
       int start = textArea.getSelectionStart();
-      String firstLine = Finder.lineAtPos(txtDoc.getText(), start);
+      String firstLine = LinesFinder.lineAtPos(txtDoc.getText(), start);
       String[] selArr = sel.split("\n");
       start -= firstLine.length() - selArr[0].length();
       selArr[0] = firstLine;
