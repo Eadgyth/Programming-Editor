@@ -2,7 +2,6 @@ package eg.document;
 
 //--Eadgyth--//
 import eg.ui.EditArea;
-import eg.utils.Finder;
 
 /**
  * The line numbering
@@ -22,8 +21,8 @@ class LineNumbers {
       return currLineNr;
    }
 
-   void updateLineNumber(String in) {
-      int nLines = Finder.countLines(in);
+   void updateLineNumber(String text) {
+      int nLines = countLines(text);
       if (nLines > currLineNr) {
          addLineNumbers(currLineNr + 1, nLines);
       }
@@ -33,8 +32,8 @@ class LineNumbers {
       currLineNr = nLines;
    }
 
-   void addAllLineNumbers(String in) {
-      int nLines = Finder.countLines(in);
+   void addAllLineNumbers(String text) {
+      int nLines = countLines(text);
       currLineNr = nLines;
       replaceLineNr(nLines);
    }
@@ -53,5 +52,18 @@ class LineNumbers {
          editArea.appendLineNumber(i + 1);
       }
       editArea.revalidateLineAreaWidth();
+   }
+   
+   private int countLines(String text) {
+      int count = 0;
+      int i = 0;
+      while (i != -1) {
+         i = text.indexOf("\n", i);
+         if (i != -1) {
+            count++;
+            i++;
+         }
+      }
+      return count;
    }
 }
