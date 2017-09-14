@@ -25,7 +25,8 @@ public class JavaColoring implements Colorable {
    };
 
    private final static String[] JAVA_ANNOTATIONS = {
-      "@Override", "@Deprecated", "@SuppressWarnings", "@SafeVarargs"
+      "@Override", "@Deprecated", "@SuppressWarnings", "@SafeVarargs",
+      "@FunctionalInterface"
    };
 
    @Override
