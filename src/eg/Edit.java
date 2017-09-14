@@ -85,6 +85,9 @@ public class Edit {
     */
    public void pasteText() {
       String clipboard = getClipboard();
+      if (clipboard.length() == 0) {
+         return;
+      }
       String sel = textArea.getSelectedText();
       int pos = textArea.getSelectionStart();
       txtDoc.enableTypeEdit(false);
@@ -128,49 +131,72 @@ public class Edit {
    }
 
    /**
-    * Indents selected text by one indentation unit
+    * Indents text by one indentation unit
     */
-   public void indentSelection()  {
+   public void indent()  {
       String sel = textArea.getSelectedText();
-      if (sel == null) {
-         return;
-      }
-
-      txtDoc.enableTypeEdit(false);
-      String[] selArr = sel.split("\n");
       int start = textArea.getSelectionStart();
-      int sum = 0;
-      for (String s : selArr) {
-         int lineLength = s.length() + indentLength;
-         txtDoc.insertStr(start + sum, indentUnit);
-         sum += lineLength + 1;
+      txtDoc.enableTypeEdit(false);
+      if (sel == null) {
+         txtDoc.insertStr(start, indentUnit);
+      }
+      else {
+         String[] selArr = sel.split("\n");
+         int sum = 0;
+         for (String s : selArr) {
+            int lineLength = s.length() + indentLength;
+            txtDoc.insertStr(start + sum, indentUnit);
+            sum += lineLength + 1;
+         }
       }
       txtDoc.enableTypeEdit(true);
    }
 
    /**
-    * Reduces the indentation of selected text by one indentation unit
+    * Reduces the indentation by one indentation unit
     */
-   public void outdentSelection() {
+   public void outdent() {
       String sel = textArea.getSelectedText();
-      if (sel == null) {
-         return;
-      }
-
-      txtDoc.enableTypeEdit(false);
       int start = textArea.getSelectionStart();
-      String firstLine = LinesFinder.lineAtPos(txtDoc.getText(), start);
-      String[] selArr = sel.split("\n");
-      start -= firstLine.length() - selArr[0].length();
-      selArr[0] = firstLine;
-      if (selArr[0].startsWith(" ") && isIndentConsistent(selArr)) {
-         int sum = 0;
-         for (String s : selArr) {
-            if (s.startsWith(indentUnit)) {
-               txtDoc.removeStr(start + sum, indentLength);
-               sum += (s.length() - indentLength) + 1;
-            } else {
-               sum += s.length() + 1;
+      String text = txtDoc.getText();
+      boolean isAtLineStart
+            = LinesFinder.lastNewline(text, start) > start - indentLength;
+ 
+      txtDoc.enableTypeEdit(false);
+      if (sel == null) {
+         if (!isAtLineStart && start >= indentLength) {
+            if (indentUnit.equals(text.substring(start - indentLength, start))) {
+               txtDoc.removeStr(start - indentLength, indentLength);
+            }
+            else {
+               textArea.setCaretPosition(start - indentLength);
+            }
+         }
+      }
+      else {
+         String[] selArr = sel.split("\n");
+         boolean corrNeeded
+               = selArr[0].startsWith(" ")
+               && !selArr[0].startsWith(indentUnit);
+
+         if (corrNeeded) {
+            int countSpaces = 0;
+            while (selArr[0].charAt(countSpaces) == ' ') {
+               countSpaces++;
+            }
+            int diff = indentLength - countSpaces;
+            start -= diff;
+            selArr[0] = text.substring(start, start + selArr[0].length() + diff);
+         }
+         if (selArr[0].startsWith(" ") && isIndentConsistent(selArr)) {
+            int sum = 0;
+            for (String s : selArr) {
+               if (s.startsWith(indentUnit)) {
+                  txtDoc.removeStr(start + sum, indentLength);
+                  sum += (s.length() - indentLength) + 1;
+               } else {
+                  sum += s.length() + 1;
+               }
             }
          }
       }
@@ -193,7 +219,7 @@ public class Edit {
       }
       txtDoc.enableTypeEdit(true);
    }
-
+   
    //
    //--private--//
    //
@@ -233,7 +259,8 @@ public class Edit {
          }
       }
       if (!isConsistent) {
-         JOptions.warnMessage("The indentation is not consistent.");
+         JOptions.warnMessage("The selected text is not consistently"
+               + " indented by at least one indentation length");
       }
       return isConsistent;
    }
