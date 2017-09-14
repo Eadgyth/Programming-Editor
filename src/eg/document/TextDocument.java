@@ -63,6 +63,24 @@ public final class TextDocument {
       type.setUpEditing(lang);
       this.lang = lang;
    }
+   
+   /**
+    * Sets a <code>SelectionLister</code>
+    *
+    * @param sl  a {@link SelectionListener}
+    */
+   public void setSelectionListener(SelectionListener sl) {
+      type.setSelectionListener(sl);
+   }
+   
+   /**
+    * Sets an <code>UndoableChangeListener</code>
+    *
+    * @param ul  an {@link UndoableChangeListener}
+    */
+   public void setUndoableChangeListener(UndoableChangeListener ul) {
+      type.setUndoableChangeListener(ul);
+   }
 
    /**
     * Returns the text area of this <code>EditArea</code>
@@ -104,6 +122,15 @@ public final class TextDocument {
    }
    
    /**
+    * Returns the text in the document
+    *
+    * @return  the text in the document
+    */
+   public String getText() {
+      return type.getText();
+   }
+   
+   /**
     * If the set Language is a coding language, i.e. not plain text
     *
     * @return  the set Language is any coding language, i.e. not plain text
@@ -142,6 +169,7 @@ public final class TextDocument {
     * @return  if the content was saved
     */
    public boolean saveToFile() {
+      setContent();
       return writeToFile(docFile);
    }
 
@@ -154,6 +182,7 @@ public final class TextDocument {
    public boolean saveFileAs(File f) {
       assignFile(f);
       setLanguageBySuffix();
+      setContent();
       return writeToFile(f);
    }
    
@@ -174,7 +203,7 @@ public final class TextDocument {
     * @return  if the current text is saved
     */
    public boolean isContentSaved() {
-      return content.equals(type.getText());
+      return content.equals(getText());
    }
 
    /**
@@ -226,6 +255,20 @@ public final class TextDocument {
          type.colorMultipleLines(section, pos);
       }
    }
+   
+   /**
+    * @return  if edits can be undone
+    */
+   public boolean canUndo() {
+      return type.canUndo();
+   }
+   
+   /**
+    * @return  if edits can be redone
+    */
+   public boolean canRedo() {
+      return type.canRedo();
+   }
 
    /**
     * Performs an undo action
@@ -239,15 +282,6 @@ public final class TextDocument {
     */
    public void redo() {
       type.redo();
-   }
-
-   /**
-    * Returns the text in the document
-    *
-    * @return  the text in the document
-    */
-   public String getText() {
-      return type.getText();
    }
 
    /**
@@ -321,8 +355,7 @@ public final class TextDocument {
     * Saves the current content to this file
     */
    private boolean writeToFile(File f) {
-      setContent();
-      String[] lines = content.split("\n");
+      String[] lines = getText().split("\n");
       try (FileWriter writer = new FileWriter(f)) {
          for (String s : lines) {
             writer.write(s + LINE_SEP);
@@ -336,7 +369,7 @@ public final class TextDocument {
    }
 
    private void setContent() {
-      content = type.getText();
+      content = getText();
    }
 
    private void assignFile(File f) {

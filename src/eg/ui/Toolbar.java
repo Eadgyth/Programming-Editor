@@ -28,18 +28,18 @@ public class Toolbar {
    private final JButton changeProjBt = new JButton(IconFiles.CHANGE_PROJ_ICON);
    private final JButton compileBt    = new JButton(IconFiles.COMPILE_ICON);
    private final JButton runBt        = new JButton(IconFiles.RUN_ICON);
-   
+
    public Toolbar() {
       initToolbar();
    }
-   
+
    /**
     * @return  this {@code JToolBar}
     */
    public JToolBar toolbar() {
       return toolbar;
    }
-   
+
    /**
     * Adds action handlers to the buttons for file actions
     * @param tf  the reference to the {@link TabbedFiles} object
@@ -47,9 +47,9 @@ public class Toolbar {
     */
    public void registerFileAct(TabbedFiles tf) {
       openBt.addActionListener(e -> tf.openFileByChooser());
-      saveBt.addActionListener(e -> tf.save(true));      
+      saveBt.addActionListener(e -> tf.save(true));
    }
-   
+
    /**
     * Adds action handlers to the buttons for project actions
     *
@@ -61,7 +61,7 @@ public class Toolbar {
       runBt.addActionListener(e -> currProj.runProj());
       compileBt.addActionListener(e -> currProj.saveAllAndCompile());
    }
-   
+
    /**
     * Adds action handlers to the buttons for edit actions
     *
@@ -74,10 +74,10 @@ public class Toolbar {
       cutBt.addActionListener(e -> edit.cut());
       copyBt.addActionListener(e -> edit.setClipboard());
       pasteBt.addActionListener(e -> edit.pasteText());
-      indentBt.addActionListener(e -> edit.indentSelection());   
-      outdentBt.addActionListener(e -> edit.outdentSelection());
+      indentBt.addActionListener(e -> edit.indent());
+      outdentBt.addActionListener(e -> edit.outdent());
    }
-   
+
    /**
     * Enables/disables buttons for project actions
     *
@@ -89,15 +89,25 @@ public class Toolbar {
       runBt.setEnabled(isRun);
    }
    
+   public void enableCutCopyBts(boolean isEnabled) {
+      cutBt.setEnabled(isEnabled);
+      copyBt.setEnabled(isEnabled);
+   }
+
    public void enableChangeProjBt() {
       changeProjBt.setEnabled(true);
+   }
+
+   public void enableUndoRedoBts(boolean canUndo, boolean canRedo) {
+      undoBt.setEnabled(canUndo);
+      redoBt.setEnabled(canRedo);
    }
 
    //
    //--private methods
    //
-   
-   private void initToolbar() { 
+
+   private void initToolbar() {
       toolbar.setOpaque(false);
       toolbar.setBorder(null);
       toolbar.setFloatable(false);
@@ -108,15 +118,15 @@ public class Toolbar {
          undoBt, redoBt, cutBt, copyBt, pasteBt,
          indentBt, outdentBt,
          compileBt, runBt, changeProjBt
-      };                         
+      };
       String[] toolTips = new String[] {
          "Open file", "Save selected file",
-         "Undo", "Redo", "Cut selection", "Copy selection",
-         "Paste",
-         "Indent selection more", "Indent selection less",
+         "Undo", "Redo", "Cut selection", "Copy selection", "Paste",
+         "Increase indentation by the set indent length",
+         "Reduce indentation by the set indent length",
          "Save all opened source files of active project and compile",
          "Run project", "Change between projects"
-      }; 
+      };
       for (int i = 0; i < bts.length; i++) {
          toolbar.add(bts[i]);
          if (i == 1 || i == 8) {

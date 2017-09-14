@@ -21,7 +21,6 @@ import java.io.File;
 import eg.utils.JOptions;
 
 import eg.document.TextDocument;
-
 import eg.ui.MainWin;
 import eg.ui.EditArea;
 import eg.ui.tabpane.ExtTabbedPane;
@@ -111,9 +110,14 @@ public class TabbedFiles implements Observer {
          ok = nTabs() == 0;
       }
       if (ok) {
-         editArea[nTabs()] = format.createEditArea();
-         txtDoc[nTabs()] = new TextDocument(editArea[nTabs()], lang);
-         addNewTab("unnamed", editArea[nTabs()].textPanel());
+         int n = nTabs();
+         editArea[n] = format.createEditArea();
+         txtDoc[n] = new TextDocument(editArea[n], lang);
+         txtDoc[n].setUndoableChangeListener(e ->
+               enableUndoRedo(e.canUndo(), e.canRedo()));
+         txtDoc[n].setSelectionListener(e ->
+               enableCutCopy(e.isSelection()));
+         addNewTab("unnamed", editArea[n].textPanel());
       }
    }
 
@@ -156,7 +160,7 @@ public class TabbedFiles implements Observer {
     */
    public boolean save(boolean update) {
       if (txtDoc[iTab].filename().length() == 0
-            || !new File(txtDoc[iTab].filepath()).exists()) {
+            /*|| !new File(txtDoc[iTab].filepath()).exists()*/) {
          return saveAs(update);
       }
       else {
@@ -199,20 +203,18 @@ public class TabbedFiles implements Observer {
    public boolean saveAs(boolean update) {
       File f = fc.fileToSave(txtDoc[iTab].filepath());
       boolean isSave = f != null;
-      if (f.exists()) {
+      if (isSave && f.exists()) {
          if (0 == replaceOption(f)) {
-            isSave = isSave && txtDoc[iTab].saveToFile();
+            isSave = true;
          }
-      }
-      else {
-         isSave = isSave && txtDoc[iTab].saveFileAs(f);
-         if (isSave && update) {
-            updateForFile(iTab);
-            tabPane.changeTitle(iTab, txtDoc[iTab].filename());
-            EventQueue.invokeLater(() ->
-                  currProj.updateFileTree(txtDoc[iTab].dir()));
-         }
-      }
+      }     
+      isSave = isSave && txtDoc[iTab].saveFileAs(f);
+      if (isSave && update) {
+         updateForFile(iTab);
+         tabPane.changeTitle(iTab, txtDoc[iTab].filename());
+         EventQueue.invokeLater(() ->
+               currProj.updateFileTree(txtDoc[iTab].dir()));
+      }   
       return isSave;
    }
 
@@ -381,6 +383,10 @@ public class TabbedFiles implements Observer {
    private void createDocument(int i, File f) {
       editArea[i] = format.createEditArea();
       txtDoc[i] = new TextDocument(editArea[i]);
+      txtDoc[i].setUndoableChangeListener(e ->
+            enableUndoRedo(e.canUndo(), e.canRedo()));
+      txtDoc[i].setSelectionListener(e ->
+            enableCutCopy(e.isSelection()));
       openFile(i, f);
    }
    
@@ -461,9 +467,21 @@ public class TabbedFiles implements Observer {
          docUpdate.updateDocument(iTab);
          currProj.setCurrTextDocument(iTab);
          mw.displayFrameTitle(txtDoc[iTab].filepath());
+         enableUndoRedo(txtDoc[iTab].canUndo(), txtDoc[iTab].canRedo());
+         enableCutCopy(txtDoc[iTab].textArea().getSelectedText() != null);
          eMenu.setLanguagesItms(txtDoc[iTab].language(),
                txtDoc[iTab].filename().length() == 0);
       }
+   }
+   
+   private void enableUndoRedo(boolean canUndo, boolean canRedo) {
+      eMenu.enableUndoRedoItms(canUndo, canRedo);
+      mw.toolbar().enableUndoRedoBts(canUndo, canRedo);
+   }
+   
+   private void enableCutCopy(boolean isEnabled) {
+      mw.toolbar().enableCutCopyBts(isEnabled);
+      eMenu.enableCutCopyItms(isEnabled);
    }
 
    private int nTabs() {

@@ -39,13 +39,20 @@ class TypingEdit {
    private final LineNumbers lineNum;
    private final UndoRedo undo = new UndoRedo();
 
+   private UndoableChangeEvent cue;
+   private UndoableChangeListener ul;
+   private SelectionEvent se;
+   private SelectionListener sl;
    private boolean isDocListen = true;
-   private boolean isUndoable = true;
+   private boolean isAddToUndo = true;
    private boolean isTypeEdit = false;
    private String text = "";
    private int pos = 0;
    private String change = "";
    private DocumentEvent.EventType event;
+   private boolean canUndo;
+   private boolean canRedo;
+   private boolean isSelection;
 
    TypingEdit(EditArea editArea) {
       this.editArea = editArea;
@@ -53,23 +60,36 @@ class TypingEdit {
       col = new Coloring(lex);
       lineNum = new LineNumbers(editArea);
       autoInd = new AutoIndent(editArea);
-      
+
       editArea.getDoc().addDocumentListener(docListen);
 
       editArea.textArea().addCaretListener(new CaretListener() {
          @Override
          public void caretUpdate(CaretEvent ce) {
+            notifySelectionEvent(ce.getDot() != ce.getMark());
             if (text.length() > 0) {
-               if (event.equals(DocumentEvent.EventType.CHANGE)) {
+               if (isAddToUndo && event.equals(DocumentEvent.EventType.CHANGE)) {
                   undo.markBreak();
                }
             }
          }
       });
    }
-   
+
    String getText() {
       return text;
+   }
+
+   void setUndoableChangeListener(UndoableChangeListener ul) {
+      if (ul != null) {
+         this.ul = ul;
+      }
+   }
+   
+   void setSelectionListener(SelectionListener sl) {
+      if (sl != null) {
+         this.sl = sl;
+      }
    }
 
    void enableDocListen(boolean isEnabled) {
@@ -112,22 +132,30 @@ class TypingEdit {
       lex.enableTypeMode(true);
    }
 
+   boolean canUndo() {
+      return undo.canUndo();
+   }
+
+   boolean canRedo() {
+      return undo.canRedo();
+   }
+
    void undo() {
-      isUndoable = false;
-      if (undo.canUndo()) {
+      isAddToUndo = false;
+      if (canUndo()) {
          undo.undo();
          updateAfterUndoRedo();
       }
-      isUndoable = true;
+      isAddToUndo = true;
    }
 
    void redo() {
-      isUndoable = false;
-      if (undo.canRedo()) {
+      isAddToUndo = false;
+      if (canRedo()) {
          undo.redo();
          updateAfterUndoRedo();
       }
-      isUndoable = true;
+      isAddToUndo = true;
    }
 
    //
@@ -135,8 +163,30 @@ class TypingEdit {
    //
 
    private void updateAfterUndoRedo() {
+      notifyUndoableChangeEvent();
       if (isTypeEdit) {
          colorMultipleLines(change, pos);
+      }
+   }
+   
+   private void notifySelectionEvent(boolean isSelectionUpdate) {
+      if (isSelectionUpdate != isSelection) {
+         isSelection = isSelectionUpdate;
+         se = new SelectionEvent(isSelection);
+         sl.selectionUpdate(se);
+      }
+   }
+
+   private void notifyUndoableChangeEvent() {
+      if (canUndo != undo.canUndo()) {
+         canUndo = undo.canUndo();
+         cue = new UndoableChangeEvent(canUndo, canRedo);
+         ul.undoableStateChanged(cue);
+      }
+      if (canRedo != undo.canRedo()) {
+         canRedo = undo.canRedo();
+         cue = new UndoableChangeEvent(canUndo, canRedo);
+         ul.undoableStateChanged(cue);
       }
    }
 
@@ -151,8 +201,9 @@ class TypingEdit {
          pos = de.getOffset();
          textUpdate();
          change = text.substring(pos, pos + de.getLength());
-         if (isUndoable) {
+         if (isAddToUndo) {
             undo.addEdit();
+            notifyUndoableChangeEvent();
             if (isTypeEdit) {
                autoInd.setText(text);
                color();
@@ -172,8 +223,9 @@ class TypingEdit {
          pos = de.getOffset();
          change = text.substring(pos, pos + de.getLength());
          textUpdate();
-         if (isUndoable) {
+         if (isAddToUndo) {
             undo.addEdit();
+            notifyUndoableChangeEvent();
             if (isTypeEdit) {
                color();
             }
@@ -184,12 +236,12 @@ class TypingEdit {
       public void changedUpdate(DocumentEvent de) {
          event = de.getType();
       }
-      
+
       private void textUpdate() {
          text = editArea.getDocText();
          lineNum.updateLineNumber(text);
       }
-      
+
       private void color() {
          EventQueue.invokeLater(() -> col.colorLine(text, pos));
       }
@@ -287,13 +339,13 @@ class TypingEdit {
          }
          editArea.textArea().setCaretPosition(nextPos);
       }
-      
+
       void markBreak() {
          if (edits.size() > 0) {
             isBreak = true;
          }
       }
-      
+
       private void addBreakpoint() {
          breakpoints.add(iEd - 1);
          iBr = breakpoints.size() - 1;
@@ -311,19 +363,19 @@ class TypingEdit {
             }
          }
       }
-      
+
       private int pos(int i) {
          return positions.get(i);
       }
-      
+
       private String edit(int i) {
          return edits.get(i);
       }
-      
+
       private boolean isInsert(int i) {
          return eventTypes.get(i);
       }
-      
+
       private int breakPt(int i) {
          return breakpoints.get(i);
       }

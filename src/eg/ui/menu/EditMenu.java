@@ -27,9 +27,11 @@ public class EditMenu {
    private final JMenuItem cutItm          = new JMenuItem("Cut", IconFiles.CUT_ICON);
    private final JMenuItem copyItm         = new JMenuItem("Copy", IconFiles.COPY_ICON);
    private final JMenuItem pasteItm        = new JMenuItem("Paste", IconFiles.PASTE_ICON);
-   private final JMenuItem indentItm       = new JMenuItem("Indent selection more ",
+   private final JMenuItem indentItm       = new JMenuItem(
+                                             "Increase indentation by the set indent length",
                                              IconFiles.INDENT_ICON);
-   private final JMenuItem outdentItm      = new JMenuItem("Indent selection less",
+   private final JMenuItem outdentItm      = new JMenuItem(
+                                             "Reduce indentation by the set indent length",
                                              IconFiles.OUTDENT_ICON);
    private final JMenuItem changeIndentItm = new JMenuItem("Indent/outdent length");
    private final JMenuItem clearSpacesItm  = new JMenuItem("Clear trailing spaces");
@@ -71,17 +73,27 @@ public class EditMenu {
    public void registerAct(Edit edit, TabbedFiles tf) {
       undoItm.addActionListener(e -> edit.undo());
       redoItm.addActionListener(e -> edit.redo());
-      selectAllItm.addActionListener(e -> edit.selectAll());
       cutItm.addActionListener(e -> edit.cut());
       copyItm.addActionListener(e -> edit.setClipboard());
       pasteItm.addActionListener(e -> edit.pasteText());
-      indentItm.addActionListener(e -> edit.indentSelection());
-      outdentItm.addActionListener(e -> edit.outdentSelection());
+      selectAllItm.addActionListener(e -> edit.selectAll());
+      indentItm.addActionListener(e -> edit.indent());
+      outdentItm.addActionListener(e -> edit.outdent());
       clearSpacesItm.addActionListener(e -> edit.clearTrailingSpaces());
       changeIndentItm.addActionListener(e -> edit.setNewIndentUnit());
       for (JCheckBoxMenuItem item : selectLangChBxItm) {
            item.addActionListener(e -> getNewLanguage(e, edit, tf));
-       }
+      }
+   }
+   
+   public void enableCutCopyItms(boolean isEnabled) {
+      cutItm.setEnabled(isEnabled);
+      copyItm.setEnabled(isEnabled);
+   }
+   
+   public void enableUndoRedoItms(boolean canUndo, boolean canRedo) {
+      undoItm.setEnabled(canUndo);
+      redoItm.setEnabled(canRedo);
    }
 
    //
@@ -122,6 +134,7 @@ public class EditMenu {
          selectLangChBxItm[i] = new JCheckBoxMenuItem(Languages.values()[i].display());
          if (prefs.getProperty("language").equals(
                eg.Languages.values()[i].toString())) {
+
             selectLangChBxItm[i].setSelected(true);
             selectLangChBxItm[i].setEnabled(false);
          }
