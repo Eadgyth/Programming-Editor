@@ -50,8 +50,6 @@ class TypingEdit {
    private int pos = 0;
    private String change = "";
    private DocumentEvent.EventType event;
-   private boolean canUndo;
-   private boolean canRedo;
    private boolean isSelection;
 
    TypingEdit(EditArea editArea) {
@@ -97,6 +95,9 @@ class TypingEdit {
       if (isEnabled) {
          text = editArea.getDocText();
          lineNum.addAllLineNumbers(text);
+      }
+      else {
+         undo.discardEdits();
       }
    }
 
@@ -163,30 +164,29 @@ class TypingEdit {
    //
 
    private void updateAfterUndoRedo() {
-      notifyUndoableChangeEvent();
+      undo.notifyUndoableChangeEvent();
       if (isTypeEdit) {
-         colorMultipleLines(change, pos);
+         if (event.equals(DocumentEvent.EventType.INSERT)) {
+            colorMultipleLines(change, pos);
+         }
+         else if (event.equals(DocumentEvent.EventType.REMOVE)) {
+            colorLine();
+         }
       }
    }
    
+   private void colorLine() {
+      EventQueue.invokeLater(() -> col.colorLine(text, pos));
+   }
+   
    private void notifySelectionEvent(boolean isSelectionUpdate) {
+      if (sl == null) {
+         return;
+      }
       if (isSelectionUpdate != isSelection) {
          isSelection = isSelectionUpdate;
          se = new SelectionEvent(isSelection);
          sl.selectionUpdate(se);
-      }
-   }
-
-   private void notifyUndoableChangeEvent() {
-      if (canUndo != undo.canUndo()) {
-         canUndo = undo.canUndo();
-         cue = new UndoableChangeEvent(canUndo, canRedo);
-         ul.undoableStateChanged(cue);
-      }
-      if (canRedo != undo.canRedo()) {
-         canRedo = undo.canRedo();
-         cue = new UndoableChangeEvent(canUndo, canRedo);
-         ul.undoableStateChanged(cue);
       }
    }
 
@@ -203,10 +203,9 @@ class TypingEdit {
          change = text.substring(pos, pos + de.getLength());
          if (isAddToUndo) {
             undo.addEdit();
-            notifyUndoableChangeEvent();
             if (isTypeEdit) {
                autoInd.setText(text);
-               color();
+               colorLine();
                EventQueue.invokeLater(() -> {
                   autoInd.closeBracketIndent(pos);
                });
@@ -225,9 +224,8 @@ class TypingEdit {
          textUpdate();
          if (isAddToUndo) {
             undo.addEdit();
-            notifyUndoableChangeEvent();
             if (isTypeEdit) {
-               color();
+               colorLine();
             }
          }
       }
@@ -241,21 +239,19 @@ class TypingEdit {
          text = editArea.getDocText();
          lineNum.updateLineNumber(text);
       }
-
-      private void color() {
-         EventQueue.invokeLater(() -> col.colorLine(text, pos));
-      }
    };
 
    private final class UndoRedo {
 
-      List<String> edits = new ArrayList<>(500);
-      List<Integer> positions = new ArrayList<>(500);
-      List<Boolean> eventTypes = new ArrayList<>(500);
-      List<Integer> breakpoints = new ArrayList<>();
-      boolean isBreak = false;
-      int iEd = -1;
-      int iBr = -1;
+      private final List<String> edits = new ArrayList<>(500);
+      private final List<Integer> positions = new ArrayList<>(500);
+      private final List<Boolean> eventTypes = new ArrayList<>(500);
+      private final List<Integer> breakpoints = new ArrayList<>();
+      private boolean isBreak = false;
+      private int iEd = -1;
+      private int iBr = -1;
+      private boolean canUndo;
+      private boolean canRedo;
 
       void addEdit() {
          trim();
@@ -278,6 +274,7 @@ class TypingEdit {
             }
          }
          iBr = breakpoints.size() - 1;
+         notifyUndoableChangeEvent();
       }
 
       boolean canUndo() {
@@ -345,6 +342,35 @@ class TypingEdit {
             isBreak = true;
          }
       }
+      
+      void discardEdits() {
+         edits.clear();
+         positions.clear();
+         eventTypes.clear();
+         breakpoints.clear();
+         iEd = -1;
+         iBr = -1;
+         isBreak = false;
+         notifyUndoableChangeEvent();
+      }
+      
+      void notifyUndoableChangeEvent() {
+         if (ul == null) {
+            return;
+         }
+         if (canUndo != canUndo()) {
+            canUndo = canUndo();
+            cue = new UndoableChangeEvent(canUndo, canRedo);
+            ul.undoableStateChanged(cue);
+         }
+         if (canRedo != canRedo()) {
+            canRedo = canRedo();
+            cue = new UndoableChangeEvent(canUndo, canRedo);
+            ul.undoableStateChanged(cue);
+         }
+      }
+      
+      //--private methods--//
 
       private void addBreakpoint() {
          breakpoints.add(iEd - 1);
