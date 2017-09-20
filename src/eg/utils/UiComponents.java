@@ -43,14 +43,13 @@ public class UiComponents {
    
    /**
     * Creates an <code>ExtTabbedPane</code> that is
-    * scrollable, unfocusable and has no border
+    * scrollable and unfocusable
     *
     * @return  a new {@link ExtTabbedPane}
     */
    public static ExtTabbedPane extTabbedPane() {
       ExtTabbedPane tabPane = new ExtTabbedPane();
       tabPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-      tabPane.setBorder(null);
       tabPane.setFocusable(false);
       return tabPane;
    }

@@ -312,7 +312,7 @@ public final class EditArea {
    }
 
    //
-   //--private methods
+   //--private methods--//
    //
 
    private void initTextArea() {

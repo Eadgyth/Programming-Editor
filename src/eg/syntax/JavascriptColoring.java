@@ -22,13 +22,13 @@ public class JavascriptColoring implements Colorable {
    };
 
    @Override
-   public void color(Lexer lex) {
-      if (!lex.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
-         lex.setCharAttrBlack();
-         lex.keywordsRed(JS_KEYWORDS, true);
-         lex.quotedText();
-         lex.lineComments(SyntaxUtils.LINE_CMNT, '\0');
+   public void color(Coloring col) {
+      if (!col.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
+         col.setCharAttrBlack();
+         col.keywordsRed(JS_KEYWORDS, true);
+         col.quotedText();
+         col.lineComments(SyntaxUtils.LINE_CMNT, '\0');
       }
-      lex.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
+      col.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
    }
 }

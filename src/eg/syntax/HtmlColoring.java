@@ -17,7 +17,7 @@ public class HtmlColoring implements Colorable {
       "meta",
       "object", "ol",
       "p",
-      "script", "span", "style",
+      "s", "script", "span", "style",
       "table",  "textarea", "title",
       "ul",
    };
@@ -41,19 +41,19 @@ public class HtmlColoring implements Colorable {
    private final static String BLOCK_CMNT_END = "-->";
 
    @Override
-   public void color(Lexer lex) {
-      if (!lex.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)
-             & !lex.isInBlock(SyntaxUtils.BLOCK_CMNT_START,
+   public void color(Coloring col) {
+      if (!col.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)
+             & !col.isInBlock(SyntaxUtils.BLOCK_CMNT_START,
                               SyntaxUtils.BLOCK_CMNT_END)) {
 
-         lex.setCharAttrBlack();
-         lex.htmlTags(TAGS);
-         lex.htmlKeywords(ATTRIBUTES, "<", ">");
-         lex.htmlKeywords(JavascriptColoring.JS_KEYWORDS, "<script>", "</script>");
-         lex.quotedTextHtml();
-         lex.lineCommentsJavascriptInHtml();
+         col.setCharAttrBlack();
+         col.htmlTags(TAGS);
+         col.htmlKeywords(ATTRIBUTES, "<", ">");
+         col.htmlKeywords(JavascriptColoring.JS_KEYWORDS, "<script>", "</script>");
+         col.quotedTextHtml();
+         col.lineCommentsJavascriptInHtml();
       }
-      lex.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
-      lex.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
+      col.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
+      col.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
    }
 }

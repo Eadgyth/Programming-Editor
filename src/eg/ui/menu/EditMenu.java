@@ -70,7 +70,7 @@ public class EditMenu {
       }
    }
 
-   public void registerAct(Edit edit, TabbedFiles tf) {
+   public void registerEditTextAct(Edit edit) {
       undoItm.addActionListener(e -> edit.undo());
       redoItm.addActionListener(e -> edit.redo());
       cutItm.addActionListener(e -> edit.cut());
@@ -81,11 +81,14 @@ public class EditMenu {
       outdentItm.addActionListener(e -> edit.outdent());
       clearSpacesItm.addActionListener(e -> edit.clearTrailingSpaces());
       changeIndentItm.addActionListener(e -> edit.setNewIndentUnit());
-      for (JCheckBoxMenuItem item : selectLangChBxItm) {
-           item.addActionListener(e -> getNewLanguage(e, edit, tf));
-      }
    }
    
+   public void registerChangeLanguageAct(TabbedFiles tf) {
+      for (JCheckBoxMenuItem item : selectLangChBxItm) {
+           item.addActionListener(e -> setLanguage(e, tf));
+      }
+   }
+
    public void enableCutCopyItms(boolean isEnabled) {
       cutItm.setEnabled(isEnabled);
       copyItm.setEnabled(isEnabled);
@@ -100,11 +103,10 @@ public class EditMenu {
    //--private methods--//
    //
 
-   private void getNewLanguage(ActionEvent e, Edit edit, TabbedFiles tf) {
-      Languages lang = null;
+   private void setLanguage(ActionEvent e, TabbedFiles tf) {
       for (int i = 0; i < selectLangChBxItm.length; i++) {
          if (e.getSource() == selectLangChBxItm[i]) {
-            lang = Languages.values()[i];
+            Languages lang = Languages.values()[i];
             tf.changeLanguage(lang);
             selectLangChBxItm[i].setEnabled(false);
          }

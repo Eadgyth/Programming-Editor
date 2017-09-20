@@ -48,7 +48,7 @@ public final class TextDocument {
       type = new TypingEdit(editArea);
       PREFS.readPrefs();
       String indentUnit = PREFS.getProperty("indentUnit");
-      setIndentUnit(indentUnit);    
+      setIndentUnit(indentUnit); 
    }
 
    /**
@@ -85,7 +85,7 @@ public final class TextDocument {
    /**
     * Returns the text area of this <code>EditArea</code>
     *
-    * @return  the text area this {@link EditArea}
+    * @return  the text area of this {@link EditArea}
     */
     public JTextPane textArea() {
        return textArea;
@@ -109,6 +109,10 @@ public final class TextDocument {
     */
    public String filepath() {
       return filepath;
+   }
+   
+   public File docFile() {
+      return docFile;
    }
 
    /**

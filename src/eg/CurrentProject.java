@@ -61,8 +61,8 @@ public class CurrentProject {
    private final String[] projectOptions;
    
    private ProjectActions current;
-   private TextDocument[] txtDoc;
    private TextDocument currDoc;
+   private TextDocument[] txtDoc;
    private String currExt;
 
    public CurrentProject(MainWin mw) {
@@ -77,7 +77,7 @@ public class CurrentProject {
          projectOptions[i + 1] = selProj.projectTypes[i];
       }
    }
-
+   
    /**
     * Sets the array of {@code TextDocument}
     *
@@ -90,10 +90,10 @@ public class CurrentProject {
    /**
     * Selects an element from this array of {@code TextDocument}
     *
-    * @param index  the index of the array element
+    * @param i  the index of the array element
     */
-   public void setCurrTextDocument(int index) {
-      currDoc = txtDoc[index];
+   public void setTextDocumentAt(int i) {
+      currDoc = txtDoc[i];
       currExt = FileUtils.fileSuffix(currDoc.filename());
    }
 
@@ -213,14 +213,11 @@ public class CurrentProject {
    }
 
    /**
-    * Updates the file tree if the specified path includes the
-    * project's root directory.
-    *
-    * @param path  the directory that may include the project's root
-    * directory
+    * Updates the file tree if the set {@link TextDocument} is in the
+    * directory of the current project
     */
-   public void updateFileTree(String path) {
-      if (current != null && current.isInProject(path)) {
+   public void updateFileTree() {
+      if (current != null && current.isInProject(currDoc.dir())) {
          mw.fileTree().updateTree();
       }
    }

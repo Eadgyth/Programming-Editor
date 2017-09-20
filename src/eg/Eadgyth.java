@@ -30,19 +30,13 @@ public class Eadgyth {
       FileUtils.emptyLog();
 
       MainWin         mw         = new MainWin();
-      CurrentProject  currProj   = new CurrentProject(mw);
-      PluginStarter   plugStart  = new PluginStarter(mw.functionPanel());
       ViewSettingWin  viewSetWin = new ViewSettingWin();
       EditAreaFormat  format     = new EditAreaFormat(viewSetWin, mw.menu().formatMenu());
       ViewSetter      viewSet    = new ViewSetter(viewSetWin, mw);
-      Edit            edit       = new Edit();
-      DocumentUpdate  docUpdate  = new DocumentUpdate(edit, plugStart);
-      TabbedFiles     tabFiles   = new TabbedFiles(mw, format, currProj, docUpdate);
+      TabbedFiles     tabFiles   = new TabbedFiles(mw, format);
 
       mw.registerFileAct(tabFiles);
-      mw.registerProjectAct(currProj);
-      mw.registerEditAct(edit, tabFiles);
-      mw.registerPlugAct(plugStart);
+      mw.menu().editMenu().registerChangeLanguageAct(tabFiles);
       mw.menu().viewMenu().openSettingWinItmAct(e ->
             viewSetWin.makeVisible(true));
       viewSetWin.okAct(e -> {

@@ -57,6 +57,9 @@ public class SelectedProject {
          case "html": case "htm":
             newProj = new HtmlActions(fileExt);
             break;
+         case "js":
+            newProj = new HtmlActions();
+            break;
          case "pl": case "pm":
             newProj = new PerlActions(update, proc);
             break;
@@ -82,7 +85,7 @@ public class SelectedProject {
             newProj = new JavaActions(update, proc, console);
             break;
          case "Html":
-            newProj = new HtmlActions("html");
+            newProj = new HtmlActions();
             break;
          case "Perl":
             newProj = new PerlActions(update, proc);

@@ -60,7 +60,7 @@ public class FileChooser {
       int res = chSave.showSaveDialog(frame);  
       if (res == JFileChooser.APPROVE_OPTION) {
          f = chSave.getSelectedFile();
-         chSave.setCurrentDirectory(f.getParentFile()); 
+         chSave.setCurrentDirectory(f.getParentFile());
       }
       return f;
    }
@@ -72,7 +72,7 @@ public class FileChooser {
       chOpen.setApproveButtonText("Open");
       chOpen.addChoosableFileFilter(new FileNameExtensionFilter(
             "",
-            "txt", "java", "pl", "pm", "properties",
+            "txt", "java", "js", "pl", "pm", "properties",
             "html", "htm", "xml", "bat"));
       chOpen.setFileSelectionMode(JFileChooser.FILES_ONLY); 
       setIcons(chOpen);

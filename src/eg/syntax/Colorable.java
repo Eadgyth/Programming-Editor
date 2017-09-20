@@ -8,7 +8,7 @@ public interface Colorable {
    /**
     * Colors text
     *
-    * @param lex  the reference to {@link Lexer}
+    * @param col  the reference to {@link Coloring}
     */
-   public void color(Lexer lex);
+   public void color(Coloring col);
 }

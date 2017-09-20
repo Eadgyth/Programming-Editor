@@ -2,7 +2,7 @@ package eg.document;
 
 /**
  * The interface for detecting that the state, in which edits can be
- * undone and redone, has changed
+ * undone and redone, has changed.
  */
 @FunctionalInterface
 public interface UndoableChangeListener {
@@ -14,5 +14,4 @@ public interface UndoableChangeListener {
     * @param e  an {@link UndoableChangeEvent} object
     */
    public void undoableStateChanged(UndoableChangeEvent e);
-   
 }

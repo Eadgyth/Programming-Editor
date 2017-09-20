@@ -85,8 +85,8 @@ public class Constants {
 
     /**
      * Extensions of files that can be opened */
-    public final static String[] SUFFIXES = {".bat", ".java", ".txt", ".properties",
-            ".html", ".htm", "xml", ".pl", ".pm"};
+    public final static String[] SUFFIXES = {".bat", ".java", ".js", ".txt",
+             ".properties", ".html", ".htm", "xml", ".pl", ".pm"};
 
     //
     // private

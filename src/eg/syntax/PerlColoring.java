@@ -43,13 +43,13 @@ public class PerlColoring implements Colorable {
    private final static String LINE_CMNT = "#";
    
    @Override
-   public void color(Lexer lex) {
-      lex.setCharAttrBlack();
-      lex.signedKeywordsBlue(PERL_SIGNS, END_OF_VAR);
-      lex.keywordsRed(PERL_KEYWORDS, true);
-      lex.keywordsRed(PERL_OP, false);
-      lex.bracesGray();
-      lex.quotedText();
-      lex.lineComments(LINE_CMNT, '$');
+   public void color(Coloring col) {
+      col.setCharAttrBlack();
+      col.signedKeywordsBlue(PERL_SIGNS, END_OF_VAR);
+      col.keywordsRed(PERL_KEYWORDS, true);
+      col.keywordsRed(PERL_OP, false);
+      col.bracesGray();
+      col.quotedText();
+      col.lineComments(LINE_CMNT, '$');
    }
 }

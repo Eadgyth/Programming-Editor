@@ -30,16 +30,16 @@ public class JavaColoring implements Colorable {
    };
 
    @Override
-   public void color(Lexer lex) {
-      if (!lex.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
-         lex.setCharAttrBlack();
-         lex.keywordsBlue(JAVA_ANNOTATIONS, false);
-         lex.keywordsRed(JAVA_KEYWORDS, true);
-         lex.bracketsBlue();
-         lex.bracesGray();
-         lex.quotedText();
-         lex.lineComments(SyntaxUtils.LINE_CMNT, '\0');   
+   public void color(Coloring col) {
+      if (!col.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
+         col.setCharAttrBlack();
+         col.keywordsBlue(JAVA_ANNOTATIONS, false);
+         col.keywordsRed(JAVA_KEYWORDS, true);
+         col.bracketsBlue();
+         col.bracesGray();
+         col.quotedText();
+         col.lineComments(SyntaxUtils.LINE_CMNT, '\0');   
       }
-      lex.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
+      col.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
    }
 }

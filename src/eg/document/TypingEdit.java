@@ -17,8 +17,8 @@ import java.util.List;
 
 //--Eadgyth--//
 import eg.Languages;
-import eg.syntax.Lexer;
 import eg.syntax.Coloring;
+import eg.syntax.LanguageSetter;
 import eg.ui.EditArea;
 import eg.utils.FileUtils;
 
@@ -33,8 +33,8 @@ import eg.utils.FileUtils;
 class TypingEdit {
 
    private final EditArea editArea;
-   private final Lexer lex;
    private final Coloring col;
+   private final LanguageSetter langSet;
    private final AutoIndent autoInd;
    private final LineNumbers lineNum;
    private final UndoRedo undo = new UndoRedo();
@@ -54,8 +54,8 @@ class TypingEdit {
 
    TypingEdit(EditArea editArea) {
       this.editArea = editArea;
-      lex = new Lexer(editArea.getDoc(), editArea.getAttrSet());
-      col = new Coloring(lex);
+      col = new Coloring(editArea.getDoc(), editArea.getAttrSet());
+      langSet = new LanguageSetter(col);
       lineNum = new LineNumbers(editArea);
       autoInd = new AutoIndent(editArea);
 
@@ -107,12 +107,12 @@ class TypingEdit {
 
    void setUpEditing(Languages lang) {
       if (lang == Languages.PLAIN_TEXT) {
-         lex.setAllCharAttrBlack();
+         col.setAllCharAttrBlack();
          enableTypeEdit(false);
          autoInd.enableIndent(false);
       }
       else {
-         col.selectColorable(lang);
+         langSet.setColorable(lang);
          colorMultipleLines(null, 0);
          enableTypeEdit(true);
          autoInd.enableIndent(true);
@@ -128,9 +128,7 @@ class TypingEdit {
    }
 
    void colorMultipleLines(String section, int pos) {
-      lex.enableTypeMode(section != null);
       col.colorMultipleLines(text, section, pos);
-      lex.enableTypeMode(true);
    }
 
    boolean canUndo() {

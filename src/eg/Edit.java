@@ -159,11 +159,10 @@ public class Edit {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
       String text = txtDoc.getText();
-      boolean isAtLineStart
-            = LinesFinder.lastNewline(text, start) > start - indentLength;
- 
       txtDoc.enableTypeEdit(false);
       if (sel == null) {
+         boolean isAtLineStart
+               = LinesFinder.lastNewline(text, start) > start - indentLength;
          if (!isAtLineStart && start >= indentLength) {
             if (indentUnit.equals(text.substring(start - indentLength, start))) {
                txtDoc.removeStr(start - indentLength, indentLength);
@@ -175,18 +174,16 @@ public class Edit {
       }
       else {
          String[] selArr = sel.split("\n");
-         boolean corrNeeded
-               = selArr[0].startsWith(" ")
-               && !selArr[0].startsWith(indentUnit);
-
-         if (corrNeeded) {
+         if (!selArr[0].startsWith(indentUnit)) {
             int countSpaces = 0;
             while (selArr[0].charAt(countSpaces) == ' ') {
                countSpaces++;
             }
             int diff = indentLength - countSpaces;
             start -= diff;
-            selArr[0] = text.substring(start, start + selArr[0].length() + diff);
+            if (start >= 0) {
+               selArr[0] = text.substring(start, start + selArr[0].length() + diff);
+            }
          }
          if (selArr[0].startsWith(" ") && isIndentConsistent(selArr)) {
             int sum = 0;
@@ -219,7 +216,7 @@ public class Edit {
       }
       txtDoc.enableTypeEdit(true);
    }
-   
+
    //
    //--private--//
    //

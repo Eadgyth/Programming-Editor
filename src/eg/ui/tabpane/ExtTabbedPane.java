@@ -32,6 +32,7 @@ public class ExtTabbedPane extends JTabbedPane {
    private final ExtTabbedPaneUI ui = new ExtTabbedPaneUI();
 
    private int iTabMouseOver = -1;
+   private boolean isShowTabbar;
    
    /**
     * Creates an <code>ExtTabbedPane</code> using the parameterless
@@ -57,6 +58,11 @@ public class ExtTabbedPane extends JTabbedPane {
       }
       ui.setShowTabs(show);
       updateUI();
+      isShowTabbar = show;
+   }
+   
+   public boolean isShowTabbar() {
+      return isShowTabbar;
    }
 
    /**

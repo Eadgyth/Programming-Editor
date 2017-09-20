@@ -40,8 +40,7 @@ public abstract class ProjectConfig implements Configurable {
     * Used to read prefs from an 'eadconfig' file that may be saved in a project */
    private final static Preferences CONFIG = new Preferences();
 
-   private final String suffix;
-
+   private String suffix;
    private SettingsWin setWin = null;
    private String projTestName = "";
    private String projectPath = "";

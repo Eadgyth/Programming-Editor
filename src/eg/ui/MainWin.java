@@ -80,7 +80,7 @@ public class MainWin {
    public Menu menu() {
       return menu;
    }
-   
+
    /**
     * Gets this toolbar
     *
@@ -280,11 +280,10 @@ public class MainWin {
     * Registers handlers for edit actions
     *
     * @param ed  the reference to {@link Edit}
-    * @param tf  the reference to {@link CurrentProject}
     */
-   public void registerEditAct(Edit ed, TabbedFiles tf) {
-      toolbar.registerEditAct(ed);
-      menu.editMenu().registerAct(ed, tf);
+   public void registerEditTextAct(Edit ed) {
+      toolbar.registerEditTextAct(ed);
+      menu.editMenu().registerEditTextAct(ed);
    }
 
    /**

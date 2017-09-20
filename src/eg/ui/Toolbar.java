@@ -68,7 +68,7 @@ public class Toolbar {
     * @param edit  the reference to the {@link Edit}
     * object that handles the edit actions
     */
-   public void registerEditAct(Edit edit) {
+   public void registerEditTextAct(Edit edit) {
       undoBt.addActionListener(e -> edit.undo());
       redoBt.addActionListener(e -> edit.redo());
       cutBt.addActionListener(e -> edit.cut());

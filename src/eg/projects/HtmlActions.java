@@ -19,6 +19,10 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
       super("." + suffix);
    }
    
+   HtmlActions() {
+      super(".html");
+   }
+   
    /**
     * Creates a basic {@link SettingsWin}.
     */
@@ -71,8 +75,7 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    
    //--private--//
    
-   private void setHtmlFile() {
-      
+   private void setHtmlFile() {      
       htmlFile = new File(getProjectPath() + F_SEP
             + getModuleName() + F_SEP + getMainFile() + super.getSourceSuffix());
    }

@@ -9,7 +9,7 @@ import eg.ui.menu.FormatMenu;
  * The formatting (word wrap, font, display of line numbers) for
  * <code>EditArea</code> objects.
  * <p>The font is applied to all objects, whereas wordwrap and the
- * visibility line numbers is applied to the currently viewed editor
+ * visibility of line numbers is applied to the currently viewed editor
  * <p>The initial parameters are given by entries in the prefs file.
  */
 public class EditAreaFormat {
@@ -49,6 +49,18 @@ public class EditAreaFormat {
    public void setEditAreaArr(EditArea[] editArea) {
       this.editArea = editArea;
    }
+
+  /**
+    * Selects an element from this array of {@code EditArea} and
+    * selects/unselects the wordwrap menu item depending on the state
+    * of that element
+    *
+    * @param i  the index of the array element
+    */
+   public void setEditAreaAt(int i) {
+      currEdArea = editArea[i];
+      fMenu.selectWordWrapItm(currEdArea.isWordWrap());
+   }
    
    /** 
     * Returns a new {@code EditArea} that is initialized with the
@@ -59,22 +71,10 @@ public class EditAreaFormat {
    public EditArea createEditArea() {
       return new EditArea(isWordWrap, isShowLineNr, font, fontSize);
    }
-
-  /**
-    * Selects an element from this array of {@code EditArea} and
-    * selects/unselects the wordwrap menu item depending on the state
-    * of that element
-    *
-    * @param index  the index of the array element
-    */
-   public void setCurrEditArea(int index) {
-      currEdArea = editArea[index];
-      fMenu.selectWordWrapItm(currEdArea.isWordWrap());
-   }
    
    /**
-    * Changes the wordwrap state of the {@code EditArea}
-    * selected by {@link #setCurrEditArea(int)}
+    * Changes the wordwrap state of the <code>EditArea</code>
+    * selected by {@link #setEditArea(int)}
     */
    public void changeWordWrap() {
       isWordWrap = fMenu.isWordWrapItmSelected();
