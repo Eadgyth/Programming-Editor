@@ -27,8 +27,8 @@ public class SelectedProject {
     *
     * @param update  the {@link ProjectUIUpdate}
     * @param proc  the {@link ProcessStarter}
-    * @param console  the {@link ConsolePanel} tht is also shared
-    * by <code>ProcessStarter</code>
+    * @param console  the {@link ConsolePanel} that is also shared
+    * with <code>ProcessStarter</code>
     */
    public SelectedProject(ProjectUIUpdate update,
          ProcessStarter proc, ConsolePanel console) {
