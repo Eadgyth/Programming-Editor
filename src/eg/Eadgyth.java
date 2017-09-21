@@ -31,8 +31,8 @@ public class Eadgyth {
 
       MainWin         mw         = new MainWin();
       ViewSettingWin  viewSetWin = new ViewSettingWin();
-      EditAreaFormat  format     = new EditAreaFormat(viewSetWin, mw.menu().formatMenu());
       ViewSetter      viewSet    = new ViewSetter(viewSetWin, mw);
+      EditAreaFormat  format     = new EditAreaFormat(viewSetWin, mw.menu().formatMenu());
       TabbedFiles     tabFiles   = new TabbedFiles(mw, format);
 
       mw.registerFileAct(tabFiles);

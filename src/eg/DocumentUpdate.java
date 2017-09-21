@@ -83,7 +83,7 @@ public class DocumentUpdate {
    }
    
    /**
-    * Sets in the <code>TextDocument</cpde> at the specified index
+    * Sets in the <code>TextDocument</code> at the specified index
     * the listeners for updating undo/redo as well as cut/copy buttons
     * and menu items
     *

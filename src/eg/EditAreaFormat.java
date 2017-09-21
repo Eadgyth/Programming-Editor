@@ -74,7 +74,7 @@ public class EditAreaFormat {
    
    /**
     * Changes the wordwrap state of the <code>EditArea</code>
-    * selected by {@link #setEditArea(int)}
+    * selected by {@link #setEditAreaAt(int)}
     */
    public void changeWordWrap() {
       isWordWrap = fMenu.isWordWrapItmSelected();
