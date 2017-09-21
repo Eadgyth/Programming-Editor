@@ -46,7 +46,8 @@ public class CurrentProject {
    private final String WRONG_TYPE_MESSAGE
          = "<html>"
          + "The selected file does not specify a project category.<br>"
-         + "If the file belongs to a project select a category:"
+         + "If the file belongs to a project specify the extension of<br>"
+         + "the source files:"
          + "</html>";
 
    private final String FILES_NOT_FOUND_MESSAGE
@@ -55,6 +56,7 @@ public class CurrentProject {
    private final MainWin mw;
    private final SelectedProject selProj;
    private final ProcessStarter proc;
+   private final ProjectUIUpdate update;
    private final List<ProjectActions> projList = new ArrayList<>();
    /*
     * Options for a Comobox*/
@@ -63,18 +65,17 @@ public class CurrentProject {
    private ProjectActions current;
    private TextDocument currDoc;
    private TextDocument[] txtDoc;
-   private String currExt;
+   private String docSuffix;
 
    public CurrentProject(MainWin mw) {
       this.mw = mw;
       proc = new ProcessStarter(mw.console());
-      ProjectUIUpdate update = new ProjectUIUpdate(mw.menu().viewMenu(),
-            mw.fileTree());
+      update = new ProjectUIUpdate(mw);
       selProj = new SelectedProject(update, proc, mw.console());
-      projectOptions = new String[selProj.projectTypes.length + 1];
-      projectOptions[0] = "Categories...";
-      for (int i = 0; i < selProj.projectTypes.length; i++) {
-         projectOptions[i + 1] = selProj.projectTypes[i];
+      projectOptions = new String[selProj.projectSuffixes.length + 1];
+      projectOptions[0] = "File extensions...";
+      for (int i = 0; i < selProj.projectSuffixes.length; i++) {
+         projectOptions[i + 1] = selProj.projectSuffixes[i];
       }
    }
    
@@ -94,7 +95,7 @@ public class CurrentProject {
     */
    public void setTextDocumentAt(int i) {
       currDoc = txtDoc[i];
-      currExt = FileUtils.fileSuffix(currDoc.filename());
+      docSuffix = FileUtils.fileSuffix(currDoc.filename());
    }
 
    /**
@@ -109,12 +110,12 @@ public class CurrentProject {
       }
 
       EventQueue.invokeLater(() -> {
-         ProjectActions prToFind = selProj.createProjectByExt(currExt);
+         ProjectActions prToFind = selProj.createProject(docSuffix);
          boolean isFound = prToFind != null
                && prToFind.retrieveProject(currDoc.dir());
          if (prToFind == null) {
-            for (String opt : selProj.projectTypes) {
-               prToFind = selProj.createProjectByType(opt);
+            for (String opt : selProj.projectSuffixes) {
+               prToFind = selProj.createProject(opt);
                isFound = prToFind != null
                      && prToFind.retrieveProject(currDoc.dir());
                if (isFound) {
@@ -128,13 +129,14 @@ public class CurrentProject {
                current = prFin;
                current.addOkAction(e -> configureProject(current));
                projList.add(current);
-               updateProjectSetting(current);
+               proc.setWorkingDir(current.getProjectPath());
+               update.updateProjectSetting(current, projList.size());
             }
             else {
                if (selectFromList(currDoc.dir(), true) == null) {
                   prFin.addOkAction(e -> configureProject(prFin));
                   projList.add(prFin);
-                  enableChangeProject();
+                  update.enableChangeProject(projList.size());
                   changeProject(prFin);
                }
             }
@@ -321,12 +323,12 @@ public class CurrentProject {
          JOptions.titledInfoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          return;
       }
-      ProjectActions projNew = selProj.createProjectByExt(currExt);
+      ProjectActions projNew = selProj.createProject(docSuffix);
       if (projNew == null) {
-         String selType = JOptions.comboBoxRes(WRONG_TYPE_MESSAGE,
+         String selectedSuffix = JOptions.comboBoxRes(WRONG_TYPE_MESSAGE,
                "Project category", projectOptions, null, true);
-         if (selType != null && !selType.equals(projectOptions[0])) {
-            projNew = selProj.createProjectByType(selType);
+         if (selectedSuffix != null && !selectedSuffix.equals(projectOptions[0])) {
+            projNew = selProj.createProject(selectedSuffix);
          }
       }
       if (projNew != null) {
@@ -348,7 +350,8 @@ public class CurrentProject {
       if (result == 0) {
          current = toChangeTo;
          current.storeInPrefs();
-         updateProjectSetting(current);
+         proc.setWorkingDir(current.getProjectPath());
+         update.updateProjectSetting(current, projList.size());
          return true;
       }
       else {
@@ -372,30 +375,8 @@ public class CurrentProject {
             current = projToConf;
             projList.add(current);
          }
-         updateProjectSetting(current);
-      }
-   }
-
-   private void updateProjectSetting(ProjectActions projToSet) {
-      mw.fileTree().setDeletableDirName(projToSet.getExecutableDirName());
-      proc.setWorkingDir(projToSet.getProjectPath());
-      mw.showProjectInfo(projToSet.getProjectName());
-      enableActions(projToSet);
-      mw.fileTree().setProjectTree(projToSet.getProjectPath());
-   }
-
-   private void enableActions(ProjectActions projToSet) {
-      if (projList.size() == 1) {
-         mw.menu().viewMenu().enableFileView();
-      }
-      enableChangeProject();
-      selProj.enableActions(projToSet.getClass().getSimpleName(), mw);
-   }
-
-   private void enableChangeProject() {
-      if (projList.size() == 2) {
-         mw.menu().projectMenu().enableChangeProjItm();
-         mw.toolbar().enableChangeProjBt();
+         proc.setWorkingDir(current.getProjectPath());
+         update.updateProjectSetting(current, projList.size());
       }
    }
 
@@ -407,7 +388,7 @@ public class CurrentProject {
 
    private void endCompilation() {
       EventQueue.invokeLater(() -> {
-         mw.fileTree().updateTree();
+         update.updateFileTree();
          mw.setBusyCursor(false);
       });
    }

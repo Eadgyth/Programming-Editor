@@ -11,13 +11,10 @@ import eg.ui.MainWin;
 public class SelectedProject {
    
    /**
-    * The names for possible project types. The names are the
-    * display values of the corresponding constants in {@link eg.Languages}
+    * The file extensions that can identify a project category
     */
-   public String[] projectTypes = {
-      Languages.HTML.display(),
-      Languages.JAVA.display(),
-      Languages.PERL.display()
+   public String[] projectSuffixes = {
+      "htm", "html", "java", "pl"
    };
 
    private final ProjectUIUpdate update;
@@ -45,20 +42,17 @@ public class SelectedProject {
     * Returns a {@code ProjectActions} based on the file extension and
     * creates the {@code SettingsWin} for the project.
     *
-    * @param fileExt  the file extension which a project is to be defined for
+    * @param suffix  the file extension which a project is to be defined for
     * @return  an object of type {@link ProjectActions}
     */
-   public ProjectActions createProjectByExt(String fileExt) {
+   public ProjectActions createProject(String suffix) {
       ProjectActions newProj = null;
-      switch (fileExt) {
+      switch (suffix) {
          case "java":
             newProj = new JavaActions(update, proc, console);
             break;
          case "html": case "htm":
-            newProj = new HtmlActions(fileExt);
-            break;
-         case "js":
-            newProj = new HtmlActions();
+            newProj = new HtmlActions(suffix);
             break;
          case "pl": case "pm":
             newProj = new PerlActions(update, proc);
@@ -68,65 +62,5 @@ public class SelectedProject {
          newProj.createSettingsWin();
       }
       return newProj;
-   }
-   
-   /**
-    * Returns a {@code ProjectActions} based on the specified language and
-    * creates the {@code SettingsWin} for the project.
-    *
-    * @param projectType the type of project which has a value from
-    * {@link projectTypes}
-    * @return  an object of type {@link ProjectActions}
-    */
-   public ProjectActions createProjectByType(String projectType) {
-      ProjectActions newProj = null;
-      switch (projectType) {
-         case "Java":
-            newProj = new JavaActions(update, proc, console);
-            break;
-         case "Html":
-            newProj = new HtmlActions();
-            break;
-         case "Perl":
-            newProj = new PerlActions(update, proc);
-            break;
-      }
-      if (newProj != null) {
-         newProj.createSettingsWin();
-      }
-      return newProj;
-   }
-
-   /**
-    * Enables action components in the menu and toolbar depending on the
-    * name of the class that implements {@code ProjectActions}
-    *
-    * @param className  the name of the class
-    * @param mw  the {@link MainWin}
-    */
-   public void enableActions(String className, MainWin mw) {
-      mw.menu().projectMenu().setBuildLabel("Build");
-      switch (className) {
-         case "JavaActions":
-            enableProjActions(true, true, true, mw);
-            mw.menu().projectMenu().setBuildLabel("Create jar");
-            break;
-         case "HtmlActions":
-            enableProjActions(false, true, false, mw);
-            break;
-         case "PerlActions":
-            enableProjActions(false, true, false, mw);
-            break;
-         case "TxtActions":
-            enableProjActions(false, false, false, mw);
-            break;
-      }
-   }
-   
-   private void enableProjActions(boolean isCompile, boolean isRun,
-         boolean isBuild, MainWin mw) {
-
-      mw.menu().projectMenu().enableProjItms(isCompile, isRun, isBuild);
-      mw.toolbar().enableProjBts(isCompile, isRun);
    }
 }

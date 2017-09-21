@@ -19,10 +19,6 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
       super("." + suffix);
    }
    
-   HtmlActions() {
-      super(".html");
-   }
-   
    /**
     * Creates a basic {@link SettingsWin}.
     */
