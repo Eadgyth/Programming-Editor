@@ -24,7 +24,7 @@
          <p>... please help: if really somebody gave the program a try a message about
             problems is welcome at
             <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a>.</p>
-            
+
          <hr>
 
          <h3>Content</h3>
@@ -135,10 +135,9 @@
                 If errors occured it is asked to open the console panel to view messages.</li>
             <li>If the compilation was successful the new program can be run for testing by
                 using 'Run' in the 'Project' menu. Any output and error
-                messages from the tested program are displayed in the console panel. In the case
-                that the program asks for input through a command line the console area is writable.
-                The tested program can be forcibly quit by clicking the 'stop' symbol in
-                the toolbar of the console panel.</li>
+                messages from the tested program are displayed in the console panel. The tested
+                program can be forcibly quit by clicking the 'stop' symbol in the toolbar of the
+                console panel.</li>
             <li>Arguments for a start script may be entered in the text field 'Arguments'
                 (separated by single spaces) in the settings window ('Project' > '
                 Project settings').</li>
@@ -151,25 +150,22 @@
 
          <h4 id="PerlProject">Testing a Perl script</h4>
          <ol>
-            <li>Save changes to the script and select 'Run' in the 'Project'
-                menu.</li>
+            <li>Save changes to the script and select 'Run' in the 'Project' menu.</li>
             <li>Any output (error) is shown in the console panel. NOTE: there is a limitation when the
                 script asks for input through a command line. In that case any output from the script
-                expected before user input is asked for (like "Enter your name:") is not printed (more
-                precisely it's printed only after inputs were made). The output would be shown as
-                expected (as far as tested) if the autoflushing of Perl's STDOUT is turned on in the
+                expected before the user input is asked for (like "Enter your name:") is not printed
+                (more precisely it's printed only after all inputs were made). The output would be shown
+                as expected (as far as tested) if the autoflushing of Perl's STDOUT is turned on in the
                 script itself. The other possibilty is, of course, to start the command line/terminal
                 of the OS to test the script (see <a href="#Console">Using the console</a>).</li>
             <li>Arguments for a start script may be entered in the text field 'Arguments'
                 (separated by single spaces) in the settings window ('Project' > 'Project settings').</li>
-            <li>The syntax coloring for Perl is presently very basic and incomplete.</li>
          </ol>
 
          <h4 id="HtmlProject">Viewing HTML code in a web browser</h4>
          <ol>
             <li>Save changes to the file and select 'Run' in the 'Project' menu to view the html file in
                 the default web browser.</li>
-            <li>As for Perl, the syntax coloring is presently rudimentary.</li>
          </ol>
          <a href="#ancor">Back to top</a>
          <hr>
