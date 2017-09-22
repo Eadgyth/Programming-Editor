@@ -313,12 +313,7 @@ public class TabbedFiles implements Observer {
    //
 
    private void open(File f) {
-      if (isFileOpen(f.toString())) {
-         JOptions.warnMessage(f.getName() + ":\nThe file is already open.");
-         return;
-      }
-      if (nTabs() == txtDoc.length) {
-         JOptions.warnMessage("The maximum number of tabs is reached.");
+      if (isMaxTabNumber() || isFileOpen(f)) {
          return;
       }
 
@@ -351,15 +346,24 @@ public class TabbedFiles implements Observer {
       }
    }
 
-   private boolean isFileOpen(String fileToOpen) {
+   private boolean isFileOpen(File f) {
       boolean isFileOpen = false;
       for (int i = 0; i < nTabs(); i++) {
-         if (txtDoc[i].filepath().equals(fileToOpen)) {
+         if (txtDoc[i].filepath().equals(f.toString())) {
            isFileOpen = true;
+           JOptions.warnMessage(f.getName() + " is already open.");
            break;
          }
       }
       return isFileOpen;
+   }
+   
+   private boolean isMaxTabNumber() {
+      boolean isMax = nTabs() == txtDoc.length;
+      if (isMax) {
+         JOptions.warnMessage("The maximum number of tabs is reached.");
+      }
+      return isMax;
    }
 
    private void createDocument(int i, File f) {
@@ -405,13 +409,13 @@ public class TabbedFiles implements Observer {
    }
    
    private int unsavedTab() {
-      int count;
-      for (count = 0; count < nTabs(); count++) {
-         if (!txtDoc[count].isContentSaved()) {
+      int i;
+      for (i = 0; i < nTabs(); i++) {
+         if (!txtDoc[i].isContentSaved()) {
             break;
          }
       }
-      return count;
+      return i;
    }
 
    private int saveOrCloseOption(int i) {
