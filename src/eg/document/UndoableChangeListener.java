@@ -4,7 +4,6 @@ package eg.document;
  * The interface for detecting that the state, in which edits can be
  * undone and redone, has changed.
  */
-@FunctionalInterface
 public interface UndoableChangeListener {
    
    /**
