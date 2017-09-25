@@ -21,25 +21,21 @@ public class DocumentUpdate {
 
    private TextDocument[] txtDoc;
 
-   public DocumentUpdate(MainWin mw) {
-
+   /**
+    * Creates a DocumentUpdate
+    *
+    * @param mw  the reference to {@link MainWin}
+    * @param txtDoc  the array of {@link TextDocument}
+    */
+   public DocumentUpdate(MainWin mw, TextDocument[] txtDoc) {
       this.mw = mw;
+      this.txtDoc = txtDoc;
       edit = new Edit();
       plugStart = new PluginStarter(mw.functionPanel());
-      currProj = new CurrentProject(mw);
+      currProj = new CurrentProject(mw, txtDoc);
       mw.registerEditTextAct(edit);
       mw.registerPlugAct(plugStart);
       mw.registerProjectAct(currProj);
-   }
-
-   /**
-    * Assigns the array of <code>TextDocument</code>
-    *
-    * @param txtDoc  the array of {@link TextDocument}
-    */
-   public void setDocumentArr(TextDocument[] txtDoc) {
-      this.txtDoc = txtDoc;
-      currProj.setDocumentArr(txtDoc);
    }
 
    /**
@@ -77,20 +73,6 @@ public class DocumentUpdate {
       if (updateFiletree) {
          currProj.updateFileTree();
       }
-   }
-   
-   /**
-    * Sets in the <code>TextDocument</code> at the specified index
-    * the listeners for updating undo/redo as well as cut/copy buttons
-    * and menu items
-    *
-    * @param i  the index of the selected {@link TextDocument}
-    */
-   public void setUIUpdateListenersAt(int i) {
-      txtDoc[i].setUndoableChangeListener(e ->
-            mw.enableUndoRedo(e.canUndo(), e.canRedo()));
-      txtDoc[i].setTextSelectionListener(e ->
-            mw.enableCutCopy(e.isSelection()));
    }
    
    //

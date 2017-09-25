@@ -52,8 +52,7 @@ public class TabbedFiles implements Observer {
       this.format = format;
       this.mw = mw;
       tabPane = mw.tabPane();
-      docUpdate = new DocumentUpdate(mw);
-      docUpdate.setDocumentArr(txtDoc);     
+      docUpdate = new DocumentUpdate(mw, txtDoc);
       format.setEditAreaArr(editArea);
       prefs.readPrefs();
       lang = Languages.valueOf(prefs.getProperty("language"));
@@ -100,7 +99,7 @@ public class TabbedFiles implements Observer {
          editArea[n] = format.createEditArea();
          txtDoc[n] = new TextDocument(editArea[n], lang);
          addNewTab("unnamed", editArea[n].textPanel());
-         docUpdate.setUIUpdateListenersAt(n);
+         setUIUpdateListenersAt(n);
       }
    }
 
@@ -132,7 +131,7 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Saves the text content in the selected tab.
+    * Saves the text content of the selected tab.
     * <p>{@link #saveAs(boolean)} is called if the selected tab is
     * unnamed or if the content was read in from a file that no
     * longer exists.
@@ -369,8 +368,15 @@ public class TabbedFiles implements Observer {
    private void createDocument(int i, File f) {
       editArea[i] = format.createEditArea();
       txtDoc[i] = new TextDocument(editArea[i]);
-      docUpdate.setUIUpdateListenersAt(i);
+      setUIUpdateListenersAt(i);
       openFile(i, f);
+   }
+   
+  private void setUIUpdateListenersAt(int i) {
+      txtDoc[i].setUndoableChangeListener(e ->
+            mw.enableUndoRedo(e.canUndo(), e.canRedo()));
+      txtDoc[i].setTextSelectionListener(e ->
+            mw.enableCutCopy(e.isSelection()));
    }
    
    private void openFile(int i, File f) {

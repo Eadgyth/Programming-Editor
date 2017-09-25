@@ -33,15 +33,12 @@ import eg.utils.FileUtils;
  */
 public class CurrentProject {
 
-   private final static String F_SEP = File.separator;
-
    private final String NO_FILE_IN_TAB_MESSAGE
          = "A project can be set after a file was opened or"
          + " newly saved.";
 
    private final String NOT_IN_PROJ_MESSAGE
-         = "The selected file is not in the root directory"
-         + " of the currently active project.";
+         = "The selected file does not belong to the active project";
 
    private final String FILES_NOT_FOUND_MESSAGE
          = "The following file could not be found anymore:";
@@ -51,7 +48,7 @@ public class CurrentProject {
    private final ProcessStarter proc;
    private final List<ProjectActions> projList = new ArrayList<>();
    /*
-    * Options for a Comobox*/
+    * Options for a Comobox */
    private final String[] projectOptions;
    
    private ProjectActions current;
@@ -59,8 +56,15 @@ public class CurrentProject {
    private TextDocument[] txtDoc;
    private String docSuffix;
 
-   public CurrentProject(MainWin mw) {
+   /**
+    * Creates a CurrentProject
+    *
+    * @param mw  the reference to {@link MainWin}
+    * @param txtDoc  the array of {@link TextDocument}
+    */
+   public CurrentProject(MainWin mw, TextDocument[] txtDoc) {
       this.mw = mw;
+      this.txtDoc = txtDoc;
       proc = new ProcessStarter(mw.console());
       selProj = new SelectedProject(mw, proc, mw.console());
       projectOptions = new String[selProj.projectSuffixes.length + 1];
@@ -68,15 +72,6 @@ public class CurrentProject {
       for (int i = 0; i < selProj.projectSuffixes.length; i++) {
          projectOptions[i + 1] = selProj.projectSuffixes[i];
       }
-   }
-   
-   /**
-    * Sets the array of {@code TextDocument}
-    *
-    * @param txtDoc  the array of {@link TextDocument}
-    */
-   public void setDocumentArr(TextDocument[] txtDoc) {
-      this.txtDoc = txtDoc;
    }
 
    /**
@@ -101,7 +96,6 @@ public class CurrentProject {
       if (current != null && current.isInProject(currDoc.dir())) {
          return;
       }
-
       EventQueue.invokeLater(() -> {
          ProjectActions prToFind = selProj.createProject(docSuffix);
          boolean isFound = prToFind != null
@@ -302,24 +296,6 @@ public class CurrentProject {
    //
    //--private methods--//
    //
-   
-   private void confirmedNewProject(ProjectActions toConfirm) {
-      int res = JOptions.confirmYesNo(currDoc.filename()
-              + "\nThe file belongs the project "
-              + "'" + toConfirm.getProjectName() + "'."
-              + "\nStill set new project?");
-      if (res == 0) {
-         createNewProject();
-      }
-   }
-   
-   private String wrongExtentionMessage(String filename) {  
-         return "<html>"
-         + filename + "<br>"
-         + "If the file belongs to a project specify the extension of<br>"
-         + "the source files:"
-         + "</html>";
-   }
 
    private void createNewProject() {
       if (currDoc.filename().length() == 0) {
@@ -382,13 +358,31 @@ public class CurrentProject {
    }
 
    private boolean isCurrent(String action) {
-      boolean useCurrentProj = current.isInProject(currDoc.dir());
+      boolean isCurrent = current.isInProject(currDoc.dir());
       int res = 0;
-      if (!useCurrentProj) {
+      if (!isCurrent) {
          res = JOptions.confirmYesNo(NOT_IN_PROJ_MESSAGE
-             + "\n" + action + " " + current.getProjectName() + "?");
+             + "\n" + action + " project '" + current.getProjectName() + "' ?");
       }
-      return useCurrentProj || res == 0;
+      return isCurrent || res == 0;
+   }
+   
+   private void confirmedNewProject(ProjectActions toConfirm) {
+      int res = JOptions.confirmYesNo(currDoc.filename()
+              + "\nThe file belongs the project "
+              + "'" + toConfirm.getProjectName() + "'."
+              + "\nStill set new project?");
+      if (res == 0) {
+         createNewProject();
+      }
+   }
+   
+   private String wrongExtentionMessage(String filename) {  
+         return "<html>"
+         + filename + "<br>"
+         + "If the file belongs to a project specify the extension of<br>"
+         + "the source files:"
+         + "</html>";
    }
    
    private void updateProjectSetting(ProjectActions projToSet) {
@@ -403,11 +397,8 @@ public class CurrentProject {
       if (projList.size() == 1) {
          mw.enableOpenFileView();
       }
-      enableActions(projToSet.getClass().getSimpleName());
-   }
-
-   private void enableActions(String className) {
       mw.setBuildName("Build");
+      String className = projToSet.getClass().getSimpleName();
       switch (className) {
          case "JavaActions":
             mw.enableProjActions(true, true, true);
