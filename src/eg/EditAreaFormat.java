@@ -3,7 +3,7 @@ package eg;
 import eg.ui.EditArea;
 import eg.ui.ViewSettingWin;
 import eg.ui.FontSettingWin;
-import eg.ui.menu.FormatMenu;
+import eg.ui.MainWin;
 
 /**
  * The formatting (word wrap, font, display of line numbers) for
@@ -15,29 +15,28 @@ import eg.ui.menu.FormatMenu;
 public class EditAreaFormat {
    
    private final ViewSettingWin viewSetWin;
-   private final FormatMenu fMenu;
-   private final FontSettingWin fontSetWin = new FontSettingWin();
+   private final FontSettingWin fontSetWin;
    private final Preferences prefs = new Preferences();
 
    private EditArea[] editArea;  
    private EditArea currEdArea;
    
-   private boolean isWordWrap;
+   private boolean isWordwrap;
    private boolean isShowLineNr;
    private String font;
    private int fontSize;
    
-   public EditAreaFormat(ViewSettingWin viewSetWin, FormatMenu fMenu) {
+   /**
+    * @param viewSetWin  the reference to {@link ViewSettingWin}
+    */
+   public EditAreaFormat(ViewSettingWin viewSetWin) {
       this.viewSetWin = viewSetWin;
-      this.fMenu = fMenu;
-
       isShowLineNr = viewSetWin.isShowLineNumbers();
       prefs.readPrefs();
-      isWordWrap = "enabled".equals(prefs.getProperty("wordWrap"));
-      font = fontSetWin.fontComboBxRes();
-      fontSize = fontSetWin.sizeComboBxRes();
-      fMenu.changeWordWrapAct(e -> changeWordWrap());
-      fMenu.fontAct(e -> fontSetWin.makeVisible(true));
+      isWordwrap = "enabled".equals(prefs.getProperty("wordWrap"));
+      font = prefs.getProperty("font");
+      fontSize = Integer.parseInt(prefs.getProperty("fontSize"));
+      fontSetWin = new FontSettingWin(font, fontSize);
       fontSetWin.okAct(e -> setFont());
    }
    
@@ -59,7 +58,22 @@ public class EditAreaFormat {
     */
    public void setEditAreaAt(int i) {
       currEdArea = editArea[i];
-      fMenu.selectWordWrapItm(currEdArea.isWordWrap());
+   }
+   
+   /**
+    * Makes this window to set the font visible
+    */
+   public void makeFontSettingWinVisible() {
+      fontSetWin.makeVisible(true);
+   }
+   
+   /**
+    * If wordwrap is set in the currently selected <code>EditArea</code>
+    *
+    * @return if wordwrap is set in the currently selected {@link EditArea}
+    */
+   public boolean isWordwrap() {
+      return currEdArea.isWordwrap();
    }
    
    /** 
@@ -69,27 +83,29 @@ public class EditAreaFormat {
     * @return  a new {@link EditArea}
     */
    public EditArea createEditArea() {
-      return new EditArea(isWordWrap, isShowLineNr, font, fontSize);
+      return new EditArea(isWordwrap, isShowLineNr, font, fontSize);
    }
    
    /**
-    * Changes the wordwrap state of the <code>EditArea</code>
-    * selected by {@link #setEditAreaAt(int)}
+    * Changes the wordwrap state of the selected
+    * <code>EditArea</code>
+    *
+    * @param isWordwrap  if wordwrap is enabled
     */
-   public void changeWordWrap() {
-      isWordWrap = fMenu.isWordWrapItmSelected();
-      if (isWordWrap) {
-         currEdArea.enableWordWrap();
+   public void changeWordWrap(boolean isWordwrap) {
+      if (isWordwrap) {
+         currEdArea.enableWordwrap();
       }
       else {
          showLineNumbers(currEdArea);
       }
-      String state = isWordWrap ? "enabled" : "disabled";
+      String state = isWordwrap ? "enabled" : "disabled";
       prefs.storePrefs("wordWrap", state);
+      this.isWordwrap = isWordwrap;
    }
 
    /**
-    * Applies the selection in the {@link ViewSettingWin} to show or hide
+    * Applies the selection in this {@link ViewSettingWin} to show or hide
     * line numbers
     */
    public void applySetWinOk() {
@@ -97,7 +113,7 @@ public class EditAreaFormat {
       if (isShowLineNr != show) {
          isShowLineNr = show;
          for (EditArea ea : editArea) {
-            if (ea != null && !ea.isWordWrap()) {
+            if (ea != null && !ea.isWordwrap()) {
                showLineNumbers(ea);
             }
          }
@@ -127,6 +143,8 @@ public class EditAreaFormat {
              ea.revalidateLineAreaWidth();
          }
       }
+      prefs.storePrefs("fontSize", String.valueOf(fontSize));
+      prefs.storePrefs("font", font);
       fontSetWin.makeVisible(false);
    }
 }

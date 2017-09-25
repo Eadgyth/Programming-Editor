@@ -5,13 +5,14 @@ import java.io.IOException;
 
 import java.awt.EventQueue;
 
+import javax.swing.SwingWorker;
+
 //--Eadgyth--//
-import eg.ProjectUIUpdate;
 import eg.console.*;
 import eg.javatools.*;
 import eg.utils.JOptions;
 import eg.utils.FileUtils;
-import eg.ui.filetree.FileTree;
+import eg.ui.ConsoleOpenable;
 
 /**
  * Represents a programming project in Java.
@@ -21,7 +22,7 @@ public final class JavaActions extends ProjectConfig
 
    private final static String F_SEP = File.separator;
 
-   private final ProjectUIUpdate update;
+   private final ConsoleOpenable co;
    private final Compile comp;
    private final CreateJar jar;
    private final ProcessStarter proc;
@@ -29,11 +30,11 @@ public final class JavaActions extends ProjectConfig
 
    private String startCommand = "";
 
-   JavaActions(ProjectUIUpdate update, ProcessStarter proc,
+   JavaActions(ConsoleOpenable co, ProcessStarter proc,
          ConsolePanel consPnl) {
 
       super(".java");
-      this.update = update;
+      this.co = co;
       this.proc = proc;
       this.consPnl = consPnl;
       comp = new Compile(consPnl);
@@ -93,7 +94,7 @@ public final class JavaActions extends ProjectConfig
             comp.compile(getProjectPath(), getExecutableDirName(),
                   getSourceDirName());            
             consPnl.setCaret(0);
-            if (!update.isConsoleOpen()) {
+            if (!co.isConsoleOpen()) {
                if (!comp.success()) {
                   int result = JOptions.confirmYesNo(
                         "Compilation of the project "
@@ -101,7 +102,7 @@ public final class JavaActions extends ProjectConfig
                         + comp.getMessage() + "."
                         + "\nOpen the console window to view messages?");
                   if (result == 0) {
-                     update.openConsole();
+                     co.openConsole();
                   }
                }
                else {
@@ -122,8 +123,8 @@ public final class JavaActions extends ProjectConfig
       if (!mainClassFileExists()) {
          return;
       }
-      if (!update.isConsoleOpen()) {
-         update.openConsole();
+      if (!co.isConsoleOpen()) {
+         co.openConsole();
       }
       proc.startProcess(startCommand);
    }
@@ -136,6 +137,7 @@ public final class JavaActions extends ProjectConfig
       if (!mainClassFileExists()) {
          return;
       }
+
       String jarName = getBuildName();
       if (jarName.length() == 0) {
          jarName = getMainFile();
@@ -155,14 +157,16 @@ public final class JavaActions extends ProjectConfig
                }
                exists = jarFileExists(jarName);
             }
-            update.updateFileTree();
          }
-         consPnl.appendText("<<Saved jar file named " + jarName + ">>\n");
-         JOptions.infoMessage("Saved jar file named " + jarName);
+         String jarNameFin = jarName;
+         EventQueue.invokeLater(() -> {
+            consPnl.appendText("<<Saved jar file named " + jarNameFin + ">>\n");
+            JOptions.infoMessage("Saved jar file named " + jarNameFin);
+         });
       }
       catch (IOException e) {
          FileUtils.logStack(e);
-      }        
+      }   
    }
 
    private boolean mainClassFileExists() {

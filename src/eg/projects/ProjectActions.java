@@ -1,7 +1,5 @@
 package eg.projects;
 
-import eg.utils.JOptions;
-
 /**
  * The interface to perform actions in a project
  */

@@ -1,4 +1,4 @@
-package eg.ui.menu;
+package eg.ui;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
@@ -12,7 +12,7 @@ import eg.CurrentProject;
 
 import eg.ui.IconFiles;
 
-public class ProjectMenu {
+class ProjectMenu {
    
    private final JMenu     menu       = new JMenu("Project");
    private final JMenuItem SaveCompile
@@ -36,7 +36,7 @@ public class ProjectMenu {
       return menu;
    }
    
-   public void registerAct(CurrentProject currProj) {
+   void registerAct(CurrentProject currProj) {
       setProject.addActionListener(e -> currProj.openSettingsWindow());
       changeProj.addActionListener(e -> currProj.changeProject());
       newProj.addActionListener(e -> currProj.newProject());
@@ -46,22 +46,22 @@ public class ProjectMenu {
       SaveAllCompile.addActionListener(e -> currProj.saveAllAndCompile());
    }
    
-   public void enableChangeProjItm() {
-      changeProj.setEnabled(true);
+   void enableChangeProjItm(boolean isEnabled) {
+      changeProj.setEnabled(isEnabled);
    }
 
-   public void enableProjItms(boolean isCompile, boolean isRun, boolean isBuild) {
+   void enableProjItms(boolean isCompile, boolean isRun, boolean isBuild) {
       SaveCompile.setEnabled(isCompile);
       SaveAllCompile.setEnabled(isCompile);
       run.setEnabled(isRun);
       build.setEnabled(isBuild);
    }
    
-   public void setBuildLabel(String label) {
+   void setBuildLabel(String label) {
       build.setText(label);
    }
 
-   private void assembleMenu() {
+   void assembleMenu() {
       menu.add(SaveCompile);
       SaveCompile.setEnabled(false);
       menu.add(SaveAllCompile);

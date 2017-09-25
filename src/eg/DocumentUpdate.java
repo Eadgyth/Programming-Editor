@@ -1,7 +1,5 @@
 package eg;
 
-import java.awt.EventQueue;
-
 //--Eadgyth--//
 import eg.plugin.PluginStarter;
 import eg.document.TextDocument;
@@ -55,18 +53,17 @@ public class DocumentUpdate {
       edit.setTextDocument(txtDoc[i]);
       plugStart.setTextDocument(txtDoc[i]);
       currProj.setTextDocumentAt(i);
-
-      enableUndoRedo(txtDoc[i].canUndo(), txtDoc[i].canRedo());
-      enableCutCopy(txtDoc[i].textArea().getSelectedText() != null);
+      mw.enableUndoRedo(txtDoc[i].canUndo(), txtDoc[i].canRedo());
+      mw.enableCutCopy(txtDoc[i].textArea().getSelectedText() != null);
       mw.displayFrameTitle(txtDoc[i].filepath());
-      mw.menu().viewMenu().enableTabItm(nTabs == 1);
-      mw.menu().editMenu().setLanguagesItms(txtDoc[i].language(),
-            txtDoc[i].filename().length() == 0);
+      mw.enableShowHideTabbar(nTabs == 1);
+      mw.setLanguagesSelected(txtDoc[i].language(), txtDoc[i].filename().length() == 0);
       txtDoc[i].requestFocus();
    }
    
    /**
-    * Updates UI when a file is assigned but the tab is not changed
+    * Updates <code>MainWin</code> when a file is assigned but the tab is
+    * not changed
     *
     * @param i  the index of the selected {@link TextDocument}
     * @param nTabs  the number of open tabs
@@ -74,11 +71,11 @@ public class DocumentUpdate {
     */
    public void changedFileUpdate(int i, int nTabs, boolean updateFiletree) {
       retrieveProject(i);
-      mw.menu().editMenu().setLanguagesItms(txtDoc[i].language(), false);
-      mw.menu().viewMenu().enableTabItm(nTabs == 1);
+      mw.setLanguagesSelected(txtDoc[i].language(), false);
+      mw.enableShowHideTabbar(nTabs == 1);
       mw.displayFrameTitle(txtDoc[i].filepath());
       if (updateFiletree) {
-         EventQueue.invokeLater(() -> currProj.updateFileTree());
+         currProj.updateFileTree();
       }
    }
    
@@ -91,24 +88,14 @@ public class DocumentUpdate {
     */
    public void setUIUpdateListenersAt(int i) {
       txtDoc[i].setUndoableChangeListener(e ->
-            enableUndoRedo(e.canUndo(), e.canRedo()));
-      txtDoc[i].setSelectionListener(e ->
-            enableCutCopy(e.isSelection()));
+            mw.enableUndoRedo(e.canUndo(), e.canRedo()));
+      txtDoc[i].setTextSelectionListener(e ->
+            mw.enableCutCopy(e.isSelection()));
    }
    
    //
    //--private--//
    //
-   
-   private void enableUndoRedo(boolean canUndo, boolean canRedo) {
-      mw.toolbar().enableUndoRedoBts(canUndo, canRedo);
-      mw.menu().editMenu().enableUndoRedoItms(canUndo, canRedo);
-   }
-   
-   private void enableCutCopy(boolean isEnabled) {
-      mw.toolbar().enableCutCopyBts(isEnabled);
-      mw.menu().editMenu().enableCutCopyItms(isEnabled);
-   }
    
    private void retrieveProject(int i) {
       currProj.setTextDocumentAt(i);

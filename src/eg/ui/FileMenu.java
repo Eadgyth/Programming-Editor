@@ -1,4 +1,4 @@
-package eg.ui.menu;
+package eg.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -13,7 +13,7 @@ import eg.Edit;
 
 import eg.ui.IconFiles;
 
-public class FileMenu {
+class FileMenu {
    
    private final JMenu     menu        = new JMenu("File");
    private final JMenuItem newFileItm  = new JMenuItem("New" );
@@ -38,13 +38,8 @@ public class FileMenu {
    JMenu getMenu() {
       return menu;
    }
-   
-   /**
-    * Adds action listeners to this menu items
-    *
-    * @param tf  the reference to {@link TabbedFiles}
-    */
-   public void registerAct(TabbedFiles tf) {
+
+   void registerAct(TabbedFiles tf) {
       newFileItm.addActionListener(e -> tf.createEmptyTab());
       openItm.addActionListener(e -> tf.openFileByChooser());
       closeItm.addActionListener(e -> tf.close(true));
@@ -56,6 +51,10 @@ public class FileMenu {
       printItm.addActionListener(e -> tf.print());      
       exitItm.addActionListener(e -> tf.exit());
    }
+   
+   //
+   //--private methods--//
+   //
    
    private void assembleMenu() {
       menu.add(newFileItm);

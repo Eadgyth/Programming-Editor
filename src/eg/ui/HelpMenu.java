@@ -1,4 +1,4 @@
-package eg.ui.menu;
+package eg.ui;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;

@@ -17,7 +17,6 @@ import javax.swing.JButton;
 
 //--Eadgyth--//
 import eg.Constants;
-import eg.Preferences;
 
 /**
  * A frame that contains combo boxes to change the font and font size
@@ -32,12 +31,15 @@ public class FontSettingWin {
    private final JComboBox<String> selectFont;
    private final JComboBox<String> selectSize = new JComboBox<>(FONT_SIZES);
    private final JButton okBt = new JButton("OK");
-   private final Preferences prefs = new Preferences();
 
    private final String[] fonts;
+   
+   private String font;
+   private int fontSize;
 
-   public FontSettingWin() {
-      prefs.readPrefs();
+   public FontSettingWin(String initFont, int initFontSize) {
+      font = initFont;
+      fontSize = initFontSize;
       fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
       selectFont = new JComboBox<>(fonts);
       initFrame();
@@ -69,7 +71,6 @@ public class FontSettingWin {
     */
    public String fontComboBxRes() {
       String font = fonts[selectFont.getSelectedIndex()];
-      prefs.storePrefs("font", font);
       return font;
    }
 
@@ -81,7 +82,6 @@ public class FontSettingWin {
     */
    public int sizeComboBxRes() {
       String size = FONT_SIZES[selectSize.getSelectedIndex()];
-      prefs.storePrefs("fontSize", size);
       return Integer.parseInt(size);
    }
 
@@ -116,12 +116,12 @@ public class FontSettingWin {
    }
 
    private JPanel fontPnl() {
-      selectFont.setSelectedItem(prefs.getProperty("font"));
+      selectFont.setSelectedItem(font);
       return comboBoxPnl(selectFont, "Font:   ");     
    }
 
    private JPanel sizePnl() {
-      selectSize.setSelectedItem(prefs.getProperty("fontSize"));
+      selectSize.setSelectedItem(String.valueOf(fontSize));
       return comboBoxPnl(selectSize, "Size:   ");     
    }
 

@@ -1,13 +1,10 @@
-package eg.ui.menu;
+package eg.ui;
 
 import javax.swing.JMenuBar;
 import javax.swing.Box;
 import javax.swing.UIManager;
 
-/**
- * The main menu
- */
-public class Menu {
+class Menu {
 
    private final JMenuBar menuMain = new JMenuBar();
 
@@ -19,37 +16,37 @@ public class Menu {
    private final ProjectMenu projectMenu = new ProjectMenu();
    private final HelpMenu helpMenu = new HelpMenu();
 
-   public Menu() { 
+   Menu() { 
       menuMain.setOpaque(false);
       menuMain.setBorder(null);
       assembleMenu();
    }
 
-   public JMenuBar menubar() {
+   JMenuBar menubar() {
       return menuMain;
    }
    
-   public FileMenu fileMenu() {
+   FileMenu fileMenu() {
       return fileMenu;
    }
    
-   public EditMenu editMenu() {
+   EditMenu editMenu() {
       return editMenu;
    }
    
-   public FormatMenu formatMenu() {
+   FormatMenu formatMenu() {
       return formatMenu;
    }
    
-   public ViewMenu viewMenu() {
+   ViewMenu viewMenu() {
       return viewMenu;
    }
    
-   public PluginMenu pluginMenu() {
+   PluginMenu pluginMenu() {
       return plugMenu;
    }
    
-   public ProjectMenu projectMenu() {
+   ProjectMenu projectMenu() {
       return projectMenu;
    }
 

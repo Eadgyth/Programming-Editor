@@ -66,17 +66,17 @@ public final class EditArea {
          JScrollPane.VERTICAL_SCROLLBAR_NEVER,
          JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-   private boolean isWordWrap;
+   private boolean isWordwrap;
    private int scrollPos;
 
    /**
-    * @param isWordWrap  true to enable wordwrap
+    * @param isWordwrap  true to enable wordwrap
     * @param isLineNumbers  true to show line numbering. Is effectless if
     * wordwrap is enabled
     * @param font  the name of the initial font
     * @param fontSize  the size of the initial font
     */
-   public EditArea(boolean isWordWrap, boolean isLineNumbers,
+   public EditArea(boolean isWordwrap, boolean isLineNumbers,
          String font, int fontSize) {
 
       doc = textArea.getStyledDocument();
@@ -91,8 +91,8 @@ public final class EditArea {
       initScrollLineNrArea();
       initScrollSimpleArea();
       intitScrollWrapArea();
-      if (isWordWrap) {
-         enableWordWrap();
+      if (isWordwrap) {
+         enableWordwrap();
       }
       else {
          if (isLineNumbers) {
@@ -154,8 +154,8 @@ public final class EditArea {
    /**
     * @return  if wordwrap is enabled
     */
-   public boolean isWordWrap() {
-      return isWordWrap;
+   public boolean isWordwrap() {
+      return isWordwrap;
    }
 
    /**
@@ -276,7 +276,7 @@ public final class EditArea {
       textArea.requestFocusInWindow();
       textPanel.repaint();
       textPanel.revalidate();
-      isWordWrap = false;
+      isWordwrap = false;
    }
 
    /**
@@ -292,14 +292,14 @@ public final class EditArea {
       textArea.requestFocusInWindow();
       textPanel.repaint();
       textPanel.revalidate();
-      isWordWrap = false;
+      isWordwrap = false;
    }
 
    /**
     * Enables wordwrap. Invoking this method also hides the area
     * that displays line numbers
     */
-   public void enableWordWrap() {
+   public void enableWordwrap() {
       textPanel.remove(lineNumAreaScroll);
       removeCenterComponent();
       wrapPnlScoll.setViewportView(textArea);
@@ -308,7 +308,7 @@ public final class EditArea {
       textArea.requestFocusInWindow();
       textPanel.repaint();
       textPanel.revalidate();
-      isWordWrap = true;
+      isWordwrap = true;
    }
 
    //

@@ -67,10 +67,10 @@ public final class TextDocument {
    /**
     * Sets a <code>SelectionLister</code>
     *
-    * @param sl  a {@link SelectionListener}
+    * @param sl  a {@link TextSelectionListener}
     */
-   public void setSelectionListener(SelectionListener sl) {
-      type.setSelectionListener(sl);
+   public void setTextSelectionListener(TextSelectionListener sl) {
+      type.setTextSelectionListener(sl);
    }
    
    /**

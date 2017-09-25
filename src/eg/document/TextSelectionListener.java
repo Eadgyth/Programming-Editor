@@ -5,13 +5,13 @@ package eg.document;
  * has changed
  */
 @FunctionalInterface
-public interface SelectionListener {
+public interface TextSelectionListener {
    
    /**
     * Called when the state, in which text is selected, has changed
     *
-    * @param e  a {@link SelectionEvent} object
+    * @param e  a {@link TextSelectionEvent} object
     */
-   public void selectionUpdate(SelectionEvent e);
+   public void selectionUpdate(TextSelectionEvent e);
    
 }

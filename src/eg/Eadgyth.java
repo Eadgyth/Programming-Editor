@@ -11,9 +11,7 @@ import javax.swing.border.EmptyBorder;
 //--Eadgyth--//
 import eg.ui.MainWin;
 import eg.ui.ViewSettingWin;
-import eg.ui.menu.Menu;
 import eg.utils.FileUtils;
-import eg.plugin.PluginStarter;
 
 /**
  * Contains the main method
@@ -32,16 +30,15 @@ public class Eadgyth {
       MainWin         mw         = new MainWin();
       ViewSettingWin  viewSetWin = new ViewSettingWin();
       ViewSetter      viewSet    = new ViewSetter(viewSetWin, mw);
-      EditAreaFormat  format     = new EditAreaFormat(viewSetWin, mw.menu().formatMenu());
-      TabbedFiles     tabFiles   = new TabbedFiles(mw, format);
+      EditAreaFormat  format     = new EditAreaFormat(viewSetWin);
+      TabbedFiles     tabFiles   = new TabbedFiles(format, mw);
 
       mw.registerFileAct(tabFiles);
-      mw.menu().editMenu().registerChangeLanguageAct(tabFiles);
-      mw.menu().viewMenu().openSettingWinItmAct(e ->
-            viewSetWin.makeVisible(true));
+      mw.openViewSettingWinAct(e -> viewSetWin.makeVisible(true));
+      mw.registerFormatAct(format);
       viewSetWin.okAct(e -> {
-         format.applySetWinOk();
          viewSet.applySetWinOk();
+         format.applySetWinOk();
          viewSetWin.makeVisible(false);
       });
 

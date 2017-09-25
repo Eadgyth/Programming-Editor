@@ -3,7 +3,7 @@ package eg.projects;
 import java.io.File;
 
 //--Eadgyth--//
-import eg.ProjectUIUpdate;
+import eg.ui.ConsoleOpenable;
 import eg.console.*;
 
 /**
@@ -11,14 +11,14 @@ import eg.console.*;
  */
 public final class PerlActions extends ProjectConfig implements ProjectActions {
    
-   private final ProjectUIUpdate update;
+   private final ConsoleOpenable co;
    private final ProcessStarter proc;
    
    private String startCommand = "";
    
-   PerlActions(ProjectUIUpdate update, ProcessStarter proc) {
+   PerlActions(ConsoleOpenable co, ProcessStarter proc) {
       super(".pl");
-      this.update = update;
+      this.co = co;
       this.proc = proc;
    }
    
@@ -65,8 +65,8 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void runProject() {
-      if (!update.isConsoleOpen()) {
-         update.openConsole();
+      if (!co.isConsoleOpen()) {
+         co.openConsole();
       }
       proc.startProcess(startCommand);
    }

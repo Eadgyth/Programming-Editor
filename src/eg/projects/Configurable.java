@@ -5,17 +5,16 @@ import java.awt.event.ActionListener;
 /**
  * The interface to configure a project.
  * <p>
- * 'Configuration' means to define the directory structure of a project by
- * entries in a settings window.<br>
- * A project configuration can be saved to a preferences file so that this
- * project may be retrieved.<br>
- * {@code Configurable} is made to be used with {@link ProjectConfig} which
+ * 'Configuration' means to define the directory structure and main project file.
+ * File and directory names are specified in a settings window and can be saved
+ * to a preferences file so that a project may be retrieved.<br>
+ * <code>Configurable</code> is made to be used with {@link ProjectConfig} which
  * works with {@link SettingsWin} as the class that defines a settings window.
  */
 public interface Configurable {
    
    /**
-    * Creates and sets a new object that provides a settings window.
+    * Creates and sets a new object that defines a settings window.
     */
    public void createSettingsWin();
    

@@ -11,6 +11,7 @@ import java.awt.EventQueue;
 import eg.console.*;
 import eg.Languages;
 import eg.ui.MainWin;
+import eg.ui.ConsoleOpenable;
 import eg.projects.ProjectActions;
 import eg.projects.SelectedProject;
 
@@ -41,14 +42,6 @@ public class CurrentProject {
    private final String NOT_IN_PROJ_MESSAGE
          = "The selected file is not in the root directory"
          + " of the currently active project.";
-   /*
-    * Formatted for use in a JLabel */
-   private final String WRONG_TYPE_MESSAGE
-         = "<html>"
-         + "The selected file does not specify a project category.<br>"
-         + "If the file belongs to a project specify the extension of<br>"
-         + "the source files:"
-         + "</html>";
 
    private final String FILES_NOT_FOUND_MESSAGE
          = "The following file could not be found anymore:";
@@ -56,7 +49,6 @@ public class CurrentProject {
    private final MainWin mw;
    private final SelectedProject selProj;
    private final ProcessStarter proc;
-   private final ProjectUIUpdate update;
    private final List<ProjectActions> projList = new ArrayList<>();
    /*
     * Options for a Comobox*/
@@ -70,8 +62,7 @@ public class CurrentProject {
    public CurrentProject(MainWin mw) {
       this.mw = mw;
       proc = new ProcessStarter(mw.console());
-      update = new ProjectUIUpdate(mw);
-      selProj = new SelectedProject(update, proc, mw.console());
+      selProj = new SelectedProject(mw, proc, mw.console());
       projectOptions = new String[selProj.projectSuffixes.length + 1];
       projectOptions[0] = "File extensions...";
       for (int i = 0; i < selProj.projectSuffixes.length; i++) {
@@ -96,6 +87,8 @@ public class CurrentProject {
    public void setTextDocumentAt(int i) {
       currDoc = txtDoc[i];
       docSuffix = FileUtils.fileSuffix(currDoc.filename());
+      ProjectActions inList = selectFromList(currDoc.dir(), true);
+      mw.enableChangeProject(inList != null);
    }
 
    /**
@@ -129,14 +122,12 @@ public class CurrentProject {
                current = prFin;
                current.addOkAction(e -> configureProject(current));
                projList.add(current);
-               proc.setWorkingDir(current.getProjectPath());
-               update.updateProjectSetting(current, projList.size());
+               updateProjectSetting(current);
             }
             else {
                if (selectFromList(currDoc.dir(), true) == null) {
                   prFin.addOkAction(e -> configureProject(prFin));
                   projList.add(prFin);
-                  update.enableChangeProject(projList.size());
                   changeProject(prFin);
                }
             }
@@ -152,23 +143,20 @@ public class CurrentProject {
     * or to a newly created project.
     */
    public void openSettingsWindow() {
-      if (current == null) {
-         createNewProject(false);
+      ProjectActions fromList = selectFromList(currDoc.dir(), false);
+      if (fromList == null) {
+         int res = JOptions.confirmYesNo("Set new project?");
+         if (res == 0) {
+            createNewProject();
+         }
       }
       else {
-         boolean openCurrent
-              =  currDoc.filename().length() == 0
-              || current.isInProject(currDoc.dir());
-         if (openCurrent) {
+         if (fromList == current) {
             current.makeSetWinVisible(true);
          }
          else {
-            ProjectActions fromList = selectFromList(currDoc.dir(), true);
-            if (fromList != null && changeProject(fromList)) {
+            if (changeProject(fromList)) {
                current.makeSetWinVisible(true);
-            }
-            else {
-               createNewProject(true);
             }
          }
       }
@@ -180,37 +168,33 @@ public class CurrentProject {
     * set project a dialog to confirm to proceed is shown.
     */
    public void newProject() {
-      if (current == null) {
-         createNewProject(false);
+      ProjectActions fromList = selectFromList(currDoc.dir(), false);
+      if (fromList == null) {
+         createNewProject();
       }
       else {
-         ProjectActions test = selectFromList(currDoc.dir(), false);
-         int res = 0;
-         if (test != null) {
-            res = JOptions.confirmYesNo(currDoc.filename()
-                  + "\nThe file belongs the project "
-                  + "'" + test.getProjectName() + "'."
-                  + "\nStill set new project?");
-         }
-         if (res == 0) {
-            createNewProject(false);
-         }
+         confirmedNewProject(fromList);
       }
   }
 
    /**
     * Sets active the project from this <code>List</code> of configured
     * projects which the currently selected {@code TextDocument} belongs to.
-    * <p>If the set {@link TextDocument} does not belong to a listed project
-    * or to the currently active project it is asked to set up a new project.
+    * <p>If the set {@link TextDocument} belongs to the currently active project
+    * it is asked to set up a new project.
     */
    public void changeProject() {
-      ProjectActions fromList = selectFromList(currDoc.dir(), true);
-      if (fromList != null) {
-         changeProject(fromList);
+      ProjectActions fromList = selectFromList(currDoc.dir(), false);
+      if (fromList == null) {
+         createNewProject();
       }
       else {
-         createNewProject(true);
+         if (fromList != current) {
+            changeProject(fromList);
+         }
+         else {
+            confirmedNewProject(fromList);
+         }
       }
    }
 
@@ -220,7 +204,7 @@ public class CurrentProject {
     */
    public void updateFileTree() {
       if (current != null && current.isInProject(currDoc.dir())) {
-         mw.fileTree().updateTree();
+         EventQueue.invokeLater(() -> mw.fileTree().updateTree());
       }
    }
 
@@ -232,7 +216,6 @@ public class CurrentProject {
       if (!isCurrent("Compile")) {
          return;
       }
-
       try {
         mw.setBusyCursor(true);
         if (isFileToCompile(currDoc)) {
@@ -240,6 +223,7 @@ public class CurrentProject {
             if (exists) {
                currDoc.saveToFile();
                current.compile();
+               updateFileTree();
             }
             else {
                JOptions.warnMessage(currDoc.filename()
@@ -248,7 +232,7 @@ public class CurrentProject {
          }
       }
       finally {
-         endCompilation();
+         EventQueue.invokeLater(() ->  mw.setBusyCursor(false));
       }
    }
 
@@ -260,7 +244,6 @@ public class CurrentProject {
       if (!isCurrent("Compile")) {
          return;
       }
-
       try {
          mw.setBusyCursor(true);
          StringBuilder missingFiles = new StringBuilder();
@@ -278,13 +261,14 @@ public class CurrentProject {
          }
          if (missingFiles.length() == 0) {
             current.compile();
+            updateFileTree();
          }
          else {
             JOptions.warnMessage(FILES_NOT_FOUND_MESSAGE + missingFiles);
          }
       }
       finally {
-         endCompilation();
+         EventQueue.invokeLater(() ->  mw.setBusyCursor(false));
       }
    }
 
@@ -308,50 +292,64 @@ public class CurrentProject {
       try {
          mw.setBusyCursor(true);
          current.build();
+         updateFileTree();
       }
       finally {
-         mw.setBusyCursor(false);
+         EventQueue.invokeLater(() ->  mw.setBusyCursor(false));
       }
    }
 
    //
    //--private methods--//
    //
+   
+   private void confirmedNewProject(ProjectActions toConfirm) {
+      int res = JOptions.confirmYesNo(currDoc.filename()
+              + "\nThe file belongs the project "
+              + "'" + toConfirm.getProjectName() + "'."
+              + "\nStill set new project?");
+      if (res == 0) {
+         createNewProject();
+      }
+   }
+   
+   private String wrongExtentionMessage(String filename) {  
+         return "<html>"
+         + filename + "<br>"
+         + "If the file belongs to a project specify the extension of<br>"
+         + "the source files:"
+         + "</html>";
+   }
 
-   private void createNewProject(boolean needConfirm) {
+   private void createNewProject() {
       if (currDoc.filename().length() == 0) {
          JOptions.titledInfoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          return;
       }
       ProjectActions projNew = selProj.createProject(docSuffix);
       if (projNew == null) {
-         String selectedSuffix = JOptions.comboBoxRes(WRONG_TYPE_MESSAGE,
-               "Project category", projectOptions, null, true);
+         String selectedSuffix
+               = JOptions.comboBoxRes(wrongExtentionMessage(currDoc.filename()),
+               "File extension", projectOptions, null, true);
          if (selectedSuffix != null && !selectedSuffix.equals(projectOptions[0])) {
             projNew = selProj.createProject(selectedSuffix);
          }
       }
       if (projNew != null) {
-         ProjectActions prFin = projNew;
-         int res = 0;
-         if (needConfirm && current != null) {
-            res = JOptions.confirmYesNo("Set new project ?");
-         }
-         if (res == 0) {
-            prFin.makeSetWinVisible(true);
-            prFin.addOkAction(e -> configureProject(prFin));
-         }
+         ProjectActions projFin = projNew;
+         projFin.makeSetWinVisible(true);
+         projFin.addOkAction(e -> configureProject(projFin));
       }
    }
 
    private boolean changeProject(ProjectActions toChangeTo) {
-      int result = JOptions.confirmYesNo("Set active the project '"
+      int result = JOptions.confirmYesNo("Switch to project '"
                  + toChangeTo.getProjectName() + "'?");
       if (result == 0) {
          current = toChangeTo;
          current.storeInPrefs();
-         proc.setWorkingDir(current.getProjectPath());
-         update.updateProjectSetting(current, projList.size());
+         updateProjectSetting(current);
+         mw.enableChangeProject(false);
          return true;
       }
       else {
@@ -371,12 +369,9 @@ public class CurrentProject {
 
    private void configureProject(ProjectActions projToConf) {
       if (projToConf.configureProject(currDoc.dir())) {
-         if (current != projToConf) {
-            current = projToConf;
-            projList.add(current);
-         }
-         proc.setWorkingDir(current.getProjectPath());
-         update.updateProjectSetting(current, projList.size());
+         current = projToConf;
+         projList.add(current);
+         updateProjectSetting(current);
       }
    }
 
@@ -384,13 +379,6 @@ public class CurrentProject {
        return td != null
              && td.filename().endsWith(current.getSourceSuffix())
              && current.isInProject(td.dir());
-   }
-
-   private void endCompilation() {
-      EventQueue.invokeLater(() -> {
-         update.updateFileTree();
-         mw.setBusyCursor(false);
-      });
    }
 
    private boolean isCurrent(String action) {
@@ -401,5 +389,36 @@ public class CurrentProject {
              + "\n" + action + " " + current.getProjectName() + "?");
       }
       return useCurrentProj || res == 0;
+   }
+   
+   private void updateProjectSetting(ProjectActions projToSet) {
+      proc.setWorkingDir(projToSet.getProjectPath());
+      enableActions(projToSet);
+      mw.setProjectName(projToSet.getProjectName());
+      mw.fileTree().setDeletableDirName(projToSet.getExecutableDirName());
+      mw.fileTree().setProjectTree(projToSet.getProjectPath());
+   }
+
+   private void enableActions(ProjectActions projToSet) {
+      if (projList.size() == 1) {
+         mw.enableOpenFileView();
+      }
+      enableActions(projToSet.getClass().getSimpleName());
+   }
+
+   private void enableActions(String className) {
+      mw.setBuildName("Build");
+      switch (className) {
+         case "JavaActions":
+            mw.enableProjActions(true, true, true);
+            mw.setBuildName("Create jar");
+            break;
+         case "HtmlActions":
+            mw.enableProjActions(false, true, false);
+            break;
+         case "PerlActions":
+            mw.enableProjActions(false, true, false);
+            break;
+      }
    }
 }

@@ -41,8 +41,8 @@ class TypingEdit {
 
    private UndoableChangeEvent cue;
    private UndoableChangeListener ul;
-   private SelectionEvent se;
-   private SelectionListener sl;
+   private TextSelectionEvent se;
+   private TextSelectionListener sl;
    private boolean isDocListen = true;
    private boolean isAddToUndo = true;
    private boolean isTypeEdit = false;
@@ -64,7 +64,7 @@ class TypingEdit {
       editArea.textArea().addCaretListener(new CaretListener() {
          @Override
          public void caretUpdate(CaretEvent ce) {
-            notifySelectionEvent(ce.getDot() != ce.getMark());
+            notifyTextSelectionEvent(ce.getDot() != ce.getMark());
             if (text.length() > 0) {
                if (isAddToUndo && event.equals(DocumentEvent.EventType.CHANGE)) {
                   undo.markBreak();
@@ -84,7 +84,7 @@ class TypingEdit {
       }
    }
    
-   void setSelectionListener(SelectionListener sl) {
+   void setTextSelectionListener(TextSelectionListener sl) {
       if (sl != null) {
          this.sl = sl;
       }
@@ -177,13 +177,13 @@ class TypingEdit {
       EventQueue.invokeLater(() -> col.colorLine(text, pos));
    }
    
-   private void notifySelectionEvent(boolean isSelectionUpdate) {
+   private void notifyTextSelectionEvent(boolean selectionUpdate) {
       if (sl == null) {
          return;
       }
-      if (isSelectionUpdate != isSelection) {
-         isSelection = isSelectionUpdate;
-         se = new SelectionEvent(isSelection);
+      if (selectionUpdate != isSelection) {
+         isSelection = selectionUpdate;
+         se = new TextSelectionEvent(isSelection);
          sl.selectionUpdate(se);
       }
    }
@@ -245,11 +245,11 @@ class TypingEdit {
       private final List<Integer> positions = new ArrayList<>(500);
       private final List<Boolean> eventTypes = new ArrayList<>(500);
       private final List<Integer> breakpoints = new ArrayList<>();
-      private boolean isBreak = false;
       private int iEd = -1;
       private int iBr = -1;
-      private boolean canUndo;
-      private boolean canRedo;
+      private boolean isBreak = false;
+      private boolean canUndo = false;
+      private boolean canRedo = false;
 
       void addEdit() {
          trim();
@@ -356,13 +356,15 @@ class TypingEdit {
          if (ul == null) {
             return;
          }
-         if (canUndo != canUndo()) {
+         boolean isUndoableChange = canUndo != canUndo();
+         boolean isRedoableChange = canRedo != canRedo(); 
+         if (isUndoableChange) {
             canUndo = canUndo();
-            cue = new UndoableChangeEvent(canUndo, canRedo);
-            ul.undoableStateChanged(cue);
          }
-         if (canRedo != canRedo()) {
+         if (isRedoableChange) {
             canRedo = canRedo();
+         }
+         if (isUndoableChange | isRedoableChange) {
             cue = new UndoableChangeEvent(canUndo, canRedo);
             ul.undoableStateChanged(cue);
          }

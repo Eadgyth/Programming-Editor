@@ -9,10 +9,7 @@ import eg.TabbedFiles;
 import eg.CurrentProject;
 import eg.Edit;
 
-/**
- * The main toolbar
- */
-public class Toolbar {
+class Toolbar {
 
    private final JToolBar toolbar = new JToolBar(JToolBar.HORIZONTAL);
 
@@ -33,42 +30,22 @@ public class Toolbar {
       initToolbar();
    }
 
-   /**
-    * @return  this {@code JToolBar}
-    */
-   public JToolBar toolbar() {
+   JToolBar toolbar() {
       return toolbar;
    }
 
-   /**
-    * Adds action handlers to the buttons for file actions
-    * @param tf  the reference to the {@link TabbedFiles} object
-    * that handles the file actions
-    */
-   public void registerFileAct(TabbedFiles tf) {
+  void registerFileAct(TabbedFiles tf) {
       openBt.addActionListener(e -> tf.openFileByChooser());
       saveBt.addActionListener(e -> tf.save(true));
    }
 
-   /**
-    * Adds action handlers to the buttons for project actions
-    *
-    * @param currProj  the reference to the {@link CurrentProject}
-    * object that handles the project actions
-    */
-   public void registerProjectAct(CurrentProject currProj) {
+  void registerProjectAct(CurrentProject currProj) {
       changeProjBt.addActionListener(e -> currProj.changeProject());
       runBt.addActionListener(e -> currProj.runProj());
       compileBt.addActionListener(e -> currProj.saveAllAndCompile());
    }
 
-   /**
-    * Adds action handlers to the buttons for edit actions
-    *
-    * @param edit  the reference to the {@link Edit}
-    * object that handles the edit actions
-    */
-   public void registerEditTextAct(Edit edit) {
+   void registerEditTextAct(Edit edit) {
       undoBt.addActionListener(e -> edit.undo());
       redoBt.addActionListener(e -> edit.redo());
       cutBt.addActionListener(e -> edit.cut());
@@ -78,27 +55,21 @@ public class Toolbar {
       outdentBt.addActionListener(e -> edit.outdent());
    }
 
-   /**
-    * Enables/disables buttons for project actions
-    *
-    * @param isCompile  if compiling a project is enabled
-    * @param isRun  if running a project is enabled
-    */
-   public void enableProjBts(boolean isCompile, boolean isRun) {
+   void enableProjBts(boolean isCompile, boolean isRun) {
       compileBt.setEnabled(isCompile);
       runBt.setEnabled(isRun);
    }
    
-   public void enableCutCopyBts(boolean isEnabled) {
+   void enableChangeProjBt(boolean isEnabled) {
+      changeProjBt.setEnabled(isEnabled);
+   }
+   
+   void enableCutCopyBts(boolean isEnabled) {
       cutBt.setEnabled(isEnabled);
       copyBt.setEnabled(isEnabled);
    }
 
-   public void enableChangeProjBt() {
-      changeProjBt.setEnabled(true);
-   }
-
-   public void enableUndoRedoBts(boolean canUndo, boolean canRedo) {
+   void enableUndoRedoBts(boolean canUndo, boolean canRedo) {
       undoBt.setEnabled(canUndo);
       redoBt.setEnabled(canRedo);
    }
@@ -125,7 +96,7 @@ public class Toolbar {
          "Increase indentation by the set indent length",
          "Reduce indentation by the set indent length",
          "Save all opened source files of active project and compile",
-         "Run project", "Change between projects"
+         "Run project", "Change project"
       };
       for (int i = 0; i < bts.length; i++) {
          toolbar.add(bts[i]);

@@ -48,12 +48,12 @@ public class TabbedFiles implements Observer {
     * The language read from prefs or set in the Langugae menu */
    private Languages lang;
 
-   public TabbedFiles(MainWin mw, EditAreaFormat format) {
+   public TabbedFiles(EditAreaFormat format, MainWin mw) {
+      this.format = format;
       this.mw = mw;
       tabPane = mw.tabPane();
       docUpdate = new DocumentUpdate(mw);
       docUpdate.setDocumentArr(txtDoc);     
-      this.format = format;
       format.setEditAreaArr(editArea);
       prefs.readPrefs();
       lang = Languages.valueOf(prefs.getProperty("language"));
@@ -442,6 +442,7 @@ public class TabbedFiles implements Observer {
    
    private void changedTabUpdate() {
       format.setEditAreaAt(iTab);
+      mw.setWordWrapSelected(format.isWordwrap());
       docUpdate.changedDocUpdate(iTab, nTabs());
    }
 

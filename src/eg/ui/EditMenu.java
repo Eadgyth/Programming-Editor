@@ -1,4 +1,4 @@
-package eg.ui.menu;
+package eg.ui;
 
 import java.awt.Toolkit;
 
@@ -18,7 +18,7 @@ import eg.Preferences;
 
 import eg.ui.IconFiles;
 
-public class EditMenu {
+class EditMenu {
 
    private final JMenu     menu            = new JMenu("Edit");
    private final JMenuItem undoItm         = new JMenuItem("Undo", IconFiles.UNDO_ICON);
@@ -50,14 +50,7 @@ public class EditMenu {
       return menu;
    }
 
-   /**
-    * Sets the selection state of the menu items for the language
-    *
-    * @param lang  the language that has one of the constant values in
-    * {@link Languages}
-    * @param enableSelection  true to enable non-selected items to be selectable
-    */
-   public void setLanguagesItms(Languages lang, boolean enableSelection) {
+   void setLanguagesItms(Languages lang, boolean enableSelection) {
       for (int i = 0; i < selectLangChBxItm.length; i++) {
          if (lang == Languages.values()[i]) {
             selectLangChBxItm[i].setEnabled(false);
@@ -70,7 +63,7 @@ public class EditMenu {
       }
    }
 
-   public void registerEditTextAct(Edit edit) {
+   void registerEditTextAct(Edit edit) {
       undoItm.addActionListener(e -> edit.undo());
       redoItm.addActionListener(e -> edit.redo());
       cutItm.addActionListener(e -> edit.cut());
@@ -83,18 +76,18 @@ public class EditMenu {
       changeIndentItm.addActionListener(e -> edit.setNewIndentUnit());
    }
    
-   public void registerChangeLanguageAct(TabbedFiles tf) {
+   void registerChangeLanguageAct(TabbedFiles tf) {
       for (JCheckBoxMenuItem item : selectLangChBxItm) {
            item.addActionListener(e -> setLanguage(e, tf));
       }
    }
 
-   public void enableCutCopyItms(boolean isEnabled) {
+   void enableCutCopyItms(boolean isEnabled) {
       cutItm.setEnabled(isEnabled);
       copyItm.setEnabled(isEnabled);
    }
    
-   public void enableUndoRedoItms(boolean canUndo, boolean canRedo) {
+   void enableUndoRedoItms(boolean canUndo, boolean canRedo) {
       undoItm.setEnabled(canUndo);
       redoItm.setEnabled(canRedo);
    }

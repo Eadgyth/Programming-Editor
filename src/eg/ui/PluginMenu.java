@@ -1,4 +1,4 @@
-package eg.ui.menu;
+package eg.ui;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import javax.swing.JMenuItem;
 import eg.javatools.SearchFiles;
 import eg.plugin.PluginStarter;
 
-public class PluginMenu {
+class PluginMenu {
    
    private final JMenu menu          = new JMenu("Plugins");
    private final JMenu allPlugsMenu  = new JMenu("Add to function panel");
@@ -39,7 +39,7 @@ public class PluginMenu {
       return menu;
    }
    
-   public void startPlugin(PluginStarter plugStart, ViewMenu vMenu) {
+   void startPlugin(PluginStarter plugStart, ViewMenu vMenu) {
       selectPlugAct((ActionEvent e) -> {
          try {
             plugStart.startPlugin(getPluginIndex(e));
