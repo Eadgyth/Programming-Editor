@@ -3,13 +3,10 @@ package eg.projects;
 import java.awt.event.ActionListener;
 
 /**
- * The interface to configure a project.
+ * The interface that defines the configuration of a project.
  * <p>
- * 'Configuration' means to define the directory structure and main project file.
- * File and directory names are specified in a settings window and can be saved
- * to a preferences file so that a project may be retrieved.<br>
- * <code>Configurable</code> is made to be used with {@link ProjectConfig} which
- * works with {@link SettingsWin} as the class that defines a settings window.
+ * <code>Configurable</code> is made to be used with {@link ProjectConfig}. This
+ * works with {@link SettingsWin} which defines a settings window for a project.
  */
 public interface Configurable {
    
@@ -19,7 +16,8 @@ public interface Configurable {
    public void createSettingsWin();
    
    /**
-    * Adds an {@code ActionListener} to the ok button of this settings window
+    * Adds an <code>ActionListener</code> to the ok button of this settings
+    * window
     *
     * @param al  the ActionListener
     */
@@ -37,8 +35,8 @@ public interface Configurable {
     * If a project can be successfully configured based on the entries in
     * the settings window.
     *
-    * @param dir  the directory that may be or include the project's root
-    * folder
+    * @param dir  the directory that may equal or maybe in the project's
+    * root directory
     * @return  if a project can be successfully configured
     */
    public boolean configureProject(String dir);
@@ -46,26 +44,27 @@ public interface Configurable {
    /**
     * If a project stored in a preferences file can be retrieved.
     *
-    * @param dir  the directory of a file that maybe part of a stored
-    * project 
-    * @return  if the specified directory is part of a project whose 
-    * configuration is stored in preferences file(s)
+    * @param dir  the directory that may equal or maybe in the project's
+    * root directory
+    * @return  if a saved project could be retrieved
     */
    public boolean retrieveProject(String dir);
    
    /**
-    * If the project's root directory is in the path of the specified directory
-    *
-    * @param dir  the directory that may include the project's root
+    * If the specified directory equals or is in the project's root
     * directory
-    * @return  if the project's root directory is in the path of {@code dir}
+    *
+    * @param dir  the directory that may equal or maybe in the project's
+    * root directory
+    * @return  if the specified directory equals or is in the project's root
+    * directory
     */
    public boolean isInProject(String dir);
    
    /**
-    * Returns the path of the project's root directory
+    * Returns the project's root directory
     *
-    * @return  the path of the project's root directory
+    * @return  the project's root directory
     */
    public String getProjectPath();
    

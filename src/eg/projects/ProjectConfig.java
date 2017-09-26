@@ -11,24 +11,25 @@ import eg.utils.JOptions;
 /**
  * Represents the configuration of a project.
  * <p>
- * Class works in combination with {@link SettingsWin} where the name of a
- * project file and optionally names of directories and other properties are
+ * Class works in combination with {@link SettingsWin} where the name of a project
+ * file and optionally names of sub-directories and some other properties are
  * entered.
  * <p>
- * The root folder of the project is not specified explicitely but is determined
- * based on the entries in the settings window. In the simplest case, for example,
- * the root would be the parent folder of a specified project file. If other
- * sub-directories are specified the root would be the parent of the relative path
- * given by the named sub-directories that point to the project file. The relative
- * path to the project file has the order 'sourcesDirName'/'moduleName' if names
- * for both of these properties are specified. The name of the root may be entered
- * to require that the determined root directory has this name.
- * <p>
- * It can be queried if any directory, not just the directory of the specified
- * project file, is found in the project's root folder.
+ * The root folder of the project is not specified explicitely in the settings
+ * window but the directory of a file that is part of the project (and which is
+ * not necessarily the main project file) is passed in as an argument in
+ * {@link #configureProject(String)}. It is tested if the main project file whose
+ * name is entered in the settings window exists in this directory or possibly
+ * further upwards in the path of this directory. The main project file may also be
+ * found in sub-directories relative to the supposed root. These must be specified
+ * in the settings window and have the order 'sourcesDirName'/'moduleName' if both
+ * of these properties are specified. However, the name of the root may be entered
+ * in the settings window to require that the found root directory has this name.
  * <p>
  * The configuration of a project is stored in the prefs file of the program and
- * optionally in a 'config' file that is saved in the  project's root folder.
+ * optionally in a 'config' file that is saved in the project's root folder. A
+ * stored project may be retrieved using {@link #retrieveProject(String)} in which
+ * the directory of any file that is part of the project may be passed in.
  */
 public abstract class ProjectConfig implements Configurable {
 
@@ -105,7 +106,7 @@ public abstract class ProjectConfig implements Configurable {
 
    @Override
    public boolean isInProject(String dir) {
-      return isRootInPath(dir, projectPath);
+      return isInProject(dir, projectPath);
    }
 
    @Override
@@ -140,9 +141,9 @@ public abstract class ProjectConfig implements Configurable {
    }
 
    /**
-    * Sets this {@code SettingsWin}
+    * Sets a <code>SettingsWin</code> object
     *
-    * @param setWin  the new {@link SettingsWin}
+    * @param setWin  a {@link SettingsWin} object
     */
    protected void setSettingsWin(SettingsWin setWin) {
       if (this.setWin != null) {
@@ -153,7 +154,7 @@ public abstract class ProjectConfig implements Configurable {
    }
 
    /**
-    * Returns the the name of the project's main file
+    * Returns the name of the project's main file
     *
     * @return  the name of project's main file
     */
@@ -164,7 +165,7 @@ public abstract class ProjectConfig implements Configurable {
    /**
     * Returns the name of the directory of a module.
     *
-    * @return  the name of the directory
+    * @return  the name of the directory of module
     */
    protected String getModuleName() {
       return moduleDir;
@@ -173,7 +174,7 @@ public abstract class ProjectConfig implements Configurable {
    /**
     * Returns the name of the directoy where source files are saved
     *
-    * @return  the name of the directory
+    * @return  the name of the directory where source files are saved
     */
    protected String getSourceDirName() {
       return sourceDir;
@@ -213,10 +214,10 @@ public abstract class ProjectConfig implements Configurable {
    //--private--//
    //
 
-   private void findSavedProject(String path) {
+   private void findSavedProject(String dir) {
       //
       // first look if there is a eadconfig file
-      String root = findRootByFile(path, Preferences.CONFIG_FILE);
+      String root = findRootByFile(dir, Preferences.CONFIG_FILE);
       boolean found = root.length() > 0;
       if (found) {
          CONFIG.readConfig(root);
@@ -229,7 +230,7 @@ public abstract class ProjectConfig implements Configurable {
          PREFS.readPrefs();
          setWin.setSaveConfigSelected(false);
          root = PREFS.getProperty("recentProject");
-         if (isRootInPath(path, root)) {
+         if (isInProject(dir, root)) {
              configProjectByProps(root, PREFS);
          }
       }
@@ -257,8 +258,8 @@ public abstract class ProjectConfig implements Configurable {
    /**
     * If path is (sub-)child of the project path
     */
-   private boolean isRootInPath(String path, String projPath) {
-      File child = new File(path);
+   private boolean isInProject(String dir, String projPath) {
+      File child = new File(dir);
       File root = new File(projPath);
       while(child != null) {
          if (child.equals(root)) {

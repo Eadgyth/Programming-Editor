@@ -11,7 +11,6 @@ import java.awt.EventQueue;
 import eg.console.*;
 import eg.Languages;
 import eg.ui.MainWin;
-import eg.ui.ConsoleOpenable;
 import eg.projects.ProjectActions;
 import eg.projects.SelectedProject;
 
