@@ -53,7 +53,8 @@ public class DocumentUpdate {
       mw.enableCutCopy(txtDoc[i].textArea().getSelectedText() != null);
       mw.displayFrameTitle(txtDoc[i].filepath());
       mw.enableShowHideTabbar(nTabs == 1);
-      mw.setLanguagesSelected(txtDoc[i].language(), txtDoc[i].filename().length() == 0);
+      mw.setLanguagesSelected(txtDoc[i].language(),
+            txtDoc[i].filename().length() == 0);
       txtDoc[i].requestFocus();
    }
    
