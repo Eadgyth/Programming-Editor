@@ -12,7 +12,7 @@ public class HtmlColoring implements Colorable {
       "font",
       "head", "html", "hr",
       "h1", "h2", "h3", "h4", "h5", "h6",
-      "i", "img",
+      "i", "img", "input",
       "li",
       "meta",
       "object", "ol",
@@ -31,7 +31,7 @@ public class HtmlColoring implements Colorable {
       "id",
       "onclick",
       "rows",
-      "style",
+      "scr", "source", "style",
       "title",  "type",
       "valign", "value",
       "width"
