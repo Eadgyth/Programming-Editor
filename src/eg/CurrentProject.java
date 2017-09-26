@@ -23,13 +23,13 @@ import eg.utils.FileUtils;
 /**
  * The configuration and execution of actions of projects.
  * <p>
- * A project is represented by an object of type {@link ProjectActions} and
- * is configured and/or set active depending on the {@link TextDocument} that
- * is set as selected at the time.
- * <p>
- * Several configured projects are stored in a {@code List} of projects. Any
- * of these can be (re-) activated depending on the currently set
- * {@link TextDocument}
+ * A project is represented by an object of type {@link ProjectActions}
+ * and is configured and assigned to this current project when the
+ * {@link TextDocument} that is selected at the time is part of that
+ * project.<br>
+ * Several projects can be configured and would be maintained. Any of
+ * these can be (re-)assigned to this current project if the selected
+ * <code>TextDocument</code> is part of it.
  */
 public class CurrentProject {
 
@@ -50,7 +50,7 @@ public class CurrentProject {
    /*
     * Options for a Comobox */
    private final String[] projectOptions;
-   
+
    private ProjectActions current;
    private TextDocument currDoc;
    private TextDocument[] txtDoc;
@@ -84,12 +84,20 @@ public class CurrentProject {
       docSuffix = FileUtils.fileSuffix(currDoc.filename());
       ProjectActions inList = selectFromList(currDoc.dir(), true);
       mw.enableChangeProject(inList != null);
+      if (current != null) {
+         if (!current.isInProject(currDoc.dir())) {
+            mw.enableProjActions(false, false, false);
+         }
+         else {
+            enableActions(current);
+         }
+      }
    }
 
    /**
     * Assigns to this current project a project which a configuration
     * exists for in an 'eadconfig' file saved in the project's directory
-    * or in the program's prefs file
+    * or, if not existent, in the program's prefs file
     * @see eg.projects.ProjectConfig#retrieveProject(String)
     */
    public void retrieveProject() {
@@ -97,32 +105,32 @@ public class CurrentProject {
          return;
       }
       EventQueue.invokeLater(() -> {
-         ProjectActions prToFind = selProj.createProject(docSuffix);
-         boolean isFound = prToFind != null
-               && prToFind.retrieveProject(currDoc.dir());
-         if (prToFind == null) {
+         ProjectActions projToFind = selProj.createProject(docSuffix);
+         boolean isFound = projToFind != null
+               && projToFind.retrieveProject(currDoc.dir());
+         if (projToFind == null) {
             for (String opt : selProj.projectSuffixes) {
-               prToFind = selProj.createProject(opt);
-               isFound = prToFind != null
-                     && prToFind.retrieveProject(currDoc.dir());
+               projToFind = selProj.createProject(opt);
+               isFound = projToFind != null
+                     && projToFind.retrieveProject(currDoc.dir());
                if (isFound) {
                   break;
                }
             }
          }
          if (isFound) {
-            ProjectActions prFin = prToFind;
+            ProjectActions projFin = projToFind;
             if (current == null) {
-               current = prFin;
+               current = projFin;
                current.addOkAction(e -> configureProject(current));
                projList.add(current);
                updateProjectSetting(current);
             }
             else {
                if (selectFromList(currDoc.dir(), true) == null) {
-                  prFin.addOkAction(e -> configureProject(prFin));
-                  projList.add(prFin);
-                  changeProject(prFin);
+                  projFin.addOkAction(e -> configureProject(projFin));
+                  projList.add(projFin);
+                  changeProject(projFin);
                }
             }
          }
@@ -141,7 +149,7 @@ public class CurrentProject {
       if (fromList == null) {
          int res = JOptions.confirmYesNo("Set new project?");
          if (res == 0) {
-            createNewProject();
+            createProjectImpl();
          }
       }
       else {
@@ -158,13 +166,14 @@ public class CurrentProject {
 
    /**
     * Creates a new project.
-    * <p>If the the currently set {@link TextDocument} belongs to an already
-    * set project a dialog to confirm to proceed is shown.
+    * <p>If the the currently set {@link TextDocument} belongs to a project
+    * in the List of configured projects a dialog to confirm to proceed is
+    * shown.
     */
-   public void newProject() {
+   public void createProject() {
       ProjectActions fromList = selectFromList(currDoc.dir(), false);
       if (fromList == null) {
-         createNewProject();
+         createProjectImpl();
       }
       else {
          confirmedNewProject(fromList);
@@ -174,27 +183,15 @@ public class CurrentProject {
    /**
     * Sets active the project from this <code>List</code> of configured
     * projects which the currently selected {@code TextDocument} belongs to.
-    * <p>If the set {@link TextDocument} belongs to the currently active project
-    * it is asked to set up a new project.
     */
    public void changeProject() {
-      ProjectActions fromList = selectFromList(currDoc.dir(), false);
-      if (fromList == null) {
-         createNewProject();
-      }
-      else {
-         if (fromList != current) {
-            changeProject(fromList);
-         }
-         else {
-            confirmedNewProject(fromList);
-         }
-      }
+      ProjectActions fromList = selectFromList(currDoc.dir(), true);
+      changeProject(fromList);
    }
 
    /**
-    * Updates the file tree if the set {@link TextDocument} is in the
-    * directory of the current project
+    * Updates the file tree if the selected {@link TextDocument} belongs to
+    * this current project
     */
    public void updateFileTree() {
       if (current != null && current.isInProject(currDoc.dir())) {
@@ -204,12 +201,10 @@ public class CurrentProject {
 
    /**
     * Saves the source file of the selected {@code TextDocument} if it
-    * belongs the current project and compiles the project
+    * belongs this current project and compiles the project. Updates the
+    * file tree
     */
    public void saveAndCompile() {
-      if (!isCurrent("Compile")) {
-         return;
-      }
       try {
         mw.setBusyCursor(true);
         if (isFileToCompile(currDoc)) {
@@ -231,13 +226,10 @@ public class CurrentProject {
    }
 
    /**
-    * Saves all open source files of the current project and compiles the
-    * project
+    * Saves all open source files of this current project and compiles the
+    * project. Updates the file tree
     */
    public void saveAllAndCompile() {
-      if (!isCurrent("Compile")) {
-         return;
-      }
       try {
          mw.setBusyCursor(true);
          StringBuilder missingFiles = new StringBuilder();
@@ -267,22 +259,16 @@ public class CurrentProject {
    }
 
    /**
-    * Runs this project
+    * Runs this current project
     */
    public void runProj() {
-      if (!isCurrent("Run")) {
-         return;
-      }
       current.runProject();
    }
 
    /**
-    * Creates a build of this current project
+    * Creates a build of this current project and updates the file tree
     */
    public void buildProj() {
-      if (!isCurrent("Build")) {
-         return;
-      }
       try {
          mw.setBusyCursor(true);
          current.build();
@@ -297,7 +283,7 @@ public class CurrentProject {
    //--private methods--//
    //
 
-   private void createNewProject() {
+   private void createProjectImpl() {
       if (currDoc.filename().length() == 0) {
          JOptions.titledInfoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          return;
@@ -357,52 +343,40 @@ public class CurrentProject {
              && current.isInProject(td.dir());
    }
 
-   private boolean isCurrent(String action) {
-      boolean isCurrent = current.isInProject(currDoc.dir());
-      int res = 0;
-      if (!isCurrent) {
-         res = JOptions.confirmYesNo(NOT_IN_PROJ_MESSAGE
-             + "\n" + action + " project '" + current.getProjectName() + "' ?");
-      }
-      return isCurrent || res == 0;
-   }
-   
    private void confirmedNewProject(ProjectActions toConfirm) {
       int res = JOptions.confirmYesNo(currDoc.filename()
               + "\nThe file belongs the project "
               + "'" + toConfirm.getProjectName() + "'."
               + "\nStill set new project?");
       if (res == 0) {
-         createNewProject();
+         createProjectImpl();
       }
    }
-   
-   private String wrongExtentionMessage(String filename) {  
-         return "<html>"
+
+   private String wrongExtentionMessage(String filename) {
+      return "<html>"
          + filename + "<br>"
          + "If the file belongs to a project specify the extension of<br>"
          + "the source files:"
          + "</html>";
    }
-   
+
    private void updateProjectSetting(ProjectActions projToSet) {
       proc.setWorkingDir(projToSet.getProjectPath());
       enableActions(projToSet);
+      setBuildName(projToSet);
       mw.setProjectName(projToSet.getProjectName());
       mw.fileTree().setDeletableDirName(projToSet.getExecutableDirName());
       mw.fileTree().setProjectTree(projToSet.getProjectPath());
-   }
-
-   private void enableActions(ProjectActions projToSet) {
       if (projList.size() == 1) {
          mw.enableOpenFileView();
       }
-      mw.setBuildName("Build");
-      String className = projToSet.getClass().getSimpleName();
-      switch (className) {
+   }
+
+   private void enableActions(ProjectActions projToSet) {
+      switch (className(projToSet)) {
          case "JavaActions":
             mw.enableProjActions(true, true, true);
-            mw.setBuildName("Create jar");
             break;
          case "HtmlActions":
             mw.enableProjActions(false, true, false);
@@ -411,5 +385,19 @@ public class CurrentProject {
             mw.enableProjActions(false, true, false);
             break;
       }
+   }
+   
+   private void setBuildName(ProjectActions projToSet) {
+      switch (className(projToSet)) {
+         case "JavaActions":
+            mw.setBuildName("Create jar");
+            break;
+         default:
+            mw.setBuildName("Build");
+      }
+   }
+   
+   private String className(ProjectActions projToSet) {
+      return projToSet.getClass().getSimpleName();
    }
 }

@@ -39,7 +39,7 @@ class ProjectMenu {
    void registerAct(CurrentProject currProj) {
       setProject.addActionListener(e -> currProj.openSettingsWindow());
       changeProj.addActionListener(e -> currProj.changeProject());
-      newProj.addActionListener(e -> currProj.newProject());
+      newProj.addActionListener(e -> currProj.createProject());
       run.addActionListener(e -> currProj.runProj());
       build.addActionListener(e -> currProj.buildProj());
       SaveCompile.addActionListener(e -> currProj.saveAndCompile());
