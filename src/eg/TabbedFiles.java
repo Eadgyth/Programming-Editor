@@ -141,7 +141,7 @@ public class TabbedFiles implements Observer {
     * @return  if the text content was saved
     */
    public boolean save(boolean update) {
-      if (txtDoc[iTab].filename().length() == 0
+      if (!txtDoc[iTab].hasFile()
             || !txtDoc[iTab].docFile().exists()) {
          return saveAs(update);
       }
@@ -157,8 +157,8 @@ public class TabbedFiles implements Observer {
    public void saveAll() {
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < nTabs(); i++) {
-         if (txtDoc[i].filename().length() > 0) {
-            if (new File(txtDoc[i].filepath()).exists()) {
+         if (txtDoc[i].hasFile()) {
+            if (txtDoc[i].docFile().exists()) {
                txtDoc[i].saveToFile();
             }
             else {
@@ -319,7 +319,7 @@ public class TabbedFiles implements Observer {
       int iOpen = 0;
       boolean isOpenable
             =  nTabs() == 1
-            && txtDoc[iOpen].filename().length() == 0
+            && !txtDoc[iOpen].hasFile()
             && txtDoc[iOpen].getText().length() == 0;
       if (isOpenable) {
          openFile(iOpen, f); // no new doc

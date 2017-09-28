@@ -18,8 +18,8 @@ import eg.utils.FileUtils;
 import eg.ui.EditArea;
 
 /**
- * Class represents the text document which a file and language
- * can be assigned to
+ * Class represents a text document.<br>
+ * 
  */
 public final class TextDocument {
 
@@ -81,77 +81,7 @@ public final class TextDocument {
    public void setUndoableChangeListener(UndoableChangeListener ul) {
       type.setUndoableChangeListener(ul);
    }
-
-   /**
-    * Returns the text area of this <code>EditArea</code>
-    *
-    * @return  the text area of this {@link EditArea}
-    */
-    public JTextPane textArea() {
-       return textArea;
-    }
-
-   /**
-    * Returns the name of this file or the emtpy string of no file
-    * has been assinged
-    *
-    * @return  the name of this file
-    */
-   public String filename() {
-      return filename;
-   }
-
-   /**
-    * Returns the path of this file or the empty string of no file
-    * has been assinged
-    *
-    * @return  the full path of this file
-    */
-   public String filepath() {
-      return filepath;
-   }
    
-   public File docFile() {
-      return docFile;
-   }
-
-   /**
-    * Returns the parent directory of this file or the empty string
-    * of no file has been assinged
-    *
-    * @return  the parent directory of this file
-    */
-   public String dir() {
-      return dir;
-   }
-   
-   /**
-    * Returns the text in the document
-    *
-    * @return  the text in the document
-    */
-   public String getText() {
-      return type.getText();
-   }
-   
-   /**
-    * If the set Language is a coding language, i.e. not plain text
-    *
-    * @return  the set Language is any coding language, i.e. not plain text
-    */
-   public boolean isCodingLanguage() {
-      return Languages.PLAIN_TEXT != lang;
-   }
-   
-   /**
-    * Returns this language
-    *
-    * @return  this language which has a constant value in {@link Languages}
-    */
-   public Languages language() {
-      return lang;
-   }
-
    /**
     * Sets the specified file and displays the file content.
     *
@@ -201,6 +131,103 @@ public final class TextDocument {
    }
 
    /**
+    * Returns the text area of this <code>EditArea</code>
+    *
+    * @return  the text area of this {@link EditArea}
+    */
+    public JTextPane textArea() {
+       return textArea;
+    }
+
+   /**
+    * Returns the name of this file or the emtpy string of no file
+    * has been assinged
+    *
+    * @return  the name of this file
+    */
+   public String filename() {
+      return filename;
+   }
+   
+   /**
+    * Returns the parent directory of this file or the empty string
+    * of no file has been assinged
+    *
+    * @return  the parent directory of this file
+    */
+   public String dir() {
+      return dir;
+   }
+
+   /**
+    * Returns the path of this file or the empty string of no file
+    * has been assinged
+    *
+    * @return  the full path of this file
+    */
+   public String filepath() {
+      return filepath;
+   }
+   
+   /**
+    * Returns this file
+    *
+    * @return  this file
+    */
+   public File docFile() {
+      return docFile;
+   }
+   
+   /**
+    * Returns if a file has been assigned
+    *
+    * @return  if a file has been assigned
+    */
+   public boolean hasFile() {
+      return filename.length() > 0;
+   }
+   
+   /**
+    * Returns the text in the document
+    *
+    * @return  the text in the document
+    */
+   public String getText() {
+      return type.getText();
+   }
+   
+   /**
+    * If the set Language is a coding language, i.e. not plain text
+    *
+    * @return  the set Language is any coding language, i.e. not plain text
+    */
+   public boolean isCodingLanguage() {
+      return Languages.PLAIN_TEXT != lang;
+   }
+   
+   /**
+    * Returns this language
+    *
+    * @return  this language which has a constant value in {@link Languages}
+    */
+   public Languages language() {
+      return lang;
+   }
+   
+   /**
+    * Changes the language if no file has been set
+    *
+    * @param lang  the language which has one of the constant values
+    * in {@link eg.Languages}
+    */
+   public void changeLanguage(Languages lang) {
+      if (filename.length() == 0) {
+         this.lang = lang;
+         type.setUpEditing(lang);
+      }
+   }
+
+   /**
     * Returns if the text equals the content since the last
     * saving point
     *
@@ -235,10 +262,11 @@ public final class TextDocument {
    }
 
    /**
-    * Enables/disables syntax coloring and auto-indentation
+    * Enables/disables editing during typing which is syntax coloring 
+    * and auto-indentation
     *
-    * @param isEnabled  true to enable coloring and auto-indentation,
-    * false to disable. No effect if this language is plain text
+    * @param isEnabled  true/false to enable/disable coloring and
+    * auto-indentation, True has no effect if this language is plain text
     */
    public void enableTypeEdit(boolean isEnabled) {
       if (Languages.PLAIN_TEXT != lang) {
@@ -247,10 +275,10 @@ public final class TextDocument {
    }
 
    /**
-    * Colors a section of text which also may be the entire text
+    * Colors a section of text which also may be the entire text.
     *
-    * @param section  a section of the document. Null to color the entire
-    * entire text
+    * @param section  a section of the document or the entire text. If
+    * Null the entire text is colored and <code>pos</code> is ignored
     * @param pos  the pos within the entire text where the section to
     * be colored starts. Is 0 if '{code section}' is null.
     */
@@ -315,19 +343,6 @@ public final class TextDocument {
       textArea.requestFocusInWindow();
    }
 
-   /**
-    * Changes the language if no file has been set
-    *
-    * @param lang  the language which has one of the constant values
-    * in {@link eg.Languages}
-    */
-   public void changeLanguage(Languages lang) {
-      if (filename.length() == 0) {
-         this.lang = lang;
-         type.setUpEditing(lang);
-      }
-   }
-
    //
    //----private methods----//
    //
@@ -351,7 +366,6 @@ public final class TextDocument {
       catch (IOException e) {
          FileUtils.logStack(e);
       }
-      textArea.setCaretPosition(0);
       type.enableDocListen(true);
    }
 

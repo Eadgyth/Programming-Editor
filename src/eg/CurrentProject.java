@@ -207,8 +207,7 @@ public class CurrentProject {
       try {
         mw.setBusyCursor(true);
         if (isFileToCompile(currDoc)) {
-            boolean exists = new File(currDoc.filepath()).exists();
-            if (exists) {
+            if (currDoc.docFile().exists()) {
                currDoc.saveToFile();
                current.compile();
                updateFileTree();
@@ -234,8 +233,7 @@ public class CurrentProject {
          StringBuilder missingFiles = new StringBuilder();
          for (int i = 0; i < txtDoc.length; i++) {
             if (isFileToCompile(txtDoc[i])) {
-               boolean exists = new File(txtDoc[i].filepath()).exists();
-               if (exists) {
+               if (txtDoc[i].docFile().exists()) {
                   txtDoc[i].saveToFile();
                }
                else {
