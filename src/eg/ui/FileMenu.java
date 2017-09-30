@@ -40,7 +40,7 @@ class FileMenu {
    }
 
    void registerAct(TabbedFiles tf) {
-      newFileItm.addActionListener(e -> tf.createEmptyTab());
+      newFileItm.addActionListener(e -> tf.openEmptyTab());
       openItm.addActionListener(e -> tf.openFileByChooser());
       closeItm.addActionListener(e -> tf.close(true));
       closeAllItm.addActionListener(e -> tf.closeAll());

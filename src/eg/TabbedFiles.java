@@ -90,7 +90,7 @@ public class TabbedFiles implements Observer {
     */
    public void openEmptyTab() {
       if (isTabOpenable()) {
-         createDocument(nTabs());
+         createDocument();
       }
    }
 
@@ -312,51 +312,34 @@ public class TabbedFiles implements Observer {
          removeTab();
       }
       if (isTabOpenable()) {
-         System.out.println(nTabs());
-         createDocument(nTabs(), f);
+         createDocument(f);
       }
    }
 
-   private boolean isFileOpen(File f) {
-      boolean isFileOpen = false;
-      for (int i = 0; i < nTabs(); i++) {
-         if (txtDoc[i].filepath().equals(f.toString())) {
-           isFileOpen = true;
-           JOptions.warnMessage(f.getName() + " is already open.");
-           break;
-         }
-      }
-      return isFileOpen;
-   }
-   
-   private boolean isMaxTabNumber() {
-      boolean isMax = nTabs() == txtDoc.length;
-      if (isMax) {
-         JOptions.warnMessage("The maximum number of tabs is reached.");
-      }
-      return isMax;
-   }
-
-   private void createDocument(int i, File f) {
+   private void createDocument(File f) {
       try {
          mw.setBusyCursor(true);
-         editArea[i] = format.createEditArea();
-         txtDoc[i] = new TextDocument(editArea[i], f);
-         addNewTab(txtDoc[i].filename(), editArea[i].textPanel());
-         setUIUpdateListenersAt(i);
-         docUpdate.changedFileUpdate(i, nTabs(), false);
-         prefs.storePrefs("recentPath", txtDoc[i].dir());
+         int n = nTabs();
+         editArea[n] = format.createEditArea();
+         txtDoc[n] = new TextDocument(editArea[n], f);
+         txtDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
+         addNewTab(txtDoc[n].filename(), editArea[n].textPanel());
+         setUIUpdateListenersAt(n);
+         docUpdate.changedFileUpdate(n, nTabs(), false);
+         prefs.storePrefs("recentPath", txtDoc[n].dir());
       }
       finally {
          mw.setBusyCursor(false);
       } 
    }
    
-   private void createDocument(int i) {
-      editArea[i] = format.createEditArea();
-      txtDoc[i] = new TextDocument(editArea[i], lang);
-      addNewTab("unnamed", editArea[i].textPanel());
-      setUIUpdateListenersAt(i);
+   private void createDocument() {
+      int n = nTabs();
+      editArea[n] = format.createEditArea();
+      txtDoc[n] = new TextDocument(editArea[n], lang);
+      txtDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
+      addNewTab("unnamed", editArea[n].textPanel());
+      setUIUpdateListenersAt(n);
    }
    
    private void addNewTab(String filename, JPanel pnl) {
@@ -376,16 +359,16 @@ public class TabbedFiles implements Observer {
    }
    
    private void removeTab() {
-      int count = iTab; // remember the index of the tab that will be removed
+      int count = iTab;
       tabPane.removeTabAt(iTab);
       for (int i = count; i < nTabs(); i++) {
          txtDoc[i] = txtDoc[i + 1];
          editArea[i] = editArea[i + 1];
       }
       int n = nTabs();    
-         txtDoc[n] = null;
-         editArea[n] = null;
-         if (n > 0) {
+      txtDoc[n] = null;
+      editArea[n] = null;
+      if (n > 0) {
          iTab = tabPane.getSelectedIndex();
          changedTabUpdate();
       }
@@ -403,6 +386,26 @@ public class TabbedFiles implements Observer {
       format.setEditAreaAt(iTab);
       mw.setWordWrapSelected(format.isWordwrap());
       docUpdate.changedDocUpdate(iTab, nTabs());
+   }
+   
+   private boolean isFileOpen(File f) {
+      boolean isFileOpen = false;
+      for (int i = 0; i < nTabs(); i++) {
+         if (txtDoc[i].filepath().equals(f.toString())) {
+           isFileOpen = true;
+           JOptions.warnMessage(f.getName() + " is already open.");
+           break;
+         }
+      }
+      return isFileOpen;
+   }
+   
+   private boolean isMaxTabNumber() {
+      boolean isMax = nTabs() == txtDoc.length;
+      if (isMax) {
+         JOptions.warnMessage("The maximum number of tabs is reached.");
+      }
+      return isMax;
    }
    
    private int unsavedTab() {

@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 //--Eadgyth--//
-import eg.Preferences;
 import eg.Languages;
 
 import eg.utils.FileUtils;
@@ -25,7 +24,6 @@ import eg.ui.EditArea;
 public final class TextDocument {
 
    private final static String LINE_SEP = System.lineSeparator();
-   private final static Preferences PREFS = new Preferences();
 
    private final JTextPane textArea;
    private final EditArea editArea;
@@ -148,6 +146,20 @@ public final class TextDocument {
    public void setUndoableChangeListener(UndoableChangeListener ul) {
       type.setUndoableChangeListener(ul);
    }
+   
+   /**
+    * Sets the indentation unit which consists in any number of spaces
+    *
+    * @param indentUnit  the String that consists of a certain number of
+    * white spaces
+    */
+   public void setIndentUnit(String indentUnit) {
+      if (indentUnit == null || !indentUnit.matches("[\\s]+")) {
+         throw new IllegalArgumentException(
+               "Argument indentUnit is incorrect");
+      }
+      type.setIndentUnit(indentUnit);
+   }
 
    /**
     * Saves the current text content to this file
@@ -236,21 +248,6 @@ public final class TextDocument {
       }
       this.lang = lang;
       type.setUpEditing(lang);
-   }
-
-   /**
-    * Sets the indentation unit
-    *
-    * @param indentUnit  the String that consists of a certain number of
-    * white spaces
-    */
-   public void setIndentUnit(String indentUnit) {
-      if (indentUnit == null || !indentUnit.matches("[\\s]+")) {
-         throw new IllegalArgumentException(
-               "Argument indentUnit is incorrect");
-      }
-      type.setIndentUnit(indentUnit);
-      PREFS.storePrefs("indentUnit", type.getIndentUnit());
    }
 
    /**
@@ -357,9 +354,6 @@ public final class TextDocument {
       this.editArea = editArea;
       this.textArea = editArea.textArea();
       type = new TypingEdit(editArea);
-      PREFS.readPrefs();
-      String indentUnit = PREFS.getProperty("indentUnit");
-      setIndentUnit(indentUnit); 
    }
 
    private void displayFileContent(File f) {

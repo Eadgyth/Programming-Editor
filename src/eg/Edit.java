@@ -25,6 +25,8 @@ public class Edit {
 
    /* Options for the numbers of white spaces in indentation unit */
    private static final String[] SPACE_NUMBER = { "1", "2", "3", "4", "5", "6" };
+   
+   private final Preferences prefs = new Preferences();
 
    private TextDocument txtDoc;
    private JTextPane textArea;
@@ -127,6 +129,7 @@ public class Edit {
             indentUnit += " ";
          }
          txtDoc.setIndentUnit(indentUnit);
+         prefs.storePrefs("indentUnit", indentUnit);
       }
    }
 

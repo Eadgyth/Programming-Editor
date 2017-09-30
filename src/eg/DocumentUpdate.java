@@ -7,7 +7,7 @@ import eg.ui.MainWin;
 import eg.ui.EditArea;
 
 /**
- * Holds object that need to be updated when the tab is changed and when
+ * Holds objects that need to be updated when the tab is changed and when
  * the file of a selected document changes.
  * The updated classes are {@link Edit}, {@link PluginStarter},
  * {@link CurrentProject} and {@link MainWin}
