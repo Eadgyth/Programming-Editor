@@ -76,8 +76,8 @@ public class Coloring {
     *
     * @param allText  the entire text of the document
     * @param section  a section of <code>allText</code>. If null
-    * <code>allText</code> is used. If it does not start at a line start or
-    * does not end at line end the full lines are built
+    * <code>allText</code> is used. The complete lines are colored even if
+    * it does not start a line start or end at line end
     * @param pos  the pos within the document where a change happened.
     */
    public void colorMultipleLines(String allText, String section, int pos) {
