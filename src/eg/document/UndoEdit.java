@@ -132,8 +132,9 @@ class UndoEdit {
    //
 
    private void addBreakpoint() {
-      if (breakpoints.size() > 0
-            && iEd - 1 == breakPt(breakpoints.size() - 1)) {
+      int iLastBreak = breakpoints.size() - 1;
+      if (iLastBreak > -1
+            && iEd - 1 == breakPt(iLastBreak)) {
          return;
       }
       breakpoints.add(iEd - 1);
@@ -146,9 +147,9 @@ class UndoEdit {
             edits.remove(i);
             positions.remove(i);
             eventTypes.remove(i);
-            int nBreaks = breakpoints.size() - 1;
-            if (nBreaks > 0 && i == breakPt(nBreaks)) {
-               breakpoints.remove(nBreaks);
+            int iLastBreak = breakpoints.size() - 1;
+            if (iLastBreak > -1 && i == breakPt(iLastBreak)) {
+               breakpoints.remove(iLastBreak);
             }
          }
       }
