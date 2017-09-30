@@ -50,7 +50,7 @@ class TypingEdit {
    private int pos = 0;
    private String change = "";
    private DocumentEvent.EventType event;
-   private boolean isSelection = false;
+   private boolean isSelectionTmp = false;
    private boolean canUndoTmp = false;
    private boolean canRedoTmp = false;
 
@@ -72,7 +72,6 @@ class TypingEdit {
             stopUndo(caret);
          }
       });
-
    }
 
    void setUndoableChangeListener(UndoableChangeListener ul) {
@@ -193,12 +192,12 @@ class TypingEdit {
       }
    }
 
-   private void notifyTextSelectionEvent(boolean selectionUpdate) {
+   private void notifyTextSelectionEvent(boolean isSelection) {
       if (sl == null) {
          return;
       }
-      if (selectionUpdate != isSelection) {
-         isSelection = selectionUpdate;
+      if (isSelection != isSelectionTmp) {
+         isSelectionTmp = isSelection;
          se = new TextSelectionEvent(isSelection);
          sl.selectionUpdate(se);
       }
