@@ -18,7 +18,8 @@ import eg.utils.FileUtils;
 import eg.ui.EditArea;
 
 /**
- * Class represents a text document.<br>
+ * Represents a text document with a language or a file that
+ * defines the language.<br>
  * 
  */
 public final class TextDocument {
@@ -31,28 +32,33 @@ public final class TextDocument {
    private final TypingEdit type;
 
    private File docFile = null;
+   private Languages lang;
    private String filename = "";
    private String filepath = "";
    private String dir = "";
    private String content = "";
-   private Languages lang;
-
+   
    /**
-    * Creates a TextDocument
+    * Creates a <code>TextDocument</code> with the specified file. The file
+    * content is displayed.<br>
+    * The file extension defines the language. The language cannot be
+    * changed afterwards but a new file may be set which also may define
+    * another language
     *
     * @param editArea  a new {@link EditArea}
+    * @param f  the file
     */
-  public TextDocument(EditArea editArea) {
-      this.editArea = editArea;
-      this.textArea = editArea.textArea();
-      type = new TypingEdit(editArea);
-      PREFS.readPrefs();
-      String indentUnit = PREFS.getProperty("indentUnit");
-      setIndentUnit(indentUnit); 
+   public TextDocument(EditArea editArea, File f) {
+      this(editArea);
+      assignFile(f);
+      displayFileContent(f);
+      setLanguageBySuffix();
+      setContent();
    }
 
    /**
-    * Creates a TextDocument with a specified language
+    * Creates a <code>TextDocument</code> with the specified
+    * language
     *
     * @param editArea  a new {@link EditArea}
     * @param lang  the language that is one of the constants in
@@ -65,7 +71,68 @@ public final class TextDocument {
    }
    
    /**
-    * Sets a <code>SelectionLister</code>
+    * Returns the text area of this <code>EditArea</code>
+    *
+    * @return  the text area of this {@link EditArea}
+    */
+    public JTextPane textArea() {
+       return textArea;
+    }
+    
+    /**
+    * Gets the name of this file
+    *
+    * @return  the name of this file.The empty string
+    * of no file has been assinged
+    */
+   public String filename() {
+      return filename;
+   }
+   
+   /**
+    * Gets the parent directory of this file.
+    *
+    * @return  the parent directory of this file. The empty string
+    * of no file has been assinged
+    */
+   public String dir() {
+      return dir;
+   }
+
+   /**
+    * Gets the path of this file
+    *
+    * @return  the full path of this file. The empty string of
+    * no file has been assinged
+    */
+   public String filepath() {
+      return filepath;
+   }
+   
+   /**
+    * Returns if a file has been assigned
+    *
+    * @return  if a file has been assigned
+    */
+   public boolean hasFile() {
+      return docFile != null;
+   }
+   
+   /**
+    * Gets this file if a file has been assigned
+    *
+    * @return  this file
+    */
+   public File docFile() {
+      if (docFile == null) {
+         throw new IllegalStateException("No file has"
+               + " been assigned");
+      }
+      return docFile;
+   }
+   
+   /**
+    * Sets a <code>TextSelectionLister</code>
     *
     * @param sl  a {@link TextSelectionListener}
     */
@@ -81,39 +148,29 @@ public final class TextDocument {
    public void setUndoableChangeListener(UndoableChangeListener ul) {
       type.setUndoableChangeListener(ul);
    }
-   
-   /**
-    * Sets the specified file and displays the file content.
-    *
-    * @param f  the file whose content is displayed in this text area
-    */
-   public void openFile(File f) {
-      if (this.filepath().length() != 0) {
-         throw new IllegalStateException("A file has been assigned already");
-      }
-      assignFile(f);
-      displayFileContent(f);
-      setLanguageBySuffix();
-      setContent();
-   }
 
    /**
     * Saves the current text content to this file
     *
     * @return  if the content was saved
     */
-   public boolean saveToFile() {
+   public boolean saveFile() {
+      if (docFile == null) {
+         throw new IllegalStateException("No file has"
+               + " been assigned");
+      }
       setContent();
       return writeToFile(docFile);
    }
 
    /**
-    * Sets the specified file and saves the current text content
+    * Assigns the specified file and saves the current text content to
+    * the file. If a file that has been assigned before is replaced.
     *
-    * @param f  the new file
+    * @param f  the file
     * @return  if the content was saved
     */
-   public boolean saveFileAs(File f) {
+   public boolean setFile(File f) {
       assignFile(f);
       setLanguageBySuffix();
       setContent();
@@ -122,69 +179,22 @@ public final class TextDocument {
    
    /**
     * Saves the current content to the specified file but does not
-    * assign the file to this
+    * assign the file
     *
     * @param f  the file which the current content is saved to
     */
    public void saveCopy(File f) {
       writeToFile(f);
    }
-
-   /**
-    * Returns the text area of this <code>EditArea</code>
-    *
-    * @return  the text area of this {@link EditArea}
-    */
-    public JTextPane textArea() {
-       return textArea;
-    }
-
-   /**
-    * Returns the name of this file or the emtpy string of no file
-    * has been assinged
-    *
-    * @return  the name of this file
-    */
-   public String filename() {
-      return filename;
-   }
    
    /**
-    * Returns the parent directory of this file or the empty string
-    * of no file has been assinged
+    * Returns if the text equals the content since the last
+    * saving point
     *
-    * @return  the parent directory of this file
+    * @return  if the current text is saved
     */
-   public String dir() {
-      return dir;
-   }
-
-   /**
-    * Returns the path of this file or the empty string of no file
-    * has been assinged
-    *
-    * @return  the full path of this file
-    */
-   public String filepath() {
-      return filepath;
-   }
-   
-   /**
-    * Returns this file
-    *
-    * @return  this file
-    */
-   public File docFile() {
-      return docFile;
-   }
-   
-   /**
-    * Returns if a file has been assigned
-    *
-    * @return  if a file has been assigned
-    */
-   public boolean hasFile() {
-      return filename.length() > 0;
+   public boolean isContentSaved() {
+      return content.equals(type.getText());
    }
    
    /**
@@ -197,15 +207,6 @@ public final class TextDocument {
    }
    
    /**
-    * If the set Language is a coding language, i.e. not plain text
-    *
-    * @return  the set Language is any coding language, i.e. not plain text
-    */
-   public boolean isCodingLanguage() {
-      return Languages.PLAIN_TEXT != lang;
-   }
-   
-   /**
     * Returns this language
     *
     * @return  this language which has a constant value in {@link Languages}
@@ -215,26 +216,26 @@ public final class TextDocument {
    }
    
    /**
-    * Changes the language if no file has been set
+    * If the set Language is a coding language, i.e. not plain text
+    *
+    * @return  the set Language is any coding language, i.e. not plain text
+    */
+   public boolean isCodingLanguage() {
+      return Languages.PLAIN_TEXT != lang;
+   }
+   
+   /**
+    * Changes the language if no file has been assigned
     *
     * @param lang  the language which has one of the constant values
     * in {@link eg.Languages}
     */
    public void changeLanguage(Languages lang) {
-      if (filename.length() == 0) {
-         this.lang = lang;
-         type.setUpEditing(lang);
+      if (hasFile()) {
+         throw new IllegalStateException("The language cannot be changed.");
       }
-   }
-
-   /**
-    * Returns if the text equals the content since the last
-    * saving point
-    *
-    * @return  if the current text is saved
-    */
-   public boolean isContentSaved() {
-      return content.equals(getText());
+      this.lang = lang;
+      type.setUpEditing(lang);
    }
 
    /**
@@ -262,25 +263,26 @@ public final class TextDocument {
    }
 
    /**
-    * Enables/disables editing during typing which is syntax coloring 
-    * and auto-indentation
+    * Enables/disables editing during typing. Affects syntax coloring and
+    * auto-indentation.
     *
-    * @param isEnabled  true/false to enable/disable coloring and
-    * auto-indentation, True has no effect if this language is plain text
+    * @param isEnabled  true/false to enable/disable editing during
+    * typing. Has no effect if this language is plain text
     */
    public void enableTypeEdit(boolean isEnabled) {
-      if (Languages.PLAIN_TEXT != lang) {
+      if (!isCodingLanguage()) {
          type.enableTypeEdit(isEnabled);
       }
    }
 
    /**
-    * Colors a section of text which also may be the entire text.
+    * Colors a section of text
     *
-    * @param section  a section of the document or the entire text. If
-    * Null the entire text is colored and <code>pos</code> is ignored
+    * @param section  a section of the document which also may be the
+    * entire text. If null the entire text is assumed. The complete lines
+    * are colored even if it does not start a line start or end at line end
     * @param pos  the pos within the entire text where the section to
-    * be colored starts. Is 0 if '{code section}' is null.
+    * be colored starts
     */
    public void colorSection(String section, int pos) {
       if (Languages.PLAIN_TEXT != lang) {
@@ -289,13 +291,17 @@ public final class TextDocument {
    }
    
    /**
-    * @return  if edits can be undone
+    * Returns if edits can be redone
+    * 
+    * @return  if edits can be redone
     */
    public boolean canUndo() {
       return type.canUndo();
    }
    
    /**
+    * Returns if edits can be undone
+    * 
     * @return  if edits can be redone
     */
    public boolean canRedo() {
@@ -346,6 +352,15 @@ public final class TextDocument {
    //
    //----private methods----//
    //
+   
+   private TextDocument(EditArea editArea) {
+      this.editArea = editArea;
+      this.textArea = editArea.textArea();
+      type = new TypingEdit(editArea);
+      PREFS.readPrefs();
+      String indentUnit = PREFS.getProperty("indentUnit");
+      setIndentUnit(indentUnit); 
+   }
 
    private void displayFileContent(File f) {
       type.enableDocListen(false);
@@ -373,7 +388,7 @@ public final class TextDocument {
     * Saves the current content to this file
     */
    private boolean writeToFile(File f) {
-      String[] lines = getText().split("\n");
+      String[] lines = type.getText().split("\n");
       try (FileWriter writer = new FileWriter(f)) {
          for (String s : lines) {
             writer.write(s + LINE_SEP);
@@ -387,7 +402,7 @@ public final class TextDocument {
    }
 
    private void setContent() {
-      content = getText();
+      content = type.getText();
    }
 
    private void assignFile(File f) {
