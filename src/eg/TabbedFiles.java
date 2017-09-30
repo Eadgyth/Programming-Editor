@@ -43,7 +43,7 @@ public class TabbedFiles implements Observer {
 
    /*
     * The index of the selected tab */
-   private int iTab = 0;
+   private int iTab = -1;
    /*
     * The language read from prefs or set in the Langugae menu */
    private Languages lang;
@@ -88,18 +88,9 @@ public class TabbedFiles implements Observer {
    /**
     * Opens a new 'unnamed' tab
     */
-   public void createEmptyTab() {
-      boolean ok = true;
-      if (nTabs() == 1 && !tabPane.isShowTabbar()) {
-         close(false);
-         ok = nTabs() == 0;
-      }
-      if (ok) {
-         int n = nTabs();
-         editArea[n] = format.createEditArea();
-         txtDoc[n] = new TextDocument(editArea[n], lang);
-         addNewTab("unnamed", editArea[n].textPanel());
-         setUIUpdateListenersAt(n);
+   public void openEmptyTab() {
+      if (isTabOpenable()) {
+         createDocument(nTabs());
       }
    }
 
@@ -133,8 +124,8 @@ public class TabbedFiles implements Observer {
    /**
     * Saves the text content of the selected tab.
     * <p>{@link #saveAs(boolean)} is called if the selected tab is
-    * unnamed or if the content was read in from a file that no
-    * longer exists.
+    * unnamed or if the content was read in from a file that no longer
+    * exists.
     *
     * @param update   if the view (e.g. tab title, file view) is
     * updated and it is tried to retrieve a project
@@ -239,7 +230,7 @@ public class TabbedFiles implements Observer {
       if (removable) {
          removeTab();
          if (createEmptyTab && nTabs() == 0) {
-            createEmptyTab();
+            openEmptyTab();
          }
       }
    }
@@ -258,7 +249,7 @@ public class TabbedFiles implements Observer {
             editArea[i] = null;
             i--;
          }
-         createEmptyTab();
+         openEmptyTab();
       }
       else {
          tabPane.setSelectedIndex(count);
@@ -320,17 +311,9 @@ public class TabbedFiles implements Observer {
       if (isBlankFirstTab) {
          removeTab();
       }
-      boolean isOpenable = iTab == -1 || tabPane.isShowTabbar();
-      if (!isOpenable) {
-         close(false);
-         isOpenable = iTab == -1;
-      }
-      if (isOpenable) {
-         int n = nTabs();
-         createDocument(n, f);
-         addNewTab(txtDoc[n].filename(), editArea[n].textPanel());
-         docUpdate.changedFileUpdate(n, n, false);
-         prefs.storePrefs("recentPath", txtDoc[n].dir());
+      if (isTabOpenable()) {
+         System.out.println(nTabs());
+         createDocument(nTabs(), f);
       }
    }
 
@@ -356,14 +339,24 @@ public class TabbedFiles implements Observer {
 
    private void createDocument(int i, File f) {
       try {
-      mw.setBusyCursor(true);
+         mw.setBusyCursor(true);
          editArea[i] = format.createEditArea();
          txtDoc[i] = new TextDocument(editArea[i], f);
+         addNewTab(txtDoc[i].filename(), editArea[i].textPanel());
          setUIUpdateListenersAt(i);
+         docUpdate.changedFileUpdate(i, nTabs(), false);
+         prefs.storePrefs("recentPath", txtDoc[i].dir());
       }
       finally {
          mw.setBusyCursor(false);
       } 
+   }
+   
+   private void createDocument(int i) {
+      editArea[i] = format.createEditArea();
+      txtDoc[i] = new TextDocument(editArea[i], lang);
+      addNewTab("unnamed", editArea[i].textPanel());
+      setUIUpdateListenersAt(i);
    }
    
    private void addNewTab(String filename, JPanel pnl) {
@@ -373,6 +366,13 @@ public class TabbedFiles implements Observer {
          iTab = tabPane.iTabMouseOver();
          close(true);
       });
+   }
+   
+   private void setUIUpdateListenersAt(int i) {
+      txtDoc[i].setUndoableChangeListener(e ->
+            mw.enableUndoRedo(e.canUndo(), e.canRedo()));
+      txtDoc[i].setTextSelectionListener(e ->
+            mw.enableCutCopy(e.isSelection()));
    }
    
    private void removeTab() {
@@ -389,13 +389,6 @@ public class TabbedFiles implements Observer {
          iTab = tabPane.getSelectedIndex();
          changedTabUpdate();
       }
-   }
-   
-   private void setUIUpdateListenersAt(int i) {
-      txtDoc[i].setUndoableChangeListener(e ->
-            mw.enableUndoRedo(e.canUndo(), e.canRedo()));
-      txtDoc[i].setTextSelectionListener(e ->
-            mw.enableCutCopy(e.isSelection()));
    }
    
    private void changeTabEvent(ChangeEvent changeEvent) {
@@ -420,6 +413,15 @@ public class TabbedFiles implements Observer {
          }
       }
       return i;
+   }
+   
+   private boolean isTabOpenable() {
+      boolean isOpenable = iTab == -1 || tabPane.isShowTabbar();
+      if (!isOpenable) {
+         close(false);
+         isOpenable = iTab == -1;
+      }
+      return isOpenable;
    }
 
    private int saveOrCloseOption(int i) {
