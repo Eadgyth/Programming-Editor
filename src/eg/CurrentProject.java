@@ -208,7 +208,7 @@ public class CurrentProject {
         mw.setBusyCursor(true);
         if (isFileToCompile(currDoc)) {
             if (currDoc.docFile().exists()) {
-               currDoc.saveToFile();
+               currDoc.saveFile();
                current.compile();
                updateFileTree();
             }
@@ -234,7 +234,7 @@ public class CurrentProject {
          for (int i = 0; i < txtDoc.length; i++) {
             if (isFileToCompile(txtDoc[i])) {
                if (txtDoc[i].docFile().exists()) {
-                  txtDoc[i].saveToFile();
+                  txtDoc[i].saveFile();
                }
                else {
                   missingFiles.append("\n");
@@ -251,7 +251,7 @@ public class CurrentProject {
          }
       }
       finally {
-         EventQueue.invokeLater(() ->  mw.setBusyCursor(false));
+         EventQueue.invokeLater(() -> mw.setBusyCursor(false));
       }
    }
 
@@ -272,7 +272,7 @@ public class CurrentProject {
          updateFileTree();
       }
       finally {
-         EventQueue.invokeLater(() ->  mw.setBusyCursor(false));
+         EventQueue.invokeLater(() -> mw.setBusyCursor(false));
       }
    }
 
