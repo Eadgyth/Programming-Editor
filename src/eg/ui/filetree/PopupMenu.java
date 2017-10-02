@@ -10,7 +10,7 @@ import javax.swing.JMenuItem;
  * A popup menu with menu items for deleting a file and creating
  * a new folder
  */
-class PopupMenu {
+public class PopupMenu {
    
    static int FILE_OPT = 0;
    static int FOLDER_OPT = 1;
