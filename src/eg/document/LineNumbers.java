@@ -4,51 +4,51 @@ package eg.document;
 import eg.ui.EditArea;
 
 /**
- * The line numbering
+ * The line numbering<br>
+ * Created in {@link TypingEdit}
  */
-class LineNumbers {
+public class LineNumbers {
 
    private final EditArea editArea;
 
-   private int currLineNr = 0;
+   private int nOld;
+   private int nNew;
 
-   LineNumbers(EditArea editArea) {
+   /**
+    * @param editArea  the reference to {@link EditArea}
+    */
+   public LineNumbers(EditArea editArea) {
       this.editArea = editArea;
       editArea.appendLineNumber(1);
    }
 
-   int getCurrLineNr() {
-      return currLineNr;
-   }
-
-   void updateLineNumber(String text) {
-      int nLines = countLines(text);
-      if (nLines > currLineNr) {
-         addLineNumbers(currLineNr + 1, nLines);
+   /**
+    * Updates the line numbers
+    *
+    * @param text  the text of the document
+    */
+   public void updateLineNumber(String text) {
+      nNew = countLines(text);
+      if (nNew > nOld) {
+         addLineNumbers(nOld + 1);
       }
-      else if (nLines < currLineNr) {
-         replaceLineNr(nLines);
+      else if (nNew < nOld) {
+         replaceLineNr();
       }
-      currLineNr = nLines;
-   }
-
-   void addAllLineNumbers(String text) {
-      int nLines = countLines(text);
-      currLineNr = nLines;
-      replaceLineNr(nLines);
+      nOld = nNew;
    }
 
    //
    //----private methods----//
    //
 
-   private void replaceLineNr(int nLines) {
+   private void replaceLineNr() {
       editArea.removeAllLineNumbers();
-      addLineNumbers(0, nLines);
+      addLineNumbers(0);
    }
 
-   private void addLineNumbers(int previousLines, int nLines) {
-      for (int i = previousLines; i <= nLines; i++) {
+   private void addLineNumbers(int start) {
+      for (int i = start; i <= nNew; i++) {
          editArea.appendLineNumber(i + 1);
       }
       editArea.revalidateLineAreaWidth();

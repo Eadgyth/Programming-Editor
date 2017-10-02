@@ -7,45 +7,79 @@ import java.awt.event.KeyAdapter;
 import eg.ui.EditArea;
 
 /**
- * The auto-indentation
+ * The auto-indentation which works with spaces.<br>
+ * Created in {@link TypingEdit}
  */
-class AutoIndent {
+public class AutoIndent {
 
    private final EditArea editArea;
 
    private String indentUnit;
    private int indentLength;
-   private String indent = "";
-   private boolean isActive;
-   private String text = "";
+   private String currentIndent;
 
-   AutoIndent(EditArea editArea) {
+   /**
+    * @param editArea  the reference to {@link EditArea}
+    */
+   public AutoIndent(EditArea editArea) {
       this.editArea = editArea;
-      editArea.textArea().addKeyListener(listener);
    }
 
-   void enableIndent(boolean isEnabled) {
-      indent = "";
-      isActive = isEnabled;
-   }
-
-   void setIndentUnit(String indentUnit) {
+   /**
+    * Sets the indent unit which consists of a certain number of
+    * spaces
+    *
+    * @param indentUnit  the indent unit
+    */
+   public void setIndentUnit(String indentUnit) {
+      if (indentUnit == null || !indentUnit.matches("[\\s]+")) {
+         throw new IllegalArgumentException(
+               "Argument indentUnit must consist of spaces");
+      }
       this.indentUnit = indentUnit;
       indentLength = indentUnit.length();
    }
 
-   String getIndentUnit() {
+   /**
+    * Gets this indent unit
+    *
+    * @return  this indent unit
+    */
+   public String getIndentUnit() {
       return indentUnit;
    }
-
-   void setText(String text) {
-      this.text = text;
+   
+   /** 
+    * Indents a new line by the indentation of the previous line and increases
+    * the indentation by one indent unit when an opening brace was typed before
+    * pressing enter
+    *
+    * @param text  the text in the document
+    * @param pos  the position where the text change happened
+    */
+   public void indent(String text, int pos) {
+      if ('\n' != text.charAt(pos)) {
+         return;
+      }
+      String currIndent = currentIndent(text, pos);
+      if (pos > 1) {
+         if ('{' == text.charAt(pos - 1)) {
+            currIndent += indentUnit;
+         }
+      }
+      editArea.insertStr(pos + 1, currIndent);
+      currentIndent = currIndent;
    }
 
-   void closeBracketIndent(int pos) {
-      if (pos > 2) {
-         String atPos = text.substring(pos, pos + 1);
-         if ("}".equals(atPos)) {
+   /**
+    * Reduces the indentation by one indent unit if a closing brace is typed
+    *
+    * @param text  the text in the document
+    * @param pos  the position where text change happened
+    */
+   public void closedBracketIndent(String text, int pos) {
+      if (pos >= indentLength) {
+         if ('}' == text.charAt(pos)) {
             if (text.substring(pos - indentLength, pos).equals(indentUnit)) {
                editArea.removeStr(pos - indentLength, indentLength);
             }
@@ -53,62 +87,16 @@ class AutoIndent {
       }
    }
 
-   //
-   //--private--//
-   //
-
-   private void setCurrentIndent(int pos) {
-      String currIndent = currentIndent(pos);
-      if (pos > 1) {
-         String atPrevPos = text.substring(pos - 2, pos - 1);
-         if (atPrevPos.equals("{")) {
-            currIndent += indentUnit;
-         }
-      }
-      this.indent = currIndent;
-   }
-
-   private String currentIndent(int pos) {
+   private String currentIndent(String text, int pos) {
       String currIndent = "";
-      //
-      // -2 to skip the new return after pressing enter
       int lineStart = -1;
       if (pos > 1) {
-         lineStart = text.lastIndexOf("\n", pos - 2);
-      }
-      if (pos > 1) {
-         char[] line = text.substring(lineStart + 1, pos).toCharArray();
+         lineStart = text.lastIndexOf("\n", pos - 1) + 1;
+         char[] line = text.substring(lineStart, pos).toCharArray();
          for (int i = 0; i < line.length && line[i] == ' '; i++) {
             currIndent += " ";
          }
       }
       return currIndent;
    }
-
-   KeyListener listener = new KeyAdapter() {
-      //
-      // Detecting enter pressed makes sure that pressing
-      // enter in another window does inactivate the
-      // insertString method in keyReleased
-      boolean isEnter = false;
-
-      @Override
-      public void keyPressed(KeyEvent e) {
-         int key = e.getKeyCode();
-         if (key == KeyEvent.VK_ENTER) {
-            isEnter = true;
-         }
-      }
-
-      @Override
-      public void keyReleased(KeyEvent e) {
-         int pos = editArea.textArea().getCaretPosition();
-         int key = e.getKeyCode();
-         if (isActive && isEnter && key == KeyEvent.VK_ENTER) {
-            setCurrentIndent(pos);
-            editArea.insertStr(pos, indent);
-         }
-         isEnter = false;
-      }
-   };
 }

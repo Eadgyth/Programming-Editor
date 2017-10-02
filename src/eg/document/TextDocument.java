@@ -18,8 +18,8 @@ import eg.ui.EditArea;
 
 /**
  * Represents a text document with a language or a file that
- * defines the language.<br>
- * 
+ * defines the language.
+ * Uses {@link TypingEdit} for editing during typing 
  */
 public final class TextDocument {
 
@@ -154,10 +154,6 @@ public final class TextDocument {
     * white spaces
     */
    public void setIndentUnit(String indentUnit) {
-      if (indentUnit == null || !indentUnit.matches("[\\s]+")) {
-         throw new IllegalArgumentException(
-               "Argument indentUnit is incorrect");
-      }
       type.setIndentUnit(indentUnit);
    }
 
@@ -210,7 +206,7 @@ public final class TextDocument {
    }
    
    /**
-    * Returns the text in the document
+    * Gets the text in the document
     *
     * @return  the text in the document
     */
@@ -260,11 +256,11 @@ public final class TextDocument {
    }
 
    /**
-    * Enables/disables editing during typing. Affects syntax coloring and
-    * auto-indentation.
+    * Enables/disables syntax coloring and auto-indentation if this
+    * language is not plain text
     *
     * @param isEnabled  true/false to enable/disable editing during
-    * typing. Has no effect if this language is plain text
+    * typing
     */
    public void enableTypeEdit(boolean isEnabled) {
       if (!isCodingLanguage()) {
@@ -273,7 +269,8 @@ public final class TextDocument {
    }
 
    /**
-    * Colors a section of text
+    * Colors a section of the document if this language is not plain
+    * text
     *
     * @param section  a section of the document which also may be the
     * entire text. If null the entire text is assumed. The complete lines
@@ -283,21 +280,21 @@ public final class TextDocument {
     */
    public void colorSection(String section, int pos) {
       if (Languages.PLAIN_TEXT != lang) {
-         type.colorMultipleLines(section, pos);
+         type.colorSection(section, pos);
       }
    }
    
    /**
-    * Returns if edits can be redone
+    * Returns if edits can be undone
     * 
-    * @return  if edits can be redone
+    * @return  if edits can be undone
     */
    public boolean canUndo() {
       return type.canUndo();
    }
    
    /**
-    * Returns if edits can be undone
+    * Returns if edits can be redone
     * 
     * @return  if edits can be redone
     */

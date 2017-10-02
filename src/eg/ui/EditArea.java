@@ -220,7 +220,7 @@ public final class EditArea {
    }
 
    /**
-    * Removes all line numbers
+    * Removes line numbers
     */
    public void removeAllLineNumbers() {
       try {

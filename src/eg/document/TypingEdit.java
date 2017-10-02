@@ -25,12 +25,11 @@ import eg.utils.FileUtils;
 /**
  * Mediates the editing in the {@code EditArea} that shall happen during
  * typing.
- * <p>
- * Uses methods from classes that show line numbering, do syntax
- * coloring, auto-indentation and undo/redo editing (the latter in this inner
- * class).
+ * <p> Uses methods from classes that show line numbering, do syntax
+ * coloring, auto-indentation and undo/redo editing.
+ * <p> Is created in {@link TextDocument}
  */
-class TypingEdit {
+public class TypingEdit {
 
    private final EditArea editArea;
    private final Coloring col;
@@ -54,7 +53,10 @@ class TypingEdit {
    private boolean canUndoTmp = false;
    private boolean canRedoTmp = false;
 
-   TypingEdit(EditArea editArea) {
+   /**
+    * @param editArea  the reference to {@link EditArea}
+    */
+   public TypingEdit(EditArea editArea) {
       this.editArea = editArea;
       col = new Coloring(editArea.getDoc(), editArea.getAttrSet());
       langSet = new LanguageSetter(col);
@@ -74,23 +76,44 @@ class TypingEdit {
       });
    }
 
-   void setUndoableChangeListener(UndoableChangeListener ul) {
-      if (ul != null) {
-         this.ul = ul;
+   /**
+    * Sets an <code>UndoableChangeListener</code> if none was set before
+    *
+    * @param ul  an {@link UndoableChangeListener}
+    */
+   public void setUndoableChangeListener(UndoableChangeListener ul) {
+      if (ul == null) {
+         throw new IllegalStateException(
+               "An UndoableChangeListener is already set");
       }
+      this.ul = ul;
    }
 
-   void setTextSelectionListener(TextSelectionListener sl) {
-      if (sl != null) {
-         this.sl = sl;
+  /**
+    * Sets a <code>TextSelectionLister</code> if none was set before
+    *
+    * @param sl  a {@link TextSelectionListener}
+    */
+   public void setTextSelectionListener(TextSelectionListener sl) {
+      if (sl == null) {
+         throw new IllegalStateException(
+               "A TextSelectionListener is already set");
       }
+      this.sl = sl;
    }
 
-   void enableDocListen(boolean isEnabled) {
+   /**
+    * Enabled/disables the update methods in this
+    * <code>DocumentListener</code>
+    *
+    * @param isEnabled  true/false to enable/disabled the update
+    * methods in this <code>DocumentListener</code>
+    */
+   public void enableDocListen(boolean isEnabled) {
       isDocListen = isEnabled;
       if (isEnabled) {
          text = editArea.getDocText();
-         lineNum.addAllLineNumbers(text);
+         lineNum.updateLineNumber(text);
          editArea.textArea().setCaretPosition(0);
       }
       else {
@@ -99,55 +122,107 @@ class TypingEdit {
       }
    }
 
-   String getText() {
+   /**
+    * Gets the text that is set in the update methods in this
+    * <code>DocumentListener</code>
+    *
+    * @return  the text in the document
+    */
+   public String getText() {
       return text;
    }
 
-   void enableTypeEdit(boolean isEnabled) {
+   /**
+    * Enables/disables syntax coloring and auto-indentation
+    *
+    * @param isEnabled  true/false to enable/disable editing during
+    * typing
+    */
+   public void enableTypeEdit(boolean isEnabled) {
       isTypeEdit = isEnabled;
    }
 
-   void setUpEditing(Languages lang) {
+   /**
+    * Sets the editing during typing depending on the language
+    *
+    * @param lang  the language which is one of the constants in
+    * {@link Languages}
+    */
+   public void setUpEditing(Languages lang) {
       if (lang == Languages.PLAIN_TEXT) {
          col.setAllCharAttrBlack();
          enableTypeEdit(false);
-         autoInd.enableIndent(false);
       }
       else {
          langSet.setColorable(lang);
-         colorMultipleLines(null, 0);
+         colorSection(null, 0);
          enableTypeEdit(true);
-         autoInd.enableIndent(true);
       }
    }
 
-   void setIndentUnit(String indentUnit) {
+   /**
+    * Sets the indentation unit which consists in any number of spaces
+    *
+    * @param indentUnit  the String that consists of a certain number of
+    * white spaces
+    */
+   public void setIndentUnit(String indentUnit) {
       autoInd.setIndentUnit(indentUnit);
    }
 
-   String getIndentUnit() {
+   /**
+    * Returns the current indentation unit
+    *
+    * @return the current indentation unit
+    */
+   public String getIndentUnit() {
       return autoInd.getIndentUnit();
    }
 
-   void colorMultipleLines(String section, int pos) {
+   /**
+    * Colors a section of the document
+    *
+    * @param section  a section of the document which also may be the
+    * entire text. If null the entire text is assumed. The complete lines
+    * are colored even if it does not start a line start or end at line end
+    * @param pos  the pos within the entire text where the section to
+    * be colored starts
+    */
+   public void colorSection(String section, int pos) {
       col.colorMultipleLines(text, section, pos);
    }
 
-   boolean canUndo() {
+   /**
+    * Returns if edits can be undone
+    * 
+    * @return  if edits can be undone
+    */
+   public boolean canUndo() {
       return undo.canUndo();
    }
 
-   boolean canRedo() {
+   /**
+    * Returns if edits can be redone
+    * 
+    * @return  if edits can be redone
+    */
+   public boolean canRedo() {
       return undo.canRedo();
    }
 
-   void undo() {
+   /**
+    * Performs an undo action
+    */
+   public void undo() {
       isAddToUndo = false;
       undo.undo();
       updateAfterUndoRedo();
    }
 
-   void redo() {
+   /**
+    * Performs a redo action
+    */
+   public void redo() {
       isAddToUndo = false;
       undo.redo();
       updateAfterUndoRedo();
@@ -161,17 +236,14 @@ class TypingEdit {
       notifyUndoableChangeEvent();
       if (isTypeEdit) {
          if (event.equals(DocumentEvent.EventType.INSERT)) {
-            colorMultipleLines(change, pos);
+            colorSection(change, pos);
          }
          else if (event.equals(DocumentEvent.EventType.REMOVE)) {
-            colorLine();
+            EventQueue.invokeLater(() ->
+                     col.colorLine(text, pos));
          }
       }
       isAddToUndo = true;
-   }
-
-   private void colorLine() {
-      EventQueue.invokeLater(() -> col.colorLine(text, pos));
    }
 
    private void notifyUndoableChangeEvent() {
@@ -235,11 +307,11 @@ class TypingEdit {
          if (isAddToUndo) {
             undo.addEdit(change, pos, true);
             notifyUndoableChangeEvent();
-            if (isTypeEdit) {
-               autoInd.setText(text);
-               colorLine();
+            if (isTypeEdit) { 
                EventQueue.invokeLater(() -> {
-                  autoInd.closeBracketIndent(pos);
+                  col.colorLine(text, pos);
+                  autoInd.indent(text, pos);
+                  autoInd.closedBracketIndent(text, pos);
                });
             }
          }
@@ -258,14 +330,15 @@ class TypingEdit {
             undo.addEdit(change, pos, false);
             notifyUndoableChangeEvent();
             if (isTypeEdit) {
-               colorLine();
+               EventQueue.invokeLater(() ->
+                     col.colorLine(text, pos));
             }
          }
       }
 
       @Override
       public void changedUpdate(DocumentEvent de) {
-         //nothing
+         // nothing to do
       }
 
       private void textUpdate() {

@@ -8,7 +8,18 @@ import java.util.List;
 //--Eadgyth--//
 import eg.ui.EditArea;
 
-class UndoEdit {
+/**
+ * An undo/redo editing for the document in <code>EditArea</code>.<br>
+ *
+ * <p>Undoing/redoing stops and breakpoints. These are included when the
+ * text change is newline, when the direction, i.e. insertion and removal,
+ * changes and when the change is longer than one character. Additional
+ * causes for breakpoints are added through {link #markBreak()} (used
+ * to mark breaks when the cursor was moved with the mouse or cursor keys).
+ * Already undone (and not redone) edits are removed when a new edit is added.
+ * <p> Is created in {@link TypingEdit}
+ */
+public class UndoEdit {
    
    private final EditArea editArea;
 
@@ -21,10 +32,21 @@ class UndoEdit {
    private int iBr = -1;
    private boolean isBreak = false;
 
-   UndoEdit(EditArea editArea) {
+   /**
+    * @param editArea  the reference to {@link EditArea}
+    */
+   public UndoEdit(EditArea editArea) {
       this.editArea = editArea;
    }
 
+   /**
+    * Adds an edit
+    *
+    * @param change  the text change
+    * @param pos  the position where the change happened
+    * @param isInsert  true if the change is an insertion, false if it
+    * was a removal
+    */
    void addEdit(String change, int pos, boolean isInsert) {
       trim();
       edits.add(change);
@@ -51,15 +73,29 @@ class UndoEdit {
       iBr = breakpoints.size() - 1;
    }
 
-   boolean canUndo() {
+   /**
+    * Returns if edits can be undone
+    *
+    * @return if edits can be undone
+    */
+   public boolean canUndo() {
       return edits.size() > 0 && iEd > -1;
    }
 
-   boolean canRedo() {
+   /**
+    * Returns if edits can be redone
+    *
+    * @return if edits can be redone
+    */
+   public boolean canRedo() {
       return edits.size() > 0 && iEd < edits.size() - 1;
    }
 
-  void undo() {
+   /**
+    * Undoes edits up to the next breakpoint that is located before the
+    * undoable edits
+    */
+   public void undo() {
       int nextPos = 0;
       while (iEd > -1) {
          if (isInsert(iEd)) {
@@ -84,7 +120,11 @@ class UndoEdit {
       editArea.textArea().setCaretPosition(nextPos);
    }
 
-   void redo() {
+   /**
+    * Redoes edits up to the next breakpoint that is located behind the
+    * redoable edits
+    */
+   public void redo() {
       int nextPos = 0;
       while (iEd < edits.size() - 1) {
          int iNext = iEd + 1;
@@ -111,12 +151,19 @@ class UndoEdit {
       editArea.textArea().setCaretPosition(nextPos);
    }
 
-   void markBreak() {
+   /**
+    * Marks that the edit before the next edit that will be added is
+    * a breakpoint
+    */
+   public void markBreak() {
       if (edits.size() > 0) {
          isBreak = true;
       }
    }
 
+   /**
+    * Discards all edits
+    */
    void discardEdits() {
       edits.clear();
       positions.clear();
