@@ -14,7 +14,7 @@ import eg.ui.MainWin;
 import eg.projects.ProjectActions;
 import eg.projects.SelectedProject;
 
-import eg.document.TextDocument;
+import eg.document.FileDocument;
 
 import eg.utils.JOptions;
 import eg.utils.FileUtils;
@@ -24,11 +24,11 @@ import eg.utils.FileUtils;
  * <p>
  * A project is represented by an object of type {@link ProjectActions}
  * and is configured and assigned to this current project when the
- * {@link TextDocument} that is selected at the time is part of that
+ * {@link FileDocument} that is selected at the time is part of that
  * project.<br>
  * Several projects can be configured and would be maintained. Any of
  * these can be (re-)assigned to this current project if the selected
- * <code>TextDocument</code> is part of it.
+ * <code>FileDocument</code> is part of it.
  */
 public class CurrentProject {
 
@@ -51,19 +51,17 @@ public class CurrentProject {
    private final String[] projectOptions;
 
    private ProjectActions current;
-   private TextDocument currDoc;
-   private TextDocument[] txtDoc;
+   private FileDocument currDoc;
+   private FileDocument[] fDoc;
    private String docSuffix;
 
    /**
-    * Creates a CurrentProject
-    *
     * @param mw  the reference to {@link MainWin}
-    * @param txtDoc  the array of {@link TextDocument}
+    * @param fDoc  the array of {@link FileDocument}
     */
-   public CurrentProject(MainWin mw, TextDocument[] txtDoc) {
+   public CurrentProject(MainWin mw, FileDocument[] fDoc) {
       this.mw = mw;
-      this.txtDoc = txtDoc;
+      this.fDoc = fDoc;
       proc = new ProcessStarter(mw.console());
       selProj = new SelectedProject(mw, proc, mw.console());
       projectOptions = new String[selProj.projectSuffixes.length + 1];
@@ -74,12 +72,12 @@ public class CurrentProject {
    }
 
    /**
-    * Selects an element from this array of {@code TextDocument}
+    * Selects an element from this array of <code>FileDocument</code>
     *
     * @param i  the index of the array element
     */
-   public void setTextDocumentAt(int i) {
-      currDoc = txtDoc[i];
+   public void setFileDocumentAt(int i) {
+      currDoc = fDoc[i];
       docSuffix = FileUtils.fileSuffix(currDoc.filename());
       ProjectActions inList = selectFromList(currDoc.dir(), true);
       mw.enableChangeProject(inList != null);
@@ -96,7 +94,7 @@ public class CurrentProject {
    /**
     * Assigns to this current project a project which a configuration
     * exists for in an 'eadconfig' file saved in the project's directory
-    * or, if not existent, in the program's prefs file
+    * or, if not existent, in the program's prefs file.
     * @see eg.projects.ProjectConfig#retrieveProject(String)
     */
    public void retrieveProject() {
@@ -137,9 +135,9 @@ public class CurrentProject {
    }
 
    /**
-    * Opens the window of the {@code SettingsWin} object that belongs to
-    * a project.
-    * <p>Depending on the currently set {@link TextDocument} the opened
+    * Opens the window of the <code>SettingsWin</code> object that belongs
+    * to a project.
+    * <p>Depending on the currently set <code>FileDocument</code> the opened
     * window belongs to the current project, to one of this listed projects
     * or to a newly created project.
     */
@@ -165,9 +163,9 @@ public class CurrentProject {
 
    /**
     * Creates a new project.
-    * <p>If the the currently set {@link TextDocument} belongs to a project
-    * in the List of configured projects a dialog to confirm to proceed is
-    * shown.
+    * <br>If the the currently set <code>FileDocument</code> belongs to a
+    * project in the List of configured projects a dialog to confirm to
+    * proceed is shown.
     */
    public void createProject() {
       ProjectActions fromList = selectFromList(currDoc.dir(), false);
@@ -180,8 +178,8 @@ public class CurrentProject {
   }
 
    /**
-    * Sets active the project from this <code>List</code> of configured
-    * projects which the currently selected {@code TextDocument} belongs to.
+    * Sets active the project from this List of configured projects
+    * which the currently selected <code>FileDocument</code> belongs to.
     */
    public void changeProject() {
       ProjectActions fromList = selectFromList(currDoc.dir(), true);
@@ -189,8 +187,8 @@ public class CurrentProject {
    }
 
    /**
-    * Updates the file tree if the selected {@link TextDocument} belongs to
-    * this current project
+    * Updates the file tree if the selected <code>FileDocument</code>
+    * belongs to this current project
     */
    public void updateFileTree() {
       if (current != null && current.isInProject(currDoc.dir())) {
@@ -199,9 +197,8 @@ public class CurrentProject {
    }
 
    /**
-    * Saves the source file of the selected {@code TextDocument} if it
-    * belongs this current project and compiles the project. Updates the
-    * file tree
+    * Saves the source file of the selected <code>TextDocument</code>
+    * if it belongs to this current project and compiles the project
     */
    public void saveAndCompile() {
       try {
@@ -225,20 +222,20 @@ public class CurrentProject {
 
    /**
     * Saves all open source files of this current project and compiles the
-    * project. Updates the file tree
+    * project
     */
    public void saveAllAndCompile() {
       try {
          mw.setBusyCursor(true);
          StringBuilder missingFiles = new StringBuilder();
-         for (int i = 0; i < txtDoc.length; i++) {
-            if (isFileToCompile(txtDoc[i])) {
-               if (txtDoc[i].docFile().exists()) {
-                  txtDoc[i].saveFile();
+         for (int i = 0; i < fDoc.length; i++) {
+            if (isFileToCompile(fDoc[i])) {
+               if (fDoc[i].docFile().exists()) {
+                  fDoc[i].saveFile();
                }
                else {
                   missingFiles.append("\n");
-                  missingFiles.append(txtDoc[i].filename());
+                  missingFiles.append(fDoc[i].filename());
                }
             }
          }
@@ -263,7 +260,7 @@ public class CurrentProject {
    }
 
    /**
-    * Creates a build of this current project and updates the file tree
+    * Creates a build of this current project
     */
    public void buildProj() {
       try {
@@ -334,15 +331,15 @@ public class CurrentProject {
       }
    }
 
-   private boolean isFileToCompile(TextDocument td) {
-       return td != null
-             && td.filename().endsWith(current.getSourceSuffix())
-             && current.isInProject(td.dir());
+   private boolean isFileToCompile(FileDocument fd) {
+       return fd != null
+             && fd.filename().endsWith(current.getSourceSuffix())
+             && current.isInProject(fd.dir());
    }
 
    private void confirmedNewProject(ProjectActions toConfirm) {
       int res = JOptions.confirmYesNo(currDoc.filename()
-              + "\nThe file belongs the project "
+              + "\nThe file belongs to the project "
               + "'" + toConfirm.getProjectName() + "'."
               + "\nStill set new project?");
       if (res == 0) {

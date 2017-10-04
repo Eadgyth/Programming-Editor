@@ -19,19 +19,15 @@ import java.util.List;
 import eg.Languages;
 import eg.syntax.Coloring;
 import eg.syntax.LanguageSetter;
-import eg.ui.EditArea;
 import eg.utils.FileUtils;
 
 /**
- * Mediates the editing in the {@code EditArea} that shall happen during
- * typing.
- * <p> Uses methods from classes that show line numbering, do syntax
- * coloring, auto-indentation and undo/redo editing.
- * <p> Is created in {@link TextDocument}
+ * Mediates the editing that shall happen during typing.
+ * <p> Created in {@link FileDocument}
  */
 public class TypingEdit {
 
-   private final EditArea editArea;
+   private final TextDocument textDoc;
    private final Coloring col;
    private final LanguageSetter langSet;
    private final AutoIndent autoInd;
@@ -54,26 +50,18 @@ public class TypingEdit {
    private boolean canRedoTmp = false;
 
    /**
-    * @param editArea  the reference to {@link EditArea}
+    * @param textDoc  the reference to {@link TextDocument}
+    * @param lineDoc  the reference to {@link LineNumberDocument}
     */
-   public TypingEdit(EditArea editArea) {
-      this.editArea = editArea;
-      col = new Coloring(editArea.getDoc(), editArea.getAttrSet());
+   public TypingEdit(TextDocument textDoc, LineNumberDocument lineDoc) {
+      this.textDoc = textDoc;
+      col = new Coloring(textDoc.doc(), textDoc.attrSet());
       langSet = new LanguageSetter(col);
-      lineNum = new LineNumbers(editArea);
-      autoInd = new AutoIndent(editArea);
-      undo = new UndoEdit(editArea);
-
-      editArea.getDoc().addDocumentListener(docListen);
-
-      editArea.textArea().addCaretListener(new CaretListener() {
-         @Override
-         public void caretUpdate(CaretEvent ce) {
-            int caret = ce.getDot();
-            notifyTextSelectionEvent(caret != ce.getMark());
-            stopUndo(caret);
-         }
-      });
+      lineNum = new LineNumbers(lineDoc);
+      autoInd = new AutoIndent(textDoc);
+      undo = new UndoEdit(textDoc);
+      textDoc.doc().addDocumentListener(docListen);
+      textDoc.docTextArea().addCaretListener(caretListen);
    }
 
    /**
@@ -112,9 +100,9 @@ public class TypingEdit {
    public void enableDocListen(boolean isEnabled) {
       isDocListen = isEnabled;
       if (isEnabled) {
-         text = editArea.getDocText();
+         text = textDoc.getText();
          lineNum.updateLineNumber(text);
-         editArea.textArea().setCaretPosition(0);
+         textDoc.docTextArea().setCaretPosition(0);
       }
       else {
          undo.discardEdits();
@@ -171,7 +159,7 @@ public class TypingEdit {
    }
 
    /**
-    * Returns the current indentation unit
+    * Gets the current indentation unit
     *
     * @return the current indentation unit
     */
@@ -184,7 +172,7 @@ public class TypingEdit {
     *
     * @param section  a section of the document which also may be the
     * entire text. If null the entire text is assumed. The complete lines
-    * are colored even if it does not start a line start or end at line end
+    * are colored if it does not start a line start or end at line end
     * @param pos  the pos within the entire text where the section to
     * be colored starts
     */
@@ -330,8 +318,7 @@ public class TypingEdit {
             undo.addEdit(change, pos, false);
             notifyUndoableChangeEvent();
             if (isTypeEdit) {
-               EventQueue.invokeLater(() ->
-                     col.colorLine(text, pos));
+               EventQueue.invokeLater(() -> col.colorLine(text, pos));
             }
          }
       }
@@ -342,8 +329,16 @@ public class TypingEdit {
       }
 
       private void textUpdate() {
-         text = editArea.getDocText();
+         text = textDoc.getText();
          lineNum.updateLineNumber(text);
+      }
+   };
+   
+   private CaretListener caretListen = new CaretListener() {
+      @Override
+      public void caretUpdate(CaretEvent ce) {
+         notifyTextSelectionEvent(ce.getDot() != ce.getMark());
+         stopUndo(ce.getDot());
       }
    };
 }

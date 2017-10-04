@@ -4,22 +4,21 @@ package eg.document;
 import eg.ui.EditArea;
 
 /**
- * The line numbering<br>
+ * The line numbering.<br>
  * Created in {@link TypingEdit}
  */
 public class LineNumbers {
 
-   private final EditArea editArea;
-
+   private final LineNumberDocument lineDoc;
    private int nOld;
-   private int nNew;
 
    /**
-    * @param editArea  the reference to {@link EditArea}
+    * @param lineDoc  the reference to {@link LineNumberDocument}
     */
-   public LineNumbers(EditArea editArea) {
-      this.editArea = editArea;
-      editArea.appendLineNumber(1);
+   public LineNumbers(LineNumberDocument lineDoc) {
+      this.lineDoc = lineDoc;
+      nOld = 1;
+      lineDoc.appendLineNumbers(0, 1);
    }
 
    /**
@@ -28,34 +27,18 @@ public class LineNumbers {
     * @param text  the text of the document
     */
    public void updateLineNumber(String text) {
-      nNew = countLines(text);
+      int nNew = countLines(text);
       if (nNew > nOld) {
-         addLineNumbers(nOld + 1);
+         lineDoc.appendLineNumbers(nOld, nNew);
       }
       else if (nNew < nOld) {
-         replaceLineNr();
+         lineDoc.removeLineNumbers(nOld, nNew);
       }
       nOld = nNew;
    }
-
-   //
-   //----private methods----//
-   //
-
-   private void replaceLineNr() {
-      editArea.removeAllLineNumbers();
-      addLineNumbers(0);
-   }
-
-   private void addLineNumbers(int start) {
-      for (int i = start; i <= nNew; i++) {
-         editArea.appendLineNumber(i + 1);
-      }
-      editArea.revalidateLineAreaWidth();
-   }
    
    private int countLines(String text) {
-      int count = 0;
+      int count = 1;
       int i = 0;
       while (i != -1) {
          i = text.indexOf("\n", i);

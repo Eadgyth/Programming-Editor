@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import eg.utils.LinesFinder;
 
 /**
- * The search and coloring of different syntax elements
+ * The search and coloring of different syntax elements.<br>
+ * Created in {@link eg.document.TypingEdit}.
  */
 public class Coloring {
 
@@ -47,8 +48,6 @@ public class Coloring {
    private boolean isTypeMode = false;
 
    /**
-    * Creates a Lexer
-    *
     * @param doc  the <code>StyledDocument</code> that contains
     * the text to color
     * @param set  the <code>SimpleAttributeSet</code> that has the
@@ -70,9 +69,10 @@ public class Coloring {
    }
 
    /**
-    * Colors a subset of lines or the entire text (in any case the entire
-    * text is scanned for block comments). To scan the entire text
-    * <code>section</code> is equal to <code>allText</code> or null.
+    * Colors a subset of lines or the entire text.<br>
+    * To scan the entire text <code>section</code> is equal to
+    * <code>allText</code> or null. In any case the entire text is scanned
+    * for block comments.
     *
     * @param allText  the entire text of the document
     * @param section  a section of <code>allText</code>. If null
@@ -94,8 +94,8 @@ public class Coloring {
    }
 
    /**
-    * Colors the current line where a change happened (the entire text is
-    * scanned for block comments though).
+    * Colors the current line where a change happened.<br>
+    * The entire text is scanned for block comments.
     *
     * @param allText  the entire text of the document
     * @param pos  the pos within document where a change happened
@@ -108,7 +108,8 @@ public class Coloring {
    }
 
    /**
-    * (Re-)colors in black this section of text that is to be colored
+    * (Re-)colors in black this section or line of text that is to
+    * be colored
     */
    public void setCharAttrBlack() {
       setCharAttr(posStart, toColor.length(), normalSet);
@@ -146,10 +147,10 @@ public class Coloring {
    }
 
    /**
-    * Searches and colors variables that start with a sign in blue
-    * (like $ in Perl)
+    * Searches and colors variables that start with a sign (like $ in
+    * Perl) in blue
     *
-    * @param signs  the array of characters that marks a variable
+    * @param signs  the array of characters that mark a variable start
     * @param endChars  the array of characters that mark the end of the
     * variable
     */

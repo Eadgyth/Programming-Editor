@@ -4,25 +4,23 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyAdapter;
 
-import eg.ui.EditArea;
-
 /**
  * The auto-indentation which works with spaces.<br>
  * Created in {@link TypingEdit}
  */
 public class AutoIndent {
 
-   private final EditArea editArea;
+   private final TextDocument textDoc;
 
    private String indentUnit;
    private int indentLength;
    private String currentIndent;
 
    /**
-    * @param editArea  the reference to {@link EditArea}
+    * @param textDoc  the reference to {@link TextDocument}
     */
-   public AutoIndent(EditArea editArea) {
-      this.editArea = editArea;
+   public AutoIndent(TextDocument textDoc) {
+      this.textDoc = textDoc;
    }
 
    /**
@@ -67,7 +65,7 @@ public class AutoIndent {
             currIndent += indentUnit;
          }
       }
-      editArea.insertStr(pos + 1, currIndent);
+      textDoc.insertStr(pos + 1, currIndent);
       currentIndent = currIndent;
    }
 
@@ -81,7 +79,7 @@ public class AutoIndent {
       if (pos >= indentLength) {
          if ('}' == text.charAt(pos)) {
             if (text.substring(pos - indentLength, pos).equals(indentUnit)) {
-               editArea.removeStr(pos - indentLength, indentLength);
+               textDoc.removeStr(pos - indentLength, indentLength);
             }
          }
       }

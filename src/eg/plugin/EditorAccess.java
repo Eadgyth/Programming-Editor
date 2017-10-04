@@ -4,7 +4,7 @@ import javax.swing.JTextPane;
 
 //--Eadgyth--//
 import eg.ui.FunctionPanel;
-import eg.document.TextDocument;
+import eg.document.FileDocument;
 
 /**
  * Makes accessible for a plugin methods to work with the text that is
@@ -17,24 +17,24 @@ import eg.document.TextDocument;
 public class EditorAccess {
    
    FunctionPanel functPnl;
-   TextDocument txtDoc;
+   FileDocument fDoc;
 
    EditorAccess(FunctionPanel functPnl) {
       this.functPnl = functPnl;
    }
    
-   void setTextDocument(TextDocument txtDoc) {
-      this.txtDoc = txtDoc;
+   void setFileDocument(FileDocument fDoc) {
+      this.fDoc = fDoc;
    }
    
    /**
-    * Returns the currently opened or selected text area
-    * which is of type <code>JTextPane</code>
+    * Returns the text area that shows the currently opened or selected
+    * document
     *
-    * @return  the currently opened or selected text area
+    * @return  the text area
     */
    public JTextPane textArea() {
-      return txtDoc.textArea();
+      return fDoc.docTextArea();
    }
    
    /**
@@ -45,7 +45,7 @@ public class EditorAccess {
     * {@code JTextPane}
     */
    public String getText() {
-      return txtDoc.getText();
+      return fDoc.getText();
    }
    
    /**
@@ -55,7 +55,7 @@ public class EditorAccess {
     * @param toInsert  the String that contains the text to insert
     */
    public void insertStr(int pos, String toInsert) {
-      txtDoc.insertStr(pos, toInsert);
+      fDoc.insertStr(pos, toInsert);
    }
 
    /**
@@ -65,14 +65,14 @@ public class EditorAccess {
     * @param length  the length of the text to be removed
     */  
    public void removeStr(int start, int length) {
-      txtDoc.removeStr(start, length);
+      fDoc.removeStr(start, length);
    }
    
    /**
     * Asks the currently viewed text area to gain the focus
     */
    public void requestFocus() {
-      txtDoc.requestFocus();
+      fDoc.requestFocus();
    }
    
    /**

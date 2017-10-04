@@ -6,7 +6,7 @@ import java.util.List;
 
 //--Eadgyth--//
 import eg.ui.FunctionPanel;
-import eg.document.TextDocument;
+import eg.document.FileDocument;
 
 /**
  * Class can start a plugin of type {@code Pluggable}
@@ -24,11 +24,11 @@ public class PluginStarter {
    
    /**
     * Sets in this EditorAcces the reference to an object of
-    * {@code TextDocument}
-    * @param txtDoc  the {@link TextDocument} in the selected tab
+    * {@code FileDocument}
+    * @param fDoc  the {@link FileDocument} in the selected tab
     */
-   public void setTextDocument(TextDocument txtDoc) {
-      acc.setTextDocument(txtDoc);
+   public void setFileDocument(FileDocument fDoc) {
+      acc.setFileDocument(fDoc);
    }
  
    /**

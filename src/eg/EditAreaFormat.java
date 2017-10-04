@@ -140,7 +140,6 @@ public class EditAreaFormat {
       for (EditArea ea : editArea) {
          if (ea != null) {
              ea.setFont(font, fontSize);
-             ea.revalidateLineAreaWidth();
          }
       }
       prefs.storePrefs("fontSize", String.valueOf(fontSize));

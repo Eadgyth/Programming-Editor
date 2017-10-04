@@ -21,7 +21,7 @@ import java.io.File;
 //--Eadgyth--//
 import eg.utils.JOptions;
 
-import eg.document.TextDocument;
+import eg.document.FileDocument;
 import eg.ui.MainWin;
 import eg.ui.EditArea;
 import eg.ui.tabpane.ExtTabbedPane;
@@ -32,7 +32,7 @@ import eg.ui.tabpane.ExtTabbedPane;
  */
 public class TabbedFiles implements Observer {
 
-   private final TextDocument[] txtDoc = new TextDocument[10];
+   private final FileDocument[] fDoc = new FileDocument[10];
    private final EditArea[] editArea = new EditArea[10];
    private final Preferences prefs = new Preferences();
    private final FileChooser fc;
@@ -52,7 +52,7 @@ public class TabbedFiles implements Observer {
       this.format = format;
       this.mw = mw;
       tabPane = mw.tabPane();
-      docUpdate = new DocumentUpdate(mw, txtDoc);
+      docUpdate = new DocumentUpdate(mw, fDoc);
       format.setEditAreaArr(editArea);
       prefs.readPrefs();
       lang = Languages.valueOf(prefs.getProperty("language"));
@@ -82,7 +82,7 @@ public class TabbedFiles implements Observer {
     */
    public void changeLanguage(Languages lang) {
       this.lang = lang;
-      txtDoc[iTab].changeLanguage(lang);
+      fDoc[iTab].changeLanguage(lang);
    }
 
    /**
@@ -132,12 +132,12 @@ public class TabbedFiles implements Observer {
     * @return  if the text content was saved
     */
    public boolean save(boolean update) {
-      if (!txtDoc[iTab].hasFile()
-            || !txtDoc[iTab].docFile().exists()) {
+      if (!fDoc[iTab].hasFile()
+            || !fDoc[iTab].docFile().exists()) {
          return saveAs(update);
       }
       else {
-         return txtDoc[iTab].saveFile();
+         return fDoc[iTab].saveFile();
       }
    }
 
@@ -148,12 +148,12 @@ public class TabbedFiles implements Observer {
    public void saveAll() {
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < nTabs(); i++) {
-         if (txtDoc[i].hasFile()) {
-            if (txtDoc[i].docFile().exists()) {
-               txtDoc[i].saveFile();
+         if (fDoc[i].hasFile()) {
+            if (fDoc[i].docFile().exists()) {
+               fDoc[i].saveFile();
             }
             else {
-               sb.append(txtDoc[i].filename());
+               sb.append(fDoc[i].filename());
                sb.append("\n");
             }
          }
@@ -174,18 +174,18 @@ public class TabbedFiles implements Observer {
     * @return  if the text content was saved
     */
    public boolean saveAs(boolean update) {
-      File f = fc.fileToSave(txtDoc[iTab].filepath());
+      File f = fc.fileToSave(fDoc[iTab].filepath());
       boolean isSave = f != null;
       if (isSave && f.exists()) {
          if (0 == replaceOption(f)) {
             isSave = true;
          }
       }     
-      isSave = isSave && txtDoc[iTab].setFile(f);
+      isSave = isSave && fDoc[iTab].setFile(f);
       if (isSave && update) {
-         docUpdate.changedFileUpdate(iTab, nTabs(), true);
-         tabPane.changeTitle(iTab, txtDoc[iTab].filename());
-         prefs.storePrefs("recentPath", txtDoc[iTab].dir());
+         docUpdate.changedFileUpdate(iTab, true);
+         tabPane.changeTitle(iTab, fDoc[iTab].filename());
+         prefs.storePrefs("recentPath", fDoc[iTab].dir());
       }   
       return isSave;
    }
@@ -196,7 +196,7 @@ public class TabbedFiles implements Observer {
     * <p> Method does not change the file of the document.
     */
    public void saveCopy() {
-      File f = fc.fileToSave(txtDoc[iTab].filepath());
+      File f = fc.fileToSave(fDoc[iTab].filepath());
       if (f == null) {
          return;
       }
@@ -205,7 +205,7 @@ public class TabbedFiles implements Observer {
          res = replaceOption(f);
       }
       if (res == 0) {
-         txtDoc[iTab].saveCopy(f);
+         fDoc[iTab].saveCopy(f);
       }
    }
 
@@ -217,7 +217,7 @@ public class TabbedFiles implements Observer {
     * are closed
     */
    public void close(boolean createEmptyTab) {
-      boolean removable = txtDoc[iTab].isContentSaved();
+      boolean removable = fDoc[iTab].isContentSaved();
       if (!removable) {
          int res = saveOrCloseOption(iTab);
          if (res == JOptionPane.YES_OPTION) {
@@ -245,7 +245,7 @@ public class TabbedFiles implements Observer {
          int i = count - 1;
          while(i > -1) {     
             tabPane.removeTabAt(i);
-            txtDoc[i] = null;
+            fDoc[i] = null;
             editArea[i] = null;
             i--;
          }
@@ -306,8 +306,8 @@ public class TabbedFiles implements Observer {
       if (isFileOpen(f) || isMaxTabNumber()) {
          return;
       }
-      boolean isBlankFirstTab = nTabs() == 1 && !txtDoc[0].hasFile()
-            && txtDoc[0].getText().length() == 0;
+      boolean isBlankFirstTab = nTabs() == 1 && !fDoc[0].hasFile()
+            && fDoc[0].getText().length() == 0;
       if (isBlankFirstTab) {
          removeTab();
       }
@@ -321,12 +321,12 @@ public class TabbedFiles implements Observer {
          mw.setBusyCursor(true);
          int n = nTabs();
          editArea[n] = format.createEditArea();
-         txtDoc[n] = new TextDocument(editArea[n], f);
-         txtDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-         addNewTab(txtDoc[n].filename(), editArea[n].textPanel());
+         fDoc[n] = new FileDocument(editArea[n], f);
+         fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
+         addNewTab(fDoc[n].filename(), editArea[n].editAreaPanel());
          setUIUpdateListenersAt(n);
-         docUpdate.changedFileUpdate(n, nTabs(), false);
-         prefs.storePrefs("recentPath", txtDoc[n].dir());
+         docUpdate.changedFileUpdate(n, false);
+         prefs.storePrefs("recentPath", fDoc[n].dir());
       }
       finally {
          mw.setBusyCursor(false);
@@ -336,9 +336,9 @@ public class TabbedFiles implements Observer {
    private void createDocument() {
       int n = nTabs();
       editArea[n] = format.createEditArea();
-      txtDoc[n] = new TextDocument(editArea[n], lang);
-      txtDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-      addNewTab("unnamed", editArea[n].textPanel());
+      fDoc[n] = new FileDocument(editArea[n], lang);
+      fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
+      addNewTab("unnamed", editArea[n].editAreaPanel());
       setUIUpdateListenersAt(n);
    }
    
@@ -352,9 +352,9 @@ public class TabbedFiles implements Observer {
    }
    
    private void setUIUpdateListenersAt(int i) {
-      txtDoc[i].setUndoableChangeListener(e ->
+      fDoc[i].setUndoableChangeListener(e ->
             mw.enableUndoRedo(e.canUndo(), e.canRedo()));
-      txtDoc[i].setTextSelectionListener(e ->
+      fDoc[i].setTextSelectionListener(e ->
             mw.enableCutCopy(e.isSelection()));
    }
    
@@ -362,11 +362,11 @@ public class TabbedFiles implements Observer {
       int count = iTab;
       tabPane.removeTabAt(iTab);
       for (int i = count; i < nTabs(); i++) {
-         txtDoc[i] = txtDoc[i + 1];
+         fDoc[i] = fDoc[i + 1];
          editArea[i] = editArea[i + 1];
       }
       int n = nTabs();    
-      txtDoc[n] = null;
+      fDoc[n] = null;
       editArea[n] = null;
       if (n > 0) {
          iTab = tabPane.getSelectedIndex();
@@ -391,7 +391,7 @@ public class TabbedFiles implements Observer {
    private boolean isFileOpen(File f) {
       boolean isFileOpen = false;
       for (int i = 0; i < nTabs(); i++) {
-         if (txtDoc[i].filepath().equals(f.toString())) {
+         if (fDoc[i].filepath().equals(f.toString())) {
            isFileOpen = true;
            JOptions.warnMessage(f.getName() + " is already open.");
            break;
@@ -401,7 +401,7 @@ public class TabbedFiles implements Observer {
    }
    
    private boolean isMaxTabNumber() {
-      boolean isMax = nTabs() == txtDoc.length;
+      boolean isMax = nTabs() == fDoc.length;
       if (isMax) {
          JOptions.warnMessage("The maximum number of tabs is reached.");
       }
@@ -411,7 +411,7 @@ public class TabbedFiles implements Observer {
    private int unsavedTab() {
       int i;
       for (i = 0; i < nTabs(); i++) {
-         if (!txtDoc[i].isContentSaved()) {
+         if (!fDoc[i].isContentSaved()) {
             break;
          }
       }
@@ -428,7 +428,7 @@ public class TabbedFiles implements Observer {
    }
 
    private int saveOrCloseOption(int i) {
-      String filename = txtDoc[i].filename();
+      String filename = fDoc[i].filename();
       if (filename.length() == 0) {
          filename = "unnamed";
       }

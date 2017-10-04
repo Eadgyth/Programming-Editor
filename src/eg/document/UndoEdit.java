@@ -5,23 +5,21 @@ import javax.swing.event.DocumentEvent.EventType;
 import java.util.ArrayList;
 import java.util.List;
 
-//--Eadgyth--//
-import eg.ui.EditArea;
-
 /**
- * An undo/redo editing for the document in <code>EditArea</code>.<br>
+ * An undo/redo editing.<br>
  *
  * <p>Undoing/redoing stops and breakpoints. These are included when the
  * text change is newline, when the direction, i.e. insertion and removal,
  * changes and when the change is longer than one character. Additional
- * causes for breakpoints are added through {link #markBreak()} (used
+ * causes for breakpoints are added through {@link #markBreak()} (used
  * to mark breaks when the cursor was moved with the mouse or cursor keys).
  * Already undone (and not redone) edits are removed when a new edit is added.
- * <p> Is created in {@link TypingEdit}
+ * <br>
+ * Is created in {@link TypingEdit}
  */
 public class UndoEdit {
    
-   private final EditArea editArea;
+   private final TextDocument textDoc;
 
    private final List<String> edits = new ArrayList<>(500);
    private final List<Integer> positions = new ArrayList<>(500);
@@ -33,10 +31,10 @@ public class UndoEdit {
    private boolean isBreak = false;
 
    /**
-    * @param editArea  the reference to {@link EditArea}
+    * @param textDoc  the reference to {@link TextDocument}
     */
-   public UndoEdit(EditArea editArea) {
-      this.editArea = editArea;
+   public UndoEdit(TextDocument textDoc) {
+      this.textDoc = textDoc;
    }
 
    /**
@@ -100,11 +98,11 @@ public class UndoEdit {
       while (iEd > -1) {
          if (isInsert(iEd)) {
             nextPos = pos(iEd);
-            editArea.removeStr(nextPos, edit(iEd).length());
+            textDoc.removeStr(nextPos, edit(iEd).length());
          }
          else {
             nextPos = pos(iEd) + edit(iEd).length();
-            editArea.insertStr(pos(iEd), edit(iEd));
+            textDoc.insertStr(pos(iEd), edit(iEd));
          }
          iEd--;
          if (iBr > -1) {
@@ -117,7 +115,7 @@ public class UndoEdit {
       if (iEd == -1) {
          iBr--;
       }
-      editArea.textArea().setCaretPosition(nextPos);
+      textDoc.docTextArea().setCaretPosition(nextPos);
    }
 
    /**
@@ -130,11 +128,11 @@ public class UndoEdit {
          int iNext = iEd + 1;
          if (isInsert(iNext)) {
             nextPos = pos(iNext) + edit(iNext).length();
-            editArea.insertStr(pos(iNext), edit(iNext));
+            textDoc.insertStr(pos(iNext), edit(iNext));
          }
          else {
             nextPos = pos(iNext);
-            editArea.removeStr(nextPos, edit(iNext).length());
+            textDoc.removeStr(nextPos, edit(iNext).length());
          }
          iEd++;
          int iBrAhead = iBr + 2;
@@ -148,7 +146,7 @@ public class UndoEdit {
       if (iEd == edits.size() - 1) {
          iBr++;
       }
-      editArea.textArea().setCaretPosition(nextPos);
+      textDoc.docTextArea().setCaretPosition(nextPos);
    }
 
    /**
