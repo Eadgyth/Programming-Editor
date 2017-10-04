@@ -19,9 +19,7 @@ includes the ".properties" files and the 'Resources' folder
 DOCUMENTATION<br>
 A guide how to configure a project and some other info is found in
 <a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/EadgythProgram/Resources/Help.html">Help.html</a>.
-This file is also addressable from the 'Help' menu in the program.
-<p>
-For an overwiew of the program the
+This file is also addressable from the 'Help' menu in the program. For an overwiew of the program the
 <a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/javadoc/index.html">javadoc</a>
 may be used.
 <p>
