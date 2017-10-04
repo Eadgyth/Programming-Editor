@@ -23,7 +23,7 @@ This file is also addressable from the 'Help' menu in the program. For an overwi
 <a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/javadoc/index.html">javadoc</a>
 may be used.
 <p>
-LIMITATIONS (related to functinos that are there at least)<br> 
+LIMITATIONS (related to functions that are there at least)<br> 
 1) Running an interactive (console) program that then requires writing to this process is not
 guaranteed to work in the console panel of the program. Interactive programs in Java seem to
 work fine but, for example, an interactive Perl script does not unless the autoflushing of its
