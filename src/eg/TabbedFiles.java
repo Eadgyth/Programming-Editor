@@ -177,9 +177,7 @@ public class TabbedFiles implements Observer {
       File f = fc.fileToSave(fDoc[iTab].filepath());
       boolean isSave = f != null;
       if (isSave && f.exists()) {
-         if (0 == replaceOption(f)) {
-            isSave = true;
-         }
+         isSave = 0 == replaceOption(f);
       }     
       isSave = isSave && fDoc[iTab].setFile(f);
       if (isSave && update) {
@@ -197,14 +195,11 @@ public class TabbedFiles implements Observer {
     */
    public void saveCopy() {
       File f = fc.fileToSave(fDoc[iTab].filepath());
-      if (f == null) {
-         return;
-      }
-      int res = 0;
-      if (f.exists()) {
-         res = replaceOption(f);
-      }
-      if (res == 0) {
+      boolean isSave = f != null;
+      if (isSave && f.exists()) {
+         isSave = 0 == replaceOption(f);
+      }     
+      if (isSave) {
          fDoc[iTab].saveCopy(f);
       }
    }
@@ -315,6 +310,15 @@ public class TabbedFiles implements Observer {
          createDocument(f);
       }
    }
+   
+   private boolean isTabOpenable() {
+      boolean isOpenable = iTab == -1 || tabPane.isShowTabbar();
+      if (!isOpenable) {
+         close(false);
+         isOpenable = iTab == -1;
+      }
+      return isOpenable;
+   }
 
    private void createDocument(File f) {
       try {
@@ -323,7 +327,7 @@ public class TabbedFiles implements Observer {
          editArea[n] = format.createEditArea();
          fDoc[n] = new FileDocument(editArea[n], f);
          fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-         addNewTab(fDoc[n].filename(), editArea[n].editAreaPanel());
+         addNewTab(fDoc[n].filename(), editArea[n].editAreaPnl());
          setUIUpdateListenersAt(n);
          docUpdate.changedFileUpdate(n, false);
          prefs.storePrefs("recentPath", fDoc[n].dir());
@@ -338,7 +342,7 @@ public class TabbedFiles implements Observer {
       editArea[n] = format.createEditArea();
       fDoc[n] = new FileDocument(editArea[n], lang);
       fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-      addNewTab("unnamed", editArea[n].editAreaPanel());
+      addNewTab("unnamed", editArea[n].editAreaPnl());
       setUIUpdateListenersAt(n);
    }
    
@@ -416,15 +420,6 @@ public class TabbedFiles implements Observer {
          }
       }
       return i;
-   }
-   
-   private boolean isTabOpenable() {
-      boolean isOpenable = iTab == -1 || tabPane.isShowTabbar();
-      if (!isOpenable) {
-         close(false);
-         isOpenable = iTab == -1;
-      }
-      return isOpenable;
    }
 
    private int saveOrCloseOption(int i) {
