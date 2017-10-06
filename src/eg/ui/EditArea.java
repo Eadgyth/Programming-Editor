@@ -1,10 +1,14 @@
 package eg.ui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.Font;
-
 import java.awt.print.*;
+
+import java.awt.event.FocusListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 import javax.swing.JTextPane;
 import javax.swing.JPanel;
@@ -15,10 +19,6 @@ import javax.swing.KeyStroke;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.StyledDocument;
 
-import java.awt.event.FocusListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 
@@ -28,29 +28,31 @@ import eg.utils.FileUtils;
 
 /**
  * Defines the editor view that contains the text area to edit text and the
- * area that displays line numbers.
+ * area that shows line numbers. These are contained in a JPanel which is
+ * obtained through {@link #editAreaPnl()}.
  */
 public final class EditArea {
 
    private final static LineBorder WHITE_BORDER
          = new LineBorder(Color.WHITE, 5);
 
-   private final JPanel editAreaPanel = new JPanel(new BorderLayout());
-   private final JTextPane textArea   = new JTextPane();   
-   private final JTextPane lineArea   = new JTextPane();
+   private final JPanel editAreaPnl = new JPanel(new BorderLayout());
+   private final JTextPane textArea = new JTextPane();
+   private final JTextPane lineNrArea = new JTextPane();
 
    private final JPanel disabledWordwrapPnl = new JPanel(new BorderLayout());
    private final JPanel enabledWordwrapPnl = new JPanel();
-   private final JScrollPane wrapPnlScoll = new JScrollPane(
+
+   private final JScrollPane wordwrapScoll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-   private final JScrollPane lineNumPnlScroll = new JScrollPane(
+   private final JScrollPane noWordwrapScroll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-   private final JScrollPane noWrapPnlScroll = new JScrollPane(
+   private final JScrollPane linkedLineNrScroll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-   private final JScrollPane lineNumAreaScroll = new JScrollPane(
+   private final JScrollPane lineNrScroll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_NEVER,
          JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -68,13 +70,13 @@ public final class EditArea {
          String font, int fontSize) {
 
       removeShortCuts();
-      editAreaPanel.setBorder(Constants.DARK_BORDER);
+      initEditAreaPnl();
       initTextArea();
       initLineNrArea();
       setFont(font, fontSize);
-      initScrollLineNrArea();
-      initScrollSimpleArea();
-      intitScrollWrapArea();
+      initLinkedLineNrScrolling();
+      initWordwrapScrolling();
+      initNoWordwrapScrolling();
       if (isWordwrap) {
          enableWordwrap();
       }
@@ -86,7 +88,7 @@ public final class EditArea {
             hideLineNumbers();
          }
       }
-      
+
       textArea.addFocusListener(new FocusAdapter() {
          @Override
          public void focusLost(FocusEvent fe) {
@@ -94,36 +96,43 @@ public final class EditArea {
          }
       });
    }
-   
+
    /**
-    * Returns this <code>JTextPane</code> in which text is edited
+    * Gets this edit area panel for adding it to the tab pane
     *
-    * @return  this <code>JTextPane</code>
+    * @return  this edit area panel
+    */
+   public JPanel editAreaPnl() {
+      return editAreaPnl;
+   }
+
+   /**
+    * Gets this area in which text is edited
+    *
+    * @return  this area in which text is edited
     */
    public JTextPane textArea() {
       return textArea;
    }
-   
+
    /**
-    * Returns the {@code StyledDocument} associated with this
-    * area that shows line numbers
+    * Gets the StyledDocument associated with the area that shows
+    * line numbers
     *
-    * @return  the {@code StyledDocument} associated with this
+    * @return  the <code>StyledDocument</code> associated with the
     * area that shows line numbers
     */
-   public StyledDocument lineDoc() {
-      return lineArea.getStyledDocument();
+   public StyledDocument lineNrDoc() {
+      return lineNrArea.getStyledDocument();
    }
 
    /**
-    * Returns the JPanel that holds the area to edit text and
-    * the area showing line numbers
+    * Gets this implemented method in <code>LineNrWidthAdaptable</code>
     *
-    * @return  the JPanel that holds the area to edit text and
-    * the area showing line numbers
+    * @return  this implemented method in {@link LineNrWidthAdaptable}
     */
-   public JPanel editAreaPanel() {
-      return editAreaPanel;
+   public LineNrWidthAdaptable lineNrWidth() {
+      return (i, j) -> adaptLineNrWidth(i, j);
    }
 
    /**
@@ -135,7 +144,7 @@ public final class EditArea {
       return isWordwrap;
    }
 
-    /**
+   /**
     * Sets a new font
     *
     * @param font  the name of the font
@@ -144,9 +153,9 @@ public final class EditArea {
    public void setFont(String font, int fontSize) {
       Font fontNew = new Font(font, Font.PLAIN,
             (int) (fontSize * eg.Constants.SCREEN_RES_RATIO));
-      lineArea.setFont(fontNew);
+      lineNrArea.setFont(fontNew);
       textArea.setFont(fontNew);
-      revalidateEditAreaPanel();
+      revalidate();
    }
 
    /**
@@ -155,12 +164,12 @@ public final class EditArea {
    public void showLineNumbers() {
       removeCenterComponent();
       disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
-      lineNumPnlScroll.setViewportView(disabledWordwrapPnl);
-      editAreaPanel.add(lineNumAreaScroll, BorderLayout.WEST);
-      editAreaPanel.add(lineNumPnlScroll, BorderLayout.CENTER);
-      setScrollPos(lineNumPnlScroll);
+      linkedLineNrScroll.setViewportView(disabledWordwrapPnl);
+      editAreaPnl.add(lineNrScroll, BorderLayout.WEST);
+      editAreaPnl.add(linkedLineNrScroll, BorderLayout.CENTER);
+      setScrollPos(linkedLineNrScroll);
       textArea.requestFocusInWindow();
-      revalidateEditAreaPanel();
+      revalidate();
       isWordwrap = false;
    }
 
@@ -168,14 +177,14 @@ public final class EditArea {
     * Hides line numbers. Invoking this method also annules wordwrap
     */
    public void hideLineNumbers() {
-      editAreaPanel.remove(lineNumAreaScroll);
+      editAreaPnl.remove(lineNrScroll);
       removeCenterComponent();
       disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
-      noWrapPnlScroll.setViewportView(disabledWordwrapPnl);
-      editAreaPanel.add(noWrapPnlScroll, BorderLayout.CENTER);
-      setScrollPos(noWrapPnlScroll);
+      noWordwrapScroll.setViewportView(disabledWordwrapPnl);
+      editAreaPnl.add(noWordwrapScroll, BorderLayout.CENTER);
+      setScrollPos(noWordwrapScroll);
       textArea.requestFocusInWindow();
-      revalidateEditAreaPanel();
+      revalidate();
       isWordwrap = false;
    }
 
@@ -184,16 +193,16 @@ public final class EditArea {
     * that displays line numbers
     */
    public void enableWordwrap() {
-      editAreaPanel.remove(lineNumAreaScroll);
+      editAreaPnl.remove(lineNrScroll);
       removeCenterComponent();
-      wrapPnlScoll.setViewportView(textArea);
-      editAreaPanel.add(wrapPnlScoll, BorderLayout.CENTER);
-      setScrollPos(wrapPnlScoll);
+      wordwrapScoll.setViewportView(textArea);
+      editAreaPnl.add(wordwrapScoll, BorderLayout.CENTER);
+      setScrollPos(wordwrapScoll);
       textArea.requestFocusInWindow();
-      revalidateEditAreaPanel();
+      revalidate();
       isWordwrap = true;
    }
-   
+
    /**
     * Prints this document to a printer
     */
@@ -209,9 +218,19 @@ public final class EditArea {
    //--private methods--//
    //
    
-   private void revalidateEditAreaPanel() {
-      editAreaPanel.revalidate();
-      editAreaPanel.repaint();
+   private void adaptLineNrWidth(int prevLineNr, int lineNr) {
+      if (Math.log10(prevLineNr) - Math.log10(lineNr) != 0 ) {
+         revalidate();
+      }
+   }
+
+   private void revalidate() {
+      editAreaPnl.revalidate();
+      editAreaPnl.repaint();
+   }
+
+   private void initEditAreaPnl() {
+      editAreaPnl.setBorder(Constants.DARK_BORDER);
    }
 
    private void initTextArea() {
@@ -219,45 +238,43 @@ public final class EditArea {
    }
 
    private void initLineNrArea() {
-      lineArea.setBorder(WHITE_BORDER);
-      lineArea.setEditable(false);
-      lineArea.setFocusable(false);
-      DefaultCaret caretLine = (DefaultCaret) lineArea.getCaret();
+      lineNrArea.setBorder(WHITE_BORDER);
+      lineNrArea.setEditable(false);
+      lineNrArea.setFocusable(false);
+      DefaultCaret caretLine = (DefaultCaret) lineNrArea.getCaret();
       caretLine.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
    }
 
-   private void intitScrollWrapArea() {
-      wrapPnlScoll.getVerticalScrollBar().setUnitIncrement(15);
-      wrapPnlScoll.setBorder(null);
-      wrapPnlScoll.setViewportView(enabledWordwrapPnl);
+   private void initWordwrapScrolling() {
+      wordwrapScoll.getVerticalScrollBar().setUnitIncrement(15);
+      wordwrapScoll.setBorder(null);
+      wordwrapScoll.setViewportView(enabledWordwrapPnl);
    }
 
-   private void initScrollSimpleArea() {
-      noWrapPnlScroll.getVerticalScrollBar().setUnitIncrement(15);
-      noWrapPnlScroll.setBorder(null);
-      noWrapPnlScroll.setViewportView(disabledWordwrapPnl);
+   private void initNoWordwrapScrolling() {
+      noWordwrapScroll.getVerticalScrollBar().setUnitIncrement(15);
+      noWordwrapScroll.setBorder(null);
+      noWordwrapScroll.setViewportView(disabledWordwrapPnl);
    }
 
-   private void initScrollLineNrArea() {
-      lineNumPnlScroll.getVerticalScrollBar().setUnitIncrement(15);
-      lineNumPnlScroll.setBorder(null);
-      lineNumPnlScroll.setViewportView(disabledWordwrapPnl);
-      lineNumAreaScroll.setViewportView(lineArea);
-      lineNumAreaScroll.setBorder(null);
-      lineNumAreaScroll.setBorder(new MatteBorder(0, 0, 0, 1,
+   private void initLinkedLineNrScrolling() {
+      linkedLineNrScroll.getVerticalScrollBar().setUnitIncrement(15);
+      linkedLineNrScroll.setBorder(null);
+      linkedLineNrScroll.setViewportView(disabledWordwrapPnl);
+      lineNrScroll.setViewportView(lineNrArea);
+      lineNrScroll.setBorder(null);
+      lineNrScroll.setBorder(new MatteBorder(0, 0, 0, 1,
             Constants.BORDER_DARK_GRAY));
-      //
-      // link scrolling of line number area to text area
-      lineNumAreaScroll.getVerticalScrollBar().setModel
-            (lineNumPnlScroll.getVerticalScrollBar().getModel());
+      lineNrScroll.getVerticalScrollBar().setModel
+            (linkedLineNrScroll.getVerticalScrollBar().getModel());
    }
 
    private void removeCenterComponent() {
-      BorderLayout layout = (BorderLayout) editAreaPanel.getLayout();
+      BorderLayout layout = (BorderLayout) editAreaPnl.getLayout();
       JScrollPane c = (JScrollPane) layout.getLayoutComponent(BorderLayout.CENTER);
       if (c != null) {
          scrollPos = c.getVerticalScrollBar().getValue();
-         editAreaPanel.remove(c);
+         editAreaPnl.remove(c);
       }
    }
 

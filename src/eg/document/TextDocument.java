@@ -93,7 +93,7 @@ public class TextDocument {
     * @param pos  the position where new text is inserted
     * @param toInsert  the String that contains the text to insert
     */
-   public void insertStr(int pos, String toInsert) {
+   public void insert(int pos, String toInsert) {
       try {
          doc.insertString(pos, toInsert, null);
       }
@@ -108,7 +108,7 @@ public class TextDocument {
     * @param start  the position where text to be removed starts
     * @param length  the length of the text to be removed
     */
-   public void removeStr(int start, int length) {
+   public void remove(int start, int length) {
       try {
          doc.remove(start, length);
       }

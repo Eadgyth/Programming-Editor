@@ -37,7 +37,7 @@ import eg.utils.UiComponents;
 /**
  * The main window
  */
-public class MainWin implements ConsoleOpenable {
+public class MainWin {
 
    private final static Cursor BUSY_CURSOR
          = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
@@ -65,22 +65,11 @@ public class MainWin implements ConsoleOpenable {
 
    public MainWin() {
       initFrame();
-      registerViewAct();
-      
+      registerViewAct();      
       prefs.readPrefs();
       boolean isShowTabs = "show".equals(prefs.getProperty("showTabs"));
       showTabbar(isShowTabs);
       setShowTabbarSelected(isShowTabs);
-   }
-   
-   @Override
-   public boolean isConsoleOpen() {
-      return menu.viewMenu().isConsoleItmSelected();
-   }
-   
-   @Override
-   public void openConsole() {
-      menu.viewMenu().doConsoleItmAct(true);
    }
 
    /**
@@ -125,6 +114,15 @@ public class MainWin implements ConsoleOpenable {
     public FunctionPanel functionPanel() {
        return functPnl;
     }
+    
+    /**
+     * Gets the reference to a <code>ConsoleOpenable</code>
+     *
+     * @return  the reference to a {@link ConsoleOpenable}
+     */
+    public ConsoleOpenable consOpen() {
+       return menu.viewMenu();
+    }
 
    /**
     * Displays text in the title bar
@@ -166,16 +164,6 @@ public class MainWin implements ConsoleOpenable {
    }
    
    /**
-    * Sets the selection state of the menu item to set wordwrap
-    *
-    * @param isSelected   true to select state the menu item
-    * to set wordwrap, false to unselect
-    */
-   public void setWordWrapSelected(boolean isSelected) {
-      menu.formatMenu().selectWordWrapItm(isSelected);
-   }
-   
-   /**
     * Enabled/disables the action to select if the tabbar is visible
     *
     * @param isEnabled  if the action to select if the tabbar is
@@ -183,6 +171,16 @@ public class MainWin implements ConsoleOpenable {
     */
    public void enableShowHideTabbar(boolean isEnabled) {
       menu.viewMenu().enableTabItm(isEnabled);
+   }
+   
+   /**
+    * Sets the selection state of the menu item to set wordwrap
+    *
+    * @param isSelected   true to select state the menu item
+    * to set wordwrap, false to unselect
+    */
+   public void setWordWrapSelected(boolean isSelected) {
+      menu.formatMenu().selectWordWrapItm(isSelected);
    }
    
    /**

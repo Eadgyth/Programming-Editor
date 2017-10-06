@@ -9,16 +9,16 @@ import eg.ui.EditArea;
  */
 public class LineNumbers {
 
-   private final LineNumberDocument lineDoc;
+   private final LineNumberDocument lineNrDoc;
    private int nOld;
 
    /**
-    * @param lineDoc  the reference to {@link LineNumberDocument}
+    * @param lineNrDoc  the reference to {@link LineNumberDocument}
     */
-   public LineNumbers(LineNumberDocument lineDoc) {
-      this.lineDoc = lineDoc;
+   public LineNumbers(LineNumberDocument lineNrDoc) {
+      this.lineNrDoc = lineNrDoc;
       nOld = 1;
-      lineDoc.appendLineNumbers(0, 1);
+      lineNrDoc.appendLineNumbers(0, 1);
    }
 
    /**
@@ -29,10 +29,10 @@ public class LineNumbers {
    public void updateLineNumber(String text) {
       int nNew = countLines(text);
       if (nNew > nOld) {
-         lineDoc.appendLineNumbers(nOld, nNew);
+         lineNrDoc.appendLineNumbers(nOld, nNew);
       }
       else if (nNew < nOld) {
-         lineDoc.removeLineNumbers(nOld, nNew);
+         lineNrDoc.removeLineNumbers(nOld, nNew);
       }
       nOld = nNew;
    }

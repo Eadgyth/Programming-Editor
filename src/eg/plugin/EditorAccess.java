@@ -55,7 +55,7 @@ public class EditorAccess {
     * @param toInsert  the String that contains the text to insert
     */
    public void insertStr(int pos, String toInsert) {
-      fDoc.insertStr(pos, toInsert);
+      fDoc.insert(pos, toInsert);
    }
 
    /**
@@ -65,7 +65,7 @@ public class EditorAccess {
     * @param length  the length of the text to be removed
     */  
    public void removeStr(int start, int length) {
-      fDoc.removeStr(start, length);
+      fDoc.remove(start, length);
    }
    
    /**

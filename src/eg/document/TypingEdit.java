@@ -8,18 +8,13 @@ import javax.swing.event.DocumentEvent.EventType;
 
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
-import javax.swing.text.AttributeSet;
 
 import java.awt.EventQueue;
-
-import java.util.ArrayList;
-import java.util.List;
 
 //--Eadgyth--//
 import eg.Languages;
 import eg.syntax.Coloring;
 import eg.syntax.LanguageSetter;
-import eg.utils.FileUtils;
 
 /**
  * Mediates the editing that shall happen during typing.
@@ -51,13 +46,13 @@ public class TypingEdit {
 
    /**
     * @param textDoc  the reference to {@link TextDocument}
-    * @param lineDoc  the reference to {@link LineNumberDocument}
+    * @param lineNrDoc  the reference to {@link LineNumberDocument}
     */
-   public TypingEdit(TextDocument textDoc, LineNumberDocument lineDoc) {
+   public TypingEdit(TextDocument textDoc, LineNumberDocument lineNrDoc) {
       this.textDoc = textDoc;
       col = new Coloring(textDoc.doc(), textDoc.attrSet());
       langSet = new LanguageSetter(col);
-      lineNum = new LineNumbers(lineDoc);
+      lineNum = new LineNumbers(lineNrDoc);
       autoInd = new AutoIndent(textDoc);
       undo = new UndoEdit(textDoc);
       textDoc.doc().addDocumentListener(docListen);

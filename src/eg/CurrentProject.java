@@ -63,7 +63,7 @@ public class CurrentProject {
       this.mw = mw;
       this.fDoc = fDoc;
       proc = new ProcessStarter(mw.console());
-      selProj = new SelectedProject(mw, proc, mw.console());
+      selProj = new SelectedProject(mw.consOpen(), proc, mw.console());
       projectOptions = new String[selProj.projectSuffixes.length + 1];
       projectOptions[0] = "File extensions...";
       for (int i = 0; i < selProj.projectSuffixes.length; i++) {

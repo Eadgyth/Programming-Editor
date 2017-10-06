@@ -30,7 +30,7 @@ public final class FileDocument {
 
    private final TypingEdit type;
    private final TextDocument textDoc;
-   private final LineNumberDocument lineDoc;
+   private final LineNumberDocument lineNrDoc;
 
    private File docFile = null;
    private Languages lang;
@@ -324,8 +324,8 @@ public final class FileDocument {
     * @param pos  the position where new text is inserted
     * @param toInsert  the String that contains the text to insert
     */
-   public void insertStr(int pos, String toInsert) {
-      textDoc.insertStr(pos, toInsert);
+   public void insert(int pos, String toInsert) {
+      textDoc.insert(pos, toInsert);
    }
 
    /**
@@ -334,8 +334,8 @@ public final class FileDocument {
     * @param start  the position where text to be removed starts
     * @param length  the length of the text to be removed
     */
-   public void removeStr(int start, int length) {
-      textDoc.removeStr(start, length);
+   public void remove(int start, int length) {
+      textDoc.remove(start, length);
    }
 
    /**
@@ -351,8 +351,9 @@ public final class FileDocument {
 
    private FileDocument(EditArea editArea) {
       textDoc = new TextDocument(editArea.textArea());
-      lineDoc = new LineNumberDocument(editArea.lineDoc(), editArea.editAreaPanel());
-      type = new TypingEdit(textDoc, lineDoc);
+      lineNrDoc = new LineNumberDocument(editArea.lineNrDoc(),
+            editArea.lineNrWidth());
+      type = new TypingEdit(textDoc, lineNrDoc);
    }
 
    private void displayFileContent(File f) {
@@ -362,10 +363,10 @@ public final class FileDocument {
          String nextLine = br.readLine();
          while (null != line) {            
             if (null == nextLine) {
-               insertStr(textDoc.length(), line);
+               insert(textDoc.length(), line);
             }
             else {
-               insertStr(textDoc.length(), line + "\n");
+               insert(textDoc.length(), line + "\n");
             }
             line = nextLine;
             nextLine = br.readLine();

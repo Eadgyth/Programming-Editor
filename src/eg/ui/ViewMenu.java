@@ -7,7 +7,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 
-class ViewMenu {
+class ViewMenu implements ConsoleOpenable{
    
    private final JMenu menu = new JMenu("View");
 
@@ -28,6 +28,16 @@ class ViewMenu {
    
    JMenu getMenu() {
       return menu;
+   }
+   
+   @Override
+   public boolean isConsoleOpen() {
+      return isConsoleItmSelected();
+   }
+   
+   @Override
+   public void openConsole() {
+      doConsoleItmAct(true);
    }
    
    void consoleItmAct(ActionListener al) {
@@ -54,7 +64,7 @@ class ViewMenu {
       return consoleItm.isSelected();
    }
 
-  boolean isFileViewItmSelected() {
+   boolean isFileViewItmSelected() {
       return fileViewItm.isSelected();
    }
 
@@ -84,7 +94,7 @@ class ViewMenu {
       }
    }
 
-  void selectTabsItm(boolean select) {
+   void selectTabsItm(boolean select) {
       tabItm.setSelected(select);
    }
    

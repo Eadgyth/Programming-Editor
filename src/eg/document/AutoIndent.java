@@ -65,7 +65,7 @@ public class AutoIndent {
             currIndent += indentUnit;
          }
       }
-      textDoc.insertStr(pos + 1, currIndent);
+      textDoc.insert(pos + 1, currIndent);
       currentIndent = currIndent;
    }
 
@@ -79,7 +79,7 @@ public class AutoIndent {
       if (pos >= indentLength) {
          if ('}' == text.charAt(pos)) {
             if (text.substring(pos - indentLength, pos).equals(indentUnit)) {
-               textDoc.removeStr(pos - indentLength, indentLength);
+               textDoc.remove(pos - indentLength, indentLength);
             }
          }
       }

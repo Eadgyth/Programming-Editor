@@ -98,11 +98,11 @@ public class UndoEdit {
       while (iEd > -1) {
          if (isInsert(iEd)) {
             nextPos = pos(iEd);
-            textDoc.removeStr(nextPos, edit(iEd).length());
+            textDoc.remove(nextPos, edit(iEd).length());
          }
          else {
             nextPos = pos(iEd) + edit(iEd).length();
-            textDoc.insertStr(pos(iEd), edit(iEd));
+            textDoc.insert(pos(iEd), edit(iEd));
          }
          iEd--;
          if (iBr > -1) {
@@ -128,11 +128,11 @@ public class UndoEdit {
          int iNext = iEd + 1;
          if (isInsert(iNext)) {
             nextPos = pos(iNext) + edit(iNext).length();
-            textDoc.insertStr(pos(iNext), edit(iNext));
+            textDoc.insert(pos(iNext), edit(iNext));
          }
          else {
             nextPos = pos(iNext);
-            textDoc.removeStr(nextPos, edit(iNext).length());
+            textDoc.remove(nextPos, edit(iNext).length());
          }
          iEd++;
          int iBrAhead = iBr + 2;

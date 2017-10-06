@@ -66,7 +66,7 @@ public class Edit {
       int start = textArea.getSelectionStart();
       int end = textArea.getSelectionEnd();
       setClipboard();
-      fDoc.removeStr(start, end - start);
+      fDoc.remove(start, end - start);
    }
 
    /**
@@ -93,10 +93,10 @@ public class Edit {
       int pos = textArea.getSelectionStart();
       fDoc.enableTypeEdit(false);
       if (sel != null) {
-         fDoc.removeStr(pos, sel.length());
+         fDoc.remove(pos, sel.length());
       }
       EventQueue.invokeLater(() -> {
-         fDoc.insertStr(pos, clipboard);
+         fDoc.insert(pos, clipboard);
          if (fDoc.isCodingLanguage()) {
             fDoc.colorSection(clipboard, pos);
             fDoc.enableTypeEdit(true);
@@ -140,14 +140,14 @@ public class Edit {
       int start = textArea.getSelectionStart();
       fDoc.enableTypeEdit(false);
       if (sel == null) {
-         fDoc.insertStr(start, indentUnit);
+         fDoc.insert(start, indentUnit);
       }
       else {
          String[] selArr = sel.split("\n");
          int sum = 0;
          for (String s : selArr) {
             int lineLength = s.length() + indentLength;
-            fDoc.insertStr(start + sum, indentUnit);
+            fDoc.insert(start + sum, indentUnit);
             sum += lineLength + 1;
          }
       }
@@ -167,7 +167,7 @@ public class Edit {
                = LinesFinder.lastNewline(text, start) > start - indentLength;
          if (!isAtLineStart && start >= indentLength) {
             if (indentUnit.equals(text.substring(start - indentLength, start))) {
-               fDoc.removeStr(start - indentLength, indentLength);
+               fDoc.remove(start - indentLength, indentLength);
             }
             else {
                textArea.setCaretPosition(start - indentLength);
@@ -191,7 +191,7 @@ public class Edit {
             int sum = 0;
             for (String s : selArr) {
                if (s.startsWith(indentUnit)) {
-                  fDoc.removeStr(start + sum, indentLength);
+                  fDoc.remove(start + sum, indentLength);
                   sum += (s.length() - indentLength) + 1;
                } else {
                   sum += s.length() + 1;
@@ -213,7 +213,7 @@ public class Edit {
       for (String s : textArr) {
          int startOfSpaces = startOfTrailingSpaces(s);
          int spacesLength = s.length() - startOfSpaces;
-         fDoc.removeStr(startOfSpaces + sum, spacesLength);
+         fDoc.remove(startOfSpaces + sum, spacesLength);
          sum += startOfSpaces + 1;
       }
       fDoc.enableTypeEdit(true);

@@ -10,7 +10,9 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants;
 
+//--Eadgyth--//
 import eg.utils.FileUtils;
+import eg.ui.LineNrWidthAdaptable;
 
 /**
  * The document that contains line numbers.<br>
@@ -20,21 +22,22 @@ public class LineNumberDocument {
    
    private final static Color GRAY = new Color(170, 170, 170);
    
-   private final SimpleAttributeSet lineSet = new SimpleAttributeSet();
-   private final StyledDocument lineDoc;
-   private final JPanel editAreaPanel;
+   private final SimpleAttributeSet set = new SimpleAttributeSet();
+   private final StyledDocument doc;
+   private final LineNrWidthAdaptable lineNrWidth;
    private final StringBuilder lineNrBuilder = new StringBuilder();
-   
+
    /**
-    * @param lineDoc  the document associated with the area that displays
+    * @param doc  the document associated with the area that displays
     * line numbers
-    * @param  editAreaPanel  the JPanel that contains the text area and the line
-    * number area (used to revaltidate the width of line number area)
+    * @param  lineNrWidth  the reference to the {@link LineNrWidthAdaptable}
     */
-   public LineNumberDocument(StyledDocument lineDoc, JPanel editAreaPanel) {
-      this.lineDoc = lineDoc;
-      this.editAreaPanel = editAreaPanel;
-      setLineDocStyle();
+   public LineNumberDocument(StyledDocument doc,
+         LineNrWidthAdaptable lineNrWidth) {
+
+      this.doc = doc;
+      this.lineNrWidth = lineNrWidth;
+      setDocStyle();
    }
    
    /**
@@ -50,9 +53,8 @@ public class LineNumberDocument {
          lineNrBuilder.append("\n");
       }
       try {
-         lineDoc.insertString(lineDoc.getLength(), lineNrBuilder.toString(),
-               lineSet);
-         revalidateWidth();
+         doc.insertString(doc.getLength(), lineNrBuilder.toString(), set);
+         lineNrWidth.adaptLineNrWidth(prevLineNr, lineNr);
       }
       catch(BadLocationException e) {
          FileUtils.logStack(e);
@@ -71,24 +73,19 @@ public class LineNumberDocument {
           length += (Integer.toString(i).length() + 1);
       }
       try {
-         lineDoc.remove(lineDoc.getLength() - length, length);
-         revalidateWidth();
+         doc.remove(doc.getLength() - length, length);
+         lineNrWidth.adaptLineNrWidth(prevLineNr, lineNr);
       }
       catch (BadLocationException e) {
          FileUtils.logStack(e);
       }
    }
-   
-   private void revalidateWidth() {
-      editAreaPanel.revalidate();
-      editAreaPanel.repaint();
-   }
     
-   private void setLineDocStyle() {
-      StyleConstants.setForeground(lineSet, GRAY);
-      StyleConstants.setAlignment(lineSet, StyleConstants.ALIGN_RIGHT);
-      StyleConstants.setLineSpacing(lineSet, 0.25f);
-      Element el = lineDoc.getParagraphElement(0);
-      lineDoc.setParagraphAttributes(0, el.getEndOffset(), lineSet, false);
+   private void setDocStyle() {
+      StyleConstants.setForeground(set, GRAY);
+      StyleConstants.setAlignment(set, StyleConstants.ALIGN_RIGHT);
+      StyleConstants.setLineSpacing(set, 0.25f);
+      Element el = doc.getParagraphElement(0);
+      doc.setParagraphAttributes(0, el.getEndOffset(), set, false);
    }
 }
