@@ -26,7 +26,8 @@ import javax.swing.plaf.TabbedPaneUI;
  */
 public class ExtTabbedPane extends JTabbedPane {
 
-   private final static FlowLayout FLOW_LAYOUT_LEFT = new FlowLayout(FlowLayout.LEFT, 0, 0);
+   private final static FlowLayout FLOW_LAYOUT_LEFT
+         = new FlowLayout(FlowLayout.LEFT, 0, 0);
    private final static EmptyBorder EMPTY_BORDER = new EmptyBorder(0, 0, 0, 0);
 
    private final ExtTabbedPaneUI ui = new ExtTabbedPaneUI();

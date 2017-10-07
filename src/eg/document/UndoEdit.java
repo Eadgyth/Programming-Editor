@@ -6,16 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An undo/redo editing.<br>
- *
- * <p>Undoing/redoing stops and breakpoints. These are included when the
- * text change is newline, when the direction, i.e. insertion and removal,
- * changes and when the change is longer than one character. Additional
- * causes for breakpoints are added through {@link #markBreak()} (used
- * to mark breaks when the cursor was moved with the mouse or cursor keys).
- * Already undone (and not redone) edits are removed when a new edit is added.
- * <br>
- * Is created in {@link TypingEdit}
+ * The undo and redo editing.
+ * <p>
+ * An Undo action undoes edits until a breakpoint is reached. Redo runs
+ * in the same way in the opposite direction. Breakpoints are added when
+ * the text change is a newline, when the direction, i.e. insertion and
+ * removal, changes and when the change is longer than one character.
+ * Additional occasions for breakpoints can be added from outside by
+ * {@link #markBreakpoint()}. If edits are undone adding a new edit
+ * removes the undone (and not redone) edits.
+ * <p>
+ * Created in {@link TypingEdit}
  */
 public class UndoEdit {
    
@@ -40,10 +41,11 @@ public class UndoEdit {
    /**
     * Adds an edit
     *
-    * @param change  the text change
+    * @param change  the text change which may be an insertion or a
+    * removal
     * @param pos  the position where the change happened
     * @param isInsert  true if the change is an insertion, false if it
-    * was a removal
+    * is a removal
     */
    void addEdit(String change, int pos, boolean isInsert) {
       trim();
@@ -150,10 +152,10 @@ public class UndoEdit {
    }
 
    /**
-    * Marks that the edit before the next edit that will be added is
+    * Marks that the edit before the edit that will be added next is
     * a breakpoint
     */
-   public void markBreak() {
+   public void markBreakpoint() {
       if (edits.size() > 0) {
          isBreak = true;
       }

@@ -17,7 +17,10 @@ import eg.syntax.Coloring;
 import eg.syntax.LanguageSetter;
 
 /**
- * Mediates the editing that shall happen during typing.
+ * Mediates between the editing of the text document and changes that shall
+ * happen in response.
+ * Changes include syntax coloring, line numbering, indention and the adding
+ * of text changes for undo editing.<br>
  * <p> Created in {@link FileDocument}
  */
 public class TypingEdit {
@@ -29,17 +32,17 @@ public class TypingEdit {
    private final LineNumbers lineNum;
    private final UndoEdit undo;
 
-   private UndoableChangeEvent cue;
-   private UndoableChangeListener ul;
-   private TextSelectionEvent se;
-   private TextSelectionListener sl;
+   private UndoableChangeEvent uce;
+   private UndoableChangeListener ucl;
+   private TextSelectionEvent tse;
+   private TextSelectionListener tsl;
    private boolean isDocListen = true;
    private boolean isAddToUndo = true;
    private boolean isTypeEdit = false;
-   private String text = "";
-   private int pos = 0;
-   private String change = "";
    private DocumentEvent.EventType event;
+   private int pos = 0;
+   private String text = "";
+   private String change = "";
    private boolean isSelectionTmp = false;
    private boolean canUndoTmp = false;
    private boolean canRedoTmp = false;
@@ -62,27 +65,27 @@ public class TypingEdit {
    /**
     * Sets an <code>UndoableChangeListener</code> if none was set before
     *
-    * @param ul  an {@link UndoableChangeListener}
+    * @param ucl  an {@link UndoableChangeListener}
     */
-   public void setUndoableChangeListener(UndoableChangeListener ul) {
-      if (ul == null) {
+   public void setUndoableChangeListener(UndoableChangeListener ucl) {
+      if (ucl == null) {
          throw new IllegalStateException(
                "An UndoableChangeListener is already set");
       }
-      this.ul = ul;
+      this.ucl = ucl;
    }
 
   /**
     * Sets a <code>TextSelectionLister</code> if none was set before
     *
-    * @param sl  a {@link TextSelectionListener}
+    * @param tsl  a {@link TextSelectionListener}
     */
-   public void setTextSelectionListener(TextSelectionListener sl) {
-      if (sl == null) {
+   public void setTextSelectionListener(TextSelectionListener tsl) {
+      if (tsl == null) {
          throw new IllegalStateException(
                "A TextSelectionListener is already set");
       }
-      this.sl = sl;
+      this.tsl = tsl;
    }
 
    /**
@@ -103,16 +106,6 @@ public class TypingEdit {
          undo.discardEdits();
          notifyUndoableChangeEvent();
       }
-   }
-
-   /**
-    * Gets the text that is set in the update methods in this
-    * <code>DocumentListener</code>
-    *
-    * @return  the text in the document
-    */
-   public String getText() {
-      return text;
    }
 
    /**
@@ -142,6 +135,16 @@ public class TypingEdit {
          enableTypeEdit(true);
       }
    }
+   
+   /**
+    * Gets the text that is set in the update methods in this
+    * <code>DocumentListener</code>
+    *
+    * @return  the text in the document
+    */
+   public String getText() {
+      return text;
+   }
 
    /**
     * Sets the indentation unit which consists in any number of spaces
@@ -163,13 +166,12 @@ public class TypingEdit {
    }
 
    /**
-    * Colors a section of the document
+    * Colors a section of the document or the entire document
     *
-    * @param section  a section of the document which also may be the
-    * entire text. If null the entire text is assumed. The complete lines
-    * are colored if it does not start a line start or end at line end
-    * @param pos  the pos within the entire text where the section to
-    * be colored starts
+    * @param section  a section of the document. Null to color the
+    * entire text.
+    * @param pos  the pos where the section starts. Set to 0 if
+    * <code>section</code> is null
     */
    public void colorSection(String section, int pos) {
       col.colorMultipleLines(text, section, pos);
@@ -222,15 +224,14 @@ public class TypingEdit {
             colorSection(change, pos);
          }
          else if (event.equals(DocumentEvent.EventType.REMOVE)) {
-            EventQueue.invokeLater(() ->
-                     col.colorLine(text, pos));
+            EventQueue.invokeLater(() -> col.colorLine(text, pos));
          }
       }
       isAddToUndo = true;
    }
 
    private void notifyUndoableChangeEvent() {
-      if (ul == null) {
+      if (ucl == null) {
          return;
       }
       boolean isUndoableChange = canUndoTmp != undo.canUndo();
@@ -241,24 +242,24 @@ public class TypingEdit {
       if (isRedoableChange) {
          canRedoTmp = undo.canRedo();
       }
-      if (isUndoableChange | isRedoableChange) {
-         cue = new UndoableChangeEvent(canUndoTmp, canRedoTmp);
-         ul.undoableStateChanged(cue);
+      if (isUndoableChange || isRedoableChange) {
+         uce = new UndoableChangeEvent(canUndoTmp, canRedoTmp);
+         ucl.undoableStateChanged(uce);
       }
    }
 
    private void notifyTextSelectionEvent(boolean isSelection) {
-      if (sl == null) {
+      if (tsl == null) {
          return;
       }
-      if (isSelection != isSelectionTmp) {
+      if (isSelectionTmp != isSelection) {
          isSelectionTmp = isSelection;
-         se = new TextSelectionEvent(isSelection);
-         sl.selectionUpdate(se);
+         tse = new TextSelectionEvent(isSelection);
+         tsl.selectionUpdate(tse);
       }
    }
 
-   private void stopUndo(int caret) {
+   private void markUndoBreakpoint(int caret) {
       if (!isAddToUndo || event == null) {
          return;
       }
@@ -271,7 +272,7 @@ public class TypingEdit {
             isStop = caret - pos != 0;
          }
          if (isStop) {
-            undo.markBreak();
+            undo.markBreakpoint();
          }
       }
    }
@@ -333,7 +334,7 @@ public class TypingEdit {
       @Override
       public void caretUpdate(CaretEvent ce) {
          notifyTextSelectionEvent(ce.getDot() != ce.getMark());
-         stopUndo(ce.getDot());
+         markUndoBreakpoint(ce.getDot());
       }
    };
 }

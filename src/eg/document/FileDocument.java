@@ -20,9 +20,7 @@ import eg.ui.EditArea;
 /**
  * Represents the document that is either initialized with a language and
  * which a file may be assigned to afterwards or is initialized with a file
- * which defines the language.<br>
- * Uses {@link TypingEdit} for editing text during typing (syntax coloring,
- * line numbering, indention and undo/redo editing.<br>
+ * which defines the language
  */
 public final class FileDocument {
 
@@ -135,19 +133,19 @@ public final class FileDocument {
    /**
     * Sets a <code>TextSelectionLister</code>
     *
-    * @param sl  a {@link TextSelectionListener}
+    * @param tsl  a {@link TextSelectionListener}
     */
-   public void setTextSelectionListener(TextSelectionListener sl) {
-      type.setTextSelectionListener(sl);
+   public void setTextSelectionListener(TextSelectionListener tsl) {
+      type.setTextSelectionListener(tsl);
    }
    
    /**
     * Sets an <code>UndoableChangeListener</code>
     *
-    * @param ul  an {@link UndoableChangeListener}
+    * @param ucl  an {@link UndoableChangeListener}
     */
-   public void setUndoableChangeListener(UndoableChangeListener ul) {
-      type.setUndoableChangeListener(ul);
+   public void setUndoableChangeListener(UndoableChangeListener ucl) {
+      type.setUndoableChangeListener(ucl);
    }
    
    /**
@@ -274,11 +272,9 @@ public final class FileDocument {
     * Colors a section of the document if this language is not plain
     * text
     *
-    * @param section  a section of the document which also may be the
-    * entire text. If null the entire text is assumed. The complete lines
-    * are colored even if it does not start a line start or end at line end
-    * @param pos  the pos within the entire text where the section to
-    * be colored starts
+    * @param section  a section of the document
+    * @param pos  the pos where the section starts
+    * @see TypingEdit#colorSection(String,int)
     */
    public void colorSection(String section, int pos) {
       if (Languages.PLAIN_TEXT != lang) {
