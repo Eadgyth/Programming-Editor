@@ -219,7 +219,7 @@ public final class EditArea {
    //
    
    private void adaptLineNrWidth(int prevLineNr, int lineNr) {
-      if (Math.log10(prevLineNr) - Math.log10(lineNr) != 0 ) {
+      if ((int) Math.log10(prevLineNr) - (int) Math.log10(lineNr) != 0) {
          revalidate();
       }
    }
@@ -230,7 +230,7 @@ public final class EditArea {
    }
 
    private void initEditAreaPnl() {
-      editAreaPnl.setBorder(Constants.DARK_BORDER);
+      editAreaPnl.setBorder(Constants.GRAY_BORDER);
    }
 
    private void initTextArea() {
@@ -241,8 +241,8 @@ public final class EditArea {
       lineNrArea.setBorder(WHITE_BORDER);
       lineNrArea.setEditable(false);
       lineNrArea.setFocusable(false);
-      DefaultCaret caretLine = (DefaultCaret) lineNrArea.getCaret();
-      caretLine.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+      DefaultCaret caret = (DefaultCaret) lineNrArea.getCaret();
+      caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
    }
 
    private void initWordwrapScrolling() {
@@ -263,8 +263,7 @@ public final class EditArea {
       linkedLineNrScroll.setViewportView(disabledWordwrapPnl);
       lineNrScroll.setViewportView(lineNrArea);
       lineNrScroll.setBorder(null);
-      lineNrScroll.setBorder(new MatteBorder(0, 0, 0, 1,
-            Constants.BORDER_DARK_GRAY));
+      lineNrScroll.setBorder(new MatteBorder(0, 0, 0, 1, Constants.GRAY));
       lineNrScroll.getVerticalScrollBar().setModel
             (linkedLineNrScroll.getVerticalScrollBar().getModel());
    }
