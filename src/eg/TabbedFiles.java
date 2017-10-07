@@ -95,7 +95,7 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Opens a file selected in <code>FileTree</code>
+    * Opens a file that is double clicked in <code>FileTree</code>
     */
    @Override
    public void update(Observable o, Object arg) {
@@ -105,8 +105,6 @@ public class TabbedFiles implements Observer {
 
    /**
     * Opens a file that is selected in the file chooser.
-    * If a project is not yet defined it is tried to set active a
-    * project
     */
    public void openFileByChooser() {
       File f = fc.fileToOpen();
@@ -125,10 +123,10 @@ public class TabbedFiles implements Observer {
     * Saves the text content of the selected tab.
     * <p>{@link #saveAs(boolean)} is called if the selected tab is
     * unnamed or if the content was read in from a file that no longer
-    * exists.
+    * exists on the harddrive.
     *
     * @param update   if the view (e.g. tab title, file view) is
-    * updated and it is tried to retrieve a project
+    * updated and if it is tried to retrieve a project
     * @return  if the text content was saved
     */
    public boolean save(boolean update) {
@@ -166,8 +164,7 @@ public class TabbedFiles implements Observer {
 
    /**
     * Saves the text content in the selected tab as a new file that
-    * is specified in the file chooser or asks to replace the file
-    * if it exists
+    * is specified in the file chooser
     *
     * @param update  if the view (e.g. tab title, file view) is
     * updated and it is tried to retrieve a project
@@ -205,8 +202,8 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Closes a tab if the text content is saved or asks if closing
-    * shall happen with or without saving
+    * Closes a tab if the text content is saved or asks in a dialog
+    * if closing shall happen with or without saving
     *
     * @param createEmptyTab  true to create a new empty tab when all tabs
     * are closed
@@ -215,24 +212,25 @@ public class TabbedFiles implements Observer {
       boolean removable = fDoc[iTab].isContentSaved();
       if (!removable) {
          int res = saveOrCloseOption(iTab);
-         if (res == JOptionPane.YES_OPTION) {
+         if (JOptionPane.YES_OPTION == res) {
             removable = save(false);
          }
          else {
-            removable = res == JOptionPane.NO_OPTION;
+            removable = JOptionPane.NO_OPTION == res;
          }
       }
       if (removable) {
          removeTab();
-         if (createEmptyTab && nTabs() == 0) {
+         if (nTabs() == 0 && createEmptyTab) {
             openEmptyTab();
          }
       }
    }
 
    /**
-    * Closes all tabs or selects the first tab whose text content is found
-    * unsaved
+    * Closes all tabs or selects the first tab whose text content is
+    * found unsaved and asks in a dialog if closing shall happen with
+    * or without saving
     */
    public void closeAll() {
       int count = unsavedTab();
@@ -263,7 +261,8 @@ public class TabbedFiles implements Observer {
 
    /**
     * Exits the program or selects the first tab whose text content is
-    * found unsaved
+    * found unsaved and asks in a dialog if closing shall happen with
+    * or without saving
     */
    public void exit() {
       int count = unsavedTab();
