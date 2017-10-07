@@ -70,7 +70,7 @@ public class FunctionPanel {
       closeBt.setFocusable(false);
       titlePnl.add(Box.createHorizontalGlue());
       titlePnl.add(closeBt);
-      pnl.setBorder(Constants.DARK_BORDER);
+      pnl.setBorder(Constants.GRAY_BORDER);
       pnl.add(titlePnl, BorderLayout.NORTH);
    }
 }

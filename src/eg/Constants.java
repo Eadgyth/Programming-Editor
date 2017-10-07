@@ -35,31 +35,19 @@ public class Constants {
     //
 
     /**
-     * The gray color for borders */
-    public final static Color BORDER_GRAY = new Color(150, 150, 150);
-
-    /**
-     * The darker gray color for borders */
-    public final static Color BORDER_DARK_GRAY = new Color(100, 100, 100);
-
-    /**
-     * The light gray color for borders */
-    public final static Color BORDER_LIGHT_GRAY = new Color(210, 210, 210);
+     * The gray color */
+    public final static Color GRAY = new Color(100, 100, 100);
 
     //
     // Borders
     //
 
     /**
-     * The  line border with gray color */
-    public final static Border BORDER = new LineBorder(BORDER_GRAY, 1);
+     * The line border with dark gray color */
+    public final static Border GRAY_BORDER = new LineBorder(GRAY, 1);
 
     /**
-     * The  line border with dark gray color */
-    public final static Border DARK_BORDER = new LineBorder(BORDER_DARK_GRAY, 1);
-
-    /**
-     * Empty border with thickness 5 pt */
+     * Empty border with thickness of 5 pt */
     public final static Border EMPTY_BORDER = new EmptyBorder(5, 5, 5, 5);
 
     //
