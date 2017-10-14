@@ -9,13 +9,6 @@ import eg.ui.ConsoleOpenable;
  * The selection and creation of an object of type {@code ProjectActions}
  */
 public class SelectedProject {
-   
-   /**
-    * The file extensions that can identify a project category
-    */
-   public String[] projectSuffixes = {
-      "htm", "html", "java", "pl"
-   };
 
    private final ConsoleOpenable co;
    private final ProcessStarter proc;
@@ -43,7 +36,7 @@ public class SelectedProject {
     * and creates the <code>SettingsWin</code> for the project.
     *
     * @param suffix  the file extension which a project is to be defined for
-    * @return  an object of type {@link ProjectActions} or null of
+    * @return  an object of type {@link ProjectActions} or null if
     * <code>suffix</code> does not specify a project
     */
    public ProjectActions createProject(String suffix) {

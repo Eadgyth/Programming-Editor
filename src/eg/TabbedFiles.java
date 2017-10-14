@@ -321,7 +321,7 @@ public class TabbedFiles implements Observer {
 
    private void createDocument(File f) {
       try {
-         mw.setBusyCursor(true);
+         mw.setBusyCursor();
          int n = nTabs();
          editArea[n] = format.createEditArea();
          fDoc[n] = new FileDocument(editArea[n], f);
@@ -332,7 +332,7 @@ public class TabbedFiles implements Observer {
          prefs.storePrefs("recentPath", fDoc[n].dir());
       }
       finally {
-         mw.setBusyCursor(false);
+         mw.setDefaultCursor();
       } 
    }
    

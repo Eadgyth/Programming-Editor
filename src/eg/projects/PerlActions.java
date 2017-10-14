@@ -17,7 +17,7 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
    private String startCommand = "";
    
    PerlActions(ConsoleOpenable co, ProcessStarter proc) {
-      super(".pl");
+      super("pl");
       this.co = co;
       this.proc = proc;
    }
@@ -76,7 +76,6 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
       if (getArgs().length() > 0) {
          main += " " + getArgs();
       }
-
       if (getSourceDirName().length() == 0 ) {
          startCommand = "perl " + main;
       }

@@ -8,7 +8,7 @@ public interface Colorable {
    /**
     * Colors text
     *
-    * @param col  the reference to {@link Coloring}
+    * @param search  the reference to {@link SyntaxSearch}
     */
-   public void color(Coloring col);
+   public void color(SyntaxSearch search);
 }

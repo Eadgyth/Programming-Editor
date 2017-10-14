@@ -16,7 +16,7 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    private File htmlFile;
    
    HtmlActions(String suffix) {
-      super("." + suffix);
+      super(suffix);
    }
    
    /**
@@ -59,7 +59,7 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void runProject() {
-      try{
+      try {
          if (java.awt.Desktop.isDesktopSupported()) {
             java.awt.Desktop.getDesktop().open(htmlFile);
          }
@@ -71,8 +71,8 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    
    //--private--//
    
-   private void setHtmlFile() {      
-      htmlFile = new File(getProjectPath() + F_SEP
-            + getModuleName() + F_SEP + getMainFile() + super.getSourceSuffix());
+   private void setHtmlFile() {
+      htmlFile = new File(getProjectPath() + F_SEP + getModuleName()
+               + F_SEP + getMainFile() + "." + getSourceSuffix());
    }
 }

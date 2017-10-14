@@ -9,6 +9,10 @@ import eg.TabbedFiles;
 import eg.CurrentProject;
 import eg.Edit;
 
+/**
+ * The toolbar.
+ * <p> Created in {@link MainWin}
+ */
 class Toolbar {
 
    private final JToolBar toolbar = new JToolBar(JToolBar.HORIZONTAL);
@@ -30,22 +34,22 @@ class Toolbar {
       initToolbar();
    }
 
-   JToolBar toolbar() {
+   public JToolBar toolbar() {
       return toolbar;
    }
 
-  void registerFileAct(TabbedFiles tf) {
+   public void setFileActions(TabbedFiles tf) {
       openBt.addActionListener(e -> tf.openFileByChooser());
       saveBt.addActionListener(e -> tf.save(true));
    }
 
-  void registerProjectAct(CurrentProject currProj) {
+   public void setProjectActions(CurrentProject currProj) {
       changeProjBt.addActionListener(e -> currProj.changeProject());
       runBt.addActionListener(e -> currProj.runProj());
       compileBt.addActionListener(e -> currProj.saveAllAndCompile());
    }
 
-   void registerEditTextAct(Edit edit) {
+   public void setEditTextActions(Edit edit) {
       undoBt.addActionListener(e -> edit.undo());
       redoBt.addActionListener(e -> edit.redo());
       cutBt.addActionListener(e -> edit.cut());
@@ -55,23 +59,40 @@ class Toolbar {
       outdentBt.addActionListener(e -> edit.outdent());
    }
 
-   void enableProjBts(boolean isCompile, boolean isRun) {
+   public void enableCompileRunBts(boolean isCompile, boolean isRun) {
       compileBt.setEnabled(isCompile);
       runBt.setEnabled(isRun);
    }
    
+   /**
+    * Enables/disables the button for the action to change project
+    *
+    * @param isEnabled  if the botton for changing project
+    * is enabled
+    */
    void enableChangeProjBt(boolean isEnabled) {
       changeProjBt.setEnabled(isEnabled);
    }
    
+   /**
+    * Enables/disables the buttons for cut and copy actions
+    *
+    * @param isEnabled  if the buttons for cut and copy are enabled
+    */
    void enableCutCopyBts(boolean isEnabled) {
       cutBt.setEnabled(isEnabled);
       copyBt.setEnabled(isEnabled);
    }
 
-   void enableUndoRedoBts(boolean canUndo, boolean canRedo) {
-      undoBt.setEnabled(canUndo);
-      redoBt.setEnabled(canRedo);
+   /**
+    * Enables/disables the buttons for undo and redo actions
+    *
+    * @param enableUndo  if the button for undo is enabled
+    * @param enableRedo  if the button for redo is enabled
+    */
+   public void enableUndoRedoBts(boolean enableUndo, boolean enableRedo) {
+      undoBt.setEnabled(enableUndo);
+      redoBt.setEnabled(enableRedo);
    }
 
    //
@@ -82,7 +103,7 @@ class Toolbar {
       toolbar.setOpaque(false);
       toolbar.setBorder(null);
       toolbar.setFloatable(false);
-      enableProjBts(false, false);
+      enableCompileRunBts(false, false);
       changeProjBt.setEnabled(false);
       JButton[] bts = new JButton[] {
          openBt, saveBt,

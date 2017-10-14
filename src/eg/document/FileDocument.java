@@ -81,7 +81,7 @@ public final class FileDocument {
     /**
     * Gets the name of this file
     *
-    * @return  the name of this file.The empty string
+    * @return  the name of this file. The empty string
     * of no file has been assinged
     */
    public String filename() {
@@ -89,7 +89,7 @@ public final class FileDocument {
    }
    
    /**
-    * Gets the parent directory of this file.
+    * Gets the parent directory of this file
     *
     * @return  the parent directory of this file. The empty string
     * of no file has been assinged
@@ -270,15 +270,15 @@ public final class FileDocument {
 
    /**
     * Colors a section of the document if this language is not plain
-    * text
+    * text.
+    * @see TypingEdit#colorMultipleLines(String,int)
     *
-    * @param section  a section of the document
+    * @param section  a section of the document text
     * @param pos  the pos where the section starts
-    * @see TypingEdit#colorSection(String,int)
     */
    public void colorSection(String section, int pos) {
       if (Languages.PLAIN_TEXT != lang) {
-         type.colorSection(section, pos);
+         type.colorMultipleLines(section, pos);
       }
    }
    
@@ -371,7 +371,9 @@ public final class FileDocument {
       catch (IOException e) {
          FileUtils.logStack(e);
       }
-      type.enableDocListen(true);
+      finally {
+         type.enableDocListen(true);
+      }
    }
 
    /**

@@ -68,12 +68,8 @@ public class FileChooser {
    private void initChooserOpen(String startingDir) {
       chOpen = new JFileChooser(startingDir);
       chOpen.setDialogTitle("Open");
-      chOpen.setAcceptAllFileFilterUsed(false);
+      chOpen.setAcceptAllFileFilterUsed(true);
       chOpen.setApproveButtonText("Open");
-      chOpen.addChoosableFileFilter(new FileNameExtensionFilter(
-            "",
-            "txt", "java", "js", "pl", "pm", "properties",
-            "html", "htm", "xml", "bat"));
       chOpen.setFileSelectionMode(JFileChooser.FILES_ONLY); 
       setIcons(chOpen);
    }
@@ -81,7 +77,7 @@ public class FileChooser {
    private void initChooserSave(String startingDir) {
       chSave = new JFileChooser(startingDir);
       chSave.setAcceptAllFileFilterUsed(true);
-      chSave.setDialogTitle("Save as");
+      chSave.setDialogTitle("Save file as...");
       setIcons(chSave);
    }
    

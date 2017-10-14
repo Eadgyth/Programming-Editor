@@ -1,4 +1,4 @@
-package eg.ui;
+package eg.ui.menu;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
@@ -12,7 +12,11 @@ import eg.CurrentProject;
 
 import eg.ui.IconFiles;
 
-class ProjectMenu {
+/**
+ * The menu for project actions.
+ * <p> Created in {@link MenuBar}
+ */
+public class ProjectMenu {
    
    private final JMenu     menu       = new JMenu("Project");
    private final JMenuItem SaveCompile
@@ -23,20 +27,20 @@ class ProjectMenu {
    private final JMenuItem run        = new JMenuItem("Run", IconFiles.RUN_ICON);
    private final JMenuItem build      = new JMenuItem("Build");
    private final JMenuItem setProject = new JMenuItem("Project settings");
-   private final JMenuItem newProj    = new JMenuItem("New project");
+   private final JMenuItem newProj    = new JMenuItem("Assign project");
    private final JMenuItem changeProj
          = new JMenuItem("Change project", IconFiles.CHANGE_PROJ_ICON);
    
-   ProjectMenu() {
+   public ProjectMenu() {
       assembleMenu();
       shortCuts();
    }
    
-   JMenu getMenu() {
+   public JMenu getMenu() {
       return menu;
    }
    
-   void registerAct(CurrentProject currProj) {
+   public void setActions(CurrentProject currProj) {
       setProject.addActionListener(e -> currProj.openSettingsWindow());
       changeProj.addActionListener(e -> currProj.changeProject());
       newProj.addActionListener(e -> currProj.createProject());
@@ -46,22 +50,24 @@ class ProjectMenu {
       SaveAllCompile.addActionListener(e -> currProj.saveAllAndCompile());
    }
    
-   void enableChangeProjItm(boolean isEnabled) {
+   public void enableChangeProjItm(boolean isEnabled) {
       changeProj.setEnabled(isEnabled);
    }
 
-   void enableProjItms(boolean isCompile, boolean isRun, boolean isBuild) {
+   public void enableCompileRunBuildItms(boolean isCompile, boolean isRun,
+         boolean isBuild) {
+
       SaveCompile.setEnabled(isCompile);
       SaveAllCompile.setEnabled(isCompile);
       run.setEnabled(isRun);
       build.setEnabled(isBuild);
    }
    
-   void setBuildLabel(String label) {
+   public void setBuildLabel(String label) {
       build.setText(label);
    }
 
-   void assembleMenu() {
+   private void assembleMenu() {
       menu.add(SaveCompile);
       SaveCompile.setEnabled(false);
       menu.add(SaveAllCompile);

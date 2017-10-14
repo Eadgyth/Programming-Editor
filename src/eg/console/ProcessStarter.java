@@ -125,7 +125,7 @@ public class ProcessStarter {
    }
 
    //
-   // private
+   //--private--//
    //
 
    private void sendOutput(PrintWriter out) {
@@ -169,9 +169,9 @@ public class ProcessStarter {
     */
    private void startNewCmd() {
       String cmd = JOptions.dialogRes(
-               "Enter a system command that is executed in the current"
-               + " working directory (" + workingDirName + ")",
-               "Run", previousCmd);
+            "Enter a system command that is executed in the current"
+            + " working directory '" + workingDirName + "'", "Run",
+            previousCmd);
       if (cmd != null && cmd.length() > 0) {
          consPnl.enableRunBt(false);
          startProcess(cmd);
@@ -200,7 +200,7 @@ public class ProcessStarter {
       }
    }
    
-   private class CaptureInput extends SwingWorker<Void, String> { // why String?
+   private class CaptureInput extends SwingWorker<Void, String> {
       PrintWriter out; // to close after program exited
       InputStream is = process.getInputStream();
       InputStreamReader isr = new InputStreamReader(is);

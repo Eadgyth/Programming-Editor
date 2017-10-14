@@ -1,4 +1,4 @@
-package eg.ui;
+package eg.ui.menu;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,13 +15,17 @@ import javax.swing.JMenuItem;
 import eg.javatools.SearchFiles;
 import eg.plugin.PluginStarter;
 
-class PluginMenu {
-   
+/**
+ * The menu for starting a plugin.
+ * <p> Created in {@link MenuBar}
+ */
+public class PluginMenu {
+
    private final JMenu menu          = new JMenu("Plugins");
    private final JMenu allPlugsMenu  = new JMenu("Add to function panel");
    private JMenuItem[] selectPlugItm = null;
-   
-   PluginMenu() {    
+
+   PluginMenu() {
       menu.add(allPlugsMenu);
       File[] plugJars = null;
       plugJars = new SearchFiles().filteredFilesToArr("./Plugins", ".jar");
@@ -34,23 +38,29 @@ class PluginMenu {
       }
       menu.setMnemonic(KeyEvent.VK_U);
    }
-   
+
    JMenu getMenu() {
       return menu;
    }
-   
-   void startPlugin(PluginStarter plugStart, ViewMenu vMenu) {
+
+   /**
+    * Starts a plugin and opens the function panel
+    *
+    * @param plugStart  the reference to {@link PluginStarter}
+    * @param vMenu  the reference to {@link ViewMenu}
+    */
+   public void startPlugin(PluginStarter plugStart, ViewMenu vMenu) {
       selectPlugAct((ActionEvent e) -> {
          try {
             plugStart.startPlugin(getPluginIndex(e));
             vMenu.doFunctionItmAct(true);
          }
          catch (IOException ioe) {
-            System.out.println(ioe.getMessage());  
+            eg.utils.FileUtils.logStack(ioe);
          }
       });
    }
-   
+
    private void selectPlugAct(ActionListener al) {
       if (selectPlugItm != null) {
           for (JMenuItem itm : selectPlugItm) {
@@ -58,10 +68,7 @@ class PluginMenu {
           }
       }
    }
-   
-   /**
-    * @return  the index of the plugin selected in the menu
-    */
+
    private int getPluginIndex(ActionEvent e) {
       int pluginIndex = 0;
       for (int i = 0; i < selectPlugItm.length; i++) {

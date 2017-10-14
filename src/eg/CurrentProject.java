@@ -51,7 +51,7 @@ public class CurrentProject {
    private final String[] projectOptions;
 
    private ProjectActions current;
-   private FileDocument currDoc;
+   private FileDocument currFDoc;
    private FileDocument[] fDoc;
    private String docSuffix;
 
@@ -63,11 +63,11 @@ public class CurrentProject {
       this.mw = mw;
       this.fDoc = fDoc;
       proc = new ProcessStarter(mw.console());
-      selProj = new SelectedProject(mw.consOpen(), proc, mw.console());
-      projectOptions = new String[selProj.projectSuffixes.length + 1];
+      selProj = new SelectedProject(mw, proc, mw.console());
+      projectOptions = new String[Constants.PROJECT_SUFFIXES.length + 1];
       projectOptions[0] = "File extensions...";
-      for (int i = 0; i < selProj.projectSuffixes.length; i++) {
-         projectOptions[i + 1] = selProj.projectSuffixes[i];
+      for (int i = 0; i < Constants.PROJECT_SUFFIXES.length; i++) {
+         projectOptions[i + 1] = Constants.PROJECT_SUFFIXES[i];
       }
    }
 
@@ -77,13 +77,13 @@ public class CurrentProject {
     * @param i  the index of the array element
     */
    public void setFileDocumentAt(int i) {
-      currDoc = fDoc[i];
-      docSuffix = FileUtils.fileSuffix(currDoc.filename());
-      ProjectActions inList = selectFromList(currDoc.dir(), true);
+      currFDoc = fDoc[i];
+      docSuffix = FileUtils.fileSuffix(currFDoc.filename());
+      ProjectActions inList = selectFromList(currFDoc.dir(), true);
       mw.enableChangeProject(inList != null);
       if (current != null) {
-         if (!current.isInProject(currDoc.dir())) {
-            mw.enableProjActions(false, false, false);
+         if (!current.isInProject(currFDoc.dir())) {
+            mw.enableCompileRunBuild(false, false, false);
          }
          else {
             enableActions(current);
@@ -98,18 +98,18 @@ public class CurrentProject {
     * @see eg.projects.ProjectConfig#retrieveProject(String)
     */
    public void retrieveProject() {
-      if (current != null && current.isInProject(currDoc.dir())) {
+      if (current != null && current.isInProject(currFDoc.dir())) {
          return;
       }
       EventQueue.invokeLater(() -> {
          ProjectActions projToFind = selProj.createProject(docSuffix);
          boolean isFound = projToFind != null
-               && projToFind.retrieveProject(currDoc.dir());
+               && projToFind.retrieveProject(currFDoc.dir());
          if (projToFind == null) {
-            for (String opt : selProj.projectSuffixes) {
+            for (String opt : Constants.PROJECT_SUFFIXES) {
                projToFind = selProj.createProject(opt);
                isFound = projToFind != null
-                     && projToFind.retrieveProject(currDoc.dir());
+                     && projToFind.retrieveProject(currFDoc.dir());
                if (isFound) {
                   break;
                }
@@ -124,7 +124,7 @@ public class CurrentProject {
                updateProjectSetting(current);
             }
             else {
-               if (selectFromList(currDoc.dir(), true) == null) {
+               if (selectFromList(currFDoc.dir(), true) == null) {
                   projFin.addOkAction(e -> configureProject(projFin));
                   projList.add(projFin);
                   changeProject(projFin);
@@ -142,7 +142,7 @@ public class CurrentProject {
     * or to a newly created project.
     */
    public void openSettingsWindow() {
-      ProjectActions fromList = selectFromList(currDoc.dir(), false);
+      ProjectActions fromList = selectFromList(currFDoc.dir(), false);
       if (fromList == null) {
          int res = JOptions.confirmYesNo("Set new project?");
          if (res == 0) {
@@ -168,7 +168,7 @@ public class CurrentProject {
     * proceed is shown.
     */
    public void createProject() {
-      ProjectActions fromList = selectFromList(currDoc.dir(), false);
+      ProjectActions fromList = selectFromList(currFDoc.dir(), false);
       if (fromList == null) {
          createProjectImpl();
       }
@@ -182,7 +182,7 @@ public class CurrentProject {
     * which the currently selected <code>FileDocument</code> belongs to.
     */
    public void changeProject() {
-      ProjectActions fromList = selectFromList(currDoc.dir(), true);
+      ProjectActions fromList = selectFromList(currFDoc.dir(), true);
       changeProject(fromList);
    }
 
@@ -191,7 +191,7 @@ public class CurrentProject {
     * belongs to this current project
     */
    public void updateFileTree() {
-      if (current != null && current.isInProject(currDoc.dir())) {
+      if (current != null && current.isInProject(currFDoc.dir())) {
          EventQueue.invokeLater(() -> mw.fileTree().updateTree());
       }
    }
@@ -202,21 +202,21 @@ public class CurrentProject {
     */
    public void saveAndCompile() {
       try {
-        mw.setBusyCursor(true);
-        if (isFileToCompile(currDoc)) {
-            if (currDoc.docFile().exists()) {
-               currDoc.saveFile();
+        mw.setBusyCursor();
+        if (isFileToCompile(currFDoc)) {
+            if (currFDoc.docFile().exists()) {
+               currFDoc.saveFile();
                current.compile();
                updateFileTree();
             }
             else {
-               JOptions.warnMessage(currDoc.filename()
+               JOptions.warnMessage(currFDoc.filename()
                      + ":\nThe file could not be found anymore");
             }
          }
       }
       finally {
-         EventQueue.invokeLater(() ->  mw.setBusyCursor(false));
+         EventQueue.invokeLater(() ->  mw.setDefaultCursor());
       }
    }
 
@@ -226,7 +226,7 @@ public class CurrentProject {
     */
    public void saveAllAndCompile() {
       try {
-         mw.setBusyCursor(true);
+         mw.setBusyCursor();
          StringBuilder missingFiles = new StringBuilder();
          for (int i = 0; i < fDoc.length; i++) {
             if (isFileToCompile(fDoc[i])) {
@@ -248,7 +248,7 @@ public class CurrentProject {
          }
       }
       finally {
-         EventQueue.invokeLater(() -> mw.setBusyCursor(false));
+         EventQueue.invokeLater(() -> mw.setDefaultCursor());
       }
    }
 
@@ -264,12 +264,12 @@ public class CurrentProject {
     */
    public void buildProj() {
       try {
-         mw.setBusyCursor(true);
+         mw.setBusyCursor();
          current.build();
          updateFileTree();
       }
       finally {
-         EventQueue.invokeLater(() -> mw.setBusyCursor(false));
+         EventQueue.invokeLater(() -> mw.setDefaultCursor());
       }
    }
 
@@ -278,14 +278,15 @@ public class CurrentProject {
    //
 
    private void createProjectImpl() {
-      if (currDoc.filename().length() == 0) {
+      if (!currFDoc.hasFile()) {
          JOptions.titledInfoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          return;
       }
+      System.out.println(docSuffix);
       ProjectActions projNew = selProj.createProject(docSuffix);
       if (projNew == null) {
          String selectedSuffix
-               = JOptions.comboBoxRes(wrongExtentionMessage(currDoc.filename()),
+               = JOptions.comboBoxRes(wrongExtentionMessage(currFDoc.filename()),
                "File extension", projectOptions, null, true);
          if (selectedSuffix != null && !selectedSuffix.equals(projectOptions[0])) {
             projNew = selProj.createProject(selectedSuffix);
@@ -324,7 +325,7 @@ public class CurrentProject {
    }
 
    private void configureProject(ProjectActions projToConf) {
-      if (projToConf.configureProject(currDoc.dir())) {
+      if (projToConf.configureProject(currFDoc.dir())) {
          current = projToConf;
          projList.add(current);
          updateProjectSetting(current);
@@ -338,7 +339,7 @@ public class CurrentProject {
    }
 
    private void confirmedNewProject(ProjectActions toConfirm) {
-      int res = JOptions.confirmYesNo(currDoc.filename()
+      int res = JOptions.confirmYesNo(currFDoc.filename()
               + "\nThe file belongs to the project "
               + "'" + toConfirm.getProjectName() + "'."
               + "\nStill set new project?");
@@ -370,13 +371,13 @@ public class CurrentProject {
    private void enableActions(ProjectActions projToSet) {
       switch (className(projToSet)) {
          case "JavaActions":
-            mw.enableProjActions(true, true, true);
+            mw.enableCompileRunBuild(true, true, true);
             break;
          case "HtmlActions":
-            mw.enableProjActions(false, true, false);
+            mw.enableCompileRunBuild(false, true, false);
             break;
          case "PerlActions":
-            mw.enableProjActions(false, true, false);
+            mw.enableCompileRunBuild(false, true, false);
             break;
       }
    }

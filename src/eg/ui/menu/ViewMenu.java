@@ -1,4 +1,4 @@
-package eg.ui;
+package eg.ui.menu;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
@@ -7,7 +7,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 
-class ViewMenu implements ConsoleOpenable{
+/**
+ * The menu for view actions.
+ * <p>Created in {@link MenuBar}
+ */
+public class ViewMenu {
    
    private final JMenu menu = new JMenu("View");
 
@@ -22,87 +26,77 @@ class ViewMenu implements ConsoleOpenable{
    private final JMenuItem openSettingsItm
          = new JMenuItem("Other settings...");
 
-   ViewMenu() {
+   public ViewMenu() {
       assembleMenu();
    }
    
-   JMenu getMenu() {
+   public JMenu getMenu() {
       return menu;
    }
    
-   @Override
-   public boolean isConsoleOpen() {
-      return isConsoleItmSelected();
-   }
-   
-   @Override
-   public void openConsole() {
-      doConsoleItmAct(true);
-   }
-   
-   void consoleItmAct(ActionListener al) {
+   public void setConsoleItmAction(ActionListener al) {
       consoleItm.addActionListener(al);
    }
    
-   void fileViewItmAct(ActionListener al) {
+   public void setFileViewItmAction(ActionListener al) {
       fileViewItm.addActionListener(al);
    }
    
-   void functionItmAct(ActionListener al) {
+   public void setFunctionItmAction(ActionListener al) {
       functionItm.addActionListener(al);
    }
    
-   void tabItmAct(ActionListener al) {
+   public void setTabItmAction(ActionListener al) {
       tabItm.addActionListener(al);
    }
    
-   void openSettingWinItmAct(ActionListener al) {
+   public void openSettingWinItmAction(ActionListener al) {
       openSettingsItm.addActionListener(al);
    }
    
-   boolean isConsoleItmSelected() {
+   public boolean isConsoleItmSelected() {
       return consoleItm.isSelected();
    }
 
-   boolean isFileViewItmSelected() {
+   public boolean isFileViewItmSelected() {
       return fileViewItm.isSelected();
    }
 
-   boolean isFunctionItmSelected() {
+   public boolean isFunctionItmSelected() {
       return functionItm.isSelected();
    }
    
-   boolean isTabItmSelected() {
+   public boolean isTabItmSelected() {
       return tabItm.isSelected();
    }
 
-   void doConsoleItmAct(boolean select) {
+   public void doConsoleItmAct(boolean select) {
       if (select != consoleItm.isSelected()) {
          consoleItm.doClick();
       }
    }
 
-   void doUnselectFileViewAct() {
+   public void doUnselectFileViewAct() {
       if (fileViewItm.isSelected()) {
           fileViewItm.doClick();
        }
    }
 
-   void doFunctionItmAct(boolean select) {
+   public void doFunctionItmAct(boolean select) {
       if (select != functionItm.isSelected()) {
          functionItm.doClick();
       }
    }
 
-   void selectTabsItm(boolean select) {
+   public void selectTabsItm(boolean select) {
       tabItm.setSelected(select);
    }
    
-   void enableFileViewItm() {
+   public void enableFileViewItm() {
       fileViewItm.setEnabled(true);
    }
    
-   void enableTabItm(boolean isEnabled) {
+   public void enableTabItm(boolean isEnabled) {
       tabItm.setEnabled(isEnabled);
    }
    

@@ -55,7 +55,6 @@ public abstract class ProjectConfig implements Configurable {
 
    /**
     * @param suffix  the file extension of source files
-    * Includes the dot (e.g. .java)
     */
    protected ProjectConfig(String suffix) {
       this.suffix = suffix;
@@ -287,7 +286,9 @@ public abstract class ProjectConfig implements Configurable {
          sb.append(moduleDirName);
          sb.append(F_SEP);
       }
-      sb.append(mainFile + suffix);
+      sb.append(mainFile);
+      sb.append(".");
+      sb.append(suffix);
       return sb.toString();
    }
 

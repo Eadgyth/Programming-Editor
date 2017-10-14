@@ -33,9 +33,9 @@ public class Eadgyth {
       EditAreaFormat  format     = new EditAreaFormat(viewSetWin);
       TabbedFiles     tabFiles   = new TabbedFiles(format, mw);
 
-      mw.registerFileAct(tabFiles);
-      mw.openViewSettingWinAct(e -> viewSetWin.makeVisible(true));
-      mw.registerFormatAct(format);
+      mw.setFileActions(tabFiles);
+      mw.setViewSettingWinAction(viewSetWin);
+      mw.setFormatActions(format);
       viewSetWin.okAct(e -> {
          viewSet.applySetWinOk();
          format.applySetWinOk();

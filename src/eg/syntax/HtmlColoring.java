@@ -1,5 +1,8 @@
 package eg.syntax;
 
+/**
+ * Syntax coloring for Html
+ */
 public class HtmlColoring implements Colorable {
    
    // incomplete
@@ -29,6 +32,7 @@ public class HtmlColoring implements Colorable {
       "class",  "cols", "content",
       "height", "href",
       "id",
+      "name",
       "onclick",
       "rows",
       "scr", "source", "style",
@@ -39,21 +43,15 @@ public class HtmlColoring implements Colorable {
 
    private final static String BLOCK_CMNT_START = "<!--";
    private final static String BLOCK_CMNT_END = "-->";
+   private final JavascriptColoring jsCol = new JavascriptColoring();
 
    @Override
-   public void color(Coloring col) {
-      if (!col.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)
-             & !col.isInBlock(SyntaxUtils.BLOCK_CMNT_START,
-                              SyntaxUtils.BLOCK_CMNT_END)) {
-
-         col.setCharAttrBlack();
-         col.htmlTags(TAGS);
-         col.htmlKeywords(ATTRIBUTES, "<", ">");
-         col.htmlKeywords(JavascriptColoring.JS_KEYWORDS, "<script>", "</script>");
-         col.quotedTextHtml();
-         col.lineCommentsJavascriptInHtml();
+   public void color(SyntaxSearch search) {
+      if (!search.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
+         search.setCharAttrBlack();
+         search.htmlTags(TAGS, ATTRIBUTES);
+         search.javascript(jsCol);
       }
-      col.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
-      col.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
+      search.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
    }
 }

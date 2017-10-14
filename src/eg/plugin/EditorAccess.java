@@ -7,12 +7,11 @@ import eg.ui.FunctionPanel;
 import eg.document.FileDocument;
 
 /**
- * Makes accessible for a plugin methods to work with the text that is
- * currently viewed in the main window's text area (i.e., the opened or
- * tab selected document).
+ * Makes accessible methods to work with the text that is currently
+ * viewed in text area of the main window.
  * <p>
- * Also includes the possibility to add a {@code Component} to the 'function
- * panel' in the main window.
+ * Includes the possibility to add a <code>Component</code> to the
+ * {@link FunctionPanel} that is shown in the main window
  */
 public class EditorAccess {
    
@@ -38,11 +37,11 @@ public class EditorAccess {
    }
    
    /**
-    * Gets the text in the currently viewed text area
+    * Gets the text of the <code>StyledDocment</code> that is
+    * shown in the currently viewed text area
     *
-    * @return  the text in the currently viewed text area that is
-    * is contained in the {@code Document} associated with the
-    * {@code JTextPane}
+    * @return  the text of the document in the currently viewed
+    * text area
     */
    public String getText() {
       return fDoc.getText();
@@ -76,7 +75,8 @@ public class EditorAccess {
    }
    
    /**
-    * Adds a {@code Component} to the 'function panel' in the main window
+    * Adds a <code>Component</code> to the 'function panel' in the
+    * main window
     *
     * @param c  the {@code Component} that is added
     * @param title  the title for the function

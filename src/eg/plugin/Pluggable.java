@@ -6,8 +6,8 @@ package eg.plugin;
 public interface Pluggable {
    
    /**
-    * Sets a reference to an EditorAccess object
-    * @param acc  an object of {@link EditorAccess}
+    * Sets the reference to <code>EditorAccess</code>
+    * @param acc  the reference to {@link EditorAccess}
     */
    public void setEditorAccess(EditorAccess acc);
 

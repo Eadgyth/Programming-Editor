@@ -20,11 +20,13 @@ public class Constants {
 
    /**
     * The screen size */
-   public final static Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
+   public final static Dimension SCREEN_SIZE
+         = Toolkit.getDefaultToolkit().getScreenSize();
 
    /**
     * The screen resolution */
-   public final static int SCREEN_RES = Toolkit.getDefaultToolkit().getScreenResolution();
+   public final static int SCREEN_RES
+         = Toolkit.getDefaultToolkit().getScreenResolution();
 
    /**
     * The ratio between the screen resolution and the resolution in Graphics */
@@ -70,11 +72,18 @@ public class Constants {
     //
     // Strings
     //
-
+             
     /**
      * Extensions of files that can be opened */
-    public final static String[] SUFFIXES = {".bat", ".java", ".js", ".txt",
-             ".properties", ".html", ".htm", "xml", ".pl", ".pm"};
+    public final static String[] SUFFIXES = {
+       "bat", "java", "js", "txt",
+       "properties", "html", "htm", "xml", "pl", "pm"};
+             
+   /**
+    * Extensions of files that define a project */
+   public final static String[] PROJECT_SUFFIXES = {
+      "htm", "html", "java", "pl"
+   };
 
     //
     // private

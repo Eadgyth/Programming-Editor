@@ -33,7 +33,7 @@ public final class JavaActions extends ProjectConfig
    JavaActions(ConsoleOpenable co, ProcessStarter proc,
          ConsolePanel consPnl) {
 
-      super(".java");
+      super("java");
       this.co = co;
       this.proc = proc;
       this.consPnl = consPnl;

@@ -1,6 +1,6 @@
 package eg.syntax;
 
-/*
+/**
  * Static methods to search for text elements
  */
 public class SyntaxUtils {
@@ -56,36 +56,15 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns if the character following the <code>pos</code> is
-    * not a letter or a digit
+    * Returns the position of the last block start relative to the
+    * the specified position
     *
     * @param text  the text
-    * @param pos  the position that may be a the end of a word
-    * @return  if the character following the <code>pos</code> is
-    * not a letter or a digit
-    */
-   public static boolean isWordEnd(String text, int pos) {
-      if (text.length() > pos) {
-         char c = text.charAt(pos);
-         return !isLetterOrDigit(c);
-      }
-      else {
-         return true;
-      }
-   }
-
-   /**
-    * Returns the position of the last block start where block is a portion
-    * of text that is bordered by a block start and a block end signal.
-    *
-    * @param text  the text
-    * @param pos  the position relative to which the last block start is
-    * searched
-    * @param blockStart  the String that signals the start of a block
-    * @param blockEnd  the String that signals the end of a block
-    * @return  the position of the last block start before '{@code pos}'. -1
-    * if no block start is found or a block end is closer to '{@code pos}'
-    * than a block start
+    * @param pos  the position in the text
+    * @param blockStart  the start of a block
+    * @param blockEnd  the end of a block
+    * @return  the position of the last block start. -1 if a block end
+    * is closer than a block start or if no block start is found 
     */
    public static int lastBlockStart(String text, int pos, String blockStart,
          String blockEnd) {
@@ -105,16 +84,15 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the position of the next block end. -1 if the a block start
-    * is found before an end
+    * Returns the position of the next block end relative to the
+    * specified position
     *
     * @param text  the text
-    * @param pos  the position relative to which the next block end is
-    * searched
-    * @param blockStart  the String that signals the start of a block
-    * @param blockEnd  the String that signals the end of a block
-    * @return the position of the next block end. -1 if the a block start is
-    * found before an end
+    * @param pos  the position in the text
+    * @param blockStart  the start of a block
+    * @param blockEnd  the end of a block
+    * @return the position of the next block end. -1 if a block start is
+    * closer than a block end or if no block end is found
     */
    public static int nextBlockEnd(String text, int pos, String blockStart,
          String blockEnd) {
@@ -132,85 +110,10 @@ public class SyntaxUtils {
       }
       return nextEnd;
    }
-
-   /**
-    * Returns if the portion of text starting at the specified position
-    * and spanning the specified length is surrounded by double quotes
-    *
-    * @param text  the text
-    * @param pos  the start position of the portion that may be in quotes
-    * @param length  the of the portion that may be in quotes
-    * @return  if the portion of text starting at <code>pos</code>
-    * and spanning <code>length</code> is surrounded by double quotes
-    */
-   public static boolean isInQuotes(String text, int pos, int length) {
-      boolean isInQuotes = false;
-      int endPos = pos + length;
-      if (pos > 0 & text.length() > endPos) {
-         isInQuotes = text.charAt(pos - 1) == '\"'
-               & text.charAt(endPos) == '\"';
-      }
-      return isInQuotes;
-   }
-   
-   /**
-    * Returns the position of the specified String <code>toSearch</code>
-    * that is not preceded with a backslash
-    *
-    * @param text  the text
-    * @param toSearch  the String to seach
-    * @param pos  the position within <code>text</code> where the search
-    * starts
-    * @return  the position of <code>toSearch</code> that is not preceded
-    * with a backslash
-    */
-   public static int nextNotEscaped(String text, String toSearch, int pos) {
-      int index = text.indexOf(toSearch, pos);
-      while (SyntaxUtils.isEscaped(text, index)) {
-         index = text.indexOf(toSearch, index + 1);
-      }
-      return index;
-   }
-   
-   /**
-    * Returns if the portion of text between the specified start and end
-    * positions is an html tag
-    *
-    * @param text  the text
-    * @param start  the start position of the tag keyword
-    * @param end  the end position of the tag keyword
-    * @return  if the portion of text between <code>start</code> and
-    * <code>end</code> is an html tag
-    */
-   public static boolean isHtmlTag(String text, int start, int end) {
-      return isTagStart(text, start) && isTagEnd(text, end);
-   }
-
-   public static boolean isTagStart(String text, int start) {
-      boolean isTagStart = false;
-      if (start > 0) {
-         isTagStart = text.charAt(start - 1) == '<';
-      }
-      if (!isTagStart && start > 1) {
-         isTagStart = text.charAt(start - 1) == '/'
-               && text.charAt(start - 2) == '<';
-      }
-      return isTagStart;
-   }
-
-   public static boolean isTagEnd(String text, int end) {
-      if (text.length() > end) {
-         char c = text.charAt(end);
-         return c == '>' || c == ' ';
-      }
-      else {
-         return true;
-      }
-   }
    
    /**
     * Returns the length of a word that starts at the specified
-    * position and ends at one of the characters saved in
+    * position and ends at one of the characters in the specifies
     * <code>endChars</code>
     *
     * @param text  the text
@@ -240,8 +143,38 @@ public class SyntaxUtils {
       }
       return i - pos;
    }
+   
+   /**
+    * Returns if the section starting at the specified position
+    * and spanning the specified length is bordered by double quotes
+    *
+    * @param text  the text
+    * @param pos  the start position of the portion that may be in quotes
+    * @param length  the length of the section that may be in quotes
+    * @return  if the section of text starting at <code>pos</code>
+    * and spanning <code>length</code> is bordered by double quotes
+    */
+   public static boolean isInQuotes(String text, int pos, int length) {
+      boolean isInQuotes = false;
+      int endPos = pos + length;
+      if (pos > 0 & text.length() > endPos) {
+         isInQuotes = text.charAt(pos - 1) == '\"'
+               & text.charAt(endPos) == '\"';
+      }
+      return isInQuotes;
+   }
 
-   public static boolean isNotQuoted(String text, int pos) {
+   /**
+    * Returns if the specified position is found inside a section
+    * of text in double quotes
+    *
+    * @param text  the text
+    * @param pos  the position that may be found in quoted
+    * section
+    * @return  if the <code>pos</code> is found inside a section
+    * of text in double quotes
+    */
+   public static boolean isInQuotes(String text, int pos) {
       int count = 0;
       int i = 0;
       while (i != -1) {
@@ -257,16 +190,45 @@ public class SyntaxUtils {
          }
       }
       if (pos < i) {
-         return (count - 1) % 2 == 0;
+         return (count) % 2 == 0;
       }
       else {
-         return count <= 1 || count % 2 == 0;
+         return false;
+      }     
+   }
+   
+    /**
+    * Returns the position of the specified String <code>toSearch</code>
+    * that is not preceded with a backslash
+    *
+    * @param text  the text
+    * @param toSearch  the String to seach
+    * @param pos  the position within <code>text</code> where the search
+    * starts
+    * @return  the position of <code>toSearch</code> that is not preceded
+    * with a backslash
+    */
+   public static int nextNotEscaped(String text, String toSearch, int pos) {
+      int index = text.indexOf(toSearch, pos);
+      while (SyntaxUtils.isEscaped(text, index)) {
+         index = text.indexOf(toSearch, index + 1);
       }
+      return index;
    }
    
    //
    //--private methods--/
    //
+   
+   private static boolean isWordEnd(String text, int pos) {
+      if (text.length() > pos) {
+         char c = text.charAt(pos);
+         return !isLetterOrDigit(c);
+      }
+      else {
+         return true;
+      }
+   }
 
    private static boolean isLetterOrDigit(char c) {
       return Character.isLetter(c) || Character.isDigit(c);

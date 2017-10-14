@@ -2,9 +2,9 @@ package eg.document;
 
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentEvent.EventType;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
-import javax.swing.event.DocumentEvent.EventType;
 
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
@@ -13,21 +13,20 @@ import java.awt.EventQueue;
 
 //--Eadgyth--//
 import eg.Languages;
+import eg.utils.LinesFinder;
 import eg.syntax.Coloring;
-import eg.syntax.LanguageSetter;
 
 /**
  * Mediates between the editing of the text document and changes that shall
  * happen in response.
- * Changes include syntax coloring, line numbering, indention and the adding
- * of text changes for undo editing.<br>
+ * Changes include syntax coloring, line numbering, indention and adding
+ * edits to the undoable edits.<br>
  * <p> Created in {@link FileDocument}
  */
 public class TypingEdit {
 
    private final TextDocument textDoc;
    private final Coloring col;
-   private final LanguageSetter langSet;
    private final AutoIndent autoInd;
    private final LineNumbers lineNum;
    private final UndoEdit undo;
@@ -54,7 +53,6 @@ public class TypingEdit {
    public TypingEdit(TextDocument textDoc, LineNumberDocument lineNrDoc) {
       this.textDoc = textDoc;
       col = new Coloring(textDoc.doc(), textDoc.attrSet());
-      langSet = new LanguageSetter(col);
       lineNum = new LineNumbers(lineNrDoc);
       autoInd = new AutoIndent(textDoc);
       undo = new UndoEdit(textDoc);
@@ -98,13 +96,8 @@ public class TypingEdit {
    public void enableDocListen(boolean isEnabled) {
       isDocListen = isEnabled;
       if (isEnabled) {
-         text = textDoc.getText();
-         lineNum.updateLineNumber(text);
+         textUpdate();
          textDoc.docTextArea().setCaretPosition(0);
-      }
-      else {
-         undo.discardEdits();
-         notifyUndoableChangeEvent();
       }
    }
 
@@ -119,19 +112,18 @@ public class TypingEdit {
    }
 
    /**
-    * Sets the editing during typing depending on the language
+    * Sets up the editing during typing depending on the language
     *
     * @param lang  the language which is one of the constants in
     * {@link Languages}
     */
    public void setUpEditing(Languages lang) {
+      col.setColorable(lang);
       if (lang == Languages.PLAIN_TEXT) {
-         col.setAllCharAttrBlack();
          enableTypeEdit(false);
       }
       else {
-         langSet.setColorable(lang);
-         colorSection(null, 0);
+         colorMultipleLines(null, 0);
          enableTypeEdit(true);
       }
    }
@@ -166,15 +158,23 @@ public class TypingEdit {
    }
 
    /**
-    * Colors a section of the document or the entire document
+    * Colors multiple lines of the document text
     *
-    * @param section  a section of the document. Null to color the
-    * entire text.
-    * @param pos  the pos where the section starts. Set to 0 if
-    * <code>section</code> is null
+    * @param section  a section of the document text. If null the
+    * entire text is used.
+    * @param pos  the pos within the document where <code>section</code>
+    * starts
     */
-   public void colorSection(String section, int pos) {
-      col.colorMultipleLines(text, section, pos);
+   public void colorMultipleLines(String section, int pos) {
+      int posStart = 0;
+      if (section == null) {
+         section = text;
+      }
+      else {
+         section = LinesFinder.allLinesAtPos(text, section, pos);
+         posStart = LinesFinder.lastNewline(text, pos) + 1;
+      }
+      col.color(text, section, pos, posStart);
    }
 
    /**
@@ -216,15 +216,26 @@ public class TypingEdit {
    //
    //--private methods/classes--//
    //
+   
+   private void textUpdate() {
+      text = textDoc.getText();
+      lineNum.updateLineNumber(text);
+   }
+   
+   private void colorLine() {
+      String toColor = LinesFinder.lineAtPos(text, pos);
+      int posStart = LinesFinder.lastNewline(text, pos) + 1;
+      col.color(text, toColor, pos, posStart);
+   }
 
    private void updateAfterUndoRedo() {
       notifyUndoableChangeEvent();
       if (isTypeEdit) {
          if (event.equals(DocumentEvent.EventType.INSERT)) {
-            colorSection(change, pos);
+            colorMultipleLines(change, pos);
          }
          else if (event.equals(DocumentEvent.EventType.REMOVE)) {
-            EventQueue.invokeLater(() -> col.colorLine(text, pos));
+            EventQueue.invokeLater(() -> colorLine());
          }
       }
       isAddToUndo = true;
@@ -293,7 +304,7 @@ public class TypingEdit {
             notifyUndoableChangeEvent();
             if (isTypeEdit) { 
                EventQueue.invokeLater(() -> {
-                  col.colorLine(text, pos);
+                  colorLine();
                   autoInd.indent(text, pos);
                   autoInd.closedBracketIndent(text, pos);
                });
@@ -314,7 +325,7 @@ public class TypingEdit {
             undo.addEdit(change, pos, false);
             notifyUndoableChangeEvent();
             if (isTypeEdit) {
-               EventQueue.invokeLater(() -> col.colorLine(text, pos));
+               EventQueue.invokeLater(() -> colorLine());
             }
          }
       }
@@ -322,11 +333,6 @@ public class TypingEdit {
       @Override
       public void changedUpdate(DocumentEvent de) {
          // nothing to do
-      }
-
-      private void textUpdate() {
-         text = textDoc.getText();
-         lineNum.updateLineNumber(text);
       }
    };
    

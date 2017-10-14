@@ -1,4 +1,4 @@
-package eg.ui;
+package eg.ui.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -9,11 +9,13 @@ import javax.swing.KeyStroke;
 
 //--Eadgyth--//
 import eg.TabbedFiles;
-import eg.Edit;
-
 import eg.ui.IconFiles;
 
-class FileMenu {
+/**
+ * The menu for file actions.
+ * <p>Created in {@link MenuBar}
+ */
+public class FileMenu {
    
    private final JMenu     menu        = new JMenu("File");
    private final JMenuItem newFileItm  = new JMenuItem("New" );
@@ -30,16 +32,16 @@ class FileMenu {
    private final JMenuItem printItm    = new JMenuItem("Print...");
    private final JMenuItem exitItm     = new JMenuItem("Exit");
    
-   FileMenu() {
+   public FileMenu() {
       assembleMenu();
       shortCuts();
    }
    
-   JMenu getMenu() {
+   public JMenu getMenu() {
       return menu;
    }
 
-   void registerAct(TabbedFiles tf) {
+   public void setActions(TabbedFiles tf) {
       newFileItm.addActionListener(e -> tf.openEmptyTab());
       openItm.addActionListener(e -> tf.openFileByChooser());
       closeItm.addActionListener(e -> tf.close(true));

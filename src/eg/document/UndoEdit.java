@@ -8,15 +8,17 @@ import java.util.List;
 /**
  * The undo and redo editing.
  * <p>
- * An Undo action undoes edits until a breakpoint is reached. Redo runs
- * in the same way in the opposite direction. Breakpoints are added when
- * the text change is a newline, when the direction, i.e. insertion and
+ * Calling undo undoes edits until a breakpoint is reached. The next
+ * undo would proceed to the next breakpoint etc.. Redo runs in the
+ * same way in the opposite direction. Breakpoints are added when the
+ * text change is a newline, when the direction, that is insertion and
  * removal, changes and when the change is longer than one character.
  * Additional occasions for breakpoints can be added from outside by
- * {@link #markBreakpoint()}. If edits are undone adding a new edit
- * removes the undone (and not redone) edits.
+ * {@link #markBreakpoint()}. Adding a new edit while edits are undone
+ * (and not redone) removes the undone edits.
  * <p>
- * Created in {@link TypingEdit}
+ * Created in {@link TypingEdit} which adds edits and also adds
+ * breakpoints when the cursor is moved with the mouse or cursor keys.
  */
 public class UndoEdit {
    
@@ -79,7 +81,7 @@ public class UndoEdit {
     * @return if edits can be undone
     */
    public boolean canUndo() {
-      return edits.size() > 0 && iEd > -1;
+      return iEd > -1;
    }
 
    /**
@@ -88,12 +90,12 @@ public class UndoEdit {
     * @return if edits can be redone
     */
    public boolean canRedo() {
-      return edits.size() > 0 && iEd < edits.size() - 1;
+      return iEd < edits.size() - 1;
    }
 
    /**
     * Undoes edits up to the next breakpoint that is located before the
-    * undoable edits
+    * edits that are not yet undone
     */
    public void undo() {
       int nextPos = 0;
@@ -122,7 +124,7 @@ public class UndoEdit {
 
    /**
     * Redoes edits up to the next breakpoint that is located behind the
-    * redoable edits
+    * edits that are undone and not yet redone
     */
    public void redo() {
       int nextPos = 0;
@@ -153,7 +155,8 @@ public class UndoEdit {
 
    /**
     * Marks that the edit before the edit that will be added next is
-    * a breakpoint
+    * a breakpoint. This is effectless if this edit is already a
+    * breakpoint
     */
    public void markBreakpoint() {
       if (edits.size() > 0) {
@@ -189,15 +192,16 @@ public class UndoEdit {
    }
 
    private void trim() {
-      if (iEd < edits.size() - 1) {
-         for (int i = edits.size() - 1; i > iEd; i--) {
-            edits.remove(i);
-            positions.remove(i);
-            eventTypes.remove(i);
-            int iLastBreak = breakpoints.size() - 1;
-            if (iLastBreak > -1 && i == breakPt(iLastBreak)) {
-               breakpoints.remove(iLastBreak);
-            }
+      if (iEd == edits.size() - 1) {
+         return;
+      }
+      for (int i = edits.size() - 1; i > iEd; i--) {
+         edits.remove(i);
+         positions.remove(i);
+         eventTypes.remove(i);
+         int iLastBreak = breakpoints.size() - 1;
+         if (iLastBreak > -1 && i == breakPt(iLastBreak)) {
+            breakpoints.remove(iLastBreak);
          }
       }
    }

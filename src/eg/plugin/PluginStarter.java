@@ -17,6 +17,9 @@ public class PluginStarter {
    private final EditorAccess acc;
    private List<Pluggable> plugins = null;
    
+   /**
+    * @param functPnl  the reference to {@link FunctionPanel}
+    */
    public PluginStarter(FunctionPanel functPnl) {
       this.functPnl = functPnl;
       acc = new EditorAccess(functPnl);

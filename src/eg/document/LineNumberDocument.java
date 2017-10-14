@@ -15,8 +15,8 @@ import eg.utils.FileUtils;
 import eg.ui.LineNrWidthAdaptable;
 
 /**
- * The document that contains line numbers.<br>
- * Created in {@link FileDocument}
+ * The document that contains line numbers.
+ * <p>Created in {@link FileDocument}
  */
 public class LineNumberDocument {
    
@@ -30,7 +30,7 @@ public class LineNumberDocument {
    /**
     * @param doc  the document associated with the area that displays
     * line numbers
-    * @param  lineNrWidth  the reference to the {@link LineNrWidthAdaptable}
+    * @param  lineNrWidth  the reference to {@link LineNrWidthAdaptable}
     */
    public LineNumberDocument(StyledDocument doc,
          LineNrWidthAdaptable lineNrWidth) {

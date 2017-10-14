@@ -27,6 +27,9 @@ import eg.EditAreaFormat;
 import eg.Preferences;
 import eg.Languages;
 
+import eg.ui.menu.MenuBar;
+import eg.ui.menu.FormatMenu;
+import eg.ui.menu.ViewMenu;
 import eg.ui.filetree.FileTree;
 import eg.ui.tabpane.ExtTabbedPane;
 
@@ -37,7 +40,7 @@ import eg.utils.UiComponents;
 /**
  * The main window
  */
-public class MainWin {
+public class MainWin implements ConsoleOpenable {
 
    private final static Cursor BUSY_CURSOR
          = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
@@ -48,7 +51,7 @@ public class MainWin {
    private final JPanel statusBar = new JPanel();
    private final JLabel showProjectLb = new JLabel();
 
-   private final Menu menu = new Menu();
+   private final MenuBar menuBar = new MenuBar();
    private final Toolbar toolbar = new Toolbar();
    private final ExtTabbedPane tabPane = UiComponents.extTabbedPane();
    private final FileTree fileTree = new FileTree();
@@ -65,11 +68,21 @@ public class MainWin {
 
    public MainWin() {
       initFrame();
-      registerViewAct();      
+      setViewActions();      
       prefs.readPrefs();
       boolean isShowTabs = "show".equals(prefs.getProperty("showTabs"));
       showTabbar(isShowTabs);
-      setShowTabbarSelected(isShowTabs);
+      menuBar.viewMenu().selectTabsItm(isShowTabs);
+   }
+   
+   @Override
+   public boolean isConsoleOpen() {
+      return menuBar.viewMenu().isConsoleItmSelected();
+   }
+   
+   @Override
+   public void openConsole() {
+      menuBar.viewMenu().doConsoleItmAct(true);
    }
 
    /**
@@ -114,15 +127,6 @@ public class MainWin {
     public FunctionPanel functionPanel() {
        return functPnl;
     }
-    
-    /**
-     * Gets the reference to a <code>ConsoleOpenable</code>
-     *
-     * @return  the reference to a {@link ConsoleOpenable}
-     */
-    public ConsoleOpenable consOpen() {
-       return menu.viewMenu();
-    }
 
    /**
     * Displays text in the title bar
@@ -143,6 +147,37 @@ public class MainWin {
    }
    
    /**
+    * Sets the build name in the menu item for the build action
+    *
+    * @param buildName  the name for a build
+    */
+   public void setBuildName(String buildName) {
+      menuBar.projectMenu().setBuildLabel(buildName);
+   }
+   
+   /**
+    * Sets the selection state of the menu item for wordwrap
+    *
+    * @param isSelected   true to select state the menu item
+    * to set wordwrap, false to unselect
+    */
+   public void setWordWrapSelected(boolean isSelected) {
+      menuBar.formatMenu().selectWordWrapItm(isSelected);
+   }
+   
+   /**
+    * Selects the menu item for the specified language and enables the
+    * items for the other languages if <code>enable</code> is true
+    *
+    * @param lang  the language that has one of the constant values in
+    * {@link Languages}
+    * @param enable  true to enable non-selected items
+    */
+   public void setLanguageSelected(Languages lang, boolean enable){
+      menuBar.editMenu().selectLanguageItm(lang, enable);
+   }
+   
+   /**
     * Enables/disables undo and redo actions
     *
     * @param enableUndo  if undo action is enabled
@@ -150,7 +185,7 @@ public class MainWin {
     */
    public void enableUndoRedo(boolean enableUndo, boolean enableRedo) {
       toolbar.enableUndoRedoBts(enableUndo, enableRedo);
-      menu.editMenu().enableUndoRedoItms(enableUndo, enableRedo);
+      menuBar.editMenu().enableUndoRedoItms(enableUndo, enableRedo);
    }
    
    /**
@@ -160,89 +195,48 @@ public class MainWin {
     */
    public void enableCutCopy(boolean isEnabled) {
       toolbar.enableCutCopyBts(isEnabled);
-      menu.editMenu().enableCutCopyItms(isEnabled);
+      menuBar.editMenu().enableCutCopyItms(isEnabled);
    }
    
    /**
-    * Enabled/disables the action to select if the tabbar is visible
+    * Enabled/disables the action to make the tabbar visible
     *
-    * @param isEnabled  if the action to select if the tabbar is
-    * visible
+    * @param isEnabled  if the action to make the tabbar visible
+    * is enabled
     */
-   public void enableShowHideTabbar(boolean isEnabled) {
-      menu.viewMenu().enableTabItm(isEnabled);
+   public void enableShowTabbar(boolean isEnabled) {
+      menuBar.viewMenu().enableTabItm(isEnabled);
    }
    
    /**
-    * Sets the selection state of the menu item to set wordwrap
-    *
-    * @param isSelected   true to select state the menu item
-    * to set wordwrap, false to unselect
-    */
-   public void setWordWrapSelected(boolean isSelected) {
-      menu.formatMenu().selectWordWrapItm(isSelected);
-   }
-   
-   /**
-    * Sets the selection state of the menu item for selecting if the
-    * tabbar is visible
-    *
-    * @param isSelected  true to select the menu item for selecting if the
-    * tabbar is visible, false to unselect
-    */
-   public void setShowTabbarSelected(boolean isSelected) {
-      menu.viewMenu().selectTabsItm(isSelected);
-   }
-   
-  /**
-    * Sets the selection state of the menu items for the language
-    *
-    * @param lang  the language that has one of the constant values in
-    * {@link Languages}
-    * @param selectable  true to enable non-selected items to be selectable
-    */
-   public void setLanguagesSelected(Languages lang, boolean selectable){
-      menu.editMenu().setLanguagesItms(lang, selectable);
-   }
-   
-   /**
-    * Enables to open the fileview
+    * Enables to open the fileview panel
     */
    public void enableOpenFileView() {
-      menu.viewMenu().enableFileViewItm();
+      menuBar.viewMenu().enableFileViewItm();
    }
    
    /**
-    * Enables/disables the action to change project
+    * Enables/disables to change project
     *
     * @param isEnabled  if changing project is enabled
     */
    public void enableChangeProject(boolean isEnabled) {
-      menu.projectMenu().enableChangeProjItm(isEnabled);
+      menuBar.projectMenu().enableChangeProjItm(isEnabled);
       toolbar.enableChangeProjBt(isEnabled);
    }
    
    /**
-    * Enables/disables actions for a project
+    * Enables/disables compiling, running and building a project
     *
     * @param isCompile  if the compile action is enabled
     * @param isRun  if the run action is enabled
     * @param isBuild  if the build action is enabled
     */
-   public void enableProjActions(boolean isCompile, boolean isRun,
+   public void enableCompileRunBuild(boolean isCompile, boolean isRun,
          boolean isBuild) {
 
-      menu.projectMenu().enableProjItms(isCompile, isRun, isBuild);
-      toolbar.enableProjBts(isCompile, isRun);
-   }
- 
-   /**
-    * Sets the build name in the menu item for the build action
-    *
-    * @param buildName  the name for a build
-    */
-   public void setBuildName(String buildName) {
-      menu.projectMenu().setBuildLabel(buildName);
+      menuBar.projectMenu().enableCompileRunBuildItms(isCompile, isRun, isBuild);
+      toolbar.enableCompileRunBts(isCompile, isRun);
    }
 
    /**
@@ -276,104 +270,105 @@ public class MainWin {
    }
 
    /**
-    * Sets a busy or default cursor
-    *
-    * @param b  true to set the wait cursor, false to set
-    * the default cursor
+    * Sets the busy cursor
     */
-   public void setBusyCursor(boolean b) {
-      if (b) {
-         Component glassPane = frame.getGlassPane();
-         glassPane.setVisible(true);
-         glassPane.setCursor(BUSY_CURSOR);
-      }
-      else {
-         Component glassPane = frame.getGlassPane();
-         glassPane.setVisible(false);
-         glassPane.setCursor(DEF_CURSOR);
-      }
+   public void setBusyCursor() {
+      Component glassPane = frame.getGlassPane();
+      glassPane.setVisible(true);
+      glassPane.setCursor(BUSY_CURSOR);
+   }
+   
+   /**
+    * Sets the default cursor
+    */
+   public void setDefaultCursor() {
+      Component glassPane = frame.getGlassPane();
+      glassPane.setVisible(false);
+      glassPane.setCursor(DEF_CURSOR);
    }
 
    /**
-    * Adds a {@code WindowListener} to this JFrame
+    * Adds a <code>WindowListener</code> to this JFrame
     *
-    * @param wl  the {@code WindowListener}
+    * @param wl  the <code>WindowListener</code>
     */
    public void winListen(WindowListener wl) {
       frame.addWindowListener(wl);
    }
 
    /**
-    * Registers listeners for file actions
+    * Sets listeners for file actions
     *
     * @param tf  the reference to {@link TabbedFiles}
     */
-   public void registerFileAct(TabbedFiles tf) {
-      menu.fileMenu().registerAct(tf);
-      menu.editMenu().registerChangeLanguageAct(tf);
-      toolbar.registerFileAct(tf);
+   public void setFileActions(TabbedFiles tf) {
+      menuBar.fileMenu().setActions(tf);
+      menuBar.editMenu().setChangeLanguageAction(tf);
+      toolbar.setFileActions(tf);
       fileTree.addObserver(tf);
    }
 
    /**
-    * Registers listeners for edit actions
+    * Sets listeners for actions to edit text
     *
     * @param ed  the reference to {@link Edit}
     */
-   public void registerEditTextAct(Edit ed) {
-      toolbar.registerEditTextAct(ed);
-      menu.editMenu().registerEditTextAct(ed);
+   public void setEditTextActions(Edit ed) {
+      toolbar.setEditTextActions(ed);
+      menuBar.editMenu().setEditTextActions(ed);
    }
    
    /**
-    * Adds the listener to open the window for view settings
+    * Sets the listener that opens the window for view settings
     *
-    * @param al  the <code>ActionListener</code>
+    * @param viewSetWin  the reference to <code>ViewSettingWin</code>
     */
-   public void openViewSettingWinAct(ActionListener al) {
-      menu.viewMenu().openSettingWinItmAct(al);
+   public void setViewSettingWinAction(ViewSettingWin viewSetWin) {
+      menuBar.viewMenu().openSettingWinItmAction(e ->
+            viewSetWin.makeVisible(true));
    }
       
    /**
-    * Registers listeners for format actions
+    * Sets listeners for format actions
     *
     * @param format  the reference to {@link EditAreaFormat}
     */
-   public void registerFormatAct(EditAreaFormat format) {
-      FormatMenu fm =  menu.formatMenu();
-      fm.changeWordWrapAct(e -> format.changeWordWrap(fm.isWordWrapItmSelected()));
-      fm.fontAct(e -> format.makeFontSettingWinVisible());
+   public void setFormatActions(EditAreaFormat format) {
+      FormatMenu fm =  menuBar.formatMenu();
+      fm.setChangeWordWrapAct(e ->
+            format.changeWordWrap(fm.isWordWrapItmSelected()));
+      fm.setFontAction(e -> format.makeFontSettingWinVisible());
    }
 
    /**
-    * Registers listener for plugin actions
+    * Sets the listener for starting a plugin
     *
     * @param plugSt  the reference to {@link PluginStarter}
     */
-   public void registerPlugAct(PluginStarter plugSt) {
-      menu.pluginMenu().startPlugin(plugSt, menu.viewMenu());
+   public void setPlugAction(PluginStarter plugSt) {
+      menuBar.pluginMenu().startPlugin(plugSt, menuBar.viewMenu());
    }
 
    /**
-    * Registers listeners for project actions
+    * Sets listeners for project actions
     *
     * @param cp  the reference to {@link CurrentProject}
     */
-   public void registerProjectAct(CurrentProject cp) {
-      menu.projectMenu().registerAct(cp);
-      toolbar.registerProjectAct(cp);
+   public void setProjectActions(CurrentProject cp) {
+      menuBar.projectMenu().setActions(cp);
+      toolbar.setProjectActions(cp);
    }
 
    //
    //--private methods
    //
    
-   private void registerViewAct() {
-      ViewMenu vm = menu.viewMenu();
-      vm.consoleItmAct(e -> showConsole(vm.isConsoleItmSelected()));
-      vm.fileViewItmAct(e -> showFileView(vm.isFileViewItmSelected()));
-      vm.functionItmAct(e -> showFunctionPnl(vm.isFunctionItmSelected()));
-      vm.tabItmAct(e -> showTabbar(vm.isTabItmSelected()));
+   private void setViewActions() {
+      ViewMenu vm = menuBar.viewMenu();
+      vm.setConsoleItmAction(e -> showConsole(vm.isConsoleItmSelected()));
+      vm.setFileViewItmAction(e -> showFileView(vm.isFileViewItmSelected()));
+      vm.setFunctionItmAction(e -> showFunctionPnl(vm.isFunctionItmSelected()));
+      vm.setTabItmAction(e -> showTabbar(vm.isTabItmSelected()));
       fileTree.closeAct(e -> vm.doUnselectFileViewAct());
       console.closeAct(e -> vm.doConsoleItmAct(false));
       functPnl.closeAct(e -> vm.doFunctionItmAct(false));
@@ -436,7 +431,7 @@ public class MainWin {
    private void initFrame() {
       initSplitPane();
       initStatusbar();
-      frame.setJMenuBar(menu.menubar());
+      frame.setJMenuBar(menuBar.menuBar());
       frame.add(splitHorAll, BorderLayout.CENTER);
       frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());

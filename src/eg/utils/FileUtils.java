@@ -50,11 +50,11 @@ public class FileUtils {
    }
    
    /**
-    * Appends to the file 'log.txt' the stack trace of
-    * an exception and shows a warning in a dialog window.
+    * Appends to the file 'log.txt' the stack trace of an exception
+    * and shows a warning in a dialog window.
     * <p>The "log" file is saved in the program's directory.
     *
-    * @param e  an {@code Exception}
+    * @param e  an <code>Exception</code>
     */
    public static void logStack(Exception e) { 
       File logFile = new File("log.txt");

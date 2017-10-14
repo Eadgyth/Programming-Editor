@@ -1,5 +1,8 @@
 package eg.syntax;
 
+/**
+ * Syntax coloring for Javascript
+ */
 public class JavascriptColoring implements Colorable {
    
    // incomplete
@@ -22,13 +25,15 @@ public class JavascriptColoring implements Colorable {
    };
 
    @Override
-   public void color(Coloring col) {
-      if (!col.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
-         col.setCharAttrBlack();
-         col.keywordsRed(JS_KEYWORDS, true);
-         col.quotedText();
-         col.lineComments(SyntaxUtils.LINE_CMNT, '\0');
+   public void color(SyntaxSearch search) {
+      if (!search.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
+         search.setCharAttrBlack();
+         search.keywordsRed(JS_KEYWORDS, true);
+         search.bracketsBlue();
+         search.bracesGray();
+         search.quotedText();
+         search.lineComments(SyntaxUtils.LINE_CMNT, '\0');
       }
-      col.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
+      search.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
    }
 }

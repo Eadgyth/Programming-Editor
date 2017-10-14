@@ -30,16 +30,16 @@ public class JavaColoring implements Colorable {
    };
 
    @Override
-   public void color(Coloring col) {
-      if (!col.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
-         col.setCharAttrBlack();
-         col.keywordsBlue(JAVA_ANNOTATIONS, false);
-         col.keywordsRed(JAVA_KEYWORDS, true);
-         col.bracketsBlue();
-         col.bracesGray();
-         col.quotedText();
-         col.lineComments(SyntaxUtils.LINE_CMNT, '\0');   
-      }
-      col.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
+   public void color(SyntaxSearch search) {
+     if (!search.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
+         search.setCharAttrBlack();
+         search.keywordsBlue(JAVA_ANNOTATIONS, false);
+         search.keywordsRed(JAVA_KEYWORDS, true);
+         search.bracketsBlue();
+         search.bracesGray();
+         search.quotedText();
+         search.lineComments(SyntaxUtils.LINE_CMNT, '\0');   
+     }
+     search.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
    }
 }

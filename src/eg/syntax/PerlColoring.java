@@ -1,5 +1,8 @@
 package eg.syntax;
 
+/**
+ * Syntax coloring for Perl
+ */
 public class PerlColoring implements Colorable {
    
    private final static char[] END_OF_VAR = {
@@ -43,13 +46,13 @@ public class PerlColoring implements Colorable {
    private final static String LINE_CMNT = "#";
    
    @Override
-   public void color(Coloring col) {
-      col.setCharAttrBlack();
-      col.signedKeywordsBlue(PERL_SIGNS, END_OF_VAR);
-      col.keywordsRed(PERL_KEYWORDS, true);
-      col.keywordsRed(PERL_OP, false);
-      col.bracesGray();
-      col.quotedText();
-      col.lineComments(LINE_CMNT, '$');
+   public void color(SyntaxSearch search) {
+      search.setCharAttrBlack();
+      search.signedKeywords(PERL_SIGNS, END_OF_VAR);
+      search.keywordsBlue(PERL_KEYWORDS, true);
+      search.keywordsBlue(PERL_OP, false);
+      search.bracesGray();
+      search.quotedText();
+      search.lineComments(LINE_CMNT, '$');
    }
 }

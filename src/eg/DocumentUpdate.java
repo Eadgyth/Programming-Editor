@@ -33,9 +33,9 @@ public class DocumentUpdate {
       edit = new Edit();
       plugStart = new PluginStarter(mw.functionPanel());
       currProj = new CurrentProject(mw, fDoc);
-      mw.registerEditTextAct(edit);
-      mw.registerPlugAct(plugStart);
-      mw.registerProjectAct(currProj);
+      mw.setEditTextActions(edit);
+      mw.setPlugAction(plugStart);
+      mw.setProjectActions(currProj);
    }
 
    /**
@@ -52,8 +52,8 @@ public class DocumentUpdate {
       mw.enableUndoRedo(fDoc[i].canUndo(), fDoc[i].canRedo());
       mw.enableCutCopy(fDoc[i].docTextArea().getSelectedText() != null);
       mw.displayFrameTitle(fDoc[i].filepath());
-      mw.enableShowHideTabbar(nTabs == 1);
-      mw.setLanguagesSelected(fDoc[i].language(),
+      mw.enableShowTabbar(nTabs == 1);
+      mw.setLanguageSelected(fDoc[i].language(),
             fDoc[i].filename().length() == 0);
       fDoc[i].requestFocus();
    }
@@ -67,7 +67,7 @@ public class DocumentUpdate {
     */
    public void changedFileUpdate(int i, boolean updateFiletree) {
       retrieveProject(i);
-      mw.setLanguagesSelected(fDoc[i].language(), false);
+      mw.setLanguageSelected(fDoc[i].language(), false);
       mw.displayFrameTitle(fDoc[i].filepath());
       if (updateFiletree) {
          currProj.updateFileTree();

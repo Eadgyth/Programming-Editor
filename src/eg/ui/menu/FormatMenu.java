@@ -1,4 +1,4 @@
-package eg.ui;
+package eg.ui.menu;
 
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -7,35 +7,39 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 
-class FormatMenu {
+/**
+ * The menu for format actions.
+ * <p>Created in {@link MenuBar}
+ */
+public class FormatMenu {
    
    private final JMenu     menu     = new JMenu("Format");
    private final JMenuItem fontItm  = new JMenuItem("Font ...");
    private final JCheckBoxMenuItem wordWrapItm
                                     = new JCheckBoxMenuItem("Wordwrap");
                              
-   FormatMenu() {
+   public FormatMenu() {
       assembleMenu();
    }
    
-   void fontAct(ActionListener al) {
+   public JMenu getMenu() {
+      return menu;
+   }
+   
+   public void setFontAction(ActionListener al) {
       fontItm.addActionListener(al);
    }
    
-   void changeWordWrapAct(ActionListener al) {
+   public void setChangeWordWrapAct(ActionListener al) {
       wordWrapItm.addActionListener(al);
    }
    
-   boolean isWordWrapItmSelected() {
+   public boolean isWordWrapItmSelected() {
       return wordWrapItm.isSelected();
    }
   
-   void selectWordWrapItm(boolean select) {
+   public void selectWordWrapItm(boolean select) {
       wordWrapItm.setState(select);
-   }
-   
-   JMenu getMenu() {
-      return menu;
    }
    
    private void assembleMenu() {

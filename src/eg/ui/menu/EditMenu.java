@@ -1,4 +1,4 @@
-package eg.ui;
+package eg.ui.menu;
 
 import java.awt.Toolkit;
 
@@ -15,10 +15,13 @@ import eg.Edit;
 import eg.TabbedFiles;
 import eg.Languages;
 import eg.Preferences;
-
 import eg.ui.IconFiles;
 
-class EditMenu {
+/**
+ * The menu for edit actions.
+ * <p>Created in {@link MenuBar}
+ */
+public class EditMenu {
 
    private final JMenu     menu            = new JMenu("Edit");
    private final JMenuItem undoItm         = new JMenuItem("Undo", IconFiles.UNDO_ICON);
@@ -28,12 +31,12 @@ class EditMenu {
    private final JMenuItem copyItm         = new JMenuItem("Copy", IconFiles.COPY_ICON);
    private final JMenuItem pasteItm        = new JMenuItem("Paste", IconFiles.PASTE_ICON);
    private final JMenuItem indentItm       = new JMenuItem(
-                                             "Increase indentation by the set indent length",
-                                             IconFiles.INDENT_ICON);
+                                           "Increase indentation by the set indent length",
+                                           IconFiles.INDENT_ICON);
    private final JMenuItem outdentItm      = new JMenuItem(
-                                             "Reduce indentation by the set indent length",
-                                             IconFiles.OUTDENT_ICON);
-   private final JMenuItem changeIndentItm = new JMenuItem("Indent/outdent length");
+                                           "Reduce indentation by the set indent length",
+                                           IconFiles.OUTDENT_ICON);
+   private final JMenuItem changeIndentItm = new JMenuItem("Change indentation length");
    private final JMenuItem clearSpacesItm  = new JMenuItem("Clear trailing spaces");
    private final JMenu     languageMenu    = new JMenu("Language");
    private final JCheckBoxMenuItem[] selectLangChBxItm
@@ -50,20 +53,7 @@ class EditMenu {
       return menu;
    }
 
-   void setLanguagesItms(Languages lang, boolean enableSelection) {
-      for (int i = 0; i < selectLangChBxItm.length; i++) {
-         if (lang == Languages.values()[i]) {
-            selectLangChBxItm[i].setEnabled(false);
-            selectLangChBxItm[i].setSelected(true);
-         }
-         else {
-            selectLangChBxItm[i].setEnabled(enableSelection);
-            selectLangChBxItm[i].setSelected(false);
-         }
-      }
-   }
-
-   void registerEditTextAct(Edit edit) {
+   public void setEditTextActions(Edit edit) {
       undoItm.addActionListener(e -> edit.undo());
       redoItm.addActionListener(e -> edit.redo());
       cutItm.addActionListener(e -> edit.cut());
@@ -76,20 +66,52 @@ class EditMenu {
       changeIndentItm.addActionListener(e -> edit.setNewIndentUnit());
    }
    
-   void registerChangeLanguageAct(TabbedFiles tf) {
+   public void setChangeLanguageAction(TabbedFiles tf) {
       for (JCheckBoxMenuItem item : selectLangChBxItm) {
            item.addActionListener(e -> setLanguage(e, tf));
       }
    }
 
-   void enableCutCopyItms(boolean isEnabled) {
+   /**
+    * Enables/disables the items for cut and copy
+    *
+    * @param isEnabled  if the items for cut and copy are enabled
+    */
+   public void enableCutCopyItms(boolean isEnabled) {
       cutItm.setEnabled(isEnabled);
       copyItm.setEnabled(isEnabled);
    }
    
-   void enableUndoRedoItms(boolean canUndo, boolean canRedo) {
-      undoItm.setEnabled(canUndo);
-      redoItm.setEnabled(canRedo);
+   /**
+    * Enables/disables the items for undo and redo
+    *
+    * @param enableUndo  if the item for undo action is enabled
+    * @param enableRedo  if the item for redo action is enabled
+    */
+   public void enableUndoRedoItms(boolean enableUndo, boolean enableRedo) {
+      undoItm.setEnabled(enableUndo);
+      redoItm.setEnabled(enableRedo);
+   }
+   
+   /**
+    * Selects and disables the item for the specified language and enables
+    * the items for the other languages if <code>enable</code> is true
+    *
+    * @param lang  the language that has one of the constant values in
+    * {@link Languages}
+    * @param enable  true to enable the non-selected items
+    */
+   public void selectLanguageItm(Languages lang, boolean enable) {
+      for (int i = 0; i < selectLangChBxItm.length; i++) {
+         if (lang == Languages.values()[i]) {
+            selectLangChBxItm[i].setEnabled(false);
+            selectLangChBxItm[i].setSelected(true);
+         }
+         else {
+            selectLangChBxItm[i].setEnabled(enable);
+            selectLangChBxItm[i].setSelected(false);
+         }
+      }
    }
 
    //

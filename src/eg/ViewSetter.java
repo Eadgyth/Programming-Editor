@@ -5,7 +5,8 @@ import eg.ui.MainWin;
 import eg.ui.ViewSettingWin;
 
 /**
- * The view settings of the main window that are set in <code>SettingsWin</code>
+ * The view settings in the main window that are set in
+ * <code>ViewSettingWin</code> except for showing/hiding line numbers
  */
 public class ViewSetter {
 
@@ -18,10 +19,13 @@ public class ViewSetter {
    private int selectedIconSizeInd;
    private int selectedLafInd;
 
+   /**
+    * @param viewSetWin  the reference to <code>ViewSettingWin</code>
+    * @param mw  the reference to <code>MainWin</code>
+    */
    public ViewSetter(ViewSettingWin viewSetWin, MainWin mw) {
       this.viewSetWin = viewSetWin;
       this.mw = mw;
-
       isShowStatusbar = viewSetWin.isShowStatusbar();
       mw.showStatusbar(isShowStatusbar);
       isShowToolbar = viewSetWin.isShowToolbar();

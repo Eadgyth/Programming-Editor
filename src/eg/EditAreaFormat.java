@@ -123,7 +123,7 @@ public class EditAreaFormat {
    }
    
    //
-   //--private methods
+   //--private methods--//
    //
    
    private void showLineNumbers(EditArea ea) {
