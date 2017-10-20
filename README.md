@@ -7,8 +7,7 @@ The program is extensible by plugins which have access to the editor field in a 
 by implementing other types of projects using the interface intended for this purpose.
 <p>
 REQUIREMENTS FOR TESTING AND COMPILATION<br>
-Running the program requires JAVA 8 (JRE 8). I did not have the opportunity to test the program
-on operating systems other than windows Vista, 7 and 10.<p>
+Running the program requires JAVA 8 (JRE 8).<p>
 The program must be found in the same folder as the two .properties files and the Resources
 folder, just like in the 'EadgythProgram' folder in this repository.<p>
 Plugins must be stored in the folder 'Plugins' which must be found in the same folder as the
