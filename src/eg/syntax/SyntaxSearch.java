@@ -496,13 +496,23 @@ public class SyntaxSearch {
                 blockStart.length())) {
             nextStart = text.indexOf(blockStart, nextStart + 1);
          }
-         if (nextStart == -1) {
-            nextStart = text.length();
+         int end = nextStart;
+         if (sectionEnd > 0) {
+            end = sectionEnd;
          }
-         if (sectionEnd > 0 && nextStart < sectionEnd) {
-            String toUncomment = text.substring(startPos, nextStart);
-            uncommentBlock(toUncomment, startPos);
+         String toUncomment = "";
+         if (nextStart != -1) {
+            toUncomment = text.substring(startPos, end);
          }
+         else {
+            if (sectionEnd > 0) {
+               toUncomment = text.substring(startPos, end);
+            }
+            else {
+               toUncomment = text.substring(startPos);
+            }
+         }
+         uncommentBlock(toUncomment, startPos);
       }
    }
 
