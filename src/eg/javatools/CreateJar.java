@@ -48,11 +48,11 @@ public class CreateJar {
     * @throws IOException  if not input can be read in
     */
    public void createJar(String root, String main, String packageName,
-         String classDir, String jarName) throws IOException {      
+         String classDir, String jarName) throws IOException {
+   
       File manifest = new File(root + F_SEP + classDir
             + F_SEP + "manifest.txt");
       createManifest(manifest, main, packageName);
-
       ProcessBuilder pb = new ProcessBuilder(commandForJar(root, jarName, classDir));
       pb.directory(new File(root + F_SEP + classDir));
       pb.redirectErrorStream(true);
@@ -60,6 +60,7 @@ public class CreateJar {
       p = pb.start();
       try (BufferedReader br = new BufferedReader(
             new InputStreamReader(p.getInputStream()))) {
+
          String ch;
          while((ch = br.readLine()) != null) {
             consPnl.appendText(ch + "\n");

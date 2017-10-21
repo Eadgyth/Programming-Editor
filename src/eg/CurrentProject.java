@@ -36,11 +36,8 @@ public class CurrentProject {
          = "A project can be set after a file was opened or"
          + " newly saved.";
 
-   private final String NOT_IN_PROJ_MESSAGE
-         = "The selected file does not belong to the active project";
-
    private final String FILES_NOT_FOUND_MESSAGE
-         = "The following file could not be found anymore:";
+         = "The following files could not be found anymore:";
 
    private final MainWin mw;
    private final SelectedProject selProj;
@@ -347,12 +344,13 @@ public class CurrentProject {
          createProjectImpl();
       }
    }
-
+ 
    private String wrongExtentionMessage(String filename) {
-      return "<html>"
-         + filename + "<br>"
-         + "If the file belongs to a project specify the extension of<br>"
-         + "the source files:"
+      return
+         "<html>"
+         + filename + " cannot define a project category.<br><br>"
+         + "If the file belongs to a project select the file extension "
+         + "of source files in the project:"
          + "</html>";
    }
 
