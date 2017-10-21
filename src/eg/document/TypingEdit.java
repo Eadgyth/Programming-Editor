@@ -17,9 +17,9 @@ import eg.utils.LinesFinder;
 import eg.syntax.Coloring;
 
 /**
- * Mediates between the editing of the text document and changes that shall
+ * Mediates between the editing of the text document and the actions that
  * happen in response.
- * Changes include syntax coloring, line numbering, indention and adding
+ * Actions include syntax coloring, indentation, line numbering, and adding
  * edits to the undoable edits.<br>
  * <p> Created in {@link FileDocument}
  */
@@ -37,7 +37,7 @@ public class TypingEdit {
    private TextSelectionListener tsl;
    private boolean isDocListen = true;
    private boolean isAddToUndo = true;
-   private boolean isTypeEdit = false;
+   private boolean isCodeEditing = false;
    private DocumentEvent.EventType event;
    private int pos = 0;
    private String text = "";
@@ -66,7 +66,7 @@ public class TypingEdit {
     * @param ucl  an {@link UndoableChangeListener}
     */
    public void setUndoableChangeListener(UndoableChangeListener ucl) {
-      if (ucl == null) {
+      if (this.ucl != null) {
          throw new IllegalStateException(
                "An UndoableChangeListener is already set");
       }
@@ -79,7 +79,7 @@ public class TypingEdit {
     * @param tsl  a {@link TextSelectionListener}
     */
    public void setTextSelectionListener(TextSelectionListener tsl) {
-      if (tsl == null) {
+      if (this.tsl != null) {
          throw new IllegalStateException(
                "A TextSelectionListener is already set");
       }
@@ -104,33 +104,33 @@ public class TypingEdit {
    /**
     * Enables/disables syntax coloring and auto-indentation
     *
-    * @param isEnabled  true/false to enable/disable editing during
-    * typing
+    * @param isEnabled  true/false to enable/disable syntax
+    * coloring and auto-indentation
     */
-   public void enableTypeEdit(boolean isEnabled) {
-      isTypeEdit = isEnabled;
+   public void enableCodeEditing(boolean isEnabled) {
+      isCodeEditing = isEnabled;
    }
 
    /**
-    * Sets up the editing during typing depending on the language
+    * Set the editing mode that depends on the language
     *
     * @param lang  the language which is one of the constants in
     * {@link Languages}
     */
-   public void setUpEditing(Languages lang) {
+   public void setEditingMode(Languages lang) {
       col.setColorable(lang);
       if (lang == Languages.PLAIN_TEXT) {
-         enableTypeEdit(false);
+         enableCodeEditing(false);
       }
       else {
          colorMultipleLines(null, 0);
-         enableTypeEdit(true);
+         enableCodeEditing(true);
       }
    }
    
    /**
-    * Gets the text that is set in the update methods in this
-    * <code>DocumentListener</code>
+    * Gets the text that is updated in the insert- and remove
+    * methods of this <code>DocumentListener</code>
     *
     * @return  the text in the document
     */
@@ -230,7 +230,7 @@ public class TypingEdit {
 
    private void updateAfterUndoRedo() {
       notifyUndoableChangeEvent();
-      if (isTypeEdit) {
+      if (isCodeEditing) {
          if (event.equals(DocumentEvent.EventType.INSERT)) {
             colorMultipleLines(change, pos);
          }
@@ -302,7 +302,7 @@ public class TypingEdit {
          if (isAddToUndo) {
             undo.addEdit(change, pos, true);
             notifyUndoableChangeEvent();
-            if (isTypeEdit) { 
+            if (isCodeEditing) { 
                EventQueue.invokeLater(() -> {
                   colorLine();
                   autoInd.indent(text, pos);
@@ -324,7 +324,7 @@ public class TypingEdit {
          if (isAddToUndo) {
             undo.addEdit(change, pos, false);
             notifyUndoableChangeEvent();
-            if (isTypeEdit) {
+            if (isCodeEditing) {
                EventQueue.invokeLater(() -> colorLine());
             }
          }

@@ -27,14 +27,13 @@ public class SyntaxSearch {
    private final static Color ORANGE = new Color(230, 120, 50);
 
    private final SimpleAttributeSet normalSet;
-
    private final SimpleAttributeSet redPlainSet    = new SimpleAttributeSet();
    private final SimpleAttributeSet bluePlainSet   = new SimpleAttributeSet();
    private final SimpleAttributeSet blueBoldSet    = new SimpleAttributeSet();
    private final SimpleAttributeSet greenPlainSet  = new SimpleAttributeSet();
    private final SimpleAttributeSet grayBoldSet    = new SimpleAttributeSet();
    private final SimpleAttributeSet orangePlainSet = new SimpleAttributeSet();
-   private final SimpleAttributeSet purpleBoldSet = new SimpleAttributeSet();
+   private final SimpleAttributeSet purpleBoldSet  = new SimpleAttributeSet();
 
    private final StyledDocument doc;
 
@@ -71,8 +70,7 @@ public class SyntaxSearch {
    }
 
    /**
-    * Sets the text parameters for coloring and calls
-    * this <code>Colorable</code>
+    * Sets the text parameters for coloring
     *
     * @param text  the entire text in the document
     * @param toColor  the part of <code>text</code> this is
@@ -135,8 +133,7 @@ public class SyntaxSearch {
    }
 
    /**
-    * Searches variables that start with a sign (like $ in
-    * Perl) and colors them in red
+    * Searches variables that start with a sign and colors them in red
     *
     * @param signs  the array of characters that mark a variable start
     * @param endChars  the array of characters that mark the end of the
@@ -209,11 +206,11 @@ public class SyntaxSearch {
    }
 
    /**
-    * Colors sections that contain javascript
+    * Colors sections in Html that contain javascript
     *
     * @param jsCol  the refernce to {@link JavascriptColoring}
     */
-   public void javascript(JavascriptColoring jsCol) {
+   public void javascriptInHtml(JavascriptColoring jsCol) {
       Colorable curr = colorable;
       setColorable(jsCol);
       javascript();
@@ -221,8 +218,9 @@ public class SyntaxSearch {
    }
 
    /**
-    * Returns if this pos where a change happened is found in a block of
-    * text that is delimited by the specified start and end signals
+    * Returns if this position where a change happened is found in a
+    * block of text that is delimited by the specified start and end
+    * signals
     *
     * @param blockStart  the String that defines the block start
     * @param blockEnd  the String that defines the block end

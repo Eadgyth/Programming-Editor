@@ -65,8 +65,8 @@ public final class FileDocument {
     */
    public FileDocument(EditArea editArea, Languages lang) {
       this(editArea);
-      type.setUpEditing(lang);
       this.lang = lang;
+      type.setEditingMode(lang);
    }
    
    /**
@@ -78,7 +78,7 @@ public final class FileDocument {
        return textDoc.docTextArea();
     }
     
-    /**
+   /**
     * Gets the name of this file
     *
     * @return  the name of this file. The empty string
@@ -124,8 +124,7 @@ public final class FileDocument {
     */
    public File docFile() {
       if (docFile == null) {
-         throw new IllegalStateException("No file has"
-               + " been assigned");
+         throw new IllegalStateException("No file has been assigned");
       }
       return docFile;
    }
@@ -174,10 +173,10 @@ public final class FileDocument {
 
    /**
     * Assigns the specified file and saves the current text content to
-    * the file. If a file that has been assigned before is replaced.
+    * the file. A file that has been assigned before is replaced.
     *
     * @param f  the file
-    * @return  if the content was saved
+    * @return  if the content was saved to the specified file
     */
    public boolean setFile(File f) {
       assignFile(f);
@@ -188,7 +187,7 @@ public final class FileDocument {
    
    /**
     * Saves the current content to the specified file but does not
-    * assign the file
+    * assign the file to this <code>FileDocument</code>
     *
     * @param f  the file which the current content is saved to
     */
@@ -225,15 +224,6 @@ public final class FileDocument {
    }
    
    /**
-    * If the set Language is a coding language, i.e. not plain text
-    *
-    * @return  the set Language is any coding language, i.e. not plain text
-    */
-   public boolean isCodingLanguage() {
-      return Languages.PLAIN_TEXT != lang;
-   }
-   
-   /**
     * Changes the language if no file has been assigned
     *
     * @param lang  the language which has one of the constant values
@@ -244,7 +234,7 @@ public final class FileDocument {
          throw new IllegalStateException("The language cannot be changed.");
       }
       this.lang = lang;
-      type.setUpEditing(lang);
+      type.setEditingMode(lang);
    }
 
    /**
@@ -257,21 +247,21 @@ public final class FileDocument {
    }
 
    /**
-    * Enables/disables syntax coloring and auto-indentation
+    * Enables/disables syntax coloring and auto-indentation. Has no effect
+    * if this language is not a coding language
     *
-    * @param isEnabled  true/false to enable/disable editing during
-    * typing. True has no effect if this language is plain text
+    * @param isEnabled  true/false to enable/disable actions in responce to
+    * the editing of source code
     */
-   public void enableTypeEdit(boolean isEnabled) {
-      if (!isCodingLanguage()) {
-         type.enableTypeEdit(isEnabled);
+   public void enableCodeEditing(boolean isEnabled) {
+      if (Languages.PLAIN_TEXT != lang) {
+         type.enableCodeEditing(isEnabled);
       }
    }
 
    /**
-    * Colors a section of the document if this language is not plain
-    * text.
-    * @see TypingEdit#colorMultipleLines(String,int)
+    * Colors a section of the document if this language is a coding
+    * language. Has no effect if this language is not a coding language
     *
     * @param section  a section of the document text
     * @param pos  the pos where the section starts
@@ -376,9 +366,6 @@ public final class FileDocument {
       }
    }
 
-   /**
-    * Saves the current content to this file
-    */
    private boolean writeToFile(File f) {
       String[] lines = type.getText().split("\n");
       try (FileWriter writer = new FileWriter(f)) {
@@ -422,6 +409,6 @@ public final class FileDocument {
          default:
             lang = Languages.PLAIN_TEXT;
       }
-      type.setUpEditing(lang);
+      type.setEditingMode(lang);
    }
 }

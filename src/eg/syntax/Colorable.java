@@ -4,7 +4,7 @@ package eg.syntax;
  * The interface to color text
  */
 public interface Colorable {
-   
+
    /**
     * Colors text
     *

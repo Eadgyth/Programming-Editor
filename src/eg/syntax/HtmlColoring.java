@@ -50,7 +50,7 @@ public class HtmlColoring implements Colorable {
       if (!search.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
          search.setCharAttrBlack();
          search.htmlTags(TAGS, ATTRIBUTES);
-         search.javascript(jsCol);
+         search.javascriptInHtml(jsCol);
       }
       search.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
    }

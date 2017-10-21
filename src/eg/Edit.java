@@ -91,16 +91,14 @@ public class Edit {
       }
       String sel = textArea.getSelectedText();
       int pos = textArea.getSelectionStart();
-      fDoc.enableTypeEdit(false);
+      fDoc.enableCodeEditing(false);
       if (sel != null) {
          fDoc.remove(pos, sel.length());
       }
       EventQueue.invokeLater(() -> {
          fDoc.insert(pos, clipboard);
-         if (fDoc.isCodingLanguage()) {
-            fDoc.colorSection(clipboard, pos);
-            fDoc.enableTypeEdit(true);
-         }
+         fDoc.colorSection(clipboard, pos);
+         fDoc.enableCodeEditing(true);
       });
    }
 
@@ -138,7 +136,7 @@ public class Edit {
    public void indent()  {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
-      fDoc.enableTypeEdit(false);
+      fDoc.enableCodeEditing(false);
       if (sel == null) {
          fDoc.insert(start, indentUnit);
       }
@@ -151,7 +149,7 @@ public class Edit {
             sum += lineLength + 1;
          }
       }
-      fDoc.enableTypeEdit(true);
+      fDoc.enableCodeEditing(true);
    }
 
    /**
@@ -161,7 +159,7 @@ public class Edit {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
       String text = fDoc.getText();
-      fDoc.enableTypeEdit(false);
+      fDoc.enableCodeEditing(false);
       if (sel == null) {
          boolean isAtLineStart
                = LinesFinder.lastNewline(text, start) > start - indentLength;
@@ -199,14 +197,14 @@ public class Edit {
             }
          }
       }
-      fDoc.enableTypeEdit(true);
+      fDoc.enableCodeEditing(true);
    }
 
    /**
     * Clears trailing spaces
     */
    public void clearTrailingSpaces() {
-      fDoc.enableTypeEdit(false);
+      fDoc.enableCodeEditing(false);
       String text = fDoc.getText();
       String[] textArr = text.split("\n");
       int sum = 0;
@@ -216,7 +214,7 @@ public class Edit {
          fDoc.remove(startOfSpaces + sum, spacesLength);
          sum += startOfSpaces + 1;
       }
-      fDoc.enableTypeEdit(true);
+      fDoc.enableCodeEditing(true);
    }
 
    //

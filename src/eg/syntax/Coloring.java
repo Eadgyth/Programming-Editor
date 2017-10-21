@@ -7,7 +7,7 @@ import javax.swing.text.StyledDocument;
 import eg.Languages;
 
 /**
- * Creates a <code>SyntaxSearch</code> for Coloring
+ * Maintains a <code>SyntaxSearch</code> for Coloring
  */
 public class Coloring {
    
