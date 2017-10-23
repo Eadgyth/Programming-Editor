@@ -311,8 +311,8 @@ public abstract class ProjectConfig implements Configurable {
          canStore = projTestName.equals(getProjectName());
       }
       if (!canStore) {
-         Dialogs.warnMessage(
-               "An entry in the 'Structure' panel is incorrect");
+         Dialogs.warnMessageOnTop(
+               "The entries cannot be matched with an existing file");
       }
       else {
          storeInPrefs();

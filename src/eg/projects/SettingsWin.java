@@ -36,7 +36,7 @@ public class SettingsWin {
    private final JFrame frame = new JFrame("Eadgyth - Project settings");
    private final JTextField fileTf       = new JTextField();
    private final JTextField moduleTf     = new JTextField();
-   private final JTextField sourcesDirTf = new JTextField();      
+   private final JTextField sourcesDirTf = new JTextField();
    private final JTextField execDirTf    = new JTextField();
    private final JTextField projDirTf    = new JTextField();
    private final JTextField argsTf       = new JTextField();
@@ -44,21 +44,21 @@ public class SettingsWin {
    private final JButton    okBt         = new JButton("   OK   ");
    private final JButton    cancelBt     = new JButton("Cancel");
    private final JCheckBox  saveConfig   = new JCheckBox();
-   
+
    private String fileLabel = "";
    private String moduleLabel = null;
    private boolean useScr = false;
    private boolean useExec = false;
    private boolean useArgs = false;
    private String buildLabel = null;
-   
+
    private SettingsWin(String fileLabel, boolean initWindow) {
       this.fileLabel = fileLabel;
       if (initWindow) {
          initWindow();
       }
-   } 
-   
+   }
+
    /**
     * Returns a new SettingsWin where only the name for a project file and
     * for a project root can be entered
@@ -68,7 +68,7 @@ public class SettingsWin {
    public static SettingsWin basicWindow(String fileLabel) {
       return new SettingsWin(fileLabel, true);
    }
-   
+
    /**
     * Returns a new SettingsWin whose content is set up afterwards by choosing
     * from the methods that add input options.
@@ -83,18 +83,18 @@ public class SettingsWin {
    public static SettingsWin adaptableWindow(String fileLabel) {
       return new SettingsWin(fileLabel, false);
    }
-   
+
    /**
     * Adds the option to enter a name for a module/subdirectory and
     * sets the label for the corresponding text field
-    * @param moduleLabel  the label for the module text field 
+    * @param moduleLabel  the label for the module text field
     * @return  this
     */
    public SettingsWin addModuleOption(String moduleLabel) {
       this.moduleLabel = moduleLabel;
       return this;
    }
-   
+
    /**
     * Adds the option to enter a name of a directory where source
     * files are stored
@@ -104,7 +104,7 @@ public class SettingsWin {
       this.useScr = true;
       return this;
    }
-   
+
    /**
     * Adds the option to enter a name of a directory where executable
     * files are stored
@@ -114,7 +114,7 @@ public class SettingsWin {
       useExec = true;
       return this;
    }
-   
+
    /**
     * Adds the option to enter arguments for a start script.
     * @return  this
@@ -123,7 +123,7 @@ public class SettingsWin {
       this.useArgs = true;
       return this;
    }
-   
+
    /**
     * Adds the option to enter a build name and sets the label for the
     * corresponding text field
@@ -134,7 +134,7 @@ public class SettingsWin {
       this.buildLabel = buildLabel;
       return this;
    }
-   
+
    /**
     * Sets up this frame
     */
@@ -145,14 +145,14 @@ public class SettingsWin {
       }
       initWindow();
    }
-   
+
    /**
     * Adds an {@code ActionListener} to this ok button
     * @param al  the {@code ActionListener};
     */
    public void okAct(ActionListener al) {
       okBt.addActionListener(al);
-   }      
+   }
 
    /**
     * Makes this frame visible
@@ -162,7 +162,7 @@ public class SettingsWin {
       fileTf.requestFocus();
       frame.setVisible(isVisible);
    }
-   
+
    /**
     * Returns the input in the text field for the name of a project
     * file
@@ -197,7 +197,7 @@ public class SettingsWin {
    public String execDirNameInput() {
       return execDirTf.getText();
    }
-   
+
    /**
     * Returns the input in the text field for the name of a project root
     * directory
@@ -258,7 +258,7 @@ public class SettingsWin {
    public void displayExecDir(String in) {
       execDirTf.setText(in);
    }
-   
+
    /**
     * Shows in the corresponding text field the name of the project's
     * root directory
@@ -267,7 +267,7 @@ public class SettingsWin {
    public void displayProjDirName(String in) {
       projDirTf.setText(in);
    }
-   
+
    /**
     * Shows in the corresponding text field the name of a build
     * @param in  the name of a build
@@ -275,7 +275,7 @@ public class SettingsWin {
    public void displayBuildName(String in) {
       buildTf.setText(in);
    }
-   
+
    /**
     * @return  if the checkbox to save the text field inputs to a
     * local config file is selected
@@ -283,7 +283,7 @@ public class SettingsWin {
    public boolean isSaveConfig() {
       return saveConfig.isSelected();
    }
-   
+
    /**
     * @param isSelected  true select the checkbox for saving text
     * field inputs to a local config file
@@ -291,7 +291,7 @@ public class SettingsWin {
    public void setSaveConfigSelected(boolean isSelected) {
       saveConfig.setSelected(isSelected);
    }
-   
+
    //--private--//
 
    private JPanel structurePanel() {
@@ -314,7 +314,7 @@ public class SettingsWin {
       // sources panel
       if (useScr) {
          gridSize++;
-         grid.setRows(gridSize);        
+         grid.setRows(gridSize);
          JLabel sourcesDirLb = new JLabel("Name of sources directory:");
          projPnl.add(holdLbAndTf(sourcesDirLb, sourcesDirTf));
       }
@@ -326,12 +326,12 @@ public class SettingsWin {
          JLabel execDirLb = new JLabel("Name of executables directory:");
          projPnl.add(holdLbAndTf(execDirLb, execDirTf));
       }
- 
+
       JLabel projDirLb = new JLabel("Name of project root (input not rqd.):");
       projPnl.add(holdLbAndTf(projDirLb, projDirTf));
       projPnl.add(checkBxPnl(saveConfig, "Store settings in 'eadconfig' file"));
 
-      projPnl.setBorder(titledBorder("Structure"));  
+      projPnl.setBorder(titledBorder("Structure"));
       return projPnl;
    }
 
@@ -339,15 +339,15 @@ public class SettingsWin {
       JPanel argsPnl = new JPanel( new GridLayout(1, 0));
       JLabel argsLb = new JLabel("Arguments:");
       argsPnl.add(holdLbAndTf(argsLb, argsTf));
-      argsPnl.setBorder(titledBorder("Startscript"));  
+      argsPnl.setBorder(titledBorder("Startscript"));
       return argsPnl;
-   }  
+   }
 
    private JPanel buildPanel() {
       JPanel buildPnl = new JPanel(new GridLayout(1, 0));
       JLabel buildLb = new JLabel("Name for " + buildLabel +":");
       buildPnl.add(holdLbAndTf(buildLb, buildTf));
-      buildPnl.setBorder(titledBorder("Build (" + buildLabel + ")"));      
+      buildPnl.setBorder(titledBorder("Build (" + buildLabel + ")"));
       return buildPnl;
    }
 
@@ -378,20 +378,16 @@ public class SettingsWin {
       tBorder.setTitleFont(eg.Constants.VERDANA_PLAIN_8);
       return tBorder;
    }
-   
+
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
+      JPanel holdPnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       JLabel label = new JLabel(title);
-      label.setFont(Constants.SANSSERIF_BOLD_9);      
-      JPanel checkBxPnl = new JPanel(); 
-      checkBxPnl.setLayout(new BoxLayout(checkBxPnl, BoxLayout.LINE_AXIS));
-      checkBox.setHorizontalTextPosition(JCheckBox.LEFT);
-      checkBxPnl.add(Box.createHorizontalGlue());   
-      checkBxPnl.add(label);
-      checkBxPnl.add(checkBox);
-      checkBxPnl.add(Box.createRigidArea(new Dimension(30, 0)));
-      return checkBxPnl;
+      label.setFont(Constants.SANSSERIF_BOLD_9);
+      holdPnl.add(label);
+      holdPnl.add(checkBox);
+      return holdPnl;
    }
-   
+
    private JPanel combineAll() {
       JPanel combineAll = new JPanel();
       combineAll.setLayout(new BoxLayout(combineAll, BoxLayout.Y_AXIS));

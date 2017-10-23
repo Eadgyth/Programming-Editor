@@ -9,7 +9,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-//import javax.swing.JFrame;
 
 /**
  * Static methods to show dialogs using <code>JOptionPane</code>
@@ -34,6 +33,18 @@ public class Dialogs {
     */
    public static void warnMessage(String message) {
       JOptionPane.showMessageDialog(null, message, null,
+            JOptionPane.WARNING_MESSAGE);
+   }
+   
+   /**
+    * Shows a warning message that is shown on top of all windows
+    *
+    * @param message  the warning message
+    */
+   public static void warnMessageOnTop(String message) {
+      final JDialog dialog = new JDialog();
+      dialog.setAlwaysOnTop(true);
+      JOptionPane.showMessageDialog(dialog, message, "",
             JOptionPane.WARNING_MESSAGE);
    }
 
