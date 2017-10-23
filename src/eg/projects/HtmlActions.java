@@ -5,7 +5,6 @@ import java.io.IOException;
 
 //--Eadgyth--//
 import eg.utils.FileUtils;
-import eg.utils.JOptions;
 
 /**
  * Represents a project to write a webpage in HTML

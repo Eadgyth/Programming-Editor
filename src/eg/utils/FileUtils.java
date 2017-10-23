@@ -60,12 +60,12 @@ public class FileUtils {
       File logFile = new File("log.txt");
       try (PrintWriter pw = new PrintWriter(new FileOutputStream(logFile, true))) {
          e.printStackTrace(pw);
-         JOptions.errorMessage("Error:\n" + e.getMessage()
-         + ".\nSee log.txt file");
+         Dialogs.errorMessage("Error:\n" + e.getMessage()
+               + ".\nSee log.txt file");
       }
       catch(IOException ioe) {
          throw new RuntimeException(
-               "Could not write stack trace to the log file", ioe);
+               "Could not write the stack trace to the log file", ioe);
       }
    }
    

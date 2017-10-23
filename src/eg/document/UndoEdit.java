@@ -164,21 +164,8 @@ public class UndoEdit {
       }
    }
 
-   /**
-    * Discards all edits
-    */
-   void discardEdits() {
-      edits.clear();
-      positions.clear();
-      eventTypes.clear();
-      breakpoints.clear();
-      iEd = -1;
-      iBr = -1;
-      isBreak = false;
-   }
-
    //
-   //--private methods--//
+   //--private methods--/
    //
 
    private void addBreakpoint() {

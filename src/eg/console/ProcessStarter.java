@@ -23,9 +23,8 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 
 //--Eadgyth--//
-import eg.utils.JOptions;
+import eg.utils.Dialogs;
 import eg.utils.FileUtils;
-
 
 /**
  *  The starting of an external process
@@ -117,9 +116,9 @@ public class ProcessStarter {
    public boolean isProcessEnded() {
       boolean isEnded = process == null;
       if (!isEnded) {
-         JOptions.warnMessage(
-               "A process is currently running."
-               + " The process must be quit to start a new process.");
+         Dialogs.warnMessage(
+               "A process is currently running. The process must"
+               + " be quit to start a new process.");
       }
       return isEnded;
    }
@@ -168,7 +167,7 @@ public class ProcessStarter {
     * is entered in a dialog window
     */
    private void startNewCmd() {
-      String cmd = JOptions.dialogRes(
+      String cmd = Dialogs.textFieldInput(
             "Enter a system command that is executed in the current"
             + " working directory '" + workingDirName + "'", "Run",
             previousCmd);

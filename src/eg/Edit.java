@@ -113,7 +113,7 @@ public class Edit {
     * Sets a new indentation length
     */
    public void setNewIndentUnit() {
-      String selectedNumber = JOptions.comboBoxRes(
+      String selectedNumber = Dialogs.comboBoxOpt(
             "Select the number of spaces:",
             "Indentation length",
             SPACE_NUMBER,
@@ -256,7 +256,7 @@ public class Edit {
          }
       }
       if (!isConsistent) {
-         JOptions.warnMessage("The selected text is not consistently"
+         Dialogs.warnMessage("The selected text is not consistently"
                + " indented by at least one indentation length");
       }
       return isConsistent;

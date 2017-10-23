@@ -52,6 +52,7 @@ class PluginLoader {
    @SuppressWarnings("unchecked")
    private static List<Class<Pluggable>> extractClassesFromJAR(File jar, ClassLoader cl)
          throws IOException {
+
       List<Class<Pluggable>> classes = new ArrayList<>();
       JarInputStream jaris = new JarInputStream(new FileInputStream(jar));
       JarEntry ent = null;
@@ -65,8 +66,7 @@ class PluginLoader {
                }
             }
             catch (ClassNotFoundException e) {
-               System.err.println("Can't load Class " + ent.getName());
-               e.printStackTrace();
+               eg.utils.FileUtils.logStack(e);
             }
         }
      }
@@ -84,20 +84,15 @@ class PluginLoader {
    }
    
    private static List<Pluggable> createPluggableObjects(List<Class<Pluggable>> pluggables) { 
-     List<Pluggable> plugs = new ArrayList<>(pluggables.size());
-     for (Class<Pluggable> plug : pluggables) {
-       try {
-         plugs.add(plug.newInstance());
-       }
-       catch (InstantiationException e) {
-         System.err.println("Can't instantiate plugin: " + plug.getName());
-         e.printStackTrace();
-       }
-       catch (IllegalAccessException e) {
-         System.err.println("IllegalAccess for plugin: " + plug.getName());
-         e.printStackTrace();
-       }
-     }
-     return plugs;
+      List<Pluggable> plugs = new ArrayList<>(pluggables.size());
+      for (Class<Pluggable> plug : pluggables) {
+         try {
+            plugs.add(plug.newInstance());
+         }
+         catch (InstantiationException | IllegalAccessException e) {
+            eg.utils.FileUtils.logStack(e);
+         }
+      }
+      return plugs;
    }
 }

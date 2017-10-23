@@ -37,7 +37,7 @@ import java.util.Observable;
 //--Eadgyth--//
 import eg.Constants;
 import eg.ui.IconFiles;
-import eg.utils.JOptions;
+import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 import eg.utils.UiComponents;
 
@@ -162,7 +162,7 @@ public class FileTree extends Observable {
       model = new DefaultTreeModel(root);
       getFiles(root, new File(path));
       initTree(); // includes creating a new JTree object
-      holdTreePnl.add(tree); // old one removed in setNewTree(String)
+      holdTreePnl.add(tree);
       fileTreePnl.revalidate();
       fileTreePnl.repaint();
    }
@@ -250,14 +250,14 @@ public class FileTree extends Observable {
    private void deleteFile() {
       DefaultMutableTreeNode selectedNode = getSelectedNode();
       File f = getSelectedFile();
-      int res = JOptions.confirmYesNo(deleteMessage(f));
+      int res = Dialogs.confirmYesNo(deleteMessage(f));
       if (res == JOptionPane.YES_OPTION) {
          boolean success = f.delete();
          if (success) {
             model.removeNodeFromParent(selectedNode);
          }
          else {
-            JOptions.warnMessage("Deleting " + f.getName() + " failed");
+            Dialogs.warnMessage("Deleting " + f.getName() + " failed");
          }
       }
    }
@@ -265,14 +265,14 @@ public class FileTree extends Observable {
    private void deleteFolder() {
       DefaultMutableTreeNode selectedNode = getSelectedNode();
       File f = getSelectedFile();  
-      int res = JOptions.confirmYesNo(deleteMessage(f));
+      int res = Dialogs.confirmYesNo(deleteMessage(f));
       if (res == JOptionPane.YES_OPTION) {
          boolean success = FileUtils.deleteFolder(f);
          if (success) {
             model.removeNodeFromParent(selectedNode);
          }
          else {
-            JOptions.warnMessage("Deleting " + f.getName() + "failed.");
+            Dialogs.warnMessage("Deleting " + f.getName() + "failed.");
          }
       }
    }
@@ -284,8 +284,9 @@ public class FileTree extends Observable {
    private void newFolder() {
       DefaultMutableTreeNode parent = getSelectedNode();
       File f = getSelectedFile();
-      String newFolder = JOptions.dialogRes("Enter name of new folder",
-            "New folder", "");
+      String newFolder = Dialogs.textFieldInput(
+            "Enter name of new folder", "New folder", "");
+
       if (newFolder != null) {
          File newDir = new File(f.getPath(), newFolder);
          boolean succes = newDir.mkdirs();
@@ -294,7 +295,7 @@ public class FileTree extends Observable {
                   parent, parent.getChildCount());
          }
          else {
-            JOptions.warnMessage("Creating " + newDir.getName() + " failed");
+            Dialogs.warnMessage("Creating " + newDir.getName() + " failed");
          }
       }
    }
@@ -305,7 +306,7 @@ public class FileTree extends Observable {
          notifyObservers(fileStr);
       }
       else {
-         JOptions.warnMessageToFront(
+         Dialogs.warnMessage(
                 "No function is associated with this file type");
       }
    }

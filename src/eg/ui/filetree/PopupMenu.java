@@ -7,11 +7,11 @@ import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 
 /**
- * A popup menu with menu items for deleting a file and creating
+ * A popup menu with menu items for deleting a file, directory and creating
  * a new folder
  */
 public class PopupMenu {
-   
+
    static int FILE_OPT = 0;
    static int FOLDER_OPT = 1;
 
@@ -28,7 +28,7 @@ public class PopupMenu {
          popMenu.add(deleteItm);
       }
    }
-   
+
    void enableDelete(boolean isEnabled) {
       if (isEnabled) {
          deleteItm.setText("Delete");
@@ -38,7 +38,6 @@ public class PopupMenu {
       }
       deleteItm.setEnabled(isEnabled);
    }
-      
 
    void showMenu(Component c, int x, int y) {
       popMenu.show(c, x, y);
@@ -47,7 +46,7 @@ public class PopupMenu {
    void deleteAct(ActionListener al) {
       deleteItm.addActionListener(al);
    }
-   
+
    void newFolderAct(ActionListener al) {
       newFolderItm.addActionListener(al);
    }

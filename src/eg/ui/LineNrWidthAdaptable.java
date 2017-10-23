@@ -15,5 +15,4 @@ public interface LineNrWidthAdaptable {
     * @param lineNr  the new number of lines
     */
    public void adaptLineNrWidth(int prevLineNr, int lineNr);
-   
 }

@@ -247,11 +247,12 @@ public final class FileDocument {
    }
 
    /**
-    * Enables/disables syntax coloring and auto-indentation. Has no effect
-    * if this language is not a coding language
+    * Enables/disables actions in responce to the editing of source code.
+    * Affects syntax coloring and auto-indentation. Has no effect if this
+    * language is not a coding language.
     *
-    * @param isEnabled  true/false to enable/disable actions in responce to
-    * the editing of source code
+    * @param isEnabled  true/false to enable/disable actions in responce
+    * to the editing of source code
     */
    public void enableCodeEditing(boolean isEnabled) {
       if (Languages.PLAIN_TEXT != lang) {
@@ -260,8 +261,8 @@ public final class FileDocument {
    }
 
    /**
-    * Colors a section of the document if this language is a coding
-    * language. Has no effect if this language is not a coding language
+    * Colors a section of the document. Has no effect if this language is not
+    * a coding language
     *
     * @param section  a section of the document text
     * @param pos  the pos where the section starts
@@ -332,7 +333,7 @@ public final class FileDocument {
    }
 
    //
-   //----private methods----//
+   //--private methods--/
    //
 
    private FileDocument(EditArea editArea) {

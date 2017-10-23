@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 //--Eadgyth--//
 import eg.Preferences;
-import eg.utils.JOptions;
+import eg.utils.Dialogs;
 import eg.console.ConsolePanel;
 
 /**
@@ -162,7 +162,7 @@ public class Compile {
       if (!new File(jdkPath).exists()) {
          String notFound = "The JDK was not found."
                + " Enter or correct the filepath of the JDK.";
-         jdkPath = JOptions.dialogRes(notFound, "Location of JDK", jdkPath);
+         jdkPath = Dialogs.textFieldInput(notFound, "Location of JDK", jdkPath);
          if (jdkPath != null) { // if ok clicked
             PREFS.storeSettings(jdkPath);
             setJdkPath();

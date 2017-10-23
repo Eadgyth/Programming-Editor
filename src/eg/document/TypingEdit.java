@@ -102,10 +102,11 @@ public class TypingEdit {
    }
 
    /**
-    * Enables/disables syntax coloring and auto-indentation
+    * Enables/disables actions in responce to the editing of source code.
+    * Affects syntax coloring and auto-indentation.
     *
-    * @param isEnabled  true/false to enable/disable syntax
-    * coloring and auto-indentation
+    * @param isEnabled  true/false to enable/disable actions in responce
+    * to the editing of source code
     */
    public void enableCodeEditing(boolean isEnabled) {
       isCodeEditing = isEnabled;
@@ -216,6 +217,19 @@ public class TypingEdit {
    //
    //--private methods/classes--//
    //
+
+   private void updateAfterUndoRedo() {
+      notifyUndoableChangeEvent();
+      if (isCodeEditing) {
+         if (event.equals(DocumentEvent.EventType.INSERT)) {
+            colorMultipleLines(change, pos);
+         }
+         else if (event.equals(DocumentEvent.EventType.REMOVE)) {
+            colorLine();
+         }
+      }
+      isAddToUndo = true;
+   }
    
    private void textUpdate() {
       text = textDoc.getText();
@@ -225,20 +239,7 @@ public class TypingEdit {
    private void colorLine() {
       String toColor = LinesFinder.lineAtPos(text, pos);
       int posStart = LinesFinder.lastNewline(text, pos) + 1;
-      col.color(text, toColor, pos, posStart);
-   }
-
-   private void updateAfterUndoRedo() {
-      notifyUndoableChangeEvent();
-      if (isCodeEditing) {
-         if (event.equals(DocumentEvent.EventType.INSERT)) {
-            colorMultipleLines(change, pos);
-         }
-         else if (event.equals(DocumentEvent.EventType.REMOVE)) {
-            EventQueue.invokeLater(() -> colorLine());
-         }
-      }
-      isAddToUndo = true;
+      EventQueue.invokeLater(() -> col.color(text, toColor, pos, posStart));
    }
 
    private void notifyUndoableChangeEvent() {
@@ -302,9 +303,9 @@ public class TypingEdit {
          if (isAddToUndo) {
             undo.addEdit(change, pos, true);
             notifyUndoableChangeEvent();
-            if (isCodeEditing) { 
+            if (isCodeEditing) {
+               colorLine();
                EventQueue.invokeLater(() -> {
-                  colorLine();
                   autoInd.indent(text, pos);
                   autoInd.closedBracketIndent(text, pos);
                });
@@ -325,7 +326,7 @@ public class TypingEdit {
             undo.addEdit(change, pos, false);
             notifyUndoableChangeEvent();
             if (isCodeEditing) {
-               EventQueue.invokeLater(() -> colorLine());
+               colorLine();
             }
          }
       }

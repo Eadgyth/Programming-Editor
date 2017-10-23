@@ -16,10 +16,8 @@ import eg.console.ConsolePanel;
 /**
  * The creation of a jar file of a project.
  * <p>
- * TODO: the jar is created in the folder containing the class files (packages)
- * which is the classpath. If the class files are located in a subfolder of
- * the project's root folder the jar is additionally copied to the root. How
- * can the destination for the jar be specified?
+ * The jar is saved in the folder containing the class files (packages)
+ * which is the classpath.
  */
 public class CreateJar {
 

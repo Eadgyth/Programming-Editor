@@ -22,7 +22,7 @@ import javax.swing.plaf.TabbedPaneUI;
 /**
  * A JTabbedPane with a close button in the tabs, the possibility
  * to show and hide the tab bar and a somewhat changed tab appearance.
- * The tab placement is restricted to be at the top, however.
+ * The tab placement is restricted to be at the top.
  */
 public class ExtTabbedPane extends JTabbedPane {
 

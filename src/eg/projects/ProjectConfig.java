@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 //--Eadgyth--//
 import eg.Preferences;
-import eg.utils.JOptions;
+import eg.utils.Dialogs;
 
 /**
  * Represents the configuration of a project.
@@ -311,7 +311,7 @@ public abstract class ProjectConfig implements Configurable {
          canStore = projTestName.equals(getProjectName());
       }
       if (!canStore) {
-         JOptions.warnMessageToFront(
+         Dialogs.warnMessage(
                "An entry in the 'Structure' panel is incorrect");
       }
       else {
@@ -334,13 +334,13 @@ public abstract class ProjectConfig implements Configurable {
       File configFile = new File(projectRoot + F_SEP
             + Preferences.CONFIG_FILE);
       if (configFile.exists()) {
-         int res = JOptions.confirmYesNo(
+         int res = Dialogs.confirmYesNo(
                  "Saving the 'eadconfig' is disabled."
                + " Remove the config file?");
          if (res == 0) {
             boolean success = configFile.delete();
             if (!success) {
-               JOptions.warnMessage(
+               Dialogs.warnMessage(
                      "Deleting the 'eadconfig' file failed");
             }
          }

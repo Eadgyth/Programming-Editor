@@ -19,7 +19,7 @@ import javax.swing.event.ChangeListener;
 import java.io.File;
 
 //--Eadgyth--//
-import eg.utils.JOptions;
+import eg.utils.Dialogs;
 
 import eg.document.FileDocument;
 import eg.ui.MainWin;
@@ -112,7 +112,7 @@ public class TabbedFiles implements Observer {
          return;
       }
       if (!f.exists()) {
-         JOptions.warnMessage(f.getName() + "\nThe file was not found.");
+         Dialogs.warnMessage(f.getName() + "\nThe file was not found.");
       }
       else {
          open(f);
@@ -158,7 +158,7 @@ public class TabbedFiles implements Observer {
       }
       if (sb.length() > 0) {
          sb.insert(0, "These files could not be found:\n");
-         JOptions.warnMessage(sb.toString());
+         Dialogs.warnMessage(sb.toString());
       }
    }
 
@@ -396,7 +396,7 @@ public class TabbedFiles implements Observer {
       for (int i = 0; i < nTabs(); i++) {
          if (fDoc[i].filepath().equals(f.toString())) {
            isFileOpen = true;
-           JOptions.warnMessage(f.getName() + " is already open.");
+           Dialogs.warnMessage(f.getName() + " is already open.");
            break;
          }
       }
@@ -406,7 +406,7 @@ public class TabbedFiles implements Observer {
    private boolean isMaxTabNumber() {
       boolean isMax = nTabs() == fDoc.length;
       if (isMax) {
-         JOptions.warnMessage("The maximum number of tabs is reached.");
+         Dialogs.warnMessage("The maximum number of tabs is reached.");
       }
       return isMax;
    }
@@ -426,12 +426,12 @@ public class TabbedFiles implements Observer {
       if (filename.length() == 0) {
          filename = "unnamed";
       }
-      return JOptions.confirmYesNoCancel
+      return Dialogs.confirmYesNoCancel
             ("Save changes in " + filename + " ?");
    }
    
    private int replaceOption(File f) {
-      return JOptions.confirmYesNo(f.getName()
+      return Dialogs.confirmYesNo(f.getName()
              + "\nThe file already exists. Replace file?");
    }
 

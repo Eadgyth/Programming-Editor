@@ -10,7 +10,7 @@ import javax.swing.SwingWorker;
 //--Eadgyth--//
 import eg.console.*;
 import eg.javatools.*;
-import eg.utils.JOptions;
+import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 import eg.ui.ConsoleOpenable;
 
@@ -96,7 +96,7 @@ public final class JavaActions extends ProjectConfig
             consPnl.setCaret(0);
             if (!co.isConsoleOpen()) {
                if (!comp.success()) {
-                  int result = JOptions.confirmYesNo(
+                  int result = Dialogs.confirmYesNo(
                         "Compilation of the project "
                         + getProjectName() + " failed.\n"
                         + comp.getMessage() + "."
@@ -106,9 +106,10 @@ public final class JavaActions extends ProjectConfig
                   }
                }
                else {
-                  JOptions.infoMessage(
-                        "Successfully compiled the project "
-                        + getProjectName() + ".");
+                  Dialogs.infoMessage(
+                        "Successfully compiled the project '"
+                        + getProjectName() + "'.",
+                        null);
                }
             }
          }
@@ -161,7 +162,7 @@ public final class JavaActions extends ProjectConfig
          String jarNameFin = jarName;
          EventQueue.invokeLater(() -> {
             consPnl.appendText("<<Saved jar file named " + jarNameFin + ">>\n");
-            JOptions.infoMessage("Saved jar file named " + jarNameFin);
+            Dialogs.infoMessage("Saved jar file named " + jarNameFin, null);
          });
       }
       catch (IOException e) {
@@ -172,7 +173,7 @@ public final class JavaActions extends ProjectConfig
    private boolean mainClassFileExists() {
       boolean exists = mainExecFileExists(".class");
       if (!exists) {
-         JOptions.warnMessage("A compiled main class file could not be found");
+         Dialogs.warnMessage("A compiled main class file could not be found");
       }
       return exists;
    }

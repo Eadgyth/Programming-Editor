@@ -16,7 +16,7 @@ import eg.projects.SelectedProject;
 
 import eg.document.FileDocument;
 
-import eg.utils.JOptions;
+import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 
 /**
@@ -33,8 +33,8 @@ import eg.utils.FileUtils;
 public class CurrentProject {
 
    private final String NO_FILE_IN_TAB_MESSAGE
-         = "A project can be set after a file was opened or"
-         + " newly saved.";
+         = "A project can be assigned if an opened or newly"
+         + " saved file is selected.";
 
    private final String FILES_NOT_FOUND_MESSAGE
          = "The following files could not be found anymore:";
@@ -141,8 +141,8 @@ public class CurrentProject {
    public void openSettingsWindow() {
       ProjectActions fromList = selectFromList(currFDoc.dir(), false);
       if (fromList == null) {
-         int res = JOptions.confirmYesNo("Set new project?");
-         if (res == 0) {
+         int res = Dialogs.confirmYesNo("Set new project?");
+         if (0 == res) {
             createProjectImpl();
          }
       }
@@ -207,7 +207,7 @@ public class CurrentProject {
                updateFileTree();
             }
             else {
-               JOptions.warnMessage(currFDoc.filename()
+               Dialogs.warnMessage(currFDoc.filename()
                      + ":\nThe file could not be found anymore");
             }
          }
@@ -241,7 +241,7 @@ public class CurrentProject {
             updateFileTree();
          }
          else {
-            JOptions.warnMessage(FILES_NOT_FOUND_MESSAGE + missingFiles);
+            Dialogs.warnMessage(FILES_NOT_FOUND_MESSAGE + missingFiles);
          }
       }
       finally {
@@ -276,18 +276,12 @@ public class CurrentProject {
 
    private void createProjectImpl() {
       if (!currFDoc.hasFile()) {
-         JOptions.titledInfoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
+         Dialogs.infoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          return;
       }
-      System.out.println(docSuffix);
       ProjectActions projNew = selProj.createProject(docSuffix);
       if (projNew == null) {
-         String selectedSuffix
-               = JOptions.comboBoxRes(wrongExtentionMessage(currFDoc.filename()),
-               "File extension", projectOptions, null, true);
-         if (selectedSuffix != null && !selectedSuffix.equals(projectOptions[0])) {
-            projNew = selProj.createProject(selectedSuffix);
-         }
+         projNew = bySuffixOptions();
       }
       if (projNew != null) {
          ProjectActions projFin = projNew;
@@ -295,9 +289,21 @@ public class CurrentProject {
          projFin.addOkAction(e -> configureProject(projFin));
       }
    }
+   
+   private ProjectActions bySuffixOptions() {
+      String selectedSuffix
+            = Dialogs.comboBoxOpt(wrongExtentionMessage(currFDoc.filename()),
+            "File extension", projectOptions, null, true);
+      if (selectedSuffix != null && !selectedSuffix.equals(projectOptions[0])) {
+         return selProj.createProject(selectedSuffix);
+      }
+      else {
+         return null;
+      }
+   }
 
    private boolean changeProject(ProjectActions toChangeTo) {
-      int result = JOptions.confirmYesNo("Switch to project '"
+      int result = Dialogs.confirmYesNo("Switch to project '"
                  + toChangeTo.getProjectName() + "'?");
       if (result == 0) {
          current = toChangeTo;
@@ -336,7 +342,7 @@ public class CurrentProject {
    }
 
    private void confirmedNewProject(ProjectActions toConfirm) {
-      int res = JOptions.confirmYesNo(currFDoc.filename()
+      int res = Dialogs.confirmYesNo(currFDoc.filename()
               + "\nThe file belongs to the project "
               + "'" + toConfirm.getProjectName() + "'."
               + "\nStill set new project?");

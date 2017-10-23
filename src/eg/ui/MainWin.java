@@ -68,11 +68,8 @@ public class MainWin implements ConsoleOpenable {
 
    public MainWin() {
       initFrame();
-      setViewActions();      
-      prefs.readPrefs();
-      boolean isShowTabs = "show".equals(prefs.getProperty("showTabs"));
-      showTabbar(isShowTabs);
-      menuBar.viewMenu().selectTabsItm(isShowTabs);
+      setViewActions();
+      initShowTabbar();
    }
    
    @Override
@@ -426,6 +423,13 @@ public class MainWin implements ConsoleOpenable {
       tabPane.showTabbar(show);
       String state = show ? "show" : "hide";
       prefs.storePrefs("showTabs", state);
+   }
+   
+   private void initShowTabbar() {
+      prefs.readPrefs();
+      boolean show = "show".equals(prefs.getProperty("showTabs"));
+      tabPane.showTabbar(show);
+      menuBar.viewMenu().selectTabsItm(show);
    }
 
    private void initFrame() {
