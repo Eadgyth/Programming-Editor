@@ -1,7 +1,11 @@
 package eg.utils;
 
+import java.awt.FlowLayout;
+
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JComponent;
 import javax.swing.JToolBar;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
@@ -10,7 +14,7 @@ import javax.swing.border.EmptyBorder;
 import eg.ui.tabpane.ExtTabbedPane;
 
 /**
- * Static methods to create customized UI components
+ * Static methods to create specialized UI components
  */
 public class UiComponents {
 
@@ -42,8 +46,8 @@ public class UiComponents {
    }
    
    /**
-    * Creates an <code>ExtTabbedPane</code> that is
-    * scrollable and unfocusable
+    * Creates an <code>ExtTabbedPane</code> that is scrollable
+    * and unfocusable
     *
     * @return  a new {@link ExtTabbedPane}
     */

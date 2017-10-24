@@ -255,7 +255,7 @@ public final class FileDocument {
     * to the editing of source code
     */
    public void enableCodeEditing(boolean isEnabled) {
-      if (Languages.PLAIN_TEXT != lang) {
+      if (Languages.NORMAL_TEXT != lang) {
          type.enableCodeEditing(isEnabled);
       }
    }
@@ -268,7 +268,7 @@ public final class FileDocument {
     * @param pos  the pos where the section starts
     */
    public void colorSection(String section, int pos) {
-      if (Languages.PLAIN_TEXT != lang) {
+      if (Languages.NORMAL_TEXT != lang) {
          type.colorMultipleLines(section, pos);
       }
    }
@@ -408,7 +408,7 @@ public final class FileDocument {
             lang = Languages.PERL;
             break;
          default:
-            lang = Languages.PLAIN_TEXT;
+            lang = Languages.NORMAL_TEXT;
       }
       type.setEditingMode(lang);
    }

@@ -55,6 +55,7 @@ public class DocumentUpdate {
       mw.enableShowTabbar(nTabs == 1);
       mw.setLanguageSelected(fDoc[i].language(),
             fDoc[i].filename().length() == 0);
+      mw.setLanguageName(fDoc[i].language().display());
       fDoc[i].requestFocus();
    }
    
@@ -68,6 +69,7 @@ public class DocumentUpdate {
    public void changedFileUpdate(int i, boolean updateFiletree) {
       retrieveProject(i);
       mw.setLanguageSelected(fDoc[i].language(), false);
+      mw.setLanguageName(fDoc[i].language().display());
       mw.displayFrameTitle(fDoc[i].filepath());
       if (updateFiletree) {
          currProj.updateFileTree();

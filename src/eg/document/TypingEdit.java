@@ -120,7 +120,7 @@ public class TypingEdit {
     */
    public void setEditingMode(Languages lang) {
       col.setColorable(lang);
-      if (lang == Languages.PLAIN_TEXT) {
+      if (lang == Languages.NORMAL_TEXT) {
          enableCodeEditing(false);
       }
       else {

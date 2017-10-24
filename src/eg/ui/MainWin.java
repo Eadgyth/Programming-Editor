@@ -4,13 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.WindowListener;
 import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -50,6 +51,7 @@ public class MainWin implements ConsoleOpenable {
    private final JFrame frame = new JFrame();
    private final JPanel statusBar = new JPanel();
    private final JLabel showProjectLb = new JLabel();
+   private final JLabel showLanguageLb = new JLabel();
 
    private final MenuBar menuBar = new MenuBar();
    private final Toolbar toolbar = new Toolbar();
@@ -137,10 +139,19 @@ public class MainWin implements ConsoleOpenable {
    /**
     * Sets the project name in the status bar
     *
-    * @param name  the name of the project's root directory 
+    * @param projName  the name of the project's root directory 
     */
-   public void setProjectName(String name) {
-      showProjectLb.setText("Project: " + name); 
+   public void setProjectName(String projName) {
+      showProjectLb.setText("Project: " + projName); 
+   }
+   
+   /**
+    * Sets the language name in the status bar
+    *
+    * @param langName  the language name
+    */
+   public void setLanguageName(String langName) {
+      showLanguageLb.setText("Language: " + langName); 
    }
    
    /**
@@ -462,9 +473,22 @@ public class MainWin implements ConsoleOpenable {
    }
 
    private void initStatusbar() {
-      showProjectLb.setFont(Constants.VERDANA_PLAIN_8);
-      statusBar.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
+      setStatusLb(showLanguageLb, 200);
+      setStatusLb(showProjectLb, 400);
+      statusBar.setLayout(new BoxLayout(statusBar, BoxLayout.LINE_AXIS));
+      statusBar.add(showLanguageLb);
+      statusBar.add(Box.createRigidArea(new Dimension(10, 0)));
       statusBar.add(showProjectLb);
-      showProjectLb.setText("Project: not set");
+      statusBar.add(Box.createHorizontalGlue());
+      showProjectLb.setText("Project: none");
+   }
+   
+   private void setStatusLb(JLabel lb, int width) {
+      lb.setFont(Constants.VERDANA_PLAIN_8);
+      lb.setBorder(Constants.EMPTY_BORDER_3);
+      Dimension dim = new Dimension(width, 24);
+      lb.setPreferredSize(dim);
+      lb.setMaximumSize(dim);
+      lb.setMinimumSize(dim);
    }
 }

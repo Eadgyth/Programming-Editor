@@ -9,8 +9,8 @@ import eg.Preferences;
 /*
  * Static ImageIcons for buttons etc.
  * <p>
- * Next to a few home-made icons
- * the majority is from the Tango Desktop Project; see
+ * Next to a few home-made icons the majority is from the
+ * Tango Desktop Project; see
  * <a href="http://tango.freedesktop.org/Tango_Icon_Library">Tango Project</a>
  */
 public class IconFiles {

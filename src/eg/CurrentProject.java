@@ -39,13 +39,14 @@ public class CurrentProject {
    private final String FILES_NOT_FOUND_MESSAGE
          = "The following files could not be found anymore:";
 
+   private final static String[] PROJ_SUFFIXES = {
+      "htm", "html", "java", "pl"
+   };
+
    private final MainWin mw;
    private final SelectedProject selProj;
    private final ProcessStarter proc;
    private final List<ProjectActions> projList = new ArrayList<>();
-   /*
-    * Options for a Comobox */
-   private final String[] projectOptions;
 
    private ProjectActions current;
    private FileDocument currFDoc;
@@ -61,11 +62,6 @@ public class CurrentProject {
       this.fDoc = fDoc;
       proc = new ProcessStarter(mw.console());
       selProj = new SelectedProject(mw, proc, mw.console());
-      projectOptions = new String[Constants.PROJECT_SUFFIXES.length + 1];
-      projectOptions[0] = "File extensions...";
-      for (int i = 0; i < Constants.PROJECT_SUFFIXES.length; i++) {
-         projectOptions[i + 1] = Constants.PROJECT_SUFFIXES[i];
-      }
    }
 
    /**
@@ -103,7 +99,7 @@ public class CurrentProject {
          boolean isFound = projToFind != null
                && projToFind.retrieveProject(currFDoc.dir());
          if (projToFind == null) {
-            for (String opt : Constants.PROJECT_SUFFIXES) {
+            for (String opt : PROJ_SUFFIXES) {
                projToFind = selProj.createProject(opt);
                isFound = projToFind != null
                      && projToFind.retrieveProject(currFDoc.dir());
@@ -281,7 +277,7 @@ public class CurrentProject {
       }
       ProjectActions projNew = selProj.createProject(docSuffix);
       if (projNew == null) {
-         projNew = bySuffixOptions();
+         projNew = selectBySuffix();
       }
       if (projNew != null) {
          ProjectActions projFin = projNew;
@@ -290,11 +286,11 @@ public class CurrentProject {
       }
    }
    
-   private ProjectActions bySuffixOptions() {
+   private ProjectActions selectBySuffix() {
       String selectedSuffix
             = Dialogs.comboBoxOpt(wrongExtentionMessage(currFDoc.filename()),
-            "File extension", projectOptions, null, true);
-      if (selectedSuffix != null && !selectedSuffix.equals(projectOptions[0])) {
+            "File extension", PROJ_SUFFIXES, null, true);
+      if (selectedSuffix != null) {
          return selProj.createProject(selectedSuffix);
       }
       else {
@@ -354,9 +350,10 @@ public class CurrentProject {
    private String wrongExtentionMessage(String filename) {
       return
          "<html>"
-         + filename + " cannot define a project category.<br><br>"
-         + "If the file belongs to a project select the file extension "
-         + "of source files in the project:"
+         + filename + " cannot define a project category."
+         + "<br><br>"
+         + "If the file belongs to a project select the extension of the"
+         + " <i>existing</i> main source file in this project."
          + "</html>";
    }
 

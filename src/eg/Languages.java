@@ -5,7 +5,7 @@ package eg;
  */
 public enum Languages {
 
-   PLAIN_TEXT("Plain text"),
+   NORMAL_TEXT("Normal text"),
    HTML("Html"),
    JAVA("Java"),
    JAVASCRIPT("Javascript"),

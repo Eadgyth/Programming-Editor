@@ -53,7 +53,7 @@ public class SettingsWin {
    private String buildLabel = null;
 
    private SettingsWin(String fileLabel, boolean initWindow) {
-      this.fileLabel = fileLabel;
+      this.fileLabel = fileLabel + " (without Ext.)";
       if (initWindow) {
          initWindow();
       }

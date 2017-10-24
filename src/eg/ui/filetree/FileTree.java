@@ -301,25 +301,8 @@ public class FileTree extends Observable {
    }
 
    private void openFile(String fileStr) {
-      if (isSupportedFile(fileStr)) {
-         setChanged();
-         notifyObservers(fileStr);
-      }
-      else {
-         Dialogs.warnMessage(
-                "No function is associated with this file type");
-      }
-   }
-
-   private boolean isSupportedFile(String fileStr) {
-      boolean allowed = false;
-      for (String s : Constants.SUFFIXES) {
-         if (fileStr.endsWith(s)) {
-            allowed = true;
-            break;
-         }
-      }
-      return allowed;            
+      setChanged();
+      notifyObservers(fileStr);
    }
 
    private File getSelectedFile() {

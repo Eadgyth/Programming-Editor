@@ -181,8 +181,7 @@ public class ViewSettingWin {
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
       JLabel label = new JLabel(title);
       label.setFont(Constants.SANSSERIF_BOLD_9);
-      JPanel holdCheckBx = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      
+      JPanel holdCheckBx = new JPanel(new FlowLayout(FlowLayout.LEFT));    
       JPanel checkBxPnl = new JPanel(); 
       checkBxPnl.setLayout(new BoxLayout(checkBxPnl, BoxLayout.LINE_AXIS));
       checkBox.setHorizontalTextPosition(JCheckBox.LEFT);     
@@ -196,7 +195,6 @@ public class ViewSettingWin {
       JLabel lb = new JLabel(title);
       lb.setFont(Constants.SANSSERIF_BOLD_9);
       comboBox.setFont(Constants.SANSSERIF_PLAIN_9);
-
       JPanel pnl = new JPanel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
       pnl.add(lb);
