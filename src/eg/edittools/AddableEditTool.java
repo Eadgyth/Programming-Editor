@@ -4,9 +4,8 @@ import eg.document.FileDocument;
 import eg.ui.ToolPanel;
 
 /**
- * The interface to to add an edit tool that is shown in the
- * <code>ToolPanel</code> in the main window and that has access
- * to the currently open or selected <code>FileDocument</code>
+ * The interface to add an edit tool to the <code>ToolPanel</code>
+ * in the main window
  */
 public interface AddableEditTool {
    

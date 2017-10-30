@@ -23,7 +23,7 @@ import eg.ui.IconFiles;
 import eg.utils.UiComponents;
 
 /**
- * Class consists of a text area to write to and to read from and a toolbar.
+ * The console panel with a text area to write to and to read from and a toolbar.
  * Initially, the text area is not editable.
  */
 public class ConsolePanel {
