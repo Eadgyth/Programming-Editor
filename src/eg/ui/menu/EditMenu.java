@@ -3,6 +3,7 @@ package eg.ui.menu;
 import java.awt.Toolkit;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JMenu;
@@ -16,6 +17,7 @@ import eg.TabbedFiles;
 import eg.Languages;
 import eg.Preferences;
 import eg.ui.IconFiles;
+import eg.edittools.EditTools;
 
 /**
  * The menu for edit actions.
@@ -26,10 +28,11 @@ public class EditMenu {
    private final JMenu     menu            = new JMenu("Edit");
    private final JMenuItem undoItm         = new JMenuItem("Undo", IconFiles.UNDO_ICON);
    private final JMenuItem redoItm         = new JMenuItem("Redo", IconFiles.REDO_ICON);
-   private final JMenuItem selectAllItm    = new JMenuItem("Select all");
    private final JMenuItem cutItm          = new JMenuItem("Cut", IconFiles.CUT_ICON);
    private final JMenuItem copyItm         = new JMenuItem("Copy", IconFiles.COPY_ICON);
    private final JMenuItem pasteItm        = new JMenuItem("Paste", IconFiles.PASTE_ICON);
+   private final JMenuItem selectAllItm    = new JMenuItem("Select all");
+   private final JMenuItem[] editToolsItm  = new JMenuItem[EditTools.values().length];
    private final JMenuItem indentItm       = new JMenuItem(
                                            "Increase indentation by the set indent length",
                                            IconFiles.INDENT_ICON);
@@ -41,7 +44,7 @@ public class EditMenu {
    private final JMenu     languageMenu    = new JMenu("Language");
    private final JCheckBoxMenuItem[] selectLangChBxItm
                                            = new JCheckBoxMenuItem[Languages.values().length];
-                                            
+
    private final Preferences prefs = new Preferences();
 
    EditMenu() {
@@ -53,6 +56,11 @@ public class EditMenu {
       return menu;
    }
 
+   /**
+    * Sets listeners for actions to edit text
+    *
+    * @param edit  the reference to {@link Edit}
+    */
    public void setEditTextActions(Edit edit) {
       undoItm.addActionListener(e -> edit.undo());
       redoItm.addActionListener(e -> edit.redo());
@@ -65,10 +73,21 @@ public class EditMenu {
       clearSpacesItm.addActionListener(e -> edit.clearTrailingSpaces());
       changeIndentItm.addActionListener(e -> edit.setNewIndentUnit());
    }
-   
+
+   /**
+    * Sets the listener for actions to open an <code>AddableEditTool</code>
+    * in the menu item at the sepecified index
+    *
+    * @param al  the <code>ActionListener</code>
+    * @param i  the index
+    */
+   public void setEditToolsActions(ActionListener al, int i) {
+      editToolsItm[i].addActionListener(al);
+   }
+
    public void setChangeLanguageAction(TabbedFiles tf) {
       for (JCheckBoxMenuItem item : selectLangChBxItm) {
-           item.addActionListener(e -> setLanguage(e, tf));
+         item.addActionListener(e -> setLanguage(e, tf));
       }
    }
 
@@ -81,7 +100,7 @@ public class EditMenu {
       cutItm.setEnabled(isEnabled);
       copyItm.setEnabled(isEnabled);
    }
-   
+
    /**
     * Enables/disables the items for undo and redo
     *
@@ -92,7 +111,7 @@ public class EditMenu {
       undoItm.setEnabled(enableUndo);
       redoItm.setEnabled(enableRedo);
    }
-   
+
    /**
     * Selects and disables the item for the specified language and enables
     * the items for the other languages if <code>enable</code> is true
@@ -140,6 +159,11 @@ public class EditMenu {
       menu.add(copyItm);
       menu.add(pasteItm );
       menu.add(selectAllItm);
+      menu.addSeparator();
+      for (int i = 0; i < editToolsItm.length; i++) {
+         editToolsItm[i] = new JMenuItem(EditTools.values()[i].display());
+         menu.add(editToolsItm[i]);
+      }
       menu.addSeparator();
       menu.add(indentItm);
       menu.add(outdentItm);

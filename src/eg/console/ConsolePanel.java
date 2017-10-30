@@ -40,7 +40,6 @@ public class ConsolePanel {
    private final JButton   stopBt     = new JButton(IconFiles.STOP_PROCESS_ICON);
    private final JButton   clearBt    = new JButton(IconFiles.CLEAR_ICON);
    private final JButton   closeBt    = new JButton(IconFiles.CLOSE_ICON);
-
    private final JScrollPane scroll   = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -48,20 +47,17 @@ public class ConsolePanel {
    public ConsolePanel() {
       scroll.setViewportView(area);
       scroll.setBorder(null);
-      area.setBorder(new LineBorder(Color.WHITE, 5));
+      area.setBorder(Constants.EMPTY_BORDER);
       area.setFont(Constants.VERDANA_PLAIN_8);
       area.setForeground(areaFontColor);
       area.setEditable(false);
-
-      runBt.setEnabled(false);
-      stopBt.setEnabled(false);
-
       toolbar = createToolbar();
-      clearAct();
-
       consolePnl.setBorder(Constants.GRAY_BORDER);
       consolePnl.add(toolbar, BorderLayout.NORTH);
       consolePnl.add(scroll, BorderLayout.CENTER);
+      runBt.setEnabled(false);
+      stopBt.setEnabled(false);
+      clearBt.addActionListener(e -> area.setText(""));
    }
 
    /**
@@ -71,32 +67,89 @@ public class ConsolePanel {
    public JPanel consolePnl() {
       return consolePnl;
    }
-   
+
    /**
-    * Places the cursor at the specified position
-     * @param pos  the position where the caret is set
+    * Sets the cursor position in this text area
+    *
+    * @param pos  the position
     */
    public void setCaret(int pos) {
+      if (!area.isEditable()) {
+         throw new IllegalStateException("The text area is set uneditable");
+      }
       area.setCaretPosition(pos);
+   }
+
+   /**
+    * Sets the cursor position in this text area although it is
+    * currently uneditable
+    *
+    * @param pos  the position
+    */
+   public void setCaretUneditable(int pos) {
+      area.setEditable(true);
+      area.setCaretPosition(pos);
+      area.setEditable(false);
    }
 
    /**
     * Sets the specified text in this text area
     *
-    * @param text  the text that is set in this text area 
+    * @param text  the text
     */
-   public void setText(String text) {    
+   public void setText(String text) {
       area.setText(text);
    }
 
    /**
-    * Adds the specified text to the text displayed in this text area
+    * Adds the specified text to the text in this text area
     *
-    * @param text  the text that is added to the text in this text
-    * area
+    * @param text  the text
     */
    public void appendText(String text) {
       area.append(text);
+   }
+
+   /**
+    * Gets the text in this text area
+    *
+    * @return  the text
+    */
+   public String getText() {
+      return area.getText();
+   }
+
+   /**
+    * Asks this text area to gain focus
+    */
+   public void focus() {
+      area.requestFocusInWindow();
+   }
+
+   /**
+    * Sets the active state in which this text area is editable,
+    * the stop button is enabled and the clear button disabled
+    *
+    * @param isActive  true for the active, false for the inactive
+    * state
+    */
+   public void setActive(boolean isActive) {
+      area.setEditable(isActive);
+      area.setFocusable(isActive);
+      clearBt.setEnabled(!isActive);
+      stopBt.setEnabled(isActive);
+   }
+
+   public void enableRunBt(boolean isEnabled) {
+      runBt.setEnabled(isEnabled);
+   }
+
+   public void addKeyListen(KeyListener keyListener) {
+      area.addKeyListener(keyListener);
+   }
+
+   public void addCaretListen(CaretListener caretListener) {
+      area.addCaretListener(caretListener);
    }
    
    /**
@@ -109,58 +162,25 @@ public class ConsolePanel {
       closeBt.addActionListener(al);
    }
 
-   /**
-    * Returns the text in this text area
-    * @return  the text displayed in this text area
-    */
-   String getText() {
-      return area.getText();
-   }
-
-   /**
-    * Sets this text area active
-    */
-   void focus() {
-      area.requestFocusInWindow();
-   }
-
-   /*
-    * Allows writing in this text area
-    */ 
-   void setActive(boolean isActive) {
-      area.setEditable(isActive);
-      area.setFocusable(isActive);
-      clearBt.setEnabled(!isActive);
-      stopBt.setEnabled(isActive);
-   }
-
-   void enableRunBt(boolean isEnabled) {
-      runBt.setEnabled(isEnabled);
-   }
-
-   void addKeyListen(KeyListener keyListener) {
-      area.addKeyListener(keyListener);
-   }
-
-   void addCaretListen(CaretListener caretListener) {
-      area.addCaretListener(caretListener);
-   }
-
-   void setCmdAct(ActionListener al) {
+   public void setCmdAct(ActionListener al) {
       setCmdBt.addActionListener(al);
    }
 
-   void runAct(ActionListener al) {
+   public void setRunAct(ActionListener al) {
       runBt.addActionListener(al);
    }
 
-   void runEadAct(ActionListener al) {
+   public void setRunEadAct(ActionListener al) {
       runEadBt.addActionListener(al);
    }
 
-   void stopAct(ActionListener al) {
+   public void setStopAct(ActionListener al) {
       stopBt.addActionListener(al);
    }
+
+   //
+   //--private--/
+   //
 
    private JToolBar createToolbar() {
       JButton[] bts = new JButton[] {
@@ -175,9 +195,5 @@ public class ConsolePanel {
          "Close the console"
       };
       return UiComponents.lastBtRightToolbar(bts, tooltips);
-   }
-
-   private void clearAct() {
-      clearBt.addActionListener(e -> area.setText(""));
    }
 }

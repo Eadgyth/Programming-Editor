@@ -6,14 +6,14 @@ package eg.ui;
 public interface ConsoleOpenable {
    
    /**
-    * If the console panel is open
+    * Returns if the console panel is open
     *
     * @return  if the console is open
     */
    public boolean isConsoleOpen();
    
    /**
-    * Shows the console panel
+    * Opens the console panel
     */
    public void openConsole(); 
 }

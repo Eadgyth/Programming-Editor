@@ -1,8 +1,8 @@
 package eg.document;
 
-/**
- * Created to give notice of a change of the state, in which edits can be undone
- * or redone
+/** 
+ * Created to give notice that the state, in which edits can or
+ * cannot be undone and/or redone, has changed
  */
 public class UndoableChangeEvent {
 
@@ -10,8 +10,11 @@ public class UndoableChangeEvent {
    private boolean canRedo;
 
    /**
-    * @param canUndo  if edits can be undone
-    * @param canRedo  if edits can be redone
+    * Creates an <code>UndoableChangeEvent</code> with the booleans
+    * that indicate if edits can or cannot be undone and redone
+    *
+    * @param canUndo  the boolean
+    * @param canRedo  the boolean
     */
    public UndoableChangeEvent(boolean canUndo, boolean canRedo) {
       this.canUndo = canUndo;
@@ -19,14 +22,18 @@ public class UndoableChangeEvent {
    }
 
    /**
-    * @return  if edits can be undone
+    * Returns if edits can be undone
+    *
+    * @return  true if undo is possible, false otherwise
     */
    public boolean canUndo() {
       return canUndo;
    }
 
    /**
-    * @return  if edits can be redone
+    * Returns if edits can be redone
+    *
+    * @return  true if redo is possible, false otherwise
     */
    public boolean canRedo() {
       return canRedo;

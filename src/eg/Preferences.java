@@ -61,7 +61,8 @@ public class Preferences {
     * <p>
     * One of the read methods must be used before: {@link #readSettings()},
     * {@link #readPrefs()}, {@link #readConfig(String)}
-    * @param property  the property whoch a value is searched for
+    *
+    * @param property  the property which a value is searched for
     * @return  the value for the specified property
     */
    public String getProperty(String property) {
@@ -87,6 +88,7 @@ public class Preferences {
    
    /**
     * Reads in the properties stored in the config.properties file
+    *
     * @param dir  the directory where the config file is found
     */
    public void readConfig(String dir) {
@@ -94,14 +96,14 @@ public class Preferences {
    }
    
    /** 
-    * Stores a new value for the single property in the
+    * Stores a new value for the (single) property in the
     * settings.proprties file
-    * @param newValue  the new value for the property in the
-    * settings.properties file
+    *
+    * @param newValue  the new value for the property
     */
    public void storeSettings(String newValue) {
       readSettings();
-      String[] allKeys = {"LocationOfJDK"};
+      String[] allKeys = { "LocationOfJDK" };
       String[] allValues = { newValue };
       store(SETTINGS_FILE, allKeys, allValues);
    }
@@ -130,8 +132,9 @@ public class Preferences {
    /**
     * Stores a new value for the specified property in the config.properties
     * file and creates the file if it does not exist
+    *
     * @param propToUpdate  the property which a new value is assigned to
-    * @param newValue  the new value for the property to update
+    * @param newValue  the new value for the property
     * @param dir  the directory where the eadconfig.properties file is
     * found
     */
@@ -142,8 +145,8 @@ public class Preferences {
       if (!new File(configFile).exists()) {
          createFile(configFile, CONFIG_KEYS);
       }
-      readConfig(dir);
-      
+ 
+      readConfig(dir);      
       String[] allValues = new String[CONFIG_KEYS.length];
       for (int i = 0; i < allValues.length; i++) {
          allValues[i] = prop.getProperty(CONFIG_KEYS[i]);

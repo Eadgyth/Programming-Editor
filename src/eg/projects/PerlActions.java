@@ -10,30 +10,26 @@ import eg.console.*;
  * Represents a programming project in Perl
  */
 public final class PerlActions extends ProjectConfig implements ProjectActions {
-   
+
    private final ConsoleOpenable co;
    private final ProcessStarter proc;
-   
+
    private String startCommand = "";
-   
+
    PerlActions(ConsoleOpenable co, ProcessStarter proc) {
       super("pl");
       this.co = co;
       this.proc = proc;
    }
    
-   /**
-    * Creates an adapted {@link SettingsWin}.
-    */
    @Override
    public void createSettingsWin() {
-      SettingsWin setWin = SettingsWin.adaptableWindow("Name of Perl script");
+      setWin = SettingsWin.adaptableWindow("Name of Perl script");
       setWin.addSourceDirOption()
             .addArgsOption()
             .setupWindow();
-      setSettingsWin(setWin);
    }
-   
+
    /**
     * {@inheritDoc}
     * <p>Creates the start command to run the Perl script
@@ -70,7 +66,11 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
       }
       proc.startProcess(startCommand);
    }
-   
+
+   //
+   //--private--/
+   //
+
    private void setStartCommand() {
       String main = getMainFile() + ".pl";
       if (getArgs().length() > 0) {

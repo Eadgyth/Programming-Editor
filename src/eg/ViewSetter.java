@@ -35,8 +35,7 @@ public class ViewSetter {
    }
 
    /**
-    * Applies the selections in {@link ViewSettingWin} to show or
-    * hide the toolbar and the status bar and to chnage the LaF
+    * Applies the selections made in {@link ViewSettingWin}
     */
    public void applySetWinOk() {
       boolean show = false;

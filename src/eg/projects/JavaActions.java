@@ -41,21 +41,17 @@ public final class JavaActions extends ProjectConfig
       jar = new CreateJar(consPnl);
    }
    
-   /**
-    * Creates an adapted {@link SettingsWin}.
-    */
    @Override
    public void createSettingsWin() {
-      SettingsWin setWin = SettingsWin.adaptableWindow("Name of main class");
+      setWin = SettingsWin.adaptableWindow("Name of main class");
       setWin.addModuleOption("Package containing the main class")
             .addSourceDirOption()
             .addExecDirOption()
             .addArgsOption()
             .addBuildOption("jar file")
             .setupWindow();
-       setSettingsWin(setWin);
    }
-   
+
    /**
     * {@inheritDoc}
     * Creates the start command to run the java project
@@ -81,35 +77,32 @@ public final class JavaActions extends ProjectConfig
       }
       return success;
    }
-   
+
    /**
-    * Compiles java files and shows error messages in the console panel
-    * or the first error in a dialog if the console is not set visible
+    * Compiles java files
     */
-   @Override                                                                        
-   public void compile() {      
+   @Override
+   public void compile() {
       consPnl.setText("<<Compile " + getProjectName() + ">>\n");
       EventQueue.invokeLater(() -> {
-         if (proc.isProcessEnded()) {    
+         if (proc.isProcessEnded()) {
             comp.compile(getProjectPath(), getExecutableDirName(),
-                  getSourceDirName());            
-            consPnl.setCaret(0);
+                  getSourceDirName());
+
+            consPnl.setCaretUneditable(0);
             if (!co.isConsoleOpen()) {
                if (!comp.success()) {
-                  int result = Dialogs.confirmYesNo(
-                        "Compilation of the project "
-                        + getProjectName() + " failed.\n"
-                        + comp.getMessage() + "."
-                        + "\nOpen the console window to view messages?");
-                  if (result == 0) {
+                  int res = Dialogs.confirmYesNo(
+                        "Compilation failed.\n"
+                        + comp.getMessage() + ".\n"
+                        + "Open the console window to view messages?");
+
+                  if (0 == res) {
                      co.openConsole();
                   }
                }
                else {
-                  Dialogs.infoMessage(
-                        "Successfully compiled the project '"
-                        + getProjectName() + "'.",
-                        null);
+                  Dialogs.infoMessage("Compilation successful", null);
                }
             }
          }
@@ -148,6 +141,7 @@ public final class JavaActions extends ProjectConfig
          consPnl.setText("");
          jar.createJar(getProjectPath(), getMainFile(),
                getModuleName(), getExecutableDirName(), jarName);
+
          if (!existed) {
             boolean exists = false;
             while (!exists) {
@@ -155,6 +149,7 @@ public final class JavaActions extends ProjectConfig
                   Thread.sleep(200);
                }
                catch (InterruptedException e) {
+                  FileUtils.logStack(e);
                }
                exists = jarFileExists(jarName);
             }
@@ -167,7 +162,7 @@ public final class JavaActions extends ProjectConfig
       }
       catch (IOException e) {
          FileUtils.logStack(e);
-      }   
+      }
    }
 
    private boolean mainClassFileExists() {
@@ -182,7 +177,7 @@ public final class JavaActions extends ProjectConfig
       String execDir = getProjectPath() + F_SEP + getExecutableDirName();
       return new File(execDir + F_SEP + jarName + ".jar").exists();
    }
-   
+
    private void setStartCommand() {
       StringBuilder sb = new StringBuilder("java ");
       if (getExecutableDirName().length() > 0) {

@@ -1,25 +1,23 @@
 package eg.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+
 import java.awt.event.WindowListener;
 import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-import javax.swing.JButton;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.Constants;
 import eg.TabbedFiles;
 import eg.CurrentProject;
@@ -27,15 +25,13 @@ import eg.Edit;
 import eg.EditAreaFormat;
 import eg.Preferences;
 import eg.Languages;
-
+import eg.edittools.AddableEditTool;
 import eg.ui.menu.MenuBar;
 import eg.ui.menu.FormatMenu;
 import eg.ui.menu.ViewMenu;
 import eg.ui.filetree.FileTree;
 import eg.ui.tabpane.ExtTabbedPane;
-
 import eg.console.ConsolePanel;
-import eg.plugin.PluginStarter;
 import eg.utils.UiComponents;
 
 /**
@@ -50,15 +46,17 @@ public class MainWin implements ConsoleOpenable {
 
    private final JFrame frame = new JFrame();
    private final JPanel statusBar = new JPanel();
-   private final JLabel showProjectLb = new JLabel();
-   private final JLabel showLanguageLb = new JLabel();
+   private final JLabel projectLb = new JLabel();
+   private final JLabel languageLb = new JLabel();
+   private final JLabel cursorPosLb = new JLabel();
+   private final JLabel wordwrapLb = new JLabel();
 
    private final MenuBar menuBar = new MenuBar();
    private final Toolbar toolbar = new Toolbar();
    private final ExtTabbedPane tabPane = UiComponents.extTabbedPane();
    private final FileTree fileTree = new FileTree();
    private final ConsolePanel console = new ConsolePanel();
-   private final FunctionPanel functPnl = new FunctionPanel();
+   private final ToolPanel toolPnl = new ToolPanel();
    private final Preferences prefs = new Preferences();
 
    private JSplitPane splitHorAll;
@@ -67,6 +65,7 @@ public class MainWin implements ConsoleOpenable {
    private int dividerLocVert = 0;
    private int dividerLocHorAll = 0;
    private int dividerLocHor = 0;
+   private String wordwrapOn = "";
 
    public MainWin() {
       initFrame();
@@ -118,133 +117,142 @@ public class MainWin implements ConsoleOpenable {
        return fileTree;
     }
 
-    /**
-     * Gets this <code>FunctionPanel</code>
-     *
-     * @return  this {@link FunctionPanel}
-     */
-    public FunctionPanel functionPanel() {
-       return functPnl;
-    }
-
    /**
     * Displays text in the title bar
     *
-    * @param title  the text that is displayed in the title bar
+    * @param title  the title
     */
    public void displayFrameTitle(String title) {
       frame.setTitle(title);
    }
    
    /**
-    * Sets the project name in the status bar
+    * Displays the file type, i.e. the display value of the set
+    * language, in the status bar
     *
-    * @param projName  the name of the project's root directory 
+    * @param lang   the language
     */
-   public void setProjectName(String projName) {
-      showProjectLb.setText("Project: " + projName); 
+   public void displayFileType(Languages lang) {
+      languageLb.setText("File type: " + lang.display());
    }
    
    /**
-    * Sets the language name in the status bar
+    * Displays the project name in the status bar
     *
-    * @param langName  the language name
+    * @param projName  the name
     */
-   public void setLanguageName(String langName) {
-      showLanguageLb.setText("Language: " + langName); 
+   public void displayProjectName(String projName) {
+      projectLb.setText("Active project: " + projName); 
    }
    
    /**
-    * Sets the build name in the menu item for the build action
+    * Displays the line and column number of the cursor position in
+    * the status bar
     *
-    * @param buildName  the name for a build
+    * @param lineNr  the line number
+    * @param colNr  the column number
     */
-   public void setBuildName(String buildName) {
-      menuBar.projectMenu().setBuildLabel(buildName);
+   public void displayLineAndColNr(int lineNr, int colNr) {
+      cursorPosLb.setText("Line " + lineNr + "  Col " + colNr);
    }
    
    /**
-    * Sets the selection state of the menu item for wordwrap
+    * Labels the menu item for building actions
     *
-    * @param isSelected   true to select state the menu item
-    * to set wordwrap, false to unselect
+    * @param label  the label
     */
-   public void setWordWrapSelected(boolean isSelected) {
-      menuBar.formatMenu().selectWordWrapItm(isSelected);
+   public void setBuildLabel(String label) {
+      menuBar.projectMenu().setBuildLabel(label);
    }
    
    /**
-    * Selects the menu item for the specified language and enables the
-    * items for the other languages if <code>enable</code> is true
+    * Sets the selection state of the menu item for setting wordwrap
+    * actions
     *
-    * @param lang  the language that has one of the constant values in
-    * {@link Languages}
-    * @param enable  true to enable non-selected items
+    * @param b  true to select, false to unselect the item
     */
-   public void setLanguageSelected(Languages lang, boolean enable){
-      menuBar.editMenu().selectLanguageItm(lang, enable);
+   public void setWordWrapSelected(boolean b) {
+      menuBar.formatMenu().selectWordWrapItm(b);
+      setWordwrapInStatusBar(b);
    }
    
    /**
-    * Enables/disables undo and redo actions
+    * Selects the menu item for the specified language and displays
+    * the file type in the status bar
     *
-    * @param enableUndo  if undo action is enabled
-    * @param enableRedo  if redo action is enabled
+    * @param lang  the language
+    * @param b  if the non-selected items are set enabled
     */
-   public void enableUndoRedo(boolean enableUndo, boolean enableRedo) {
-      toolbar.enableUndoRedoBts(enableUndo, enableRedo);
-      menuBar.editMenu().enableUndoRedoItms(enableUndo, enableRedo);
+   public void setLanguageSelected(Languages lang, boolean b){
+      menuBar.editMenu().selectLanguageItm(lang, b);
+      displayFileType(lang); 
    }
    
    /**
-    * Enables/disables cut and copy actions
+    * Enables or disables controls for undoing and redoing actions. The
+    * booleans indicate if the controls for the respective action are set
+    * enabled or disabled
     *
-    * @param isEnabled  if cut and copy actions are enabled
+    * @param isUndo  the boolean
+    * @param isRedo  the boolean
     */
-   public void enableCutCopy(boolean isEnabled) {
-      toolbar.enableCutCopyBts(isEnabled);
-      menuBar.editMenu().enableCutCopyItms(isEnabled);
+   public void enableUndoRedo(boolean isUndo, boolean isRedo) {
+      toolbar.enableUndoRedoBts(isUndo, isRedo);
+      menuBar.editMenu().enableUndoRedoItms(isUndo, isRedo);
    }
    
    /**
-    * Enabled/disables the action to make the tabbar visible
+    * Enables or disables controls for cutting and copying actions
     *
-    * @param isEnabled  if the action to make the tabbar visible
-    * is enabled
+    * @param b  true to enable, false to disable the controls
     */
-   public void enableShowTabbar(boolean isEnabled) {
-      menuBar.viewMenu().enableTabItm(isEnabled);
+   public void enableCutCopy(boolean b) {
+      toolbar.enableCutCopyBts(b);
+      menuBar.editMenu().enableCutCopyItms(b);
    }
    
    /**
-    * Enables to open the fileview panel
+    * Enables or disables the munu item for actions to set the visiblity
+    * of the tabbar
+    *
+    * @param b  true to enable, false to disable the item
+    */
+   public void enableShowTabbar(boolean b) {
+      menuBar.viewMenu().enableTabItm(b);
+   }
+   
+   /**
+    * Enables the menu item for actions to open the fileview panel
     */
    public void enableOpenFileView() {
       menuBar.viewMenu().enableFileViewItm();
    }
    
    /**
-    * Enables/disables to change project
+    * Enables or disables the controls for actions to change project
     *
-    * @param isEnabled  if changing project is enabled
+    * @param b  true to enable, false to disable the controls
     */
-   public void enableChangeProject(boolean isEnabled) {
-      menuBar.projectMenu().enableChangeProjItm(isEnabled);
-      toolbar.enableChangeProjBt(isEnabled);
+   public void enableChangeProject(boolean b) {
+      menuBar.projectMenu().enableChangeProjItm(b);
+      toolbar.enableChangeProjBt(b);
    }
    
    /**
-    * Enables/disables compiling, running and building a project
+    * Enables or disables the controls for actions to compile, run and
+    * build a project. The booleans indicate if the respective controls are
+    * set enabled or disabled.
     *
-    * @param isCompile  if the compile action is enabled
-    * @param isRun  if the run action is enabled
-    * @param isBuild  if the build action is enabled
+    * @param isCompile  the boolean
+    * @param isRun  the boolean
+    * @param isBuild  the boolean
     */
-   public void enableCompileRunBuild(boolean isCompile, boolean isRun,
+   public void enableSrcCodeActions(boolean isCompile, boolean isRun,
          boolean isBuild) {
 
-      menuBar.projectMenu().enableCompileRunBuildItms(isCompile, isRun, isBuild);
-      toolbar.enableCompileRunBts(isCompile, isRun);
+      menuBar.projectMenu().enableSrcCodeActionItms(isCompile, isRun,
+            isBuild);
+      toolbar.enableSrcCodeActionBts(isCompile, isRun);
    }
 
    /**
@@ -319,15 +327,24 @@ public class MainWin implements ConsoleOpenable {
    /**
     * Sets listeners for actions to edit text
     *
-    * @param ed  the reference to {@link Edit}
+    * @param edit the reference to {@link Edit}
     */
-   public void setEditTextActions(Edit ed) {
-      toolbar.setEditTextActions(ed);
-      menuBar.editMenu().setEditTextActions(ed);
+   public void setEditTextActions(Edit edit) {
+      toolbar.setEditTextActions(edit);
+      menuBar.editMenu().setEditTextActions(edit);
    }
    
+   public void setEditToolsActions(AddableEditTool tool, int i) {
+      menuBar.editMenu().setEditToolsActions(
+            e -> {
+               tool.addComponent(toolPnl);
+               showToolPnl(true);
+            }, i);             
+   }    
+   
    /**
-    * Sets the listener that opens the window for view settings
+    * Sets the listener for actions to opens the window for view
+    * settings
     *
     * @param viewSetWin  the reference to <code>ViewSettingWin</code>
     */
@@ -342,19 +359,13 @@ public class MainWin implements ConsoleOpenable {
     * @param format  the reference to {@link EditAreaFormat}
     */
    public void setFormatActions(EditAreaFormat format) {
-      FormatMenu fm =  menuBar.formatMenu();
-      fm.setChangeWordWrapAct(e ->
-            format.changeWordWrap(fm.isWordWrapItmSelected()));
+      FormatMenu fm =  menuBar.formatMenu(); 
+      fm.setChangeWordWrapAct(e -> {
+         boolean isWordwrap = fm.isWordWrapItmSelected();
+         format.changeWordWrap(isWordwrap);
+         setWordwrapInStatusBar(isWordwrap);
+      });
       fm.setFontAction(e -> format.makeFontSettingWinVisible());
-   }
-
-   /**
-    * Sets the listener for starting a plugin
-    *
-    * @param plugSt  the reference to {@link PluginStarter}
-    */
-   public void setPlugAction(PluginStarter plugSt) {
-      menuBar.pluginMenu().startPlugin(plugSt, menuBar.viewMenu());
    }
 
    /**
@@ -368,18 +379,17 @@ public class MainWin implements ConsoleOpenable {
    }
 
    //
-   //--private methods
+   //--private methods--/
    //
    
    private void setViewActions() {
       ViewMenu vm = menuBar.viewMenu();
       vm.setConsoleItmAction(e -> showConsole(vm.isConsoleItmSelected()));
       vm.setFileViewItmAction(e -> showFileView(vm.isFileViewItmSelected()));
-      vm.setFunctionItmAction(e -> showFunctionPnl(vm.isFunctionItmSelected()));
       vm.setTabItmAction(e -> showTabbar(vm.isTabItmSelected()));
       fileTree.closeAct(e -> vm.doUnselectFileViewAct());
       console.closeAct(e -> vm.doConsoleItmAct(false));
-      functPnl.closeAct(e -> vm.doFunctionItmAct(false));
+      toolPnl.closeAct(e -> showToolPnl(false));
    }
    
    private void showConsole(boolean b) {
@@ -398,10 +408,10 @@ public class MainWin implements ConsoleOpenable {
       }
    }
    
-   private void showFunctionPnl(boolean b) {
+   public void showToolPnl(boolean b) {
       if (b) {
          splitHorAll.setDividerSize(6);
-         splitHorAll.setRightComponent(functPnl.functionPanel());
+         splitHorAll.setRightComponent(toolPnl.panel());
          if (dividerLocHorAll == 0) {
             dividerLocHorAll = (int)(frame.getWidth() * 0.7);
          }
@@ -436,6 +446,17 @@ public class MainWin implements ConsoleOpenable {
       prefs.storePrefs("showTabs", state);
    }
    
+   private void setWordwrapInStatusBar(boolean isWordwrap) {
+      if (isWordwrap) {
+         cursorPosLb.setForeground(Constants.GRAY);
+         wordwrapLb.setText("Word-wrap ");
+      }
+      else {
+         cursorPosLb.setForeground(Color.BLACK);
+         wordwrapLb.setText("");
+      }
+   }
+      
    private void initShowTabbar() {
       prefs.readPrefs();
       boolean show = "show".equals(prefs.getProperty("showTabs"));
@@ -473,22 +494,39 @@ public class MainWin implements ConsoleOpenable {
    }
 
    private void initStatusbar() {
-      setStatusLb(showLanguageLb, 200);
-      setStatusLb(showProjectLb, 400);
+      int lbHeight = 15;
+      Dimension width5 = UiComponents.scaledDimension(5, lbHeight);
+      Dimension width20 = UiComponents.scaledDimension(20, lbHeight);
+      Dimension width100 = UiComponents.scaledDimension(100, lbHeight);
+      Dimension width150 = UiComponents.scaledDimension(150, lbHeight);
+      JLabel[] lbArr = { languageLb, projectLb, cursorPosLb, wordwrapLb };
+      setLbFont(lbArr);
+      setLbWidth(languageLb, width100);
+      projectLb.setMinimumSize(width100);
+      setLbWidth(cursorPosLb, width150);
       statusBar.setLayout(new BoxLayout(statusBar, BoxLayout.LINE_AXIS));
-      statusBar.add(showLanguageLb);
-      statusBar.add(Box.createRigidArea(new Dimension(10, 0)));
-      statusBar.add(showProjectLb);
+      statusBar.add(Box.createRigidArea(width5));
+      statusBar.add(languageLb);
+      statusBar.add(Box.createRigidArea(width20));
+      statusBar.add(projectLb);
+      statusBar.add(Box.createRigidArea(width20));
       statusBar.add(Box.createHorizontalGlue());
-      showProjectLb.setText("Project: none");
+      statusBar.add(wordwrapLb);
+      statusBar.add(Box.createRigidArea(width5));
+      statusBar.add(cursorPosLb);
+      statusBar.add(Box.createRigidArea(width100));
+      displayProjectName("none");
    }
    
-   private void setStatusLb(JLabel lb, int width) {
-      lb.setFont(Constants.VERDANA_PLAIN_8);
-      lb.setBorder(Constants.EMPTY_BORDER_3);
-      Dimension dim = new Dimension(width, 24);
-      lb.setPreferredSize(dim);
-      lb.setMaximumSize(dim);
-      lb.setMinimumSize(dim);
+   private void setLbFont(JLabel[] lb) {
+      for (JLabel l : lb) {
+         l.setFont(Constants.VERDANA_PLAIN_8);
+      }
    }
+   
+   private void setLbWidth(JLabel lb, Dimension dim) {
+      lb.setPreferredSize(dim);
+      lb.setMinimumSize(dim);
+      lb.setMaximumSize(dim);
+   }         
 }

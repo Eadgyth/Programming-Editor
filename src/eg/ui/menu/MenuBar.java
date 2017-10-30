@@ -14,7 +14,6 @@ public class MenuBar {
    private final EditMenu editMenu = new EditMenu();
    private final FormatMenu formatMenu = new FormatMenu();
    private final ViewMenu viewMenu = new ViewMenu();
-   private final PluginMenu plugMenu = new PluginMenu();
    private final ProjectMenu projectMenu = new ProjectMenu();
    private final HelpMenu helpMenu = new HelpMenu();
 
@@ -44,10 +43,6 @@ public class MenuBar {
       return viewMenu;
    }
 
-   public PluginMenu pluginMenu() {
-      return plugMenu;
-   }
-
    public ProjectMenu projectMenu() {
       return projectMenu;
    }
@@ -64,8 +59,6 @@ public class MenuBar {
       menuBar.add(formatMenu.getMenu());
       menuBar.add(Box.createHorizontalStrut(strutSize));
       menuBar.add(viewMenu.getMenu());
-      menuBar.add(Box.createHorizontalStrut(strutSize));
-      menuBar.add(plugMenu.getMenu());
       menuBar.add(Box.createHorizontalStrut(strutSize));
       menuBar.add(projectMenu.getMenu());
       menuBar.add(Box.createHorizontalStrut(strutSize));

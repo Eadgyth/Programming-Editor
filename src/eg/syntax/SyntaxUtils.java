@@ -20,15 +20,13 @@ public class SyntaxUtils {
    /*
     * Returns if the portion of text starting at the specified
     * position and spanning the specified length does not adjoin
-    * to a letter or a digit at one or both ends.
+    * to a letter or a digit at the start and/or at the end.
     *
     * @param text  the text
-    * @param pos  the position that may be a the start of a word
-    * @param length  the length of the portion of text that may be
-    * word
-    * @return  if the portion of text starting at the specified
-    * position and spanning the specified length does not adjoin
-    * to a letter or a digit.
+    * @param pos  the position
+    * @param length  the length
+    * @return  if the portion of text does not adjoin to a letter
+    * or a digit.
     */
    public static boolean isWord(String text, int pos, int length) {
       boolean startMatches = isWordStart(text, pos);
@@ -37,12 +35,12 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns if the character preceding the specified position is
-    * not a letter or a digit
+    * Returns if the character that precedes the specified position
+    * is not a letter or a digit
     *
     * @param text  the text
-    * @param pos  the position that may be a the start of a word
-    * @return  if the character preceding <code>pos</code> is
+    * @param pos  the position
+    * @return  if the character that preceded <code>pos</code> is
     * not a letter or a digit
     */
    public static boolean isWordStart(String text, int pos) {
@@ -56,11 +54,11 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the position of the last block start relative to the
-    * the specified position
+    * Returns the position of the last block start before the
+    * specified position
     *
     * @param text  the text
-    * @param pos  the position in the text
+    * @param pos  the position
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
     * @return  the position of the last block start. -1 if a block end
@@ -91,7 +89,7 @@ public class SyntaxUtils {
     * @param pos  the position in the text
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
-    * @return the position of the next block end. -1 if a block start is
+    * @return  the position of the next block end. -1 if a block start is
     * closer than a block end or if no block end is found
     */
    public static int nextBlockEnd(String text, int pos, String blockStart,
@@ -113,11 +111,11 @@ public class SyntaxUtils {
    
    /**
     * Returns the length of a word that starts at the specified
-    * position and ends at one of the characters in the specifies
+    * position and ends with one of the characters in the specified
     * <code>endChars</code>
     *
     * @param text  the text
-    * @param pos   the position where the word starts
+    * @param pos   the position
     * @param endChars  the array of characters that mark the end of the word
     * @return  the length of the word
     */
@@ -149,8 +147,8 @@ public class SyntaxUtils {
     * and spanning the specified length is bordered by double quotes
     *
     * @param text  the text
-    * @param pos  the start position of the portion that may be in quotes
-    * @param length  the length of the section that may be in quotes
+    * @param pos  the position
+    * @param length  the length
     * @return  if the section of text starting at <code>pos</code>
     * and spanning <code>length</code> is bordered by double quotes
     */
@@ -169,9 +167,8 @@ public class SyntaxUtils {
     * of text in double quotes
     *
     * @param text  the text
-    * @param pos  the position that may be found in quoted
-    * section
-    * @return  if the <code>pos</code> is found inside a section
+    * @param pos  the position
+    * @return  if <code>pos</code> is found inside a section
     * of text in double quotes
     */
    public static boolean isInQuotes(String text, int pos) {
@@ -197,14 +194,14 @@ public class SyntaxUtils {
       }     
    }
    
-    /**
-    * Returns the position of the specified String <code>toSearch</code>
-    * that is not preceded with a backslash
+   /**
+    * Returns the next position, relative to the specified position, of the
+    * specified string, <code>toSearch</code>,cthat is not preceded with a
+    * backslash
     *
     * @param text  the text
-    * @param toSearch  the String to seach
-    * @param pos  the position within <code>text</code> where the search
-    * starts
+    * @param toSearch  the string to search
+    * @param pos  the position
     * @return  the position of <code>toSearch</code> that is not preceded
     * with a backslash
     */

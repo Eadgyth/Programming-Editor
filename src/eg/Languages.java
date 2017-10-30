@@ -21,7 +21,7 @@ public enum Languages {
     * Returns the display value associated with a language
     * constant
     *
-    * @return  the display value for a language
+    * @return  the display value
     */
    public String display() {
       return display;

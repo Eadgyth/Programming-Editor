@@ -41,8 +41,7 @@ public final class FileDocument {
     * Creates a <code>FileDocument</code> with the specified file whose
     * content is displayed.<br>
     * The file extension defines the language. The language cannot be
-    * changed afterwards but a new file may be set which also may define
-    * another language
+    * changed afterwards unless a new file with another extension is set.
     *
     * @param editArea  a new {@link EditArea}
     * @param f  the file
@@ -60,8 +59,7 @@ public final class FileDocument {
     * language and which a file can be assigned to afterwards
     *
     * @param editArea  a new {@link EditArea}
-    * @param lang  the language that is one of the constants in
-    * {@link Languages}
+    * @param lang  a language in {@link Languages}
     */
    public FileDocument(EditArea editArea, Languages lang) {
       this(editArea);
@@ -72,7 +70,7 @@ public final class FileDocument {
    /**
     * Gets the text area that displays this document
     *
-    * @return  the text area that displays this document
+    * @return  the text area
     */
     public JTextPane docTextArea() {
        return textDoc.docTextArea();
@@ -81,8 +79,8 @@ public final class FileDocument {
    /**
     * Gets the name of this file
     *
-    * @return  the name of this file. The empty string
-    * of no file has been assinged
+    * @return  the filename. The empty string  of no file has been
+    * assinged
     */
    public String filename() {
       return filename;
@@ -91,8 +89,8 @@ public final class FileDocument {
    /**
     * Gets the parent directory of this file
     *
-    * @return  the parent directory of this file. The empty string
-    * of no file has been assinged
+    * @return  the parent directory. The empty string of no file
+    + has been assinged
     */
    public String dir() {
       return dir;
@@ -101,8 +99,8 @@ public final class FileDocument {
    /**
     * Gets the path of this file
     *
-    * @return  the full path of this file. The empty string of
-    * no file has been assinged
+    * @return  the filepath. The empty string of no file has been
+    * assinged
     */
    public String filepath() {
       return filepath;
@@ -120,7 +118,7 @@ public final class FileDocument {
    /**
     * Gets this file if a file has been assigned
     *
-    * @return  this file
+    * @return  the file
     */
    public File docFile() {
       if (docFile == null) {
@@ -148,6 +146,15 @@ public final class FileDocument {
    }
    
    /**
+    * Sets an <code>LineAndColumnReadable</code>
+    *
+    * @param lcr  an {@link LineAndColumnReadable}
+    */
+   public void setLineAndColumnReadable(LineAndColumnReadable lcr) {
+      type.setLineAndColumnReadable(lcr);
+   }
+   
+   /**
     * Sets the indentation unit which consists in any number of spaces
     *
     * @param indentUnit  the String that consists of a certain number of
@@ -164,19 +171,18 @@ public final class FileDocument {
     */
    public boolean saveFile() {
       if (docFile == null) {
-         throw new IllegalStateException("No file has"
-               + " been assigned");
+         throw new IllegalStateException("No file has been assigned");
       }
       setContent();
       return writeToFile(docFile);
    }
 
    /**
-    * Assigns the specified file and saves the current text content to
-    * the file. A file that has been assigned before is replaced.
+    * Sets the specified file and saves the current text content.
+    * This file is replaced
     *
     * @param f  the file
-    * @return  if the content was saved to the specified file
+    * @return  if the content was saved to the file
     */
    public boolean setFile(File f) {
       assignFile(f);
@@ -187,7 +193,7 @@ public final class FileDocument {
    
    /**
     * Saves the current content to the specified file but does not
-    * assign the file to this <code>FileDocument</code>
+    * replace this file
     *
     * @param f  the file which the current content is saved to
     */
@@ -196,8 +202,8 @@ public final class FileDocument {
    }
    
    /**
-    * Returns if the text equals the content since the last
-    * saving point
+    * Returns if the text equals the content since the last saving
+    * point
     *
     * @return  if the current text is saved
     */
@@ -206,9 +212,9 @@ public final class FileDocument {
    }
    
    /**
-    * Gets the currently viewd text
+    * Gets the text in this documument
     *
-    * @return  the currently viewed text
+    * @return  the text
     */
    public String getText() {
       return type.getText();
@@ -226,12 +232,13 @@ public final class FileDocument {
    /**
     * Changes the language if no file has been assigned
     *
-    * @param lang  the language which has one of the constant values
-    * in {@link eg.Languages}
+    * @param lang  the language which has one of the constant values in
+    * {@link eg.Languages}
     */
    public void changeLanguage(Languages lang) {
       if (hasFile()) {
-         throw new IllegalStateException("The language cannot be changed.");
+         throw new IllegalStateException(
+               "The language cannot be changed since a file is already set.");
       }
       this.lang = lang;
       type.setEditingMode(lang);
@@ -247,12 +254,11 @@ public final class FileDocument {
    }
 
    /**
-    * Enables/disables actions in responce to the editing of source code.
-    * Affects syntax coloring and auto-indentation. Has no effect if this
+    * Enables or disables actions in responce to the editing of source code.
+    * This affects syntax coloring and auto-indentation. Has no effect if this
     * language is not a coding language.
     *
-    * @param isEnabled  true/false to enable/disable actions in responce
-    * to the editing of source code
+    * @param isEnabled  true to enable, false to disable
     */
    public void enableCodeEditing(boolean isEnabled) {
       if (Languages.NORMAL_TEXT != lang) {
@@ -261,16 +267,35 @@ public final class FileDocument {
    }
 
    /**
-    * Colors a section of the document. Has no effect if this language is not
-    * a coding language
+    * Colors a section of the document that starts at the specified
+    * position. Has no effect if this language is not a coding language
     *
-    * @param section  a section of the document text
-    * @param pos  the pos where the section starts
+    * @param section  the section
+    * @param pos  the position
     */
    public void colorSection(String section, int pos) {
       if (Languages.NORMAL_TEXT != lang) {
          type.colorMultipleLines(section, pos);
       }
+   }
+   
+   /**
+    * Gets the number of the line where the cursor is positioned
+    *
+    * @return  the number
+    */
+   public int lineNrAtCursor() {
+      return type.lineNrAtCursor();
+   }
+   
+   /**
+    * Gets the number of the column within the line where the cursor
+    * is located
+    *
+    * @return  the number
+    */
+   public int columnNrAtCursor() {
+      return type.columnNrAtCursor();
    }
    
    /**
@@ -306,23 +331,25 @@ public final class FileDocument {
    }
 
    /**
-    * Inserts text in this text area
+    * Inserts the string <code>toInsert</code> at the specified
+    * position
     *
-    * @param pos  the position where new text is inserted
-    * @param toInsert  the String that contains the text to insert
+    * @param pos  the position
+    * @param toInsert  the String to insert
     */
    public void insert(int pos, String toInsert) {
       textDoc.insert(pos, toInsert);
    }
 
    /**
-    * Removes text from this document
+    * Removes text of the specified length at the specified
+    * position
     *
-    * @param start  the position where text to be removed starts
-    * @param length  the length of the text to be removed
+    * @param pos  the position
+    * @param length  the length
     */
-   public void remove(int start, int length) {
-      textDoc.remove(start, length);
+   public void remove(int pos, int length) {
+      textDoc.remove(pos, length);
    }
 
    /**

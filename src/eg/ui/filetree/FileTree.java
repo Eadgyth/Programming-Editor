@@ -272,7 +272,7 @@ public class FileTree extends Observable {
             model.removeNodeFromParent(selectedNode);
          }
          else {
-            Dialogs.warnMessage("Deleting " + f.getName() + "failed.");
+            Dialogs.warnMessage("Deleting " + f.getName() + " failed.");
          }
       }
    }
@@ -285,7 +285,7 @@ public class FileTree extends Observable {
       DefaultMutableTreeNode parent = getSelectedNode();
       File f = getSelectedFile();
       String newFolder = Dialogs.textFieldInput(
-            "Enter name of new folder", "New folder", "");
+            "Enter a name for the new folder", "New folder", "");
 
       if (newFolder != null) {
          File newDir = new File(f.getPath(), newFolder);

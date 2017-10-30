@@ -13,7 +13,7 @@ import eg.Edit;
  * The toolbar.
  * <p> Created in {@link MainWin}
  */
-class Toolbar {
+public class Toolbar {
 
    private final JToolBar toolbar = new JToolBar(JToolBar.HORIZONTAL);
 
@@ -59,40 +59,48 @@ class Toolbar {
       outdentBt.addActionListener(e -> edit.outdent());
    }
 
-   public void enableCompileRunBts(boolean isCompile, boolean isRun) {
+   /**
+    * Enables or disables the buttons for actions to compile and run
+    * a project. The booleans indicate if the respective button is set
+    * enabled or disabled
+    *
+    * @param isCompile  the boolean
+    * @param isRun  the boolean
+    */
+   public void enableSrcCodeActionBts(boolean isCompile, boolean isRun) {
       compileBt.setEnabled(isCompile);
       runBt.setEnabled(isRun);
    }
-   
+
    /**
-    * Enables/disables the button for the action to change project
+    * Enables or disables the button for changing project actions
     *
-    * @param isEnabled  if the botton for changing project
-    * is enabled
+    * @param b  true to enable, false to disable the button
     */
-   void enableChangeProjBt(boolean isEnabled) {
-      changeProjBt.setEnabled(isEnabled);
-   }
-   
-   /**
-    * Enables/disables the buttons for cut and copy actions
-    *
-    * @param isEnabled  if the buttons for cut and copy are enabled
-    */
-   void enableCutCopyBts(boolean isEnabled) {
-      cutBt.setEnabled(isEnabled);
-      copyBt.setEnabled(isEnabled);
+   public void enableChangeProjBt(boolean b) {
+      changeProjBt.setEnabled(b);
    }
 
    /**
-    * Enables/disables the buttons for undo and redo actions
+    * Enables or disables the buttons for cutting and copying actions
     *
-    * @param enableUndo  if the button for undo is enabled
-    * @param enableRedo  if the button for redo is enabled
+    * @param b  true to enable, false to disable both buttons
     */
-   public void enableUndoRedoBts(boolean enableUndo, boolean enableRedo) {
-      undoBt.setEnabled(enableUndo);
-      redoBt.setEnabled(enableRedo);
+   public void enableCutCopyBts(boolean b) {
+      cutBt.setEnabled(b);
+      copyBt.setEnabled(b);
+   }
+
+   /**
+    * Enables or disables the buttons for undoing and redoing actions. The
+    * booleans indicate if the respective button is set enabled or disabled
+    *
+    * @param isUndo  the boolean
+    * @param isRedo  the boolean
+    */
+   public void enableUndoRedoBts(boolean isUndo, boolean isRedo) {
+      undoBt.setEnabled(isUndo);
+      redoBt.setEnabled(isRedo);
    }
 
    //
@@ -103,7 +111,7 @@ class Toolbar {
       toolbar.setOpaque(false);
       toolbar.setBorder(null);
       toolbar.setFloatable(false);
-      enableCompileRunBts(false, false);
+      enableSrcCodeActionBts(false, false);
       changeProjBt.setEnabled(false);
       JButton[] bts = new JButton[] {
          openBt, saveBt,

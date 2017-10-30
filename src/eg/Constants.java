@@ -39,8 +39,6 @@ public class Constants {
    /**
     * The gray color */
    public final static Color GRAY = new Color(100, 100, 100);
-   
-   public final static Color WHITE = new Color(255, 255, 255);
 
    //
    // Borders
@@ -74,6 +72,10 @@ public class Constants {
     * The font verdana, plain, size 9 pt (scaled) */
    public final static Font VERDANA_PLAIN_8
          = new Font("Verdana", Font.PLAIN, scaledSize(8.0));
+   /**
+    * The font consolas, plain, size 9 pt (scaled) */
+   public final static Font CONSOLAS_PLAIN_9
+         = new Font("Consolas", Font.PLAIN, scaledSize(9.0));
 
     //
     // private

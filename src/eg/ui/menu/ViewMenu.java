@@ -19,12 +19,10 @@ public class ViewMenu {
          = new JCheckBoxMenuItem("Console");
    private final JCheckBoxMenuItem fileViewItm
          = new JCheckBoxMenuItem("Project explorer");
-   private final JCheckBoxMenuItem functionItm
-         = new JCheckBoxMenuItem("Function panel");
    private final JCheckBoxMenuItem tabItm
          = new JCheckBoxMenuItem("Files in tabs");
    private final JMenuItem openSettingsItm
-         = new JMenuItem("Other settings...");
+         = new JMenuItem("Preferences");
 
    public ViewMenu() {
       assembleMenu();
@@ -42,10 +40,6 @@ public class ViewMenu {
       fileViewItm.addActionListener(al);
    }
    
-   public void setFunctionItmAction(ActionListener al) {
-      functionItm.addActionListener(al);
-   }
-   
    public void setTabItmAction(ActionListener al) {
       tabItm.addActionListener(al);
    }
@@ -60,10 +54,6 @@ public class ViewMenu {
 
    public boolean isFileViewItmSelected() {
       return fileViewItm.isSelected();
-   }
-
-   public boolean isFunctionItmSelected() {
-      return functionItm.isSelected();
    }
    
    public boolean isTabItmSelected() {
@@ -82,12 +72,6 @@ public class ViewMenu {
        }
    }
 
-   public void doFunctionItmAct(boolean select) {
-      if (select != functionItm.isSelected()) {
-         functionItm.doClick();
-      }
-   }
-
    public void selectTabsItm(boolean select) {
       tabItm.setSelected(select);
    }
@@ -103,11 +87,10 @@ public class ViewMenu {
    private void assembleMenu() {
       menu.add(consoleItm);
       menu.add(fileViewItm);
-      fileViewItm.setEnabled(false);
-      menu.add(functionItm);
       menu.add(tabItm);
       menu.addSeparator();
       menu.add(openSettingsItm);
       menu.setMnemonic(KeyEvent.VK_V);
+      fileViewItm.setEnabled(false);
    }
 }

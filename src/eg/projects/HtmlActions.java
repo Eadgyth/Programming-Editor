@@ -14,17 +14,8 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    private final static String F_SEP = File.separator;
    private File htmlFile;
    
-   HtmlActions(String suffix) {
+   public HtmlActions(String suffix) {
       super(suffix);
-   }
-   
-   /**
-    * Creates a basic {@link SettingsWin}.
-    */
-   @Override
-   public void createSettingsWin() { 
-      SettingsWin setWin = SettingsWin.basicWindow("Name of main HTML file");
-      setSettingsWin(setWin);
    }
    
    /**
@@ -68,7 +59,14 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
       }
    }
    
-   //--private--//
+   @Override
+   protected void createSettingsWin() {
+      setWin = SettingsWin.basicWindow("Name of main HTML file");
+   }
+   
+   //
+   //--private--/
+   //
    
    private void setHtmlFile() {
       htmlFile = new File(getProjectPath() + F_SEP + getModuleName()

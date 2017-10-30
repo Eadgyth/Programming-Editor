@@ -36,7 +36,7 @@ public class Eadgyth {
       mw.setFileActions(tabFiles);
       mw.setViewSettingWinAction(viewSetWin);
       mw.setFormatActions(format);
-      viewSetWin.okAct(e -> {
+      viewSetWin.setOkAct(e -> {
          viewSet.applySetWinOk();
          format.applySetWinOk();
          viewSetWin.makeVisible(false);

@@ -27,10 +27,10 @@ public class FileChooser {
    }
 
    /**
-    * Returns a <code>File</code> to open
+    * Opens the chooser to open a file and returns a File object
     *
-    * @return  a <code>File</code> or null if cancel was clicked
-    * or the chooser window was closed
+    * @return  a File object. Null if cancel was clicked or the
+    * chooser window was closed
     */
    public File fileToOpen() {
       File f = null;
@@ -42,14 +42,13 @@ public class FileChooser {
       return f;
    }
    
-    /**
-    * Returns a <code>File</code> a file to save
+   /**
+    * Opens the chooser to save a file and returns a File object
     *
-    * @param presetFile  the filename that is preselected and shown
-    * in the file text field. The empty String or null to not show a
-    * preset filename
-    * @return  a <code>File</code> or null if cancel was clicked
-    * or the chooser window was closed
+    * @param presetFile  the filename that is shown in the text
+    * field to specify a file. Can be Null or the empty string
+    * @return  a File object. Null if cancel was clicked or the
+    * chooser window was closed
     */  
    public File fileToSave(String presetFile) {
       File f = null;

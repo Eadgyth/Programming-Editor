@@ -6,11 +6,11 @@ import eg.ui.FontSettingWin;
 import eg.ui.MainWin;
 
 /**
- * The formatting (word wrap, font, display of line numbers) for
- * <code>EditArea</code> objects.
- * <p>The font is applied to all objects, whereas wordwrap and the
- * visibility of line numbers is applied to the currently viewed editor
- * <p>The initial parameters are given by entries in the prefs file.
+ * The formatting for <code>EditArea</code> objects which are associated
+ * with the objects of <code>FileDocument</code>.
+ * <p>The font and visibility of line numbersis applied to all editors,
+ * whereas wordwrap is applied only to the currently selected editor.
+ * <p>The initial parameters are read from the prefs file.
  */
 public class EditAreaFormat {
    
@@ -18,9 +18,8 @@ public class EditAreaFormat {
    private final FontSettingWin fontSetWin;
    private final Preferences prefs = new Preferences();
 
-   private EditArea[] editArea;  
-   private EditArea currEdArea;
-   
+   private EditArea[] editArea;
+   private int iCurr; 
    private boolean isWordwrap;
    private boolean isShowLineNr;
    private String font;
@@ -43,21 +42,19 @@ public class EditAreaFormat {
    /**
     * Sets the array of type {@code EditArea}
     *
-    * @param editArea  the array of type {@link EditArea}
+    * @param editArea  the {@link EditArea} array
     */
    public void setEditAreaArr(EditArea[] editArea) {
       this.editArea = editArea;
    }
 
   /**
-    * Selects an element from this array of {@code EditArea} and
-    * selects/unselects the wordwrap menu item depending on the state
-    * of that element
+    * Selects an element from this <code>EditArea</code> array
     *
     * @param i  the index of the array element
     */
    public void setEditAreaAt(int i) {
-      currEdArea = editArea[i];
+      iCurr = i;
    }
    
    /**
@@ -65,15 +62,6 @@ public class EditAreaFormat {
     */
    public void makeFontSettingWinVisible() {
       fontSetWin.makeVisible(true);
-   }
-   
-   /**
-    * If wordwrap is set in the currently selected <code>EditArea</code>
-    *
-    * @return if wordwrap is set in the currently selected {@link EditArea}
-    */
-   public boolean isWordwrap() {
-      return currEdArea.isWordwrap();
    }
    
    /** 
@@ -94,10 +82,10 @@ public class EditAreaFormat {
     */
    public void changeWordWrap(boolean isWordwrap) {
       if (isWordwrap) {
-         currEdArea.enableWordwrap();
+         editArea[iCurr].enableWordwrap();
       }
       else {
-         showLineNumbers(currEdArea);
+         showLineNumbers(editArea[iCurr]);
       }
       String state = isWordwrap ? "enabled" : "disabled";
       prefs.storePrefs("wordWrap", state);
@@ -105,8 +93,8 @@ public class EditAreaFormat {
    }
 
    /**
-    * Applies the selection in this {@link ViewSettingWin} to show or hide
-    * line numbers
+    * Applies the selection in this {@link ViewSettingWin} to
+    * show or hide line numbers
     */
    public void applySetWinOk() {
       boolean show = viewSetWin.isShowLineNumbers();
@@ -123,7 +111,7 @@ public class EditAreaFormat {
    }
    
    //
-   //--private methods--//
+   //--private--/
    //
    
    private void showLineNumbers(EditArea ea) {

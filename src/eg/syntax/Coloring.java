@@ -23,8 +23,7 @@ public class Coloring {
     * not a coding language no Colorable is set and the text is
     * (re-)colored in black
     *
-    * @param lang  the language which is one of the constants
-    * in {@link Languages}.
+    * @param lang  a language in {@link Languages}
     */
    public void setColorable(Languages lang) {
       Colorable colorable = null;

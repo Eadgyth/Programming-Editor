@@ -1,5 +1,6 @@
 package eg.utils;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 
 import javax.swing.Box;
@@ -29,6 +30,9 @@ public class UiComponents {
     */
    public static JToolBar lastBtRightToolbar(JButton[] bts, String[] tooltips) {
       JToolBar tb = new JToolBar(JToolBar.HORIZONTAL);
+      int lbHeight = 16;
+      Dimension dim = UiComponents.scaledDimension(0, lbHeight);
+      tb.setPreferredSize(dim);
       tb.setOpaque(false);
       tb.setBorder(null);
       tb.setFloatable(false);
@@ -38,7 +42,7 @@ public class UiComponents {
             tb.add(Box.createHorizontalGlue());
          }
          tb.add(bts[i]);
-         bts[i].setBorder(new EmptyBorder(2, 5, 2, 5));
+         bts[i].setBorder(new EmptyBorder(0, 5, 0, 5));
          bts[i].setToolTipText(tooltips[i]);
          bts[i].setFocusable(false);
       }
@@ -47,7 +51,7 @@ public class UiComponents {
    
    /**
     * Creates an <code>ExtTabbedPane</code> that is scrollable
-    * and unfocusable
+    * and not focusable
     *
     * @return  a new {@link ExtTabbedPane}
     */
@@ -56,5 +60,19 @@ public class UiComponents {
       tabPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
       tabPane.setFocusable(false);
       return tabPane;
+   }
+   
+   /**
+    * Returns the Dimension with the specified width and height scaled
+    * to the ratio between screen resolution and graphic resolution
+    *
+    * @param width  the width in pt
+    * @param height  the height in pt
+    * @return   a new scaled Dimension
+    */
+   public static Dimension scaledDimension(int width, int height) {
+      width = (int) (Math.round(width * eg.Constants.SCREEN_RES_RATIO));
+      height = (int) (Math.round(height * eg.Constants.SCREEN_RES_RATIO));
+      return new Dimension(width, height);
    }
 }

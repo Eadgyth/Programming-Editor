@@ -34,6 +34,13 @@ import eg.utils.Dialogs;
 public abstract class ProjectConfig implements Configurable {
 
    private final static String F_SEP = File.separator;
+   
+   /**
+    * The object of <code>SettingsWin</code> associated with this project.
+    * Is initially null
+    */
+   protected SettingsWin setWin = null;
+
    /*
     * Used to read prefs from the program's Prefs file */
    private final static Preferences PREFS = new Preferences();
@@ -43,7 +50,6 @@ public abstract class ProjectConfig implements Configurable {
 
    private final String suffix;
 
-   private SettingsWin setWin = null;
    private String projectRoot = "";
    private String mainFile = "";
    private String moduleDirName = "";
@@ -53,39 +59,22 @@ public abstract class ProjectConfig implements Configurable {
    private String buildName = "";
    private String projTestName = "";
 
-   /**
-    * @param suffix  the file extension of source files
-    */
-   protected ProjectConfig(String suffix) {
-      this.suffix = suffix;
-   }
-
-   /**
-    * Creates a {@code SettingsWin} with the basic content
-    * @see SettingsWin#basicWindow(String)
-    */
    @Override
-   public void createSettingsWin() {
-      SettingsWin win = SettingsWin.basicWindow("Name of main project file");
-      setSettingsWin(win);
-   }
-
-   @Override
-   public void addOkAction(ActionListener al) {
+   public void setConfiguringAction(ActionListener al) {
       setWin.okAct(al);
    }
 
    @Override
-   public void makeSetWinVisible(boolean isVisible) {
-      setWin.makeVisible(isVisible);
+   public void makeSetWinVisible() {
+      setWin.setVisible(true);
    }
 
    @Override
    public boolean configureProject(String dir) {
       projectRoot = findRootByFile(dir, pathRelToRoot(true));
-      boolean success = storeInputs();
+      boolean success =  isConfigSuccessful();
       if (success) {
-         setWin.makeVisible(false);
+         setWin.setVisible(false);
       }
       return success;
    }
@@ -142,32 +131,27 @@ public abstract class ProjectConfig implements Configurable {
    }
 
    @Override
-   public void storeInPrefs() {
-      PREFS.storePrefs("recentProject", projectRoot);
-      PREFS.storePrefs("recentMain", mainFile);
-      PREFS.storePrefs("recentModule", moduleDirName);
-      PREFS.storePrefs("recentSourceDir", sourceDirName);
-      PREFS.storePrefs("recentExecDir", execDirName);
-      PREFS.storePrefs("recentBuildName", buildName);
+   public void storeConfiguration() {
+      storeConfigurationImpl();
    }
-
+   
    /**
-    * Sets a <code>SettingsWin</code> object
-    *
-    * @param setWin  a {@link SettingsWin} object
+    * @param suffix  the file extension of source files
     */
-   protected void setSettingsWin(SettingsWin setWin) {
-      if (this.setWin != null) {
-         throw new IllegalStateException("A SettingsWin"
-               + " is already set cannot be replaced.");
-      }
-      this.setWin = setWin;
+   protected ProjectConfig(String suffix) {
+      this.suffix = suffix;
+      createSettingsWin();
    }
+   
+   /**
+    * Creates a new <code>SettingsWin</code>
+    */
+   protected abstract void createSettingsWin();
 
    /**
     * Returns the name of the project's main file
     *
-    * @return  the name of project's main file
+    * @return  the name
     */
    protected String getMainFile() {
       return mainFile;
@@ -176,7 +160,7 @@ public abstract class ProjectConfig implements Configurable {
    /**
     * Returns the name of the directory of a module.
     *
-    * @return  the name of the directory of module
+    * @return  the name
     */
    protected String getModuleName() {
       return moduleDirName;
@@ -185,7 +169,7 @@ public abstract class ProjectConfig implements Configurable {
    /**
     * Returns the name of the directoy where source files are saved
     *
-    * @return  the name of the directory where source files are saved
+    * @return  the name
     */
    protected String getSourceDirName() {
       return sourceDirName;
@@ -194,7 +178,7 @@ public abstract class ProjectConfig implements Configurable {
    /**
     * Returns the name for a build
     *
-    * @return  the name for a build
+    * @return  the name
     */
    protected String getBuildName() {
       return buildName;
@@ -203,7 +187,7 @@ public abstract class ProjectConfig implements Configurable {
    /**
     * Returns the arguments for a start script
     *
-    * @return  the arguments for a start command
+    * @return  the arguments
     */
    protected String getArgs() {
       return args;
@@ -218,11 +202,12 @@ public abstract class ProjectConfig implements Configurable {
    protected boolean mainExecFileExists(String aSuffix) {
       File f = new File(projectRoot + F_SEP + execDirName + F_SEP
              + moduleDirName + F_SEP + mainFile + aSuffix);
+
       return f.exists();
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private void configByPropertiesFile(String root, Preferences prefs) {
@@ -302,32 +287,51 @@ public abstract class ProjectConfig implements Configurable {
       buildName = setWin.buildNameInput();
    }
 
-   private boolean storeInputs() {
-      boolean canStore = projectRoot.length() > 0;
-      if (canStore && projTestName.length() == 0) {
+   private boolean isConfigSuccessful() {
+      boolean success = projectRoot.length() > 0;
+      if (success && projTestName.length() == 0) {
          setWin.displayProjDirName(getProjectName());
       }
-      else if (canStore && projTestName.length() > 0) {
-         canStore = projTestName.equals(getProjectName());
+      else if (success && projTestName.length() > 0) {
+         success = projTestName.equals(getProjectName());
       }
-      if (!canStore) {
+      if (!success) {
          Dialogs.warnMessageOnTop(
-               "The entries cannot be matched with an existing file");
+                  "The entries cannot be matched with an existing file");            
+         setWin.focusInFileTextField();
+      }
+      return success;      
+   }
+   
+   private void storeConfigurationImpl() {
+      if (projectRoot.length() == 0) {
+         throw new IllegalStateException(
+            "The project is not configured");
+      }
+      storeInPrefs();
+      storeInEadConfig();
+   }
+   
+   private void storeInPrefs() {
+      PREFS.storePrefs("recentProject", projectRoot);
+      PREFS.storePrefs("recentMain", mainFile);
+      PREFS.storePrefs("recentModule", moduleDirName);
+      PREFS.storePrefs("recentSourceDir", sourceDirName);
+      PREFS.storePrefs("recentExecDir", execDirName);
+      PREFS.storePrefs("recentBuildName", buildName);
+   }
+   
+   private void storeInEadConfig() {
+      if (setWin.isSaveConfig()) {
+         EAD_CONFIG.storeConfig("recentMain", mainFile, projectRoot);
+         EAD_CONFIG.storeConfig("recentModule", moduleDirName, projectRoot);
+         EAD_CONFIG.storeConfig("recentSourceDir", sourceDirName, projectRoot);
+         EAD_CONFIG.storeConfig("recentExecDir", execDirName, projectRoot);
+         EAD_CONFIG.storeConfig("recentBuildName", buildName, projectRoot);
       }
       else {
-         storeInPrefs();
-         if (setWin.isSaveConfig()) {
-            EAD_CONFIG.storeConfig("recentMain", mainFile, projectRoot);
-            EAD_CONFIG.storeConfig("recentModule", moduleDirName, projectRoot);
-            EAD_CONFIG.storeConfig("recentSourceDir", sourceDirName, projectRoot);
-            EAD_CONFIG.storeConfig("recentExecDir", execDirName, projectRoot);
-            EAD_CONFIG.storeConfig("recentBuildName", buildName, projectRoot);
-         }
-         else {
-            deleteConfigFile();
-         }
+         deleteConfigFile();
       }
-      return canStore;
    }
       
    private void deleteConfigFile() {

@@ -124,7 +124,7 @@ public class Compile {
                consPnl.appendText(diagnostic.getSource().toString() + "\n");
                String file = new File(diagnostic.getSource().toString()).getName();
                file = file.substring(0, file.length() - 1);
-               errorInfo.add("First listed error in " + file + ", line " 
+               errorInfo.add("First listed error is found in " + file + ", line " 
                      + diagnostic.getLineNumber());
             }
             String devider = "_";

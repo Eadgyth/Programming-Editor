@@ -27,9 +27,8 @@ import eg.Constants;
 import eg.utils.FileUtils;
 
 /**
- * Defines the editor view that contains the text area to edit text and the
- * area that shows line numbers. These are contained in a JPanel which is
- * obtained through {@link #editAreaPnl()}.
+ * The editor view that contains the text area to edit text and the
+ * area that shows line numbers
  */
 public final class EditArea {
 
@@ -60,7 +59,7 @@ public final class EditArea {
    private int scrollPos;
 
    /**
-    * @param isWordwrap  true to enable wordwrap
+    * @param isWordwrap  true to enable, false to disable wordwrap
     * @param isLineNumbers  true to show line numbering. Is effectless if
     * wordwrap is enabled
     * @param font  the name of the initial font
@@ -98,7 +97,8 @@ public final class EditArea {
    }
 
    /**
-    * Gets this edit area panel for adding it to the tab pane
+    * Gets this edit area panel which contains the area in which
+    * text is edited and the area that shows line numbers
     *
     * @return  this edit area panel
     */
@@ -107,20 +107,19 @@ public final class EditArea {
    }
 
    /**
-    * Gets this area in which text is edited
+    * Gets this text area in which text is edited
     *
-    * @return  this area in which text is edited
+    * @return  this text area
     */
    public JTextPane textArea() {
       return textArea;
    }
 
    /**
-    * Gets the StyledDocument associated with the area that shows
-    * line numbers
+    * Gets the <code>StyledDocument</code> associated with the area
+    * that shows line numbers
     *
-    * @return  the <code>StyledDocument</code> associated with the
-    * area that shows line numbers
+    * @return  the <code>StyledDocument</code>
     */
    public StyledDocument lineNrDoc() {
       return lineNrArea.getStyledDocument();
@@ -129,7 +128,8 @@ public final class EditArea {
    /**
     * Gets this implemented method in <code>LineNrWidthAdaptable</code>
     *
-    * @return  this implemented method in {@link LineNrWidthAdaptable}
+    * @return  the implemented method
+    * @see LineNrWidthAdaptable
     */
    public LineNrWidthAdaptable lineNrWidth() {
       return (i, j) -> adaptLineNrWidth(i, j);
@@ -215,7 +215,7 @@ public final class EditArea {
    }
 
    //
-   //--private methods--//
+   //--private methods--/
    //
    
    private void adaptLineNrWidth(int prevLineNr, int lineNr) {
@@ -227,6 +227,20 @@ public final class EditArea {
    private void revalidate() {
       editAreaPnl.revalidate();
       editAreaPnl.repaint();
+   }
+   
+   private void removeCenterComponent() {
+      BorderLayout layout = (BorderLayout) editAreaPnl.getLayout();
+      JScrollPane c = (JScrollPane) layout.getLayoutComponent(BorderLayout.CENTER);
+      if (c != null) {
+         scrollPos = c.getVerticalScrollBar().getValue();
+         editAreaPnl.remove(c);
+      }
+   }
+
+   private void setScrollPos(JScrollPane pane) {
+      JScrollBar bar = pane.getVerticalScrollBar();
+      bar.setValue(scrollPos);
    }
 
    private void initEditAreaPnl() {
@@ -266,20 +280,6 @@ public final class EditArea {
       lineNrScroll.setBorder(new MatteBorder(0, 0, 0, 1, Constants.GRAY));
       lineNrScroll.getVerticalScrollBar().setModel
             (linkedLineNrScroll.getVerticalScrollBar().getModel());
-   }
-
-   private void removeCenterComponent() {
-      BorderLayout layout = (BorderLayout) editAreaPnl.getLayout();
-      JScrollPane c = (JScrollPane) layout.getLayoutComponent(BorderLayout.CENTER);
-      if (c != null) {
-         scrollPos = c.getVerticalScrollBar().getValue();
-         editAreaPnl.remove(c);
-      }
-   }
-
-   private void setScrollPos(JScrollPane pane) {
-      JScrollBar bar = pane.getVerticalScrollBar();
-      bar.setValue(scrollPos);
    }
 
    private void removeShortCuts() {

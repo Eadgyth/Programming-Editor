@@ -17,7 +17,7 @@ import eg.ui.IconFiles;
  * <p> Created in {@link MenuBar}
  */
 public class ProjectMenu {
-   
+
    private final JMenu     menu       = new JMenu("Project");
    private final JMenuItem SaveCompile
          = new JMenuItem("Save selected source file and compile");
@@ -26,20 +26,20 @@ public class ProjectMenu {
          IconFiles.COMPILE_ICON);
    private final JMenuItem run        = new JMenuItem("Run", IconFiles.RUN_ICON);
    private final JMenuItem build      = new JMenuItem("Build");
-   private final JMenuItem setProject = new JMenuItem("Project settings");
    private final JMenuItem newProj    = new JMenuItem("Assign project");
+   private final JMenuItem setProject = new JMenuItem("Project settings");
    private final JMenuItem changeProj
          = new JMenuItem("Change project", IconFiles.CHANGE_PROJ_ICON);
-   
+
    public ProjectMenu() {
       assembleMenu();
       shortCuts();
    }
-   
+
    public JMenu getMenu() {
       return menu;
    }
-   
+
    public void setActions(CurrentProject currProj) {
       setProject.addActionListener(e -> currProj.openSettingsWindow());
       changeProj.addActionListener(e -> currProj.changeProject());
@@ -49,12 +49,12 @@ public class ProjectMenu {
       SaveCompile.addActionListener(e -> currProj.saveAndCompile());
       SaveAllCompile.addActionListener(e -> currProj.saveAllAndCompile());
    }
-   
+
    public void enableChangeProjItm(boolean isEnabled) {
       changeProj.setEnabled(isEnabled);
    }
 
-   public void enableCompileRunBuildItms(boolean isCompile, boolean isRun,
+   public void enableSrcCodeActionItms(boolean isCompile, boolean isRun,
          boolean isBuild) {
 
       SaveCompile.setEnabled(isCompile);
@@ -62,29 +62,30 @@ public class ProjectMenu {
       run.setEnabled(isRun);
       build.setEnabled(isBuild);
    }
-   
+
    public void setBuildLabel(String label) {
       build.setText(label);
    }
 
+   //
+   //--private--/
+   //
+
    private void assembleMenu() {
       menu.add(SaveCompile);
-      SaveCompile.setEnabled(false);
       menu.add(SaveAllCompile);
-      SaveAllCompile.setEnabled(false);
       menu.add(run);
-      run.setEnabled(false);
       menu.addSeparator();
       menu.add(build);
-      build.setEnabled(false);
       menu.addSeparator();
       menu.add(newProj);
       menu.add(setProject);
       menu.add(changeProj);
-      changeProj.setEnabled(false);
       menu.setMnemonic(KeyEvent.VK_P);
+      changeProj.setEnabled(false);
+      enableSrcCodeActionItms(false, false, false);
    }
-   
+
    private void shortCuts() {
       SaveAllCompile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,
             ActionEvent.CTRL_MASK));
@@ -92,4 +93,3 @@ public class ProjectMenu {
             ActionEvent.CTRL_MASK));
    }
 }
-      

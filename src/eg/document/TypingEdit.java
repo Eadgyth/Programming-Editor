@@ -19,8 +19,8 @@ import eg.syntax.Coloring;
 /**
  * Mediates between the editing of the text document and the actions that
  * happen in response.
- * Actions include syntax coloring, indentation, line numbering, and adding
- * edits to the undoable edits.<br>
+ * Actions include syntax coloring, indentation, line numbering, reading the
+ * current line and columns and adding edits to the undoable edits.<br>
  * <p> Created in {@link FileDocument}
  */
 public class TypingEdit {
@@ -35,6 +35,7 @@ public class TypingEdit {
    private UndoableChangeListener ucl;
    private TextSelectionEvent tse;
    private TextSelectionListener tsl;
+   private LineAndColumnReadable lcr;
    private boolean isDocListen = true;
    private boolean isAddToUndo = true;
    private boolean isCodeEditing = false;
@@ -45,6 +46,8 @@ public class TypingEdit {
    private boolean isSelectionTmp = false;
    private boolean canUndoTmp = false;
    private boolean canRedoTmp = false;
+   private int lineNrAtCursor = 1;
+   private int colNrAtCursor = 1;
 
    /**
     * @param textDoc  the reference to {@link TextDocument}
@@ -84,6 +87,19 @@ public class TypingEdit {
                "A TextSelectionListener is already set");
       }
       this.tsl = tsl;
+   }
+   
+   /**
+    * Sets a <code>CursorPositionReadable</code> if none was set before
+    *
+    * @param lcr  a {@link LineAndColumnReadable}
+    */
+   public void setLineAndColumnReadable(LineAndColumnReadable lcr) {
+      if (this.lcr != null) {
+         throw new IllegalStateException(
+               "A PositionReadable is already set");
+      }
+      this.lcr = lcr;
    }
 
    /**
@@ -177,6 +193,25 @@ public class TypingEdit {
       }
       col.color(text, section, pos, posStart);
    }
+   
+   /**
+    * Gets the number of the line where the cursor is positioned
+    *
+    * @return  the number of the line where the cursor is positioned
+    */
+   public int lineNrAtCursor() {
+      return lineNrAtCursor;
+   }
+   
+   /**
+    * Gets the number of the column in the line where the cursor is
+    * positioned
+    *
+    * @return  the number of the line where the cursor is positioned
+    */
+   public int columnNrAtCursor() {
+      return colNrAtCursor;
+   }
 
    /**
     * Returns if edits can be undone
@@ -239,7 +274,8 @@ public class TypingEdit {
    private void colorLine() {
       String toColor = LinesFinder.lineAtPos(text, pos);
       int posStart = LinesFinder.lastNewline(text, pos) + 1;
-      EventQueue.invokeLater(() -> col.color(text, toColor, pos, posStart));
+      EventQueue.invokeLater(() ->
+         col.color(text, toColor, pos, posStart));
    }
 
    private void notifyUndoableChangeEvent() {
@@ -268,6 +304,20 @@ public class TypingEdit {
          isSelectionTmp = isSelection;
          tse = new TextSelectionEvent(isSelection);
          tsl.selectionUpdate(tse);
+      }
+   }
+   
+   private void readLineAndColumnNr(int caret) {
+      int lastNewLine = LinesFinder.lastNewline(text, caret);
+      lineNrAtCursor = LinesFinder.lineNrAtPos(text, caret);
+      if (lastNewLine == -1) {
+         colNrAtCursor = caret + 1;
+      }
+      else {
+         colNrAtCursor = caret - lastNewLine;
+      }
+      if (lcr != null) {
+         lcr.setCurrLineAndColumn(lineNrAtCursor, colNrAtCursor);
       }
    }
 
@@ -338,9 +388,11 @@ public class TypingEdit {
    };
    
    private CaretListener caretListen = new CaretListener() {
+
       @Override
       public void caretUpdate(CaretEvent ce) {
          notifyTextSelectionEvent(ce.getDot() != ce.getMark());
+         readLineAndColumnNr(ce.getDot());
          markUndoBreakpoint(ce.getDot());
       }
    };

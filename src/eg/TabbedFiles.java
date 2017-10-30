@@ -45,7 +45,7 @@ public class TabbedFiles implements Observer {
     * The index of the selected tab */
    private int iTab = -1;
    /*
-    * The language read from prefs or set in the Langugae menu */
+    * The language read from prefs and set in the Languge menu */
    private Languages lang;
 
    public TabbedFiles(EditAreaFormat format, MainWin mw) {
@@ -75,19 +75,19 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Sets the current language
+    * Changes the language language in the currently selected
+    * <code>FileDocument</code>.
     *
-    * @param lang  the language that has one of the constant
-    * values in {@link Languages}
+    * @param lang  a language in {@link Languages}
     */
    public void changeLanguage(Languages lang) {
       this.lang = lang;
       fDoc[iTab].changeLanguage(lang);
-      mw.setLanguageName(lang.display());
+      mw.displayFileType(lang);
    }
 
    /**
-    * Opens a new 'unnamed' tab
+    * Opens a new empty tab
     */
    public void openEmptyTab() {
       if (isTabOpenable()) {
@@ -113,7 +113,7 @@ public class TabbedFiles implements Observer {
          return;
       }
       if (!f.exists()) {
-         Dialogs.warnMessage(f.getName() + "\nThe file was not found.");
+         Dialogs.warnMessage(f.getName() + " was not found.");
       }
       else {
          open(f);
@@ -124,15 +124,14 @@ public class TabbedFiles implements Observer {
     * Saves the text content of the selected tab.
     * <p>{@link #saveAs(boolean)} is called if the selected tab is
     * unnamed or if the content was read in from a file that no longer
-    * exists on the harddrive.
+    * exists on the hard drive.
     *
-    * @param update   if the view (e.g. tab title, file view) is
+    * @param update  if the view (e.g. tab title, file view) is
     * updated and if it is tried to retrieve a project
     * @return  if the text content was saved
     */
    public boolean save(boolean update) {
-      if (!fDoc[iTab].hasFile()
-            || !fDoc[iTab].docFile().exists()) {
+      if (!fDoc[iTab].hasFile() || !fDoc[iTab].docFile().exists()) {
          return saveAs(update);
       }
       else {
@@ -141,8 +140,7 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Saves the text content in all tabs. A warning is shown if any
-    * files no longer exist on the hard drive.
+    * Saves the text content in all open documents
     */
    public void saveAll() {
       StringBuilder sb = new StringBuilder();
@@ -164,8 +162,8 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Saves the text content in the selected tab as a new file that
-    * is specified in the file chooser
+    * Saves the text content in the selected document as a new
+    * file that is specified in the file chooser
     *
     * @param update  if the view (e.g. tab title, file view) is
     * updated and it is tried to retrieve a project
@@ -188,8 +186,7 @@ public class TabbedFiles implements Observer {
 
    /**
     * Saves a copy of the content in the selected document to the file
-    * that is selected in the file chooser.
-    * <p> Method does not change the file of the document.
+    * that is selected in the file chooser
     */
    public void saveCopy() {
       File f = fc.fileToSave(fDoc[iTab].filepath());
@@ -203,11 +200,10 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Closes a tab if the text content is saved or asks in a dialog
-    * if closing shall happen with or without saving
+    * Closes a tab if the text content is saved
     *
-    * @param createEmptyTab  true to create a new empty tab when all tabs
-    * are closed
+    * @param createEmptyTab  true to create a new empty tab in case the
+    * tab to close is the only opened one
     */
    public void close(boolean createEmptyTab) {
       boolean removable = fDoc[iTab].isContentSaved();
@@ -229,9 +225,8 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Closes all tabs or selects the first tab whose text content is
-    * found unsaved and asks in a dialog if closing shall happen with
-    * or without saving
+    * Closes all tabs if the text contents of the documents
+    * are saved
     */
    public void closeAll() {
       int count = unsavedTab();
@@ -261,9 +256,8 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Exits the program or selects the first tab whose text content is
-    * found unsaved and asks in a dialog if closing shall happen with
-    * or without saving
+    * Exits the program if the text contents of all open documents
+    * are saved
     */
    public void exit() {
       int count = unsavedTab();
@@ -287,7 +281,7 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Prints the text content in the selected tab to a printer
+    * Prints the text content in the selected document to a printer
     */
    public void print() {
       editArea[iTab].print();
@@ -328,8 +322,8 @@ public class TabbedFiles implements Observer {
          fDoc[n] = new FileDocument(editArea[n], f);
          fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
          addNewTab(fDoc[n].filename(), editArea[n].editAreaPnl());
-         setUIUpdateListenersAt(n);
          docUpdate.changedFileUpdate(n, false);
+         setUIUpdatersAt(n);
          prefs.storePrefs("recentPath", fDoc[n].dir());
       }
       finally {
@@ -343,7 +337,7 @@ public class TabbedFiles implements Observer {
       fDoc[n] = new FileDocument(editArea[n], lang);
       fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
       addNewTab("unnamed", editArea[n].editAreaPnl());
-      setUIUpdateListenersAt(n);
+      setUIUpdatersAt(n);
    }
    
    private void addNewTab(String filename, JPanel pnl) {
@@ -355,11 +349,17 @@ public class TabbedFiles implements Observer {
       });
    }
    
-   private void setUIUpdateListenersAt(int i) {
+   private void setUIUpdatersAt(int i) {
       fDoc[i].setUndoableChangeListener(e ->
             mw.enableUndoRedo(e.canUndo(), e.canRedo()));
       fDoc[i].setTextSelectionListener(e ->
             mw.enableCutCopy(e.isSelection()));
+      fDoc[i].setLineAndColumnReadable((j, k) ->
+            setLineAndColNr(j, k));
+   }
+   
+   private void setLineAndColNr(int lineNr, int colNr) {
+      mw.displayLineAndColNr(lineNr, colNr);
    }
    
    private void removeTab() {
@@ -388,7 +388,7 @@ public class TabbedFiles implements Observer {
    
    private void changedTabUpdate() {
       format.setEditAreaAt(iTab);
-      mw.setWordWrapSelected(format.isWordwrap());
+      mw.setWordWrapSelected(editArea[iTab].isWordwrap());
       docUpdate.changedDocUpdate(iTab, nTabs());
    }
    
@@ -432,8 +432,8 @@ public class TabbedFiles implements Observer {
    }
    
    private int replaceOption(File f) {
-      return Dialogs.confirmYesNo(f.getName()
-             + "\nThe file already exists. Replace file?");
+      return Dialogs.confirmYesNo(
+             f.getName() + " already exists.\nReplace file?");
    }
 
    private int nTabs() {

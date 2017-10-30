@@ -4,6 +4,7 @@ package eg.document;
  * The interface for detecting that the state, in which text is selected,
  * has changed
  */
+@FunctionalInterface
 public interface TextSelectionListener {
    
    /**

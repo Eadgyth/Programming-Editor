@@ -32,12 +32,12 @@ public class SelectedProject {
    }
 
    /**
-    * Returns a <code>ProjectActions</code> selected based on the file extension
-    * and creates the <code>SettingsWin</code> for the project.
+    * Returns a <code>ProjectActions</code> selected based on the file
+    * extension
     *
-    * @param suffix  the file extension which a project is to be defined for
-    * @return  an object of type {@link ProjectActions} or null if
-    * <code>suffix</code> does not specify a project
+    * @param suffix  the file extension
+    * @return  a new {@link ProjectActions}. Null if <code>suffix</code>
+    * does not specify a project
     */
    public ProjectActions createProject(String suffix) {
       ProjectActions newProj = null;
@@ -51,9 +51,6 @@ public class SelectedProject {
          case "pl": case "pm":
             newProj = new PerlActions(co, proc);
             break;
-      }
-      if (newProj != null) {
-         newProj.createSettingsWin();
       }
       return newProj;
    }

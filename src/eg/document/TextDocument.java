@@ -56,16 +56,16 @@ public class TextDocument {
    /**
     * Gets this text area that displays the document
     *
-    * @return  this text area that display the document
+    * @return  the text area
     */
    public JTextPane docTextArea() {
       return textArea;
    }
    
    /**
-    * Returns the text in this document
+    * Gets the text in this documument
     *
-    * @return  the text in this <code>StyledDocument</code>
+    * @return  the text
     */
    public String getText() {
       String text = null;
@@ -81,17 +81,18 @@ public class TextDocument {
    /**
     * Gets the length of this document
     *
-    * @return  the document length
+    * @return  the length
     */
    public int length() {
       return doc.getLength();
    }
 
    /**
-    * Inserts text in this document
+    * Inserts the string <code>toInsert</code> at the specified
+    * position
     *
-    * @param pos  the position where new text is inserted
-    * @param toInsert  the String that contains the text to insert
+    * @param pos  the position
+    * @param toInsert  the String to insert
     */
    public void insert(int pos, String toInsert) {
       try {
@@ -103,14 +104,15 @@ public class TextDocument {
    }
 
    /**
-    * Removes text from this document
+    * Removes text of the specified length at the specified
+    * position
     *
-    * @param start  the position where text to be removed starts
-    * @param length  the length of the text to be removed
+    * @param pos  the position
+    * @param length  the length
     */
-   public void remove(int start, int length) {
+   public void remove(int pos, int length) {
       try {
-         doc.remove(start, length);
+         doc.remove(pos, length);
       }
       catch (BadLocationException e) {
          FileUtils.logStack(e);

@@ -1,7 +1,6 @@
 package eg;
 
 import java.awt.EventQueue;
-
 import java.awt.Toolkit;
 
 import java.awt.datatransfer.Clipboard;
@@ -36,7 +35,7 @@ public class Edit {
     * Sets the {@code FileDocument} that is edited and its current
     * indentation unit
     *
-    * @param fDoc  the {@link FileDocument} that is edited
+    * @param fDoc  the {@link FileDocument}
     */
    public void setFileDocument(FileDocument fDoc) {
       this.fDoc  = fDoc;

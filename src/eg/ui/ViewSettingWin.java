@@ -48,34 +48,33 @@ public class ViewSettingWin {
    /**
     * Makes this frame visible/unvisible
     *
-    * @param isVisible  true/false to make this frame visible/unvisible
+    * @param isVisible  true to make this frame visible, false to
+    * to make it invisible
     */
    public void makeVisible(boolean isVisible) {
       frame.setVisible(isVisible);
    }
    
    /**
-    * Adds an action handler to this ok button
+    * Sets the listener to this ok button
     *
     * @param al  the {@code ActionListener}
     */
-   public void okAct(ActionListener al) {
+   public void setOkAct(ActionListener al) {
       okBt.addActionListener(al);
    }
 
    /**
-    * Returns if showing the toolbar is selected in the corresponding
-    * checkbox
+    * Returns if check box for showing the toolbar is selected
     *
-    * @return if showing the toolbar is selected
+    * @return  if showing the toolbar is selected
     */ 
    public boolean isShowToolbar() {
       return checkToolbar.isSelected();
    }
    
    /**
-    * Returns if showing line numbers is selected in the corresponding
-    * checkbox
+    * Returns if check box for showing line numbers is selected
     *
     * @return if showing line numbers is selected
     */ 
@@ -84,7 +83,7 @@ public class ViewSettingWin {
    }
    
    /**
-    * Returns if showing the status bar is selected
+    * Returns if check box for showing the statusbar is selected
     *
     * @return if showing the staus bar is selected
     */ 
@@ -95,7 +94,7 @@ public class ViewSettingWin {
    /**
     * Returns the index of combobox selection for the icon size
     *
-    * @return  the index of combobox selection for the icon size
+    * @return  the index
     */ 
    public int selectedIconSize() {
       return selectIconSize.getSelectedIndex();
@@ -104,7 +103,7 @@ public class ViewSettingWin {
    /**
     * Returns the index of combobox selection for the look and feel
     *
-    * @return  the index of combobox selection for the look and feel
+    * @return  the index
     */ 
    public int selectedLaf() {
       return selectLaf.getSelectedIndex();

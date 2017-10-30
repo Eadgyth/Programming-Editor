@@ -52,13 +52,6 @@ public class SettingsWin {
    private boolean useArgs = false;
    private String buildLabel = null;
 
-   private SettingsWin(String fileLabel, boolean initWindow) {
-      this.fileLabel = fileLabel + " (without Ext.)";
-      if (initWindow) {
-         initWindow();
-      }
-   }
-
    /**
     * Returns a new SettingsWin where only the name for a project file and
     * for a project root can be entered
@@ -87,7 +80,8 @@ public class SettingsWin {
    /**
     * Adds the option to enter a name for a module/subdirectory and
     * sets the label for the corresponding text field
-    * @param moduleLabel  the label for the module text field
+    *
+    * @param moduleLabel  the label
     * @return  this
     */
    public SettingsWin addModuleOption(String moduleLabel) {
@@ -145,22 +139,32 @@ public class SettingsWin {
       }
       initWindow();
    }
+   
+   /**
+    * Asks the text field for setting the project file to get focus
+    */
+   public void focusInFileTextField() {
+      fileTf.requestFocusInWindow();
+   }
 
    /**
-    * Adds an {@code ActionListener} to this ok button
-    * @param al  the {@code ActionListener};
+    * Adds an <code>ActionListener</code> to this ok button
+    *
+    * @param al  the <code>ActionListener</code>;
     */
    public void okAct(ActionListener al) {
       okBt.addActionListener(al);
    }
 
    /**
-    * Makes this frame visible
-    * @param isVisible  true to make this frame visible
+    * Makes this frame visible or invisible, depending on the
+    * specified boolean value 
+    *
+    * @param b  the boolean
     */
-   public void makeVisible(boolean isVisible) {
+   public void setVisible(boolean b) {
       fileTf.requestFocus();
-      frame.setVisible(isVisible);
+      frame.setVisible(b);
    }
 
    /**
@@ -292,7 +296,16 @@ public class SettingsWin {
       saveConfig.setSelected(isSelected);
    }
 
-   //--private--//
+   //
+   //--private--/
+   //
+   
+   private SettingsWin(String fileLabel, boolean initWindow) {
+      this.fileLabel = fileLabel + " (without Ext.)";
+      if (initWindow) {
+         initWindow();
+      }
+   }
 
    private JPanel structurePanel() {
       int gridSize = 3;
