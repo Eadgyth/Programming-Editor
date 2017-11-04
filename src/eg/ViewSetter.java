@@ -38,9 +38,9 @@ public class ViewSetter {
     * Applies the selections made in {@link ViewSettingWin}
     */
    public void applySetWinOk() {
-      boolean show = false;
-      int index = 0;
-      String state = null;
+      boolean show;
+      int index;
+      String state;
 
       show = viewSetWin.isShowToolbar();
       if (show != isShowToolbar) {
