@@ -413,7 +413,6 @@ public class MainWin implements ConsoleOpenable {
       vm.setTabItmAction(e -> showTabbar(vm.isTabItmSelected()));
       fileTree.closeAct(e -> vm.doUnselectFileViewAct());
       console.closeAct(e -> vm.doConsoleItmAct(false));
-      toolPnl.closeAct(e -> showToolPnl(false));
    }
    
    private void showConsole(boolean b) {
