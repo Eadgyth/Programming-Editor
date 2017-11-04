@@ -59,7 +59,6 @@ public class FileTree extends Observable {
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-   private final JToolBar toolbar;
    private final JButton upBt        = new JButton(UIManager.getIcon(
                                        "FileChooser.upFolderIcon"));
    private final JButton   renewBt   = new JButton(IconFiles.REFRESH_ICON);
@@ -79,7 +78,7 @@ public class FileTree extends Observable {
 
    public FileTree() {
       ml = mouseListener;
-      toolbar = createToolbar();
+      renewBt.setEnabled(false);
       initTreePanel();
    }
 
@@ -141,7 +140,7 @@ public class FileTree extends Observable {
    }
 
    //
-   //--private methods--//
+   //--private--/
    //
 
    private void setNewTree(String path) {
@@ -161,6 +160,7 @@ public class FileTree extends Observable {
       root = new DefaultMutableTreeNode("root", true);
       model = new DefaultTreeModel(root);
       getFiles(root, new File(path));
+      renewBt.setEnabled(true);
       initTree(); // includes creating a new JTree object
       holdTreePnl.add(tree);
       fileTreePnl.revalidate();
@@ -189,9 +189,9 @@ public class FileTree extends Observable {
           File fList[] = f.listFiles();
           if (fList != null) {
              File fListSort[] = sortFoldersAndFiles(fList);
-              for (File fListSort1 : fListSort) {
-                  getFiles(child, fListSort1);
-              }
+             for (File fs : fListSort) {
+                getFiles(child, fs);
+             }
           }
       }
    }
@@ -352,21 +352,21 @@ public class FileTree extends Observable {
 
    private void initTreePanel() {
       holdTreePnl.setLayout(new BorderLayout());
-      scroll.setBorder(null);
+      scroll.setBorder(Constants.MATTE_TOP);
       scroll.setViewportView(holdTreePnl);
       scroll.getVerticalScrollBar().setUnitIncrement(10);
-      fileTreePnl.add(toolbar, BorderLayout.NORTH);
+      fileTreePnl.add(toolbar(), BorderLayout.NORTH);
       fileTreePnl.add(scroll, BorderLayout.CENTER);
       fileTreePnl.setBorder(Constants.GRAY_BORDER);
       upBt.addActionListener(e -> folderUp());
-      renewBt.addActionListener(e -> updateTree());
       upBt.setEnabled(false);
+      renewBt.addActionListener(e -> updateTree());
       popupFile.deleteAct(e -> deleteFile());
       popupDir.newFolderAct(e -> newFolder());
       popupDir.deleteAct(e -> deleteFolder());
    }
 
-   private JToolBar createToolbar() {
+   private JToolBar toolbar() {
       JButton[] bts = new JButton[] {
          upBt, renewBt, closeBt
       };  
