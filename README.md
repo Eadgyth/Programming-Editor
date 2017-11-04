@@ -1,17 +1,14 @@
 # Java-Programming-Editor / Eadgyth
 A text editor written in Java. The goal is a coding editor suited to write rather simple applications,
-may be for home requirements, and to provide a simple but flexible setting up of projects. Coding
-language is Java (Perl and HTML included but less elaborated).
-<p>
-The program is extensible by plugins which have access to the editor field in a selected tab and
-by implementing other types of projects using the interface intended for this purpose.
+may be for home requirements, and to provide a simple but flexible setting up of projects. The coding
+language is Java and to try out that other project categories can be added draft implementations
+for setting Perl and HTML projects are included.
 <p>
 REQUIREMENTS FOR TESTING AND COMPILATION<br>
-Running the program requires JAVA 8 (JRE 8).<p>
+Running the program requires JAVA 8 (JRE 8). Some modifications to use Java 9 remain have yet
+to be done.<p>
 The program must be found in the same folder as the two .properties files and the Resources
-folder, just like in the 'EadgythProgram' folder in this repository.<p>
-Plugins must be stored in the folder 'Plugins' which must be found in the same folder as the
-program. Plugins currently must be available as single jar files.<p>
+folder, just like found in the 'EadgythProgram' folder in this repository.<p>
 To compile the program the source files (packages) must be placed in a directory that also
 includes the ".properties" files and the 'Resources' folder
 <p>
@@ -24,7 +21,7 @@ is hopefully helpful.
 <p>
 LIMITATIONS (related to functions that are there at least)<br> 
 1) Running an interactive (console) program that then requires writing to this process is not
-guaranteed to work in the console panel of the program. Interactive programs in Java seem to
+guaranteed to work in the console area of the program. Interactive programs in Java seem to
 work fine but, for example, an interactive Perl script does not unless the autoflushing of its
 STDOUT is enabled in the script itself.
 <br>
@@ -33,7 +30,7 @@ STDOUT is enabled in the script itself.
 3) The printing to a printer is rudimentary and is rather the blueprint for a printing function.
 The font size is different from the corresponding font size in other programs (e.g. Editor in Windows).
 <br>
-4) The syntax coloring is incomplete and has problems especially for html that includes scripts
+4) The syntax coloring is incomplete
 <p>
 PROBLEMS <br>
 1) Unexpected rendering of the UI happened when the system look and feel was selected and the
@@ -47,10 +44,6 @@ implement the interface 'Pluggable' in the 'plugins' package. An implementing pl
 a reference to EditorAccess class which provides a reference to the text area object (JTextPane)
 in the currently selected tab, methods to modify text and a method to add a graphical view in the
 main window.
-<p>
-CONTACT<br>
-Malte Bussiek<br>
-m.bussiek@web.de<br>
 <p>
 LICENSE: MIT, see LICENSE<br>
 <p>
