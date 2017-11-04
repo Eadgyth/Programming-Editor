@@ -5,7 +5,6 @@ import javax.swing.JFrame;
 import javax.swing.JFileChooser;
 import javax.swing.Icon;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileView;
 import javax.swing.filechooser.FileSystemView;
 
