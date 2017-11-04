@@ -1,7 +1,5 @@
 package eg;
 
-import java.io.File;
-
 import java.util.List;
 import java.util.ArrayList;
 
@@ -9,7 +7,6 @@ import java.awt.EventQueue;
 
 //--Eadgyth--//
 import eg.console.*;
-import eg.Languages;
 import eg.ui.MainWin;
 import eg.projects.ProjectActions;
 import eg.projects.SelectedProject;
@@ -17,7 +14,7 @@ import eg.projects.SelectedProject;
 import eg.document.FileDocument;
 
 import eg.utils.Dialogs;
-import eg.utils.FileUtils;
+//import eg.utils.FileUtils;
 
 /**
  * The configuration and execution of actions of projects.
@@ -47,11 +44,11 @@ public class CurrentProject {
    private final SelectedProject selProj;
    private final ProcessStarter proc;
    private final List<ProjectActions> projList = new ArrayList<>();
+   private final FileDocument[] fDoc;
 
    private ProjectActions current;
-   private FileDocument[] fDoc;
    private int iCurr;
-   private String docSuffix;
+   private String docSuffix = "";
 
    /**
     * @param mw  the reference to {@link MainWin}
@@ -83,7 +80,7 @@ public class CurrentProject {
          }
       }
    }
-
+   
    /**
     * Tries to retrieve a project whose configuration is saved in the
     * 'eadconfig' file in the project's directory or, if not existent,
@@ -91,40 +88,7 @@ public class CurrentProject {
     * @see eg.projects.ProjectConfig#retrieveProject(String)
     */
    public void retrieveProject() {
-      if (current != null && current.isInProject(fDoc[iCurr].dir())) {
-         return;
-      }
-      EventQueue.invokeLater(() -> {
-         ProjectActions projToFind = selProj.createProject(docSuffix);
-         boolean isFound = projToFind != null
-               && projToFind.retrieveProject(fDoc[iCurr].dir());
-         if (projToFind == null) {
-            for (String opt : PROJ_SUFFIXES) {
-               projToFind = selProj.createProject(opt);
-               isFound = projToFind != null
-                     && projToFind.retrieveProject(fDoc[iCurr].dir());
-               if (isFound) {
-                  break;
-               }
-            }
-         }
-         if (isFound) {
-            ProjectActions projFin = projToFind;
-            if (current == null) {
-               current = projFin;
-               current.setConfiguringAction(e -> configureProject(current));
-               projList.add(current);
-               updateProjectSetting(current);
-            }
-            else {
-               if (selectFromList(fDoc[iCurr].dir(), true) == null) {
-                  projFin.setConfiguringAction(e -> configureProject(projFin));
-                  projList.add(projFin);
-                  changeProject(projFin);
-               }
-            }
-         }
-      });
+      retrieveProject(fDoc[iCurr].dir());
    }
 
    /**
@@ -223,15 +187,15 @@ public class CurrentProject {
       try {
          mw.setBusyCursor();
          StringBuilder missingFiles = new StringBuilder();
-         for (int i = 0; i < fDoc.length; i++) {
-            if (isFileToCompile(fDoc[i])) {
-               if (fDoc[i].docFile().exists()) {
-                  fDoc[i].saveFile();
-               }
-               else {
-                  missingFiles.append("\n");
-                  missingFiles.append(fDoc[i].filename());
-               }
+         for (FileDocument f : fDoc) {
+            if (isFileToCompile(f)) {
+                if (f.docFile().exists()) {
+                    f.saveFile();
+                } else {
+                    missingFiles.append("\n");
+                    missingFiles.append(f.filename());
+                }
+            } else {
             }
          }
          if (missingFiles.length() == 0) {
@@ -271,6 +235,45 @@ public class CurrentProject {
    //
    //--private--/
    //
+   
+   private void retrieveProject(String dir) {
+      if (current != null && current.isInProject(dir)) {
+         return;
+      }
+      EventQueue.invokeLater(() -> {
+         ProjectActions projToFind = selProj.createProject(docSuffix);
+         boolean isFound = projToFind != null
+               && projToFind.retrieveProject(dir);
+
+         if (projToFind == null) {
+            for (String opt : PROJ_SUFFIXES) {
+               projToFind = selProj.createProject(opt);
+               isFound = projToFind != null
+                     && projToFind.retrieveProject(dir);
+
+               if (isFound) {
+                  break;
+               }
+            }
+         }
+         if (isFound) {
+            ProjectActions projFin = projToFind;
+            if (current == null) {
+               current = projFin;
+               current.setConfiguringAction(e -> configureProject(current));
+               projList.add(current);
+               updateProjectSetting(current);
+            }
+            else {
+               if (selectFromList(dir, true) == null) {
+                  projFin.setConfiguringAction(e -> configureProject(projFin));
+                  projList.add(projFin);
+                  changeProject(projFin);
+               }
+            }
+         }
+      });
+   }
 
    private void createProjectImpl() {
       if (!fDoc[iCurr].hasFile()) {
@@ -292,6 +295,7 @@ public class CurrentProject {
       String selectedSuffix
             = Dialogs.comboBoxOpt(wrongExtentionMessage(fDoc[iCurr].filename()),
             "File extension", PROJ_SUFFIXES, null, true);
+
       if (selectedSuffix != null) {
          return selProj.createProject(selectedSuffix);
       }
@@ -303,6 +307,7 @@ public class CurrentProject {
    private boolean changeProject(ProjectActions toChangeTo) {
       int result = Dialogs.confirmYesNo("Switch to project '"
                  + toChangeTo.getProjectName() + "'?");
+
       if (result == 0) {
          current = toChangeTo;
          current.storeConfiguration();
@@ -311,6 +316,7 @@ public class CurrentProject {
          return true;
       }
       else {
+         mw.enableChangeProject(true);
          return false;
       }
    }
