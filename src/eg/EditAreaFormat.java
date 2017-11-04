@@ -3,7 +3,6 @@ package eg;
 import eg.ui.EditArea;
 import eg.ui.ViewSettingWin;
 import eg.ui.FontSettingWin;
-import eg.ui.MainWin;
 
 /**
  * The formatting for <code>EditArea</code> objects which are associated
