@@ -7,15 +7,16 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 
 import java.awt.event.WindowListener;
-import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 
 //--Eadgyth--/
 import eg.Constants;
@@ -25,6 +26,7 @@ import eg.Edit;
 import eg.EditAreaFormat;
 import eg.Preferences;
 import eg.Languages;
+import eg.FunctionalAction;
 import eg.edittools.AddableEditTool;
 import eg.ui.menu.MenuBar;
 import eg.ui.menu.FormatMenu;
@@ -33,6 +35,7 @@ import eg.ui.filetree.FileTree;
 import eg.ui.tabpane.ExtTabbedPane;
 import eg.console.ConsolePanel;
 import eg.utils.UiComponents;
+import java.awt.event.ActionEvent;
 
 /**
  * The main window
@@ -65,7 +68,7 @@ public class MainWin implements ConsoleOpenable {
    private int dividerLocVert = 0;
    private int dividerLocHorAll = 0;
    private int dividerLocHor = 0;
-   private String wordwrapOn = "";
+   private final String wordwrapOn = "";
 
    public MainWin() {
       initFrame();
@@ -334,12 +337,33 @@ public class MainWin implements ConsoleOpenable {
       menuBar.editMenu().setEditTextActions(edit);
    }
    
+   /**
+    * Sets the listener for opening the ith edit tool of the tools
+    * in <code>EditTools</code>
+    *
+    * @param tool  the tool
+    * @param i  the index
+    * @see eg.edittools.EditTools
+    */
    public void setEditToolsActions(AddableEditTool tool, int i) {
+      JButton closeBt = new JButton();
+      closeBt.setAction(new FunctionalAction("", IconFiles.CLOSE_ICON,
+            e -> showToolPnl(false)));
+      tool.createToolPanel(closeBt);
+
+      winListen(new WindowAdapter() {
+
+         @Override
+         public void windowClosing(WindowEvent we) {
+            tool.end();
+         }
+      });
+
       menuBar.editMenu().setEditToolsActions(
             e -> {
-               tool.addComponent(toolPnl);
+               toolPnl.addComponent(tool.toolComponent());
                showToolPnl(true);
-            }, i);             
+            }, i);               
    }    
    
    /**
@@ -360,7 +384,7 @@ public class MainWin implements ConsoleOpenable {
     */
    public void setFormatActions(EditAreaFormat format) {
       FormatMenu fm =  menuBar.formatMenu(); 
-      fm.setChangeWordWrapAct(e -> {
+      fm.setChangeWordWrapAct((ActionEvent e) -> {
          boolean isWordwrap = fm.isWordWrapItmSelected();
          format.changeWordWrap(isWordwrap);
          setWordwrapInStatusBar(isWordwrap);
@@ -484,25 +508,26 @@ public class MainWin implements ConsoleOpenable {
       splitVert = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true,
            splitHor, null);
       splitVert.setDividerSize(0);
-      splitVert.setResizeWeight(1);
+      splitVert.setResizeWeight(0);
       splitVert.setBorder(null);
       splitHorAll = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
             splitVert, null);
-      splitHorAll.setResizeWeight(1);
+      splitHorAll.setResizeWeight(0);
       splitHorAll.setDividerSize(0);
       splitHorAll.setBorder(null);
    }
 
    private void initStatusbar() {
       int lbHeight = 15;
-      Dimension width5 = UiComponents.scaledDimension(5, lbHeight);
-      Dimension width20 = UiComponents.scaledDimension(20, lbHeight);
+      Dimension width5   = UiComponents.scaledDimension(5, lbHeight);
+      Dimension width20  = UiComponents.scaledDimension(20, lbHeight);
       Dimension width100 = UiComponents.scaledDimension(100, lbHeight);
       Dimension width150 = UiComponents.scaledDimension(150, lbHeight);
+      Dimension width200 = UiComponents.scaledDimension(200, lbHeight);
       JLabel[] lbArr = { languageLb, projectLb, cursorPosLb, wordwrapLb };
       setLbFont(lbArr);
       setLbWidth(languageLb, width100);
-      projectLb.setMinimumSize(width100);
+      setLbWidth(projectLb, width200);
       setLbWidth(cursorPosLb, width150);
       statusBar.setLayout(new BoxLayout(statusBar, BoxLayout.LINE_AXIS));
       statusBar.add(Box.createRigidArea(width5));
@@ -510,11 +535,9 @@ public class MainWin implements ConsoleOpenable {
       statusBar.add(Box.createRigidArea(width20));
       statusBar.add(projectLb);
       statusBar.add(Box.createRigidArea(width20));
-      statusBar.add(Box.createHorizontalGlue());
       statusBar.add(wordwrapLb);
       statusBar.add(Box.createRigidArea(width5));
       statusBar.add(cursorPosLb);
-      statusBar.add(Box.createRigidArea(width100));
       displayProjectName("none");
    }
    
@@ -528,5 +551,5 @@ public class MainWin implements ConsoleOpenable {
       lb.setPreferredSize(dim);
       lb.setMinimumSize(dim);
       lb.setMaximumSize(dim);
-   }         
+   }
 }
