@@ -1,12 +1,10 @@
 package eg.ui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.print.*;
 
-import java.awt.event.FocusListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
@@ -72,10 +70,10 @@ public final class EditArea {
       initEditAreaPnl();
       initTextArea();
       initLineNrArea();
-      setFont(font, fontSize);
       initLinkedLineNrScrolling();
       initWordwrapScrolling();
       initNoWordwrapScrolling();
+      setFont(font, fontSize);
       if (isWordwrap) {
          enableWordwrap();
       }
@@ -89,6 +87,7 @@ public final class EditArea {
       }
 
       textArea.addFocusListener(new FocusAdapter() {
+
          @Override
          public void focusLost(FocusEvent fe) {
             textArea.getCaret().setSelectionVisible(true);
