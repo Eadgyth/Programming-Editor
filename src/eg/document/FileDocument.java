@@ -1,8 +1,5 @@
 package eg.document;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-
 import javax.swing.JTextPane;
 
 import java.io.File;
@@ -13,18 +10,16 @@ import java.io.IOException;
 
 //--Eadgyth--//
 import eg.Languages;
-
+import eg.Constants;
 import eg.utils.FileUtils;
 import eg.ui.EditArea;
 
 /**
  * Represents the document that is either initialized with a language and
  * which a file may be assigned to afterwards or is initialized with a file
- * which defines the language
+ * which defines the (then unchangeable) language
  */
 public final class FileDocument {
-
-   private final static String LINE_SEP = System.lineSeparator();
 
    private final TypingEdit type;
    private final TextDocument textDoc;
@@ -39,9 +34,7 @@ public final class FileDocument {
    
    /**
     * Creates a <code>FileDocument</code> with the specified file whose
-    * content is displayed.<br>
-    * The file extension defines the language. The language cannot be
-    * changed afterwards unless a new file with another extension is set.
+    * content is displayed.
     *
     * @param editArea  a new {@link EditArea}
     * @param f  the file
@@ -56,7 +49,7 @@ public final class FileDocument {
 
    /**
     * Creates a <code>FileDocument</code> with the specified
-    * language and which a file can be assigned to afterwards
+    * language
     *
     * @param editArea  a new {@link EditArea}
     * @param lang  a language in {@link Languages}
@@ -65,66 +58,6 @@ public final class FileDocument {
       this(editArea);
       this.lang = lang;
       type.setEditingMode(lang);
-   }
-   
-   /**
-    * Gets the text area that displays this document
-    *
-    * @return  the text area
-    */
-    public JTextPane docTextArea() {
-       return textDoc.docTextArea();
-    }
-    
-   /**
-    * Gets the name of this file
-    *
-    * @return  the filename. The empty string  of no file has been
-    * assinged
-    */
-   public String filename() {
-      return filename;
-   }
-   
-   /**
-    * Gets the parent directory of this file
-    *
-    * @return  the parent directory. The empty string of no file
-    + has been assinged
-    */
-   public String dir() {
-      return dir;
-   }
-
-   /**
-    * Gets the path of this file
-    *
-    * @return  the filepath. The empty string of no file has been
-    * assinged
-    */
-   public String filepath() {
-      return filepath;
-   }
-   
-   /**
-    * Returns if a file has been assigned
-    *
-    * @return  if a file has been assigned
-    */
-   public boolean hasFile() {
-      return docFile != null;
-   }
-   
-   /**
-    * Gets this file if a file has been assigned
-    *
-    * @return  the file
-    */
-   public File docFile() {
-      if (docFile == null) {
-         throw new IllegalStateException("No file has been assigned");
-      }
-      return docFile;
    }
    
    /**
@@ -155,13 +88,71 @@ public final class FileDocument {
    }
    
    /**
-    * Sets the indentation unit which consists in any number of spaces
+    * Sets the indent unit which consists of spaces
     *
-    * @param indentUnit  the String that consists of a certain number of
-    * white spaces
+    * @param indentUnit  the indend unit
     */
    public void setIndentUnit(String indentUnit) {
       type.setIndentUnit(indentUnit);
+   }
+   
+   /**
+    * Gets the text area that displays this document
+    *
+    * @return  the text area
+    */
+    public JTextPane docTextArea() {
+       return textDoc.docTextArea();
+    }
+    
+   /**
+    * Gets the name of this file
+    *
+    * @return  the filename. The empty string  of no file has been
+    * set
+    */
+   public String filename() {
+      return filename;
+   }
+   
+   /**
+    * Gets the parent directory of this file
+    *
+    * @return  the parent directory. The empty string of no file been set
+    */
+   public String dir() {
+      return dir;
+   }
+
+   /**
+    * Gets the path of this file
+    *
+    * @return  the filepath. The empty string of no file has been set
+    */
+   public String filepath() {
+      return filepath;
+   }
+   
+   /**
+    * Returns the boolean that indicates if a file has been assigned
+    *
+    * @return  the boolean
+    */
+   public boolean hasFile() {
+      return docFile != null;
+   }
+   
+   /**
+    * Gets this file
+    *
+    * @return  the file
+    * @throws  IllegalStateException  if no file has been assigned
+    */
+   public File docFile() {
+      if (docFile == null) {
+         throw new IllegalStateException("No file has been assigned");
+      }
+      return docFile;
    }
 
    /**
@@ -179,7 +170,7 @@ public final class FileDocument {
 
    /**
     * Sets the specified file and saves the current text content.
-    * This file is replaced
+    * A previous file is replaced
     *
     * @param f  the file
     * @return  if the content was saved to the file
@@ -192,8 +183,37 @@ public final class FileDocument {
    }
    
    /**
-    * Saves the current content to the specified file but does not
-    * replace this file
+    * Displays the content of the specified file but does not set the file
+    *
+    * @param f  the file
+    */
+   public void displayFileContent(File f) {
+      type.enableDocListen(false);
+      try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+         String line = br.readLine();
+         String nextLine = br.readLine();
+         while (null != line) {            
+            if (null == nextLine) {
+               insert(textDoc.length(), line);
+            }
+            else {
+               insert(textDoc.length(), line + "\n");
+            }
+            line = nextLine;
+            nextLine = br.readLine();
+         }
+      }
+      catch (IOException e) {
+         System.out.println(e.getMessage());
+         FileUtils.logStack(e);
+      }
+      finally {
+         type.enableDocListen(true);
+      }
+   }
+   
+   /**
+    * Saves the current content to the specified file but does not set the file
     *
     * @param f  the file which the current content is saved to
     */
@@ -202,8 +222,7 @@ public final class FileDocument {
    }
    
    /**
-    * Returns if the text equals the content since the last saving
-    * point
+    * Returns if the text equals the content since the last saving point
     *
     * @return  if the current text is saved
     */
@@ -216,24 +235,41 @@ public final class FileDocument {
     *
     * @return  the text
     */
-   public String getText() {
+   public String getDocText() {
       return type.getText();
+   }
+   
+   /**
+    * Gets the text length in this documument
+    *
+    * @return  the length
+    */
+   public int getDocLength() {
+      return type.getText().length();
    }
    
    /**
     * Returns this language
     *
-    * @return  this language which has a constant value in {@link Languages}
+    * @return  this language which is a constant in {@link Languages}
     */
    public Languages language() {
       return lang;
    }
    
    /**
-    * Changes the language if no file has been assigned
+    * Returns the currently set indent unit
     *
-    * @param lang  the language which has one of the constant values in
-    * {@link eg.Languages}
+    * @return  the indent unit
+    */
+   public String getIndentUnit() {
+      return type.getIndentUnit();
+   }
+   
+   /**
+    * Changes the language if no file has been set
+    *
+    * @param lang  the language which is a constant in {@link eg.Languages}
     */
    public void changeLanguage(Languages lang) {
       if (hasFile()) {
@@ -242,15 +278,6 @@ public final class FileDocument {
       }
       this.lang = lang;
       type.setEditingMode(lang);
-   }
-
-   /**
-    * Returns the current indentation unit
-    *
-    * @return the current indentation unit
-    */
-   public String getIndentUnit() {
-      return type.getIndentUnit();
    }
 
    /**
@@ -299,18 +326,18 @@ public final class FileDocument {
    }
    
    /**
-    * Returns if edits can be undone
+    * Returns the boolean that indicates if edits can be undone
     * 
-    * @return  if edits can be undone
+    * @return  the boolean
     */
    public boolean canUndo() {
       return type.canUndo();
    }
    
    /**
-    * Returns if edits can be redone
+    * Returns the boolean that indicates if edits can be redone
     * 
-    * @return  if edits can be redone
+    * @return  the boolean
     */
    public boolean canRedo() {
       return type.canRedo();
@@ -331,18 +358,17 @@ public final class FileDocument {
    }
 
    /**
-    * Inserts the string <code>toInsert</code> at the specified
-    * position
+    * Inserts the specified string at the specified position
     *
     * @param pos  the position
-    * @param toInsert  the String to insert
+    * @param toInsert  the String
     */
    public void insert(int pos, String toInsert) {
       textDoc.insert(pos, toInsert);
    }
 
    /**
-    * Removes text of the specified length at the specified
+    * Removes text with the specified length that starts at the specified
     * position
     *
     * @param pos  the position
@@ -353,7 +379,7 @@ public final class FileDocument {
    }
 
    /**
-    * Asks the text area that shows this text document to gain the focus
+    * Asks this text area to gain the focus
     */
    public void requestFocus() {
       textDoc.docTextArea().requestFocusInWindow();
@@ -370,35 +396,11 @@ public final class FileDocument {
       type = new TypingEdit(textDoc, lineNrDoc);
    }
 
-   private void displayFileContent(File f) {
-      type.enableDocListen(false);
-      try (BufferedReader br = new BufferedReader(new FileReader(f))) {
-         String line = br.readLine();
-         String nextLine = br.readLine();
-         while (null != line) {            
-            if (null == nextLine) {
-               insert(textDoc.length(), line);
-            }
-            else {
-               insert(textDoc.length(), line + "\n");
-            }
-            line = nextLine;
-            nextLine = br.readLine();
-         }
-      }
-      catch (IOException e) {
-         FileUtils.logStack(e);
-      }
-      finally {
-         type.enableDocListen(true);
-      }
-   }
-
    private boolean writeToFile(File f) {
       String[] lines = type.getText().split("\n");
       try (FileWriter writer = new FileWriter(f)) {
          for (String s : lines) {
-            writer.write(s + LINE_SEP);
+            writer.write(s + Constants.LINE_SEP);
          }
          return true;
       }
