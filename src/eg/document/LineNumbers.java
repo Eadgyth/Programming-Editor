@@ -1,8 +1,5 @@
 package eg.document;
 
-//--Eadgyth--//
-import eg.ui.EditArea;
-
 /**
  * The line numbering.<br>
  * Created in {@link TypingEdit}
