@@ -8,7 +8,6 @@ import eg.edittools.*;
 import eg.utils.FileUtils;
 import eg.document.FileDocument;
 import eg.ui.MainWin;
-import eg.ui.EditArea;
 
 /**
  * Holds objects that need to be updated when the tab is changed and when
@@ -20,8 +19,7 @@ public class DocumentUpdate {
    private final Edit edit;
    private final List<AddableEditTool> tools = new ArrayList<>();
    private final CurrentProject currProj;
-
-   private FileDocument[] fDoc;
+   private final FileDocument[] fDoc;
 
    /**
     * Creates a DocumentUpdate
@@ -80,7 +78,7 @@ public class DocumentUpdate {
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private void createAddableEditTools() {
