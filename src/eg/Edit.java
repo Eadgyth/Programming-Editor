@@ -21,7 +21,6 @@ import eg.document.FileDocument;
  */
 public class Edit {
 
-   /* Options for the numbers of white spaces in indentation unit */
    private static final String[] SPACE_NUMBER = { "1", "2", "3", "4", "5", "6" };
    
    private final Preferences prefs = new Preferences();
@@ -130,7 +129,7 @@ public class Edit {
    }
 
    /**
-    * Indents text by one indentation unit
+    * Increases the indentation by one indentation unit
     */
    public void indent()  {
       String sel = textArea.getSelectedText();
@@ -157,7 +156,7 @@ public class Edit {
    public void outdent() {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
-      String text = fDoc.getText();
+      String text = fDoc.getDocText();
       fDoc.enableCodeEditing(false);
       if (sel == null) {
          boolean isAtLineStart
@@ -204,7 +203,7 @@ public class Edit {
     */
    public void clearTrailingSpaces() {
       fDoc.enableCodeEditing(false);
-      String text = fDoc.getText();
+      String text = fDoc.getDocText();
       String[] textArr = text.split("\n");
       int sum = 0;
       for (String s : textArr) {
@@ -224,11 +223,14 @@ public class Edit {
       String inClipboard = "";
       Toolkit toolkit = Toolkit.getDefaultToolkit();
       Clipboard clipboard = toolkit.getSystemClipboard();
-      DataFlavor flavor = DataFlavor.stringFlavor;
       try {
+         DataFlavor flavor = DataFlavor.stringFlavor;
          inClipboard = (String) clipboard.getData(flavor);
       }
-      catch (UnsupportedFlavorException | IOException e) {
+      catch (IOException e) {
+         FileUtils.logStack(e);
+      }
+      catch (UnsupportedFlavorException e) {
          FileUtils.logStack(e);
       }
       return inClipboard;
@@ -236,7 +238,7 @@ public class Edit {
 
    private int startOfTrailingSpaces(String line) {
       char[] c = line.toCharArray();
-      int i = 0;
+      int i;
       for (i = c.length - 1; i >= 0; i--) {
          if (c[i] != ' ') {
             break;
