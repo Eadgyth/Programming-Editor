@@ -54,9 +54,9 @@ public class SearchFiles {
       for (File f : targets) {
          resultList.add(f);
       }
-      for (int i = 0; i < filesInPath.length; i++) {
-         if (filesInPath[i].isDirectory()) {    
-            getFilteredFiles(filesInPath[i].toString(), suffix);
+      for (File f : filesInPath) {
+         if (f.isDirectory()) {
+            getFilteredFiles(f.toString(), suffix);
          }
       }
    }
