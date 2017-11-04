@@ -1,7 +1,5 @@
 package eg.document;
 
-import javax.swing.event.DocumentEvent.EventType;
-
 import java.util.ArrayList;
 import java.util.List;
 
