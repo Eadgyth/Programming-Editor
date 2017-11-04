@@ -67,6 +67,7 @@ public class Compile {
 
    /**
     * Invokes the javac compiler
+    *
     * @param projectPath  the root directory of the project
     * @param classDir  the target directory of the class files
     * @param sourceDir  the directory that contains java files
