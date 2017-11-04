@@ -58,6 +58,7 @@ public abstract class ProjectConfig implements Configurable {
    private String args = "";
    private String buildName = "";
    private String projTestName = "";
+   
 
    @Override
    public void setConfiguringAction(ActionListener al) {
@@ -140,13 +141,7 @@ public abstract class ProjectConfig implements Configurable {
     */
    protected ProjectConfig(String suffix) {
       this.suffix = suffix;
-      createSettingsWin();
    }
-   
-   /**
-    * Creates a new <code>SettingsWin</code>
-    */
-   protected abstract void createSettingsWin();
 
    /**
     * Returns the name of the project's main file
