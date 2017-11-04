@@ -11,7 +11,7 @@ public enum Languages {
    JAVASCRIPT("Javascript"),
    PERL("Perl");
    
-   private String display;
+   private final String display;
    
    private Languages(String display) {
       this.display = display;
