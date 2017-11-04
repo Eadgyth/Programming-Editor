@@ -6,7 +6,7 @@ package eg.document;
  */
 public class TextSelectionEvent {
    
-   private boolean isSelection;
+   private final boolean isSelection;
    
    /**
     * Creates a <code>TextSelectionEvent</code> with the boolean that
