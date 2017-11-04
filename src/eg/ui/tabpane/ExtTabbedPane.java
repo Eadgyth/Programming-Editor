@@ -2,8 +2,6 @@ package eg.ui.tabpane;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.Font;
-
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
@@ -12,12 +10,11 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
-
+import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.border.EmptyBorder;
 
-import javax.swing.event.ChangeListener;
-
-import javax.swing.plaf.TabbedPaneUI;
+//--Eadgyth-/
+import eg.Constants; 
 
 /**
  * A JTabbedPane with a close button in the tabs, the possibility
@@ -28,7 +25,7 @@ public class ExtTabbedPane extends JTabbedPane {
 
    private final static FlowLayout FLOW_LAYOUT_LEFT
          = new FlowLayout(FlowLayout.LEFT, 0, 0);
-   private final static EmptyBorder EMPTY_BORDER = new EmptyBorder(0, 0, 0, 0);
+   private final static EmptyBorder EMPTY_BORDER = new EmptyBorder(0, 5, 0, 0);
 
    private final ExtTabbedPaneUI ui = new ExtTabbedPaneUI();
 
@@ -41,7 +38,7 @@ public class ExtTabbedPane extends JTabbedPane {
     * sets this {@link ExtTabbedPaneUI}
     */
    public ExtTabbedPane() {
-      ui.setHeight((int) (eg.Constants.SCREEN_RES_RATIO * 16));
+      ui.setHeight(Constants.BAR_HEIGHT);
       super.setUI(ui);
       addMouseMotionListener(mml);
    }
