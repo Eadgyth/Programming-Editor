@@ -54,8 +54,7 @@ public class CreateJar {
       ProcessBuilder pb = new ProcessBuilder(commandForJar(root, jarName, classDir));
       pb.directory(new File(root + F_SEP + classDir));
       pb.redirectErrorStream(true);
-      Process p = null;
-      p = pb.start();
+      Process p = pb.start();
       try (BufferedReader br = new BufferedReader(
             new InputStreamReader(p.getInputStream()))) {
 
