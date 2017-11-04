@@ -8,6 +8,11 @@ import java.awt.event.ActionListener;
 public interface Configurable {
    
    /**
+    * Creates an object the defines a setttings window
+    */
+   public void createSettingsWin();
+   
+   /**
     * Sets the <code>ActionListener</code> that is called when
     * the entries in the settings window are applied
     *
