@@ -1,7 +1,9 @@
 # Java-Programming-Editor / Eadgyth
-A text editor written in Java. The goal is a coding editor suited to write rather simple applications,
-may be for home requirements, and to provide a simple but flexible setting up of projects.<br>
-The coding language is Java and to try out that other project categories can be added draft
+A text editor written in Java. The goal is a coding editor suited to write rather simple
+applications, may be for home requirements, and to provide a simple but flexible setting
+up of projects.
+<p>
+The coding language is Java. To illustrate that other project categories can be added draft
 implementations for setting Perl and HTML projects are included.
 <p>
 REQUIREMENTS FOR TESTING AND COMPILATION<br>
