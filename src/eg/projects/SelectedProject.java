@@ -52,6 +52,9 @@ public class SelectedProject {
             newProj = new PerlActions(co, proc);
             break;
       }
+      if (newProj != null) {
+         newProj.createSettingsWin();
+      }
       return newProj;
    }
 }
