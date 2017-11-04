@@ -4,8 +4,6 @@ import java.awt.Color;
 
 import javax.swing.JTextPane;
 
-import javax.swing.event.CaretListener;
-
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
