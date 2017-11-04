@@ -32,13 +32,13 @@ public class LinesFinder {
     * @return  the full lines of text which include <code>section</code>
     */
    public static String allLinesAtPos(String text, String section, int pos) {
-      String lines = null;
+      String lines;
       String[] sectionArr = section.split("\n");
       String firstLine = LinesFinder.lineAtPos(text, pos);
       if (sectionArr.length > 0 && sectionArr.length > 1) {
          sectionArr[0] = firstLine;
          String lastLine = LinesFinder.lineAtPos(text, pos + section.length());
-         StringBuffer sb = new StringBuffer();
+         StringBuilder sb = new StringBuilder();
          for (int i = 0; i < sectionArr.length - 1; i++) {
             sb.append(sectionArr[i]);
             sb.append("\n");
