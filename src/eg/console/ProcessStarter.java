@@ -15,7 +15,6 @@ import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyAdapter;
-import java.awt.event.ActionEvent;
 
 import javax.swing.SwingWorker;
 
@@ -222,7 +221,7 @@ public class ProcessStarter {
       @Override
       protected Void doInBackground() throws Exception {
          try {
-            int cInt = - 1;
+            int cInt;
             char c;
             while ((cInt = reader.read()) != -1) {
                 c = (char) cInt;
@@ -230,9 +229,8 @@ public class ProcessStarter {
                 consoleText = consPnl.getText();
                 caretPos = consoleText.length();
                 consPnl.setCaret(caretPos);
-            }
-            int exitVal = -1;    
-            exitVal = process.waitFor();
+            } 
+            int exitVal = process.waitFor();
             if (exitVal == 0) {
                consPnl.appendText(
                      "\n<<Process ended normally (exit value = "
