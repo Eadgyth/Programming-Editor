@@ -12,8 +12,8 @@ public class AutoIndent {
 
    private final TextDocument textDoc;
 
-   private String indentUnit;
-   private int indentLength;
+   private String indentUnit = "";
+   private int indentLength = 0;
 
    /**
     * @param textDoc  the reference to {@link TextDocument}
@@ -38,7 +38,7 @@ public class AutoIndent {
    }
 
    /**
-    * Gets this indent unit
+    * Returns the currently set indent unit
     *
     * @return  the indent unit
     */
