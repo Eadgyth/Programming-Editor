@@ -1,157 +1,101 @@
 package eg.edittools;
 
 import java.awt.Component;
-import java.awt.EventQueue;
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.Dimension;
 
-import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JToolBar;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.Document;
+import eg.document.FileDocument;
+import eg.Constants;
 
 //--Eadgyth--/
-import eg.ui.ToolPanel;
-import eg.document.FileDocument;
-import eg.utils.Dialogs;
-import eg.Constants;
+import eg.utils.UiComponents;
 
 /**
  * The search and replace of text
  */
 public class Finder implements AddableEditTool {
 
-   private final JTextField inputTf     = new JTextField();
-   private final JTextField replInputTf = new JTextField();
-   private final JButton searchBt       = new JButton("Find");
-   private final JButton replBt         = new JButton("Replace");
+   private final JPanel finderPnl     = new JPanel(new BorderLayout());
+   private final JTextField inputTf   = new JTextField();
+   private final JTextField replaceTf = new JTextField();
+   private final JButton searchBt     = new JButton("Find");
+   private final JButton replaceBt    = new JButton("Replace");
 
-   private JPanel mainPnl = null;
-   private boolean constrainWord = false;
-   private int index = -1;
-
-   private FileDocument fDoc;
-   private JTextPane textArea;
-
-   public Finder() {
-      if (mainPnl == null) {
-         setupMainPnl();
-      }
+   private final TextSearch search = new TextSearch();
+   
+   @Override
+   public void createToolPanel(JButton closeBt) {
+      initFinderPnl(closeBt);
    }
 
+   @Override
+   public Component toolComponent() {
+      return finderPnl;
+   }
+   
    @Override
    public void setFileDocument(FileDocument fDoc) {
-      this.fDoc  = fDoc;
-      this.textArea = fDoc.docTextArea();
+      search.setFileDocument(fDoc);
    }
-
+   
    @Override
-   public void addComponent(ToolPanel toolPnl) {
-      toolPnl.addComponent(mainPnl, "Find");
+   public void end() {
+      // nothing
    }
 
    //
    //--private--/
    //
 
-   private void searchText() {
-      int caret = textArea.getCaretPosition();
-      textArea.setSelectionStart(caret);
-      textArea.setSelectionEnd(caret);
-      String toSearch = inputTf.getText();;
-      String content = fDoc.getText();
-      boolean notFound = false;
-      int ind = 0;
-      int nextStep = 0;
-      if (index > -1) {
-         nextStep = 1;
-      }
-      ind = nextIndex(content, toSearch, index + nextStep);
-      /*
-       * go back to start if last match is reached */
-      if (ind == -1 & index > -1) {
-         index = 0;
-         nextStep = 0;
-         ind = nextIndex(content, toSearch, index + nextStep);
-      }
-      if (ind != -1) {
-         index = ind;
-         fDoc.requestFocus();
-         textArea.select(index, index + toSearch.length());
-      }
-      else {
-         Dialogs.infoMessage(toSearch + " could not be found", null);
-         fDoc.requestFocus();
-         index = -1;
-      }
+   private void initFinderPnl(JButton closeBt) {
+      finderPnl.add(toolbar(closeBt), BorderLayout.NORTH);
+      finderPnl.add(controlsPnl(), BorderLayout.CENTER);
    }
-
-   private int nextIndex(String content, String toSearch, int pos) {
-      if (constrainWord) {
-         return findWordIndex(content, toSearch, pos);
-      }
-      else {
-         return content.indexOf(toSearch, pos);
-      }
+   
+   private JToolBar toolbar(JButton closeBt) {
+      JButton[] bts = new JButton[] {
+         closeBt
+      };
+      String[] toolTips = new String[] {
+         "Close Finder"
+      };
+      JToolBar tb = UiComponents.lastBtRightToolbar(bts, toolTips);
+      return tb;
    }
-
-   private int findWordIndex(String content, String toSearch, int pos) {
-      int result = -1;
-      int ind = 0;
-      int nextStep = 0;
-      while (ind != -1) {
-         ind = content.indexOf(toSearch, pos + ind + nextStep);
-         if (ind != -1 & isWord(content, toSearch, ind)) {
-            result = ind;
-            ind = -1;
-         }
-         nextStep = 1;
-      }
-      return result;
-   }
-
-   private boolean isWord(String content, String toSearch, int pos) {
-      return eg.syntax.SyntaxUtils.isWord(content, pos, toSearch.length());
-   }
-
-   private void replaceSel() {
-      String replaceBy = replInputTf.getText();
-      if (index != -1 && textArea.getSelectedText() != null) {
-         textArea.replaceSelection(replaceBy);
-      }
-   }
-
-   private void setupMainPnl() {
-      mainPnl = new JPanel();
-      mainPnl.setLayout(new BoxLayout(mainPnl, BoxLayout.PAGE_AXIS));
-      mainPnl.add(label("Search for:"));
+   
+   private JPanel controlsPnl() {
+      JPanel pnl = new JPanel();
+      pnl.setLayout(new BoxLayout(pnl, BoxLayout.PAGE_AXIS));
+      pnl.add(label("Search for:"));
       setSize(inputTf);
-      mainPnl.add(inputTf);
-      mainPnl.add(constrainWordBxPnl());
-      mainPnl.add(buttonsPnl(searchBt));
-      mainPnl.add(Box.createVerticalStrut(10));
-      mainPnl.add(label("Replace by:"));
-      setSize(replInputTf);
-      mainPnl.add(replInputTf);
-      mainPnl.add(buttonsPnl(replBt));
-      mainPnl.setBorder(Constants.EMPTY_BORDER);
+      pnl.add(inputTf);
+      pnl.add(checkBoxPnl());
+      pnl.add(buttonsPnl(searchBt));
+      pnl.add(Box.createVerticalStrut(10));
+      pnl.add(label("Replace by:"));
+      setSize(replaceTf);
+      pnl.add(replaceTf);
+      pnl.add(buttonsPnl(replaceBt));
+      pnl.setBorder(Constants.EMPTY_BORDER);
       inputTf.getDocument().addDocumentListener(docListen);
-      searchBt.addActionListener(e -> searchText());
-      replBt.addActionListener(e -> replaceSel());
-   }
+      return pnl;
+   }  
 
    private JPanel label(String text) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -161,13 +105,11 @@ public class Finder implements AddableEditTool {
       return pnl;
    }
 
-   private JPanel constrainWordBxPnl() {
+   private JPanel checkBoxPnl() {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
       JCheckBox cBx = new JCheckBox("Select only words");
-      cBx.addItemListener(e -> {
-         constrainWord = e.getStateChange() == ItemEvent.SELECTED
-               ? true : false;
-      });
+      cBx.addItemListener(e ->
+         search.setRequireWord(e.getStateChange() == ItemEvent.SELECTED));
       pnl.add(cBx);
       setSize(pnl);
       return pnl;
@@ -185,15 +127,26 @@ public class Finder implements AddableEditTool {
       dim.width = Integer.MAX_VALUE;
       c.setMaximumSize(dim);
    }
+   
+   private void setActions() {
+      searchBt.addActionListener(e -> search.searchText(inputTf.getText()));
+      replaceBt.addActionListener(e -> search.replaceSel(replaceTf.getText()));
+   }
 
    DocumentListener docListen = new DocumentListener() {
+
+      @Override
       public void changedUpdate(DocumentEvent documentEvent) {
       }
+
+      @Override
       public void insertUpdate(DocumentEvent documentEvent) {
-         index = -1;
+         search.resetSearchToStart();
       }
+
+      @Override
       public void removeUpdate(DocumentEvent documentEvent) {
-         index = -1;
+         search.resetSearchToStart();
       }
    };
 }
