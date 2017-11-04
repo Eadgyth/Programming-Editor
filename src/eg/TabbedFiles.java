@@ -3,8 +3,6 @@ package eg;
 import java.util.Observer;
 import java.util.Observable;
 
-import java.awt.EventQueue;
-
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -59,11 +57,8 @@ public class TabbedFiles implements Observer {
       String recentDir = prefs.getProperty("recentPath");
       fc = new FileChooser(recentDir);
 
-      tabPane.addChangeListener(new ChangeListener() {
-         @Override
-         public void stateChanged(ChangeEvent ce) {
-            changeTabEvent(ce);
-         }
+      tabPane.addChangeListener((ChangeEvent ce) -> {
+          changeTabEvent(ce);
       });
       
       mw.winListen(new WindowAdapter() {
@@ -296,7 +291,8 @@ public class TabbedFiles implements Observer {
          return;
       }
       boolean isBlankFirstTab = nTabs() == 1 && !fDoc[0].hasFile()
-            && fDoc[0].getText().length() == 0;
+            && fDoc[0].getDocLength() == 0;
+
       if (isBlankFirstTab) {
          removeTab();
       }
