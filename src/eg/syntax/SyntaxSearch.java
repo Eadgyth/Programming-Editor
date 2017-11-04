@@ -3,16 +3,8 @@ package eg.syntax;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants;
-import javax.swing.text.Style;
-import javax.swing.text.StyleContext;
 
 import java.awt.Color;
-
-import java.util.List;
-import java.util.ArrayList;
-
-//--Eadgyth--//
-import eg.utils.LinesFinder;
 
 /**
  * The search and coloring of different syntax elements
@@ -301,7 +293,7 @@ public class SyntaxSearch {
 
    private void javascript() {
       int start = 0;
-      int length = 0;
+      int length;
       while (start != -1) {
          start = text.indexOf("<script>", start);
          if (start != -1) {
@@ -327,7 +319,7 @@ public class SyntaxSearch {
       int start = 0;
       while (start != -1) {
          start = toColor.indexOf(sign, start);
-         int length = 0;
+         int length;
          if (start != -1) {
             if (SyntaxUtils.isWordStart(toColor, start)) {
                length = SyntaxUtils.wordLength(toColor, start, endChars);
@@ -342,7 +334,7 @@ public class SyntaxSearch {
    }
 
    private void quotedLineWise(boolean isHtml) {
-      if (toColor.indexOf("\n") != -1) {
+      if (toColor.contains("\n")) {
          //
          // split because string literals are not colored across lines
          String[] chunkArr = toColor.split("\n");
@@ -428,13 +420,13 @@ public class SyntaxSearch {
       }
       removedFirstBlockStart(blockStart, blockEnd);
       int start = sectionStart;
-      int length = 0;
+      int length;
       while (start != -1) {
          start = text.indexOf(blockStart, start);
          if (sectionEnd > 0 && start >= sectionEnd - blockStart.length()) {
             start = -1;
          }
-         int end = 0;
+         int end;
          if (start != -1) {
             length = 0;
             if (!SyntaxUtils.isInQuotes(text, start, blockStart.length())) {
@@ -498,7 +490,7 @@ public class SyntaxSearch {
          if (sectionEnd > 0) {
             end = sectionEnd;
          }
-         String toUncomment = "";
+         String toUncomment;
          if (nextStart != -1) {
             toUncomment = text.substring(startPos, end);
          }
