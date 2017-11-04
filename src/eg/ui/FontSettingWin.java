@@ -32,10 +32,9 @@ public class FontSettingWin {
    private final JComboBox<String> selectSize = new JComboBox<>(FONT_SIZES);
    private final JButton okBt = new JButton("OK");
 
-   private final String[] fonts;
-   
-   private String font;
-   private int fontSize;
+   private final String[] fonts; 
+   private final String font;
+   private final int fontSize;
 
    public FontSettingWin(String initFont, int initFontSize) {
       font = initFont;
@@ -70,8 +69,8 @@ public class FontSettingWin {
     * @return the selected font
     */
    public String fontComboBxRes() {
-      String font = fonts[selectFont.getSelectedIndex()];
-      return font;
+      String aFont = fonts[selectFont.getSelectedIndex()];
+      return aFont;
    }
 
    /**
