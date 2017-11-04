@@ -1,12 +1,11 @@
 # Java-Programming-Editor / Eadgyth
 A text editor written in Java. The goal is a coding editor suited to write rather simple applications,
-may be for home requirements, and to provide a simple but flexible setting up of projects. The coding
-language is Java and to try out that other project categories can be added draft implementations
-for setting Perl and HTML projects are included.
+may be for home requirements, and to provide a simple but flexible setting up of projects.<br>
+The coding language is Java and to try out that other project categories can be added draft
+implementations for setting Perl and HTML projects are included.
 <p>
 REQUIREMENTS FOR TESTING AND COMPILATION<br>
-Running the program requires JAVA 8 (JRE 8). Some modifications to use Java 9 remain have yet
-to be done.<p>
+Running the program requires JAVA 8 (JRE 8). Modifications to use Java 9 have yet to be done.<p>
 The program must be found in the same folder as the two .properties files and the Resources
 folder, just like found in the 'EadgythProgram' folder in this repository.<p>
 To compile the program the source files (packages) must be placed in a directory that also
@@ -36,14 +35,13 @@ PROBLEMS <br>
 1) Unexpected rendering of the UI happened when the system look and feel was selected and the
 program was idling for a longer period of time (under Windows 10).<br>
 <p>
-IDEA FOR FURTHER DEVELOPEMENT<br>
-1) To develop types of projects (for coding or other). A type of project is defined by the
-interface 'ProjectActions' in the 'projects' package.<br>
-2) To develop plugins that can do specialized work with text files. Presently, a plugin would
-implement the interface 'Pluggable' in the 'plugins' package. An implementing plugin receives
-a reference to EditorAccess class which provides a reference to the text area object (JTextPane)
-in the currently selected tab, methods to modify text and a method to add a graphical view in the
-main window.
+IDEAS FOR FURTHER DEVELOPEMENT<br>
+1) To develop different types of projects (for coding or other). A type of project is defined by
+   the interface 'ProjectActions' in the 'projects' package.<br>
+2) To develop "Edit Tools" that can do specialized work with text files. An edit tool implements
+   'AddableEditTool' in the 'edittools' package. It can be included in the main window and has
+   access to the file in the selected tab (the interface replaces the plugin interface in previous
+   commits).
 <p>
 LICENSE: MIT, see LICENSE<br>
 <p>
