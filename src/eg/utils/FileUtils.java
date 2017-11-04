@@ -1,10 +1,11 @@
 package eg.utils;
 
 import java.io.File;
-import java.io.PrintWriter;
 import java.io.FileWriter;
-import java.io.FileOutputStream;
 import java.io.IOException;
+
+//--Eadgyth--/
+import eg.Constants;
 
 /**
  * Static methods to work with files
@@ -52,16 +53,20 @@ public class FileUtils {
    /**
     * Appends to the file 'log.txt' the stack trace of an exception
     * and shows a warning in a dialog window.
-    * <p>The "log" file is saved in the program's directory.
+    * <p>The log file is saved in the program's directory.
     *
-    * @param e  an <code>Exception</code>
+    * @param e  the <code>Exception</code>
     */
-   public static void logStack(Exception e) { 
-      File logFile = new File("log.txt");
-      try (PrintWriter pw = new PrintWriter(new FileOutputStream(logFile, true))) {
-         e.printStackTrace(pw);
-         Dialogs.errorMessage("Error:\n" + e.getMessage()
-               + ".\nSee log.txt file");
+   public static void logStack(Exception e) {
+      File f = new File("log.txt");
+      try (FileWriter writer = new FileWriter(f, true)) {
+         writer.write(e.getMessage() + Constants.LINE_SEP);
+         for (StackTraceElement el : e.getStackTrace()) {
+            writer.write("   " + el.toString() + Constants.LINE_SEP);
+         }
+         writer.write(Constants.LINE_SEP);
+         Dialogs.errorMessage(
+               "Error:\n" + e.getMessage() + ".\nSee log.txt file");
       }
       catch(IOException ioe) {
          throw new RuntimeException(
@@ -76,8 +81,8 @@ public class FileUtils {
       try (FileWriter writer = new FileWriter("log.txt", false)) {
          writer.write("");
       }
-      catch(IOException ioe) {
-          throw new RuntimeException("Could not empty the log file", ioe);
+      catch(IOException e) {
+         throw new RuntimeException("Could not empty the log file", e);
       }
    }
 }
