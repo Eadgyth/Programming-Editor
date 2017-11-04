@@ -91,6 +91,5 @@ public class ViewMenu {
       menu.addSeparator();
       menu.add(openSettingsItm);
       menu.setMnemonic(KeyEvent.VK_V);
-      fileViewItm.setEnabled(false);
    }
 }
