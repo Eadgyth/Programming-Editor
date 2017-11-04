@@ -2,12 +2,8 @@ package eg.document;
 
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentEvent.EventType;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
-
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
 
 import java.awt.EventQueue;
 
@@ -103,11 +99,10 @@ public class TypingEdit {
    }
 
    /**
-    * Enabled/disables the update methods in this
+    * Enabled or disables the update methods in this
     * <code>DocumentListener</code>
     *
-    * @param isEnabled  true/false to enable/disabled the update
-    * methods in this <code>DocumentListener</code>
+    * @param isEnabled  true to enable, false to disable
     */
    public void enableDocListen(boolean isEnabled) {
       isDocListen = isEnabled;
@@ -118,11 +113,9 @@ public class TypingEdit {
    }
 
    /**
-    * Enables/disables actions in responce to the editing of source code.
-    * Affects syntax coloring and auto-indentation.
+    * Enables or disables actions in responce to the editing of source code
     *
-    * @param isEnabled  true/false to enable/disable actions in responce
-    * to the editing of source code
+    * @param isEnabled  true to enable, false to disable
     */
    public void enableCodeEditing(boolean isEnabled) {
       isCodeEditing = isEnabled;
@@ -131,8 +124,7 @@ public class TypingEdit {
    /**
     * Set the editing mode that depends on the language
     *
-    * @param lang  the language which is one of the constants in
-    * {@link Languages}
+    * @param lang  the language which is a constant in {@link Languages}
     */
    public void setEditingMode(Languages lang) {
       col.setColorable(lang);
@@ -156,19 +148,18 @@ public class TypingEdit {
    }
 
    /**
-    * Sets the indentation unit which consists in any number of spaces
+    * Sets the indent unit which consists of spaces
     *
-    * @param indentUnit  the String that consists of a certain number of
-    * white spaces
+    * @param indentUnit  the indend unit
     */
    public void setIndentUnit(String indentUnit) {
       autoInd.setIndentUnit(indentUnit);
    }
 
    /**
-    * Gets the current indentation unit
+    * Returns the currently set indent unit
     *
-    * @return the current indentation unit
+    * @return  the indent unit
     */
    public String getIndentUnit() {
       return autoInd.getIndentUnit();
@@ -177,10 +168,9 @@ public class TypingEdit {
    /**
     * Colors multiple lines of the document text
     *
-    * @param section  a section of the document text. If null the
-    * entire text is used.
-    * @param pos  the pos within the document where <code>section</code>
-    * starts
+    * @param section  a section of the document text. If null the entire
+    * text is used.
+    * @param pos  the pos where <code>section</code> starts
     */
    public void colorMultipleLines(String section, int pos) {
       int posStart = 0;
@@ -197,35 +187,35 @@ public class TypingEdit {
    /**
     * Gets the number of the line where the cursor is positioned
     *
-    * @return  the number of the line where the cursor is positioned
+    * @return  the number
     */
    public int lineNrAtCursor() {
       return lineNrAtCursor;
    }
    
    /**
-    * Gets the number of the column in the line where the cursor is
+    * Gets the number of the column within the line where the cursor is
     * positioned
     *
-    * @return  the number of the line where the cursor is positioned
+    * @return  the number
     */
    public int columnNrAtCursor() {
       return colNrAtCursor;
    }
 
    /**
-    * Returns if edits can be undone
+    * Returns the boolean that indicates if edits can be undone
     * 
-    * @return  if edits can be undone
+    * @return  the boolean
     */
    public boolean canUndo() {
       return undo.canUndo();
    }
 
    /**
-    * Returns if edits can be redone
+    * Returns the boolean that indicates if edits can be redone
     * 
-    * @return  if edits can be redone
+    * @return  the boolean
     */
    public boolean canRedo() {
       return undo.canRedo();
@@ -339,7 +329,7 @@ public class TypingEdit {
       }
    }
 
-   private DocumentListener docListen = new DocumentListener() {
+   private final DocumentListener docListen = new DocumentListener() {
 
       @Override
       public void insertUpdate(DocumentEvent de) {
@@ -387,13 +377,9 @@ public class TypingEdit {
       }
    };
    
-   private CaretListener caretListen = new CaretListener() {
-
-      @Override
-      public void caretUpdate(CaretEvent ce) {
-         notifyTextSelectionEvent(ce.getDot() != ce.getMark());
-         readLineAndColumnNr(ce.getDot());
-         markUndoBreakpoint(ce.getDot());
-      }
+   private final CaretListener caretListen = (CaretEvent ce) -> {
+       notifyTextSelectionEvent(ce.getDot() != ce.getMark());
+       readLineAndColumnNr(ce.getDot());
+       markUndoBreakpoint(ce.getDot());
    };
 }
