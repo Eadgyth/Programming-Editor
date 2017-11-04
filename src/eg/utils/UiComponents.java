@@ -1,17 +1,16 @@
 package eg.utils;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JComponent;
 import javax.swing.JToolBar;
 import javax.swing.JTabbedPane;
+
 import javax.swing.border.EmptyBorder;
 
 //--Eadgyth--//
+import eg.Constants;
 import eg.ui.tabpane.ExtTabbedPane;
 
 /**
@@ -22,7 +21,7 @@ public class UiComponents {
    /**
     * Creates a <code>JToolBar</code> with the last button (intended for a
     * close button) aligned at the right. The toolbar is not opaque, has
-    * no border and is not floatable
+    * a line border at the bottom and is not floatable
     *
     * @param bts  the array of JButtons added to the toolbar
     * @param tooltips  the array of tooltips for the buttons
@@ -30,19 +29,17 @@ public class UiComponents {
     */
    public static JToolBar lastBtRightToolbar(JButton[] bts, String[] tooltips) {
       JToolBar tb = new JToolBar(JToolBar.HORIZONTAL);
-      int lbHeight = 16;
-      Dimension dim = UiComponents.scaledDimension(0, lbHeight);
+      Dimension dim = new Dimension(0, Constants.BAR_HEIGHT);
       tb.setPreferredSize(dim);
       tb.setOpaque(false);
       tb.setBorder(null);
-      tb.setFloatable(false);
-      
+      tb.setFloatable(false);     
       for (int i = 0; i < bts.length; i++) {
          if (i == bts.length - 1) {
             tb.add(Box.createHorizontalGlue());
          }
          tb.add(bts[i]);
-         bts[i].setBorder(new EmptyBorder(0, 5, 0, 5));
+         bts[i].setBorder(new EmptyBorder(2, 5, 0, 5));
          bts[i].setToolTipText(tooltips[i]);
          bts[i].setFocusable(false);
       }
