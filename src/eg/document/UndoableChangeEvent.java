@@ -6,8 +6,8 @@ package eg.document;
  */
 public class UndoableChangeEvent {
 
-   private boolean canUndo;
-   private boolean canRedo;
+   private final boolean canUndo;
+   private final boolean canRedo;
 
    /**
     * Creates an <code>UndoableChangeEvent</code> with the booleans
