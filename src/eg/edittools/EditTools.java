@@ -6,10 +6,10 @@ package eg.edittools;
 public enum EditTools {
    
    FINDER("Find", "Finder"),
-   EDIT_TEXT_PASSAGE("Edit text passage", "EditTextPassage");
+   EDIT_TEXT_PASSAGE("Exchange editor", "ExchangeEditor");
    
-   private String display;
-   private String className;
+   private final String display;
+   private final String className;
    
    private EditTools(String display, String className) {
       this.display = display;
