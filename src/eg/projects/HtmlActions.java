@@ -18,6 +18,11 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
       super(suffix);
    }
    
+   @Override
+   public void createSettingsWin() {
+      setWin = SettingsWin.basicWindow("Name of main HTML file");
+   }
+   
    /**
     * {@inheritDoc}.
     * Creates the path for the html file to show it in a fil browser
@@ -57,11 +62,6 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
       catch (IOException e) {
          FileUtils.logStack(e);
       }
-   }
-   
-   @Override
-   protected void createSettingsWin() {
-      setWin = SettingsWin.basicWindow("Name of main HTML file");
    }
    
    //
