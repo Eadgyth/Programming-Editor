@@ -52,17 +52,17 @@ IDEAS FOR FURTHER DEVELOPEMENT<br>
 <p>
 LICENSE: MIT, see LICENSE<br>
 <p>
-SCREENSHOT<br>
+FEATURES<br>
 The program includes
 <ul>
    <li>Showing files in tabs</li>
    <li>A basic file explorer for projects</i>
-   <li>A basic console to view error messages during compiling and testing a program
-   (the console also allows running self-chosen system commands)</li>
-   <li>A "exchange editor" view to modify or exchange text sections in a separate view
+   <li>A basic console to view the output (error messages) during compiling and testing
+   a program (also allows running self-chosen system commands)</li>
+   <li>An "exchange editor" view to modify or exchange between files text sections in a
+   separate view
 </ul>
 (Under Windows 10, setting the system look and feel)<br>
 <img src="Screenshots/Windows10SystemLAF.png" width="650"/>
 <p>
-Basic editor view<br>
 <img src="Screenshots/SimpleEditorView.png" width="500"/>
