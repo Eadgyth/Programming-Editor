@@ -1,22 +1,45 @@
 # Java-Programming-Editor / Eadgyth
-A text editor written in Java. The goal is a coding editor suited to write rather simple
-applications, may be for home requirements, and to provide a simple but flexible setting
-up of projects.
+A source code text editor, written in Java, with a flexible and easy setting up of projects.
 <p>
-The coding language is Java. To illustrate that other project categories can be added draft
-implementations for setting Perl and HTML projects are included.
+The motivation is to have an editor that helps coding in may ways but that is at the
+same time easy to work with. It may be especially suited to write and test applications for
+home or lerning requirements.
 <p>
-REQUIREMENTS FOR TESTING AND COMPILATION<br>
-Running the program requires JAVA 8 (JRE 8). Modifications to use Java 9 have yet to be done.<p>
+The coding language is currently Java but other lnguages or types of projects can be integrated.
+To illustrate this draft implementations for writing in Perl and HTML are included.
+<p>
+FEATURES<br>
+<ul>
+   <li>Showing files in tabs</li>
+   <li>A basic file explorer for projects</i>
+   <li>An "exchange editor" view (the panel at the right in the image below) to edit text
+   in a separate view and to facilitate the exchange of text between files</li>
+   <li>A basic syntax highlighting for java, perl, html and javascript and indentation</li>
+   <li>The setting of projects without creating any extra data files outside the program's
+   own folder (a config file may optionally be saved in a project's folder though). Projects
+   can be retrieved after newly starting the program and a number of projects can be defined
+   and selected to be set active during the program's runtime</li>
+   <li>Compiling and testing of Java code and bundling a java program in a jar file; testing
+   a perl script; viewing html code in the default web browser</li>
+   <li>A basic (interactive) console to view the output (error messages) during compiling
+   and testing a program (also allows running self-chosen system commands)</li>
+</ul>
+(Under Windows 10, setting the system look and feel)<br>
+<img src="Screenshots/Windows10SystemLAF.png" width="550"/>
+<p>
+<img src="Screenshots/SimpleEditorView.png" width="400"/>
+<p>
+REQUIREMENTS FOR TESTING<br>
+Running the program requires JAVA 8 (JRE 8). Modification to use Java 9 is the next task.
+<p>
 The program must be found in the same folder as the two .properties files and the Resources
 folder, just like found in the 'EadgythProgram' folder in this repository.<p>
-To compile the program the source files (packages) must be placed in a directory that also
-includes the ".properties" files and the 'Resources' folder
 <p>
 DOCUMENTATION<br>
 A guide how to configure a project and some other info is found in
 <a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/EadgythProgram/Resources/Help.html">Help.html</a>.
-This file is also addressable from the 'Help' menu in the program. For an overwiew of the program code the
+This file is also addressable from the 'Help' menu in the program. For an overwiew of the
+program code the
 <a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/javadoc/index.html">javadoc</a>
 is hopefully helpful.
 <p>
@@ -46,10 +69,3 @@ IDEAS FOR FURTHER DEVELOPEMENT<br>
    commits).
 <p>
 LICENSE: MIT, see LICENSE<br>
-<p>
-SCREENSHOT<br>
-Under Windows 10, setting the system look and feel<br>
-<img src="Screenshots/Windows10SystemLAF.png" width="650"/>
-<p>
-Basic editor view<br>
-<img src="Screenshots/SimpleEditorView.png" width="500"/>
