@@ -1,5 +1,5 @@
 # Java-Programming-Editor / Eadgyth
-A coding text editor, written in Java, with an easy and flexible setting up of projects.
+A text editor for coding, written in Java, with an easy and flexible setting up of projects.
 <p>
 The motivation is to have a coding editor that helps coding in may ways but that is at the
 same time easy to work with. It may be suited to write and test rather simple applications, may
