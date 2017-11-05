@@ -19,7 +19,7 @@ FEATURES<br>
    own folder. Projects can be retrieved after newly starting the program and a number
    of projects can be defined and selected between during runtime</li>
    <li>Compiling and testing of Java code and bundling a java program in a jar file; testing
-   a perl script; viewing html code in the default file browser</li>
+   a perl script; viewing html code in the default web browser</li>
    <li>A basic (interactive) console to view the output (error messages) during compiling
    and testing a program (also allows running self-chosen system commands)</li>
 </ul>
