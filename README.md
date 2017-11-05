@@ -2,12 +2,12 @@
 A coding text editor, written in Java, with a flexible setting of projects and switching
 between projects.
 <p>
-The motivation is to have a coding editor that has feures to help coding but is at the same
-time easy to work with. It may be suited to write and test rather simple applications, may
+The motivation is to have a coding editor that helps coding in may ways but that is at the
+same time easy to work with. It may be suited to write and test rather simple applications, may
 be for home or lerning requirements.
 <p>
 The coding language is currently Java but the code is made to integrate other types of projects.
-To illustrate that draft implementations for writing in Perl and HTML are included.
+To illustrate this draft implementations for writing in Perl and HTML are included.
 <p>
 FEATURES<br>
 <ul>
