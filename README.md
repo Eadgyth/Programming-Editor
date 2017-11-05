@@ -5,8 +5,8 @@ The motivation is to have an editor that helps coding in may ways but that is at
 same time easy to work with. It may be especially suited to write and test applications for
 home or lerning requirements.
 <p>
-The coding language is currently Java but other types of projects can be integrated. To illustrate
-this draft implementations for writing in Perl and HTML are included.
+The coding language is currently Java but other lnguages or types of projects can be integrated.
+To illustrate this draft implementations for writing in Perl and HTML are included.
 <p>
 FEATURES<br>
 <ul>
