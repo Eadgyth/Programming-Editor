@@ -2,25 +2,27 @@
 A coding text editor, written in Java, with a flexible setting of projects and switching
 between projects.
 <p>
-The goal of this program is a coding editor suited to write and test rather simple
-applications, may be for home or lerning requirements, and to provide a simple but flexible
-setting up of projects.
+The motivation is to have a coding editor that has feures to help coding but is at the same
+time easy to work with. It may be suited to write and test rather simple applications, may
+be for home or lerning requirements.
 <p>
-The coding language is Java. To illustrate that other project categories can be added draft
-implementations for setting projects for writing in Perl and HTML are included.
+The coding language is currently Java but the code is made to integrate other types of projects.
+To illustrate that draft implementations for writing in Perl and HTML are included.
 <p>
 FEATURES<br>
 <ul>
    <li>Showing files in tabs</li>
    <li>A basic file explorer for projects</i>
-   <li>The setting of projects without creating any extra data files outside the program's
-   own folder. Projects can be retrieved after newly starting the program and a number
-   of projects can be defined and selected between during runtime</li>
-   <li>A basic (interactive) console to view the output (error messages) during compiling
-   and testing a program (also allows running self-chosen system commands)</li>
    <li>An "exchange editor" view (the panel at the right in the image below) to edit text
    in a separate view and to facilitate the exchange of text between files</li>
    <li>A basic syntax highlighting for java, perl, html and javascript and indentation</li>
+   <li>The setting of projects without creating any extra data files outside the program's
+   own folder. Projects can be retrieved after newly starting the program and a number
+   of projects can be defined and selected between during runtime</li>
+   <li>Compiling and testing of Java code, bunding a java program in a jar file; testing
+   a perl script; viewing html code in the default file browser</li>
+   <li>A basic (interactive) console to view the output (error messages) during compiling
+   and testing a program (also allows running self-chosen system commands)</li>
 </ul>
 (Under Windows 10, setting the system look and feel)<br>
 <img src="Screenshots/Windows10SystemLAF.png" width="550"/>
