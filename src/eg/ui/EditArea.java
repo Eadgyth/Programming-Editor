@@ -23,6 +23,7 @@ import javax.swing.border.MatteBorder;
 //--Eadgyth--//
 import eg.Constants;
 import eg.utils.FileUtils;
+import eg.utils.ScreenParams;
 
 /**
  * The editor view that contains the text area to edit text and the
@@ -150,8 +151,7 @@ public final class EditArea {
     * @param fontSize  the font size
     */
    public void setFont(String font, int fontSize) {
-      Font fontNew = new Font(font, Font.PLAIN,
-            (int) (fontSize * eg.Constants.SCREEN_RES_RATIO));
+      Font fontNew = new Font(font, Font.PLAIN, ScreenParams.scaledSize(fontSize));
       lineNrArea.setFont(fontNew);
       textArea.setFont(fontNew);
       revalidate();

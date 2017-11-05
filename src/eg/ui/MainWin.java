@@ -35,6 +35,7 @@ import eg.ui.filetree.FileTree;
 import eg.ui.tabpane.ExtTabbedPane;
 import eg.console.ConsolePanel;
 import eg.utils.UiComponents;
+import eg.utils.ScreenParams;
 import java.awt.event.ActionEvent;
 
 /**
@@ -495,7 +496,7 @@ public class MainWin implements ConsoleOpenable {
       frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
       frame.setLocation(5, 5);
-      Dimension screen = Constants.SCREEN_SIZE;
+      Dimension screen = ScreenParams.SCREEN_SIZE;
       frame.setSize(screen.width - screen.width/3, screen.height - screen.height/4);
    }
 
@@ -518,11 +519,11 @@ public class MainWin implements ConsoleOpenable {
 
    private void initStatusbar() {
       int lbHeight = 15;
-      Dimension width5   = UiComponents.scaledDimension(5, lbHeight);
-      Dimension width20  = UiComponents.scaledDimension(20, lbHeight);
-      Dimension width100 = UiComponents.scaledDimension(100, lbHeight);
-      Dimension width150 = UiComponents.scaledDimension(150, lbHeight);
-      Dimension width200 = UiComponents.scaledDimension(200, lbHeight);
+      Dimension width5   = ScreenParams.scaledDimension(5, lbHeight);
+      Dimension width20  = ScreenParams.scaledDimension(20, lbHeight);
+      Dimension width100 = ScreenParams.scaledDimension(100, lbHeight);
+      Dimension width150 = ScreenParams.scaledDimension(150, lbHeight);
+      Dimension width200 = ScreenParams.scaledDimension(200, lbHeight);
       JLabel[] lbArr = { languageLb, projectLb, cursorPosLb, wordwrapLb };
       setLbFont(lbArr);
       setLbWidth(languageLb, width100);

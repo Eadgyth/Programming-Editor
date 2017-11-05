@@ -58,18 +58,4 @@ public class UiComponents {
       tabPane.setFocusable(false);
       return tabPane;
    }
-   
-   /**
-    * Returns the Dimension with the specified width and height scaled
-    * to the ratio between screen resolution and graphic resolution
-    *
-    * @param width  the width in pt
-    * @param height  the height in pt
-    * @return   a new scaled Dimension
-    */
-   public static Dimension scaledDimension(int width, int height) {
-      width = (int) (Math.round(width * eg.Constants.SCREEN_RES_RATIO));
-      height = (int) (Math.round(height * eg.Constants.SCREEN_RES_RATIO));
-      return new Dimension(width, height);
-   }
 }

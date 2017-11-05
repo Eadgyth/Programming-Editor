@@ -23,15 +23,15 @@ import java.awt.event.ActionListener;
 //--Eadgyth--//
 import eg.ui.IconFiles;
 import eg.Constants;
+import eg.utils.ScreenParams;
 
 /**
  * The window for the configuration of a project
  */
 public class SettingsWin {
 
-   private final static Dimension DIM_TF
-         = new Dimension(300, (int) (18 * Constants.SCREEN_RES_RATIO));
-   private final static Dimension DIM_SPACER = new Dimension(0, 20);
+   private final static Dimension DIM_TF = ScreenParams.scaledDimension(200, 16);
+   private final static Dimension DIM_SPACER = ScreenParams.scaledDimension(0, 20);
 
    private final JFrame frame = new JFrame("Eadgyth - Project settings");
    private final JTextField fileTf       = new JTextField();
