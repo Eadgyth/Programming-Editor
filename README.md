@@ -16,8 +16,8 @@ FEATURES<br>
    <li>The setting of projects without creating any extra data files outside the program's
    own folder. Projects can be retrieved after newly starting the program and a number
    of projects can be defined and selected between during runtime</li>
-   <li>A basic console to view the output (error messages) during compiling and testing
-   a program (also allows running self-chosen system commands)</li>
+   <li>A basic (interactive) console to view the output (error messages) during compiling
+   and testing a program (also allows running self-chosen system commands)</li>
    <li>An "exchange editor" view (the panel at the right in the image below) to edit text
    in a separate view and to facilitate the exchange of text between files</li>
    <li>A basic syntax highlighting for java, perl, html and javascript and indentation</li>
