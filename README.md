@@ -1,13 +1,17 @@
 # Java-Programming-Editor / Eadgyth
-A text editor written in Java. The goal is a coding editor suited to write rather simple
-applications, may be for home requirements, and to provide a simple but flexible setting
-up of projects.
+A coding text editor, written in Java, with a flexible setting of projects and switching
+between projects.
+<p>
+The goal of this program is a coding editor suited to write and test rather simple
+applications, may be for home or lerning requirements, and to provide a simple but flexible
+setting up of projects.
 <p>
 The coding language is Java. To illustrate that other project categories can be added draft
-implementations for setting Perl and HTML projects are included.
+implementations for setting projects for writing in Perl and HTML are included.
 <p>
 REQUIREMENTS FOR TESTING AND COMPILATION<br>
-Running the program requires JAVA 8 (JRE 8). Modifications to use Java 9 have yet to be done.<p>
+Running the program requires JAVA 8 (JRE 8). Modifications to use Java 9 have yet to be done.
+<p>
 The program must be found in the same folder as the two .properties files and the Resources
 folder, just like found in the 'EadgythProgram' folder in this repository.<p>
 To compile the program the source files (packages) must be placed in a directory that also
@@ -16,7 +20,8 @@ includes the ".properties" files and the 'Resources' folder
 DOCUMENTATION<br>
 A guide how to configure a project and some other info is found in
 <a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/EadgythProgram/Resources/Help.html">Help.html</a>.
-This file is also addressable from the 'Help' menu in the program. For an overwiew of the program code the
+This file is also addressable from the 'Help' menu in the program. For an overwiew of the
+program code the
 <a href="https://rawgit.com/Eadgyth/Java-Programming-Editor/master/javadoc/index.html">javadoc</a>
 is hopefully helpful.
 <p>
@@ -48,7 +53,15 @@ IDEAS FOR FURTHER DEVELOPEMENT<br>
 LICENSE: MIT, see LICENSE<br>
 <p>
 SCREENSHOT<br>
-Under Windows 10, setting the system look and feel<br>
+The program includes
+<ul>
+   <li>Showing files in tabs</li>
+   <li>A basic file explorer for projects</i>
+   <li>A basic console to view error messages during compiling and testing a program
+   (the console also allows running self-chosen system commands)</li>
+   <li>A "exchange editor" view to modify or exchange text sections in a separate view
+</ul>
+(Under Windows 10, setting the system look and feel)<br>
 <img src="Screenshots/Windows10SystemLAF.png" width="650"/>
 <p>
 Basic editor view<br>
