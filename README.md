@@ -2,11 +2,11 @@
 A source code text editor, written in Java, with a flexible and easy setting up of projects.
 <p>
 The motivation is to have an editor that helps coding in may ways but that is at the
-same time easy to work with. It may be suited to write and test rather simple applications, may
-be for home or lerning requirements.
+same time easy to work with. It may be especially suited to write and test applications for
+home or lerning requirements.
 <p>
-The coding language is currently Java but the code is made to integrate other types of projects.
-To illustrate this draft implementations for writing in Perl and HTML are included.
+The coding language is currently Java but other types of projects can be integrated. To illustrate
+this draft implementations for writing in Perl and HTML are included.
 <p>
 FEATURES<br>
 <ul>
@@ -16,8 +16,9 @@ FEATURES<br>
    in a separate view and to facilitate the exchange of text between files</li>
    <li>A basic syntax highlighting for java, perl, html and javascript and indentation</li>
    <li>The setting of projects without creating any extra data files outside the program's
-   own folder. Projects can be retrieved after newly starting the program and a number
-   of projects can be defined and selected between during runtime</li>
+   own folder (a config file may optionally be saved in a project's folder though). Projects
+   can be retrieved after newly starting the program and a number of projects can be defined
+   and selected to be set active during the program's runtime</li>
    <li>Compiling and testing of Java code and bundling a java program in a jar file; testing
    a perl script; viewing html code in the default web browser</li>
    <li>A basic (interactive) console to view the output (error messages) during compiling
