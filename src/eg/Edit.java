@@ -4,9 +4,9 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
 import javax.swing.JTextPane;
@@ -76,9 +76,8 @@ public class Edit {
    public void setClipboard() {
       String str = textArea.getSelectedText();
       if (str != null) {
-         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
          StringSelection strSel = new StringSelection(str);
-         clipboard.setContents(strSel, null);
+         CLIPBOARD.setContents(strSel, null);
       }
    }
 
@@ -219,7 +218,7 @@ public class Edit {
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private String getClipboard() {
