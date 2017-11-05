@@ -6,13 +6,14 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
 import javax.swing.JTextPane;
 
 import java.io.IOException;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.utils.*;
 import eg.document.FileDocument;
 
@@ -21,6 +22,8 @@ import eg.document.FileDocument;
  */
 public class Edit {
 
+   private final static Clipboard CLIPBOARD
+         = Toolkit.getDefaultToolkit().getSystemClipboard();
    private static final String[] SPACE_NUMBER = { "1", "2", "3", "4", "5", "6" };
    
    private final Preferences prefs = new Preferences();
@@ -221,16 +224,13 @@ public class Edit {
 
    private String getClipboard() {
       String inClipboard = "";
-      Toolkit toolkit = Toolkit.getDefaultToolkit();
-      Clipboard clipboard = toolkit.getSystemClipboard();
+      Transferable transf = CLIPBOARD.getContents(null);
       try {
-         DataFlavor flavor = DataFlavor.stringFlavor;
-         inClipboard = (String) clipboard.getData(flavor);
+         if (transf != null && transf.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+            inClipboard = (String) transf.getTransferData(DataFlavor.stringFlavor);
+         }
       }
-      catch (IOException e) {
-         FileUtils.logStack(e);
-      }
-      catch (UnsupportedFlavorException e) {
+      catch (IOException | UnsupportedFlavorException e) {
          FileUtils.logStack(e);
       }
       return inClipboard;
