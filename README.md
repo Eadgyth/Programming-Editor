@@ -29,13 +29,11 @@ FEATURES<br>
 <p>
 <img src="Screenshots/SimpleEditorView.png" width="400"/>
 <p>
-REQUIREMENTS FOR TESTING AND COMPILATION<br>
+REQUIREMENTS FOR TESTING<br>
 Running the program requires JAVA 8 (JRE 8). Modification to use Java 9 is the next task.
 <p>
 The program must be found in the same folder as the two .properties files and the Resources
 folder, just like found in the 'EadgythProgram' folder in this repository.<p>
-To compile the program the source files (packages) must be placed in a directory that also
-includes the ".properties" files and the 'Resources' folder
 <p>
 DOCUMENTATION<br>
 A guide how to configure a project and some other info is found in
