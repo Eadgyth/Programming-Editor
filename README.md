@@ -9,6 +9,21 @@ setting up of projects.
 The coding language is Java. To illustrate that other project categories can be added draft
 implementations for setting projects for writing in Perl and HTML are included.
 <p>
+FEATURES<br>
+<ul>
+   <li>Showing files in tabs</li>
+   <li>A basic file explorer for projects</i>
+   <li>A basic console to view the output (error messages) during compiling and testing
+   a program (also allows running self-chosen system commands)</li>
+   <li>An "exchange editor" view to modify or exchange between files text sections in a
+   separate view</li>
+   <li>A basic syntax highlighting for java, perl, html and javascript and indentation</li>
+</ul>
+(Under Windows 10, setting the system look and feel)<br>
+<img src="Screenshots/Windows10SystemLAF.png" width="550"/>
+<p>
+<img src="Screenshots/SimpleEditorView.png" width="400"/>
+<p>
 REQUIREMENTS FOR TESTING AND COMPILATION<br>
 Running the program requires JAVA 8 (JRE 8). Modifications to use Java 9 have yet to be done.
 <p>
@@ -51,18 +66,3 @@ IDEAS FOR FURTHER DEVELOPEMENT<br>
    commits).
 <p>
 LICENSE: MIT, see LICENSE<br>
-<p>
-FEATURES<br>
-The program includes
-<ul>
-   <li>Showing files in tabs</li>
-   <li>A basic file explorer for projects</i>
-   <li>A basic console to view the output (error messages) during compiling and testing
-   a program (also allows running self-chosen system commands)</li>
-   <li>An "exchange editor" view to modify or exchange between files text sections in a
-   separate view
-</ul>
-(Under Windows 10, setting the system look and feel)<br>
-<img src="Screenshots/Windows10SystemLAF.png" width="650"/>
-<p>
-<img src="Screenshots/SimpleEditorView.png" width="500"/>
