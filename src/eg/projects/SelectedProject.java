@@ -1,8 +1,6 @@
 package eg.projects;
 
 import eg.console.*;
-import eg.Languages;
-import eg.ui.MainWin;
 import eg.ui.ConsoleOpenable;
 
 /**

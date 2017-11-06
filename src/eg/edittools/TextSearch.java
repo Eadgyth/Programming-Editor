@@ -1,7 +1,6 @@
 package eg.edittools;
 
 import javax.swing.JTextPane;
-import javax.swing.JTextField;
 
 //--Eadgyth--/
 import eg.utils.Dialogs;
@@ -29,6 +28,7 @@ public class TextSearch {
    }
    
    public void searchText(String toSearch) {
+      System.out.println(toSearch);
       int caret = textArea.getCaretPosition();
       textArea.setSelectionStart(caret);
       textArea.setSelectionEnd(caret);

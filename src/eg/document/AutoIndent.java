@@ -1,9 +1,5 @@
 package eg.document;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyAdapter;
-
 /**
  * The auto-indentation which works with spaces.<br>
  * Created in {@link TypingEdit}

@@ -5,8 +5,6 @@ import java.io.IOException;
 
 import java.awt.EventQueue;
 
-import javax.swing.SwingWorker;
-
 //--Eadgyth--//
 import eg.console.*;
 import eg.javatools.*;
@@ -92,7 +90,7 @@ public final class JavaActions extends ProjectConfig
             consPnl.setCaretUneditable(0);
             if (!co.isConsoleOpen()) {
                if (!comp.success()) {
-                  int res = Dialogs.confirmYesNo(
+                  int res = Dialogs.warnConfirmYesNo(
                         "Compilation failed.\n"
                         + comp.getMessage() + ".\n"
                         + "Open the console window to view messages?");

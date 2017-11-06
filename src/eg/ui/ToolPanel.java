@@ -2,21 +2,12 @@ package eg.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
-
-import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 import javax.swing.JButton;
-import javax.swing.JToolBar;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-
-import javax.swing.border.EmptyBorder;
 
 //--Eadgyth--/
 import eg.Constants;
-import eg.utils.UiComponents;
 
 /**
  * Defines a panel to which a component can be added
