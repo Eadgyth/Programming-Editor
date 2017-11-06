@@ -242,7 +242,7 @@ public abstract class ProjectConfig implements Configurable {
    private String findRootByFile(String dir, String file) {
       File root = new File(dir);
       String relToRoot = F_SEP + file;
-      String existingPath = null;
+      String existingPath;
       while (root != null) {
          existingPath = root.getPath() + relToRoot;
          if (new File(existingPath).exists()) {
@@ -333,7 +333,7 @@ public abstract class ProjectConfig implements Configurable {
       File configFile = new File(projectRoot + F_SEP
             + Preferences.CONFIG_FILE);
       if (configFile.exists()) {
-         int res = Dialogs.confirmYesNo(
+         int res = Dialogs.warnConfirmYesNo(
                  "Saving the 'eadconfig' is disabled."
                + " Remove the config file?");
          if (res == 0) {
