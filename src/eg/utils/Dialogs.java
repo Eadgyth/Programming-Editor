@@ -1,5 +1,6 @@
 package eg.utils;
 
+import java.awt.Font;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
@@ -8,6 +9,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+
+//--Eadgyth--/
+import eg.ui.IconFiles;
 
 /**
  * Static methods to show dialogs using <code>JOptionPane</code>
@@ -22,7 +26,7 @@ public class Dialogs {
     */
    public static void infoMessage(String message, String title) {
       JOptionPane.showMessageDialog (null, message, title,
-            JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.PLAIN_MESSAGE, IconFiles.INFO_ICON);
    }
 
    /**
@@ -32,7 +36,7 @@ public class Dialogs {
     */
    public static void warnMessage(String message) {
       JOptionPane.showMessageDialog(null, message, null,
-            JOptionPane.WARNING_MESSAGE);
+            JOptionPane.PLAIN_MESSAGE, IconFiles.WARNING_ICON);
    }
    
    /**
@@ -44,7 +48,7 @@ public class Dialogs {
       final JDialog dialog = new JDialog();
       dialog.setAlwaysOnTop(true);
       JOptionPane.showMessageDialog(dialog, message, "",
-            JOptionPane.WARNING_MESSAGE);
+            JOptionPane.PLAIN_MESSAGE, IconFiles.WARNING_ICON);
    }
 
    /**
@@ -54,7 +58,7 @@ public class Dialogs {
     */
    public static void errorMessage(String message) {
       JOptionPane.showMessageDialog(null, message, null,
-           JOptionPane.ERROR_MESSAGE );
+           JOptionPane.PLAIN_MESSAGE, IconFiles.ERROR_ICON);
    }
 
    /**
@@ -66,7 +70,7 @@ public class Dialogs {
     */
    public static int confirmYesNoCancel(String message) {
       int result = JOptionPane.showConfirmDialog(null, message, null,
-            JOptionPane.YES_NO_CANCEL_OPTION);
+            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
       return result;
    }
 
@@ -78,7 +82,20 @@ public class Dialogs {
     */
    public static int confirmYesNo(String message) {
       int result = JOptionPane.showConfirmDialog(null, message, null,
-            JOptionPane.YES_NO_OPTION);
+            JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+      return result;
+   }
+   
+    /**
+    * Shows a confirmation dialog with Yes and No options
+    *
+    * @param message  the message for the dialog
+    * @return  the Yes or No option specified in <code>JOptionPane</code>
+    */
+   public static int warnConfirmYesNo(String message) {
+      int result = JOptionPane.showConfirmDialog(null, message, null,
+            JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+            IconFiles.WARNING_ICON);
       return result;
    }
 
@@ -89,13 +106,13 @@ public class Dialogs {
     * @param title  the title for the dialog
     * @param options  the array of options that are selectable
     * @param preselected  the option that is preselected. Can be Null
-    * @param isQuestion  true to show a question icon, false to show no
+    * @param isWarning  true to show a warning icon, false to show no
     * icon
     * @return  the element selected from <code>options</code> if ok is
     * clicked, null otherwise
     */
    public static String comboBoxOpt(String message, String title,
-         String[] options, String preselected, boolean isQuestion) {
+         String[] options, String preselected, boolean isWarning) {
 
       JComboBox cBox = new JComboBox(options);
       if (preselected != null) {
@@ -104,21 +121,24 @@ public class Dialogs {
       cBox.setFont(eg.Constants.SANSSERIF_PLAIN_9);
       JPanel pnl = new JPanel(new GridLayout(2, 1));
       JLabel lb = new JLabel(message);
+      lb.setFont(new Font("Arial", Font.PLAIN, ScreenParams.scaledSize(9)));
       lb.setBorder(eg.Constants.EMPTY_BORDER);
       pnl.add(lb);
       JPanel holdCBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
       holdCBox.add(cBox);
       pnl.add(holdCBox);
       int messageType;
-      if (isQuestion) {
-         messageType = JOptionPane.QUESTION_MESSAGE;
+      int res;
+      if (isWarning) {
+         res = JOptionPane.showConfirmDialog(null, pnl, title,
+               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+               IconFiles.WARNING_ICON);
       }
       else {
-         messageType = JOptionPane.PLAIN_MESSAGE;
+         res = JOptionPane.showConfirmDialog(null, pnl, title,
+               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
       }
-      int res = JOptionPane.showConfirmDialog(null, pnl, title,
-            JOptionPane.OK_CANCEL_OPTION, messageType);
-      if (res == JOptionPane.YES_OPTION) {
+      if (JOptionPane.YES_OPTION == res) {
          return options[cBox.getSelectedIndex()];
       }
       else {

@@ -30,12 +30,11 @@ import eg.utils.FileUtils;
 public class CurrentProject {
 
    private final String NO_FILE_IN_TAB_MESSAGE
-         = "A project can be assigned if an opened or newly"
-         + " saved file is selected.";
+         = "To assign a project open or newly save a file that is part of the project.";
 
    private final String FILES_NOT_FOUND_MESSAGE
          = "The following files could not be found anymore:";
-
+         
    private final static String[] PROJ_SUFFIXES = {
       "htm", "html", "java", "pl"
    };
@@ -130,7 +129,9 @@ public class CurrentProject {
          createProjectImpl();
       }
       else {
-         confirmedNewProject(fromList);
+         Dialogs.warnMessage(
+               fDoc[iCurr].filename() + " belongs to the project "
+               + fromList.getProjectName());
       }
    }
 
@@ -168,7 +169,7 @@ public class CurrentProject {
                updateFileTree();
             }
             else {
-               Dialogs.warnMessage(
+               Dialogs.errorMessage(
                      fDoc[iCurr].filename()
                      + ":\nThe file could not be found anymore");
             }
@@ -203,7 +204,7 @@ public class CurrentProject {
             updateFileTree();
          }
          else {
-            Dialogs.warnMessage(FILES_NOT_FOUND_MESSAGE + missingFiles);
+            Dialogs.errorMessage(FILES_NOT_FOUND_MESSAGE + missingFiles);
          }
       }
       finally {
@@ -305,8 +306,8 @@ public class CurrentProject {
    }
 
    private boolean changeProject(ProjectActions toChangeTo) {
-      int result = Dialogs.confirmYesNo("Switch to project '"
-                 + toChangeTo.getProjectName() + "'?");
+      int result = Dialogs.confirmYesNo(
+         "Switch to project " + toChangeTo.getProjectName() + "?");
 
       if (result == 0) {
          current = toChangeTo;
@@ -346,28 +347,14 @@ public class CurrentProject {
              && fd.filename().endsWith(current.getSourceSuffix())
              && current.isInProject(fd.dir());
    }
-
-   private void confirmedNewProject(ProjectActions toConfirm) {
-      int res = Dialogs.confirmYesNo(
-            "<html>"
-            + fDoc[iCurr].filename() + " belongs to the project"
-            + " <i>" + toConfirm.getProjectName() + "</i>.<br>"
-            + "Still set new project?"
-            + "</html>");
-
-      if (0 == res) {
-         createProjectImpl();
-      }
-   }
  
    private String wrongExtentionMessage(String filename) {
       return
-         "<html>"
-         + filename + " cannot define a project category."
-         + "<br><br>"
-         + "If the file belongs to a project select the extension of the"
-         + " <i>existing</i> main source file in this project."
-         + "</html>";
+            "<html>"
+            + filename + " does not define a project category.<br>"
+            + "If the file belongs to a project select the"
+            + " extension of source files:"
+            + "</html>";
    }
 
    private void updateProjectSetting(ProjectActions projToSet) {

@@ -12,7 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import java.io.File;
 
@@ -393,7 +392,7 @@ public class TabbedFiles implements Observer {
       for (int i = 0; i < nTabs(); i++) {
          if (fDoc[i].filepath().equals(f.toString())) {
            isFileOpen = true;
-           Dialogs.warnMessage(f.getName() + " is already open.");
+           Dialogs.infoMessage(f.getName() + " is already open.", null);
            break;
          }
       }
@@ -403,7 +402,7 @@ public class TabbedFiles implements Observer {
    private boolean isMaxTabNumber() {
       boolean isMax = nTabs() == fDoc.length;
       if (isMax) {
-         Dialogs.warnMessage("The maximum number of tabs is reached.");
+         Dialogs.errorMessage("The maximum number of tabs is reached.");
       }
       return isMax;
    }
@@ -428,7 +427,7 @@ public class TabbedFiles implements Observer {
    }
    
    private int replaceOption(File f) {
-      return Dialogs.confirmYesNo(
+      return Dialogs.warnConfirmYesNo(
              f.getName() + " already exists.\nReplace file?");
    }
 

@@ -61,6 +61,12 @@ public class IconFiles {
          = new ImageIcon(TANGO_DIR + "edit-clear.png");
    public final static ImageIcon REFRESH_ICON
          = new ImageIcon(TANGO_DIR + "view-refresh.png");
+   public final static ImageIcon INFO_ICON
+         = new ImageIcon(TANGO_DIR + "dialog-information.png");
+   public final static ImageIcon ERROR_ICON
+         = new ImageIcon(TANGO_DIR + "dialog-error.png");
+   public final static ImageIcon WARNING_ICON
+         = new ImageIcon(TANGO_DIR + "dialog-warning.png");
 
    // Eadgyth icons
    public final static ImageIcon CHANGE_PROJ_ICON

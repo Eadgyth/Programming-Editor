@@ -250,14 +250,14 @@ public class FileTree extends Observable {
    private void deleteFile() {
       DefaultMutableTreeNode selectedNode = getSelectedNode();
       File f = getSelectedFile();
-      int res = Dialogs.confirmYesNo(deleteMessage(f));
+      int res = Dialogs.warnConfirmYesNo(deleteMessage(f));
       if (res == JOptionPane.YES_OPTION) {
          boolean success = f.delete();
          if (success) {
             model.removeNodeFromParent(selectedNode);
          }
          else {
-            Dialogs.warnMessage("Deleting " + f.getName() + " failed");
+            Dialogs.errorMessage("Deleting " + f.getName() + " failed");
          }
       }
    }
@@ -265,14 +265,14 @@ public class FileTree extends Observable {
    private void deleteFolder() {
       DefaultMutableTreeNode selectedNode = getSelectedNode();
       File f = getSelectedFile();  
-      int res = Dialogs.confirmYesNo(deleteMessage(f));
+      int res = Dialogs.warnConfirmYesNo(deleteMessage(f));
       if (res == JOptionPane.YES_OPTION) {
          boolean success = FileUtils.deleteFolder(f);
          if (success) {
             model.removeNodeFromParent(selectedNode);
          }
          else {
-            Dialogs.warnMessage("Deleting " + f.getName() + " failed.");
+            Dialogs.errorMessage("Deleting " + f.getName() + " failed.");
          }
       }
    }
@@ -295,7 +295,7 @@ public class FileTree extends Observable {
                   parent, parent.getChildCount());
          }
          else {
-            Dialogs.warnMessage("Creating " + newDir.getName() + " failed");
+            Dialogs.errorMessage("Creating " + newDir.getName() + " failed");
          }
       }
    }
