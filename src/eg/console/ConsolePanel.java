@@ -6,7 +6,6 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.JPanel;
@@ -15,7 +14,6 @@ import javax.swing.JScrollPane;
 
 import javax.swing.event.CaretListener;
 
-import javax.swing.border.LineBorder;
 
 //--Eadgyth--//
 import eg.Constants;
