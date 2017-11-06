@@ -36,6 +36,9 @@ public class ScreenParams {
     * Returns an integer that is the rounded product of the specified
     * size and the ratio between the screen resolution and the resolution
     * assumed by Java's Graphics2D
+    *
+    * @param size  the size
+    * @return  the rounded rescaled size
     */
    public static int scaledSize(double size) {
       return (int) (Math.round(size * SCREEN_RES_RATIO));
