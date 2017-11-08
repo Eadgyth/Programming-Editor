@@ -9,7 +9,7 @@ import eg.document.FileDocument;
 public class TextSearch {
    
    private boolean reqWord;
-   private int index = -1;
+   private int pos = 0;
 
    private FileDocument doc;
    private JTextPane textArea;
@@ -24,43 +24,37 @@ public class TextSearch {
    }
    
    public void resetSearchToStart() {
-      index = -1;
+      pos = -1;
    }
    
    public void searchText(String toSearch) {
-      System.out.println(toSearch);
       int caret = textArea.getCaretPosition();
       textArea.setSelectionStart(caret);
       textArea.setSelectionEnd(caret);
+      pos = caret;
       String content = doc.getDocText();
       boolean notFound = false;
-      int ind = 0;
       int nextStep = 0;
-      if (index > -1) {
-         nextStep = 1;
-      }
-      ind = nextIndex(content, toSearch, index + nextStep);
+      int ind = nextIndex(content, toSearch, pos + nextStep);
       /*
-       * go back to start if last match is reached */
-      if (ind == -1 & index > -1) {
-         index = 0;
+       * go to start if last match is reached */
+      if (ind == -1 & pos > -1) {
+         pos = 0;
          nextStep = 0;
-         ind = nextIndex(content, toSearch, index + nextStep);
+         ind = nextIndex(content, toSearch, pos);
       }
       if (ind != -1) {
-         index = ind;
-         doc.requestFocus();
-         textArea.select(index, index + toSearch.length());
+         pos = ind;
+         textArea.select(pos, pos + toSearch.length());
+         nextStep = 1;
       }
       else {
          Dialogs.infoMessage(toSearch + " could not be found", null);
-         doc.requestFocus();
-         index = -1;
       }
    }
    
    public void replaceSel(String replaceWith) {
-      if (index != -1 && textArea.getSelectedText() != null) {
+      if (textArea.getSelectedText() != null) {
          textArea.replaceSelection(replaceWith);
       }
    }

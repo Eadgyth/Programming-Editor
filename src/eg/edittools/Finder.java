@@ -19,9 +19,9 @@ import javax.swing.JLabel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import eg.document.FileDocument;
-import eg.Constants;
 
 //--Eadgyth--/
+import eg.Constants;
 import eg.utils.UiComponents;
 
 /**
@@ -107,6 +107,7 @@ public class Finder implements AddableEditTool {
    private JPanel checkBoxPnl() {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
       JCheckBox cBx = new JCheckBox("Select only words");
+      cBx.setFocusable(false);
       cBx.addItemListener(e ->
          search.setRequireWord(e.getStateChange() == ItemEvent.SELECTED));
       pnl.add(cBx);
@@ -116,6 +117,7 @@ public class Finder implements AddableEditTool {
 
    private JPanel buttonsPnl(JButton bt) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      bt.setFocusable(false);
       pnl.add(bt);
       setSize(pnl);
       return pnl;
@@ -129,6 +131,7 @@ public class Finder implements AddableEditTool {
    
    private void setActions() {
       searchBt.addActionListener(e -> search.searchText(inputTf.getText()));
+      inputTf.addActionListener(e -> search.searchText(inputTf.getText()));
       replaceBt.addActionListener(e -> search.replaceSel(replaceTf.getText()));
    }
 
