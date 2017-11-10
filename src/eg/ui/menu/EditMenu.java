@@ -74,7 +74,7 @@ public class EditMenu {
 
    /**
     * Sets the listener for actions to open an <code>AddableEditTool</code>
-    * in the menu item at the sepecified index
+    * in the item at the sepecified index
     *
     * @param al  the <code>ActionListener</code>
     * @param i  the index
@@ -83,6 +83,11 @@ public class EditMenu {
       editToolsItm[i].addActionListener(al);
    }
 
+   /**
+    * Sets the listeners for the actions to select the language
+    *
+    * @param tf  the reference to {@link TabbedFiles}
+    */
    public void setChangeLanguageAction(TabbedFiles tf) {
       for (JCheckBoxMenuItem item : selectLangChBxItm) {
          item.addActionListener(e -> setLanguage(e, tf));
@@ -90,24 +95,24 @@ public class EditMenu {
    }
 
    /**
-    * Enables/disables the items for cut and copy
+    * Enables or disables the buttons for undoing and redoing actions
     *
-    * @param isEnabled  if the items for cut and copy are enabled
+    * @param isUndo  true to enable, false to disable the undo button
+    * @param isRedo  true to enable, false to disable the redo button
     */
-   public void enableCutCopyItms(boolean isEnabled) {
-      cutItm.setEnabled(isEnabled);
-      copyItm.setEnabled(isEnabled);
+   public void enableUndoRedoItms(boolean isUndo, boolean isRedo) {
+      undoItm.setEnabled(isUndo);
+      redoItm.setEnabled(isRedo);
    }
-
+   
    /**
-    * Enables/disables the items for undo and redo
+    * Enables or disables the buttons for cutting and copying actions
     *
-    * @param enableUndo  if the item for undo action is enabled
-    * @param enableRedo  if the item for redo action is enabled
+    * @param b  true to enable, false to disable the buttons
     */
-   public void enableUndoRedoItms(boolean enableUndo, boolean enableRedo) {
-      undoItm.setEnabled(enableUndo);
-      redoItm.setEnabled(enableRedo);
+   public void enableCutCopyItms(boolean b) {
+      cutItm.setEnabled(b);
+      copyItm.setEnabled(b);
    }
 
    /**

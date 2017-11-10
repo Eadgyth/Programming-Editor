@@ -199,12 +199,12 @@ public class ExchangeEditor implements AddableEditTool {
       setKeyBinding(pasteBt, KeyStroke.getKeyStroke(
             KeyEvent.VK_V, ActionEvent.CTRL_MASK), "V_pressed");
 
-      indentBt.setAction(new FunctionalAction("", IconFiles.INDENT_ICON,
+      indentBt.setAction(new FunctionalAction(null, IconFiles.INDENT_ICON,
             e -> edit.indent()));
       setKeyBinding(indentBt, KeyStroke.getKeyStroke(
             KeyEvent.VK_M, ActionEvent.CTRL_MASK), "M_pressed");
 
-      outdentBt.setAction(new FunctionalAction("", IconFiles.OUTDENT_ICON,
+      outdentBt.setAction(new FunctionalAction(null, IconFiles.OUTDENT_ICON,
             e -> edit.outdent()));
       setKeyBinding(outdentBt, KeyStroke.getKeyStroke(
             KeyEvent.VK_L, ActionEvent.CTRL_MASK), "L_pressed");

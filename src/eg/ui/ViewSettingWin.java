@@ -1,5 +1,7 @@
 package eg.ui;
 
+import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
@@ -15,20 +17,23 @@ import javax.swing.BoxLayout;
 import javax.swing.Box;
 import javax.swing.BorderFactory;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.Preferences;
 import eg.Constants;
 
 /**
- * The frame that contains components to control the display of the
+ * The frame that contains components to enter preferences for the display of the
  * main window
  */
 public class ViewSettingWin {
 
    public final static String[] LAF_OPT = {"System", "Java default"};
    public final static String[] ICON_SIZES = {"16 x 16", "22 x 22"};
+   
+   private final static Dimension LABEL_DIM
+         = eg.utils.ScreenParams.scaledDimension(230, 0);
 
-   private final JFrame frame = new JFrame("View settings");
+   private final JFrame frame = new JFrame("View preferences");
    private final Preferences prefs = new Preferences();
    
    private final JCheckBox checkLineNumbers       = new JCheckBox();
@@ -110,7 +115,7 @@ public class ViewSettingWin {
    }
    
    //
-   //--private methods
+   //--private--/
    //
    
    private void initFrame() {
@@ -118,6 +123,7 @@ public class ViewSettingWin {
       frame.setResizable(false);
       frame.setLocation(550, 100);
       frame.setContentPane(allPanels());
+      frame.getRootPane().setDefaultButton(okBt);
       frame.pack();
       frame.setVisible(false);
       frame.setAlwaysOnTop(true);
@@ -125,17 +131,18 @@ public class ViewSettingWin {
    }
    
    private JPanel allPanels() {
-      JPanel allPanels = new JPanel(new GridLayout(6, 1));
-      allPanels.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-      allPanels.add(setLineNumberPanel());
-      allPanels.add(setToolbarPanel());
-      allPanels.add(setStatusBarPanel());
-      allPanels.add(setIconSizePnl());
-      allPanels.add(setLafPnl());
-      allPanels.add(buttonsPanel());
-      frame.getRootPane().setDefaultButton(okBt);
-      
-      return allPanels;
+      JPanel pnl = new JPanel(new BorderLayout());
+      pnl.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+      JPanel selectionsPnl = new JPanel(new GridLayout(5, 1));
+      selectionsPnl.add(setLineNumberPanel());
+      selectionsPnl.add(setToolbarPanel());
+      selectionsPnl.add(setStatusBarPanel());
+      selectionsPnl.add(setIconSizePnl());
+      selectionsPnl.add(setLafPnl());
+      selectionsPnl.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+      pnl.add(selectionsPnl, BorderLayout.CENTER);
+      pnl.add(buttonsPanel(), BorderLayout.SOUTH);
+      return pnl;
    }
    
    private JPanel setToolbarPanel() {      
@@ -178,35 +185,35 @@ public class ViewSettingWin {
    }
 
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
-      JLabel label = new JLabel(title);
-      label.setFont(Constants.SANSSERIF_BOLD_9);
-      JPanel holdCheckBx = new JPanel(new FlowLayout(FlowLayout.LEFT));    
-      JPanel checkBxPnl = new JPanel(); 
-      checkBxPnl.setLayout(new BoxLayout(checkBxPnl, BoxLayout.LINE_AXIS));
-      checkBox.setHorizontalTextPosition(JCheckBox.LEFT);     
-      checkBxPnl.add(label);
-      checkBxPnl.add(Box.createHorizontalGlue());
-      checkBxPnl.add(checkBox);
-      return checkBxPnl;
-   }
-   
-   private JPanel comboBxPnl(JComboBox comboBox, String title) {      
       JLabel lb = new JLabel(title);
       lb.setFont(Constants.SANSSERIF_BOLD_9);
+      lb.setPreferredSize(LABEL_DIM);
+      JPanel pnl = new JPanel(); 
+      pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));     
+      pnl.add(lb);
+      JPanel holdCheckBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      holdCheckBox.add(checkBox);
+      pnl.add(holdCheckBox);
+      return pnl;
+   }
+   
+   private JPanel comboBxPnl(JComboBox comboBox, String title) {
+      JLabel lb = new JLabel(title);
+      lb.setFont(Constants.SANSSERIF_BOLD_9);
+      lb.setPreferredSize(LABEL_DIM);
       comboBox.setFont(Constants.SANSSERIF_PLAIN_9);
       JPanel pnl = new JPanel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
       pnl.add(lb);
-      pnl.add(Box.createHorizontalGlue());
-      JPanel holdComboBx = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-      holdComboBx.add(comboBox);
-      pnl.add(holdComboBx);
+      JPanel holdComboBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      holdComboBox.add(comboBox);
+      pnl.add(holdComboBox);
       return pnl;
    }
    
    private JPanel buttonsPanel() {
-      JPanel buttonsPanel = new JPanel(new FlowLayout());   
-      buttonsPanel.add(okBt);
-      return buttonsPanel;
+      JPanel pnl = new JPanel(new FlowLayout());   
+      pnl.add(okBt);
+      return pnl;
    }
 }

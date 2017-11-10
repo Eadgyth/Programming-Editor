@@ -118,10 +118,7 @@ public class CurrentProject {
    }
 
    /**
-    * Assignes a new project.
-    * <br>If the the currently set <code>FileDocument</code> belongs to a
-    * project in the List of configured projects a confirmation dialog is
-    * shown.
+    * Assigns a new project
     */
    public void createProject() {
       ProjectActions fromList = selectFromList(fDoc[iCurr].dir(), false);

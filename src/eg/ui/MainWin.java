@@ -193,12 +193,10 @@ public class MainWin implements ConsoleOpenable {
    }
    
    /**
-    * Enables or disables controls for undoing and redoing actions. The
-    * booleans indicate if the controls for the respective action are set
-    * enabled or disabled
+    * Enables or disables undoing and redoing actions
     *
-    * @param isUndo  the boolean
-    * @param isRedo  the boolean
+    * @param isUndo  true to enable, false to disable undo actions
+    * @param isRedo  true to enable, false to disable redo actions
     */
    public void enableUndoRedo(boolean isUndo, boolean isRedo) {
       toolbar.enableUndoRedoBts(isUndo, isRedo);
@@ -206,9 +204,9 @@ public class MainWin implements ConsoleOpenable {
    }
    
    /**
-    * Enables or disables controls for cutting and copying actions
+    * Enables or disables cutting and copying actions
     *
-    * @param b  true to enable, false to disable the controls
+    * @param b  true to enable, false to disable the actions
     */
    public void enableCutCopy(boolean b) {
       toolbar.enableCutCopyBts(b);
@@ -216,26 +214,25 @@ public class MainWin implements ConsoleOpenable {
    }
    
    /**
-    * Enables or disables the munu item for actions to set the visiblity
-    * of the tabbar
+    * Enables or disables actions to set the visiblity of the tabbar
     *
-    * @param b  true to enable, false to disable the item
+    * @param b  true to enable, false to disable the actions
     */
    public void enableShowTabbar(boolean b) {
       menuBar.viewMenu().enableTabItm(b);
    }
    
    /**
-    * Enables the menu item for actions to open the fileview panel
+    * Enables the actions to open the file view panel
     */
    public void enableOpenFileView() {
       menuBar.viewMenu().enableFileViewItm();
    }
    
    /**
-    * Enables or disables the controls for actions to change project
+    * Enables or disables the actions to change project
     *
-    * @param b  true to enable, false to disable the controls
+    * @param b  true to enable, false to disable the action
     */
    public void enableChangeProject(boolean b) {
       menuBar.projectMenu().enableChangeProjItm(b);
@@ -512,7 +509,7 @@ public class MainWin implements ConsoleOpenable {
       splitVert.setBorder(null);
       splitHorAll = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
             splitVert, null);
-      splitHorAll.setResizeWeight(0);
+      splitHorAll.setResizeWeight(1);
       splitHorAll.setDividerSize(0);
       splitHorAll.setBorder(null);
    }

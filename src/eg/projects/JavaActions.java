@@ -174,7 +174,7 @@ public final class JavaActions extends ProjectConfig
    private boolean jarFileExists(String jarName) {
       String execDir = getProjectPath() + F_SEP + getExecutableDirName();
       return new File(execDir + F_SEP + jarName + ".jar").exists();
-   }
+   }      
 
    private void setStartCommand() {
       StringBuilder sb = new StringBuilder("java ");

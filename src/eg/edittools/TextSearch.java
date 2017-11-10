@@ -24,9 +24,16 @@ public class TextSearch {
    }
    
    public void resetSearchToStart() {
-      pos = -1;
+      pos = 0;
    }
    
+   /**
+    * Searches and selects the specified string in the text area of the
+    * currently set document. A repeated search starts at the each last
+    * position
+    *
+    * @param toSearch  the string to search
+    */
    public void searchText(String toSearch) {
       int caret = textArea.getCaretPosition();
       textArea.setSelectionStart(caret);

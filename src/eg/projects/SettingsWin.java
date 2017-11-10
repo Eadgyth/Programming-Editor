@@ -33,7 +33,7 @@ public class SettingsWin {
    private final static Dimension DIM_TF = ScreenParams.scaledDimension(200, 16);
    private final static Dimension DIM_SPACER = ScreenParams.scaledDimension(0, 20);
 
-   private final JFrame frame = new JFrame("Eadgyth - Project settings");
+   private final JFrame frame = new JFrame("Project settings");
    private final JTextField fileTf       = new JTextField();
    private final JTextField moduleTf     = new JTextField();
    private final JTextField sourcesDirTf = new JTextField();
