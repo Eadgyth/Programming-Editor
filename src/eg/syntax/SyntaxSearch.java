@@ -15,8 +15,8 @@ public class SyntaxSearch {
    private final static Color RED    = new Color(240, 0, 50);
    private final static Color GREEN  = new Color(80, 190, 80);
    private final static Color GRAY   = new Color(30, 30, 30);
-   private final static Color PURPLE = new Color(150, 100, 255);
-   private final static Color ORANGE = new Color(230, 120, 50);
+   private final static Color ORANGE = new Color(230, 100, 50);
+   private final static Color PURPLE = new Color(100, 60, 255);
 
    private final SimpleAttributeSet normalSet;
    private final SimpleAttributeSet redPlainSet    = new SimpleAttributeSet();
@@ -25,7 +25,7 @@ public class SyntaxSearch {
    private final SimpleAttributeSet greenPlainSet  = new SimpleAttributeSet();
    private final SimpleAttributeSet grayBoldSet    = new SimpleAttributeSet();
    private final SimpleAttributeSet orangePlainSet = new SimpleAttributeSet();
-   private final SimpleAttributeSet purpleBoldSet  = new SimpleAttributeSet();
+   private final SimpleAttributeSet purplePlainSet  = new SimpleAttributeSet();
 
    private final StyledDocument doc;
 
@@ -375,7 +375,7 @@ public class SyntaxSearch {
                   int absStart = start + lineStart;
                   if (isHtml) {
                      if (isTypeMode || isInBlock("<", ">", absStart)) {
-                        setCharAttr(absStart, length, purpleBoldSet);
+                        setCharAttr(absStart, length, purplePlainSet);
                      }
                   }
                   else {
@@ -539,13 +539,13 @@ public class SyntaxSearch {
       StyleConstants.setForeground(greenPlainSet, GREEN);
       StyleConstants.setBold(greenPlainSet, false);
 
-      StyleConstants.setForeground(purpleBoldSet, PURPLE);
-      StyleConstants.setBold(purpleBoldSet, true);
-
       StyleConstants.setForeground(grayBoldSet, GRAY);
       StyleConstants.setBold(grayBoldSet, true);
 
       StyleConstants.setForeground(orangePlainSet, ORANGE);
       StyleConstants.setBold(orangePlainSet, false);
+      
+      StyleConstants.setForeground(purplePlainSet, PURPLE);
+      StyleConstants.setBold(purplePlainSet, false);
    }
 }
