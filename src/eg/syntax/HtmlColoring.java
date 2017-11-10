@@ -29,7 +29,7 @@ public class HtmlColoring implements Colorable {
    private final static String[] ATTRIBUTES = {
       "align",
       "bgcolor",
-      "class",  "cols", "content",
+      "checked", "class",  "content", "cols",
       "for",
       "height", "href",
       "id",
