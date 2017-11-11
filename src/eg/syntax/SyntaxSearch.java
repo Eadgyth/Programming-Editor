@@ -20,12 +20,13 @@ public class SyntaxSearch {
 
    private final SimpleAttributeSet normalSet;
    private final SimpleAttributeSet redPlainSet    = new SimpleAttributeSet();
+   private final SimpleAttributeSet redBoldSet     = new SimpleAttributeSet();
    private final SimpleAttributeSet bluePlainSet   = new SimpleAttributeSet();
    private final SimpleAttributeSet blueBoldSet    = new SimpleAttributeSet();
    private final SimpleAttributeSet greenPlainSet  = new SimpleAttributeSet();
    private final SimpleAttributeSet grayBoldSet    = new SimpleAttributeSet();
    private final SimpleAttributeSet orangePlainSet = new SimpleAttributeSet();
-   private final SimpleAttributeSet purplePlainSet  = new SimpleAttributeSet();
+   private final SimpleAttributeSet purplePlainSet = new SimpleAttributeSet();
 
    private final StyledDocument doc;
 
@@ -111,6 +112,18 @@ public class SyntaxSearch {
          key(s, redPlainSet, reqWord);
       }
    }
+   
+   /**
+    * Searches keywords and colors them in red and displays them in bold
+    *
+    * @param keys  the array of keywords
+    * @param reqWord  if the keyword must be a word
+    */
+   public void keywordsRedBold(String[] keys, boolean reqWord) {
+      for (String s : keys) {
+         key(s, redBoldSet, reqWord);
+      }
+   }
 
    /**
     * Searches keywords and colors them in blue
@@ -131,7 +144,7 @@ public class SyntaxSearch {
     * @param endChars  the array of characters that mark the end of the
     * variable
     */
-   public void signedKeywords(String[] signs, char[] endChars) {
+   public void signedVariables(String[] signs, char[] endChars) {
       for (String s : signs) {
          signedVariable(s, endChars);
       }
@@ -323,7 +336,7 @@ public class SyntaxSearch {
          if (start != -1) {
             if (SyntaxUtils.isWordStart(toColor, start)) {
                length = SyntaxUtils.wordLength(toColor, start, endChars);
-               setCharAttr(start + posStart, length, redPlainSet);
+               setCharAttr(start + posStart, length, purplePlainSet);
                start += length;
             }
             else {
@@ -529,6 +542,9 @@ public class SyntaxSearch {
    private void setStyles() {
       StyleConstants.setForeground(redPlainSet, RED);
       StyleConstants.setBold(redPlainSet, false);
+      
+      StyleConstants.setForeground(redBoldSet, RED);
+      StyleConstants.setBold(redBoldSet, true);
 
       StyleConstants.setForeground(bluePlainSet, BLUE);
       StyleConstants.setBold(bluePlainSet, false);

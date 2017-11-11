@@ -48,9 +48,9 @@ public class PerlColoring implements Colorable {
    @Override
    public void color(SyntaxSearch search) {
       search.setCharAttrBlack();
-      search.signedKeywords(PERL_SIGNS, END_OF_VAR);
-      search.keywordsBlue(PERL_KEYWORDS, true);
-      search.keywordsBlue(PERL_OP, false);
+      search.signedVariables(PERL_SIGNS, END_OF_VAR);
+      search.keywordsRedBold(PERL_KEYWORDS, true);
+      search.keywordsRedBold(PERL_OP, false);
       search.bracesGray();
       search.quotedText();
       search.lineComments(LINE_CMNT, '$');
