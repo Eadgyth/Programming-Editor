@@ -67,7 +67,6 @@ public class MainWin implements ConsoleOpenable {
    private JSplitPane splitHor;
    private JSplitPane splitVert;
    private int dividerLocVert = 0;
-   private int dividerLocHorAll = 0;
    private int dividerLocHor = 0;
    private final String wordwrapOn = "";
 
@@ -409,8 +408,8 @@ public class MainWin implements ConsoleOpenable {
       vm.setConsoleItmAction(e -> showConsole(vm.isConsoleItmSelected()));
       vm.setFileViewItmAction(e -> showFileView(vm.isFileViewItmSelected()));
       vm.setTabItmAction(e -> showTabbar(vm.isTabItmSelected()));
-      fileTree.closeAct(e -> vm.doUnselectFileViewAct());
-      console.closeAct(e -> vm.doConsoleItmAct(false));
+      fileTree.setCloseAct(e -> vm.doUnselectFileViewAct());
+      console.setCloseAct(e -> vm.doConsoleItmAct(false));
    }
    
    private void showConsole(boolean b) {
@@ -433,13 +432,9 @@ public class MainWin implements ConsoleOpenable {
       if (b) {
          splitHorAll.setDividerSize(6);
          splitHorAll.setRightComponent(toolPnl.panel());
-         if (dividerLocHorAll == 0) {
-            dividerLocHorAll = (int)(frame.getWidth() * 0.7);
-         }
-         splitHorAll.setDividerLocation(dividerLocHorAll);
+         splitHorAll.setDividerLocation((int)(frame.getWidth() * 0.7));
       }
       else {
-         dividerLocHorAll = splitHorAll.getDividerLocation();
          splitHorAll.setDividerSize(0);
          splitHorAll.setRightComponent(null);
       }
