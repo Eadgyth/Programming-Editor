@@ -51,8 +51,7 @@ public class FileUtils {
    }
    
    /**
-    * Appends to the file 'log.txt' the stack trace of an exception
-    * and shows a warning in a dialog window.
+    * Appends to the file 'log.txt' the message and stack trace of an exception
     * <p>The log file is saved in the program's directory.
     *
     * @param e  the <code>Exception</code>
@@ -65,24 +64,12 @@ public class FileUtils {
             writer.write("   " + el.toString() + Constants.LINE_SEP);
          }
          writer.write(Constants.LINE_SEP);
-         Dialogs.errorMessage(
-               "Error:\n" + e.getMessage() + ".\nSee log.txt file");
+         writer.write("_________________" + Constants.LINE_SEP);
+         Dialogs.errorMessage("Error:\n" + e.getMessage());
       }
       catch(IOException ioe) {
          throw new RuntimeException(
-               "Could not write the stack trace to the log file", ioe);
-      }
-   }
-   
-   /**
-    * Empties the 'log' file saved in the program's directory
-    */
-   public static void emptyLog() { 
-      try (FileWriter writer = new FileWriter("log.txt", false)) {
-         writer.write("");
-      }
-      catch(IOException e) {
-         throw new RuntimeException("Could not empty the log file", e);
+               "Could not write to the log file", ioe);
       }
    }
 }
