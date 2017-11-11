@@ -7,9 +7,11 @@ import java.awt.GridLayout;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.JPanel;
@@ -36,7 +38,6 @@ public class ExchangeEditor implements AddableEditTool {
    private final JPanel exchPnl       = new JPanel(new BorderLayout());
    private final JButton setTextBt    = new JButton("Fetch");
    private final JButton insertTextBt = new JButton("Insert");
-   private final JButton takeLangBt   = new JButton("Adopt code editing");
    private final JButton undoBt       = new JButton();
    private final JButton redoBt       = new JButton();
    private final JButton cutBt        = new JButton();
@@ -134,20 +135,36 @@ public class ExchangeEditor implements AddableEditTool {
    private JPanel buttonPnl() {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
       JButton[] bts = new JButton[] {
-         setTextBt, insertTextBt, takeLangBt
+         setTextBt, insertTextBt
       };
       String[] toolTips = new String[] {
          "Fetch text that is selected in the selected file",
          "Insert or replace selected text in the selected file",
-         "Adopt language and indentation from the selected file"
       };
       for (int i = 0; i < bts.length; i++) {
          bts[i].setFocusable(false);
          bts[i].setToolTipText(toolTips[i]);
          pnl.add(bts[i]);
       }
+      pnl.add(setLangBox());
       return pnl;
    }
+   
+   private JComboBox setLangBox() {
+      String[] opt = new String[Languages.values().length];
+      for (int i = 0; i < opt.length; i++) {
+         opt[i] = Languages.values()[i].display();
+      }
+      JComboBox cb = new JComboBox(opt);
+      cb.addItemListener(ie -> {
+         if (ie.getStateChange() == ItemEvent.SELECTED) {
+            exch.changeCodeEditing(Languages.values()[cb.getSelectedIndex()]);
+         }
+      });
+      cb.setFocusable(false);
+      return cb;
+   }
+      
 
    private JPanel checkBoxPnl() {
       JPanel pnl = new JPanel();
@@ -168,11 +185,11 @@ public class ExchangeEditor implements AddableEditTool {
       holdPnl.add(pnl);
       return holdPnl;
    }
+      
 
    private void setBtnActions() {
       setTextBt.addActionListener(e -> exch.setTextFromDoc());
       insertTextBt.addActionListener(e -> exch.replaceTextInDoc());
-      takeLangBt.addActionListener(e -> exch.changeCodeEditing());
 
       undoBt.setAction(new FunctionalAction("", IconFiles.UNDO_ICON,
             e -> edit.undo()));

@@ -19,7 +19,6 @@ public class TextExchange {
    private final FileDocument exchangeDoc;
    private final JTextPane exchangeArea;
    private final Preferences prefs = new Preferences();
-
    private FileDocument sourceDoc;
    private JTextPane sourceArea;
    private Languages lang = Languages.NORMAL_TEXT; 
@@ -108,15 +107,8 @@ public class TextExchange {
       });
    }
    
-   public void changeCodeEditing() {
-      if (lang != sourceDoc.language()) {
-         lang = sourceDoc.language();
-         exchangeDoc.changeLanguage(lang);
-      }
-      if (!indentUnit.equals(sourceDoc.getIndentUnit())) {
-         indentUnit = sourceDoc.getIndentUnit();
-         exchangeDoc.setIndentUnit(indentUnit);
-      }
+   public void changeCodeEditing(Languages lang) {
+      exchangeDoc.changeLanguage(lang);
    }
    
    public void clear() {
