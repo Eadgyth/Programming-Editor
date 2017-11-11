@@ -49,7 +49,6 @@ public class ProcessStarter {
       this.consPnl = consPnl;
       consPnl.setCmdAct(e -> startNewCmd());
       consPnl.setRunAct(e -> startPreviousCmd());
-      consPnl.setRunEadAct(e -> runEadgyth());
       consPnl.setStopAct(e -> endProcess());
    }
 
@@ -178,13 +177,6 @@ public class ProcessStarter {
       startProcess(previousCmd);
    }
 
-   private void runEadgyth() {
-      String workingDirHelper = workingDir;
-      workingDir = System.getProperty("user.dir");
-      startProcess("java -jar Eadgyth.jar");
-      EventQueue.invokeLater(() -> workingDir = workingDirHelper);
-   }
-
    private void endProcess() {
       if (process != null) {
          kill = () -> {
@@ -214,7 +206,7 @@ public class ProcessStarter {
       InputStreamReader isr = new InputStreamReader(is);
       BufferedReader reader = new BufferedReader(isr);
       
-      CaptureInput(PrintWriter out) {
+      private CaptureInput(PrintWriter out) {
          this.out = out;
       }
 

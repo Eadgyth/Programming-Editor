@@ -34,7 +34,6 @@ public class ConsolePanel {
 
    private final JButton   setCmdBt   = new JButton("Cmd...");
    private final JButton   runBt      = new JButton(IconFiles.RUN_CMD_ICON);
-   private final JButton   runEadBt   = new JButton(IconFiles.EADGYTH_ICON_SET);
    private final JButton   stopBt     = new JButton(IconFiles.STOP_PROCESS_ICON);
    private final JButton   clearBt    = new JButton(IconFiles.CLEAR_ICON);
    private final JButton   closeBt    = new JButton(IconFiles.CLOSE_ICON);
@@ -156,7 +155,7 @@ public class ConsolePanel {
     *
     * @param al  the {@code ActionListener}
     */
-   public void closeAct(ActionListener al) {
+   public void setCloseAct(ActionListener al) {
       closeBt.addActionListener(al);
    }
 
@@ -166,10 +165,6 @@ public class ConsolePanel {
 
    public void setRunAct(ActionListener al) {
       runBt.addActionListener(al);
-   }
-
-   public void setRunEadAct(ActionListener al) {
-      runEadBt.addActionListener(al);
    }
 
    public void setStopAct(ActionListener al) {
@@ -182,12 +177,11 @@ public class ConsolePanel {
 
    private JToolBar createToolbar() {
       JButton[] bts = new JButton[] {
-         setCmdBt, runBt, runEadBt, stopBt, clearBt, closeBt
+         setCmdBt, runBt, stopBt, clearBt, closeBt
       };
       String[] tooltips = new String[] {
          "Run a new system command",
          "Run a previous system command",
-         "Run a new Eadgyth",
          "Quit current process",
          "Clear the console",
          "Close the console"
