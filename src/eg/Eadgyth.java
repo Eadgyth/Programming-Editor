@@ -8,7 +8,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.ui.MainWin;
 import eg.ui.ViewSettingWin;
 import eg.utils.FileUtils;
@@ -25,7 +25,6 @@ public class Eadgyth {
       Locale.setDefault(Locale.US);
       uiManagerSettings();
       setLaf();
-      FileUtils.emptyLog();
 
       MainWin         mw         = new MainWin();
       ViewSettingWin  viewSetWin = new ViewSettingWin();
