@@ -63,9 +63,8 @@ public class FileUtils {
          for (StackTraceElement el : e.getStackTrace()) {
             writer.write("   " + el.toString() + Constants.LINE_SEP);
          }
-         writer.write(Constants.LINE_SEP);
          writer.write("_________________" + Constants.LINE_SEP);
-         Dialogs.errorMessage("Error:\n" + e.getMessage());
+         Dialogs.errorMessage("Error:" + e.getMessage());
       }
       catch(IOException ioe) {
          throw new RuntimeException(
