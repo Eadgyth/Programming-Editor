@@ -92,6 +92,7 @@ public final class EditArea {
          @Override
          public void focusLost(FocusEvent fe) {
             textArea.getCaret().setSelectionVisible(true);
+            textArea.getCaret().setVisible(true);
          }
       });
    }
