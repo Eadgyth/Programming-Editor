@@ -30,14 +30,13 @@ import eg.document.FileDocument;
 import eg.utils.UiComponents;
 
 /**
- * The editing of text taken from a file document in a separate text area.
- * The font is fixed (Consolas)
+ * The editing and viewing of text in a separate text area
  */
 public class ExchangeEditor implements AddableEditTool {
 
    private final JPanel exchPnl       = new JPanel(new BorderLayout());
-   private final JButton setTextBt    = new JButton("Fetch");
-   private final JButton insertTextBt = new JButton("Insert");
+   private final JButton setTextBt    = new JButton("Copy from file");
+   private final JButton insertTextBt = new JButton("Copy to file");
    private final JButton undoBt       = new JButton();
    private final JButton redoBt       = new JButton();
    private final JButton cutBt        = new JButton();
@@ -56,10 +55,8 @@ public class ExchangeEditor implements AddableEditTool {
       editAreaPnl = ea.editAreaPnl();
       FileDocument fd = new FileDocument(ea, Languages.NORMAL_TEXT);
       exch = new TextExchange(fd);
-      fd.setUndoableChangeListener(e ->
-             enableUndoRedo(e.canUndo(), e.canRedo()));
-      fd.setTextSelectionListener(e ->
-             enableCutCopy(e.isSelection()));
+      fd.setUndoableChangeListener(e -> enableUndoRedo(e.canUndo(), e.canRedo()));
+      fd.setTextSelectionListener(e -> enableCutCopy(e.isSelection()));
       edit.setFileDocument(fd);
    }
 
@@ -126,9 +123,9 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    private JPanel controlsPnl() {
-      JPanel pnl = new JPanel(new GridLayout(2, 1));
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
       pnl.add(buttonPnl());
-      pnl.add(checkBoxPnl());
+      pnl.add(setLangBox());
       return pnl;
    }
 
@@ -138,19 +135,19 @@ public class ExchangeEditor implements AddableEditTool {
          setTextBt, insertTextBt
       };
       String[] toolTips = new String[] {
-         "Fetch text that is selected in the selected file",
-         "Insert or replace selected text in the selected file",
+         "Copy text selected in viewed file to exchange editor",
+         "Copy text selected in exchange editor to viewed file",
       };
       for (int i = 0; i < bts.length; i++) {
          bts[i].setFocusable(false);
          bts[i].setToolTipText(toolTips[i]);
          pnl.add(bts[i]);
       }
-      pnl.add(setLangBox());
       return pnl;
    }
    
-   private JComboBox setLangBox() {
+   private JPanel setLangBox() {
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
       String[] opt = new String[Languages.values().length];
       for (int i = 0; i < opt.length; i++) {
          opt[i] = Languages.values()[i].display();
@@ -162,30 +159,9 @@ public class ExchangeEditor implements AddableEditTool {
          }
       });
       cb.setFocusable(false);
-      return cb;
-   }
-      
-
-   private JPanel checkBoxPnl() {
-      JPanel pnl = new JPanel();
-      pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
-      JCheckBox replBx = new JCheckBox(
-            "Replace fetched text");
-      replBx.setFocusable(false);
-      replBx.addItemListener(e ->
-         exch.setReplace(e.getStateChange() == ItemEvent.SELECTED));
-      pnl.add(replBx);
-      JCheckBox selectBx = new JCheckBox(
-            "Insert only selected text");
-      selectBx.setFocusable(false);
-      selectBx.addItemListener(e ->
-         exch.setInsertSelection(e.getStateChange() == ItemEvent.SELECTED));
-      pnl.add(selectBx);
-      JPanel holdPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      holdPnl.add(pnl);
-      return holdPnl;
-   }
-      
+      pnl.add(cb);
+      return pnl;
+   }      
 
    private void setBtnActions() {
       setTextBt.addActionListener(e -> exch.setTextFromDoc());

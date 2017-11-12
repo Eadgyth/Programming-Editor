@@ -13,8 +13,9 @@ import eg.utils.Dialogs;
 public class TextExchange {
    
    private final static String F_SEP = File.separator;
-   private final static File BACK_UP = new File(System.getProperty("user.dir")
-                                     + F_SEP + "exchangeContent.txt");
+   private final static File BACK_UP
+         = new File(System.getProperty("user.dir")
+         + F_SEP + "exchangeContent.txt");
    
    private final FileDocument exchangeDoc;
    private final JTextPane exchangeArea;
@@ -23,8 +24,6 @@ public class TextExchange {
    private JTextPane sourceArea;
    private Languages lang = Languages.NORMAL_TEXT; 
    private String indentUnit = "";
-   private boolean isReplace = false;
-   private boolean isInsertSel = false;
    
    public TextExchange(FileDocument exchangeDoc) {
       this.exchangeDoc = exchangeDoc;
@@ -41,56 +40,36 @@ public class TextExchange {
       this.sourceArea = sourceDoc.docTextArea();
    }
    
-   public void setReplace(boolean b) {
-      isReplace = b;
-   }
-   
-   public void setInsertSelection(boolean b) {
-      isInsertSel = b;
-   }
-   
    public void setTextFromDoc() {
       String textToIns = sourceArea.getSelectedText();
       if (textToIns == null) {
-         Dialogs.infoMessage("No text is selected", null);
+         String filename = "unnamed";
+         if (sourceDoc.hasFile()) {
+            filename = sourceDoc.filename();
+         }
+         Dialogs.warnMessage("No text is selected in " + filename);
          return;
       }
       exchangeDoc.requestFocus();
-      int posToIns = 0;
-      String textToReplace = null;
-      if (isReplace) {
-         exchangeDoc.remove(0, exchangeDoc.getDocLength());
-      }
-      else {
-         textToReplace = exchangeArea.getSelectedText();
-         posToIns = exchangeArea.getSelectionStart();
-      }
-      int posFin = posToIns;
+      String textToReplace = exchangeArea.getSelectedText();
+      int posToIns = exchangeArea.getSelectionStart();
       exchangeDoc.enableCodeEditing(false);
       if (textToReplace != null) {
-         exchangeDoc.remove(posFin, textToReplace.length());
+         exchangeDoc.remove(posToIns, textToReplace.length());
       }
       EventQueue.invokeLater(() -> {
-         exchangeDoc.insert(posFin, textToIns);
-         exchangeDoc.colorSection(textToIns, posFin);
+         exchangeDoc.insert(posToIns, textToIns);
+         exchangeDoc.colorSection(textToIns, posToIns);
          exchangeDoc.enableCodeEditing(true);
       });
    }
    
    public void replaceTextInDoc() {
       String text;
-      if (isInsertSel) {
-         text = exchangeArea.getSelectedText();
-         if (text == null) {
-            Dialogs.infoMessage("No text to insert is selected", null);
-            return;
-         }
-      }
-      else {
-         text = exchangeDoc.getDocText();
-         if (text.length() == 0) {
-            return;
-         }
+      text = exchangeArea.getSelectedText();
+      if (text == null) {
+         Dialogs.warnMessage("No text is selected in the exchange editor");
+         return;
       }
       sourceDoc.requestFocus();
       String textFin = text;
