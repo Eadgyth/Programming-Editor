@@ -432,7 +432,6 @@ public class MainWin implements ConsoleOpenable {
       if (b) {
          splitHorAll.setDividerSize(6);
          splitHorAll.setRightComponent(toolPnl.panel());
-         splitHorAll.setDividerLocation((int)(frame.getWidth() * 0.7));
       }
       else {
          splitHorAll.setDividerSize(0);

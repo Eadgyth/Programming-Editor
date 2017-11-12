@@ -135,7 +135,7 @@ public class FileTree extends Observable {
     *
     * @param al  the {@code ActionListener}
     */
-   public void closeAct(ActionListener al) {
+   public void setCloseAct(ActionListener al) {
       closeBt.addActionListener(al);
    }
 
