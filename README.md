@@ -1,4 +1,4 @@
-# Java-Programming-Editor / Eadgyth
+# Programming-Editor
 A source code text editor, written in Java, with a simple but flexible setting up of projects.
 <p>
 The motivation is to have an editor that helps coding in may ways but that is at the
