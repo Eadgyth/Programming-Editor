@@ -156,12 +156,9 @@ public class ProcessStarter {
 
    private void startNewCmd() {
       String cmd = Dialogs.textFieldInput(
-            "<html>"
-            + "Enter a system command that is executed in the current"
-            + " working directory <i>" + workingDirName +"</i>"
-            + "</html>",
-            "Run",
-            previousCmd);
+            "Enter a system command that is executed in the current"
+            + " working directory (" + workingDirName + ")",
+            "Run", previousCmd);
  
       if (cmd != null && cmd.length() > 0) {
          consPnl.enableRunBt(false);
