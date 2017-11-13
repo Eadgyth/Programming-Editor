@@ -159,7 +159,7 @@ public class Dialogs {
          String initText) {
 
       Object resObj = JOptionPane.showInputDialog(null, message, title,
-            JOptionPane.QUESTION_MESSAGE, null, null, initText);
+            JOptionPane.PLAIN_MESSAGE, null, null, initText);
       if (resObj != null) {
          return resObj.toString();
       }
