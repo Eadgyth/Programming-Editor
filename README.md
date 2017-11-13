@@ -1,9 +1,10 @@
-# Programming-Editor
-A source code text editor, written in Java, with a simple but flexible setting up of projects.
+<img src="images/EadgythIcon.png" width="50"/>
+Eadgyth is a simple source code text editor, written in Java, with a simple but flexible setting
+up of coding projects.
 <p>
 The motivation is to have an editor that helps coding in may ways but that is at the
-same time easy to work with. It may be especially suited to write and test applications for
-home or lerning requirements.
+same time simple to work with as much as possible. It may be especially suited to write
+and test applications for home or lerning requirements.
 <p>
 The coding language is currently Java but the program is made to integrate other languages
 or types of projects. To illustrate this draft implementations for writing in Perl and HTML
@@ -29,9 +30,9 @@ FEATURES<br>
    and testing a program (also allows running self-chosen system commands)</li>
 </ul>
 (Under Windows 10, setting the system look and feel)<br>
-<img src="Screenshots/Windows10SystemLAF.png" width="550"/>
+<img src="images/Windows10SystemLAF.png" width="550"/>
 <p>
-<img src="Screenshots/SimpleEditorView.png" width="400"/>
+<img src="images/SimpleEditorView.png" width="400"/>
 <p>
 REQUIREMENTS FOR TESTING<br>
 Running the program requires Java 8 (JRE and JDK). Java 9 was tried but did not work ok
