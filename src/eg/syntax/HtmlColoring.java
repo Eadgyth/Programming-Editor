@@ -20,7 +20,7 @@ public class HtmlColoring implements Colorable {
       "meta",
       "object", "ol", "output",
       "p",
-      "s", "script", "span", "style",
+      "s", "script", "span", "strong", "style", "sub", "sup",
       "table", "textarea", "title",
       "ul",
    };
