@@ -13,7 +13,7 @@
              margin-top: 50px;
              margin-bottom: 50px;
              margin-right: 150px;
-             margin-left: 30px;
+             margin-left: 50px;
          }
       </style>
    </head>
@@ -21,9 +21,9 @@
       <div>
          <a name="ancor"></a>
          <h2>Eadgyth help</h2>
-         <p>... please help: if really somebody gave the program a try a message about
-            problems is welcome at
-            <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a>.</p>
+         <p>If somebody gave the program a try a message about problems is welcome at
+            <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a>.
+         </p>
 
          <hr>
 
@@ -56,37 +56,35 @@
          <h3 id="RunProject">Running a project</h3>
 
          <h4 id="ProjectTypes">Types of projects</h4>
-         <p>The following types of projects may be defined and would be recognized based
-            on the file extension:</p>
+         <p>The following project categories can be defined:
+         </p>
          <ol>
-            <li><a href="#JavaProject">Java</a> (file extension is .java)
-            <li><a href="#PerlProject">Perl</a> (file extensions are .pl, .pm)
-            <li><a href="#HtmlProject">HTML</a> (file extensions are .html, .htm, .js)
+            <li><a href="#JavaProject">Java</a>
+            <li><a href="#PerlProject">Perl</a>
+            <li><a href="#HtmlProject">HTML</a>
          </ol>
 
          <h4 id="Config">Configuring a project</h4>
          <ol>
-            <li>Open a file or save a new file that is part of a project to be defined.</li>
-            <li>Open the settings window by selecting 'Project' > 'Assign project' (or
-                'Project settings' at this point).</li>
+            <li>Open a file from or save a new file to the directory that is the supposed
+                project root directory. The file may also be located in a sub-directory
+                of the root.</li>
+            <li>Open the settings window by selecting 'Project' > 'Assign project'.</li>
             <li>Enter the name of the main source file. The main file does not have to be the
-                opened file but must already exist.</li>
-            <li>If the main file is part of a package (for Java) enter the package name (or
-                the package path) in the field 'Package containing the main class'.</li>
-            <li>If the source files (or the packages) are saved in a sub-directory of the 
-                project directory the name of this directory is entered in the field 'Name
-                of sources directory'.</li>
-            <li>The name of separate destination directory for compiled files (for Java) maybe
-                entered in the field 'Name of executables directory'. This folder will be
-                created in the project's root directory when source files are compiled.</li>
-            <li>Click ok. If entries are correct, that is the entries can be matched with the
-                file path of the main file, the project can be viewed in the 'Project explorer'.
-                This is opened by selecting 'View' > 'Project explorer'.</li>
-            <li>The field 'Name of project root' does not have to be filled. However, entering
-                a name enforces that the determined root directory has this name. The text
-                field shows the name of the root when the settings window is newly opened or
-                if a previous project is <a href="#Retrieve">retrieved</a>. It must be cleared
-                (or modified) if an existing project root is to be changed.</li>
+                opened file but must exist. For Html only the name of the supposed root
+                directory of the project is asked for.</li>
+            <li>If the main file is part of a package (applies to Java) enter the package name
+                (or the package path) in the field 'Package containing the main class'.</li>
+            <li>If source files (or the packages for Java) are saved in a sub-directory of
+                the supposed project's root directory the name of this directory is entered in
+                the field 'Name of sources directory'.</li>
+            <li>The name of a separate destination directory for compiled files (applied to
+                Java) maybe entered in the field 'Name of executables directory'. This folder
+                will be created in the project's root directory when source files are compiled.</li>
+            <li>Click ok. If entries are correct the project can be viewed in the 'Project
+                explorer'. This is opened by selecting 'View' > 'Project explorer'.</li>
+            <li>The field 'Name of project root' does not have to be filled unless the project
+                category is Html.</li>
          </ol>
 
          <h4 id="ChangeProjects">Changing between projects</h4>
@@ -102,126 +100,135 @@
          <ul>
             <li>The project that was active when the program was closed the last time is retrieved
                 and set active when a file of that project is opened (or a new file is saved to
-                that project) and no other project is already active.</li>
-            <li>If 'Store settings in 'eadconfig file'' is selected in the settings window the
-                configuration of the project is stored in a file that is saved in the project folder.
-                It can be deleted at any time by unselecting the option to save it.<br>
-                If a file of a project that is 'marked' by the config file is opened the project is
-                loaded even if it was not active lastly and also if another project is already
-                active.</li>
+                that project) and no other project is already active.
+            </li>
+            <li>If 'Save configuration in the project root' is selected in the settings window the
+                parameters for the project are stored in a properties file that is saved in the
+                project's root folder. It can be deleted at any time by unselecting the option to save
+                it.<br>
+                This properties file in way marks a project as an "Eadgyth project". If a file of a
+                marked project is opened (or a new file is saved to that project) the project is set
+                active even if it was not active lastly. Also, if another project is already active, a
+                marked project is loaded and can be set active by selecting 'Project' > 'Change project'.
+             </li>
                 </ol>
          </ul>
 
          <h4 id="Language">Setting the language</h4>
          <ul>
-            <li>The language is defined based on the extension of an opened or newly saved
-                file.</li>
-            <li>Selecting the language in the Edit menu ('Edit' > 'Languages') sets the
-                default value for new empty files.</li>
+            <li>The language is defined based on the extension of an opened or newly saved file.</li>
+            <li>Selecting the language in the Edit menu ('Edit' > 'Language') sets the default
+                for new empty files.</li>
          </ul>
 
          <h4 id="JavaProject">Testing Java code and packing a jar file</h4>
          <ol>
-            <li>Compile the source file(s) by selecting either 'Save selected source file and
-                compile' or 'Save all opened source files and compile' in the 'Project' menu.
-                If errors occured it is asked to open the console panel to view messages.</li>
-            <li>If the compilation was successful the new program can be run for testing by
-                using 'Run' in the 'Project' menu. The output and error messages from the tested 
-                program are displayed in the console panel. The tested program can be forcibly
-                quit by clicking the 'stop' symbol in the toolbar of the console panel.</li>
-            <li>Arguments for a start script may be entered in the text field 'Arguments'
-                (separated by single spaces) in the settings window ('Project' > '
-                Project settings').</li>
+            <li>Compile the source file(s) by selecting either 'Save selected source file and compile'
+                or 'Save all opened source files and compile' in the 'Project' menu. If errors occured
+                it is asked to open the console panel to view messages.
+            </li>
+            <li>If the compilation was successful the Java program can be run for testing by selecting 
+                'Run' in the 'Project' menu. The output and error messages from the tested program are
+                displayed in the console panel. The tested program can be forcibly quit by clicking the
+                'stop' symbol in the toolbar of the console panel.
+            </li>
+            <li>Arguments for a start script may be entered in the text field 'Arguments' (separated by
+                single spaces) in the settings window ('Project' > ' Project settings').
+            </li>
             <li>A jar file may be created by selecting 'Project' > 'Create
                 jar'. The jar file is saved in the executable's folder or, if no such folder
                 is defined, in the project's root folder. A name for the jar file can be specified
                 in the settings window. If no name is specified the jar name is the same as the
                 name of the main class. Note that presently only class files can be bundled in a
-                jar.</li>
+                jar.
+             </li>
          </ol>
 
          <h4 id="PerlProject">Testing a Perl script</h4>
          <ol>
-            <li>Save changes to the script and select 'Run' in the 'Project' menu.</li>
+            <li>Save changes to the script and select 'Run' in the 'Project' menu.
+            </li>
             <li>Any output (error) is shown in the console panel. NOTE: there is a limitation when the
                 script asks for input through a command line. In that case any output from the script
                 expected before the user input is asked for (like "Enter your name:") is not printed
-                (more precisely it's printed only after all inputs were made). The output would be shown
-                as expected (as far as tested) if the autoflushing of Perl's STDOUT is turned on in the
-                script itself. The other possibilty is, of course, to start the command line/terminal
-                of the OS to test the script (see <a href="#Console">Using the console</a>).</li>
+                (more precisely it's printed only after all inputs were made). The output would be
+                shown as expected (as far as tested) if the autoflushing of Perl's STDOUT is turned on
+                in the script itself. The other possibilty is, of course, to start the command
+                line/terminal of the OS to test the script (see <a href="#Console">Using the console</a>).
+            </li>
             <li>Arguments for a start script may be entered in the text field 'Arguments'
-                (separated by single spaces) in the settings window ('Project' > 'Project settings').</li>
+                (separated by single spaces) in the settings window ('Project' > 'Project settings').
+            </li>
          </ol>
 
          <h4 id="HtmlProject">Viewing HTML code in a web browser</h4>
          <ol>
-            <li>Save changes to the file and select 'Run' in the 'Project' menu to view the html file in
-                the default web browser.</li>
+            <li>Save changes to the selected html file and select 'Run' in the 'Project' menu to view the
+                html file in the default web browser.
+            </li>
          </ol>
          <a href="#ancor">Back to top</a>
          <hr>
 
          <!--Console-->
          <h3 id="Console">Using the console</h3>
-         <p>The console area shall show messages after compilation of a project and the output of
-            a program that is tested.</p>
+         <p>The console area shall show messages after compilation of a project and the output of a
+            program that is tested.</p>
          <p>In addition, self-chosen system commands entered in a dialog can be run in the current
-            working directory (the project's root directory). A run process can be forcibly quit by
-            clicking the 'stop' symbol.</p>
+            working directory (the project's root directory).</p>
+         <p>A run process can be forcibly quit by clicking the 'stop' symbol.</p>
          <p>The console does not emulate the terminal of the operating system! However,
             it is possible (or rather not prohibited) to run the system's terminal in the console
             by running the command that starts the terminal (e.g., cmd.exe in Windows). It is
             important to note that a tested program thereupon started from this terminal CANNOT be
             forcibly quit by clicking the 'stop' symbol.</p>
-         <p>
-         <p>Hint: using the command to start 'THE' terminal (in Windows this would be
-            cmd.exe /c [some command]) presets the working directory for the terminal to the
-            project's root directory.
+         <p>Hint: using the command to start "THE" terminal (in Windows this would be cmd.exe /c start)
+            presets the working directory for the terminal to the project's root directory.</p>
 
          <h4>To run a system command...</h4>
          <ol>
-            <li>Open the console panel in the menu 'View'.</li>
-            <li>Press the button 'Cmd..' and enter a command in the shown dialog window.
-                klick ok in the dialog window to run the command.</li>
-            <li>To run a previous command press the '>' button; to change a command open
-                the command dialog again by clicking 'Cmd...'.</li>
+            <li>Open the console panel in the menu 'View'.
+            </li>
+            <li>Press the button 'Cmd...' and enter a command in the shown dialog window. Klick ok in
+                the dialog window to run the command.
+            </li>
+            <li>To run a previous command press the '>' button; to change a command open the command
+                dialog again by clicking 'Cmd...'.
+            </li>
          </ol>
-
-         <h4>Further options</h4>
-         <ul>
-            <li>A new instance of Eadgyth can be run from the console by pressing the button with
-                the Eadgyth icon in the toolbar of the console panel. One reason to do this would
-                be to view the output when a plugin is tested.</li>
-         </ul>
          <a href="#ancor">Back to top</a>
          <hr>
 
          <!--File explorer-->
          <h3 id="Explorer">Using the project explorer</h3>
-         <p>The project explorer can be opened by selecting 'View' > 'Project explorer' once a
-            project is assigned.<br>
-            The explorer always shows the project that is currently set active. A few operations
-            are supported:</p>
+         <p>The project explorer is opened by selecting 'View' > 'Project explorer'. It shows the file
+            system of a project once one is assigned.<br>
+            The explorer always shows the project that is currently set active. A few operations are
+            supported:</p>
          <ul>
-            <li>The project's file system is shown as a tree in which folders are expanded or
-                shrunk by clicking the (+), (-) handles, as usual. However, a double left
-                click on a folder symbol does not expand/shrink the folder but displays a new
-                tree rooted at the clicked folder. To move back the 'Folder up' symbol
-                is clicked. The topmost level is always the project's root directory.</li>
-            <li>A double left click on a file opens the clicked file in a new tab.</li>
-            <li>A file may be deleted after a right click on a file symbol and selecting
-                'delete'. If the deleted file is in an open tab, the tab is not closed but
-                 goes into 'Save as' mode.</li>
-            <li>A folder may be as well deleted after a right click on a folder symbol but
-                a folder is protected from deletion if it is not empty. The exception is, if
-                present, the folder for executable files or its subfolders. This may be
-                deleted for a completely renewed compilation</li>
+            <li>The project's file system is shown as a tree in which folders are expanded or shrunk by
+                clicking the (+), (-) handles, as usual. However, a double left click on a folder symbol
+                does not expand/shrink the folder but displays a new tree rooted at the clicked folder.
+                To move back the 'Folder up' symbol is clicked. The topmost level is always the project's
+                root directory.
+            </li>
+            <li>A double left click on a file opens the clicked file in a new tab.
+            </li>
+            <li>A file may be deleted after a right click on a file symbol and selecting'delete'. If the
+                deleted file is in an open tab, the tab is not closed but goes into "Save as" mode.
+            </li>
+            <li>A folder may be as well deleted after a right click on a folder symbol but a folder is
+                protected from deletion if it is not empty. The exception is, if present, the folder for
+                executable files or its subfolders. This may be deleted for a completely renewed
+                compilation.
+            </li>
             <li>A new folder may be created after a right click on a folder symbol and selecting
-               'Create new folder'.</li>
-            <li>Changes to the project's file structure made from within the program should be
-                updated in the file view (no guarantee). Changes made from outside the program
-                would be updated "manually" by clicking the 'refresh' symbol.</li>
+               'Create new folder'.
+            </li>
+            <li>Changes to the project's file structure made from within the program should be updated
+                in the file view (???). Changes made from outside the program would be updated
+                "manually" by clicking the 'refresh' symbol.
+            </li>
           </ul>
           <a href="#ancor">Back to top</a>
       </div>
