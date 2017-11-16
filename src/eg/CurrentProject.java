@@ -213,7 +213,12 @@ public class CurrentProject {
     * Runs this current project
     */
    public void runProj() {
-      current.runProject();
+      if (current.usesProjectFile()) {
+         current.runProject();
+      }
+      else {
+         current.runProject(fDoc[iCurr].filepath());
+      }
    }
 
    /**

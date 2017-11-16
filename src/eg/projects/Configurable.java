@@ -45,6 +45,14 @@ public interface Configurable {
    public boolean retrieveProject(String dir);
    
    /**
+    * True if the project is configured with a (main) project file. False
+    * means that only the project's root directory is specified
+    *
+    * @return  if the project uses a project file
+    */
+   public boolean usesProjectFile();
+   
+   /**
     * If the specified directory equals or is in the project's root
     * directory
     *

@@ -22,6 +22,16 @@ public interface ProjectActions extends Configurable {
    };
    
    /**
+    * Runs a project using the specified file
+    *
+    * @param  filepath  the full filepath
+    */
+   public default void runProject(String filepath) {
+      throw new UnsupportedOperationException(
+            "Running the project is not supported");
+   };
+   
+   /**
     * Creates a build of a project, where it is not specified what
     * 'build' is
     */

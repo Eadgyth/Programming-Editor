@@ -17,15 +17,16 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
    private String startCommand = "";
 
    PerlActions(ConsoleOpenable co, ProcessStarter proc) {
-      super("pl");
+      super("pl", true);
       this.co = co;
       this.proc = proc;
    }
    
    @Override
    public void createSettingsWin() {
-      setWin = SettingsWin.adaptableWindow("Name of Perl script");
-      setWin.addSourceDirOption()
+      setWin = SettingsWin.adaptableWindow();
+      setWin.addFileOption("Name of Perl Script")
+            .addSourceDirOption()
             .addArgsOption()
             .setupWindow();
    }

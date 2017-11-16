@@ -10,17 +10,14 @@ import eg.utils.FileUtils;
  * Represents a project to write a webpage in HTML
  */
 public final class HtmlActions extends ProjectConfig implements ProjectActions {
-
-   private final static String F_SEP = File.separator;
-   private File htmlFile;
    
    public HtmlActions(String suffix) {
-      super(suffix);
+      super(suffix, false);
    }
    
-   @Override
+  @Override
    public void createSettingsWin() {
-      setWin = SettingsWin.basicWindow("Name of main HTML file");
+      setWin = SettingsWin.projectRootWindow();
    }
    
    /**
@@ -30,9 +27,6 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    @Override
    public boolean configureProject(String dir) {
       boolean success = super.configureProject(dir);
-      if (success) {
-         setHtmlFile();
-      }
       return success;
    }
 
@@ -43,17 +37,20 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    @Override
    public boolean retrieveProject(String dir) {
       boolean success = super.retrieveProject(dir);
-      if (success) {
-         setHtmlFile();
-      }
       return success;
    }
    
    /**
-    * Shows the html document in the default file browser
+    * {@inheritDoc}.
+    * Shows the html file in the default file browser
     */
    @Override
-   public void runProject() {
+   public void runProject(String filepath) {
+      if (!filepath.endsWith(getSourceSuffix())) {
+         eg.utils.Dialogs.warnMessage("No " + getSourceSuffix() + " file is selected");
+         return;
+      }
+      File htmlFile = new File(filepath);
       try {
          if (java.awt.Desktop.isDesktopSupported()) {
             java.awt.Desktop.getDesktop().open(htmlFile);
@@ -62,14 +59,5 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
       catch (IOException e) {
          FileUtils.logStack(e);
       }
-   }
-   
-   //
-   //--private--/
-   //
-   
-   private void setHtmlFile() {
-      htmlFile = new File(getProjectPath() + F_SEP + getModuleName()
-               + F_SEP + getMainFile() + "." + getSourceSuffix());
    }
 }

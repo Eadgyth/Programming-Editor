@@ -31,7 +31,7 @@ public final class JavaActions extends ProjectConfig
    JavaActions(ConsoleOpenable co, ProcessStarter proc,
          ConsolePanel consPnl) {
 
-      super("java");
+      super("java", true);
       this.co = co;
       this.proc = proc;
       this.consPnl = consPnl;
@@ -41,8 +41,9 @@ public final class JavaActions extends ProjectConfig
    
    @Override
    public void createSettingsWin() {
-      setWin = SettingsWin.adaptableWindow("Name of main class");
-      setWin.addModuleOption("Package containing the main class")
+      setWin = SettingsWin.adaptableWindow();
+      setWin.addFileOption("Name of main class")
+            .addModuleOption("Package containing the main class")
             .addSourceDirOption()
             .addExecDirOption()
             .addArgsOption()

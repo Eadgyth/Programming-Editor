@@ -45,21 +45,22 @@ public class SettingsWin {
    private final JButton    cancelBt     = new JButton("Cancel");
    private final JCheckBox  saveConfig   = new JCheckBox();
 
-   private String fileLabel = "";
+   private String fileLabel = null;
    private String moduleLabel = null;
    private boolean useScr = false;
    private boolean useExec = false;
    private boolean useArgs = false;
    private String buildLabel = null;
+   private JTextField hasFocus;
 
    /**
-    * Returns a new SettingsWin where only the name for a project file and
-    * for a project root can be entered
-    * @param fileLabel  the label for the file text field
+    * Returns a new SettingsWin where only the name for a project root can be
+    * entered
+    *
     * @return  a new SettingsWin
     */
-   public static SettingsWin basicWindow(String fileLabel) {
-      return new SettingsWin(fileLabel, true);
+   public static SettingsWin projectRootWindow() {
+      return new SettingsWin(true);
    }
 
    /**
@@ -68,13 +69,24 @@ public class SettingsWin {
     * <p>
     * The method {@link #setupWindow()} must be invoked (lastly) to initialize
     * the window. Calling only this method yields a SettingsWin that equals to
-    * a {@link #basicWindow(String)}.
+    * a {@link #projectRootWindow()}.
     * <p>
-    * @param fileLabel  the label for the file text field
     * @return  a new SettingsWin
     */
-   public static SettingsWin adaptableWindow(String fileLabel) {
-      return new SettingsWin(fileLabel, false);
+   public static SettingsWin adaptableWindow() {
+      return new SettingsWin(false);
+   }
+   
+   /**
+    * Adds the option to enter a name for the main project file and
+    * sets the label for the corresponding text field
+    *
+    * @param fileLabel  the label
+    * @return  this
+    */
+   public SettingsWin addFileOption(String fileLabel) {
+      this.fileLabel = fileLabel + " (without ext.)";
+      return this;
    }
 
    /**
@@ -92,6 +104,7 @@ public class SettingsWin {
    /**
     * Adds the option to enter a name of a directory where source
     * files are stored
+    *
     * @return  this
     */
    public SettingsWin addSourceDirOption() {
@@ -102,6 +115,7 @@ public class SettingsWin {
    /**
     * Adds the option to enter a name of a directory where executable
     * files are stored
+    *
     * @return  this
     */
    public SettingsWin addExecDirOption() {
@@ -110,7 +124,8 @@ public class SettingsWin {
    }
 
    /**
-    * Adds the option to enter arguments for a start script.
+    * Adds the option to enter arguments for a start script
+    *
     * @return  this
     */
    public SettingsWin addArgsOption() {
@@ -121,6 +136,7 @@ public class SettingsWin {
    /**
     * Adds the option to enter a build name and sets the label for the
     * corresponding text field
+    *
     * @param  buildLabel for the build text field
     * @return  this
     */
@@ -134,8 +150,8 @@ public class SettingsWin {
     */
    public void setupWindow() {
       if (frame.getContentPane().getComponentCount() > 0) {
-         throw new IllegalStateException("The frame of this SettingsWin"
-               + " is already initialized");
+         throw new IllegalStateException(
+               "The frame of this SettingsWin" + " is already initialized");
       }
       initWindow();
    }
@@ -143,8 +159,8 @@ public class SettingsWin {
    /**
     * Asks the text field for setting the project file to get focus
     */
-   public void focusInFileTextField() {
-      fileTf.requestFocusInWindow();
+   public void requestFocus() {
+      frame.requestFocus();
    }
 
    /**
@@ -163,7 +179,7 @@ public class SettingsWin {
     * @param b  the boolean
     */
    public void setVisible(boolean b) {
-      fileTf.requestFocus();
+      fileTf.requestFocusInWindow();
       frame.setVisible(b);
    }
 
@@ -300,22 +316,27 @@ public class SettingsWin {
    //--private--/
    //
    
-   private SettingsWin(String fileLabel, boolean initWindow) {
-      this.fileLabel = fileLabel + " (without Ext.)";
+   private SettingsWin(boolean initWindow) {
       if (initWindow) {
          initWindow();
       }
    }
 
    private JPanel structurePanel() {
-      int gridSize = 3;
+      int gridSize = 1;
       GridLayout grid = new GridLayout(gridSize, 0);
       JPanel projPnl = new JPanel(grid);
+      JLabel projDirLb = new JLabel("Name of project root:");
 
       // file panel
-      JLabel fileLb = new JLabel(fileLabel + ":");
-      projPnl.add(holdLbAndTf(fileLb, fileTf));
-
+      if (fileLabel != null) {
+         gridSize++;
+         grid.setRows(gridSize);
+         JLabel fileLb = new JLabel(fileLabel + ":");
+         projPnl.add(holdLbAndTf(fileLb, fileTf));
+         projDirLb.setText("Name of project root (input not rqd.):");
+      }
+      //
       // module/subdir panel
       if (moduleLabel != null) {
          gridSize++;
@@ -339,11 +360,10 @@ public class SettingsWin {
          JLabel execDirLb = new JLabel("Name of executables directory:");
          projPnl.add(holdLbAndTf(execDirLb, execDirTf));
       }
-
-      JLabel projDirLb = new JLabel("Name of project root (input not rqd.):");
+      //
+      // project dir panel
       projPnl.add(holdLbAndTf(projDirLb, projDirTf));
-      projPnl.add(checkBxPnl(saveConfig, "Store settings in 'eadconfig' file"));
-
+      
       projPnl.setBorder(titledBorder("Structure"));
       return projPnl;
    }
@@ -414,6 +434,8 @@ public class SettingsWin {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
          combineAll.add(buildPanel());
       }
+      combineAll.add(checkBxPnl(saveConfig,
+            "Save configuration in the project root"));
       combineAll.add(Box.createRigidArea(DIM_SPACER));
       combineAll.add(buttonsPanel());
       return combineAll;

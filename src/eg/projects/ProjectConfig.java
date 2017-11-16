@@ -11,20 +11,27 @@ import eg.utils.Dialogs;
 /**
  * Represents the configuration of a project.
  * <p>
- * Class works in combination with {@link SettingsWin} where the name of a project
- * file and optionally names of sub-directories and some other properties are
- * entered.
+ * Class works in combination with {@link SettingsWin}. To configure a project
+ * the full path of the parent directory of any file that is supposed to belong
+ * to the project is the argument in {@link #configureProject(String)}. This
+ * directory may also be a sub-directory of the supposed project root.
  * <p>
- * The root folder of the project is not specified explicitely in the settings
- * window but the directory of a file that is part of the project (and which is
- * not necessarily the main project file) is passed in as an argument in
- * {@link #configureProject(String)}. It is tested if the main project file whose
- * name is entered in the settings window exists in this directory or possibly
- * further upwards in the path of this directory. The main project file may also be
- * found in sub-directories relative to the supposed root. These must be specified
- * in the settings window and have the order 'sourcesDirName'/'moduleName' if both
- * of these properties are specified. However, the name of the root may be entered
- * in the settings window to require that the found root directory has this name.
+ * There are two modes to configure a project:
+ * <p>
+ * 1) Only a project root is defined. It is tested if the name for the project
+ * root entered in the settings window matches the name of the passed in directory.
+ * If this is not the case, a match is searched further upwards the directory path.
+ * The directory where a match is found is defined as the project root.
+ * <p>
+ * 2) A project (main) file is defined. It is tested if this file exists in
+ * the passed in directory or further upwards the directory path. The directory
+ * where the file is found is defined as the project root. The project file
+ * may itself be found in sub-directories relative to the supposed root.
+ * These must be specified in the settings window and have the order 'sourcesDirName'
+ * /'moduleName' if both of these properties are specified. In this case the test
+ * file is the relative path of the project file. The name of the root may also be
+ * entered in the settings window to require that the found project root has this
+ * name.
  * <p>
  * The configuration of a project is stored in the prefs file of the program and
  * optionally in a 'config' file that is saved in the project's root folder. A
@@ -34,13 +41,14 @@ import eg.utils.Dialogs;
 public abstract class ProjectConfig implements Configurable {
 
    private final static String F_SEP = File.separator;
-   
+
    /**
     * The object of <code>SettingsWin</code> associated with this project.
     * Is initially null
     */
    protected SettingsWin setWin = null;
 
+   private final boolean useProjectFile;
    /*
     * Used to read prefs from the program's Prefs file */
    private final static Preferences PREFS = new Preferences();
@@ -50,6 +58,7 @@ public abstract class ProjectConfig implements Configurable {
 
    private final String suffix;
 
+   private String projTestName = "";
    private String projectRoot = "";
    private String mainFile = "";
    private String moduleDirName = "";
@@ -57,8 +66,6 @@ public abstract class ProjectConfig implements Configurable {
    private String sourceDirName = "";
    private String args = "";
    private String buildName = "";
-   private String projTestName = "";
-   
 
    @Override
    public void setConfiguringAction(ActionListener al) {
@@ -72,7 +79,12 @@ public abstract class ProjectConfig implements Configurable {
 
    @Override
    public boolean configureProject(String dir) {
-      projectRoot = findRootByFile(dir, pathRelToRoot(true));
+      if (useProjectFile) {
+         projectRoot = findRootByFile(dir, pathRelToRoot(true));
+      }
+      else {
+         projectRoot = findRootByTestName(dir);
+      }
       boolean success =  isConfigSuccessful();
       if (success) {
          setWin.setVisible(false);
@@ -106,6 +118,11 @@ public abstract class ProjectConfig implements Configurable {
    }
 
    @Override
+   public boolean usesProjectFile() {
+      return useProjectFile;
+   }
+
+   @Override
    public boolean isInProject(String dir) {
       return isInProject(dir, projectRoot);
    }
@@ -135,12 +152,15 @@ public abstract class ProjectConfig implements Configurable {
    public void storeConfiguration() {
       storeConfigurationImpl();
    }
-   
+
    /**
     * @param suffix  the file extension of source files
+    * @param useProjectFile  specifies if the project uses a main project file.
+    *
     */
-   protected ProjectConfig(String suffix) {
+   protected ProjectConfig(String suffix, boolean useProjectFile) {
       this.suffix = suffix;
+      this.useProjectFile = useProjectFile;
    }
 
    /**
@@ -226,7 +246,7 @@ public abstract class ProjectConfig implements Configurable {
          }
       }
    }
-   
+
    private boolean isInProject(String dir, String projRoot) {
       File child = new File(dir);
       File root = new File(projRoot);
@@ -238,10 +258,24 @@ public abstract class ProjectConfig implements Configurable {
       }
       return false;
    }
-   
+
+   private String findRootByTestName(String dir) {
+      File root = new File(dir);
+      String existingName;
+      projTestName = setWin.projDirNameInput();
+      while(root != null) {
+         existingName = root.getName();
+         if (projTestName.equals(existingName) && root.exists()) {
+            return root.getPath();
+         }
+         root = root.getParentFile();
+      }
+      return "";
+   }
+
    private String findRootByFile(String dir, String file) {
       File root = new File(dir);
-      String relToRoot = F_SEP + file;
+      String relToRoot = relToRoot = F_SEP + file;
       String existingPath;
       while (root != null) {
          existingPath = root.getPath() + relToRoot;
@@ -266,9 +300,11 @@ public abstract class ProjectConfig implements Configurable {
          sb.append(moduleDirName);
          sb.append(F_SEP);
       }
-      sb.append(mainFile);
-      sb.append(".");
-      sb.append(suffix);
+      if (mainFile.length() > 0) {
+         sb.append(mainFile);
+         sb.append(".");
+         sb.append(suffix);
+      }
       return sb.toString();
    }
 
@@ -292,12 +328,11 @@ public abstract class ProjectConfig implements Configurable {
       }
       if (!success) {
          Dialogs.warnMessageOnTop(
-                  "The entries cannot be matched with an existing file");            
-         setWin.focusInFileTextField();
+                  "The entries cannot be matched with an existing file");
       }
-      return success;      
+      return success;
    }
-   
+
    private void storeConfigurationImpl() {
       if (projectRoot.length() == 0) {
          throw new IllegalStateException(
@@ -306,7 +341,7 @@ public abstract class ProjectConfig implements Configurable {
       storeInPrefs();
       storeInEadConfig();
    }
-   
+
    private void storeInPrefs() {
       PREFS.storePrefs("recentProject", projectRoot);
       PREFS.storePrefs("recentMain", mainFile);
@@ -315,7 +350,7 @@ public abstract class ProjectConfig implements Configurable {
       PREFS.storePrefs("recentExecDir", execDirName);
       PREFS.storePrefs("recentBuildName", buildName);
    }
-   
+
    private void storeInEadConfig() {
       if (setWin.isSaveConfig()) {
          EAD_CONFIG.storeConfig("recentMain", mainFile, projectRoot);
@@ -328,7 +363,7 @@ public abstract class ProjectConfig implements Configurable {
          deleteConfigFile();
       }
    }
-      
+
    private void deleteConfigFile() {
       File configFile = new File(projectRoot + F_SEP
             + Preferences.CONFIG_FILE);
@@ -336,6 +371,7 @@ public abstract class ProjectConfig implements Configurable {
          int res = Dialogs.warnConfirmYesNo(
                  "Saving the 'eadconfig' is disabled."
                + " Remove the config file?");
+
          if (res == 0) {
             boolean success = configFile.delete();
             if (!success) {
