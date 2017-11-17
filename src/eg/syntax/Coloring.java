@@ -7,7 +7,7 @@ import javax.swing.text.StyledDocument;
 import eg.Languages;
 
 /**
- * Maintains a <code>SyntaxSearch</code> for Coloring
+ * Maintains a <code>SyntaxSearch</code> for coloring
  */
 public class Coloring {
    
@@ -47,7 +47,7 @@ public class Coloring {
    }
    
    /**
-    * Colors text.
+    * Colors text
     *
     * @param text  the entire text
     * @param toColor  the part of <code>text</code> this is
