@@ -193,7 +193,6 @@ public class CurrentProject {
                     missingFiles.append("\n");
                     missingFiles.append(f.filename());
                 }
-            } else {
             }
          }
          if (missingFiles.length() == 0) {
