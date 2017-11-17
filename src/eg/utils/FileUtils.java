@@ -64,7 +64,7 @@ public class FileUtils {
             writer.write("   " + el.toString() + Constants.LINE_SEP);
          }
          writer.write("_________________" + Constants.LINE_SEP);
-         Dialogs.errorMessage("Error:" + e.getMessage());
+         Dialogs.errorMessage("Error: " + e.getMessage());
       }
       catch(IOException ioe) {
          throw new RuntimeException(
