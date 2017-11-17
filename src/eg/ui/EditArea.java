@@ -26,8 +26,8 @@ import eg.utils.FileUtils;
 import eg.utils.ScreenParams;
 
 /**
- * The editor view that contains the text area to edit text and the
- * area that shows line numbers
+ * The editor view that defines a JPanel that contains the text area for editing
+ * text and the area that displays line numbers
  */
 public final class EditArea {
 
@@ -90,16 +90,15 @@ public final class EditArea {
       textArea.addFocusListener(new FocusAdapter() {
 
          @Override
-         public void focusLost(FocusEvent fe) {
+         public void focusLost(FocusEvent e) {
             textArea.getCaret().setSelectionVisible(true);
-            textArea.getCaret().setVisible(true);
          }
       });
    }
 
    /**
-    * Gets this edit area panel which contains the area in which
-    * text is edited and the area that shows line numbers
+    * Gets this JPanel which contains the area for editing
+    * text and the area that shows line numbers
     *
     * @return  this edit area panel
     */
@@ -108,7 +107,7 @@ public final class EditArea {
    }
 
    /**
-    * Gets this text area in which text is edited
+    * Gets this text area for editing text
     *
     * @return  this text area
     */
@@ -118,7 +117,7 @@ public final class EditArea {
 
    /**
     * Gets the <code>StyledDocument</code> associated with the area
-    * that shows line numbers
+    * that displays line numbers
     *
     * @return  the <code>StyledDocument</code>
     */
@@ -130,23 +129,24 @@ public final class EditArea {
     * Gets this implemented method in <code>LineNrWidthAdaptable</code>
     *
     * @return  the implemented method
-    * @see LineNrWidthAdaptable
     */
    public LineNrWidthAdaptable lineNrWidth() {
       return (i, j) -> adaptLineNrWidth(i, j);
    }
 
    /**
-    * Returns if wordwrap is enabled
+    * Returns the boolean that indicates if wordwrap is enabled in this
+    * text area
     *
-    * @return  if wordwrap is enabled
+    * @return  the boolean
     */
    public boolean isWordwrap() {
       return isWordwrap;
    }
 
    /**
-    * Sets a new font
+    * Sets the font in this area for editing text and this area that displays
+    * line numbers
     *
     * @param font  the name of the font
     * @param fontSize  the font size
@@ -159,7 +159,8 @@ public final class EditArea {
    }
 
    /**
-    * Shows line numbers. Invoking this method also annules wordwrap
+    * Shows the area that displays line numbers.
+    * Invoking this method also annules wordwrap
     */
    public void showLineNumbers() {
       removeCenterComponent();
@@ -204,7 +205,7 @@ public final class EditArea {
    }
 
    /**
-    * Prints this document to a printer
+    * Prints the text content in this text area to a printer
     */
    public void print() {
       try {
