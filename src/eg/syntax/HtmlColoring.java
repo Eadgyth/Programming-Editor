@@ -21,13 +21,13 @@ public class HtmlColoring implements Colorable {
       "object", "ol", "output",
       "p",
       "s", "script", "span", "strong", "style", "sub", "sup",
-      "table", "textarea", "title",
+      "table", "textarea", "title", "td", "th", "tr",
       "ul",
    };
 
    // incomplete
    private final static String[] ATTRIBUTES = {
-      "align",
+      "align", "alt",
       "bgcolor",
       "checked", "class",  "content", "cols",
       "for",
@@ -36,7 +36,7 @@ public class HtmlColoring implements Colorable {
       "name",
       "onclick",
       "rows",
-      "scr", "source", "style",
+      "src", "source", "style",
       "title",  "type",
       "valign", "value",
       "width"
