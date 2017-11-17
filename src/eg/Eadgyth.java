@@ -53,7 +53,7 @@ public class Eadgyth {
       UIManager.put("MenuItem.font", Constants.SANSSERIF_PLAIN_9);
       UIManager.put("CheckBoxMenuItem.font", Constants.SANSSERIF_PLAIN_9);
       UIManager.put("SplitPaneDivider.border", new EmptyBorder(0, 0, 0, 0));
-      UIManager.put("Tree.rowHeight", eg.utils.ScreenParams.scaledSize(14));
+      UIManager.put("Tree.rowHeight", eg.utils.ScreenParams.scaledSize(15));
    }
 
    private static void setLaf() {
