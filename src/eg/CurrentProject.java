@@ -94,8 +94,8 @@ public class CurrentProject {
     * Opens the window of the <code>SettingsWin</code> object that belongs
     * to a project.
     * <p>Depending on the currently set <code>FileDocument</code> the opened
-    * window belongs to the current project, to one of this listed projects
-    * or to a project that is newly assigned.
+    * window belongs to the currently active project, to one of this listed
+    * projects or to a project that can be newly assigned.
     */
    public void openSettingsWindow() {
       ProjectActions fromList = selectFromList(fDoc[iCurr].dir(), false);
