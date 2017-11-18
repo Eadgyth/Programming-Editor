@@ -44,7 +44,7 @@ folder, just like found in the 'EadgythProgram' folder in this repository.<p>
 <p>
 DOCUMENTATION<br>
 A guide how to configure a project and an overview of the code of the program can be found at<br>
-<a href="https://eadgyth.github.io/Programming-Editor/index.html">
+<a href="https://eadgyth.github.io/Programming-Editor/">
    Help and program documentation</a>.
 <p>
 LIMITATIONS (related to functions that are there at least)<br> 
