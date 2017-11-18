@@ -43,9 +43,9 @@ The program must be found in the same folder as the two .properties files and th
 folder, just like found in the 'EadgythProgram' folder in this repository.<p>
 <p>
 DOCUMENTATION<br>
-A guide how to configure a project, as well as the javadoc is accessible through
+A guide how to configure a project and an overview of the code of the program can be found at<br>
 <a href="https://eadgyth.github.io/Programming-Editor/index.html">
-   https://eadgyth.github.io/Programming-Editor/index.html</a>.
+   Help and program documentation</a>.
 <p>
 LIMITATIONS (related to functions that are there at least)<br> 
 1) Running an interactive program that asks for input through a command-line is not guaranteed
