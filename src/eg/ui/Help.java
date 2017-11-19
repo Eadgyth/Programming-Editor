@@ -3,26 +3,44 @@ package eg.ui;
 import java.io.File;
 import java.io.IOException;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+//--Eadgyth--/
+import eg.utils.FileUtils;
+
 /**
- * Opens the Help file in the default browser
+ * Opens help and docu sites in the default browser
  */
 public class Help {
 
-   private final static String FILE_SEP = File.separator;
-
    /**
-    * Creates a Help and opens the Help file
+    * Shows the help site in the default browser
     */
-   public Help(){
-      try{
-         File htmlFile = new File("Resources" + FILE_SEP + "Help.html");
-         //java.awt.Desktop.getDesktop().browse(htmlFile.toURI());
+   public void showHelpSite() {
+      try {
          if (java.awt.Desktop.isDesktopSupported()) {
-            java.awt.Desktop.getDesktop().open(htmlFile);
+            java.awt.Desktop.getDesktop().browse(new URI(
+                  "https://eadgyth.github.io/Programming-Editor/help/help.html"));
          }
       }
-      catch (IOException e) {
-         System.out.println(e.getMessage());
+      catch (IOException | URISyntaxException e) {
+         FileUtils.logStack(e);
+      }
+   }
+   
+   /**
+    * Shows the Docu site in the default browser
+    */
+   public void showDocuSite() {
+      try {
+         if (java.awt.Desktop.isDesktopSupported()) {
+            java.awt.Desktop.getDesktop().browse(new URI(
+                  "https://eadgyth.github.io/Programming-Editor/"));
+         }
+      }
+      catch (IOException | URISyntaxException e) {
+         FileUtils.logStack(e);
       }
    }
 }
