@@ -1,6 +1,6 @@
 <img src="images/EadgythIcon.png" width="50"/>
-<p>Eadgyth is a simple source code text editor, written in Java. Coding projects can be easily
-   set for testing and it can be switched between a number of set projects
+<p>Eadgyth is a simple source code text editor, written in Java. It features an easy setting
+   up of coding projects and it can be switched between a number of set projects
 <p>
 The motivation is to have an editor that helps coding in may ways but that is at the
 same time simple to work with as much as possible. It may be especially suited to write
