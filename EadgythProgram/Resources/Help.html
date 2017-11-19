@@ -56,12 +56,12 @@
          <h3 id="RunProject">Running a project</h3>
 
          <h4 id="ProjectTypes">Types of projects</h4>
-         <p>The following project categories can be defined:
+         <p>Projects of the following types can be assigned to the program:
          </p>
          <ol>
-            <li><a href="#JavaProject">Java</a>
-            <li><a href="#PerlProject">Perl</a>
-            <li><a href="#HtmlProject">HTML</a>
+            <li>Java : <a href="#JavaProject">Testing Java code</a></li>
+            <li>Perl : <a href="#PerlProject">Testing a Perl script</a></li>
+            <li>HTML : <a href="#HtmlProject">Viewing HTML code in the default browser</a></li>
          </ol>
 
          <h4 id="Config">Configuring a project</h4>
@@ -124,23 +124,23 @@
          <h4 id="JavaProject">Testing Java code and packing a jar file</h4>
          <ol>
             <li>Compile the source file(s) by selecting either 'Save selected source file and compile'
-                or 'Save all opened source files and compile' in the 'Project' menu. If errors occured
-                it is asked to open the console panel to view messages.
+                or 'Save all source files and compile' in the 'Project' menu. If errors occured it is
+                asked to open the console panel to view messages.
             </li>
             <li>If the compilation was successful the Java program can be run for testing by selecting 
                 'Run' in the 'Project' menu. The output and error messages from the tested program are
-                displayed in the console panel. The tested program can be forcibly quit by clicking the
-                'stop' symbol in the toolbar of the console panel.
+                displayed in the console panel. If the program asks for input in a command line the input
+                is entered in the text area of the console panel. Thee tested program can be forcibly quit
+                by clicking the 'stop' symbol in the toolbar of the console panel.
             </li>
             <li>Arguments for a start script may be entered in the text field 'Arguments' (separated by
                 single spaces) in the settings window ('Project' > ' Project settings').
             </li>
             <li>A jar file may be created by selecting 'Project' > 'Create
-                jar'. The jar file is saved in the executable's folder or, if no such folder
-                is defined, in the project's root folder. A name for the jar file can be specified
-                in the settings window. If no name is specified the jar name is the same as the
-                name of the main class. Note that presently only class files can be bundled in a
-                jar.
+                jar'. The jar file is saved in the executable's folder or, if no such folder is defined,
+                in the project's root folder. A name for the jar file can be specified in the settings
+                window. If no name is specified the jar name is the same as the name of the main class.
+                Note that presently only class files can be bundled in a jar.
              </li>
          </ol>
 
@@ -187,7 +187,7 @@
 
          <h4>To run a system command...</h4>
          <ol>
-            <li>Open the console panel in the menu 'View'.
+            <li>Open the console panel in the menu 'View' > 'Console'.
             </li>
             <li>Press the button 'Cmd...' and enter a command in the shown dialog window. Klick ok in
                 the dialog window to run the command.
