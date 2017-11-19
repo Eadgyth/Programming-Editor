@@ -8,15 +8,22 @@ import java.io.IOException;
 import eg.Constants;
 
 /**
- * Static methods to work with files
+ * Static methods for file operations
  */
 public class FileUtils {
    
-   public static String fileSuffix(String file) {
-      int indDot = file.lastIndexOf(".") + 1;
-      int indFileSep = file.lastIndexOf(File.separator);
-      if (indDot > indFileSep) {
-         return file.substring(indDot);
+   /**
+    * Returns the extension of the specified file
+    *
+    * @param file  the file
+    * @return  the extension. The empty string if no period is found
+    * after the last file separator
+    */
+   public static String fileExtension(String file) {
+      int i = file.lastIndexOf(".") + 1;
+      int j = file.lastIndexOf(File.separator);
+      if (i > j) {
+         return file.substring(i);
       }
       else {
          return "";
@@ -52,7 +59,7 @@ public class FileUtils {
    
    /**
     * Appends to the file 'log.txt' the message and stack trace of an exception
-    * <p>The log file is saved in the program's directory.
+    * <p>The file is saved in the program's directory.
     *
     * @param e  the <code>Exception</code>
     */

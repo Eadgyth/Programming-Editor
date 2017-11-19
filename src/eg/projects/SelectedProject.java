@@ -33,18 +33,18 @@ public class SelectedProject {
     * Returns a <code>ProjectActions</code> selected based on the file
     * extension
     *
-    * @param suffix  the file extension
+    * @param ext  the file extension
     * @return  a new {@link ProjectActions}. Null if <code>suffix</code>
     * does not specify a project
     */
-   public ProjectActions createProject(String suffix) {
+   public ProjectActions createProject(String ext) {
       ProjectActions newProj = null;
-      switch (suffix) {
+      switch (ext) {
          case "java":
             newProj = new JavaActions(co, proc, console);
             break;
          case "html": case "htm":
-            newProj = new HtmlActions(suffix);
+            newProj = new HtmlActions(ext);
             break;
          case "pl": case "pm":
             newProj = new PerlActions(co, proc);

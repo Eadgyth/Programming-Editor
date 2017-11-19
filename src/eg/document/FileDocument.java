@@ -422,8 +422,8 @@ public final class FileDocument {
    }
 
    private void setLanguageBySuffix() {
-      String suffix = FileUtils.fileSuffix(filename);
-      switch (suffix) {
+      String ext = FileUtils.fileExtension(filename);
+      switch (ext) {
          case "java":
            lang = Languages.JAVA;
            break;

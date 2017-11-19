@@ -47,7 +47,7 @@ public class CurrentProject {
 
    private ProjectActions current;
    private int iCurr;
-   private String docSuffix = "";
+   private String docExt = "";
 
    /**
     * @param mw  the reference to {@link MainWin}
@@ -67,7 +67,7 @@ public class CurrentProject {
     */
    public void setFileDocumentAt(int i) {
       iCurr = i;
-      docSuffix = FileUtils.fileSuffix(fDoc[iCurr].filename());
+      docExt = FileUtils.fileExtension(fDoc[iCurr].filename());
       ProjectActions inList = selectFromList(fDoc[iCurr].dir(), true);
       mw.enableChangeProject(inList != null);
       if (current != null) {
@@ -243,7 +243,7 @@ public class CurrentProject {
          return;
       }
       EventQueue.invokeLater(() -> {
-         ProjectActions projToFind = selProj.createProject(docSuffix);
+         ProjectActions projToFind = selProj.createProject(docExt);
          boolean isFound = projToFind != null
                && projToFind.retrieveProject(dir);
 
@@ -282,7 +282,7 @@ public class CurrentProject {
          Dialogs.infoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          return;
       }
-      ProjectActions projNew = selProj.createProject(docSuffix);
+      ProjectActions projNew = selProj.createProject(docExt);
       if (projNew == null) {
          projNew = selectBySuffix();
       }
@@ -294,12 +294,12 @@ public class CurrentProject {
    }
    
    private ProjectActions selectBySuffix() {
-      String selectedSuffix
+      String selectedExt
             = Dialogs.comboBoxOpt(wrongExtentionMessage(fDoc[iCurr].filename()),
             "File extension", PROJ_SUFFIXES, null, true);
 
-      if (selectedSuffix != null) {
-         return selProj.createProject(selectedSuffix);
+      if (selectedExt != null) {
+         return selProj.createProject(selectedExt);
       }
       else {
          return null;
@@ -345,7 +345,7 @@ public class CurrentProject {
 
    private boolean isFileToCompile(FileDocument fd) {
        return fd != null
-             && fd.filename().endsWith(current.getSourceSuffix())
+             && fd.filename().endsWith(current.getSourceFileExtension())
              && current.isInProject(fd.dir());
    }
  

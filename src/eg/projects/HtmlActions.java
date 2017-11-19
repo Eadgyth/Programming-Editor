@@ -11,8 +11,8 @@ import eg.utils.FileUtils;
  */
 public final class HtmlActions extends ProjectConfig implements ProjectActions {
 
-   public HtmlActions(String suffix) {
-      super(suffix, false);
+   public HtmlActions(String fileExtension) {
+      super(fileExtension, false);
    }
 
   @Override
@@ -47,7 +47,7 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    @Override
    public void runProject(String filepath) {
       File htmlFile = new File(filepath);
-      if (!filepath.endsWith(getSourceSuffix())) {
+      if (!filepath.endsWith(getSourceFileExtension())) {
          eg.utils.Dialogs.warnMessage(
                htmlFile.getName() + " cannot be opened in a browser");
 

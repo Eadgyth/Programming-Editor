@@ -84,11 +84,11 @@ public interface Configurable {
    public String getExecutableDirName();
    
    /**
-    * Returns the suffix of source files
+    * Returns the extension of source files for the project
     *
-    * @return  the suffix
+    * @return  the file extension
     */
-   public String getSourceSuffix();
+   public String getSourceFileExtension();
    
    /**
     * Stores the configuration in a preferences file

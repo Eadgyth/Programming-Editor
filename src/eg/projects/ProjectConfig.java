@@ -47,8 +47,6 @@ public abstract class ProjectConfig implements Configurable {
     * Is initially null
     */
    protected SettingsWin setWin = null;
-
-   private final boolean useProjectFile;
    /*
     * Used to read prefs from the program's Prefs file */
    private final static Preferences PREFS = new Preferences();
@@ -56,7 +54,8 @@ public abstract class ProjectConfig implements Configurable {
     * Used to read prefs from an 'eadconfig' file that may be saved in a project */
    private final static Preferences EAD_CONFIG = new Preferences();
 
-   private final String suffix;
+   private final String ext;
+   private final boolean useProjectFile;
 
    private String projTestName = "";
    private String projectRoot = "";
@@ -144,8 +143,8 @@ public abstract class ProjectConfig implements Configurable {
    }
 
    @Override
-   public String getSourceSuffix() {
-      return suffix;
+   public String getSourceFileExtension() {
+      return ext;
    }
 
    @Override
@@ -154,12 +153,12 @@ public abstract class ProjectConfig implements Configurable {
    }
 
    /**
-    * @param suffix  the file extension of source files
+    * @param fileExtension  the file extension of source files
     * @param useProjectFile  specifies if the project uses a main project file.
     *
     */
-   protected ProjectConfig(String suffix, boolean useProjectFile) {
-      this.suffix = suffix;
+   protected ProjectConfig(String fileExtension, boolean useProjectFile) {
+      ext = fileExtension;
       this.useProjectFile = useProjectFile;
    }
 
@@ -303,7 +302,7 @@ public abstract class ProjectConfig implements Configurable {
       if (mainFile.length() > 0) {
          sb.append(mainFile);
          sb.append(".");
-         sb.append(suffix);
+         sb.append(ext);
       }
       return sb.toString();
    }
