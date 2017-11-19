@@ -15,6 +15,9 @@
              margin-right: 150px;
              margin-left: 50px;
          }
+         nav ul a {
+             text-decoration: none;
+         }
       </style>
    </head>
    <body>
@@ -28,19 +31,21 @@
          <hr>
 
          <h3>Content</h3>
-         <ul>
-            <li><a href="#Requirements">Requirements</a><br></li>
-            <li><a href="#RunProject">Running a project</a>
-               <ul>
-                  <li><a href="#ProjectTypes">Types of projects</a>
-                  <li><a href="#Config">Configuring a project</a>
-                  <li><a href="#ChangeProjects">Changing between projects</a></li>
-                  <li><a href="#Retrieve">Retrieving projects</a>
-                  <li><a href="#Language">Setting the language</a>
-               </ul></li>
-            <li><a href="#Console">Using the console</a></li>
-            <li><a href="#Explorer">Using the project explorer</a></li>
-         </ul>
+         <nav>
+            <ul>
+               <li><a href="#Requirements">Requirements</a><br></li>
+               <li><a href="#RunProject">Running a project</a>
+                  <ul>
+                     <li><a href="#ProjectTypes">Types of projects</a>
+                     <li><a href="#Config">Configuring a project</a>
+                     <li><a href="#ChangeProjects">Changing between projects</a></li>
+                     <li><a href="#Retrieve">Retrieving projects</a>
+                     <li><a href="#Language">Setting the language</a>
+                  </ul></li>
+               <li><a href="#Console">Using the console</a></li>
+               <li><a href="#Explorer">Using the project explorer</a></li>
+            </ul>
+         </nav>
 
          <hr>
 
@@ -58,12 +63,14 @@
          <h4 id="ProjectTypes">Types of projects</h4>
          <p>Projects of the following types can be assigned to the program:
          </p>
-         <ol>
-            <li>Java : <a href="#JavaProject">Testing Java code</a></li>
-            <li>Perl : <a href="#PerlProject">Testing a Perl script</a></li>
-            <li>HTML : <a href="#HtmlProject">Viewing HTML code in the default browser</a></li>
-         </ol>
-
+         <nav>
+            <ul>
+               <li>Java (<a href="#JavaProject">Testing Java code and creating a jar file</a>)</li>
+               <li>Perl (<a href="#PerlProject">Testing a Perl script</a>)</li>
+               <li>HTML (<a href="#HtmlProject">Viewing HTML code in a browser</a>)</li>
+            </ul>
+         </nav>
+        
          <h4 id="Config">Configuring a project</h4>
          <ol>
             <li>Open a file from or save a new file to the directory that is the supposed
@@ -121,7 +128,7 @@
                 for new empty files.</li>
          </ul>
 
-         <h4 id="JavaProject">Testing Java code and packing a jar file</h4>
+         <h4 id="JavaProject">Testing Java code and creating a jar file</h4>
          <ol>
             <li>Compile the source file(s) by selecting either 'Save selected source file and compile'
                 or 'Save all source files and compile' in the 'Project' menu. If errors occured it is
