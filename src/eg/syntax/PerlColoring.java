@@ -53,6 +53,6 @@ public class PerlColoring implements Colorable {
       search.keywordsRedBold(PERL_OP, false);
       search.bracesGray();
       search.quotedText();
-      search.lineComments(LINE_CMNT, '$');
+      search.lineComments(LINE_CMNT, PERL_SIGNS);
    }
 }

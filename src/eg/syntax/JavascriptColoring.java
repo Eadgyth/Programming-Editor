@@ -32,7 +32,7 @@ public class JavascriptColoring implements Colorable {
          search.bracketsBlue();
          search.bracesGray();
          search.quotedText();
-         search.lineComments(SyntaxUtils.LINE_CMNT, '\0');
+         search.lineComments(SyntaxUtils.LINE_CMNT, null);
       }
       search.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
    }

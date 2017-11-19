@@ -28,6 +28,10 @@ public class JavaColoring implements Colorable {
       "@Override", "@Deprecated", "@SuppressWarnings", "@SafeVarargs",
       "@FunctionalInterface"
    };
+   
+   private final static String[] LINE_CMT_EXC = {
+      "http:", "https:"
+   };
 
    @Override
    public void color(SyntaxSearch search) {
@@ -38,7 +42,7 @@ public class JavaColoring implements Colorable {
          search.bracketsBlue();
          search.bracesGray();
          search.quotedText();
-         search.lineComments(SyntaxUtils.LINE_CMNT, '\0');   
+         search.lineComments(SyntaxUtils.LINE_CMNT, LINE_CMT_EXC);
      }
      search.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
    }

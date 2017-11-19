@@ -190,14 +190,13 @@ public class SyntaxSearch {
    /**
     * Searches line comments and colors them in green
     *
-    * @param lineCmnt  the String that represents the start of a line
-    * comment
-    * @param exception  the character that disables the line comment
-    * when it precedes <code>lineCmt</code>. The null character to skip
-    * any exception
+    * @param lineCmnt  the string that marks the start of a line comment
+    * @param exceptions  the array of strings that disable the line comment
+    * when these precede <code>lineCmt</code>. Null if no exception is destined
+    * for line comments
     */
-   public void lineComments(String lineCmnt, char exception) {
-      lineCommentsImpl(lineCmnt, exception);
+   public void lineComments(String lineCmnt, String[] exceptions) {
+      lineCommentsImpl(lineCmnt, exceptions);
    }
 
    /**
@@ -401,15 +400,22 @@ public class SyntaxSearch {
       }
    }
 
-   private void lineCommentsImpl(String lineCmnt, char exception) {
-      final boolean isException = exception != '\0';
+   private void lineCommentsImpl(String lineCmnt, String[] exceptions) {
+      final boolean isException = exceptions != null;
       boolean ok = true;
       int start = 0;
       while (start != -1) {
          start = toColor.indexOf(lineCmnt, start);
          if (start != -1) {
-            if (isException && start > 0) {
-               ok = toColor.charAt(start - 1) != exception;
+            if (isException) {
+               for (String exc : exceptions) {
+                  if (start > exc.length() - 1) {
+                     ok = !exc.equals(toColor.substring(start - exc.length(), start));
+                     if (!ok) {
+                        break;
+                     }
+                  }
+               }
             }
             int length = 0;
             if (ok && !SyntaxUtils.isInQuotes(toColor, start, lineCmnt.length())) {
