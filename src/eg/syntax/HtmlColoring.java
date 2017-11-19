@@ -7,17 +7,18 @@ public class HtmlColoring implements Colorable {
    
    // incomplete
    private final static String[] TAGS = {
-      "a", "area", "applet",
+      "a", "applet", "article", "area",
       "b", "blockquote", "body", "bold", "button", "br",
       "code", "col",
       "data", "div",
       "em",
-      "font", "form",
-      "head", "html", "hr",
+      "figure", "figcaption", "font", "form",
+      "head", "header", "html", "hr",
       "h1", "h2", "h3", "h4", "h5", "h6",
       "i", "img", "input",
       "label", "li",
-      "meta",
+      "main", "meta",
+      "nav",
       "object", "ol", "output",
       "p",
       "s", "script", "span", "strong", "style", "sub", "sup",
