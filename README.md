@@ -38,9 +38,9 @@ FEATURES<br>
 <img src="images/SimpleEditorView.png" width="400"/>
 <p>
 REQUIREMENTS FOR TESTING<br>
-Running the program requires Java 8. Java 9 was tried but did not work ok
-graphically. Also, compiling java code from within the program did not work with Java 9
-unless the program was started from the cmd (tested under Windows 10).
+Running the program requires Java 8. To use it for compiling Java code JDK 8 is required and
+also the program must be run using the JRE contained in the JDK, not in the public JRE. Java 9
+works too with so far unsolved problems regarding the UI though.
 <p>
 The program must be found in the same folder as the two .properties files and the Resources
 folder, just like found in the 'EadgythProgram' folder in this repository.<p>
