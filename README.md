@@ -23,10 +23,10 @@ FEATURES<br>
    <li>The setting of projects without creating any extra data files outside the program's
    own folder (a properties file may optionally be saved in a project's folder though). Projects
    can be retrieved after newly starting the program and a number of projects can be defined
-   and set active during the program's runtime. A project is assigned only when a file of the
-   supposed project is opened (or newly saved) and is in the selected tab but this file may
-   any file (that is not necessarily a main source file) that is found in the working directory
-   of the project or subdirectory from that.</li>
+   and set active during the program's runtime. A project is assigned to the program when a file
+   of that project is opened (or newly saved) and is in the selected tab. This file may be any
+   file (that is not necessarily a main source file) that is found in the working directory
+   of the project or a subdirectory from that.</li>
    <li>Compiling and testing Java code and bundling a Java program in a jar file; testing
    a Perl script; viewing Html code in the default web browser</li>
    <li>A basic (interactive) console to view the output (error messages) during compiling
