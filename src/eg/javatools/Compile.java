@@ -33,8 +33,6 @@ public class Compile {
 
    private final static Preferences PREFS = new Preferences();
    private final static String F_SEP = File.separator;
-
-   private static String jdkPath = null;
    
    private final ConsolePanel consPnl;
    
@@ -73,23 +71,15 @@ public class Compile {
     * @param sourceDir  the directory that contains java files
     */
    public void compile(String projectPath, String classDir, String sourceDir) {
+      JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+      if (compiler == null) {
+         Dialogs.errorMessage("The programm may not be run in the JRE of a JDK.");
+      }
       success = false;
       errorInfo = new ArrayList<>();
-      if (jdkPath == null) {
-         setJdkPath();
-         if (jdkPath == null) {
-            errorInfo.add(
-                  "The filepath of the JDK is not defined");
-            consPnl.appendText(
-                  "<<ERROR:\nThe file path of the JDK is not defined"
-                  + " in'settings.properties'.>>");
-            return;
-         }
-      }
       String targetDir = targetDir(projectPath, classDir);
       String[] compileOptions = new String[] {"-d", targetDir} ;
       Iterable<String> compilationOptions = Arrays.asList(compileOptions);      
-      JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
       DiagnosticCollector<JavaFileObject> diagnostics
             = new DiagnosticCollector<>();
       StandardJavaFileManager fileManager
@@ -151,27 +141,5 @@ public class Compile {
          targetDir = projectPath;
       }
       return targetDir;
-   }
-
-   /**
-    * Sets the path to the Java JDK and asks for a new path if no valid path is
-    * found in Settings.properties
-    */
-   private void setJdkPath() {
-      PREFS.readSettings();
-      jdkPath = PREFS.getProperty("LocationOfJDK");
-      if (!new File(jdkPath).exists()) {
-         String notFound = "The JDK was not found."
-               + " Enter or correct the filepath of the JDK.";
-         jdkPath = Dialogs.textFieldInput(notFound, "Location of JDK", jdkPath);
-         if (jdkPath != null) { // if ok clicked
-            PREFS.storeSettings(jdkPath);
-            setJdkPath();
-         }
-      }
-      else {
-         System.setProperty("java.home", jdkPath);
-         System.out.println("Set Location of JDK: " + jdkPath);
-      }
    }
 }
