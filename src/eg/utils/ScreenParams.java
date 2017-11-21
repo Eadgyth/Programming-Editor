@@ -7,11 +7,6 @@ import java.awt.Toolkit;
  * Static methods to obtain quantities that depend on the screen resolution
  */
 public class ScreenParams {
- 
-   private final static int SCREEN_RES
-        = Toolkit.getDefaultToolkit().getScreenResolution();
-
-   private final static double SCREEN_RES_RATIO = SCREEN_RES / 72.0;
    
   /**
    * The screen size */
@@ -41,6 +36,18 @@ public class ScreenParams {
     * @return  the rounded rescaled size
     */
    public static int scaledSize(double size) {
-      return (int) (Math.round(size * SCREEN_RES_RATIO));
+      if (IS_JAVA_9) {
+         return (int) (Math.round(size * 96/72));
+      }
+      else {
+         return (int) (Math.round(size * SCREEN_RES_RATIO));
+      }
    }
+   
+   public final static boolean IS_JAVA_9 = System.getProperty("java.version").startsWith("9");
+   
+   private final static int SCREEN_RES
+        = Toolkit.getDefaultToolkit().getScreenResolution();
+
+   private final static double SCREEN_RES_RATIO = SCREEN_RES / 72.0;
 }
