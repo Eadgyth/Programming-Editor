@@ -38,11 +38,12 @@ FEATURES<br>
 <img src="images/SimpleEditorView.png" width="400"/>
 <p>
 REQUIREMENTS FOR TESTING<br>
-Running the program requires Java 8. To use it for compiling Java code JDK 8 is required and
-also the program must be run using the JRE contained in the JDK, not in the public JRE. Java 9
-works too with so far unsolved problems regarding the UI though.
+Running the program requires Java 8. For compiling Java code installing the JDK 8 is required
+and it must be ensured that the program is run using the JRE contained in the JDK, not the
+public JRE. It also can be run using Java 9, but with some problems with regard to the graphical
+interface (as seen on Windows 10).
 <p>
-The program must be found in the same folder as the two .properties files and the Resources
+The program must be found in the same folder as the prefs.properties file and the Resources
 folder, just like found in the 'EadgythProgram' folder in this repository.<p>
 <p>
 DOCUMENTATION<br>
