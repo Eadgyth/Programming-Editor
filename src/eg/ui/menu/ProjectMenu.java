@@ -26,7 +26,7 @@ public class ProjectMenu {
          IconFiles.COMPILE_ICON);
    private final JMenuItem run        = new JMenuItem("Run", IconFiles.RUN_ICON);
    private final JMenuItem build      = new JMenuItem("Build");
-   private final JMenuItem newProj    = new JMenuItem("Assign project");
+   private final JMenuItem newProj    = new JMenuItem("Assign as project");
    private final JMenuItem setProject = new JMenuItem("Project settings");
    private final JMenuItem changeProj
          = new JMenuItem("Change project", IconFiles.CHANGE_PROJ_ICON);
