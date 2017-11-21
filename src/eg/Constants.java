@@ -23,7 +23,7 @@ public class Constants {
 
    /**
     * The scaled height for bars (toolbars, tabbar) */
-   public final static int BAR_HEIGHT = scaledSize(16);
+   public final static int BAR_HEIGHT = scaledSize(15);
 
    //
    // Colors
