@@ -1,6 +1,6 @@
 <img src="images/EadgythIcon.png" width="50"/>
-<p>Eadgyth is a simple source code text editor, written in Java. Coding projects can be easily
-   set for testing and it can be switched between a number of set projects
+<p>Eadgyth is a simple source code text editor, written in Java. It features an easy setting
+up of coding projects and switching between a number of set projects
 <p>
 The motivation is to have an editor that helps coding in may ways but that is at the
 same time simple to work with as much as possible. It may be especially suited to write
@@ -23,10 +23,10 @@ FEATURES<br>
    <li>The setting of projects without creating any extra data files outside the program's
    own folder (a properties file may optionally be saved in a project's folder though). Projects
    can be retrieved after newly starting the program and a number of projects can be defined
-   and set active during the program's runtime. A project is assigned only when a file of the
-   supposed project is opened (or newly saved) and is in the selected tab but this file may
-   any file (that is not necessarily a main source file) that is found in the working directory
-   of the project or subdirectory from that.</li>
+   and set active during the program's runtime. A project is assigned to the program when a file
+   of that project is opened (or newly saved) and is in the selected tab. This file may be any
+   file (that is not necessarily a main source file) that is found in the working directory
+   of the project or a subdirectory from that.</li>
    <li>Compiling and testing Java code and bundling a Java program in a jar file; testing
    a Perl script; viewing Html code in the default web browser</li>
    <li>A basic (interactive) console to view the output (error messages) during compiling
@@ -38,9 +38,9 @@ FEATURES<br>
 <img src="images/SimpleEditorView.png" width="400"/>
 <p>
 REQUIREMENTS FOR TESTING<br>
-Running the program requires Java 8. Java 9 was tried but did not work ok
-graphically. Also, compiling java code from within the program did not work with Java 9
-unless the program was started from the cmd (tested under Windows 10).
+Running the program requires Java 8. To use it for compiling Java code JDK 8 is required and
+also the program must be run using the JRE contained in the JDK, not in the public JRE. Java 9
+works too with so far unsolved problems regarding the UI though.
 <p>
 The program must be found in the same folder as the two .properties files and the Resources
 folder, just like found in the 'EadgythProgram' folder in this repository.<p>
