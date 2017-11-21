@@ -61,9 +61,10 @@ public class CurrentProject {
    }
 
    /**
-    * Selects an element from this array of <code>FileDocument</code>
+    * Selects an element from this array of <code>FileDocument</code> by the
+    * specified index
     *
-    * @param i  the index of the array element
+    * @param i  the index
     */
    public void setFileDocumentAt(int i) {
       iCurr = i;
@@ -152,14 +153,13 @@ public class CurrentProject {
    }
 
    /**
-    * Saves the source file of the selected <code>TextDocument</code>
-    * if it belongs to this current project and compiles the source
-    * files of the project
+    * Saves the selected source file and compiles all source files of this
+    * current project
     */
    public void saveAndCompile() {
       try {
         mw.setBusyCursor();
-        if (isFileToCompile(fDoc[iCurr])) {
+        if (fDoc[iCurr].filename().endsWith(current.getSourceFileExtension())) {
             if (fDoc[iCurr].docFile().exists()) {
                fDoc[iCurr].saveFile();
                current.compile();
@@ -171,6 +171,10 @@ public class CurrentProject {
                      + ":\nThe file could not be found anymore");
             }
          }
+         else {
+            Dialogs.errorMessage(
+                  fDoc[iCurr].filename() + "is not a source file.");
+         }
       }
       finally {
          EventQueue.invokeLater(() ->  mw.setDefaultCursor());
@@ -179,14 +183,19 @@ public class CurrentProject {
 
    /**
     * Saves all open source files of this current project and compiles
-    * the files
+    * all files of the project
     */
    public void saveAllAndCompile() {
       try {
          mw.setBusyCursor();
          StringBuilder missingFiles = new StringBuilder();
          for (FileDocument f : fDoc) {
-            if (isFileToCompile(f)) {
+            boolean isProjSrc
+                   = f != null
+                   && f.filename().endsWith(current.getSourceFileExtension())
+                   && current.isInProject(f.dir());
+
+            if (isProjSrc) {
                 if (f.docFile().exists()) {
                     f.saveFile();
                 } else {
@@ -200,7 +209,8 @@ public class CurrentProject {
             updateFileTree();
          }
          else {
-            Dialogs.errorMessage(FILES_NOT_FOUND_MESSAGE + missingFiles);
+            Dialogs.errorMessage(
+                  FILES_NOT_FOUND_MESSAGE + missingFiles);
          }
       }
       finally {
@@ -284,7 +294,7 @@ public class CurrentProject {
       }
       ProjectActions projNew = selProj.createProject(docExt);
       if (projNew == null) {
-         projNew = selectBySuffix();
+         projNew = selectByExtension();
       }
       if (projNew != null) {
          ProjectActions projFin = projNew;
@@ -293,7 +303,7 @@ public class CurrentProject {
       }
    }
    
-   private ProjectActions selectBySuffix() {
+   private ProjectActions selectByExtension() {
       String selectedExt
             = Dialogs.comboBoxOpt(wrongExtentionMessage(fDoc[iCurr].filename()),
             "File extension", PROJ_SUFFIXES, null, true);
@@ -341,12 +351,6 @@ public class CurrentProject {
          updateProjectSetting(current);
          updateFileTree();
       }      
-   }
-
-   private boolean isFileToCompile(FileDocument fd) {
-       return fd != null
-             && fd.filename().endsWith(current.getSourceFileExtension())
-             && current.isInProject(fd.dir());
    }
  
    private String wrongExtentionMessage(String filename) {
