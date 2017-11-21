@@ -11,8 +11,6 @@ import eg.ui.Help;
  */
 class HelpMenu {
    
-   private final Help h = new Help();
-   
    private final JMenu     menu        = new JMenu("?");
    private final JMenuItem showHelpItm = new JMenuItem("Open help site");
    private final JMenuItem showDocuItm = new JMenuItem("Open docu site");
@@ -21,10 +19,11 @@ class HelpMenu {
    public HelpMenu() {
       menu.add(showHelpItm);
       menu.add(showDocuItm);
+      menu.addSeparator();
       menu.add(aboutItm);
       aboutItm.addActionListener(e -> new eg.ui.InfoWin());      
-      showHelpItm.addActionListener(e -> h.showHelpSite());
-      showDocuItm.addActionListener(e -> h.showDocuSite());
+      showHelpItm.addActionListener(e -> new Help().showHelpSite());
+      showDocuItm.addActionListener(e -> new Help().showDocuSite());
    }
    
    public JMenu getMenu() {
