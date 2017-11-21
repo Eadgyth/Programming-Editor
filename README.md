@@ -52,8 +52,8 @@ A guide how to configure a project and an overview of the code of the program ca
    Help and program documentation</a>.
 <p>
 LIMITATIONS<br>
-While the limitations are certainly countless some of the functions are, although already present,
-still embryonic. Some are:
+While the limitations are certainly countless some functions that are already present are still
+embryonic. Some are:
 <ul>
 <li>Running an interactive program that asks for input through a command-line is not guaranteed
    to work in the console area of the program. Interactive programs in Java seem to work fine but,
