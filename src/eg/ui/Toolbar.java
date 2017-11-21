@@ -1,7 +1,10 @@
 package eg.ui;
 
+import java.awt.FlowLayout;
+
 import javax.swing.JToolBar;
 import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 //--Eadgyth--
@@ -15,6 +18,7 @@ import eg.Edit;
  */
 public class Toolbar {
 
+   private final JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
    private final JToolBar toolbar = new JToolBar(JToolBar.HORIZONTAL);
 
    private final JButton openBt       = new JButton(IconFiles.OPEN_ICON);
@@ -34,8 +38,9 @@ public class Toolbar {
       initToolbar();
    }
 
-   public JToolBar toolbar() {
-      return toolbar;
+   public JPanel toolbar() {
+      //return toolbar;
+      return pnl;
    }
 
    public void setFileActions(TabbedFiles tf) {
@@ -137,5 +142,6 @@ public class Toolbar {
          bts[i].setFocusable(false);
          bts[i].setFocusPainted(false);
       }
+      pnl.add(toolbar);
    }
 }
