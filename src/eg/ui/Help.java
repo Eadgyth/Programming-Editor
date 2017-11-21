@@ -1,5 +1,7 @@
 package eg.ui;
 
+import java.awt.Desktop;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -19,8 +21,8 @@ public class Help {
     */
    public void showHelpSite() {
       try {
-         if (java.awt.Desktop.isDesktopSupported()) {
-            java.awt.Desktop.getDesktop().browse(new URI(
+         if (Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().browse(new URI(
                   "https://eadgyth.github.io/Programming-Editor/help/help.html"));
          }
       }
@@ -30,12 +32,12 @@ public class Help {
    }
    
    /**
-    * Shows the Docu site in the default browser
+    * Shows the docu site in the default browser
     */
    public void showDocuSite() {
       try {
-         if (java.awt.Desktop.isDesktopSupported()) {
-            java.awt.Desktop.getDesktop().browse(new URI(
+         if (Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().browse(new URI(
                   "https://eadgyth.github.io/Programming-Editor/"));
          }
       }
