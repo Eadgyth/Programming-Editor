@@ -22,7 +22,6 @@ public class Preferences {
    public final static String CONFIG_FILE = "eadconfig.properties";
 
    private final static String PREFS_FILE = "prefs.properties";
-   private final static String SETTINGS_FILE = "settings.properties"; 
    private final static String F_SEP = File.separator;
    
    private final static String[] PREFS_KEYS = {
@@ -71,13 +70,6 @@ public class Preferences {
       }
       return prop.getProperty(property);
    }
-   
-   /**
-    * Reads in the properties stored in the settings.properties file
-    */
-   public void readSettings() {
-      readProps(SETTINGS_FILE);
-   }
 
    /**
     * Reads in the properties stored in the prefs.properties file
@@ -93,19 +85,6 @@ public class Preferences {
     */
    public void readConfig(String dir) {
       readProps(dir + F_SEP + CONFIG_FILE);
-   }
-   
-   /** 
-    * Stores a new value for the (single) property in the
-    * settings.proprties file
-    *
-    * @param newValue  the new value for the property
-    */
-   public void storeSettings(String newValue) {
-      readSettings();
-      String[] allKeys = { "LocationOfJDK" };
-      String[] allValues = { newValue };
-      store(SETTINGS_FILE, allKeys, allValues);
    }
 
    /**
