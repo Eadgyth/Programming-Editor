@@ -130,13 +130,13 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    private JPanel buttonPnl() {
-      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 1));
       JButton[] bts = new JButton[] {
          setTextBt, insertTextBt
       };
       String[] toolTips = new String[] {
-         "Copy text selected in viewed file to exchange editor",
-         "Copy text selected in exchange editor to viewed file",
+         "Copy text selected file to the exchange editor",
+         "Copy text from exchange editor to selected file",
       };
       for (int i = 0; i < bts.length; i++) {
          bts[i].setFocusable(false);
@@ -147,7 +147,7 @@ public class ExchangeEditor implements AddableEditTool {
    }
    
    private JPanel setLangBox() {
-      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
       String[] opt = new String[Languages.values().length];
       for (int i = 0; i < opt.length; i++) {
          opt[i] = Languages.values()[i].display();
@@ -158,10 +158,11 @@ public class ExchangeEditor implements AddableEditTool {
             exch.changeCodeEditing(Languages.values()[cb.getSelectedIndex()]);
          }
       });
+      cb.setFont(Constants.VERDANA_PLAIN_8);
       cb.setFocusable(false);
       pnl.add(cb);
       return pnl;
-   }      
+   }
 
    private void setBtnActions() {
       setTextBt.addActionListener(e -> exch.setTextFromDoc());
