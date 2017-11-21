@@ -103,14 +103,14 @@ public class FontSettingWin {
       JPanel twoComboBx = new JPanel();
       twoComboBx.setLayout(new BoxLayout(twoComboBx, BoxLayout.LINE_AXIS));
       twoComboBx.add(fontPnl());
-      twoComboBx.add(Box.createRigidArea(new Dimension(10, 0)));
+      twoComboBx.add(Box.createRigidArea(eg.utils.ScreenParams.scaledDimension(10, 0)));
       twoComboBx.add(sizePnl());
 
       JPanel combined = new JPanel();
       combined.setLayout(new BoxLayout(combined, BoxLayout.Y_AXIS));
-      combined.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       combined.add(twoComboBx);
       combined.add(buttonPnl());
+      combined.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       return combined;
    }
 
