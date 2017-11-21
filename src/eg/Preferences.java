@@ -11,7 +11,7 @@ import java.io.FileWriter;
 import eg.utils.FileUtils;
 
 /**
- * The preferences/settings stored in and read from .properties files
+ * The preferences stored in and read from .properties files
  */
 public class Preferences {
    
@@ -58,8 +58,9 @@ public class Preferences {
    /**
     * Returns the saved value for the specified property.
     * <p>
-    * One of the read methods must be used before: {@link #readSettings()},
-    * {@link #readPrefs()}, {@link #readConfig(String)}
+    * One of the 'read' methods must be used before: {@link #readPrefs()},
+    * {@link #readConfig(String)}. These also must be invoked when a
+    * property may have changed during runtime.
     *
     * @param property  the property which a value is searched for
     * @return  the value for the specified property
@@ -79,9 +80,10 @@ public class Preferences {
    }
    
    /**
-    * Reads in the properties stored in the config.properties file
+    * Reads in the properties stored in a config.properties file found
+    * in the specified directory
     *
-    * @param dir  the directory where the config file is found
+    * @param dir  the directory
     */
    public void readConfig(String dir) {
       readProps(dir + F_SEP + CONFIG_FILE);
@@ -90,7 +92,7 @@ public class Preferences {
    /**
     * Stores a new value for the specified property in the prefs.properties
     * file
-    * @param propToUpdate  the property which a new value is assigned to
+    * @param propToUpdate  the property
     * @param newValue  the new value for the property to update
     */
    public void storePrefs(String propToUpdate, String newValue) {
@@ -109,13 +111,13 @@ public class Preferences {
    }
 
    /**
-    * Stores a new value for the specified property in the config.properties
-    * file and creates the file if it does not exist
+    * Stores a new value for the specified property in a config.properties
+    * file saved in the specified directory. Creates the file if it does not
+    * exist
     *
-    * @param propToUpdate  the property which a new value is assigned to
+    * @param propToUpdate  the property
     * @param newValue  the new value for the property
-    * @param dir  the directory where the eadconfig.properties file is
-    * found
+    * @param dir  the directory
     */
    public void storeConfig(String propToUpdate, String newValue,
          String dir) {
@@ -140,7 +142,7 @@ public class Preferences {
    }
    
    //
-   //--private methods
+   //--private--/
    //
    
    private void createFile(String file, String[] allKeys) {
