@@ -52,17 +52,18 @@ A guide how to configure a project and an overview of the code of the program ca
    Help and program documentation</a>.
 <p>
 LIMITATIONS<br>
-While the limitations presently would be best characterized as countless some of the functions
-that are already present are not sufficiently worked out. Some are:
+While the limitations are certainly countless some of the functions are, although already present,
+still embryonic. Some are:
 <ul>
 <li>Running an interactive program that asks for input through a command-line is not guaranteed
    to work in the console area of the program. Interactive programs in Java seem to work fine but,
    for example, an interactive Perl script does not unless the autoflushing of its STDOUT is enabled
-   in the script itself</li>
-<li>The built in packing of a jar file for a java application bundles only .class files</li>
+   in the script itself.</li>
+<li>The built in packing of a jar file for a java application bundles only .class files.</li>
 <li>The printing to a printer is rudimentary and is rather the blueprint for a printing function.
-The page size is not controlled.</li>
-<li>The syntax coloring is incomplete and many html tags and attributes are still not colored</li>
+    The page size is not controlled.</li>
+<li>The syntax coloring is basic. It's also still incomplete for Html. Many html tags and attributes
+    are not colored.</li>
 </ul>
 <p>
 IDEAS FOR FURTHER DEVELOPEMENT<br>
