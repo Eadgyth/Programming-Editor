@@ -315,6 +315,7 @@ public class TabbedFiles implements Observer {
          int n = nTabs();
          editArea[n] = format.createEditArea();
          fDoc[n] = new FileDocument(editArea[n], f);
+         prefs.readPrefs();
          fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
          addNewTab(fDoc[n].filename(), editArea[n].editAreaPnl());
          docUpdate.changedFileUpdate(n, false);
@@ -330,6 +331,7 @@ public class TabbedFiles implements Observer {
       int n = nTabs();
       editArea[n] = format.createEditArea();
       fDoc[n] = new FileDocument(editArea[n], lang);
+      prefs.readPrefs();
       fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
       addNewTab("unnamed", editArea[n].editAreaPnl());
       setUIUpdatersAt(n);
