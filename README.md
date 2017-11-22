@@ -18,11 +18,11 @@ FEATURES<br>
    <li>A basic file explorer for projects</i>
    <li>An "exchange editor" (the panel at the right in the image below) to edit text in a
    separate view and to facilitate the exchange of text within a file or between files</li>
-   <li>A basic syntax highlighting for java, perl, html and javascript and a basic
-   auto-indentation</li>
+   <li>A basic syntax highlighting for java, perl, html, javascript and CSS.</li>
+   <li>A basic auto-indentation</li>
    <li>The setting of projects without creating any extra data files outside the program's
    own folder (a properties file may optionally be saved in a project's folder though). Projects
-   can be retrieved after newly starting the program and a number of projects can be defined
+   are retrieved after newly starting the program and a number of projects can be defined
    and set active during the program's runtime. A project is assigned to the program when a file
    of that project is opened (or newly saved) and is in the selected tab. This file may be any
    file (that is not necessarily a main source file) that is found in the working directory
