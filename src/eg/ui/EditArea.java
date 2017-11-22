@@ -79,12 +79,7 @@ public final class EditArea {
          enableWordwrap();
       }
       else {
-         if (isLineNumbers) {
-            showLineNumbers();
-         }
-         else {
-            hideLineNumbers();
-         }
+         disableWordwrap(isLineNumbers);
       }
 
       textArea.addFocusListener(new FocusAdapter() {
@@ -145,51 +140,6 @@ public final class EditArea {
    }
 
    /**
-    * Sets the font in this area for editing text and this area that displays
-    * line numbers
-    *
-    * @param font  the name of the font
-    * @param fontSize  the font size
-    */
-   public void setFont(String font, int fontSize) {
-      Font fontNew = new Font(font, Font.PLAIN, ScreenParams.scaledSize(fontSize));
-      lineNrArea.setFont(fontNew);
-      textArea.setFont(fontNew);
-      revalidate();
-   }
-
-   /**
-    * Shows the area that displays line numbers.
-    * Invoking this method also annules wordwrap
-    */
-   public void showLineNumbers() {
-      removeCenterComponent();
-      disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
-      linkedLineNrScroll.setViewportView(disabledWordwrapPnl);
-      editAreaPnl.add(lineNrScroll, BorderLayout.WEST);
-      editAreaPnl.add(linkedLineNrScroll, BorderLayout.CENTER);
-      setScrollPos(linkedLineNrScroll);
-      textArea.requestFocusInWindow();
-      revalidate();
-      isWordwrap = false;
-   }
-
-   /**
-    * Hides line numbers. Invoking this method also annules wordwrap
-    */
-   public void hideLineNumbers() {
-      editAreaPnl.remove(lineNrScroll);
-      removeCenterComponent();
-      disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
-      noWordwrapScroll.setViewportView(disabledWordwrapPnl);
-      editAreaPnl.add(noWordwrapScroll, BorderLayout.CENTER);
-      setScrollPos(noWordwrapScroll);
-      textArea.requestFocusInWindow();
-      revalidate();
-      isWordwrap = false;
-   }
-
-   /**
     * Enables wordwrap. Invoking this method also hides the area
     * that displays line numbers
     */
@@ -202,6 +152,35 @@ public final class EditArea {
       textArea.requestFocusInWindow();
       revalidate();
       isWordwrap = true;
+   }
+   
+   /**
+    * Disables wordwrap and makes the area to show line numbers visible if the
+    * specified boolean value is true
+    *
+    * @param b  the boolean
+    */
+   public void disableWordwrap(boolean b) {
+      if (b) {
+         showLineNumbers();
+      }
+      else {
+         hideLineNumbers();
+      }
+   }
+   
+   /**
+    * Sets the font in this area for editing text and this area that displays
+    * line numbers
+    *
+    * @param font  the name of the font
+    * @param fontSize  the font size
+    */
+   public void setFont(String font, int fontSize) {
+      Font fontNew = new Font(font, Font.PLAIN, ScreenParams.scaledSize(fontSize));
+      lineNrArea.setFont(fontNew);
+      textArea.setFont(fontNew);
+      revalidate();
    }
 
    /**
@@ -218,6 +197,30 @@ public final class EditArea {
    //
    //--private methods--/
    //
+
+   private void showLineNumbers() {
+      removeCenterComponent();
+      disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
+      linkedLineNrScroll.setViewportView(disabledWordwrapPnl);
+      editAreaPnl.add(lineNrScroll, BorderLayout.WEST);
+      editAreaPnl.add(linkedLineNrScroll, BorderLayout.CENTER);
+      setScrollPos(linkedLineNrScroll);
+      textArea.requestFocusInWindow();
+      revalidate();
+      isWordwrap = false;
+   }
+   
+   private void hideLineNumbers() {
+      editAreaPnl.remove(lineNrScroll);
+      removeCenterComponent();
+      disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
+      noWordwrapScroll.setViewportView(disabledWordwrapPnl);
+      editAreaPnl.add(noWordwrapScroll, BorderLayout.CENTER);
+      setScrollPos(noWordwrapScroll);
+      textArea.requestFocusInWindow();
+      revalidate();
+      isWordwrap = false;
+   }
    
    private void adaptLineNrWidth(int prevLineNr, int lineNr) {
       if ((int) Math.log10(prevLineNr) - (int) Math.log10(lineNr) != 0) {

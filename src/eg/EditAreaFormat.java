@@ -84,7 +84,7 @@ public class EditAreaFormat {
          editArea[iCurr].enableWordwrap();
       }
       else {
-         showLineNumbers(editArea[iCurr]);
+         editArea[iCurr].disableWordwrap(isShowLineNr);
       }
       String state = isWordwrap ? "enabled" : "disabled";
       prefs.storePrefs("wordWrap", state);
@@ -101,7 +101,7 @@ public class EditAreaFormat {
          isShowLineNr = show;
          for (EditArea ea : editArea) {
             if (ea != null && !ea.isWordwrap()) {
-               showLineNumbers(ea);
+               ea.disableWordwrap(isShowLineNr);
             }
          }
          String state = isShowLineNr ? "show" : "hide";
@@ -112,14 +112,6 @@ public class EditAreaFormat {
    //
    //--private--/
    //
-   
-   private void showLineNumbers(EditArea ea) {
-      if (isShowLineNr) {
-         ea.showLineNumbers();
-      } else {
-         ea.hideLineNumbers();
-      }
-   }
    
    private void setFont() {
       font = fontSetWin.fontComboBxRes();
