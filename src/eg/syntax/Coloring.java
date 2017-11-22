@@ -37,6 +37,9 @@ public class Coloring {
          case JAVASCRIPT:
             colorable = new JavascriptColoring();
             break;
+         case CSS:
+            colorable = new CSSColoring();
+            break;
          case PERL:
             colorable = new PerlColoring();
             break;

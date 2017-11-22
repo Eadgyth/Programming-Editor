@@ -433,6 +433,9 @@ public final class FileDocument {
          case "js":
             lang = Languages.JAVASCRIPT;
             break;
+         case "css":
+            lang = Languages.CSS;
+            break;
          case "pl": case "pm":
             lang = Languages.PERL;
             break;

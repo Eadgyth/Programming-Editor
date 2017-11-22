@@ -6,6 +6,7 @@ package eg;
 public enum Languages {
 
    NORMAL_TEXT("Normal text"),
+   CSS("CSS"),
    HTML("Html"),
    JAVA("Java"),
    JAVASCRIPT("Javascript"),

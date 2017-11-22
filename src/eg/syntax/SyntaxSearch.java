@@ -16,7 +16,7 @@ public class SyntaxSearch {
    private final static Color GREEN  = new Color(80, 190, 80);
    private final static Color GRAY   = new Color(30, 30, 30);
    private final static Color ORANGE = new Color(230, 100, 50);
-   private final static Color PURPLE = new Color(100, 60, 255);
+   private final static Color PURPLE = new Color(130, 30, 250);
 
    private final SimpleAttributeSet normalSet;
    private final SimpleAttributeSet redPlainSet    = new SimpleAttributeSet();
@@ -31,14 +31,14 @@ public class SyntaxSearch {
    private final StyledDocument doc;
 
    private Colorable colorable;
+   private boolean isTypeMode = false;
    private String text = "";
    private String toColor = "";
    private int pos;
    private int posStart;
    private boolean isBlockCmnt = true;
-   private boolean isTypeMode = false;
-   private int sectionStart = 0;
-   private int sectionEnd = 0;
+   private int innerStart = 0;
+   private int innerEnd = 0;
 
    /**
     * @param doc  the <code>StyledDocument</code> that contains
@@ -75,14 +75,11 @@ public class SyntaxSearch {
    public void setTextParams(String text, String toColor, int pos,
          int posStart) {
 
-      if (colorable == null) {
-         throw new IllegalStateException("No Colorable is set");
-      }
+      this.isTypeMode = text != toColor;
       this.text = text;
       this.toColor = toColor;
-      this.pos = pos + sectionStart;
+      this.pos = pos;
       this.posStart = posStart;
-      isTypeMode = !toColor.equals(text);
       colorable.color(this);
    }
 
@@ -208,16 +205,19 @@ public class SyntaxSearch {
    public void blockComments(String blockStart, String blockEnd) {
       blockCommentsImpl(blockStart, blockEnd);
    }
-
+   
    /**
-    * Colors sections in Html that contain javascript
+    * Colors sections by setting a temporary <code>Colorable</code>. The specified
+    * strings mark the starts and ends of sections
     *
-    * @param jsCol  the refernce to {@link JavascriptColoring}
+    * @param colTemp  the {@link Colorable}
+    * @param sectionStart  the mark for the starts
+    * @param sectionEnd  the mark for the ends
     */
-   public void javascriptInHtml(JavascriptColoring jsCol) {
+   public void innerSection(Colorable colTemp, String sectionStart, String sectionEnd) {
       Colorable curr = colorable;
-      setColorable(jsCol);
-      javascript();
+      setColorable(colTemp);
+      innerSection(sectionStart, sectionEnd);
       setColorable(curr);
    }
 
@@ -303,28 +303,32 @@ public class SyntaxSearch {
       }
    }
 
-   private void javascript() {
+   private void innerSection(String sectionStart, String sectionEnd) {
       int start = 0;
       int length;
       while (start != -1) {
-         start = text.indexOf("<script>", start);
+         start = text.indexOf(sectionStart, start);
          if (start != -1) {
             length = 0;           
             int end = SyntaxUtils.nextBlockEnd(text, start + 1,
-                  "<script>", "</script>");
+                 sectionStart, sectionEnd);
             if (end != -1) {
-               int scriptStart = start + "<script>".length();
-               String section = text.substring(scriptStart, end);
-               sectionStart = scriptStart;
-               sectionEnd = end;
-               setTextParams(text, section, scriptStart, scriptStart);
+               innerStart = start + sectionStart.length();
+               innerEnd = end;
+               String section = text.substring(innerStart, end);
+               if (isTypeMode && pos >= innerStart && pos <= innerEnd) {
+                  colorable.color(this);
+               }
+               else {
+                  setTextParams(text, section, innerStart, innerStart);
+               }
                length = section.length();
             }
             start += length + 1;
          }
       }
-      sectionStart = 0;
-      sectionEnd = 0;
+      innerStart = 0;
+      innerEnd = 0;
    }
 
    private void signedVariable(String sign,  char[] endChars) {
@@ -438,11 +442,11 @@ public class SyntaxSearch {
          return;
       }
       removedFirstBlockStart(blockStart, blockEnd);
-      int start = sectionStart;
+      int start = innerStart;
       int length;
       while (start != -1) {
          start = text.indexOf(blockStart, start);
-         if (sectionEnd > 0 && start >= sectionEnd - blockStart.length()) {
+         if (innerEnd > 0 && start >= innerEnd - blockStart.length()) {
             start = -1;
          }
          int end;
@@ -451,7 +455,7 @@ public class SyntaxSearch {
             if (!SyntaxUtils.isInQuotes(text, start, blockStart.length())) {
                end = SyntaxUtils.nextBlockEnd(text, start + 1,
                      blockStart, blockEnd);
-               if (sectionEnd > 0 && end >= sectionEnd - blockEnd.length()) {
+               if (innerEnd > 0 && end >= innerEnd - blockEnd.length()) {
                   end = -1;
                }
                if (end != -1) {
@@ -470,14 +474,14 @@ public class SyntaxSearch {
 
    private void removedFirstBlockStart(String blockStart, String blockEnd) {
       if (isTypeMode) {
-         int firstEnd = SyntaxUtils.nextBlockEnd(text, sectionStart, blockStart,
+         int firstEnd = SyntaxUtils.nextBlockEnd(text, innerStart, blockStart,
                blockEnd);
-         if (sectionEnd > 0 && firstEnd > sectionEnd) {
+         if (innerEnd > 0 && firstEnd > innerEnd) {
             firstEnd = -1;
          }
          if (firstEnd != -1) {
-            String toUncomment = text.substring(sectionStart, firstEnd + 2);
-            uncommentBlock(toUncomment, sectionStart);
+            String toUncomment = text.substring(innerStart, firstEnd + 2);
+            uncommentBlock(toUncomment, innerStart);
          }
       }
    }
@@ -488,7 +492,7 @@ public class SyntaxSearch {
                blockEnd);
          int nextEnd   = SyntaxUtils.nextBlockEnd(text, endPos, blockStart,
                blockEnd);
-         if (sectionEnd > 0 && nextEnd > sectionEnd) {
+         if (innerEnd > 0 && nextEnd > innerEnd) {
             nextEnd = -1;
          }
          if (nextEnd != -1 && lastStart == -1) {
@@ -506,15 +510,15 @@ public class SyntaxSearch {
             nextStart = text.indexOf(blockStart, nextStart + 1);
          }
          int end = nextStart;
-         if (sectionEnd > 0) {
-            end = sectionEnd;
+         if (innerEnd > 0) {
+            end = innerEnd;
          }
          String toUncomment;
          if (nextStart != -1) {
             toUncomment = text.substring(startPos, end);
          }
          else {
-            if (sectionEnd > 0) {
+            if (innerEnd > 0) {
                toUncomment = text.substring(startPos, end);
             }
             else {
