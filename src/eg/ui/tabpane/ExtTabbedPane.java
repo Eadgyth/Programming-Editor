@@ -25,7 +25,8 @@ public class ExtTabbedPane extends JTabbedPane {
 
    private final static FlowLayout FLOW_LAYOUT_LEFT
          = new FlowLayout(FlowLayout.LEFT, 0, 0);
-   private final static EmptyBorder EMPTY_BORDER = new EmptyBorder(0, 5, 0, 0);
+
+   private final static EmptyBorder EMPTY_BORDER = new EmptyBorder(1, 5, 0, 0);
 
    private final ExtTabbedPaneUI ui = new ExtTabbedPaneUI();
 
@@ -33,9 +34,9 @@ public class ExtTabbedPane extends JTabbedPane {
    private boolean isShowTabbar;
    
    /**
-    * Creates an <code>ExtTabbedPane</code> using the parameterless
-    * constructor of the superclass (tab placement at the top) and
-    * sets this {@link ExtTabbedPaneUI}
+    * Creates an <code>ExtTabbedPane</code> using the parameterless constructor
+    * of the superclass (tab placement at the top) and sets this
+    * {@link ExtTabbedPaneUI}
     */
    public ExtTabbedPane() {
       ui.setHeight(Constants.BAR_HEIGHT);
@@ -52,7 +53,7 @@ public class ExtTabbedPane extends JTabbedPane {
    public void showTabbar(boolean show) {
       if (!show && getTabCount() > 1) {
          throw new IllegalStateException("Hiding tabs is illegal"
-               + " when the number of tabs is bigger than one");
+               + " when the number of tabs is larger than one");
       }
       ui.setShowTabs(show);
       updateUI();
@@ -102,7 +103,7 @@ public class ExtTabbedPane extends JTabbedPane {
     * Used instead of <code>setTitleAt()</code> in parent class if tabs
     * are added through {@link #addTab(String, Component, JButton)}
     *
-    * @param index  the index of the tab where the title is set
+    * @param index  the index
     * @param title  the tiltle
     */
    public void changeTitle(int index, String title) {
@@ -134,7 +135,7 @@ public class ExtTabbedPane extends JTabbedPane {
    }
    
    //
-   //--private
+   //--private--/
    //
 
    private final MouseMotionListener mml = new MouseMotionAdapter() {

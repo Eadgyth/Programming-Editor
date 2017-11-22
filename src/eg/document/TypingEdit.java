@@ -240,7 +240,7 @@ public class TypingEdit {
    }
 
    //
-   //--private methods/classes--//
+   //--private--/
    //
 
    private void updateAfterUndoRedo() {

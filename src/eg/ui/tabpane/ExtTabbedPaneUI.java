@@ -112,7 +112,7 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
    protected int getTabLabelShiftY(int tabPlacement, int tabIndex,
          boolean isSelected) {
 
-      return 1;
+      return 0;
    }
 
    @Override

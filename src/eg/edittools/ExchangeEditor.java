@@ -75,6 +75,12 @@ public class ExchangeEditor implements AddableEditTool {
       exch.setSourceDocument(fDoc);
    }
 
+   /**
+    * {@inheritDoc}.
+    * <p>
+    * Saves the content in the exchange editor to the file 'exchangeContent.txt'
+    * in the program folder
+    */
    @Override
    public void end() {
       exch.save();
