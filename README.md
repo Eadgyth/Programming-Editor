@@ -62,8 +62,6 @@ embryonic. Some are:
 <li>The built in packing of a jar file for a java application bundles only .class files.</li>
 <li>The printing to a printer is rudimentary and is rather the blueprint for a printing function.
     The page size is not controlled.</li>
-<li>The syntax coloring is basic. It's also still incomplete for Html. Many html tags and attributes
-    are not colored.</li>
 </ul>
 <p>
 IDEAS FOR FURTHER DEVELOPEMENT<br>
