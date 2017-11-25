@@ -351,7 +351,7 @@ public class TabbedFiles implements Observer {
             mw.enableUndoRedo(e.canUndo(), e.canRedo()));
       fDoc[i].setTextSelectionListener(e ->
             mw.enableCutCopy(e.isSelection()));
-      fDoc[i].setLineAndColumnReadable((j, k) ->
+      fDoc[i].setCursorPositionReadable((j, k) ->
             setLineAndColNr(j, k));
    }
    

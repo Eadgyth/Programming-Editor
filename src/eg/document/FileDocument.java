@@ -79,12 +79,12 @@ public final class FileDocument {
    }
    
    /**
-    * Sets an <code>LineAndColumnReadable</code>
+    * Sets a <code>CursorPositionReadable</code>
     *
-    * @param lcr  an {@link LineAndColumnReadable}
+    * @param cpr  a {@link CursorPositionReadable}
     */
-   public void setLineAndColumnReadable(LineAndColumnReadable lcr) {
-      type.setLineAndColumnReadable(lcr);
+   public void setCursorPositionReadable(CursorPositionReadable cpr) {
+      type.setCursorPositionReadable(cpr);
    }
    
    /**
