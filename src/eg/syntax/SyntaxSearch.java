@@ -1,34 +1,20 @@
 package eg.syntax;
 
+import java.awt.Color;
+
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
-import javax.swing.text.StyleConstants;
 
-import java.awt.Color;
+//--Eadgyth--/
+import eg.utils.LinesFinder;
 
 /**
  * The search and coloring of different syntax elements
  */
 public class SyntaxSearch {
 
-   private final static Color BLUE   = new Color(20, 30, 255);
-   private final static Color RED    = new Color(240, 0, 50);
-   private final static Color GREEN  = new Color(80, 190, 80);
-   private final static Color GRAY   = new Color(30, 30, 30);
-   private final static Color ORANGE = new Color(230, 100, 50);
-   private final static Color PURPLE = new Color(130, 30, 250);
-
-   private final SimpleAttributeSet normalSet;
-   private final SimpleAttributeSet redPlainSet    = new SimpleAttributeSet();
-   private final SimpleAttributeSet redBoldSet     = new SimpleAttributeSet();
-   private final SimpleAttributeSet bluePlainSet   = new SimpleAttributeSet();
-   private final SimpleAttributeSet blueBoldSet    = new SimpleAttributeSet();
-   private final SimpleAttributeSet greenPlainSet  = new SimpleAttributeSet();
-   private final SimpleAttributeSet grayBoldSet    = new SimpleAttributeSet();
-   private final SimpleAttributeSet orangePlainSet = new SimpleAttributeSet();
-   private final SimpleAttributeSet purplePlainSet = new SimpleAttributeSet();
-
    private final StyledDocument doc;
+   private final SimpleAttributeSet normalSet;
 
    private Colorable colorable;
    private boolean isTypeMode = false;
@@ -43,13 +29,12 @@ public class SyntaxSearch {
    /**
     * @param doc  the <code>StyledDocument</code> that contains
     * the text to color
-    * @param set  the <code>SimpleAttributeSet</code> that has the
-    * normal (black, plain) style
+    * @param normalSet  the <code>SimpleAttributeSet</code> that has the
+    * normal attributes, that is black and plain
     */
-   public SyntaxSearch(StyledDocument doc, SimpleAttributeSet set) {
+   public SyntaxSearch(StyledDocument doc, SimpleAttributeSet normalSet) {
       this.doc = doc;
-      normalSet = set;
-      setStyles();
+      this.normalSet = normalSet;
    }
 
    /**
@@ -63,19 +48,22 @@ public class SyntaxSearch {
    }
 
    /**
-    * Sets the text parameters for coloring
+    * Colors text in this document.
+    * <p>
+    * To scan the entire text the string <code>toColor</code> has to equal
+    * <code>text</code>.
+    * To scan parts of text (in type mode) <code>toColor</code> may be a single
+    * line or also a multiline section.<br>
+    * Method calls {@link Colorable#color(SyntaxSearch)}
     *
     * @param text  the entire text in the document
-    * @param toColor  the part of <code>text</code> this is
-    * colored
-    * @param pos  the position where a change happened
+    * @param toColor  the part that is colored.
+    * @param pos  the position where a change happened.
     * @param posStart  the position where <code>toColor</code>
     * starts
     */
-   public void setTextParams(String text, String toColor, int pos,
-         int posStart) {
-
-      this.isTypeMode = text != toColor;
+   public void color(String text, String toColor, int pos, int posStart) {
+      isTypeMode = !text.equals(toColor);
       this.text = text;
       this.toColor = toColor;
       this.pos = pos;
@@ -84,15 +72,15 @@ public class SyntaxSearch {
    }
 
    /**
-    * (Re-)colors in black this section of text that is to
-    * be colored
+    * (Re-)colors this section of text that is to be colored in
+    * black, plain
     */
    public void setCharAttrBlack() {
       setCharAttr(posStart, toColor.length(), normalSet);
    }
 
    /**
-    * (Re-)colors in black the entire text
+    * (Re-)colors the entire text in black, plain
     */
    public void setAllCharAttrBlack() {
       setCharAttr(0, doc.getLength(), normalSet);
@@ -106,10 +94,10 @@ public class SyntaxSearch {
     */
    public void keywordsRed(String[] keys, boolean reqWord) {
       for (String s : keys) {
-         key(s, redPlainSet, reqWord);
+         key(s, Attributes.RED_PLAIN, reqWord);
       }
    }
-   
+
    /**
     * Searches keywords and colors them in red and displays them in bold
     *
@@ -118,7 +106,7 @@ public class SyntaxSearch {
     */
    public void keywordsRedBold(String[] keys, boolean reqWord) {
       for (String s : keys) {
-         key(s, redBoldSet, reqWord);
+         key(s, Attributes.RED_BOLD, reqWord);
       }
    }
 
@@ -130,7 +118,7 @@ public class SyntaxSearch {
     */
    public void keywordsBlue(String[] keys, boolean reqWord) {
       for (String s : keys) {
-         key(s, bluePlainSet, reqWord);
+         key(s, Attributes.BLUE_PLAIN, reqWord);
       }
    }
 
@@ -159,21 +147,37 @@ public class SyntaxSearch {
          htmlTag(s, attributes);
       }
    }
+   
+   /**
+    * Colors sections embedded in a html document by setting a temporary
+    * <code>Colorable</code> (for a script or css). The specified strings
+    * mark the start and end tags for the embedded sections
+    *
+    * @param colTemp  the {@link Colorable}
+    * @param startTag  the start tag
+    * @param endTag  the end tag
+    */
+   public void embedInHtml(Colorable colTemp, String startTag, String endTag) {
+      Colorable curr = colorable;
+      setColorable(colTemp);
+      embedInHtml(startTag, endTag);
+      setColorable(curr);
+   }
 
    /**
     * Searches braces and colors them in bold gray
     */
    public void bracesGray() {
-      key("{", grayBoldSet, false);
-      key("}", grayBoldSet, false);
+      key("{", Attributes.GRAY_BOLD, false);
+      key("}", Attributes.GRAY_BOLD, false);
    }
 
    /**
     * Searches brackets and colors them in bold blue
     */
    public void bracketsBlue() {
-      key("(", blueBoldSet, false);
-      key(")", blueBoldSet, false);
+      key("(", Attributes.BLUE_BOLD, false);
+      key(")", Attributes.BLUE_BOLD, false);
    }
 
    /**
@@ -189,8 +193,7 @@ public class SyntaxSearch {
     *
     * @param lineCmnt  the string that marks the start of a line comment
     * @param exceptions  the array of strings that disable the line comment
-    * when these precede <code>lineCmt</code>. Null if no exception is destined
-    * for line comments
+    * if these precede <code>lineCmt</code>. Can be null.
     */
    public void lineComments(String lineCmnt, String[] exceptions) {
       lineCommentsImpl(lineCmnt, exceptions);
@@ -205,37 +208,22 @@ public class SyntaxSearch {
    public void blockComments(String blockStart, String blockEnd) {
       blockCommentsImpl(blockStart, blockEnd);
    }
-   
-   /**
-    * Colors sections by setting a temporary <code>Colorable</code>. The specified
-    * strings mark the starts and ends of sections
-    *
-    * @param colTemp  the {@link Colorable}
-    * @param sectionStart  the mark for the starts
-    * @param sectionEnd  the mark for the ends
-    */
-   public void innerSection(Colorable colTemp, String sectionStart, String sectionEnd) {
-      Colorable curr = colorable;
-      setColorable(colTemp);
-      innerSection(sectionStart, sectionEnd);
-      setColorable(curr);
-   }
 
    /**
-    * Returns if this position where a change happened is found in a
-    * block of text that is delimited by the specified start and end
-    * signals
+    * Returns the boolean value that indicates if this position where a
+    * change happened is found in a block of text that is delimited by the
+    * specified strings <code>blockStart</code> and <code>blockEnd</code>
     *
-    * @param blockStart  the String that defines the block start
-    * @param blockEnd  the String that defines the block end
-    * @return  if this pos is found in a certain block of text
+    * @param blockStart  the block start
+    * @param blockEnd  the block end
+    * @return  the boolean value
     */
    public boolean isInBlock(String blockStart, String blockEnd) {
       return isInBlock(blockStart, blockEnd, pos);
    }
 
    //
-   //--private methods--//
+   //--private--/
    //
 
    private void key(String key, SimpleAttributeSet set, boolean reqWord) {
@@ -261,15 +249,17 @@ public class SyntaxSearch {
          if (start != -1) {
             boolean isStartTag = start > 0
                   && toColor.charAt(start - 1) == '<';
+
             boolean isEndTag = !isStartTag
                   && start > 1
                   && (toColor.charAt(start - 1) == '/'
                   & toColor.charAt(start - 2) == '<');
+
             boolean ok = (isStartTag || isEndTag)
-                  && SyntaxUtils.isWord(toColor, start, tag.length());               
-             
+                  && SyntaxUtils.isWord(toColor, start, tag.length());
+
             if (ok) {
-               setCharAttr(start + posStart, tag.length(), blueBoldSet);                           
+               setCharAttr(start + posStart, tag.length(), Attributes.BLUE_BOLD);
                if (isStartTag
                      && toColor.length() > start + tag.length()
                      && toColor.charAt(start + tag.length()) == ' ') {
@@ -292,36 +282,30 @@ public class SyntaxSearch {
          if (start != -1) {
             int absStart = start + posStart;
             int lastTagStart = SyntaxUtils.lastBlockStart(text, absStart, "<", ">");
-            boolean ok = SyntaxUtils.isWord(toColor, start, keyword.length())
-                  && lastTagStart != -1;
+            boolean ok = lastTagStart != -1
+                  && SyntaxUtils.isWord(toColor, start, keyword.length());
 
             if (ok) {
-               setCharAttr(absStart, keyword.length(), redPlainSet);
+               setCharAttr(absStart, keyword.length(), Attributes.RED_PLAIN);
             }
             start += keyword.length();
          }
       }
    }
 
-   private void innerSection(String sectionStart, String sectionEnd) {
+   private void embedInHtml(String startTag, String endTag) {
       int start = 0;
       int length;
       while (start != -1) {
-         start = text.indexOf(sectionStart, start);
+         start = text.indexOf(startTag, start);
          if (start != -1) {
-            length = 0;           
-            int end = SyntaxUtils.nextBlockEnd(text, start + 1,
-                 sectionStart, sectionEnd);
+            length = 0;
+            int end = SyntaxUtils.nextBlockEnd(text, start + 1, startTag, endTag);
             if (end != -1) {
-               innerStart = start + sectionStart.length();
+               innerStart = SyntaxUtils.nextBlockEnd(text, start + 1, "<", ">");
                innerEnd = end;
                String section = text.substring(innerStart, end);
-               if (isTypeMode && pos >= innerStart && pos <= innerEnd) {
-                  colorable.color(this);
-               }
-               else {
-                  setTextParams(text, section, innerStart, innerStart);
-               }
+               color(text, section, innerStart, innerStart);
                length = section.length();
             }
             start += length + 1;
@@ -339,7 +323,7 @@ public class SyntaxSearch {
          if (start != -1) {
             if (SyntaxUtils.isWordStart(toColor, start)) {
                length = SyntaxUtils.wordLength(toColor, start, endChars);
-               setCharAttr(start + posStart, length, purplePlainSet);
+               setCharAttr(start + posStart, length, Attributes.PURPLE_PLAIN);
                start += length;
             }
             else {
@@ -391,11 +375,11 @@ public class SyntaxSearch {
                   int absStart = start + lineStart;
                   if (isHtml) {
                      if (isTypeMode || isInBlock("<", ">", absStart)) {
-                        setCharAttr(absStart, length, purplePlainSet);
+                        setCharAttr(absStart, length, Attributes.PURPLE_PLAIN);
                      }
                   }
                   else {
-                     setCharAttr(absStart, length, orangePlainSet);
+                     setCharAttr(absStart, length, Attributes.ORANGE_PLAIN);
                   }
                }
             }
@@ -430,7 +414,7 @@ public class SyntaxSearch {
                else {
                   length = toColor.length() - start;
                }
-               setCharAttr(start + posStart, length, greenPlainSet);
+               setCharAttr(start + posStart, length, Attributes.GREEN_PLAIN);
             }
             start += length + 1;
          }
@@ -460,7 +444,7 @@ public class SyntaxSearch {
                }
                if (end != -1) {
                   length = end - start + blockEnd.length();
-                  setCharAttr(start, length, greenPlainSet);
+                  setCharAttr(start, length, Attributes.GREEN_PLAIN);
                   removedBlockStart(end + blockEnd.length(), blockStart, blockEnd);
                }
                else {
@@ -532,7 +516,7 @@ public class SyntaxSearch {
    private void uncommentBlock(String section, int pos) {
       if (isTypeMode) {
          isBlockCmnt = false;
-         setTextParams(text, section, pos, pos);
+         color(text, section, pos, pos);
          isBlockCmnt = true;
       }
    }
@@ -547,31 +531,5 @@ public class SyntaxSearch {
 
    private void setCharAttr(int start, int length, SimpleAttributeSet set) {
       doc.setCharacterAttributes(start, length, set, false);
-   }
-
-   private void setStyles() {
-      StyleConstants.setForeground(redPlainSet, RED);
-      StyleConstants.setBold(redPlainSet, false);
-      
-      StyleConstants.setForeground(redBoldSet, RED);
-      StyleConstants.setBold(redBoldSet, true);
-
-      StyleConstants.setForeground(bluePlainSet, BLUE);
-      StyleConstants.setBold(bluePlainSet, false);
-
-      StyleConstants.setForeground(blueBoldSet, BLUE);
-      StyleConstants.setBold(blueBoldSet, true);
-
-      StyleConstants.setForeground(greenPlainSet, GREEN);
-      StyleConstants.setBold(greenPlainSet, false);
-
-      StyleConstants.setForeground(grayBoldSet, GRAY);
-      StyleConstants.setBold(grayBoldSet, true);
-
-      StyleConstants.setForeground(orangePlainSet, ORANGE);
-      StyleConstants.setBold(orangePlainSet, false);
-      
-      StyleConstants.setForeground(purplePlainSet, PURPLE);
-      StyleConstants.setBold(purplePlainSet, false);
    }
 }
