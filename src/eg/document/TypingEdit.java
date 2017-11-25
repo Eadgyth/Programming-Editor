@@ -31,7 +31,7 @@ public class TypingEdit {
    private UndoableChangeListener ucl;
    private TextSelectionEvent tse;
    private TextSelectionListener tsl;
-   private LineAndColumnReadable lcr;
+   private CursorPositionReadable cpr;
    private boolean isDocListen = true;
    private boolean isAddToUndo = true;
    private boolean isCodeEditing = false;
@@ -42,8 +42,8 @@ public class TypingEdit {
    private boolean isSelectionTmp = false;
    private boolean canUndoTmp = false;
    private boolean canRedoTmp = false;
-   private int lineNrAtCursor = 1;
-   private int colNrAtCursor = 1;
+   private int lineNr = 1;
+   private int colNr = 1;
 
    /**
     * @param textDoc  the reference to {@link TextDocument}
@@ -88,14 +88,14 @@ public class TypingEdit {
    /**
     * Sets a <code>CursorPositionReadable</code> if none was set before
     *
-    * @param lcr  a {@link LineAndColumnReadable}
+    * @param cpr  a {@link CursorPositionReadable}
     */
-   public void setLineAndColumnReadable(LineAndColumnReadable lcr) {
-      if (this.lcr != null) {
+   public void setCursorPositionReadable(CursorPositionReadable cpr) {
+      if (this.cpr != null) {
          throw new IllegalStateException(
-               "A PositionReadable is already set");
+               "A CursorPositionReadable is already set");
       }
-      this.lcr = lcr;
+      this.cpr = cpr;
    }
 
    /**
@@ -190,7 +190,7 @@ public class TypingEdit {
     * @return  the number
     */
    public int lineNrAtCursor() {
-      return lineNrAtCursor;
+      return lineNr;
    }
    
    /**
@@ -200,7 +200,7 @@ public class TypingEdit {
     * @return  the number
     */
    public int columnNrAtCursor() {
-      return colNrAtCursor;
+      return colNr;
    }
 
    /**
@@ -299,15 +299,15 @@ public class TypingEdit {
    
    private void readLineAndColumnNr(int caret) {
       int lastNewLine = LinesFinder.lastNewline(text, caret);
-      lineNrAtCursor = LinesFinder.lineNrAtPos(text, caret);
+      lineNr = LinesFinder.lineNrAtPos(text, caret);
       if (lastNewLine == -1) {
-         colNrAtCursor = caret + 1;
+         colNr = caret + 1;
       }
       else {
-         colNrAtCursor = caret - lastNewLine;
+         colNr = caret - lastNewLine;
       }
-      if (lcr != null) {
-         lcr.setCurrLineAndColumn(lineNrAtCursor, colNrAtCursor);
+      if (cpr != null) {
+         cpr.setPosition(lineNr, colNr);
       }
    }
 

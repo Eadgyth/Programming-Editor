@@ -153,7 +153,7 @@ public class UndoEdit {
 
    /**
     * Marks that the edit before the edit that will be added next is
-    * a breakpoint. This is effectless if this edit is already a
+    * a breakpoint. This is effectless if the edit is already a
     * breakpoint
     */
    public void markBreakpoint() {
