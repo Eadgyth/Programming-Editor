@@ -5,7 +5,7 @@ package eg.syntax;
  */
 public class HtmlColoring implements Colorable {
    
-   // complete??
+   // some tags
    public final static String[] TAGS = {
       "a", "abbr", "address", "applet", "area", "article", "aside", "audio",
       "b", "base", "bdi", "bdo", "blockquote", "bold", "body", "br", "button",
@@ -32,7 +32,7 @@ public class HtmlColoring implements Colorable {
       "wbr",
    };
 
-   // complete??
+   // some attributes
    private final static String[] ATTRIBUTES = {
       "accesskey", "abbr", "accept", "accept-charset", "action", "align", "alt",
       "archive", "axis",
@@ -70,8 +70,8 @@ public class HtmlColoring implements Colorable {
       if (!search.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
          search.setCharAttrBlack();
          search.htmlTags(TAGS, ATTRIBUTES);
-         search.innerSection(jsCol, "<script>", "</script>");
-         search.innerSection(cssCol, "<style>", "</style>");
+         search.embedInHtml(jsCol, "<script", "</script>");
+         search.embedInHtml(cssCol, "<style>", "</style>");
       }
       search.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
    }
