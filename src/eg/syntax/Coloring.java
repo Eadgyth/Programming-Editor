@@ -3,19 +3,29 @@ package eg.syntax;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.Languages;
 
 /**
- * Maintains a <code>SyntaxSearch</code> for coloring
+ * Maintains a <code>SyntaxSearch</code>, in which the <code>Colorable</code> is
+ * set and maybe changed depending on the language
+ * @see SyntaxSearch
  */
 public class Coloring {
    
    private final SyntaxSearch search;
    
-   public Coloring(StyledDocument doc, SimpleAttributeSet set) {
-      search = new SyntaxSearch(doc, set);
-   } 
+   /**
+    * @param doc  the <code>StyledDocument</code> that contains
+    * the text to color
+    * @param normalSet  the <code>SimpleAttributeSet</code> that has the
+    * normal (black, plain) style
+    */
+   public Coloring(StyledDocument doc, SimpleAttributeSet normalSet) {
+      search = new SyntaxSearch(doc, normalSet);
+   }
+   
+   
    
    /**
     * Selects a {@link Colorable} based on the language and assigns
@@ -53,15 +63,15 @@ public class Coloring {
     * Colors text
     *
     * @param text  the entire text
-    * @param toColor  the part of <code>text</code> this is
-    * colored
+    * @param toColor  the part this is colored
     * @param pos  the position where a change happened
     * @param posStart  the position where <code>toColor</code>
     * starts
+    * @see SyntaxSearch#color(String,String,int,int)
     */
    public void color(String text, String toColor, int pos,
          int posStart) {
        
-       search.setTextParams(text, toColor, pos, posStart);
+       search.color(text, toColor, pos, posStart);
     }   
 }
