@@ -120,14 +120,13 @@ public class FileTree extends Observable {
    }
 
    /**
-    * Creates a new tree at the currently shown root
+    * Udates the tree at the currently shown root. Called when it is expected
+    * that one or more nodes have to be removed or added
     */
    public void updateTree() {
       getExpandedNodes();
       setNewTree(currentRoot);
       setExpanded();
-      fileTreePnl.revalidate();
-      fileTreePnl.repaint();
    }
 
    /**
@@ -144,55 +143,42 @@ public class FileTree extends Observable {
    //
 
    private void setNewTree(String path) {
-      if (path.length() > 0) {
-         if (tree != null) {
-            holdTreePnl.remove(tree);
-         }   
-         currentRoot = path;
-         if (path.equals(projRoot)) {
-            upBt.setEnabled(false);
-         }
-         setTree(path);
-      }     
-   }
-
-   private void setTree(String path) {
+      if (path.length() == 0) {
+         return;
+      }
+      currentRoot = path;
+      if (path.equals(projRoot)) {
+         upBt.setEnabled(false);
+      }
       root = new DefaultMutableTreeNode("root", true);
       model = new DefaultTreeModel(root);
       getFiles(root, new File(path));
       renewBt.setEnabled(true);
-      initTree(); // includes creating a new JTree object
-      holdTreePnl.add(tree);
-      fileTreePnl.revalidate();
-      fileTreePnl.repaint();
-   }
-   
-   private void initTree() {
-      tree = new JTree(model);
-      tree.setRootVisible(false);
-      tree.setFont(Constants.SANSSERIF_PLAIN_9);
-      tree.setBorder(new LineBorder(Color.WHITE, 5));
-      tree.setCellRenderer(new TreeRenderer());
-      tree.setToggleClickCount(0);
-      tree.expandRow(0);
-      tree.addMouseListener(ml);
+      if (tree == null) {
+         initTree();
+         holdTreePnl.add(tree);
+      }
+      else {
+         tree.setModel(model);
+         tree.expandRow(0);
+      }
    }
 
    private void getFiles(DefaultMutableTreeNode node, File f) {
       if (f.isFile()) {
-          DefaultMutableTreeNode child = new DefaultMutableTreeNode(f);
-          node.add(child);
+         DefaultMutableTreeNode child = new DefaultMutableTreeNode(f);
+         node.add(child);
       }
       else {
-          DefaultMutableTreeNode child = new DefaultMutableTreeNode(f);
-          node.add(child);
-          File fList[] = f.listFiles();
-          if (fList != null) {
-             File fListSort[] = sortFoldersAndFiles(fList);
-             for (File fs : fListSort) {
-                getFiles(child, fs);
-             }
-          }
+         DefaultMutableTreeNode child = new DefaultMutableTreeNode(f);
+         node.add(child);
+         File fList[] = f.listFiles();
+         if (fList != null) {
+            File fListSort[] = sortFoldersAndFiles(fList);
+            for (File fs : fListSort) {
+               getFiles(child, fs);
+            }
+         }
       }
    }
 
@@ -241,7 +227,7 @@ public class FileTree extends Observable {
          }
       }
    }
-   
+
    private boolean isInDeletableDir(File file) {
       return file.toString().endsWith(F_SEP + deletableDir)
             || file.toString().contains(F_SEP + deletableDir + F_SEP);
@@ -264,7 +250,7 @@ public class FileTree extends Observable {
 
    private void deleteFolder() {
       DefaultMutableTreeNode selectedNode = getSelectedNode();
-      File f = getSelectedFile();  
+      File f = getSelectedFile();
       int res = Dialogs.warnConfirmYesNo(deleteMessage(f));
       if (res == JOptionPane.YES_OPTION) {
          boolean success = FileUtils.deleteFolder(f);
@@ -308,6 +294,7 @@ public class FileTree extends Observable {
    private File getSelectedFile() {
       DefaultMutableTreeNode node =
             (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+
       Object nodeInfo = null;
       if (node != null) {
          nodeInfo = node.getUserObject();
@@ -337,17 +324,29 @@ public class FileTree extends Observable {
          if (tree.isExpanded(i)) {
             expanded.add(tree.getPathForRow(i));
          }
-      }      
+      }
    }
 
    private void setExpanded() {
       for (TreePath tp : expanded) {
-         for (int i = 0; i < tree.getRowCount(); i++) { 
-            if (tp.toString().equals(tree.getPathForRow(i).toString())) {             
+         for (int i = 0; i < tree.getRowCount(); i++) {
+            if (tp.toString().equals(tree.getPathForRow(i).toString())) {
                tree.expandRow(i);
             }
          }
       }
+   }
+
+   private void initTree() {
+      System.out.println("init tree");
+      tree = new JTree(model);
+      tree.setRootVisible(false);
+      tree.setFont(Constants.SANSSERIF_PLAIN_9);
+      tree.setBorder(new LineBorder(Color.WHITE, 5));
+      tree.setCellRenderer(new TreeRenderer());
+      tree.setToggleClickCount(0);
+      tree.expandRow(0);
+      tree.addMouseListener(ml);
    }
 
    private void initTreePanel() {
@@ -369,7 +368,7 @@ public class FileTree extends Observable {
    private JToolBar toolbar() {
       JButton[] bts = new JButton[] {
          upBt, renewBt, closeBt
-      };  
+      };
       String[] tooltips = new String[] {
          "Folder up",
          "Update tree",
