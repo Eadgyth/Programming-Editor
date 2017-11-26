@@ -3,9 +3,6 @@ package eg;
 import java.util.Observer;
 import java.util.Observable;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
 import javax.swing.JTabbedPane;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
@@ -58,13 +55,6 @@ public class TabbedFiles implements Observer {
 
       tabPane.addChangeListener((ChangeEvent ce) -> {
           changeTabEvent(ce);
-      });
-      
-      mw.winListen(new WindowAdapter() {
-         @Override
-         public void windowClosing(WindowEvent we) {
-            exit();
-         }
       });
    }
 
@@ -356,7 +346,7 @@ public class TabbedFiles implements Observer {
    }
    
    private void setLineAndColNr(int lineNr, int colNr) {
-      mw.displayLineAndColNr(lineNr, colNr);
+      mw.displayLCursorPosition(lineNr, colNr);
    }
    
    private void removeTab() {
