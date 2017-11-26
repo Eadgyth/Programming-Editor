@@ -204,7 +204,6 @@ public final class FileDocument {
          }
       }
       catch (IOException e) {
-         System.out.println(e.getMessage());
          FileUtils.logStack(e);
       }
       finally {
