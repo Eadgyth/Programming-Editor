@@ -4,25 +4,29 @@ import java.awt.Component;
 
 import javax.swing.JButton;
 
+//--Eadgyth--/
 import eg.document.FileDocument;
 
 /**
- * The interface to create and add an edit tool to the <code>ToolPanel</code>
- * in the main window
+ * The interface to create an edit tool that has acces to the currently
+ * viewed <code>FileDocument</code> and whose view can be added to the
+ * <code>ToolPanel</code> in the main window
  */
 public interface AddableEditTool {
    
    /**
-    * Creates the Component that can be added to the <code>ToolPanel</code>.
+    * Creates the edit tool.
     * The specified button has got the action to close the tool panel added
     * and must be shown in the view.
     *
     * @param closeBt  the closing button
     */
-   public void createToolPanel(JButton closeBt);
+   public void createTool(JButton closeBt);
 
    /**
-    * Returns the Component to be added to the <code>ToolPanel</code>
+    * Gets the Component that represents the view of the tool.
+    * The Compoment is added to the {@link eg.ui.ToolPanel} in the
+    * main window
     *
     * @return  the <code>Component</code>
     */
@@ -37,7 +41,7 @@ public interface AddableEditTool {
    public void setFileDocument(FileDocument fDoc);
    
    /**
-    * Ends this edit tool when the program is shut down
+    * Ends this edit tool. Called when the when the program is exited
     */
    public void end();
 }

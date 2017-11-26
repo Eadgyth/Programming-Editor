@@ -31,19 +31,18 @@ public class DocumentUpdate {
       this.fDoc = fDoc;
       edit = new Edit();
       currProj = new CurrentProject(mw, fDoc);
-      createAddableEditTools();
       mw.setEditTextActions(edit);
       mw.setProjectActions(currProj);
    }
 
    /**
-    * Does updates for a changed document
+    * Does updates when another document is selected
     *
     * @param i  the index of the element in this <code>FileDocument</code>
     * array
     * @param nTabs  the number of open tabs
     */
-   public void changedDocUpdate(int i, int nTabs) {
+   public void updateForChangedDoc(int i, int nTabs) {
       edit.setFileDocument(fDoc[i]);
       currProj.setFileDocumentAt(i);
       for (AddableEditTool t : mw.editTools()) {
@@ -63,13 +62,13 @@ public class DocumentUpdate {
    }
 
    /**
-    * Does updates for a changed file in a document
+    * Does updates when a new file is assigned to a document 
     *
     * @param i  the index of the element in this <code>FileDocument</code>
     * array
     * @param updateFiletree  if the file tree is updated (after save as)
     */
-   public void changedFileUpdate(int i, boolean updateFiletree) {
+   public void updateForChangedFile(int i, boolean updateFiletree) {
       retrieveProject(i);
       mw.setLanguageSelected(fDoc[i].language(), false);
       mw.displayFrameTitle(fDoc[i].filepath());
@@ -81,22 +80,6 @@ public class DocumentUpdate {
    //
    //--private--/
    //
-
-   private void createAddableEditTools() {
-      try {
-         for (int i = 0; i < EditTools.values().length; i++) {
-            mw.editTools().add((AddableEditTool) Class.forName("eg.edittools."
-                  + EditTools.values()[i].className()).newInstance());
-
-            mw.setEditToolsActions(mw.editTools().get(i), i);
-         }
-      }
-      catch (ClassNotFoundException | InstantiationException
-            | IllegalAccessException e) {
-
-         FileUtils.logStack(e);
-      }
-   }
 
    private void retrieveProject(int i) {
       currProj.setFileDocumentAt(i);

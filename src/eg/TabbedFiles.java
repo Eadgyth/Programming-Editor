@@ -161,7 +161,7 @@ public class TabbedFiles implements Observer {
       }     
       isSave = isSave && fDoc[iTab].setFile(f);
       if (isSave && update) {
-         docUpdate.changedFileUpdate(iTab, true);
+         docUpdate.updateForChangedFile(iTab, true);
          tabPane.changeTitle(iTab, fDoc[iTab].filename());
          prefs.storePrefs("recentPath", fDoc[iTab].dir());
       }   
@@ -308,7 +308,7 @@ public class TabbedFiles implements Observer {
          prefs.readPrefs();
          fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
          addNewTab(fDoc[n].filename(), editArea[n].editAreaPnl());
-         docUpdate.changedFileUpdate(n, false);
+         docUpdate.updateForChangedFile(n, false);
          setUIUpdatersAt(n);
          prefs.storePrefs("recentPath", fDoc[n].dir());
       }
@@ -342,11 +342,7 @@ public class TabbedFiles implements Observer {
       fDoc[i].setTextSelectionListener(e ->
             mw.enableCutCopy(e.isSelection()));
       fDoc[i].setCursorPositionReadable((j, k) ->
-            setLineAndColNr(j, k));
-   }
-   
-   private void setLineAndColNr(int lineNr, int colNr) {
-      mw.displayLCursorPosition(lineNr, colNr);
+            mw.displayLCursorPosition(j, k));
    }
    
    private void removeTab() {
@@ -376,7 +372,7 @@ public class TabbedFiles implements Observer {
    private void changedTabUpdate() {
       format.setEditAreaAt(iTab);
       mw.setWordWrapSelected(editArea[iTab].isWordwrap());
-      docUpdate.changedDocUpdate(iTab, nTabs());
+      docUpdate.updateForChangedDoc(iTab, nTabs());
    }
    
    private boolean isFileOpen(File f) {

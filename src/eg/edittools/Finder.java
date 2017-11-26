@@ -38,7 +38,7 @@ public class Finder implements AddableEditTool {
    private final TextSearch search = new TextSearch();
    
    @Override
-   public void createToolPanel(JButton closeBt) {
+   public void createTool(JButton closeBt) {
       initFinderPnl(closeBt);
       setActions();
    }

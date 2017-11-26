@@ -6,6 +6,10 @@ import javax.swing.JTextPane;
 import eg.utils.Dialogs;
 import eg.document.FileDocument;
 
+/**
+ * The search of text or words in the <code>FileDocument</code> that
+ * is currently viewed in the main editor area
+ */
 public class TextSearch {
    
    private boolean reqWord;
@@ -14,15 +18,28 @@ public class TextSearch {
    private FileDocument doc;
    private JTextPane textArea;
    
+   /**
+    * Sets the <code>FileDocument</code> which text in searched in
+    *
+    * @param doc  the <code>FileDocument</code>
+    */
    public void setFileDocument(FileDocument doc) {
       this.doc = doc;
       this.textArea = doc.docTextArea();
    }
    
+   /**
+    * Sets the boolean which indicates if the search is restricted to words
+    *
+    * @param b  the boolen value
+    */
    public void setRequireWord(boolean b) {
       reqWord = b;
    }
    
+   /**
+    * Resets the search to the start of the document
+    */
    public void resetSearchToStart() {
       pos = 0;
    }
@@ -60,6 +77,11 @@ public class TextSearch {
       }
    }
    
+   /**
+    * Replaces text selected in the document with the specified string
+    *
+    * @param replaceWith  the string
+    */
    public void replaceSel(String replaceWith) {
       if (textArea.getSelectedText() != null) {
          textArea.replaceSelection(replaceWith);

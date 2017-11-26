@@ -29,7 +29,7 @@ import eg.EditAreaFormat;
 import eg.Preferences;
 import eg.Languages;
 import eg.FunctionalAction;
-import eg.edittools.AddableEditTool;
+import eg.edittools.*;
 import eg.ui.menu.MenuBar;
 import eg.ui.menu.FormatMenu;
 import eg.ui.menu.ViewMenu;
@@ -38,6 +38,7 @@ import eg.ui.tabpane.ExtTabbedPane;
 import eg.console.ConsolePanel;
 import eg.utils.UiComponents;
 import eg.utils.ScreenParams;
+import eg.utils.FileUtils;
 import java.awt.event.ActionEvent;
 
 /**
@@ -74,16 +75,17 @@ public class MainWin implements ConsoleOpenable {
    private final String wordwrapOn = "";
 
    public MainWin() {
+      createAddableEditTools();
       initFrame();
       setViewActions();
       initShowTabbar();
    }
-   
+
    @Override
    public boolean isConsoleOpen() {
       return menuBar.viewMenu().isConsoleItmSelected();
    }
-   
+
    @Override
    public void openConsole() {
       menuBar.viewMenu().doConsoleItmAct(true);
@@ -113,7 +115,7 @@ public class MainWin implements ConsoleOpenable {
     public ConsolePanel console() {
        return console;
     }
-    
+
    /**
     * Gets this <code>FileTree</code>
     *
@@ -122,7 +124,7 @@ public class MainWin implements ConsoleOpenable {
     public FileTree fileTree() {
        return fileTree;
     }
-    
+
     /**
      * Gets this List of <code>AddableEditTool</code>
      *
@@ -140,7 +142,7 @@ public class MainWin implements ConsoleOpenable {
    public void displayFrameTitle(String title) {
       frame.setTitle(title);
    }
-   
+
    /**
     * Displays the file type, i.e. the display value of the set
     * language, in the status bar
@@ -150,16 +152,16 @@ public class MainWin implements ConsoleOpenable {
    public void displayFileType(Languages lang) {
       languageLb.setText("File type: " + lang.display());
    }
-   
+
    /**
     * Displays the project name in the status bar
     *
     * @param projName  the name
     */
    public void displayProjectName(String projName) {
-      projectLb.setText("Active project: " + projName); 
+      projectLb.setText("Active project: " + projName);
    }
-   
+
    /**
     * Displays the line and column number of the cursor position in
     * the status bar
@@ -170,7 +172,7 @@ public class MainWin implements ConsoleOpenable {
    public void displayLCursorPosition(int lineNr, int colNr) {
       cursorPosLb.setText("Line " + lineNr + "  Col " + colNr);
    }
-   
+
    /**
     * Labels the menu item for building actions
     *
@@ -179,7 +181,7 @@ public class MainWin implements ConsoleOpenable {
    public void setBuildLabel(String label) {
       menuBar.projectMenu().setBuildLabel(label);
    }
-   
+
    /**
     * Sets the selection state of the menu item for setting wordwrap
     * actions
@@ -190,7 +192,7 @@ public class MainWin implements ConsoleOpenable {
       menuBar.formatMenu().selectWordWrapItm(b);
       setWordwrapInStatusBar(b);
    }
-   
+
    /**
     * Selects the menu item for the specified language and displays
     * the file type in the status bar
@@ -200,9 +202,9 @@ public class MainWin implements ConsoleOpenable {
     */
    public void setLanguageSelected(Languages lang, boolean b){
       menuBar.editMenu().selectLanguageItm(lang, b);
-      displayFileType(lang); 
+      displayFileType(lang);
    }
-   
+
    /**
     * Enables or disables undoing and redoing actions
     *
@@ -213,7 +215,7 @@ public class MainWin implements ConsoleOpenable {
       toolbar.enableUndoRedoBts(isUndo, isRedo);
       menuBar.editMenu().enableUndoRedoItms(isUndo, isRedo);
    }
-   
+
    /**
     * Enables or disables cutting and copying actions
     *
@@ -223,7 +225,7 @@ public class MainWin implements ConsoleOpenable {
       toolbar.enableCutCopyBts(b);
       menuBar.editMenu().enableCutCopyItms(b);
    }
-   
+
    /**
     * Enables or disables actions to set the visiblity of the tabbar
     *
@@ -232,14 +234,14 @@ public class MainWin implements ConsoleOpenable {
    public void enableShowTabbar(boolean b) {
       menuBar.viewMenu().enableTabItm(b);
    }
-   
+
    /**
     * Enables the actions to open the file view panel
     */
    public void enableOpenFileView() {
       menuBar.viewMenu().enableFileViewItm();
    }
-   
+
    /**
     * Enables or disables the actions to change project
     *
@@ -249,7 +251,7 @@ public class MainWin implements ConsoleOpenable {
       menuBar.projectMenu().enableChangeProjItm(b);
       toolbar.enableChangeProjBt(b);
    }
-   
+
    /**
     * Enables or disables the controls for actions to compile, run and
     * build a project. The booleans indicate if the respective controls are
@@ -305,7 +307,7 @@ public class MainWin implements ConsoleOpenable {
       glassPane.setVisible(true);
       glassPane.setCursor(BUSY_CURSOR);
    }
-   
+
    /**
     * Sets the default cursor
     */
@@ -314,7 +316,7 @@ public class MainWin implements ConsoleOpenable {
       glassPane.setVisible(false);
       glassPane.setCursor(DEF_CURSOR);
    }
-   
+
    /**
     * Calls the end method in all objects of
     * <code>AddableEditTool</code>
@@ -359,27 +361,7 @@ public class MainWin implements ConsoleOpenable {
       toolbar.setEditTextActions(edit);
       menuBar.editMenu().setEditTextActions(edit);
    }
-   
-   /**
-    * Sets the listener for opening the ith edit tool of the tools
-    * in <code>EditTools</code>
-    *
-    * @param tool  the tool
-    * @param i  the index
-    * @see eg.edittools.EditTools
-    */
-   public void setEditToolsActions(AddableEditTool tool, int i) {
-      JButton closeBt = new JButton();
-      closeBt.setAction(new FunctionalAction("", IconFiles.CLOSE_ICON,
-            e -> showToolPnl(false)));
-      tool.createToolPanel(closeBt);
-      menuBar.editMenu().setEditToolsActions(
-            e -> {
-               toolPnl.addComponent(tool.toolComponent());
-               showToolPnl(true);
-            }, i);       
-   }    
-   
+
    /**
     * Sets the listener for actions to opens the window for view
     * settings
@@ -390,14 +372,14 @@ public class MainWin implements ConsoleOpenable {
       menuBar.viewMenu().openSettingWinItmAction(e ->
             viewSetWin.makeVisible(true));
    }
-      
+
    /**
     * Sets listeners for format actions
     *
     * @param format  the reference to {@link EditAreaFormat}
     */
    public void setFormatActions(EditAreaFormat format) {
-      FormatMenu fm =  menuBar.formatMenu(); 
+      FormatMenu fm =  menuBar.formatMenu();
       fm.setChangeWordWrapAct((ActionEvent e) -> {
          boolean isWordwrap = fm.isWordWrapItmSelected();
          format.changeWordWrap(isWordwrap);
@@ -415,11 +397,11 @@ public class MainWin implements ConsoleOpenable {
       menuBar.projectMenu().setActions(cp);
       toolbar.setProjectActions(cp);
    }
-   
+
    //
    //--private methods--/
    //
-   
+
    private void setViewActions() {
       ViewMenu vm = menuBar.viewMenu();
       vm.setConsoleItmAction(e -> showConsole(vm.isConsoleItmSelected()));
@@ -428,7 +410,7 @@ public class MainWin implements ConsoleOpenable {
       fileTree.setCloseAct(e -> vm.doUnselectFileViewAct());
       console.setCloseAct(e -> vm.doConsoleItmAct(false));
    }
-   
+
    private void showConsole(boolean b) {
       if (b) {
          splitVert.setDividerSize(6);
@@ -444,8 +426,8 @@ public class MainWin implements ConsoleOpenable {
          splitVert.setRightComponent(null);
       }
    }
-   
-   public void showToolPnl(boolean b) {
+
+   private void showToolPnl(boolean b) {
       if (b) {
          splitHorAll.setDividerSize(6);
          splitHorAll.setRightComponent(toolPnl.panel());
@@ -455,7 +437,7 @@ public class MainWin implements ConsoleOpenable {
          splitHorAll.setRightComponent(null);
       }
    }
-   
+
    private void showFileView(boolean b) {
       if (b) {
          splitHor.setDividerSize(6);
@@ -471,13 +453,13 @@ public class MainWin implements ConsoleOpenable {
          splitHor.setLeftComponent(null);
       }
    }
-   
+
    private void showTabbar(boolean show) {
       tabPane.showTabbar(show);
       String state = show ? "show" : "hide";
       prefs.storePrefs("showTabs", state);
    }
-   
+
    private void setWordwrapInStatusBar(boolean isWordwrap) {
       if (isWordwrap) {
          cursorPosLb.setForeground(Constants.GRAY);
@@ -488,12 +470,41 @@ public class MainWin implements ConsoleOpenable {
          wordwrapLb.setText("");
       }
    }
-      
+
    private void initShowTabbar() {
       prefs.readPrefs();
       boolean show = "show".equals(prefs.getProperty("showTabs"));
       tabPane.showTabbar(show);
       menuBar.viewMenu().selectTabsItm(show);
+   }
+   
+   private void createAddableEditTools() {
+      try {
+         for (int i = 0; i < EditTools.values().length; i++) {
+            editTools.add((AddableEditTool) Class.forName("eg.edittools."
+                  + EditTools.values()[i].className()).newInstance());
+
+            setEditToolsActions(editTools().get(i), i);
+         }
+      }
+      catch (ClassNotFoundException | InstantiationException
+            | IllegalAccessException e) {
+
+         FileUtils.logStack(e);
+      }
+   }
+   
+   private void setEditToolsActions(AddableEditTool tool, int i) {
+      JButton closeBt = new JButton();
+      closeBt.setAction(new FunctionalAction("", IconFiles.CLOSE_ICON,
+            e -> showToolPnl(false)));
+
+      tool.createTool(closeBt);
+      menuBar.editMenu().setEditToolsActions(
+            e -> {
+               toolPnl.addComponent(tool.toolComponent());
+               showToolPnl(true);
+            }, i);
    }
 
    private void initFrame() {
@@ -548,13 +559,13 @@ public class MainWin implements ConsoleOpenable {
       statusBar.add(cursorPosLb);
       displayProjectName("none");
    }
-   
+
    private void setLbFont(JLabel[] lb) {
       for (JLabel l : lb) {
          l.setFont(Constants.VERDANA_PLAIN_8);
       }
    }
-   
+
    private void setLbWidth(JLabel lb, Dimension dim) {
       lb.setPreferredSize(dim);
       lb.setMinimumSize(dim);

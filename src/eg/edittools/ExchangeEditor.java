@@ -61,7 +61,7 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    @Override
-   public void createToolPanel(JButton closeBt) {
+   public void createTool(JButton closeBt) {
       initExchangePnl(closeBt);
    }
 
@@ -171,8 +171,8 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    private void setBtnActions() {
-      setTextBt.addActionListener(e -> exch.setTextFromDoc());
-      insertTextBt.addActionListener(e -> exch.replaceTextInDoc());
+      setTextBt.addActionListener(e -> exch.copyTextFromSource());
+      insertTextBt.addActionListener(e -> exch.copyTextToSource());
 
       undoBt.setAction(new FunctionalAction("", IconFiles.UNDO_ICON,
             e -> edit.undo()));

@@ -1,34 +1,33 @@
 package eg.edittools;
 
 /**
- * Constants for edit tools
+ * Constants that identify implementations of <code>AddableEditTool</code>
  */
 public enum EditTools {
-   
+
    FINDER("Find", "Finder"),
    EXCHANGE_EDITOR("Exchange editor", "ExchangeEditor");
-   
+
    private final String display;
    private final String className;
-   
+
    private EditTools(String display, String className) {
       this.display = display;
       this.className = className;
    }
-   
+
    /**
-    * Returns the display value associated with the edit tool constants
+    * Returns the display value associated with this constants
     *
     * @return  the display value
     */
    public String display() {
       return display;
    }
-   
-   
+
    /**
-    * Returns, for the edit tool contants, the name the class that implements
-    * an <code>AddableEditTool</code>
+    * Returns, for this constants, the name of the classes that implement
+    * <code>AddableEditTool</code>
     *
     * @return the class name
     */

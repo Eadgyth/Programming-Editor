@@ -34,7 +34,7 @@ public class Edit {
    private int indentLength;
 
    /**
-    * Sets the {@code FileDocument} that is edited and its current
+    * Sets the <code>FileDocument</code> that is edited and its current
     * indentation unit
     *
     * @param fDoc  the {@link FileDocument}
@@ -47,21 +47,21 @@ public class Edit {
    }
 
    /**
-    * Performs undo action
+    * Performs an undo action
     */
    public void undo() {
       fDoc.undo();
    }
 
    /**
-    * Performs redo action
+    * Performs a redo action
     */
    public void redo() {
       fDoc.redo();
    }
 
    /**
-    * Cuts selected text and stores it to the system's clipboard
+    * Cuts selected text and stores it in the system's clipboard
     */
    public void cut() {
       int start = textArea.getSelectionStart();
