@@ -12,8 +12,7 @@ import eg.utils.Dialogs;
 
 /**
  * The exchange of text between one <code>FileDocument</code> set in
- * the constructor and a variable <code>FileDocument</code> set in the
- * <code>setSourceDocument()</code> method
+ * the constructor and a variable <code>FileDocument</code>
  */
 public class TextExchange {
 
@@ -98,6 +97,12 @@ public class TextExchange {
    }
 
    public void save() {
+      if (exchangeDoc.getDocLength() > 0) {
+         int res = Dialogs.confirmYesNo("Keep content in exchange editor?");
+         if (0 != res) {
+            clear();
+         }
+      }
       exchangeDoc.saveCopy(BACK_UP);
    }
 }

@@ -1,6 +1,7 @@
 package eg.ui.menu;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JMenu;
@@ -41,6 +42,12 @@ public class FileMenu {
       return menu;
    }
 
+   /**
+    * Sets listeners for file actions except for the action to
+    * to exit the program
+    *
+    * @param tf  the reference to {@link TabbedFiles}
+    */
    public void setActions(TabbedFiles tf) {
       newFileItm.addActionListener(e -> tf.openEmptyTab());
       openItm.addActionListener(e -> tf.openFileByChooser());
@@ -50,12 +57,15 @@ public class FileMenu {
       saveAllItm.addActionListener(e -> tf.saveAll());
       saveAsItm.addActionListener(e -> tf.saveAs(true));
       saveCopyItm.addActionListener(e -> tf.saveCopy());
-      printItm.addActionListener(e -> tf.print());      
-      exitItm.addActionListener(e -> tf.exit());
+      printItm.addActionListener(e -> tf.print());
+   }
+   
+   public void setExitActions(ActionListener al) {
+      exitItm.addActionListener(al);
    }
    
    //
-   //--private methods--//
+   //--private--/
    //
    
    private void assembleMenu() {

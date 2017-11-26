@@ -6,9 +6,8 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 
+import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -17,6 +16,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
+
+import java.util.List;
+import java.util.ArrayList;
 
 //--Eadgyth--/
 import eg.Constants;
@@ -61,6 +63,7 @@ public class MainWin implements ConsoleOpenable {
    private final FileTree fileTree = new FileTree();
    private final ConsolePanel console = new ConsolePanel();
    private final ToolPanel toolPnl = new ToolPanel();
+   private final List<AddableEditTool> editTools = new ArrayList<>();
    private final Preferences prefs = new Preferences();
 
    private JSplitPane splitHorAll;
@@ -119,6 +122,15 @@ public class MainWin implements ConsoleOpenable {
     public FileTree fileTree() {
        return fileTree;
     }
+    
+    /**
+     * Gets this List of <code>AddableEditTool</code>
+     *
+     * @return  this List of type {@link AddableEditTool}
+     */
+    public List<AddableEditTool> editTools() {
+       return editTools;
+    }
 
    /**
     * Displays text in the title bar
@@ -155,7 +167,7 @@ public class MainWin implements ConsoleOpenable {
     * @param lineNr  the line number
     * @param colNr  the column number
     */
-   public void displayLineAndColNr(int lineNr, int colNr) {
+   public void displayLCursorPosition(int lineNr, int colNr) {
       cursorPosLb.setText("Line " + lineNr + "  Col " + colNr);
    }
    
@@ -302,6 +314,16 @@ public class MainWin implements ConsoleOpenable {
       glassPane.setVisible(false);
       glassPane.setCursor(DEF_CURSOR);
    }
+   
+   /**
+    * Calls the end method in all objects of
+    * <code>AddableEditTool</code>
+    */
+   public void endEditTools() {
+      for (AddableEditTool t : editTools) {
+         t.end();
+      }
+   }
 
    /**
     * Adds a <code>WindowListener</code> to this JFrame
@@ -319,6 +341,10 @@ public class MainWin implements ConsoleOpenable {
     */
    public void setFileActions(TabbedFiles tf) {
       menuBar.fileMenu().setActions(tf);
+      menuBar.fileMenu().setExitActions(e -> {
+         endEditTools();
+         tf.exit();
+      });
       menuBar.editMenu().setChangeLanguageAction(tf);
       toolbar.setFileActions(tf);
       fileTree.addObserver(tf);
@@ -327,7 +353,7 @@ public class MainWin implements ConsoleOpenable {
    /**
     * Sets listeners for actions to edit text
     *
-    * @param edit the reference to {@link Edit}
+    * @param edit  the reference to {@link Edit}
     */
    public void setEditTextActions(Edit edit) {
       toolbar.setEditTextActions(edit);
@@ -347,20 +373,11 @@ public class MainWin implements ConsoleOpenable {
       closeBt.setAction(new FunctionalAction("", IconFiles.CLOSE_ICON,
             e -> showToolPnl(false)));
       tool.createToolPanel(closeBt);
-
-      winListen(new WindowAdapter() {
-
-         @Override
-         public void windowClosing(WindowEvent we) {
-            tool.end();
-         }
-      });
-
       menuBar.editMenu().setEditToolsActions(
             e -> {
                toolPnl.addComponent(tool.toolComponent());
                showToolPnl(true);
-            }, i);               
+            }, i);       
    }    
    
    /**
@@ -398,7 +415,7 @@ public class MainWin implements ConsoleOpenable {
       menuBar.projectMenu().setActions(cp);
       toolbar.setProjectActions(cp);
    }
-
+   
    //
    //--private methods--/
    //

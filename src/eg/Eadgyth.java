@@ -4,6 +4,9 @@ import java.util.Locale;
 
 import java.awt.EventQueue;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
@@ -39,8 +42,14 @@ public class Eadgyth {
          viewSet.applySetWinOk();
          format.applySetWinOk();
          viewSetWin.makeVisible(false);
+      });      
+      mw.winListen(new WindowAdapter() {
+         @Override
+         public void windowClosing(WindowEvent we) {
+            mw.endEditTools();
+            tabFiles.exit();
+         }
       });
-
       EventQueue.invokeLater(() -> {
          mw.makeVisible();
          tabFiles.openEmptyTab();

@@ -17,7 +17,6 @@ public class DocumentUpdate {
 
    private final MainWin mw;
    private final Edit edit;
-   private final List<AddableEditTool> tools = new ArrayList<>();
    private final CurrentProject currProj;
    private final FileDocument[] fDoc;
 
@@ -47,7 +46,7 @@ public class DocumentUpdate {
    public void changedDocUpdate(int i, int nTabs) {
       edit.setFileDocument(fDoc[i]);
       currProj.setFileDocumentAt(i);
-      for (AddableEditTool t : tools) {
+      for (AddableEditTool t : mw.editTools()) {
          t.setFileDocument(fDoc[i]);
       }
       mw.enableUndoRedo(fDoc[i].canUndo(), fDoc[i].canRedo());
@@ -56,8 +55,10 @@ public class DocumentUpdate {
       mw.enableShowTabbar(nTabs == 1);
       mw.setLanguageSelected(fDoc[i].language(),
             fDoc[i].filename().length() == 0);
-      mw.displayLineAndColNr(fDoc[i].lineNrAtCursor(),
+
+      mw.displayLCursorPosition(fDoc[i].lineNrAtCursor(),
             fDoc[i].columnNrAtCursor());
+
       fDoc[i].requestFocus();
    }
 
@@ -84,16 +85,14 @@ public class DocumentUpdate {
    private void createAddableEditTools() {
       try {
          for (int i = 0; i < EditTools.values().length; i++) {
-            tools.add((AddableEditTool)
-                  Class.forName("eg.edittools."
-                        + EditTools.values()[i].className())
-                  .newInstance());
+            mw.editTools().add((AddableEditTool) Class.forName("eg.edittools."
+                  + EditTools.values()[i].className()).newInstance());
 
-            mw.setEditToolsActions(tools.get(i), i);
+            mw.setEditToolsActions(mw.editTools().get(i), i);
          }
       }
-      catch (ClassNotFoundException
-            | InstantiationException | IllegalAccessException e) {
+      catch (ClassNotFoundException | InstantiationException
+            | IllegalAccessException e) {
 
          FileUtils.logStack(e);
       }
