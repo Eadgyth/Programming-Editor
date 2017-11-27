@@ -25,7 +25,7 @@ public class CSSColoring implements Colorable {
       "counter-reset", "cursor",
       "direction", "display",
       "empty-cells",
-      "flaot", "font", "font-family", "font-size", "font-size-adjust", "font-stretch",
+      "float", "font", "font-family", "font-size", "font-size-adjust", "font-stretch",
       "font-style", "font-synthesis", "font-variant", "font-weight",
       "height",
       "left", "letter-spacing", "line-height", "list-style", "list-style-image",
