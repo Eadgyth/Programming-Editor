@@ -4,7 +4,8 @@ up of coding projects and switching between a number of set projects
 The coding language is currently Java but the program is made to integrate other languages
 or types of projects. To illustrate this draft implementations for writing in Perl and HTML
 are included.
-<p>See <a href="https://eadgyth.github.io/Programming-Editor/">Help and program documentation</a>.
+<p>Features of the program can be viewed at
+<a href="https://eadgyth.github.io/Programming-Editor/">Help and program documentation</a>.
 <p>
 REQUIREMENTS FOR TESTING<br>
 Running the program requires Java 8. For compiling Java code from within the program installing
