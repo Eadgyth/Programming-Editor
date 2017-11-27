@@ -4,7 +4,7 @@ up of coding projects and switching between a number of set projects
 The coding language is currently Java but the program is made to integrate other languages
 or types of projects. To illustrate this draft implementations for writing in Perl and HTML
 are included.
-<p>Features of the program can be viewed at
+<p>Features of the program and documentation can be found under
 <a href="https://eadgyth.github.io/Programming-Editor/">Help and program documentation</a>.
 <p>
 REQUIREMENTS FOR TESTING<br>
@@ -15,12 +15,7 @@ to the graphical interface (as seen on Windows 10).
 <p>
 The program is started by clicking the jar-file 'Eadgyth.jar". This file  must be found in the
 same folder as the prefs.properties file and the Resources folder, just like found in the
-'EadgythProgram' folder in this repository.<p>
-<p>
-DOCUMENTATION<br>
-A guide how to configure a project and an overview of the code of the program can be found at<br>
-<a href="https://eadgyth.github.io/Programming-Editor/">
-   Help and program documentation</a>.
+'EadgythProgram' folder in this repository.
 <p>
 LIMITATIONS<br>
 While the limitations are certainly countless some functions that are already present are still
