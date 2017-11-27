@@ -7,14 +7,20 @@
          * {
             font-family: sans-serif;
          }
-         div {
+         div.container {
             width: 100%;
             border: 1px solid gray;
          }
-         header {
+         header, footer {
             padding: 1em;
             color: #b1010;
-            background-color: #d3d3d3;
+            background-color: #55bfec;
+         }
+         nav {
+            float: left;
+            max-width: 300px;
+            margin: 0;
+            padding: 1em;
          }
          nav h4 {
            padding: 1em;
@@ -22,10 +28,16 @@
          nav ul a {
             text-decoration: none;
          }
+         article {
+            margin-left: 170px;
+            border-left: 1px solid gray;
+            padding: 1em;
+            overflow: hidden;
+         }
       </style>
    </head>
    <body>
-      <div>
+      <div class="container">
          <header>
             <h2>Eadgyth Programming-Editor</h2>
             <h3>A simple source code text editor</h3>
@@ -33,12 +45,55 @@
          <nav>
             <h4>Help and program documentation</h4>
             <ul>
-               <li><a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">README</a></li>
+               <li><a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
+                      README</a></li>
                <li><a href="help/help.html">Help to use Eadgyth</a></li>
-               <li><a href="javadoc/index.html">Overview of the organization of the code (javadoc)</a></li>
-               <li><a href="https://github.com/Eadgyth/Programming-Editor">Source code at Github repository</a></li>
+               <li><a href="javadoc/index.html">Overview of the code (javadoc)</a></li>
+               <li><a href="https://github.com/Eadgyth/Programming-Editor">
+                      Source code and program download at Github</a></li>
             </ul>
          </nav>
+         <article>
+            <img src="images/EadgythIcon.png" width="60"/>
+            <p>Eadgyth is a simple source code text editor, written in Java. It features an easy setting
+               up of coding projects and switching between a number of set projects.
+            </p>
+            <p>
+               The motivation is to have an editor that helps coding in may ways but that is at the
+               same time simple to work with as much as possible. It may be especially suited to write
+               and test applications for home or lerning requirements.
+            </p>
+            <h4>Features</h4>
+            <ul>
+               <li>Showing files in tabs.</li>
+               <li>Undo/redo.</li>
+               <li>A basic find/replace function</li>
+               <li>Block-wise indentation.</li>
+               <li>Clearing end-of-line white spaces.</li>
+               <li>A basic file explorer for projects.</i>
+               <li>An "exchange editor" (the panel at the right in the image below) to edit text in a
+                   separate view and to facilitate the exchange of text within a file or between files</li>
+               <li>A basic syntax highlighting for java, perl, html, javascript and CSS.</li>
+               <li>A basic auto-indentation.</li>
+               <li>A simple and flexible assignment of files as coding project. A project may be simply
+                   the location of a source file but directory structures that include, for example,
+                   the package where a Java main file is found, can be as well specified.</li>
+               <li>Retrieval of already defined projects after newly starting the program.</li>
+               <li>Compiling and testing Java code and bundling a Java program in a jar file; testing
+                   a Perl script; viewing Html code in the default web browser</li>
+               <li>A basic (interactive) console to view the output (error messages) during compiling
+                   and testing a program</li>
+               <li>Running self-chosen system commands in the current working directory</li>
+            </ul>
+            <br>
+            <img src="images/Windows10SystemLAF.png" width="600"/>
+            <img src="images/SimpleEditorView.png" width="400"/>
+         </article>
+         <footer>
+            <p>
+               Contact: <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a>
+            </p>
+         </footer>
       </div>
    </body>
 </html>
