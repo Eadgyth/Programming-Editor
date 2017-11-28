@@ -47,7 +47,7 @@ public class TextSearch {
    /**
     * Searches and selects the specified string in the text area of the
     * currently set document. A search starts from the position of the cursor
-    * and repeated searches each start from the last match position
+    * and repeated searches each start from the last match position.
     *
     * @param toSearch  the string to search
     */

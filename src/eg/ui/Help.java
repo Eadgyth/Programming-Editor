@@ -23,7 +23,7 @@ public class Help {
       try {
          if (Desktop.isDesktopSupported()) {
             Desktop.getDesktop().browse(new URI(
-                  "https://eadgyth.github.io/Programming-Editor/help/help.html"));
+                 "https://eadgyth.github.io/Programming-Editor/help/help.html"));
          }
       }
       catch (IOException | URISyntaxException e) {
