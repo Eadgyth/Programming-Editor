@@ -40,8 +40,7 @@ public class SyntaxUtils {
     *
     * @param text  the text
     * @param pos  the position
-    * @return  if the character that preceded <code>pos</code> is
-    * not a letter or a digit
+    * @return  if <code>pos</code> is a word start
     */
    public static boolean isWordStart(String text, int pos) {
       if (pos > 0) {
@@ -69,10 +68,14 @@ public class SyntaxUtils {
 
       int lastStart = text.lastIndexOf(blockStart, pos);
       int lastEnd = text.lastIndexOf(blockEnd, pos - 1);
-      while (lastStart != -1 && isInQuotes(text, lastStart, blockStart.length())) {
+      while (lastStart != -1 && isBorderedByQuotes(text, lastStart,
+            blockStart.length())) {
+
          lastStart = text.lastIndexOf(blockStart, lastStart - 1);
       }
-      while (lastEnd != -1 && isInQuotes(text, lastEnd, blockEnd.length())) {
+      while (lastEnd != -1 && isBorderedByQuotes(text, lastEnd,
+            blockEnd.length())) {
+
          lastEnd = text.lastIndexOf(blockEnd, lastEnd - 1);
       }
       if (lastStart < lastEnd) {
@@ -97,10 +100,14 @@ public class SyntaxUtils {
 
       int nextEnd = text.indexOf(blockEnd, pos);
       int nextStart = text.indexOf(blockStart, pos);
-      while (nextEnd != -1 && isInQuotes(text, nextEnd, blockEnd.length())) {
+      while (nextEnd != -1 && isBorderedByQuotes(text, nextEnd,
+            blockEnd.length())) {
+
          nextEnd = text.indexOf(blockEnd, nextEnd + 1);
       }
-      while (nextStart != -1 && isInQuotes(text, nextStart, blockStart.length())) {
+      while (nextStart != -1 && isBorderedByQuotes(text, nextStart,
+            blockStart.length())) {
+
          nextStart = text.indexOf(blockStart, nextStart + 1);
       }
       if (nextEnd > nextStart & nextStart != -1) {
@@ -152,7 +159,7 @@ public class SyntaxUtils {
     * @return  if the section of text starting at <code>pos</code>
     * and spanning <code>length</code> is bordered by double quotes
     */
-   public static boolean isInQuotes(String text, int pos, int length) {
+   public static boolean isBorderedByQuotes(String text, int pos, int length) {
       boolean isInQuotes = false;
       int endPos = pos + length;
       if (pos > 0 & text.length() > endPos) {
@@ -163,19 +170,20 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns if the specified position is found inside a section
-    * of text in double quotes
+    * Returns if the specified position is found inside a section of
+    * text in quotes
     *
     * @param text  the text
     * @param pos  the position
-    * @return  if <code>pos</code> is found inside a section
-    * of text in double quotes
+    * @param quoteMark  the quoteMark which is either the double or the
+    * single quote
+    * @return  if <code>pos</code> is found inside a sectio of text in quotes
     */
-   public static boolean isInQuotes(String text, int pos) {
+   public static boolean isInQuotes(String text, int pos, String quoteMark) {
       int count = 0;
       int i = 0;
       while (i != -1) {
-         i = text.indexOf("\"", i);
+         i = text.indexOf(quoteMark, i);
          if (i != -1) {
             if (!isEscaped(text, i)) {
                count++;
@@ -186,8 +194,13 @@ public class SyntaxUtils {
             i++;
          }
       }
-      if (pos < i) {
-         return (count) % 2 == 0;
+      if (count > 1) {
+         if (pos < i) {
+            return (count) % 2 == 0;
+         }
+         else {
+            return false;
+         }
       }
       else {
          return false;
@@ -196,14 +209,13 @@ public class SyntaxUtils {
    
    /**
     * Returns the next position, relative to the specified position, of the
-    * specified string, <code>toSearch</code>,cthat is not preceded with a
+    * specified string <code>toSearch</code> that is not preceded with a
     * backslash
     *
     * @param text  the text
     * @param toSearch  the string to search
     * @param pos  the position
-    * @return  the position of <code>toSearch</code> that is not preceded
-    * with a backslash
+    * @return  the position of the next non-escaped string
     */
    public static int nextNotEscaped(String text, String toSearch, int pos) {
       int index = text.indexOf(toSearch, pos);

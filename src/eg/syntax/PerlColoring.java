@@ -5,6 +5,10 @@ package eg.syntax;
  */
 public class PerlColoring implements Colorable {
    
+   private final static char[] START_OF_VAR = {
+      '$', '@', '%'
+   };
+   
    private final static char[] END_OF_VAR = {
       ' ', '\\', '(', ')', ';', '='
    };
@@ -39,20 +43,16 @@ public class PerlColoring implements Colorable {
       " y "
    };
    
-   private final static String[] PERL_SIGNS = {
-      "$", "@", "%"
-   };
-   
    private final static String LINE_CMNT = "#";
    
    @Override
    public void color(SyntaxSearch search) {
       search.setCharAttrBlack();
-      search.signedVariables(PERL_SIGNS, END_OF_VAR);
+      search.signedVariables(START_OF_VAR, END_OF_VAR);
       search.keywordsRedBold(PERL_KEYWORDS, true);
       search.keywordsRedBold(PERL_OP, false);
       search.bracesGray();
       search.quotedText();
-      search.lineComments(LINE_CMNT, PERL_SIGNS);
+      search.lineComments(LINE_CMNT, START_OF_VAR);
    }
 }

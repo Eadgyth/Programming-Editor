@@ -48,7 +48,7 @@ public class SyntaxSearch {
    }
 
    /**
-    * Colors text in this document.
+    * Colors text in this document using this <code>Colorable</code>.
     * <p>
     * To scan the entire text the string <code>toColor</code> has to equal
     * <code>text</code>.
@@ -123,15 +123,16 @@ public class SyntaxSearch {
    }
 
    /**
-    * Searches variables that start with a sign and colors them in red
+    * Searches variables that start with one of the characters in
+    * <code>startChars</code> and and end with one of the characters
+    * in <code>endChars</code>. The variables are colored in red
     *
-    * @param signs  the array of characters that mark a variable start
-    * @param endChars  the array of characters that mark the end of the
-    * variable
+    * @param startChars  the array start characters
+    * @param endChars  the array of end characters
     */
-   public void signedVariables(String[] signs, char[] endChars) {
-      for (String s : signs) {
-         signedVariable(s, endChars);
+   public void signedVariables(char[] startChars, char[] endChars) {
+      for (char c : startChars) {
+         signedVariable(c, endChars);
       }
    }
 
@@ -192,10 +193,10 @@ public class SyntaxSearch {
     * Searches line comments and colors them in green
     *
     * @param lineCmnt  the string that marks the start of a line comment
-    * @param exceptions  the array of strings that disable the line comment
+    * @param exceptions  the array of characters that disable the line comment
     * if these precede <code>lineCmt</code>. Can be null.
     */
-   public void lineComments(String lineCmnt, String[] exceptions) {
+   public void lineComments(String lineCmnt, char[] exceptions) {
       lineCommentsImpl(lineCmnt, exceptions);
    }
 
@@ -315,7 +316,7 @@ public class SyntaxSearch {
       innerEnd = 0;
    }
 
-   private void signedVariable(String sign,  char[] endChars) {
+   private void signedVariable(char sign,  char[] endChars) {
       int start = 0;
       while (start != -1) {
          start = toColor.indexOf(sign, start);
@@ -363,12 +364,12 @@ public class SyntaxSearch {
          start = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start);
          if (start != -1) {
             if (isSingleQuote) {
-               notQuoted = !SyntaxUtils.isInQuotes(toColor, start);
+               notQuoted = !SyntaxUtils.isInQuotes(toColor, start, "\"");
             }
             end = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start + 1);
             if (end != -1) {
                if (isSingleQuote) {
-                  notQuoted = notQuoted && !SyntaxUtils.isInQuotes(toColor, end);
+                  notQuoted = notQuoted && !SyntaxUtils.isInQuotes(toColor, end, "\"");
                }
                if (notQuoted) {
                   length = end - start + 1;
@@ -388,7 +389,7 @@ public class SyntaxSearch {
       }
    }
 
-   private void lineCommentsImpl(String lineCmnt, String[] exceptions) {
+   private void lineCommentsImpl(String lineCmnt, char[] exceptions) {
       final boolean isException = exceptions != null;
       boolean ok = true;
       int start = 0;
@@ -396,9 +397,9 @@ public class SyntaxSearch {
          start = toColor.indexOf(lineCmnt, start);
          if (start != -1) {
             if (isException) {
-               for (String exc : exceptions) {
-                  if (start > exc.length() - 1) {
-                     ok = !exc.equals(toColor.substring(start - exc.length(), start));
+               for (char exc : exceptions) {
+                  if (start > 0) {
+                     ok = toColor.charAt(start - 1) != exc;
                      if (!ok) {
                         break;
                      }
@@ -406,7 +407,9 @@ public class SyntaxSearch {
                }
             }
             int length = 0;
-            if (ok && !SyntaxUtils.isInQuotes(toColor, start, lineCmnt.length())) {
+            if (ok && !SyntaxUtils.isInQuotes(toColor, start, "\"")
+                  && !SyntaxUtils.isInQuotes(toColor, start, "\'")) {
+
                int lineEnd = toColor.indexOf("\n", start + 1);
                if (lineEnd != -1) {
                   length = lineEnd - start;
@@ -436,7 +439,7 @@ public class SyntaxSearch {
          int end;
          if (start != -1) {
             length = 0;
-            if (!SyntaxUtils.isInQuotes(text, start, blockStart.length())) {
+            if (!SyntaxUtils.isBorderedByQuotes(text, start, blockStart.length())) {
                end = SyntaxUtils.nextBlockEnd(text, start + 1,
                      blockStart, blockEnd);
                if (innerEnd > 0 && end >= innerEnd - blockEnd.length()) {
@@ -489,7 +492,7 @@ public class SyntaxSearch {
    private void removedBlockEnd(int startPos, String blockStart) {
       if (isTypeMode) {
          int nextStart = text.indexOf(blockStart, startPos + 1);
-         while (nextStart != -1 && SyntaxUtils.isInQuotes(text, nextStart,
+         while (nextStart != -1 && SyntaxUtils.isBorderedByQuotes(text, nextStart,
                 blockStart.length())) {
             nextStart = text.indexOf(blockStart, nextStart + 1);
          }
