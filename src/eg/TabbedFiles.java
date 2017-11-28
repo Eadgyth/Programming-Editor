@@ -162,7 +162,7 @@ public class TabbedFiles implements Observer {
       isSave = isSave && fDoc[iTab].setFile(f);
       if (isSave && update) {
          docUpdate.updateForChangedFile(iTab, true);
-         tabPane.changeTitle(iTab, fDoc[iTab].filename());
+         tabPane.setTitleAt(iTab, fDoc[iTab].filename());
          prefs.storePrefs("recentPath", fDoc[iTab].dir());
       }   
       return isSave;
@@ -272,7 +272,7 @@ public class TabbedFiles implements Observer {
    }
 
    //
-   //--private methods--//
+   //--private--/
    //
 
    private void open(File f) {

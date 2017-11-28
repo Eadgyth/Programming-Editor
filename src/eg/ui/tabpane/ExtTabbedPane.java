@@ -45,37 +45,37 @@ public class ExtTabbedPane extends JTabbedPane {
    }
    
    /**
-    * Show or hides the tab bar. Hiding requires that only ony tab is
-    * displayed.
+    * Sets the specified boolean that indicates if the tabbar is shown
+    * or hidden
     *
-    * @param show  true/false to show/hide the tabbar
+    * @param b  the boolean
+    * @throws IllegalStateException  if <code>b</code> is false and more
+    * than one tab is open
     */
-   public void showTabbar(boolean show) {
-      if (!show && getTabCount() > 1) {
+   public void showTabbar(boolean b) {
+      if (!b && getTabCount() > 1) {
          throw new IllegalStateException("Hiding tabs is illegal"
                + " when the number of tabs is larger than one");
       }
-      ui.setShowTabs(show);
+      ui.setShowTabs(b);
       updateUI();
-      isShowTabbar = show;
-   }
-   
-   public boolean isShowTabbar() {
-      return isShowTabbar;
+      isShowTabbar = b;
    }
 
    /**
-    * Adds a new tab
+    * Adds a new tab.
+    *
+    * <p> It is required that the specified <code>closeBt</code> has got an
+    * <code>ActionListener</code> added. This listener must first call this
+    * method {@link #iTabMouseOver()}.
     *
     * @param title  the title for the tab
     * @param c  the component to be displayed when the tab is selected
-    * @param closeBt  the button displayed in the tab. An
-    * <code>ActionListener</code> is expected to have been added to the
-    * button
+    * @param closeBt  the button displayed in the tab
     */
    public void addTab(String title, Component c, JButton closeBt) {
       int index = getTabCount();
-      addTab(null, c);
+      super.addTab(null, c);
       JPanel tabPnl = new JPanel(FLOW_LAYOUT_LEFT);
       tabPnl.setOpaque(false);
       JLabel titleLb = new JLabel(title);
@@ -89,24 +89,8 @@ public class ExtTabbedPane extends JTabbedPane {
       setSelectedIndex(index);
    }
    
-   /**
-    * Returns the index of the tab where the mouse was moved over
-    *
-    * @return  the index
-    */
-   public int iTabMouseOver() {
-      return iTabMouseOver;
-   }
-
-   /**
-    * Changes the title for the tab at the specified index.
-    * Used instead of <code>setTitleAt()</code> in parent class if tabs
-    * are added through {@link #addTab(String, Component, JButton)}
-    *
-    * @param index  the index
-    * @param title  the tiltle
-    */
-   public void changeTitle(int index, String title) {
+   @Override
+   public void setTitleAt(int index, String title) {
       JPanel p = (JPanel) getTabComponentAt(index);
       JLabel lb = (JLabel) p.getComponent(0);
       lb.setText(title);
@@ -132,6 +116,24 @@ public class ExtTabbedPane extends JTabbedPane {
     */
    @Override
    public void setTabPlacement(int tabPlacement) {
+   }
+   
+   /**
+    * Returns the index of the tab where the mouse was moved over
+    *
+    * @return  the index
+    */
+   public int iTabMouseOver() {
+      return iTabMouseOver;
+   }
+   
+   /**
+    * Returns the boolean that indicates if this tabbar is set visible
+    *
+    * @return  the boolean value
+    */
+   public boolean isShowTabbar() {
+      return isShowTabbar;
    }
    
    //
