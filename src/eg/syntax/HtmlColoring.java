@@ -4,22 +4,21 @@ package eg.syntax;
  * Syntax coloring for Html
  */
 public class HtmlColoring implements Colorable {
-   
-   // some tags
+
    public final static String[] TAGS = {
       "a", "abbr", "address", "applet", "area", "article", "aside", "audio",
       "b", "base", "bdi", "bdo", "blockquote", "bold", "body", "br", "button",
       "canvas", "caption", "code", "col", "colgroup", "command",
       "data", "details", "datalist", "dd", "del", "dfn", "div", "dl", "dt",
       "em", "embed",
-      "fieldset", "figure", "figcaption", "form", "footer",
+      "fieldset", "figure", "figcaption", "form", "footer", "frame", "frameset",
       "head", "header", "html", "hr",
       "h1", "h2", "h3", "h4", "h5", "h6",
       "i", "iframe", "img", "input", "ins",
       "kbd", "keygen",
       "label", "legend", "li", "link",
       "main", "map", "mark", "math", "menu", "menuitem", "meta", "meter",
-      "nav", "noscript",
+      "nav", "noframes", "noscript",
       "object", "ol", "optgroup", "option", "output",
       "p", "param", "pre", "progress",
       "rp", "rt", "ruby",
@@ -32,7 +31,6 @@ public class HtmlColoring implements Colorable {
       "wbr",
    };
 
-   // some attributes
    private final static String[] ATTRIBUTES = {
       "accesskey", "abbr", "accept", "accept-charset", "action", "align", "alt",
       "archive", "axis",
@@ -48,7 +46,7 @@ public class HtmlColoring implements Colorable {
       "label", "longdesc",
       "marginheight", "marginwidth", "maxlength", "media", "method", "multiple",
       "name", "nohref", "noresize", "noshade",
-      "onclick",
+      "onclick", "onload",
       "profile",
       "readonly", "rel", "rev", "rows", "rowspan", "rules",
       "scheme", "scope", "scrolling", "selected", "size", "shape", "src", "source",
