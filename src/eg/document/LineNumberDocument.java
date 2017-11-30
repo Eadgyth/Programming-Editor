@@ -19,23 +19,28 @@ import eg.ui.LineNrWidthAdaptable;
 public class LineNumberDocument {
    
    private final static Color GRAY = new Color(170, 170, 170);
-   
-   private final SimpleAttributeSet set = new SimpleAttributeSet();
+   private final static SimpleAttributeSet SET = new SimpleAttributeSet();
+
    private final StyledDocument doc;
    private final LineNrWidthAdaptable lineNrWidth;
    private final StringBuilder lineNrBuilder = new StringBuilder();
+   
+   static {
+      StyleConstants.setForeground(SET, GRAY);
+      StyleConstants.setAlignment(SET, StyleConstants.ALIGN_RIGHT);
+      StyleConstants.setLineSpacing(SET, 0.25f);
+   }
 
    /**
     * @param doc  the document associated with the area that displays
     * line numbers
     * @param  lineNrWidth  the reference to {@link LineNrWidthAdaptable}
     */
-   public LineNumberDocument(StyledDocument doc,
-         LineNrWidthAdaptable lineNrWidth) {
-
+   public LineNumberDocument(StyledDocument doc, LineNrWidthAdaptable lineNrWidth) {
       this.doc = doc;
       this.lineNrWidth = lineNrWidth;
-      setDocStyle();
+      Element el = doc.getParagraphElement(0);
+      doc.setParagraphAttributes(0, el.getEndOffset(), SET, false);
    }
    
    /**
@@ -51,7 +56,7 @@ public class LineNumberDocument {
          lineNrBuilder.append("\n");
       }
       try {
-         doc.insertString(doc.getLength(), lineNrBuilder.toString(), set);
+         doc.insertString(doc.getLength(), lineNrBuilder.toString(), SET);
          lineNrWidth.adaptLineNrWidth(prevLineNr, lineNr);
       }
       catch(BadLocationException e) {
@@ -77,13 +82,5 @@ public class LineNumberDocument {
       catch (BadLocationException e) {
          FileUtils.logStack(e);
       }
-   }
-    
-   private void setDocStyle() {
-      StyleConstants.setForeground(set, GRAY);
-      StyleConstants.setAlignment(set, StyleConstants.ALIGN_RIGHT);
-      StyleConstants.setLineSpacing(set, 0.25f);
-      Element el = doc.getParagraphElement(0);
-      doc.setParagraphAttributes(0, el.getEndOffset(), set, false);
    }
 }

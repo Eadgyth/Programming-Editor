@@ -18,9 +18,16 @@ import eg.utils.FileUtils;
  */
 public class TextDocument {
    
+   private final static SimpleAttributeSet SET = new SimpleAttributeSet();
+   
    private final JTextPane textArea;
-   private final SimpleAttributeSet set = new SimpleAttributeSet();
    private final StyledDocument doc;
+   
+   static {
+      StyleConstants.setForeground(SET, Color.BLACK);
+      StyleConstants.setBold(SET, false);
+      StyleConstants.setLineSpacing(SET, 0.25f);
+   }
    
    /**
     * @param textArea  the <code>JTextPane</code> that displays this
@@ -29,7 +36,8 @@ public class TextDocument {
    public TextDocument(JTextPane textArea) {
       this.textArea = textArea;
       doc = textArea.getStyledDocument();
-      setStyle();
+      Element el = doc.getParagraphElement(0);
+      doc.setParagraphAttributes(0, el.getEndOffset(), SET, false);
    }
    
    /**
@@ -43,16 +51,16 @@ public class TextDocument {
    
    /**
     * Gets this <code>SimpleAttributeSet</code> which has the attributes
-    * black and not bold 
+    * black and plain
     *
-    * @return  this <code>SimpleAttributeSet</code>
+    * @return  the <code>SimpleAttributeSet</code>
     */
    public SimpleAttributeSet attrSet() {
-      return set;
+      return SET;
    }
    
    /**
-    * Gets this text area that displays the document
+    * Gets this text area that displays the document's content
     *
     * @return  the text area
     */
@@ -90,7 +98,7 @@ public class TextDocument {
     * position
     *
     * @param pos  the position
-    * @param toInsert  the String to insert
+    * @param toInsert  the String
     */
    public void insert(int pos, String toInsert) {
       try {
@@ -115,13 +123,5 @@ public class TextDocument {
       catch (BadLocationException e) {
          FileUtils.logStack(e);
       }
-   }
-   
-   private void setStyle() {
-      StyleConstants.setForeground(set, Color.BLACK);
-      StyleConstants.setBold(set, false);
-      StyleConstants.setLineSpacing(set, 0.25f);
-      Element el = doc.getParagraphElement(0);
-      doc.setParagraphAttributes(0, el.getEndOffset(), set, false);
    }
 }
