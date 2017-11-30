@@ -4,31 +4,36 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 
 import javax.swing.JPanel;
-import javax.swing.JButton;
 
 //--Eadgyth--/
 import eg.Constants;
 
 /**
- * Defines a panel to which a component can be added
+ * Defines a panel to which a variable <code>Component</code> can
+ * be added
  */
 public class ToolPanel {
    
    private final JPanel pnl = new JPanel(new BorderLayout());
-   private final JPanel headPnl = new JPanel();
-   private final JButton closeBt = new JButton(IconFiles.CLOSE_ICON);
    
    public ToolPanel() {
       pnl.setBorder(Constants.GRAY_BORDER);
    }
    
    /**
-    * Adds a <code>Component</code> to this tool panel.
-    * <p> The panel has a <code>BorderLayout</code> and gray border. The
-    * Component is added to the center. A previously added component is
-    * removed.
+    * Gets this tool panel
     *
-    * @param c  the Component that is added
+    * @return  the <code>JPanel</code>
+    */
+   public JPanel panel() {
+      return pnl;
+   }
+   
+   /**
+    * Adds a component to this tool panel. A previously added
+    * component is removed
+    *
+    * @param c  the <code>Component</code>
     */
    public void addComponent(Component c) {
       BorderLayout layout = (BorderLayout) pnl.getLayout();
@@ -41,10 +46,6 @@ public class ToolPanel {
       }
       pnl.revalidate();
       pnl.repaint();
-   }
-   
-   public JPanel panel() {
-      return pnl;
    }
 }
    
