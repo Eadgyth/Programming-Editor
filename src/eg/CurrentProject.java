@@ -369,9 +369,6 @@ public class CurrentProject {
       mw.displayProjectName(projToSet.getProjectName());
       mw.fileTree().setDeletableDirName(projToSet.getExecutableDirName());
       mw.fileTree().setProjectTree(projToSet.getProjectPath());
-      if (projList.size() == 1) {
-         mw.enableOpenFileView();
-      }
    }
 
    private void enableActions(ProjectActions projToSet) {
