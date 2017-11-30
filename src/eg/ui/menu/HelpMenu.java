@@ -3,7 +3,13 @@ package eg.ui.menu;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import eg.ui.Help;
+import java.awt.Desktop;
+
+import java.io.File;
+import java.io.IOException;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * The menu for help actions
@@ -22,11 +28,30 @@ class HelpMenu {
       menu.addSeparator();
       menu.add(aboutItm);
       aboutItm.addActionListener(e -> new eg.ui.InfoWin());      
-      showHelpItm.addActionListener(e -> new Help().showHelpSite());
-      showDocuItm.addActionListener(e -> new Help().showDocuSite());
+      showHelpItm.addActionListener(e -> showHelpSite());
+      showDocuItm.addActionListener(e -> showDocuSite());
    }
    
    public JMenu getMenu() {
       return menu;
+   }
+
+   private void showHelpSite() {
+      openWebSite("https://eadgyth.github.io/Programming-Editor/help/help.html");
+   }
+
+   private void showDocuSite() {
+      openWebSite("https://eadgyth.github.io/Programming-Editor/");
+   }
+
+   private void openWebSite(String url) {
+      try {
+         if (Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().browse(new URI(url));
+         }
+      }
+      catch (IOException | URISyntaxException e) {
+         eg.utils.FileUtils.logStack(e);
+      }
    }
 }
