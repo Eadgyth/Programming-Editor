@@ -20,7 +20,6 @@ public class FunctionalAction extends AbstractAction {
     * @param al  the <code>ActionListener</code>
     */
    public FunctionalAction(String name, Icon icon, ActionListener al) {
-
       super(name, icon);
       this.al = al;
    }

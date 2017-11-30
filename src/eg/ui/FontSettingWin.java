@@ -15,11 +15,11 @@ import javax.swing.Box;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.Constants;
 
 /**
- * A frame that contains combo boxes to change the font and font size
+ * A diaolog for setting the font and font size
  */
 public class FontSettingWin {
 
@@ -29,32 +29,35 @@ public class FontSettingWin {
 
    private final JFrame frame = new JFrame("Font");
    private final JComboBox<String> selectFont;
-   private final JComboBox<String> selectSize = new JComboBox<>(FONT_SIZES);
+   private final JComboBox<String> selectSize;
    private final JButton okBt = new JButton("OK");
-
-   private final String[] fonts; 
-   private final String font;
-   private final int fontSize;
-
-   public FontSettingWin(String initFont, int initFontSize) {
-      font = initFont;
-      fontSize = initFontSize;
-      fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-      selectFont = new JComboBox<>(fonts);
-      initFrame();
-   }
+   private final String[] fonts;
 
    /**
-    * Makes this frame visible/unvisible
-    *
-    * @param isVisible  true/false to make this frame visible/unvisible
+    * @param  font  the font name that is initially set selected
+    * @param  size  the font size that is initiallay set selected
     */
-   public void makeVisible(boolean isVisible) {
-      frame.setVisible(isVisible);
+   public FontSettingWin(String font, int size) {
+      fonts = GraphicsEnvironment.getLocalGraphicsEnvironment()
+            .getAvailableFontFamilyNames();
+            
+      selectFont = new JComboBox<>(fonts);
+      selectSize = new JComboBox<>(FONT_SIZES);
+      initFrame(font, size);
    }
-   
+
    /**
-    * Adds an action handler to this ok button
+    * Sets the boolean that specified if this frame is made visible
+    * or invisible
+    *
+    * @param b  the boolean value
+    */
+   public void makeVisible(boolean b) {
+      frame.setVisible(b);
+   }
+
+   /**
+    * Adds an action listener to this ok button
     *
     * @param al  the {@code ActionListener}
     */
@@ -63,19 +66,17 @@ public class FontSettingWin {
    }
 
    /**
-    * Returns the font selection in the corresponding combobox and
-    * and stores the selection to the preferences file
+    * Returns the font selection in the corresponding combobox
     *
     * @return the selected font
     */
    public String fontComboBxRes() {
-      String aFont = fonts[selectFont.getSelectedIndex()];
-      return aFont;
+      String font = fonts[selectFont.getSelectedIndex()];
+      return font;
    }
 
    /**
-    * Returns the font size selection in the corresponding combobox and
-    * and stores the selection to the preferences file
+    * Returns the font size selection in the corresponding combobox
     *
     * @return the selected font
     */
@@ -85,26 +86,26 @@ public class FontSettingWin {
    }
 
    //
-   //--private methods
+   //--private--/
    //
 
-   private void initFrame() {
+   private void initFrame(String font, int size) {
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       frame.setResizable(false);
       frame.setLocation(550, 100);
-      frame.setContentPane(combinedPnl());
+      frame.setContentPane(combinedPnl(font, size));
       frame.pack();
       frame.setVisible(false);
       frame.setAlwaysOnTop(true);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
    }
 
-   private JPanel combinedPnl() {
+   private JPanel combinedPnl(String font, int size) {
       JPanel twoComboBx = new JPanel();
       twoComboBx.setLayout(new BoxLayout(twoComboBx, BoxLayout.LINE_AXIS));
-      twoComboBx.add(fontPnl());
+      twoComboBx.add(fontPnl(font));
       twoComboBx.add(Box.createRigidArea(eg.utils.ScreenParams.scaledDimension(10, 0)));
-      twoComboBx.add(sizePnl());
+      twoComboBx.add(sizePnl(size));
 
       JPanel combined = new JPanel();
       combined.setLayout(new BoxLayout(combined, BoxLayout.Y_AXIS));
@@ -114,14 +115,14 @@ public class FontSettingWin {
       return combined;
    }
 
-   private JPanel fontPnl() {
+   private JPanel fontPnl(String font) {
       selectFont.setSelectedItem(font);
-      return comboBoxPnl(selectFont, "Font:   ");     
+      return comboBoxPnl(selectFont, "Font:   ");
    }
 
-   private JPanel sizePnl() {
-      selectSize.setSelectedItem(String.valueOf(fontSize));
-      return comboBoxPnl(selectSize, "Size:   ");     
+   private JPanel sizePnl(int size) {
+      selectSize.setSelectedItem(String.valueOf(size));
+      return comboBoxPnl(selectSize, "Size:   ");
    }
 
    private JPanel comboBoxPnl(JComboBox<String> comboBox, String title) {
@@ -132,13 +133,13 @@ public class FontSettingWin {
       JPanel comboBoxPnl = new JPanel();
       comboBoxPnl.setLayout(new BoxLayout(comboBoxPnl, BoxLayout.LINE_AXIS));
       comboBoxPnl.add(titleLb);
-      comboBoxPnl.add(comboBox);      
+      comboBoxPnl.add(comboBox);
       return comboBoxPnl;
    }
 
     private JPanel buttonPnl() {
       JPanel buttonsPanel = new JPanel(new FlowLayout());
-      buttonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));   
+      buttonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       buttonsPanel.add(okBt);
       return buttonsPanel;
    }

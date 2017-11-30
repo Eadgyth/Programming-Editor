@@ -74,7 +74,7 @@ public class EditMenu {
 
    /**
     * Sets the listener for actions to open an <code>AddableEditTool</code>
-    * in the item at the sepecified index
+    * to the item at the sepecified index
     *
     * @param al  the <code>ActionListener</code>
     * @param i  the index
@@ -94,11 +94,12 @@ public class EditMenu {
       }
    }
 
-   /**
-    * Enables or disables the buttons for undoing and redoing actions
+  /**
+    * Sets the booleans that specify if the items for undoing and
+    * redoing actions are enabled or disabled
     *
-    * @param isUndo  true to enable, false to disable the undo button
-    * @param isRedo  true to enable, false to disable the redo button
+    * @param isUndo  the boolean value for undoing actions
+    * @param isRedo  the boolean value for redoing actions
     */
    public void enableUndoRedoItms(boolean isUndo, boolean isRedo) {
       undoItm.setEnabled(isUndo);
@@ -106,9 +107,10 @@ public class EditMenu {
    }
    
    /**
-    * Enables or disables the buttons for cutting and copying actions
+    * Sets the boolean that specifies if the items for cutting and
+    * copying actions are enabled or disabled
     *
-    * @param b  true to enable, false to disable the buttons
+    * @param b  the boolean value
     */
    public void enableCutCopyItms(boolean b) {
       cutItm.setEnabled(b);
@@ -117,7 +119,8 @@ public class EditMenu {
 
    /**
     * Selects and disables the item for the specified language and enables
-    * the items for the other languages if <code>enable</code> is true
+    * the items for the other languages if the specified <code>enable</code>
+    * is true
     *
     * @param lang  the language that has one of the constant values in
     * {@link Languages}
@@ -137,7 +140,7 @@ public class EditMenu {
    }
 
    //
-   //--private methods--//
+   //--private--/
    //
 
    private void setLanguage(ActionEvent e, TabbedFiles tf) {

@@ -376,7 +376,10 @@ public class SyntaxSearch {
                   length = end - start + 1;
                   int absStart = start + lineStart;
                   if (isHtml) {
-                     setCharAttr(absStart, length, Attributes.PURPLE_PLAIN);
+                     boolean ok = isInBlock("<", ">", absStart);
+                     if (ok) {
+                        setCharAttr(absStart, length, Attributes.PURPLE_PLAIN);
+                     }
                   }
                   else {
                      setCharAttr(absStart, length, Attributes.ORANGE_PLAIN);

@@ -5,11 +5,7 @@ import eg.ui.ViewSettingWin;
 import eg.ui.FontSettingWin;
 
 /**
- * The formatting for <code>EditArea</code> objects which are associated
- * with the objects of <code>FileDocument</code>.
- * <p>The font and visibility of line numbersis applied to all editors,
- * whereas wordwrap is applied only to the currently selected editor.
- * <p>The initial parameters are read from the prefs file.
+ * The formatting for <code>EditArea</code> objects
  */
 public class EditAreaFormat {
    
@@ -56,13 +52,6 @@ public class EditAreaFormat {
       iCurr = i;
    }
    
-   /**
-    * Makes this window to set the font visible
-    */
-   public void makeFontSettingWinVisible() {
-      fontSetWin.makeVisible(true);
-   }
-   
    /** 
     * Returns a new {@code EditArea} that is initialized with the
     * current settings
@@ -71,6 +60,13 @@ public class EditAreaFormat {
     */
    public EditArea createEditArea() {
       return new EditArea(isWordwrap, isShowLineNr, font, fontSize);
+   }
+   
+   /**
+    * Makes the dialog for setting the font visible
+    */
+   public void makeFontSettingWinVisible() {
+      fontSetWin.makeVisible(true);
    }
    
    /**

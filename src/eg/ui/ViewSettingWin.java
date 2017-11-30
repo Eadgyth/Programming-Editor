@@ -51,13 +51,13 @@ public class ViewSettingWin {
    }
    
    /**
-    * Makes this frame visible/unvisible
+    * Sets the specified boolean that specifies if this frame is made
+    * visible or invisible
     *
-    * @param isVisible  true to make this frame visible, false to
-    * to make it invisible
+    * @param b the boolean value
     */
-   public void makeVisible(boolean isVisible) {
-      frame.setVisible(isVisible);
+   public void makeVisible(boolean b) {
+      frame.setVisible(b);
    }
    
    /**
@@ -70,27 +70,30 @@ public class ViewSettingWin {
    }
 
    /**
-    * Returns if check box for showing the toolbar is selected
+    * Returns the boolean value that indicates if the checkbox for
+    * showing the toolbar is ticked
     *
-    * @return  if showing the toolbar is selected
+    * @return  the boolean value
     */ 
    public boolean isShowToolbar() {
       return checkToolbar.isSelected();
    }
    
    /**
-    * Returns if check box for showing line numbers is selected
+    * Returns the boolean value that indicates if the checkbox for
+    * showing line numbers is ticked
     *
-    * @return if showing line numbers is selected
+    * @return the boolean value
     */ 
    public boolean isShowLineNumbers() {
       return checkLineNumbers.isSelected();
    }
    
    /**
-    * Returns if check box for showing the statusbar is selected
+    * Returns the boolean value that indicates if the checkbox for
+    * showing the statusbar is ticked
     *
-    * @return if showing the staus bar is selected
+    * @return the boolean value
     */ 
    public boolean isShowStatusbar() {
       return checkStatusbar.isSelected();

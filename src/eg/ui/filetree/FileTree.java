@@ -99,10 +99,12 @@ public class FileTree extends Observable {
     * @param projRoot  the project's root directory
     */
    public void setProjectTree(String projRoot) {
-      if (!this.projRoot.equals(projRoot)) {
-         setNewTree(projRoot);
+      if (this.projRoot.equals(projRoot)) {
+         throw new IllegalArgumentException(
+            "The same project root has been already assigned");
       }
       this.projRoot = projRoot;
+      setNewTree(projRoot);
    }
 
    /**
@@ -130,9 +132,9 @@ public class FileTree extends Observable {
    }
 
    /**
-    * Adds an {@code ActionListener} to this close button
+    * Sets the listener for actions to close the file view
     *
-    * @param al  the {@code ActionListener}
+    * @param al  the <code>ActionListener</code>
     */
    public void setCloseAct(ActionListener al) {
       closeBt.addActionListener(al);
@@ -147,13 +149,11 @@ public class FileTree extends Observable {
          return;
       }
       currentRoot = path;
-      if (path.equals(projRoot)) {
-         upBt.setEnabled(false);
-      }
+      renewBt.setEnabled(true);
+      upBt.setEnabled(path.equals(projRoot));
       root = new DefaultMutableTreeNode("root", true);
       model = new DefaultTreeModel(root);
       getFiles(root, new File(path));
-      renewBt.setEnabled(true);
       if (tree == null) {
          initTree();
          holdTreePnl.add(tree);
@@ -162,6 +162,7 @@ public class FileTree extends Observable {
          tree.setModel(model);
          tree.expandRow(0);
       }
+      upBt.setEnabled(!path.equals(projRoot));
    }
 
    private void getFiles(DefaultMutableTreeNode node, File f) {
@@ -202,14 +203,6 @@ public class FileTree extends Observable {
       if (!projRoot.equals(currentRoot)) {
          setNewTree(parent);
       }
-      if (projRoot.equals(parent)) {
-         upBt.setEnabled(false);
-      }
-   }
-
-   private void folderDown(String child) {
-      setNewTree(child);
-      upBt.setEnabled(true);
    }
 
    private void showMenu(Component c, int x, int y) {
@@ -338,7 +331,6 @@ public class FileTree extends Observable {
    }
 
    private void initTree() {
-      System.out.println("init tree");
       tree = new JTree(model);
       tree.setRootVisible(false);
       tree.setFont(Constants.SANSSERIF_PLAIN_9);
@@ -393,7 +385,7 @@ public class FileTree extends Observable {
                      openFile(fStr);
                   }
                   else {
-                     folderDown(fStr);
+                     setNewTree(fStr);
                   }
                }
             }

@@ -15,7 +15,7 @@ public class LineNumbers {
    public LineNumbers(LineNumberDocument lineNrDoc) {
       this.lineNrDoc = lineNrDoc;
       nOld = 1;
-      lineNrDoc.appendLineNumbers(0, 1);
+      lineNrDoc.appendLineNumbers(0, nOld);
    }
 
    /**

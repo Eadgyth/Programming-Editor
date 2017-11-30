@@ -144,13 +144,12 @@ public class MainWin implements ConsoleOpenable {
    }
 
    /**
-    * Displays the file type, i.e. the display value of the set
-    * language, in the status bar
+    * Displays the current language in the status bar
     *
-    * @param lang   the language
+    * @param lang   the language which is a constant in {@link Languages}
     */
-   public void displayFileType(Languages lang) {
-      languageLb.setText("File type: " + lang.display());
+   public void displayLanguage(Languages lang) {
+      languageLb.setText("Language: " + lang.display());
    }
 
    /**
@@ -174,7 +173,7 @@ public class MainWin implements ConsoleOpenable {
    }
 
    /**
-    * Labels the menu item for building actions
+    * Sets the specified label for the menu item for building actions
     *
     * @param label  the label
     */
@@ -202,14 +201,15 @@ public class MainWin implements ConsoleOpenable {
     */
    public void setLanguageSelected(Languages lang, boolean b){
       menuBar.editMenu().selectLanguageItm(lang, b);
-      displayFileType(lang);
+      displayLanguage(lang);
    }
 
    /**
-    * Enables or disables undoing and redoing actions
+    * Sets the booleans that specify if undoing and redoing actions
+    * are enabled or disabled
     *
-    * @param isUndo  true to enable, false to disable undo actions
-    * @param isRedo  true to enable, false to disable redo actions
+    * @param isUndo  the boolean value for undo actions
+    * @param isRedo  the boolean value for redo actions
     */
    public void enableUndoRedo(boolean isUndo, boolean isRedo) {
       toolbar.enableUndoRedoBts(isUndo, isRedo);
@@ -217,9 +217,10 @@ public class MainWin implements ConsoleOpenable {
    }
 
    /**
-    * Enables or disables cutting and copying actions
+    * Sets the boolean that specifies if cutting and copying actions
+    * are enabled or disabled
     *
-    * @param b  true to enable, false to disable the actions
+    * @param b  the boolean value
     */
    public void enableCutCopy(boolean b) {
       toolbar.enableCutCopyBts(b);
@@ -227,25 +228,20 @@ public class MainWin implements ConsoleOpenable {
    }
 
    /**
-    * Enables or disables actions to set the visiblity of the tabbar
+    * Sets the boolean that specifies if actions to set the visiblity
+    * of the tabbar are enabled or disabled
     *
-    * @param b  true to enable, false to disable the actions
+    * @param b  the boolean value
     */
    public void enableShowTabbar(boolean b) {
       menuBar.viewMenu().enableTabItm(b);
    }
 
    /**
-    * Enables the actions to open the file view panel
-    */
-   public void enableOpenFileView() {
-      menuBar.viewMenu().enableFileViewItm();
-   }
-
-   /**
-    * Enables or disables the actions to change project
+    * Sets the boolean that specifies if actions to change project are
+    * enabled or disabled
     *
-    * @param b  true to enable, false to disable the action
+    * @param b  the boolean value
     */
    public void enableChangeProject(boolean b) {
       menuBar.projectMenu().enableChangeProjItm(b);
@@ -253,26 +249,27 @@ public class MainWin implements ConsoleOpenable {
    }
 
    /**
-    * Enables or disables the controls for actions to compile, run and
-    * build a project. The booleans indicate if the respective controls are
-    * set enabled or disabled.
+    * Sets the booleans that specify if actions to compile, run and
+    * build a project are enabled or disabled
     *
-    * @param isCompile  the boolean
-    * @param isRun  the boolean
-    * @param isBuild  the boolean
+    * @param isCompile  the boolean value for compile actions
+    * @param isRun  the boolean value for run actions
+    * @param isBuild  the boolean value for build actions
     */
    public void enableSrcCodeActions(boolean isCompile, boolean isRun,
          boolean isBuild) {
 
       menuBar.projectMenu().enableSrcCodeActionItms(isCompile, isRun,
             isBuild);
+
       toolbar.enableSrcCodeActionBts(isCompile, isRun);
    }
 
    /**
-    * Shows or hides the toolbar
+    * Sets the boolean that specified if the toolbar is shown
+    * or hidden
     *
-    * @param b  true to show, false to hide the toolbar
+    * @param b  the boolean value
     */
    public void showToolbar(boolean b) {
       if (b) {
@@ -285,9 +282,10 @@ public class MainWin implements ConsoleOpenable {
    }
 
    /**
-    * Shows or hides the status bar
+    * Sets the boolean that specified if the statusbar is shown
+    * or hidden
     *
-    * @param b  true to show, false to hide the status bar
+    * @param b  the boolean value
     */
    public void showStatusbar(boolean b) {
       if (b) {
@@ -318,8 +316,9 @@ public class MainWin implements ConsoleOpenable {
    }
 
    /**
-    * Calls the end method in all objects of
+    * Calls the 'end' method in all objects of
     * <code>AddableEditTool</code>
+    * @see AddableEditTool
     */
    public void endEditTools() {
       for (AddableEditTool t : editTools) {
@@ -363,8 +362,8 @@ public class MainWin implements ConsoleOpenable {
    }
 
    /**
-    * Sets the listener for actions to opens the window for view
-    * settings
+    * Sets the listener for actions to opens the window for the view
+    * preferences
     *
     * @param viewSetWin  the reference to <code>ViewSettingWin</code>
     */
@@ -399,7 +398,7 @@ public class MainWin implements ConsoleOpenable {
    }
 
    //
-   //--private methods--/
+   //--private--/
    //
 
    private void setViewActions() {
@@ -477,7 +476,7 @@ public class MainWin implements ConsoleOpenable {
       tabPane.showTabbar(show);
       menuBar.viewMenu().selectTabsItm(show);
    }
-   
+
    private void createAddableEditTools() {
       try {
          for (int i = 0; i < EditTools.values().length; i++) {
@@ -493,7 +492,7 @@ public class MainWin implements ConsoleOpenable {
          FileUtils.logStack(e);
       }
    }
-   
+
    private void setEditToolsActions(AddableEditTool tool, int i) {
       JButton closeBt = new JButton();
       closeBt.setAction(new FunctionalAction("", IconFiles.CLOSE_ICON,

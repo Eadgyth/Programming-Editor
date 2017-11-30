@@ -7,46 +7,77 @@ import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 
 /**
- * A popup menu with menu items for deleting a file, directory and creating
- * a new folder
+ * A popup menu with menu items for actions that can be selected
+ * after a file node or a folder node was right clicked
  */
 public class PopupMenu {
 
-   static int FILE_OPT = 0;
-   static int FOLDER_OPT = 1;
+   /**
+    * The constant for indicating that items for file operations are shown */
+   public final static int FILE_OPT = 0;
+   /**
+    * The constant for indicating that items for folder operations are shown */
+   public final static int FOLDER_OPT = 1;
 
    private final JPopupMenu popMenu = new JPopupMenu();
    private final JMenuItem deleteItm = new JMenuItem("Delete");
    private final JMenuItem newFolderItm = new JMenuItem("Create new folder");
 
-   PopupMenu(int opt) {
-      if (opt == FILE_OPT) {
+   /**
+    * @param option  one of <code>PopupMenu.FILE_OPT</code> and
+    * <code>popupMenu.FOLDER_OPT</code>
+    */
+   public PopupMenu(int option) {
+      if (option == FILE_OPT) {
          popMenu.add(deleteItm);
       }
-      else if (opt == FOLDER_OPT) {
+      else {
          popMenu.add(newFolderItm);
          popMenu.add(deleteItm);
       }
    }
 
-   void enableDelete(boolean isEnabled) {
-      if (isEnabled) {
+   /**
+    * Sets the boolean that specifies if the item for deleting
+    * actions is enabled or disabled
+    *
+    * @param b  the boolean value
+    */
+   public void enableDelete(boolean b) {
+      if (b) {
          deleteItm.setText("Delete");
       }
       else {
          deleteItm.setText("Deletable if empty");
       }
-      deleteItm.setEnabled(isEnabled);
+      deleteItm.setEnabled(b);
    }
 
-   void showMenu(Component c, int x, int y) {
+   /**
+    * Shows the menu at the specified component
+    *
+    * @param c  the <code>Component</code>
+    * @param x  the x coordinate
+    * @param y  the y coordiante
+    */
+   public void showMenu(Component c, int x, int y) {
       popMenu.show(c, x, y);
    }
 
+   /**
+    * Sets the listener for deleting actions
+    *
+    * @param al  the <code>ActionListener</code>
+    */
    void deleteAct(ActionListener al) {
       deleteItm.addActionListener(al);
    }
 
+   /**
+    * Sets the listener for actions to create a new folder
+    *
+    * @param al  the <code>ActionListener</code>
+    */
    void newFolderAct(ActionListener al) {
       newFolderItm.addActionListener(al);
    }

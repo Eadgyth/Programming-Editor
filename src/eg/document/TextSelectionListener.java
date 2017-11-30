@@ -8,9 +8,9 @@ package eg.document;
 public interface TextSelectionListener {
    
    /**
-    * Called when the state, in which text is selected, has changed
+    * Called when text is selected or unselected
     *
-    * @param e  a {@link TextSelectionEvent} object
+    * @param e  a new {@link TextSelectionEvent} object
     */
    public void selectionUpdate(TextSelectionEvent e);
    

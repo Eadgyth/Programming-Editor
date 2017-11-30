@@ -157,7 +157,7 @@ public class TypingEdit {
    }
 
    /**
-    * Returns the currently set indent unit
+    * Returns the current indent unit
     *
     * @return  the indent unit
     */
@@ -166,7 +166,10 @@ public class TypingEdit {
    }
 
    /**
-    * Colors multiple lines of the document text
+    * Colors the specified <code>section</code> of the document text.
+    * If this section does not encompass full lines, its first and last lines
+    * are completed for coloring. If it is only a part of a single line this
+    * line is as well completed.
     *
     * @param section  a section of the document text. If null the entire
     * text is used.

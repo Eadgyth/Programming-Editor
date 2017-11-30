@@ -51,6 +51,24 @@ public class SyntaxUtils {
          return true;
       }
    }
+   
+   /**
+    * Returns the boolean value that indicates if the character that
+    * follows the specified position is not a letter or a digit
+    *
+    * @param text  the text
+    * @param pos  the position
+    * @return the boolean
+    */
+   public static boolean isWordEnd(String text, int pos) {
+      if (text.length() > pos) {
+         char c = text.charAt(pos);
+         return !isLetterOrDigit(c);
+      }
+      else {
+         return true;
+      }
+   }
 
    /**
     * Returns the position of the last block start before the
@@ -226,18 +244,8 @@ public class SyntaxUtils {
    }
    
    //
-   //--private methods--/
+   //--private--/
    //
-   
-   private static boolean isWordEnd(String text, int pos) {
-      if (text.length() > pos) {
-         char c = text.charAt(pos);
-         return !isLetterOrDigit(c);
-      }
-      else {
-         return true;
-      }
-   }
 
    private static boolean isLetterOrDigit(char c) {
       return Character.isLetter(c) || Character.isDigit(c);

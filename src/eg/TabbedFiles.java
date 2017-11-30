@@ -67,7 +67,7 @@ public class TabbedFiles implements Observer {
    public void changeLanguage(Languages lang) {
       this.lang = lang;
       fDoc[iTab].changeLanguage(lang);
-      mw.displayFileType(lang);
+      mw.displayLanguage(lang);
    }
 
    /**

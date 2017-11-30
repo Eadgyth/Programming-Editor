@@ -65,12 +65,11 @@ public class Toolbar {
    }
 
    /**
-    * Enables or disables the buttons for actions to compile and run
-    * a project. The booleans indicate if the respective button is set
-    * enabled or disabled
+    * Sets the booleans that specify if the buttons for actions to
+    * compile and run a project are enabled or disabled
     *
-    * @param isCompile  the boolean
-    * @param isRun  the boolean
+    * @param isCompile  the boolean value for compile actions
+    * @param isRun  the boolean value for run actions
     */
    public void enableSrcCodeActionBts(boolean isCompile, boolean isRun) {
       compileBt.setEnabled(isCompile);
@@ -78,18 +77,20 @@ public class Toolbar {
    }
 
    /**
-    * Enables or disables the button for changing project actions
+    * Sets the boolean that specifies if the button for actions to
+    * change project is enabled or disabled
     *
-    * @param b  true to enable, false to disable the button
+    * @param b  the boolean value
     */
    public void enableChangeProjBt(boolean b) {
       changeProjBt.setEnabled(b);
    }
 
    /**
-    * Enables or disables the buttons for cutting and copying actions
+    * Sets the boolean that specifies if the buttons for cutting and
+    * copying actions are enabled or disabled
     *
-    * @param b  true to enable, false to disable both buttons
+    * @param b  the boolean value
     */
    public void enableCutCopyBts(boolean b) {
       cutBt.setEnabled(b);
@@ -97,11 +98,11 @@ public class Toolbar {
    }
 
    /**
-    * Enables or disables the buttons for undoing and redoing actions. The
-    * booleans indicate if the respective button is set enabled or disabled
+    * Sets the booleans that specify if the buttons for undoing and
+    * redoing actions are enabled or disabled
     *
-    * @param isUndo  the boolean
-    * @param isRedo  the boolean
+    * @param isUndo  the boolean value for undoing actions
+    * @param isRedo  the boolean value for redoing actions
     */
    public void enableUndoRedoBts(boolean isUndo, boolean isRedo) {
       undoBt.setEnabled(isUndo);
@@ -109,7 +110,7 @@ public class Toolbar {
    }
 
    //
-   //--private methods
+   //--private--/
    //
 
    private void initToolbar() {

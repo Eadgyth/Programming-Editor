@@ -48,7 +48,7 @@ public final class FileDocument {
    }
 
    /**
-    * Creates a <code>FileDocument</code> with the specified
+    * Creates a blank <code>FileDocument</code> with the specified
     * language
     *
     * @param editArea  a new {@link EditArea}
@@ -298,6 +298,7 @@ public final class FileDocument {
     *
     * @param section  the section
     * @param pos  the position
+    * @see TypingEdit #ColorMultipleLines(String, int)
     */
    public void colorSection(String section, int pos) {
       if (Languages.NORMAL_TEXT != lang) {
@@ -385,7 +386,7 @@ public final class FileDocument {
    }
 
    //
-   //--private methods--/
+   //--private--/
    //
 
    private FileDocument(EditArea editArea) {

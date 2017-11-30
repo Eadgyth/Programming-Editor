@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.ArrayList;
 
 //--Eadgyth--/
-import eg.edittools.*;
+import eg.edittools.AddableEditTool;
 import eg.utils.FileUtils;
 import eg.document.FileDocument;
 import eg.ui.MainWin;
 
 /**
- * Holds objects that need to be updated when the tab is changed and when
- * the file of a selected document changes
+ * Holds objects that need to be updated when the viewed document
+ * changes or when a new file is assigned to the viewed document
  */
 public class DocumentUpdate {
 
@@ -21,8 +21,6 @@ public class DocumentUpdate {
    private final FileDocument[] fDoc;
 
    /**
-    * Creates a DocumentUpdate
-    *
     * @param mw  the reference to {@link MainWin}
     * @param fDoc  the array of {@link FileDocument}
     */
@@ -36,7 +34,7 @@ public class DocumentUpdate {
    }
 
    /**
-    * Does updates when another document is selected
+    * Does updates when the viewed document changes
     *
     * @param i  the index of the element in this <code>FileDocument</code>
     * array
@@ -62,11 +60,11 @@ public class DocumentUpdate {
    }
 
    /**
-    * Does updates when a new file is assigned to a document 
+    * Does updates when a new file is assigned to the viewed document
     *
     * @param i  the index of the element in this <code>FileDocument</code>
     * array
-    * @param updateFiletree  if the file tree is updated (after save as)
+    * @param updateFiletree  if the file tree needs to be updated
     */
    public void updateForChangedFile(int i, boolean updateFiletree) {
       retrieveProject(i);

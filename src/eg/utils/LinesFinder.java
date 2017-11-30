@@ -59,7 +59,7 @@ public class LinesFinder {
     * @param text  the text
     * @param pos  the position relative to which the last newline
     * is searched
-    * @return  the position of the last newline character before '{@code pos}'
+    * @return  the last newline position
     */
    public static int lastNewline(String text, int pos) {
       int i = text.lastIndexOf("\n", pos);
