@@ -1,5 +1,9 @@
 package eg.document;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +34,14 @@ public class UndoEdit {
    private int iEd = -1;
    private int iBr = -1;
    private boolean isBreak = false;
+   private boolean isDeleteTyped = false;
 
    /**
     * @param textDoc  the reference to {@link TextDocument}
     */
    public UndoEdit(TextDocument textDoc) {
       this.textDoc = textDoc;
+      textDoc.textArea().addKeyListener(keyListen);
    }
 
    /**
@@ -63,29 +69,37 @@ public class UndoEdit {
       else {
          if (iEd > 0) {
             if (isInsert != isInsert(iEd - 1)) {
-               addBreakpoint();
+               if (isInsert && isDeleteTyped) {
+                  addBreakpoint();
+               }
+               else if (!isInsert) {
+                  addBreakpoint();
+               }               
             }
             else if (change.length() > 1) {
                addBreakpoint();
             }
          }
       }
+      if (isInsert) {
+         isDeleteTyped = false;
+      }
       iBr = breakpoints.size() - 1;
    }
 
    /**
-    * Returns if edits can be undone
+    * Returns the boolean that indicates if edits can be undone
     *
-    * @return if edits can be undone
+    * @return  the boolean value
     */
    public boolean canUndo() {
       return iEd > -1;
    }
 
    /**
-    * Returns if edits can be redone
+    * Returns the boolean that indicates if edits can be redone
     *
-    * @return if edits can be redone
+    * @return  the boolean value
     */
    public boolean canRedo() {
       return iEd < edits.size() - 1;
@@ -117,7 +131,7 @@ public class UndoEdit {
       if (iEd == -1) {
          iBr--;
       }
-      textDoc.docTextArea().setCaretPosition(nextPos);
+      textDoc.textArea().setCaretPosition(nextPos);
    }
 
    /**
@@ -148,12 +162,12 @@ public class UndoEdit {
       if (iEd == edits.size() - 1) {
          iBr++;
       }
-      textDoc.docTextArea().setCaretPosition(nextPos);
+      textDoc.textArea().setCaretPosition(nextPos);
    }
 
    /**
-    * Marks that the edit before the edit that will be added next is
-    * a breakpoint. This is effectless if the edit is already a
+    * Marks that the last edit will be a breakpoint as soon as another
+    * edit is added. This is effectless if the edit is already a
     * breakpoint
     */
    public void markBreakpoint() {
@@ -163,13 +177,12 @@ public class UndoEdit {
    }
 
    //
-   //--private methods--/
+   //--private--/
    //
 
    private void addBreakpoint() {
       int iLastBreak = breakpoints.size() - 1;
-      if (iLastBreak > -1
-            && iEd - 1 == breakPt(iLastBreak)) {
+      if (iLastBreak > -1 && iEd - 1 == breakPt(iLastBreak)) {
          return;
       }
       breakpoints.add(iEd - 1);
@@ -206,4 +219,15 @@ public class UndoEdit {
    private int breakPt(int i) {
       return breakpoints.get(i);
    }
+   
+   private KeyListener keyListen = new KeyAdapter() {
+      
+      @Override
+      public void keyPressed(KeyEvent e) {
+         int key = e.getKeyCode();
+         if (key == KeyEvent.VK_DELETE || key == KeyEvent.VK_BACK_SPACE) {
+            isDeleteTyped = true;
+         }
+      }
+   };
 }
