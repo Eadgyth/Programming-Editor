@@ -23,15 +23,11 @@ public class Coloring {
     */
    public Coloring(StyledDocument doc, SimpleAttributeSet normalSet) {
       search = new SyntaxSearch(doc, normalSet);
-   }
-   
-   
+   }   
    
    /**
     * Selects a {@link Colorable} based on the language and assigns
-    * it to this <code>SyntaxSearch</code>. If <code>lang</code> is
-    * not a coding language no Colorable is set and the text is
-    * (re-)colored in black
+    * it to this <code>SyntaxSearch</code>.
     *
     * @param lang  a language in {@link Languages}
     */
@@ -53,8 +49,6 @@ public class Coloring {
          case PERL:
             colorable = new PerlColoring();
             break;
-         default:
-            search.setAllCharAttrBlack();
       }
       search.setColorable(colorable);
    }

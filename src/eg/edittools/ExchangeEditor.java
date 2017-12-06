@@ -55,8 +55,8 @@ public class ExchangeEditor implements AddableEditTool {
       editAreaPnl = ea.editAreaPnl();
       FileDocument fd = new FileDocument(ea, Languages.NORMAL_TEXT);
       exch = new TextExchange(fd);
-      fd.setUndoableChangeListener(e -> enableUndoRedo(e.canUndo(), e.canRedo()));
-      fd.setTextSelectionListener(e -> enableCutCopy(e.isSelection()));
+      fd.setUndoableStateReadable((a, b) -> enableUndoRedo(a, b));
+      fd.setSelectionStateReadable((b) -> enableCutCopy(b));
       edit.setFileDocument(fd);
    }
 

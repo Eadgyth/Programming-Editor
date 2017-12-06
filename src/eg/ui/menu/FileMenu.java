@@ -38,21 +38,26 @@ public class FileMenu {
       shortCuts();
    }
    
+   /**
+    * Gets this menu
+    *
+    * @return  the menu
+    */
    public JMenu getMenu() {
       return menu;
    }
 
    /**
-    * Sets listeners for file actions except for the action to
-    * to exit the program
+    * Sets listeners for file actions defined in <code>TabbedFiles</code>
+    * except for the action to exit the program
     *
     * @param tf  the reference to {@link TabbedFiles}
     */
    public void setActions(TabbedFiles tf) {
-      newFileItm.addActionListener(e -> tf.openEmptyTab());
+      newFileItm.addActionListener(e -> tf.createBlankDocument());
       openItm.addActionListener(e -> tf.openFileByChooser());
       closeItm.addActionListener(e -> tf.close(true));
-      closeAllItm.addActionListener(e -> tf.closeAll());
+      closeAllItm.addActionListener(e -> tf.closeAll(true));
       saveItm.addActionListener(e -> tf.save(true));     
       saveAllItm.addActionListener(e -> tf.saveAll());
       saveAsItm.addActionListener(e -> tf.saveAs(true));
@@ -60,6 +65,11 @@ public class FileMenu {
       printItm.addActionListener(e -> tf.print());
    }
    
+   /**
+    * Sets the listener for the action to exit the program
+    *
+    * @param al  the <code>ActionListener</code>
+    */
    public void setExitActions(ActionListener al) {
       exitItm.addActionListener(al);
    }

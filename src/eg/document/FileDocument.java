@@ -17,19 +17,18 @@ import eg.ui.EditArea;
 /**
  * Represents the document that is either initialized with a language and
  * which a file may be assigned to afterwards or is initialized with a file
- * which defines the (then unchangeable) language
+ * which defines the then unchangeable language.
  */
 public final class FileDocument {
 
    private final TypingEdit type;
    private final TextDocument textDoc;
-   private final LineNumberDocument lineNrDoc;
 
    private File docFile = null;
-   private Languages lang;
    private String filename = "";
    private String filepath = "";
    private String dir = "";
+   private Languages lang;
    private String content = "";
    
    /**
@@ -61,21 +60,21 @@ public final class FileDocument {
    }
    
    /**
-    * Sets a <code>TextSelectionLister</code>
+    * Sets a <code>SelectionStateReadable</code>
     *
-    * @param tsl  a {@link TextSelectionListener}
+    * @param ssr  a {@link SelectionStateReadable}
     */
-   public void setTextSelectionListener(TextSelectionListener tsl) {
-      type.setTextSelectionListener(tsl);
+   public void setSelectionStateReadable(SelectionStateReadable ssr) {
+      type.setSelectionStateReadable(ssr);
    }
    
    /**
-    * Sets an <code>UndoableChangeListener</code>
+    * Sets an <code>UndoableStateReadable</code>
     *
-    * @param ucl  an {@link UndoableChangeListener}
+    * @param usr  an {@link UndoableStateReadable}
     */
-   public void setUndoableChangeListener(UndoableChangeListener ucl) {
-      type.setUndoableChangeListener(ucl);
+   public void setUndoableStateReadable(UndoableStateReadable usr) {
+      type.setUndoableStateReadable(usr);
    }
    
    /**
@@ -97,12 +96,22 @@ public final class FileDocument {
    }
    
    /**
+    * Asks the text area that shows this document to gain focus and reads
+    * the current editing state
+    * @see TypingEdit#readEditingState()
+    */
+   public void setFocused() {
+      textDoc.textArea().requestFocusInWindow();
+      type.readEditingState();
+   }
+   
+   /**
     * Gets the text area that displays this document
     *
     * @return  the text area
     */
     public JTextPane docTextArea() {
-       return textDoc.docTextArea();
+       return textDoc.textArea();
     }
     
    /**
@@ -221,16 +230,16 @@ public final class FileDocument {
    }
    
    /**
-    * Returns if the text equals the content since the last saving point
+    * Returns if the text equals the text since the last saving point
     *
     * @return  if the current text is saved
     */
-   public boolean isContentSaved() {
+   public boolean isSaved() {
       return content.equals(type.getText());
    }
    
    /**
-    * Gets the text in this documument
+    * Gets the text in this document
     *
     * @return  the text
     */
@@ -239,7 +248,7 @@ public final class FileDocument {
    }
    
    /**
-    * Gets the text length in this documument
+    * Gets the text length in this document
     *
     * @return  the length
     */
@@ -266,29 +275,30 @@ public final class FileDocument {
    }
    
    /**
-    * Changes the language if no file has been set
+    * Changes the language if no file has been assigned
     *
     * @param lang  the language which is a constant in {@link eg.Languages}
     */
    public void changeLanguage(Languages lang) {
       if (hasFile()) {
          throw new IllegalStateException(
-               "The language cannot be changed since a file is already set.");
+               "The language cannot be changed if a file is already set.");
       }
       this.lang = lang;
       type.setEditingMode(lang);
    }
 
    /**
-    * Enables or disables actions in responce to the editing of source code.
-    * This affects syntax coloring and auto-indentation. Has no effect if this
-    * language is not a coding language.
+    * Sets the boolean that specifies if actions in responce to the editing
+    * of source code are enabled.<br>
+    * These actions are syntax coloring and auto-indentation.
     *
-    * @param isEnabled  true to enable, false to disable
+    * @param b  the boolean value. Has no effect if this language is normal
+    * text
     */
-   public void enableCodeEditing(boolean isEnabled) {
+   public void enableCodeEditing(boolean b) {
       if (Languages.NORMAL_TEXT != lang) {
-         type.enableCodeEditing(isEnabled);
+         type.enableCodeEditing(b);
       }
    }
 
@@ -304,43 +314,6 @@ public final class FileDocument {
       if (Languages.NORMAL_TEXT != lang) {
          type.colorMultipleLines(section, pos);
       }
-   }
-   
-   /**
-    * Gets the number of the line where the cursor is positioned
-    *
-    * @return  the number
-    */
-   public int lineNrAtCursor() {
-      return type.lineNrAtCursor();
-   }
-   
-   /**
-    * Gets the number of the column within the line where the cursor
-    * is located
-    *
-    * @return  the number
-    */
-   public int columnNrAtCursor() {
-      return type.columnNrAtCursor();
-   }
-   
-   /**
-    * Returns the boolean that indicates if edits can be undone
-    * 
-    * @return  the boolean
-    */
-   public boolean canUndo() {
-      return type.canUndo();
-   }
-   
-   /**
-    * Returns the boolean that indicates if edits can be redone
-    * 
-    * @return  the boolean
-    */
-   public boolean canRedo() {
-      return type.canRedo();
    }
 
    /**
@@ -378,21 +351,15 @@ public final class FileDocument {
       textDoc.remove(pos, length);
    }
 
-   /**
-    * Asks this text area to gain the focus
-    */
-   public void requestFocus() {
-      textDoc.docTextArea().requestFocusInWindow();
-   }
-
    //
    //--private--/
    //
 
    private FileDocument(EditArea editArea) {
       textDoc = new TextDocument(editArea.textArea());
-      lineNrDoc = new LineNumberDocument(editArea.lineNrDoc(),
+      LineNumberDocument lineNrDoc = new LineNumberDocument(editArea.lineNrDoc(),
             editArea.lineNrWidth());
+
       type = new TypingEdit(textDoc, lineNrDoc);
    }
 

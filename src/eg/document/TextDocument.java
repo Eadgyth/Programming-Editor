@@ -64,7 +64,7 @@ public class TextDocument {
     *
     * @return  the text area
     */
-   public JTextPane docTextArea() {
+   public JTextPane textArea() {
       return textArea;
    }
    
@@ -85,7 +85,7 @@ public class TextDocument {
    }
    
    /**
-    * Gets the length of this document
+    * Gets the length of this document text
     *
     * @return  the length
     */

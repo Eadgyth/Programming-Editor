@@ -81,11 +81,11 @@ public class ProcessStarter {
       setConsoleActive(true);
       consPnl.focus();
       EventQueue.invokeLater(() -> {
-         try {            
+         try {
             ProcessBuilder pb
                   = new ProcessBuilder(cmdList).redirectErrorStream(true);
             pb.directory(new File(workingDir));
-            process = pb.start();            
+            process = pb.start();
             PrintWriter out = new PrintWriter(process.getOutputStream());
             new CaptureInput(out).execute();
             sendOutput(out);
@@ -94,7 +94,7 @@ public class ProcessStarter {
          catch(IOException e) {
             setConsoleActive(false);
             consPnl.appendText(
-                  "<<Error: cannot find " + cmd 
+                  "<<Error: cannot find " + cmd
                   + " in the directory " + workingDir + ">>\n");
          }
       });
@@ -120,16 +120,18 @@ public class ProcessStarter {
    //
 
    private void sendOutput(PrintWriter out) {
-      KeyListener keyListener = new KeyAdapter() {             
+      KeyListener keyListener = new KeyAdapter() {
+
          @Override
          public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
             if (key == KeyEvent.VK_ENTER) {
                String output = consPnl.getText().substring(caretPos);
                out.println(output);
-               out.flush();                
+               out.flush();
             }
          }
+
          @Override
          public void keyReleased(KeyEvent e) {
             if (consPnl.getText().length() < caretPos) {
@@ -159,7 +161,7 @@ public class ProcessStarter {
             "Enter a system command that is executed in the current"
             + " working directory (" + workingDirName + ")",
             "Run", previousCmd);
- 
+
       if (cmd != null && cmd.length() > 0) {
          consPnl.enableRunBt(false);
          startProcess(cmd);
@@ -183,7 +185,7 @@ public class ProcessStarter {
          new Thread(kill).start();
       }
    }
-   
+
    private void setConsoleActive(boolean isActive) {
       if (!isActive) {
          if (previousCmd.length() > 0) {
@@ -196,13 +198,13 @@ public class ProcessStarter {
       consPnl.setActive(isActive);
       this.isActive = isActive;
    }
-   
+
    private class CaptureInput extends SwingWorker<Void, String> {
       PrintWriter out; // to close after program exited
       InputStream is = process.getInputStream();
       InputStreamReader isr = new InputStreamReader(is);
       BufferedReader reader = new BufferedReader(isr);
-      
+
       private CaptureInput(PrintWriter out) {
          this.out = out;
       }
@@ -218,7 +220,7 @@ public class ProcessStarter {
                 consoleText = consPnl.getText();
                 caretPos = consoleText.length();
                 consPnl.setCaret(caretPos);
-            } 
+            }
             int exitVal = process.waitFor();
             if (exitVal == 0) {
                consPnl.appendText(
@@ -233,7 +235,7 @@ public class ProcessStarter {
                else {
                   consPnl.appendText(
                         "\n<<Process ended with error (exit value = "
-                        + exitVal + ")>>\n"); 
+                        + exitVal + ")>>\n");
                }
             }
          }

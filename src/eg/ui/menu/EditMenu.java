@@ -23,20 +23,20 @@ import eg.edittools.EditTools;
  */
 public class EditMenu {
 
-   private final JMenu     menu            = new JMenu("Edit");
-   private final JMenuItem undoItm         = new JMenuItem("Undo", IconFiles.UNDO_ICON);
-   private final JMenuItem redoItm         = new JMenuItem("Redo", IconFiles.REDO_ICON);
-   private final JMenuItem cutItm          = new JMenuItem("Cut", IconFiles.CUT_ICON);
-   private final JMenuItem copyItm         = new JMenuItem("Copy", IconFiles.COPY_ICON);
-   private final JMenuItem pasteItm        = new JMenuItem("Paste", IconFiles.PASTE_ICON);
-   private final JMenuItem selectAllItm    = new JMenuItem("Select all");
-   private final JMenuItem[] editToolsItm  = new JMenuItem[EditTools.values().length];
-   private final JMenuItem indentItm       = new JMenuItem(
-                                           "Increase indentation by the set indent length",
-                                           IconFiles.INDENT_ICON);
-   private final JMenuItem outdentItm      = new JMenuItem(
-                                           "Reduce indentation by the set indent length",
-                                           IconFiles.OUTDENT_ICON);
+   private final JMenu     menu             = new JMenu("Edit");
+   private final JMenuItem undoItm          = new JMenuItem("Undo", IconFiles.UNDO_ICON);
+   private final JMenuItem redoItm          = new JMenuItem("Redo", IconFiles.REDO_ICON);
+   private final JMenuItem cutItm           = new JMenuItem("Cut", IconFiles.CUT_ICON);
+   private final JMenuItem copyItm          = new JMenuItem("Copy", IconFiles.COPY_ICON);
+   private final JMenuItem pasteItm         = new JMenuItem("Paste", IconFiles.PASTE_ICON);
+   private final JMenuItem selectAllItm     = new JMenuItem("Select all");
+   private final JMenuItem[] editToolsItm   = new JMenuItem[EditTools.values().length];
+   private final JMenuItem indentItm        = new JMenuItem(
+                                            "Increase indentation by the set indent length",
+                                            IconFiles.INDENT_ICON);
+   private final JMenuItem outdentItm       = new JMenuItem(
+                                            "Reduce indentation by the set indent length",
+                                            IconFiles.OUTDENT_ICON);
    private final JMenuItem changeIndentItm = new JMenuItem("Change indentation length");
    private final JMenuItem clearSpacesItm  = new JMenuItem("Clear trailing spaces");
    private final JMenu     languageMenu    = new JMenu("Language");
@@ -45,12 +45,17 @@ public class EditMenu {
 
    private final Preferences prefs = new Preferences();
 
-   EditMenu() {
+   public EditMenu() {
       assembleMenu();
       shortCuts();
    }
 
-   JMenu getMenu() {
+   /**
+    * Gets this menu
+    *
+    * @return  the menu
+    */
+   public JMenu getMenu() {
       return menu;
    }
 
@@ -73,18 +78,18 @@ public class EditMenu {
    }
 
    /**
-    * Sets the listener for actions to open an <code>AddableEditTool</code>
-    * to the item at the sepecified index
+    * Sets the listener to an element in the array of items that are destined
+    * for actions to open an <code>AddableEditTool</code>
     *
     * @param al  the <code>ActionListener</code>
-    * @param i  the index
+    * @param i  the index of the array element
     */
    public void setEditToolsActions(ActionListener al, int i) {
       editToolsItm[i].addActionListener(al);
    }
 
    /**
-    * Sets the listeners for the actions to select the language
+    * Sets the listeners for actions to select the language
     *
     * @param tf  the reference to {@link TabbedFiles}
     */

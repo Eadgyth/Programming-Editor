@@ -21,7 +21,7 @@ import eg.ui.EditArea;
 import eg.ui.tabpane.ExtTabbedPane;
 
 /**
- * The control of operations that require knowledge of the documents in
+ * The control of file operations that require knowledge of the documents in
  * the tabs
  */
 public class TabbedFiles implements Observer {
@@ -59,8 +59,7 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Changes the language language in the currently selected
-    * <code>FileDocument</code>.
+    * Changes the language in the currently viewed document
     *
     * @param lang  a language in {@link Languages}
     */
@@ -71,9 +70,9 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Opens a new empty tab
+    * Opens a new tab with a blank document
     */
-   public void openEmptyTab() {
+   public void createBlankDocument() {
       if (isTabOpenable()) {
          createDocument();
       }
@@ -146,8 +145,8 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Saves the text content in the selected document as a new
-    * file that is specified in the file chooser
+    * Saves the text content in the selected document as a new file
+    * that is specified in the file chooser
     *
     * @param update  if the view (e.g. tab title, file view) is
     * updated and it is tried to retrieve a project
@@ -184,13 +183,15 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Closes a tab if the text content is saved
+    * Tries to close the currently viewed tab and creates a tab with a
+    * new blank document if the closed tab was the only open one and the
+    * specified boolean is true
     *
-    * @param createEmptyTab  true to create a new empty tab in case the
-    * tab to close is the only opened one
+    * @param createBlankDoc  the boolean that indicates if a new blank
+    * document is created
     */
-   public void close(boolean createEmptyTab) {
-      boolean removable = fDoc[iTab].isContentSaved();
+   public void close(boolean createBlankDoc) {
+      boolean removable = fDoc[iTab].isSaved();
       if (!removable) {
          int res = saveOrCloseOption(iTab);
          if (JOptionPane.YES_OPTION == res) {
@@ -202,66 +203,61 @@ public class TabbedFiles implements Observer {
       }
       if (removable) {
          removeTab();
-         if (nTabs() == 0 && createEmptyTab) {
-            openEmptyTab();
+         if (nTabs() == 0 && createBlankDoc) {
+            createBlankDocument();
          }
       }
    }
 
    /**
-    * Closes all tabs if the text contents of the documents
-    * are saved
+    * Tries to close all tabs and creates a new tab with a blank document
+    * if all previous tabs were closed and the specified boolean is true
+    *
+    * @param createBlankDoc  the boolean that indicates if a new blank
+    * document is created
     */
-   public void closeAll() {
+   public void closeAll(boolean createBlankDoc) {
       int count = unsavedTab();
       if (count == nTabs()) {
          int i = count - 1;
-         while(i > -1) {     
+         while( i > -1 ) {     
             tabPane.removeTabAt(i);
             fDoc[i] = null;
             editArea[i] = null;
             i--;
          }
-         openEmptyTab();
+         if (createBlankDoc) {
+            createBlankDocument();
+         }
       }
       else {
          tabPane.setSelectedIndex(count);
          int res = saveOrCloseOption(count);
          if (res == JOptionPane.YES_OPTION) {
             if (save(false)) {
-               closeAll();
+               closeAll(createBlankDoc);
             }
          }
          else if (res == JOptionPane.NO_OPTION) {
             removeTab();
-            closeAll();
+            closeAll(createBlankDoc);
          }
       }
    }
-
+   
    /**
-    * Exits the program if the text contents of all open documents
-    * are saved
+    * Tries to close all tabs
+    *
+    * @return  the boolean value that indicates if all tabs were
+    * closed
     */
-   public void exit() {
-      int count = unsavedTab();
-      if (count == nTabs()) {
+   public boolean isAllClosed() {
+      closeAll(false);
+      boolean isClosed = iTab == -1;
+      if (isClosed) {
          prefs.storePrefs("language", lang.toString());
-         System.exit(0);
       }
-      else {
-         tabPane.setSelectedIndex(count);
-         int res = saveOrCloseOption(count);
-         if (res == JOptionPane.YES_OPTION) {
-            if (save(false)) {
-               exit();
-            }
-         }
-         else if (res == JOptionPane.NO_OPTION) {
-            removeTab();
-            exit();
-         }
-      }
+      return isClosed;
    }
 
    /**
@@ -307,9 +303,9 @@ public class TabbedFiles implements Observer {
          fDoc[n] = new FileDocument(editArea[n], f);
          prefs.readPrefs();
          fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
+         setUIUpdatersAt(n);
          addNewTab(fDoc[n].filename(), editArea[n].editAreaPnl());
          docUpdate.updateForChangedFile(n, false);
-         setUIUpdatersAt(n);
          prefs.storePrefs("recentPath", fDoc[n].dir());
       }
       finally {
@@ -323,8 +319,8 @@ public class TabbedFiles implements Observer {
       fDoc[n] = new FileDocument(editArea[n], lang);
       prefs.readPrefs();
       fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-      addNewTab("unnamed", editArea[n].editAreaPnl());
       setUIUpdatersAt(n);
+      addNewTab("unnamed", editArea[n].editAreaPnl());
    }
    
    private void addNewTab(String filename, JPanel pnl) {
@@ -337,10 +333,10 @@ public class TabbedFiles implements Observer {
    }
    
    private void setUIUpdatersAt(int i) {
-      fDoc[i].setUndoableChangeListener(e ->
-            mw.enableUndoRedo(e.canUndo(), e.canRedo()));
-      fDoc[i].setTextSelectionListener(e ->
-            mw.enableCutCopy(e.isSelection()));
+      fDoc[i].setUndoableStateReadable((a, b) ->
+            mw.enableUndoRedo(a, b));
+      fDoc[i].setSelectionStateReadable((b) ->
+            mw.enableCutCopy(b));
       fDoc[i].setCursorPositionReadable((j, k) ->
             mw.displayLCursorPosition(j, k));
    }
@@ -398,7 +394,7 @@ public class TabbedFiles implements Observer {
    private int unsavedTab() {
       int i;
       for (i = 0; i < nTabs(); i++) {
-         if (!fDoc[i].isContentSaved()) {
+         if (!fDoc[i].isSaved()) {
             break;
          }
       }

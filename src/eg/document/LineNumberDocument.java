@@ -10,6 +10,7 @@ import javax.swing.text.StyleConstants;
 
 //--Eadgyth--//
 import eg.utils.FileUtils;
+import eg.utils.LinesFinder;
 import eg.ui.LineNrWidthAdaptable;
 
 /**
@@ -17,14 +18,16 @@ import eg.ui.LineNrWidthAdaptable;
  * <p>Created in {@link FileDocument}
  */
 public class LineNumberDocument {
-   
+
    private final static Color GRAY = new Color(170, 170, 170);
    private final static SimpleAttributeSet SET = new SimpleAttributeSet();
 
    private final StyledDocument doc;
    private final LineNrWidthAdaptable lineNrWidth;
    private final StringBuilder lineNrBuilder = new StringBuilder();
-   
+
+   private int nOld = 1;
+
    static {
       StyleConstants.setForeground(SET, GRAY);
       StyleConstants.setAlignment(SET, StyleConstants.ALIGN_RIGHT);
@@ -41,15 +44,30 @@ public class LineNumberDocument {
       this.lineNrWidth = lineNrWidth;
       Element el = doc.getParagraphElement(0);
       doc.setParagraphAttributes(0, el.getEndOffset(), SET, false);
+      appendLineNumbers(0, nOld);
    }
-   
+
    /**
-    * Appends line numbers
+    * Updates the line numbers
     *
-    * @param prevLineNr  the previous number of lines
-    * @param lineNr  the new number of lines
+    * @param text  the text of the document
     */
-   public void appendLineNumbers(int prevLineNr, int lineNr) {
+   public void updateLineNumber(String text) {
+      int nNew = LinesFinder.lineNumber(text);
+      if (nNew > nOld) {
+         appendLineNumbers(nOld, nNew);
+      }
+      else if (nNew < nOld) {
+         removeLineNumbers(nOld, nNew);
+      }
+      nOld = nNew;
+   }
+
+   //
+   //--private--/
+   //
+
+   private void appendLineNumbers(int prevLineNr, int lineNr) {
       lineNrBuilder.setLength(0);
       for (int i = prevLineNr + 1; i <= lineNr; i++) {
          lineNrBuilder.append(Integer.toString(i));
@@ -64,13 +82,7 @@ public class LineNumberDocument {
       }
    }
 
-   /**
-    * Removes line numbers
-    *
-    * @param prevLineNr  the previous number of lines
-    * @param lineNr  the new number of lines
-    */
-   public void removeLineNumbers(int prevLineNr, int lineNr) {
+   private void removeLineNumbers(int prevLineNr, int lineNr) {
       int length = 0;
       for (int i = prevLineNr; i > lineNr; i--) {
           length += (Integer.toString(i).length() + 1);

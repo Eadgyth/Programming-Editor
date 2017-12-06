@@ -1,11 +1,11 @@
 package eg.document;
 
+import java.awt.EventQueue;
+
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
-
-import java.awt.EventQueue;
 
 //--Eadgyth--//
 import eg.Languages;
@@ -15,23 +15,20 @@ import eg.syntax.Coloring;
 /**
  * Mediates between the editing of the text document and the actions that
  * happen in response.
- * Actions include syntax coloring, indentation, line numbering, reading the
- * current line and columns and adding edits to the undoable edits.<br>
  * <p> Created in {@link FileDocument}
  */
 public class TypingEdit {
 
    private final TextDocument textDoc;
+   private final LineNumberDocument lineNrDoc;
    private final Coloring col;
    private final AutoIndent autoInd;
-   private final LineNumbers lineNum;
    private final UndoEdit undo;
 
-   private UndoableChangeEvent uce;
-   private UndoableChangeListener ucl;
-   private TextSelectionEvent tse;
-   private TextSelectionListener tsl;
+   private UndoableStateReadable usr;
+   private SelectionStateReadable ssr;
    private CursorPositionReadable cpr;
+
    private boolean isDocListen = true;
    private boolean isAddToUndo = true;
    private boolean isCodeEditing = false;
@@ -51,38 +48,38 @@ public class TypingEdit {
     */
    public TypingEdit(TextDocument textDoc, LineNumberDocument lineNrDoc) {
       this.textDoc = textDoc;
+      this.lineNrDoc = lineNrDoc;
       col = new Coloring(textDoc.doc(), textDoc.attrSet());
-      lineNum = new LineNumbers(lineNrDoc);
       autoInd = new AutoIndent(textDoc);
       undo = new UndoEdit(textDoc);
       textDoc.doc().addDocumentListener(docListen);
-      textDoc.docTextArea().addCaretListener(caretListen);
+      textDoc.textArea().addCaretListener(caretListen);
    }
 
    /**
-    * Sets an <code>UndoableChangeListener</code> if none was set before
+    * Sets an <code>UndoableStateReadable</code> if none was set before
     *
-    * @param ucl  an {@link UndoableChangeListener}
+    * @param usr  an {@link UndoableStateReadable}
     */
-   public void setUndoableChangeListener(UndoableChangeListener ucl) {
-      if (this.ucl != null) {
+   public void setUndoableStateReadable(UndoableStateReadable usr) {
+      if (this.usr != null) {
          throw new IllegalStateException(
-               "An UndoableChangeListener is already set");
+               "An UndoableStateReadable is already set");
       }
-      this.ucl = ucl;
+      this.usr = usr;
    }
 
   /**
-    * Sets a <code>TextSelectionLister</code> if none was set before
+    * Sets a <code>SelectionStateReadable</code> if none was set before
     *
-    * @param tsl  a {@link TextSelectionListener}
+    * @param ssr  a {@link SelectionStateReadable}
     */
-   public void setTextSelectionListener(TextSelectionListener tsl) {
-      if (this.tsl != null) {
+   public void setSelectionStateReadable(SelectionStateReadable ssr) {
+      if (this.ssr != null) {
          throw new IllegalStateException(
-               "A TextSelectionListener is already set");
+               "A SelectionStateReadable is already set");
       }
-      this.tsl = tsl;
+      this.ssr = ssr;
    }
    
    /**
@@ -99,30 +96,31 @@ public class TypingEdit {
    }
 
    /**
-    * Enabled or disables the update methods in this
-    * <code>DocumentListener</code>
+    * Sets the boolean that specifies if the update methods in this
+    * <code>DocumentListener</code> are enabled or disabled
     *
-    * @param isEnabled  true to enable, false to disable
+    * @param b  the boolean value which is true to enable
     */
-   public void enableDocListen(boolean isEnabled) {
-      isDocListen = isEnabled;
-      if (isEnabled) {
+   public void enableDocListen(boolean b) {
+      isDocListen = b;
+      if (b) {
          textUpdate();
-         textDoc.docTextArea().setCaretPosition(0);
+         textDoc.textArea().setCaretPosition(0);
       }
    }
 
    /**
-    * Enables or disables actions in responce to the editing of source code
+    * Sets the boolean that specified if actions in responce to the
+    * editing of source code are enabled or disabled
     *
-    * @param isEnabled  true to enable, false to disable
+    * @param b  the boolean value which is true to enable
     */
-   public void enableCodeEditing(boolean isEnabled) {
-      isCodeEditing = isEnabled;
+   public void enableCodeEditing(boolean b) {
+      isCodeEditing = b;
    }
 
    /**
-    * Set the editing mode that depends on the language
+    * Set the editing mode that depends on the specified language
     *
     * @param lang  the language which is a constant in {@link Languages}
     */
@@ -138,10 +136,10 @@ public class TypingEdit {
    }
    
    /**
-    * Gets the text that is updated in the insert- and remove
+    * Gets the text in the document which is updated in the insert- and remove
     * methods of this <code>DocumentListener</code>
     *
-    * @return  the text in the document
+    * @return  the text
     */
    public String getText() {
       return text;
@@ -188,40 +186,19 @@ public class TypingEdit {
    }
    
    /**
-    * Gets the number of the line where the cursor is positioned
-    *
-    * @return  the number
+    * Reads the current parameters that are set in {@link SelectionStateReadable},
+    * {@link UndoableStateReadable} and {@link CursorPositionReadable}
     */
-   public int lineNrAtCursor() {
-      return lineNr;
-   }
-   
-   /**
-    * Gets the number of the column within the line where the cursor is
-    * positioned
-    *
-    * @return  the number
-    */
-   public int columnNrAtCursor() {
-      return colNr;
-   }
-
-   /**
-    * Returns the boolean that indicates if edits can be undone
-    * 
-    * @return  the boolean
-    */
-   public boolean canUndo() {
-      return undo.canUndo();
-   }
-
-   /**
-    * Returns the boolean that indicates if edits can be redone
-    * 
-    * @return  the boolean
-    */
-   public boolean canRedo() {
-      return undo.canRedo();
+   public void readEditingState() {
+      if (cpr != null) {
+         cpr.setPosition(lineNr, colNr);
+      }
+      if (usr != null) {
+         usr.setUndoableState(canUndoTmp, canRedoTmp);
+      }
+      if (ssr != null) {
+         ssr.setSelectionState(isSelectionTmp);
+      }
    }
 
    /**
@@ -247,7 +224,7 @@ public class TypingEdit {
    //
 
    private void updateAfterUndoRedo() {
-      notifyUndoableChangeEvent();
+      notifyUndoableState();
       if (isCodeEditing) {
          if (event.equals(DocumentEvent.EventType.INSERT)) {
             colorMultipleLines(change, pos);
@@ -261,7 +238,7 @@ public class TypingEdit {
    
    private void textUpdate() {
       text = textDoc.getText();
-      lineNum.updateLineNumber(text);
+      lineNrDoc.updateLineNumber(text);
    }
    
    private void colorLine() {
@@ -271,8 +248,8 @@ public class TypingEdit {
          col.color(text, toColor, pos, posStart));
    }
 
-   private void notifyUndoableChangeEvent() {
-      if (ucl == null) {
+   private void notifyUndoableState() {
+      if (usr == null) {
          return;
       }
       boolean isUndoableChange = canUndoTmp != undo.canUndo();
@@ -284,23 +261,21 @@ public class TypingEdit {
          canRedoTmp = undo.canRedo();
       }
       if (isUndoableChange || isRedoableChange) {
-         uce = new UndoableChangeEvent(canUndoTmp, canRedoTmp);
-         ucl.undoableStateChanged(uce);
+         usr.setUndoableState(canUndoTmp, canRedoTmp);
       }
    }
 
-   private void notifyTextSelectionEvent(boolean isSelection) {
-      if (tsl == null) {
+   private void notifySelectionState(boolean isSelection) {
+      if (ssr == null) {
          return;
       }
       if (isSelectionTmp != isSelection) {
          isSelectionTmp = isSelection;
-         tse = new TextSelectionEvent(isSelection);
-         tsl.selectionUpdate(tse);
+         ssr.setSelectionState(isSelectionTmp);
       }
    }
    
-   private void readLineAndColumnNr(int caret) {
+   private void notifyCursorPosition(int caret) {
       int lastNewLine = LinesFinder.lastNewline(text, caret);
       lineNr = LinesFinder.lineNrAtPos(text, caret);
       if (lastNewLine == -1) {
@@ -345,7 +320,7 @@ public class TypingEdit {
          change = text.substring(pos, pos + de.getLength());
          if (isAddToUndo) {
             undo.addEdit(change, pos, true);
-            notifyUndoableChangeEvent();
+            notifyUndoableState();
             if (isCodeEditing) {
                colorLine();
                EventQueue.invokeLater(() -> {
@@ -367,7 +342,7 @@ public class TypingEdit {
          textUpdate();
          if (isAddToUndo) {
             undo.addEdit(change, pos, false);
-            notifyUndoableChangeEvent();
+            notifyUndoableState();
             if (isCodeEditing) {
                colorLine();
             }
@@ -381,8 +356,8 @@ public class TypingEdit {
    };
    
    private final CaretListener caretListen = (CaretEvent ce) -> {
-       notifyTextSelectionEvent(ce.getDot() != ce.getMark());
-       readLineAndColumnNr(ce.getDot());
-       markUndoBreakpoint(ce.getDot());
+      notifySelectionState(ce.getDot() != ce.getMark());
+      notifyCursorPosition(ce.getDot());
+      markUndoBreakpoint(ce.getDot());
    };
 }

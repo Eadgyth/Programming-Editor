@@ -17,16 +17,16 @@ public class SyntaxUtils {
     * The "slash-slash" line comment start */
    public final static String LINE_CMNT = "//";
 
-   /*
-    * Returns if the portion of text starting at the specified
-    * position and spanning the specified length does not adjoin
-    * to a letter or a digit at the start and/or at the end.
+   /**
+    * Returns the boolean that indicates if the portion of text
+    * starting at the specified position and spanning the specified
+    * length does not adjoin to a letter or a digit at the start
+    * and/or at the end
     *
     * @param text  the text
     * @param pos  the position
     * @param length  the length
-    * @return  if the portion of text does not adjoin to a letter
-    * or a digit.
+    * @return  the boolean value
     */
    public static boolean isWord(String text, int pos, int length) {
       boolean startMatches = isWordStart(text, pos);
@@ -69,10 +69,43 @@ public class SyntaxUtils {
          return true;
       }
    }
+   
+    /**
+    * Returns the length of a word that starts at the specified
+    * position and ends with one of the characters in the specified
+    * <code>endChars</code>
+    *
+    * @param text  the text
+    * @param pos   the position
+    * @param endChars  the array of characters that mark the end of the word
+    * @return  the length of the word
+    */
+   public static int wordLength(String text, int pos, char[] endChars) {
+      boolean found = false;
+      int i;
+      for (i = pos + 1; i < text.length() && !found; i++) {
+         for (int j = 0; j < endChars.length; j++) {
+            if (i == pos + 1) {
+               if (text.charAt(i) == ' ') {
+                  found = true;
+                  break;
+               }
+            }
+            else {
+               if (text.charAt(i) == endChars[j]) {
+                  found = true;
+                  i--;
+                  break;
+               }
+            }
+         }
+      }
+      return i - pos;
+   }
 
    /**
-    * Returns the position of the last block start before the
-    * specified position
+    * Returns the position of the last block start before the specified
+    * position
     *
     * @param text  the text
     * @param pos  the position
@@ -135,39 +168,6 @@ public class SyntaxUtils {
    }
    
    /**
-    * Returns the length of a word that starts at the specified
-    * position and ends with one of the characters in the specified
-    * <code>endChars</code>
-    *
-    * @param text  the text
-    * @param pos   the position
-    * @param endChars  the array of characters that mark the end of the word
-    * @return  the length of the word
-    */
-   public static int wordLength(String text, int pos, char[] endChars) {
-      boolean found = false;
-      int i;
-      for (i = pos + 1; i < text.length() && !found; i++) {
-         for (int j = 0; j < endChars.length; j++) {
-            if (i == pos + 1) {
-               if (text.charAt(i) == ' ') {
-                  found = true;
-                  break;
-               }
-            }
-            else {
-               if (text.charAt(i) == endChars[j]) {
-                  found = true;
-                  i--;
-                  break;
-               }
-            }
-         }
-      }
-      return i - pos;
-   }
-   
-   /**
     * Returns if the section starting at the specified position
     * and spanning the specified length is bordered by double quotes
     *
@@ -181,23 +181,23 @@ public class SyntaxUtils {
       boolean isInQuotes = false;
       int endPos = pos + length;
       if (pos > 0 & text.length() > endPos) {
-         isInQuotes = text.charAt(pos - 1) == '\"'
-               & text.charAt(endPos) == '\"';
+         isInQuotes = (text.charAt(pos - 1) == '\"' || text.charAt(pos - 1) == '\'')
+            & (text.charAt(endPos) == '\"' || text.charAt(endPos) == '\'');
       }
       return isInQuotes;
    }
 
    /**
-    * Returns if the specified position is found inside a section of
-    * text in quotes
+    * Returns the boolean that indicated if the specified position is found
+    * inside a section of text in quotes
     *
     * @param text  the text
     * @param pos  the position
     * @param quoteMark  the quoteMark which is either the double or the
     * single quote
-    * @return  if <code>pos</code> is found inside a sectio of text in quotes
+    * @return  the boolean value
     */
-   public static boolean isInQuotes(String text, int pos, String quoteMark) {
+   public static boolean isInQuotes(String text, int pos, char quoteMark) {
       int count = 0;
       int i = 0;
       while (i != -1) {
@@ -235,7 +235,7 @@ public class SyntaxUtils {
     * @param pos  the position
     * @return  the position of the next non-escaped string
     */
-   public static int nextNotEscaped(String text, String toSearch, int pos) {
+   public static int nextNotEscaped(String text, char toSearch, int pos) {
       int index = text.indexOf(toSearch, pos);
       while (SyntaxUtils.isEscaped(text, index)) {
          index = text.indexOf(toSearch, index + 1);

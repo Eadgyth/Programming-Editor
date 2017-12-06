@@ -48,6 +48,12 @@ public class Toolbar {
       saveBt.addActionListener(e -> tf.save(true));
    }
 
+   /**
+    * Sets listeners for actions to change project and to run and
+    * compile a project
+    *
+    * @param currProj  the reference to {@link CurrentProject}
+    */
    public void setProjectActions(CurrentProject currProj) {
       changeProjBt.addActionListener(e -> currProj.changeProject());
       runBt.addActionListener(e -> currProj.runProj());

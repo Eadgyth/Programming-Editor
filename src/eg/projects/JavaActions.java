@@ -28,9 +28,7 @@ public final class JavaActions extends ProjectConfig
 
    private String startCommand = "";
 
-   JavaActions(ConsoleOpenable co, ProcessStarter proc,
-         ConsolePanel consPnl) {
-
+   JavaActions(ConsoleOpenable co, ProcessStarter proc, ConsolePanel consPnl) {
       super("java", true);
       this.co = co;
       this.proc = proc;
@@ -38,7 +36,7 @@ public final class JavaActions extends ProjectConfig
       comp = new Compile(consPnl);
       jar = new CreateJar(consPnl);
    }
-   
+
    @Override
    public void createSettingsWin() {
       setWin = SettingsWin.adaptableWindow();
@@ -164,6 +162,10 @@ public final class JavaActions extends ProjectConfig
       }
    }
 
+   //
+   //--private--/
+   //
+
    private boolean mainClassFileExists() {
       boolean exists = mainExecFileExists(".class");
       if (!exists) {
@@ -175,7 +177,7 @@ public final class JavaActions extends ProjectConfig
    private boolean jarFileExists(String jarName) {
       String execDir = getProjectPath() + F_SEP + getExecutableDirName();
       return new File(execDir + F_SEP + jarName + ".jar").exists();
-   }      
+   }
 
    private void setStartCommand() {
       StringBuilder sb = new StringBuilder("java ");

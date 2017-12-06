@@ -103,7 +103,7 @@ public class CurrentProject {
       if (fromList == null) {
          int res = Dialogs.confirmYesNo("Set new project?");
          if (0 == res) {
-            createProjectImpl();
+            assignProjectImpl();
          }
       }
       else {
@@ -121,10 +121,10 @@ public class CurrentProject {
    /**
     * Assigns a new project
     */
-   public void createProject() {
+   public void assignProject() {
       ProjectActions fromList = selectFromList(fDoc[iCurr].dir(), false);
       if (fromList == null) {
-         createProjectImpl();
+         assignProjectImpl();
       }
       else {
          Dialogs.warnMessage(
@@ -287,7 +287,7 @@ public class CurrentProject {
       });
    }
 
-   private void createProjectImpl() {
+   private void assignProjectImpl() {
       if (!fDoc[iCurr].hasFile()) {
          Dialogs.infoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          return;
@@ -318,7 +318,7 @@ public class CurrentProject {
 
    private boolean changeProject(ProjectActions toChangeTo) {
       int result = Dialogs.confirmYesNo(
-         "Switch to project " + toChangeTo.getProjectName() + "?");
+            "Switch to project " + toChangeTo.getProjectName() + "?");
 
       if (result == 0) {
          current = toChangeTo;

@@ -6,8 +6,11 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -39,7 +42,6 @@ import eg.console.ConsolePanel;
 import eg.utils.UiComponents;
 import eg.utils.ScreenParams;
 import eg.utils.FileUtils;
-import java.awt.event.ActionEvent;
 
 /**
  * The main window
@@ -72,7 +74,6 @@ public class MainWin implements ConsoleOpenable {
    private JSplitPane splitVert;
    private int dividerLocVert = 0;
    private int dividerLocHor = 0;
-   private final String wordwrapOn = "";
 
    public MainWin() {
       createAddableEditTools();
@@ -316,39 +317,24 @@ public class MainWin implements ConsoleOpenable {
    }
 
    /**
-    * Calls the 'end' method in all objects of
-    * <code>AddableEditTool</code>
-    * @see AddableEditTool
-    */
-   public void endEditTools() {
-      for (AddableEditTool t : editTools) {
-         t.end();
-      }
-   }
-
-   /**
-    * Adds a <code>WindowListener</code> to this JFrame
-    *
-    * @param wl  the <code>WindowListener</code>
-    */
-   public void winListen(WindowListener wl) {
-      frame.addWindowListener(wl);
-   }
-
-   /**
     * Sets listeners for file actions
     *
     * @param tf  the reference to {@link TabbedFiles}
     */
    public void setFileActions(TabbedFiles tf) {
       menuBar.fileMenu().setActions(tf);
-      menuBar.fileMenu().setExitActions(e -> {
-         endEditTools();
-         tf.exit();
-      });
+      menuBar.fileMenu().setExitActions(e -> exit(tf));
       menuBar.editMenu().setChangeLanguageAction(tf);
       toolbar.setFileActions(tf);
       fileTree.addObserver(tf);
+      
+      winListen(new WindowAdapter() {
+
+         @Override
+         public void windowClosing(WindowEvent we) {
+            exit(tf);
+         }
+      });
    }
 
    /**
@@ -409,6 +395,10 @@ public class MainWin implements ConsoleOpenable {
       fileTree.setCloseAct(e -> vm.doUnselectFileViewAct());
       console.setCloseAct(e -> vm.doConsoleItmAct(false));
    }
+   
+   private void winListen(WindowListener wl) {
+      frame.addWindowListener(wl);
+   }
 
    private void showConsole(boolean b) {
       if (b) {
@@ -467,6 +457,15 @@ public class MainWin implements ConsoleOpenable {
       else {
          cursorPosLb.setForeground(Color.BLACK);
          wordwrapLb.setText("");
+      }
+   }
+   
+   private void exit(TabbedFiles tf) {
+      for (AddableEditTool t : editTools) {
+         t.end();
+      }
+      if (tf.isAllClosed()) {
+         System.exit(0);
       }
    }
 

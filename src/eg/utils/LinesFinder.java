@@ -5,6 +5,8 @@ package eg.utils;
  */
 public class LinesFinder {
    
+   private final static char NEW_LINE = '\n';
+   
    /**
     * Returns the line which includes the specified position
     *
@@ -57,14 +59,13 @@ public class LinesFinder {
     * position
     *
     * @param text  the text
-    * @param pos  the position relative to which the last newline
-    * is searched
-    * @return  the last newline position
+    * @param pos  the position
+    * @return  the newline position
     */
    public static int lastNewline(String text, int pos) {
-      int i = text.lastIndexOf("\n", pos);
+      int i = text.lastIndexOf(NEW_LINE, pos);
       if (i == pos) {
-         i = text.lastIndexOf("\n", pos - 1);
+         i = text.lastIndexOf(NEW_LINE, pos - 1);
       }
       return i;
    }
@@ -79,7 +80,7 @@ public class LinesFinder {
     * @return  the position of the next newline character
     */
    public static int nextNewline(String text, int pos) {
-      int i = text.indexOf("\n", pos);
+      int i = text.indexOf(NEW_LINE, pos);
       if (i == -1) {
          i = text.length();
       }
@@ -99,7 +100,7 @@ public class LinesFinder {
       int count = 0;
       int i = 0;
       while (i != -1) {
-         i = text.indexOf("\n", i);
+         i = text.indexOf(NEW_LINE, i);
          if (i != -1) {
             if (i >= pos) {
                break;
@@ -109,5 +110,24 @@ public class LinesFinder {
          }
       }
       return count + 1;
+   }
+   
+   /**
+    * Returns the number of lines of the specified text
+    *
+    * @param text  the text
+    * @return  the line number
+    */
+   public static int lineNumber(String text) {
+      int count = 1;
+      int i = 0;
+      while (i != -1) {
+         i = text.indexOf(NEW_LINE, i);
+         if (i != -1) {
+            count++;
+            i++;
+         }
+      }
+      return count;
    }
 }

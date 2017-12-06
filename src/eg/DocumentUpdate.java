@@ -46,17 +46,11 @@ public class DocumentUpdate {
       for (AddableEditTool t : mw.editTools()) {
          t.setFileDocument(fDoc[i]);
       }
-      mw.enableUndoRedo(fDoc[i].canUndo(), fDoc[i].canRedo());
-      mw.enableCutCopy(fDoc[i].docTextArea().getSelectedText() != null);
       mw.displayFrameTitle(fDoc[i].filepath());
       mw.enableShowTabbar(nTabs == 1);
       mw.setLanguageSelected(fDoc[i].language(),
             fDoc[i].filename().length() == 0);
-
-      mw.displayLCursorPosition(fDoc[i].lineNrAtCursor(),
-            fDoc[i].columnNrAtCursor());
-
-      fDoc[i].requestFocus();
+      fDoc[i].setFocused();
    }
 
    /**

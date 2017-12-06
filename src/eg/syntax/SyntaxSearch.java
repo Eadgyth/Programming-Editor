@@ -12,16 +12,20 @@ import eg.utils.LinesFinder;
  * The search and coloring of different syntax elements
  */
 public class SyntaxSearch {
+   
+   private final static char SINGLE_QUOTE = '\'';
+   private final static char DOUBLE_QUOTE = '"';
 
    private final StyledDocument doc;
    private final SimpleAttributeSet normalSet;
 
    private Colorable colorable;
-   private boolean isTypeMode = false;
    private String text = "";
    private String toColor = "";
    private int pos;
    private int posStart;
+   private boolean isTypeMode = false;
+   private boolean isMultiline = true;
    private boolean isBlockCmnt = true;
    private int innerStart = 0;
    private int innerEnd = 0;
@@ -38,12 +42,16 @@ public class SyntaxSearch {
    }
 
    /**
-    * Sets a <code>Colorable</code> that uses this methods to
-    * color syntax elements
+    * Sets a <code>Colorable</code> that uses this methods to color 
+    * syntax elements. If null the text is not colored or any coloring is
+    * removed if a <code>Colorable</code> had been set before
     *
     * @param colorable  a {@link Colorable} object
     */
    public void setColorable(Colorable colorable) {
+      if (this.colorable != null && colorable == null) {
+         setAllCharAttrBlack();
+      }
       this.colorable = colorable;
    }
 
@@ -58,11 +66,12 @@ public class SyntaxSearch {
     * starts
     */
    public void color(String text, String toColor, int pos, int posStart) {
-      isTypeMode = !text.equals(toColor);
       this.text = text;
       this.toColor = toColor;
       this.pos = pos;
       this.posStart = posStart;
+      isTypeMode = !text.equals(toColor);
+      isMultiline = toColor.contains("\n");
       colorable.color(this);
    }
 
@@ -72,13 +81,6 @@ public class SyntaxSearch {
     */
    public void setCharAttrBlack() {
       setCharAttr(posStart, toColor.length(), normalSet);
-   }
-
-   /**
-    * (Re-)colors the entire text in black, plain
-    */
-   public void setAllCharAttrBlack() {
-      setCharAttr(0, doc.getLength(), normalSet);
    }
 
    /**
@@ -119,7 +121,7 @@ public class SyntaxSearch {
 
    /**
     * Searches variables that start with one of the characters in
-    * <code>startChars</code> and and end with one of the characters
+    * <code>startChars</code> and end with one of the characters
     * in <code>endChars</code>. The variables are colored in red
     *
     * @param startChars  the array start characters
@@ -132,8 +134,8 @@ public class SyntaxSearch {
    }
 
    /**
-    * Searches and colors html tags. Tags are in blue, atrributes in
-    * red and attribute values in bold purple
+    * Searches and colors html tags. Tags are colored in blue,
+    * atrributes in red and attribute values in purple
     *
     * @param tags  the array of tags
     * @param attributes  the array of attributes
@@ -178,7 +180,8 @@ public class SyntaxSearch {
 
    /**
     * Searches quoted text and colors it in orange. The quote mark is ignored
-    * if a backslash precedes it
+    * if a backslash precedes it. This method must not be used for html and must
+    * be called after calling the methods to color keywords, braces and brackets.
     */
    public void quotedText() {
       quotedLineWise(false);
@@ -206,8 +209,8 @@ public class SyntaxSearch {
    }
 
    /**
-    * Returns the boolean value that indicates if this position where a
-    * change happened is found in a block of text that is delimited by the
+    * Returns the boolean that indicates if this position where a change
+    * happened is found in a block of text that is delimited by the
     * specified strings <code>blockStart</code> and <code>blockEnd</code>
     *
     * @param blockStart  the block start
@@ -232,6 +235,24 @@ public class SyntaxSearch {
                setCharAttr(start + posStart, key.length(), set);
             }
             start += key.length();
+         }
+      }
+   }
+   
+   private void signedVariable(char sign, char[] endChars) {
+      int start = 0;
+      while (start != -1) {
+         start = toColor.indexOf(sign, start);
+         int length;
+         if (start != -1) {
+            if (SyntaxUtils.isWordStart(toColor, start)) {
+               length = SyntaxUtils.wordLength(toColor, start, endChars);
+               setCharAttr(start + posStart, length, Attributes.PURPLE_PLAIN);
+               start += length;
+            }
+            else {
+               start++;
+            }
          }
       }
    }
@@ -317,46 +338,28 @@ public class SyntaxSearch {
       innerEnd = 0;
    }
 
-   private void signedVariable(char sign, char[] endChars) {
-      int start = 0;
-      while (start != -1) {
-         start = toColor.indexOf(sign, start);
-         int length;
-         if (start != -1) {
-            if (SyntaxUtils.isWordStart(toColor, start)) {
-               length = SyntaxUtils.wordLength(toColor, start, endChars);
-               setCharAttr(start + posStart, length, Attributes.PURPLE_PLAIN);
-               start += length;
-            }
-            else {
-               start++;
-            }
-         }
-      }
-   }
-
    private void quotedLineWise(boolean isHtml) {
-      if (toColor.contains("\n")) {
+      if (isMultiline) {
          //
          // split because string literals are not colored across lines
          String[] chunkArr = toColor.split("\n");
          int sum = 0;
          for (String s : chunkArr) {
-            quoted(s, posStart + sum, "\"", isHtml);
-            quoted(s, posStart + sum, "\'", isHtml);
+            quoted(s, posStart + sum, DOUBLE_QUOTE, isHtml);
+            quoted(s, posStart + sum, SINGLE_QUOTE, isHtml);
             sum += s.length() + 1;
          }
       }
       else {
-         quoted(toColor, posStart, "\"", isHtml);
-         quoted(toColor, posStart, "\'", isHtml);
+         quoted(toColor, posStart, DOUBLE_QUOTE, isHtml);
+         quoted(toColor, posStart, SINGLE_QUOTE, isHtml);
       }
    }
 
-   private void quoted(String toColor, int lineStart, String quoteMark,
+   private void quoted(String toColor, int lineStart, char quoteMark,
          boolean isHtml) {
 
-      final boolean isSingleQuote = quoteMark.equals("\'");
+      final boolean isSingleQuote = quoteMark == SINGLE_QUOTE;
       int start = 0;
       int end = 0;
       while (start != -1 && end != -1) {
@@ -365,12 +368,13 @@ public class SyntaxSearch {
             boolean notQuoted = true;
             int length = 0;
             if (isSingleQuote) {
-               notQuoted = !SyntaxUtils.isInQuotes(toColor, start, "\"");
+               notQuoted = !SyntaxUtils.isInQuotes(toColor, start, quoteMark);
             }
             end = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start + 1);
             if (end != -1) {
                if (isSingleQuote) {
-                  notQuoted = notQuoted && !SyntaxUtils.isInQuotes(toColor, end, "\"");
+                  notQuoted = notQuoted
+                        && !SyntaxUtils.isInQuotes(toColor, end, quoteMark);
                }
                if (notQuoted) {
                   length = end - start + 1;
@@ -398,8 +402,6 @@ public class SyntaxSearch {
          boolean ok = true;
          int length = 0;
          start = toColor.indexOf(lineCmnt, start);
-         //
-         // test that the comment start is not preceded with an "exception" char
          if (start != -1) {
             if (isException) {
                for (char exc : exceptions) {
@@ -411,23 +413,7 @@ public class SyntaxSearch {
                   }
                }
             }
-            //
-            // test that the comment start is not found in a quoted section
-            String line;
-            int relStart;
-            if (toColor.contains("\n")) {
-               line = LinesFinder.lineAtPos(toColor, start);
-               relStart = start - LinesFinder.lastNewline(toColor, start);
-            }
-            else {
-               line = toColor;
-               relStart = start;
-            }
-            ok = ok &&  (!SyntaxUtils.isInQuotes(line, relStart, "\"")
-                  & !SyntaxUtils.isInQuotes(line, relStart, "\'"));
-            //
-            // the coloring up to a line end
-            if (ok) {
+            if (ok && !isPositionInQuotes(start)) {
                int lineEnd = toColor.indexOf("\n", start + 1);
                if (lineEnd != -1) {
                   length = lineEnd - start;
@@ -448,18 +434,16 @@ public class SyntaxSearch {
       }
       removedFirstBlockStart(blockStart, blockEnd);
       int start = innerStart;
-      int length;
       int end;
       while (start != -1) {
          start = text.indexOf(blockStart, start);
+         int length = 0;
          if (innerEnd > 0 && start >= innerEnd - blockStart.length()) {
             start = -1;
          }
          if (start != -1) {
-            length = 0;
-            if (!SyntaxUtils.isBorderedByQuotes(text, start, blockStart.length())) {
-               end = SyntaxUtils.nextBlockEnd(text, start + 1,
-                     blockStart, blockEnd);
+           if (!SyntaxUtils.isBorderedByQuotes(text, start, blockStart.length())) {
+               end = SyntaxUtils.nextBlockEnd(text, start + 1, blockStart, blockEnd);
                if (innerEnd > 0 && end >= innerEnd - blockEnd.length()) {
                   end = -1;
                }
@@ -479,8 +463,7 @@ public class SyntaxSearch {
 
    private void removedFirstBlockStart(String blockStart, String blockEnd) {
       if (isTypeMode) {
-         int firstEnd = SyntaxUtils.nextBlockEnd(text, innerStart, blockStart,
-               blockEnd);
+         int firstEnd = SyntaxUtils.nextBlockEnd(text, innerStart, blockStart, blockEnd);
          if (innerEnd > 0 && firstEnd > innerEnd) {
             firstEnd = -1;
          }
@@ -493,10 +476,8 @@ public class SyntaxSearch {
 
    private void removedBlockStart(int endPos, String blockStart, String blockEnd) {
       if (isTypeMode) {
-         int lastStart = SyntaxUtils.lastBlockStart(text, endPos, blockStart,
-               blockEnd);
-         int nextEnd = SyntaxUtils.nextBlockEnd(text, endPos, blockStart,
-               blockEnd);
+         int lastStart = SyntaxUtils.lastBlockStart(text, endPos, blockStart, blockEnd);
+         int nextEnd = SyntaxUtils.nextBlockEnd(text, endPos, blockStart, blockEnd);
          if (innerEnd > 0 && nextEnd > innerEnd) {
             nextEnd = -1;
          }
@@ -512,6 +493,7 @@ public class SyntaxSearch {
          int nextStart = text.indexOf(blockStart, startPos + 1);
          while (nextStart != -1 && SyntaxUtils.isBorderedByQuotes(text, nextStart,
                 blockStart.length())) {
+
             nextStart = text.indexOf(blockStart, nextStart + 1);
          }
          int end = nextStart;
@@ -543,14 +525,31 @@ public class SyntaxSearch {
    }
 
    private boolean isInBlock(String blockStart, String blockEnd, int pos) {
-      int lastStart = SyntaxUtils.lastBlockStart(text, pos, blockStart,
-            blockEnd);
-      int nextEnd = SyntaxUtils.nextBlockEnd(text, pos, blockStart,
-            blockEnd);
+      int lastStart = SyntaxUtils.lastBlockStart(text, pos, blockStart, blockEnd);
+      int nextEnd = SyntaxUtils.nextBlockEnd(text, pos, blockStart, blockEnd);
       return lastStart != -1 & nextEnd != -1;
+   }
+   
+   private boolean isPositionInQuotes(int pos) {      
+      String line;
+      int relStart;
+      if (isMultiline) {
+         line = LinesFinder.lineAtPos(toColor, pos);
+         relStart = pos - LinesFinder.lastNewline(toColor, pos);
+      }
+      else {
+         line = toColor;
+         relStart = pos;
+      }
+      return SyntaxUtils.isInQuotes(line, relStart, DOUBLE_QUOTE)
+            || SyntaxUtils.isInQuotes(line, relStart, SINGLE_QUOTE);
    }
 
    private void setCharAttr(int start, int length, SimpleAttributeSet set) {
       doc.setCharacterAttributes(start, length, set, false);
+   }
+   
+   private void setAllCharAttrBlack() {
+      setCharAttr(0, doc.getLength(), normalSet);
    }
 }

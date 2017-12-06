@@ -92,7 +92,7 @@ public final class EditArea {
    }
 
    /**
-    * Gets this JPanel which contains the area for editing
+    * Gets this <code>JPanel</code> which contains the area for editing
     * text and the area that shows line numbers
     *
     * @return  this edit area panel
@@ -140,8 +140,8 @@ public final class EditArea {
    }
 
    /**
-    * Enables wordwrap. Invoking this method also hides the area
-    * that displays line numbers
+    * Enables wordwrap. Invoking this method also hides the area that
+    * displays line numbers
     */
    public void enableWordwrap() {
       editAreaPnl.remove(lineNrScroll);
@@ -155,10 +155,10 @@ public final class EditArea {
    }
    
    /**
-    * Disables wordwrap and makes the area to show line numbers visible if the
-    * specified boolean value is true
+    * Disables wordwrap and makes the area to show line numbers visible
+    * if the specified boolean is true
     *
-    * @param b  the boolean
+    * @param b  the boolean value
     */
    public void disableWordwrap(boolean b) {
       if (b) {
@@ -195,7 +195,7 @@ public final class EditArea {
    }
 
    //
-   //--private methods--/
+   //--private--/
    //
 
    private void showLineNumbers() {

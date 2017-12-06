@@ -5,7 +5,8 @@ import javax.swing.Box;
 import javax.swing.UIManager;
 
 /**
- * The menu bar that has the menus
+ * The menu bar that has the menus.<br>
+ * Created in {@link eg.ui.MainWin}
  */
 public class MenuBar {
 
@@ -23,29 +24,63 @@ public class MenuBar {
       assembleMenu();
    }
 
+   /**
+    * Gets this menu bar
+    *
+    * @return  this menu bar
+    */
    public JMenuBar menuBar() {
       return menuBar;
    }
 
+   /**
+    * Gets this file menu
+    *
+    * @return  this file menu
+    */
    public FileMenu fileMenu() {
       return fileMenu;
    }
 
+   /**
+    * Gets this edit menu
+    *
+    * @return  this edit menu
+    */
    public EditMenu editMenu() {
       return editMenu;
    }
 
+   /**
+    * Gets this format menu
+    *
+    * @return  this format menu
+    */
    public FormatMenu formatMenu() {
       return formatMenu;
    }
 
+   /**
+    * Gets this view menu
+    *
+    * @return  this view menu
+    */
    public ViewMenu viewMenu() {
       return viewMenu;
    }
 
+   /**
+    * Gets this project menu
+    *
+    * @return  this project menu
+    */
    public ProjectMenu projectMenu() {
       return projectMenu;
    }
+
+   //
+   //--private
+   //
 
    private void assembleMenu() {
       int strutSize = 0;

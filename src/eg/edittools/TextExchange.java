@@ -120,7 +120,7 @@ public class TextExchange {
    //
    
    private void copy(FileDocument destination, String text) {
-      destination.requestFocus();
+      destination.docTextArea().requestFocusInWindow();
       String toReplace = destination.docTextArea().getSelectedText();
       int posToIns = destination.docTextArea().getSelectionStart();
       destination.enableCodeEditing(false);
