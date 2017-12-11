@@ -22,10 +22,11 @@ While the limitations are certainly countless some functions that are already pr
 embryonic. Some are:
 <ul>
 <li>Running an interactive program that asks for input through a command-line is not guaranteed
-   to work in the console area of the program. Interactive programs in Java seem to work fine but,
-   for example, an interactive Perl script does not unless the autoflushing of its STDOUT is enabled
-   in the script itself.</li>
-<li>The built in packing of a jar file for a java application bundles only .class files.</li>
+    to work in the console area of the program. Interactive programs in Java seem to work fine but,
+    for example, an interactive Perl script does not unless the autoflushing of Perl's STDOUT is
+    enabled in the script itself.</li>
+<li>The compilation of a Java project and the creation of an executable jar file includes only files
+    indide an assigned project.</li>
 <li>The printing to a printer is rudimentary and is rather the blueprint for a printing function.
     The page size is not controlled.</li>
 </ul>
