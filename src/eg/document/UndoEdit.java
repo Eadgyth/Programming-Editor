@@ -23,7 +23,7 @@ import java.util.List;
  * breakpoints when the cursor is moved with the mouse or cursor keys.
  */
 public class UndoEdit {
-   
+
    private final TextDocument textDoc;
 
    private final List<String> edits = new ArrayList<>(500);
@@ -41,7 +41,7 @@ public class UndoEdit {
     */
    public UndoEdit(TextDocument textDoc) {
       this.textDoc = textDoc;
-      textDoc.textArea().addKeyListener(keyListen);
+      textDoc.textArea().addKeyListener(keyListener);
    }
 
    /**
@@ -69,15 +69,13 @@ public class UndoEdit {
       else {
          if (iEd > 0) {
             if (isInsert != isInsert(iEd - 1)) {
-               if (isInsert && isDeleteTyped) {
+               boolean isReplace = isInsert && !isDeleteTyped;
+               if (!isReplace) {
                   addBreakpoint();
                }
-               else if (!isInsert) {
-                  addBreakpoint();
-               }               
             }
             else if (change.length() > 1) {
-               addBreakpoint();
+                addBreakpoint();
             }
          }
       }
@@ -186,7 +184,7 @@ public class UndoEdit {
          return;
       }
       breakpoints.add(iEd - 1);
-      iBr = breakpoints.size() - 1;    
+      iBr = breakpoints.size() - 1;
    }
 
    private void trim() {
@@ -219,9 +217,9 @@ public class UndoEdit {
    private int breakPt(int i) {
       return breakpoints.get(i);
    }
-   
-   private KeyListener keyListen = new KeyAdapter() {
-      
+
+   private KeyListener keyListener = new KeyAdapter() {
+
       @Override
       public void keyPressed(KeyEvent e) {
          int key = e.getKeyCode();

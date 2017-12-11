@@ -31,6 +31,19 @@ public class FileUtils {
    }
    
    /**
+    * Replaces slashes in the specified string (forward or backward) with
+    * periods
+    *
+    * @param path  the string
+    * @return  the string with slashes replaecd with periods
+    */
+   public static String dottedFileSeparators(String path) {
+      String dottedPath = path.replace("\\", "/");
+      dottedPath = dottedPath.replace("/", ".");
+      return dottedPath;
+   }
+   
+   /**
     * Deletes a folder and its content
     *
     * @param dir  the directory to be deleted

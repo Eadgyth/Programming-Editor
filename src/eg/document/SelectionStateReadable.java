@@ -1,7 +1,7 @@
 package eg.document;
 
 /**
- * The interface to read the state, in which text is selected or not
+ * The interface to read if text is selected or not
  */
 @FunctionalInterface
 public interface SelectionStateReadable {

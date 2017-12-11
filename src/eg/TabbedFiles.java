@@ -303,7 +303,7 @@ public class TabbedFiles implements Observer {
          fDoc[n] = new FileDocument(editArea[n], f);
          prefs.readPrefs();
          fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-         setUIUpdatersAt(n);
+         setEditingStateReadables(n);
          addNewTab(fDoc[n].filename(), editArea[n].editAreaPnl());
          docUpdate.updateForChangedFile(n, false);
          prefs.storePrefs("recentPath", fDoc[n].dir());
@@ -319,7 +319,7 @@ public class TabbedFiles implements Observer {
       fDoc[n] = new FileDocument(editArea[n], lang);
       prefs.readPrefs();
       fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-      setUIUpdatersAt(n);
+      setEditingStateReadables(n);
       addNewTab("unnamed", editArea[n].editAreaPnl());
    }
    
@@ -332,7 +332,7 @@ public class TabbedFiles implements Observer {
       });
    }
    
-   private void setUIUpdatersAt(int i) {
+   private void setEditingStateReadables(int i) {
       fDoc[i].setUndoableStateReadable((a, b) ->
             mw.enableUndoRedo(a, b));
       fDoc[i].setSelectionStateReadable((b) ->

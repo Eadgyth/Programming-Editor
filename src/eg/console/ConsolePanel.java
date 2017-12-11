@@ -14,7 +14,6 @@ import javax.swing.JScrollPane;
 
 import javax.swing.event.CaretListener;
 
-
 //--Eadgyth--//
 import eg.Constants;
 import eg.ui.IconFiles;

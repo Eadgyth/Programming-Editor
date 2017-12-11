@@ -30,7 +30,7 @@ public class TextDocument {
    }
    
    /**
-    * @param textArea  the <code>JTextPane</code> that displays this
+    * @param textArea  the <code>JTextPane</code> that displays the
     * document
     */
    public TextDocument(JTextPane textArea) {

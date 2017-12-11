@@ -52,8 +52,8 @@ public class TypingEdit {
       col = new Coloring(textDoc.doc(), textDoc.attrSet());
       autoInd = new AutoIndent(textDoc);
       undo = new UndoEdit(textDoc);
-      textDoc.doc().addDocumentListener(docListen);
-      textDoc.textArea().addCaretListener(caretListen);
+      textDoc.doc().addDocumentListener(docListener);
+      textDoc.textArea().addCaretListener(caretListener);
    }
 
    /**
@@ -155,7 +155,7 @@ public class TypingEdit {
    }
 
    /**
-    * Returns the current indent unit
+    * Gets the current indent unit
     *
     * @return  the indent unit
     */
@@ -307,7 +307,7 @@ public class TypingEdit {
       }
    }
 
-   private final DocumentListener docListen = new DocumentListener() {
+   private final DocumentListener docListener = new DocumentListener() {
 
       @Override
       public void insertUpdate(DocumentEvent de) {
@@ -355,7 +355,7 @@ public class TypingEdit {
       }
    };
    
-   private final CaretListener caretListen = (CaretEvent ce) -> {
+   private final CaretListener caretListener = (CaretEvent ce) -> {
       notifySelectionState(ce.getDot() != ce.getMark());
       notifyCursorPosition(ce.getDot());
       markUndoBreakpoint(ce.getDot());

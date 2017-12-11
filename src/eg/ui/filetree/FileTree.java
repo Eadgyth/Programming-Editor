@@ -100,8 +100,7 @@ public class FileTree extends Observable {
     */
    public void setProjectTree(String projRoot) {
       if (this.projRoot.equals(projRoot)) {
-         throw new IllegalArgumentException(
-            "The same project root has been already assigned");
+         return;
       }
       this.projRoot = projRoot;
       setNewTree(projRoot);
