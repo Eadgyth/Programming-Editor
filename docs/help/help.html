@@ -158,27 +158,26 @@
          <ol>
             <li>Compile the source file(s) by selecting either 'Save selected source file and compile'
                 or 'Save all source files and compile' in the 'Project' menu. If errors occured it is
-                asked to open the console panel to view messages. Note that presently all java files
-                found in the assigned project are compiled when this feature of the program is used.
-                For a compilation with different options the possibility to run system commands in 
-                current working directory may be useful (see <a href="#Console">Using the console</a>).
-                </li>
+                asked to open the console panel to view messages. Note that only files in the assigned
+                project are included if this feature of the program is used.</li>
             <li>If the compilation was successful the Java program can be run for testing by selecting 
                 'Run' in the 'Project' menu. The output and error messages from the tested program are
                 displayed in the console panel. If the tested program asks for input through a command
                 line this is entered in the text area of the console panel. A tested program can be
-                forcibly quit by clicking the 'stop' symbol in the tool bar of the console panel.
-            </li>
+                forcibly quit by clicking the 'stop' symbol in the tool bar of the console panel.</li>
             <li>Arguments for a start script may be entered in the text field 'Arguments' (separated by
-                single spaces) in the settings window ('Project' > ' Project settings').
-            </li>
-            <li>A java archive (jar) may be created by selecting 'Project' > 'Create jar'. The jar file
-                is saved in the executable's folder or, if no such folder is defined, in the project's
-                root folder. A name for the jar file can be specified in the settings window. If no name
-                is specified the name of the main class is used. Note that presently only the class files
-                found in the assigned project are bundled in a jar when the 'Create jar' option of the
-                program is selected.
-             </li>
+                single spaces) in the settings window ('Project' > ' Project settings').</li>
+            <li>An executable java archive (jar) may be created by selecting 'Project' > 'Create jar'.
+                The jar file is saved in the executable's folder or, if no such folder is defined, in the
+                project's root folder. A name for the jar file can be specified in the settings window.
+                If no name is specified the name of the main class is used. Note that presently only
+                files found in the assigned project are bundled in a jar when the 'Create jar' option of
+                the program is selected.</li>
+            <li>To include files other than java (or class) files in a compilation and in a jar file the
+                extensions of these files would be specified in the text field 'Included file types'.
+                The files are searched in the sources directory (in a compilation) and in the executables
+                directory (for creating a jar) if these directories are defined in the assigned project.
+                </li>
          </ol>
 
          <h4 id="PerlProject">Testing a Perl script</h4>
