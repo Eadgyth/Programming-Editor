@@ -42,6 +42,7 @@ public class Preferences {
       "recentModule",
       "recentSourceDir",
       "recentExecDir",
+      "recentIncludedExt",
       "recentBuildName"
    };
    
@@ -50,6 +51,7 @@ public class Preferences {
       "recentModule",
       "recentSourceDir",
       "recentExecDir",
+      "recentIncludedExt",
       "recentBuildName"
    };
 

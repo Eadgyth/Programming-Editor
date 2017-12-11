@@ -40,6 +40,7 @@ public class SettingsWin {
    private final JTextField execDirTf    = new JTextField();
    private final JTextField projDirTf    = new JTextField();
    private final JTextField argsTf       = new JTextField();
+   private final JTextField fileExtTf    = new JTextField();
    private final JTextField buildTf      = new JTextField();
    private final JButton    okBt         = new JButton("   OK   ");
    private final JButton    cancelBt     = new JButton("Cancel");
@@ -50,6 +51,7 @@ public class SettingsWin {
    private boolean useScr = false;
    private boolean useExec = false;
    private boolean useArgs = false;
+   private boolean useIncludeFiles = false;
    private String buildLabel = null;
    private JTextField hasFocus;
 
@@ -109,7 +111,7 @@ public class SettingsWin {
     */
    public SettingsWin addSourceDirOption() {
       this.useScr = true;
-      return this;
+      return  this;
    }
 
    /**
@@ -132,6 +134,17 @@ public class SettingsWin {
       this.useArgs = true;
       return this;
    }
+   
+   /**
+    * Adds the option to to enter extensions of files to be included
+    * in a build (and compilation)
+    *
+    * @return  this
+    */
+    public SettingsWin addIncludeFilesOption() {
+       this.useIncludeFiles = true;
+       return this;
+    }
 
    /**
     * Adds the option to enter a build name and sets the label for the
@@ -151,16 +164,9 @@ public class SettingsWin {
    public void setupWindow() {
       if (frame.getContentPane().getComponentCount() > 0) {
          throw new IllegalStateException(
-               "The frame of this SettingsWin" + " is already initialized");
+               "The frame of SettingsWin is already initialized");
       }
       initWindow();
-   }
-   
-   /**
-    * Asks the text field for setting the project file to get focus
-    */
-   public void requestFocus() {
-      frame.requestFocus();
    }
 
    /**
@@ -234,6 +240,17 @@ public class SettingsWin {
    public String argsInput() {
       return argsTf.getText();
    }
+   
+   /**
+    * Returns the input in the text field for extensions of files
+    * that are included in a build and compilation. Extensions must
+    * be entered in the form .txt,.png with or whithout spaces
+    *
+    * @return  the comma separated extensions
+    */
+    public String includedExtInput() {
+       return fileExtTf.getText();
+    }
 
    /**
     * Returns the input in the text field for a name of a build
@@ -282,10 +299,21 @@ public class SettingsWin {
    /**
     * Shows in the corresponding text field the name of the project's
     * root directory
-    * @param in  the name of the the project's root directory
+    *
+    * @param in  the name
     */
    public void displayProjDirName(String in) {
       projDirTf.setText(in);
+   }
+   
+   /**
+    * Shows in the corresponding text field the extensions of files
+    * that are included in a build and compilation
+    *
+    * @param in  the file extensions
+    */
+   public void displayIncludedExt(String in) {
+      fileExtTf.setText(in);
    }
 
    /**
@@ -325,62 +353,76 @@ public class SettingsWin {
    private JPanel structurePanel() {
       int gridSize = 1;
       GridLayout grid = new GridLayout(gridSize, 0);
-      JPanel projPnl = new JPanel(grid);
+      JPanel structPnl = new JPanel(grid);
       JLabel projDirLb = new JLabel("Name of project root:");
-
-      // file panel
+      //
+      // project file option
       if (fileLabel != null) {
          gridSize++;
          grid.setRows(gridSize);
          JLabel fileLb = new JLabel(fileLabel + ":");
-         projPnl.add(holdLbAndTf(fileLb, fileTf));
+         structPnl.add(holdLbAndTf(fileLb, fileTf));
          projDirLb.setText("Name of project root (input not rqd.):");
       }
       //
-      // module/subdir panel
+      // module/package option
       if (moduleLabel != null) {
          gridSize++;
          grid.setRows(gridSize);
          JLabel moduleLb = new JLabel(moduleLabel + ":");
-         projPnl.add(holdLbAndTf(moduleLb, moduleTf));
+         structPnl.add(holdLbAndTf(moduleLb, moduleTf));
       }
       //
-      // sources panel
+      // sources dir option
       if (useScr) {
          gridSize++;
          grid.setRows(gridSize);
          JLabel sourcesDirLb = new JLabel("Name of sources directory:");
-         projPnl.add(holdLbAndTf(sourcesDirLb, sourcesDirTf));
+         structPnl.add(holdLbAndTf(sourcesDirLb, sourcesDirTf));
       }
       //
-      // executabled panel
+      // executable dir option
       if (useExec) {
          gridSize++;
          grid.setRows(gridSize);
          JLabel execDirLb = new JLabel("Name of executables directory:");
-         projPnl.add(holdLbAndTf(execDirLb, execDirTf));
+         structPnl.add(holdLbAndTf(execDirLb, execDirTf));
       }
       //
-      // project dir panel
-      projPnl.add(holdLbAndTf(projDirLb, projDirTf));
+      // project dir
+      structPnl.add(holdLbAndTf(projDirLb, projDirTf));
       
-      projPnl.setBorder(titledBorder("Structure"));
-      return projPnl;
+      structPnl.setBorder(titledBorder("Structure"));
+      return structPnl;
    }
 
    private JPanel argsPanel() {
       JPanel argsPnl = new JPanel( new GridLayout(1, 0));
       JLabel argsLb = new JLabel("Arguments:");
       argsPnl.add(holdLbAndTf(argsLb, argsTf));
-      argsPnl.setBorder(titledBorder("Startscript"));
+      argsPnl.setBorder(titledBorder("Run"));
       return argsPnl;
    }
 
    private JPanel buildPanel() {
-      JPanel buildPnl = new JPanel(new GridLayout(1, 0));
-      JLabel buildLb = new JLabel("Name for " + buildLabel +":");
-      buildPnl.add(holdLbAndTf(buildLb, buildTf));
-      buildPnl.setBorder(titledBorder("Build (" + buildLabel + ")"));
+      int gridSize = 1;
+      GridLayout grid = new GridLayout(gridSize, 0);
+      JPanel buildPnl = new JPanel(grid);
+      //
+      // include files option
+      if (useIncludeFiles) {
+         JLabel fileExtLb = new JLabel("Included file types (example: .txt; .png):");
+         buildPnl.add(holdLbAndTf(fileExtLb, fileExtTf));
+      }
+      //
+      // set build name option
+      if (buildLabel != null) {
+         gridSize++;
+         grid.setRows(gridSize);
+         JLabel buildLb = new JLabel("Name for " + buildLabel +":");
+         buildPnl.add(holdLbAndTf(buildLb, buildTf));
+      }
+      buildPnl.setBorder(titledBorder("Compilation and build"));
       return buildPnl;
    }
 
@@ -430,12 +472,11 @@ public class SettingsWin {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
          combineAll.add(argsPanel());
       }
-      if (buildLabel != null) {
+      if (buildLabel != null || useIncludeFiles) {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
          combineAll.add(buildPanel());
       }
-      combineAll.add(checkBxPnl(saveConfig,
-            "Save configuration in the project root"));
+      combineAll.add(checkBxPnl(saveConfig, "Save configuration in the project"));
       combineAll.add(Box.createRigidArea(DIM_SPACER));
       combineAll.add(buttonsPanel());
       return combineAll;

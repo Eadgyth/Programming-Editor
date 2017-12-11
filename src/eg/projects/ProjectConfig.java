@@ -64,6 +64,7 @@ public abstract class ProjectConfig implements Configurable {
    private String execDirName = "";
    private String sourceDirName = "";
    private String args = "";
+   private String includedExt = "";
    private String buildName = "";
 
    @Override
@@ -101,13 +102,13 @@ public abstract class ProjectConfig implements Configurable {
    public boolean retrieveProject(String dir) {
       String root = findRootByFile(dir, Preferences.CONFIG_FILE);
       if (root.length() > 0) {
-         EAD_CONFIG.readConfig(root);
          setWin.setSaveConfigSelected(true);
+         EAD_CONFIG.readConfig(root);
          configByPropertiesFile(root, EAD_CONFIG);
       }
       else {
-         PREFS.readPrefs();
          setWin.setSaveConfigSelected(false);
+         PREFS.readPrefs();
          root = PREFS.getProperty("recentProject");
          if (isInProject(dir, root)) {
              configByPropertiesFile(root, PREFS);
@@ -155,7 +156,6 @@ public abstract class ProjectConfig implements Configurable {
    /**
     * @param fileExtension  the file extension of source files
     * @param useProjectFile  specifies if the project uses a main project file.
-    *
     */
    protected ProjectConfig(String fileExtension, boolean useProjectFile) {
       ext = fileExtension;
@@ -188,6 +188,28 @@ public abstract class ProjectConfig implements Configurable {
    protected String getSourceDirName() {
       return sourceDirName;
    }
+   
+   /**
+    * Returns the arguments for a start script
+    *
+    * @return  the arguments
+    */
+   protected String getArgs() {
+      return args;
+   }
+   
+   /**
+    * Returns the extensions of files to be included in a build or
+    * compilation. This is simply the input that was entered in the
+    * corresponding text field of the settings window or read in from
+    * a properties file 
+    *
+    * @return  the extensions. The empty string if no extensions where
+    * read in
+    */
+   protected String getIncludedExtensions() {
+      return includedExt;
+   }
 
    /**
     * Returns the name for a build
@@ -196,15 +218,6 @@ public abstract class ProjectConfig implements Configurable {
     */
    protected String getBuildName() {
       return buildName;
-   }
-
-   /**
-    * Returns the arguments for a start script
-    *
-    * @return  the arguments
-    */
-   protected String getArgs() {
-      return args;
    }
 
    /**
@@ -233,6 +246,8 @@ public abstract class ProjectConfig implements Configurable {
       setWin.displaySourcesDir(sourceDirName);
       execDirName = prefs.getProperty("recentExecDir");
       setWin.displayExecDir(execDirName);
+      includedExt = prefs.getProperty("recentIncludedExt");
+      setWin.displayIncludedExt(includedExt);
       buildName = prefs.getProperty("recentBuildName");
       setWin.displayBuildName(buildName);
 
@@ -314,6 +329,7 @@ public abstract class ProjectConfig implements Configurable {
       sourceDirName = setWin.sourcesDirNameInput();
       execDirName = setWin.execDirNameInput();
       args = setWin.argsInput();
+      includedExt = setWin.includedExtInput().replaceAll("\\s", "");
       buildName = setWin.buildNameInput();
    }
 
@@ -334,8 +350,7 @@ public abstract class ProjectConfig implements Configurable {
 
    private void storeConfigurationImpl() {
       if (projectRoot.length() == 0) {
-         throw new IllegalStateException(
-            "The project is not configured");
+         throw new IllegalStateException("The project is not configured");
       }
       storeInPrefs();
       storeInEadConfig();
@@ -347,6 +362,7 @@ public abstract class ProjectConfig implements Configurable {
       PREFS.storePrefs("recentModule", moduleDirName);
       PREFS.storePrefs("recentSourceDir", sourceDirName);
       PREFS.storePrefs("recentExecDir", execDirName);
+      PREFS.storePrefs("recentIncludedExt", includedExt);
       PREFS.storePrefs("recentBuildName", buildName);
    }
 
@@ -356,6 +372,7 @@ public abstract class ProjectConfig implements Configurable {
          EAD_CONFIG.storeConfig("recentModule", moduleDirName, projectRoot);
          EAD_CONFIG.storeConfig("recentSourceDir", sourceDirName, projectRoot);
          EAD_CONFIG.storeConfig("recentExecDir", execDirName, projectRoot);
+         EAD_CONFIG.storeConfig("recentIncludedExt", includedExt, projectRoot);
          EAD_CONFIG.storeConfig("recentBuildName", buildName, projectRoot);
       }
       else {

@@ -153,27 +153,20 @@ public class CurrentProject {
    }
 
    /**
-    * Saves the selected source file and compiles all source files of this
-    * current project
+    * Saves the selected file and compiles the project
     */
    public void saveAndCompile() {
       try {
-        mw.setBusyCursor();
-        if (fDoc[iCurr].filename().endsWith(current.getSourceFileExtension())) {
-            if (fDoc[iCurr].docFile().exists()) {
-               fDoc[iCurr].saveFile();
-               current.compile();
-               updateFileTree();
-            }
-            else {
-               Dialogs.errorMessage(
-                     fDoc[iCurr].filename()
-                     + ":\nThe file could not be found anymore");
-            }
+         mw.setBusyCursor();
+         if (fDoc[iCurr].docFile().exists()) {
+            fDoc[iCurr].saveFile();
+            current.compile();
+            updateFileTree();
          }
          else {
             Dialogs.errorMessage(
-                  fDoc[iCurr].filename() + "is not a source file.");
+                  fDoc[iCurr].filename()
+                  + ":\nThe file could not be found anymore");
          }
       }
       finally {
@@ -182,19 +175,15 @@ public class CurrentProject {
    }
 
    /**
-    * Saves all open source files of this current project and compiles
-    * all files of the project
+    * Saves all open files of this current project and compiles
+    * the project
     */
    public void saveAllAndCompile() {
       try {
          mw.setBusyCursor();
          StringBuilder missingFiles = new StringBuilder();
          for (FileDocument f : fDoc) {
-            boolean isProjSrc
-                   = f != null
-                   && f.filename().endsWith(current.getSourceFileExtension())
-                   && current.isInProject(f.dir());
-
+            boolean isProjSrc = f != null && current.isInProject(f.dir());
             if (isProjSrc) {
                 if (f.docFile().exists()) {
                     f.saveFile();

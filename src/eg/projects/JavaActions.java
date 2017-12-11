@@ -13,38 +13,39 @@ import eg.utils.FileUtils;
 import eg.ui.ConsoleOpenable;
 
 /**
- * Represents a programming project in Java.
+ * Represents a programming project in Java
  */
-public final class JavaActions extends ProjectConfig
-      implements ProjectActions {
+public final class JavaActions extends ProjectConfig implements ProjectActions {
 
    private final static String F_SEP = File.separator;
 
    private final ConsoleOpenable co;
-   private final Compile comp;
-   private final CreateJar jar;
    private final ProcessStarter proc;
    private final ConsolePanel consPnl;
+   private final Compilation comp;
+   private final JarBuilder jar;
 
    private String startCommand = "";
+   private String[] includedExt = null;
 
    JavaActions(ConsoleOpenable co, ProcessStarter proc, ConsolePanel consPnl) {
       super("java", true);
       this.co = co;
       this.proc = proc;
       this.consPnl = consPnl;
-      comp = new Compile(consPnl);
-      jar = new CreateJar(consPnl);
+      comp = new Compilation(consPnl);
+      jar = new JarBuilder(consPnl);
    }
 
    @Override
    public void createSettingsWin() {
       setWin = SettingsWin.adaptableWindow();
       setWin.addFileOption("Name of main class")
-            .addModuleOption("Package containing the main class")
+            .addModuleOption("Package path to main class")
             .addSourceDirOption()
             .addExecDirOption()
             .addArgsOption()
+            .addIncludeFilesOption()
             .addBuildOption("jar file")
             .setupWindow();
    }
@@ -58,6 +59,7 @@ public final class JavaActions extends ProjectConfig
       boolean success = super.configureProject(dir);
       if (success) {
          setStartCommand();
+         setIncludedExtArr();
       }
       return success;
    }
@@ -71,6 +73,7 @@ public final class JavaActions extends ProjectConfig
       boolean success = super.retrieveProject(dir);
       if (success) {
          setStartCommand();
+         setIncludedExtArr();
       }
       return success;
    }
@@ -83,15 +86,15 @@ public final class JavaActions extends ProjectConfig
       consPnl.setText("<<Compile " + getProjectName() + ">>\n");
       EventQueue.invokeLater(() -> {
          if (proc.isProcessEnded()) {
-            comp.compile(getProjectPath(), getExecutableDirName(),
-                  getSourceDirName());
+            comp.compile(getProjectPath(), getExecutableDirName(), getSourceDirName(),
+                  includedExt);
 
             consPnl.setCaretUneditable(0);
             if (!co.isConsoleOpen()) {
-               if (!comp.success()) {
+               if (!comp.isCompiled()) {
                   int res = Dialogs.warnConfirmYesNo(
                         "Compilation failed.\n"
-                        + comp.getMessage() + ".\n"
+                        + comp.getFirstErrSource() + ".\n"
                         + "Open the console window to view messages?");
 
                   if (0 == res) {
@@ -136,8 +139,9 @@ public final class JavaActions extends ProjectConfig
       boolean existed = jarFileExists(jarName);
       try {
          consPnl.setText("");
-         jar.createJar(getProjectPath(), getMainFile(),
-               getModuleName(), getExecutableDirName(), jarName);
+         jar.createJar(getProjectPath(), getMainFile(), getModuleName(),
+               getExecutableDirName(), getSourceDirName(), jarName,
+               includedExt);
 
          if (!existed) {
             boolean exists = false;
@@ -185,7 +189,8 @@ public final class JavaActions extends ProjectConfig
          sb.append("-cp " + getExecutableDirName() + " ");
       }
       if (getModuleName().length() > 0) {
-         sb.append(getModuleName() + ".");
+         String dotted = FileUtils.dottedFileSeparators(getModuleName());
+         sb.append(dotted + ".");
       }
       String main = getMainFile();
       if (getArgs().length() > 0) {
@@ -194,4 +199,13 @@ public final class JavaActions extends ProjectConfig
       sb.append(main);
       startCommand = sb.toString();
    }
+   
+   public void setIncludedExtArr() {
+       if (getIncludedExtensions().length() > 0) {
+          includedExt = getIncludedExtensions().split(";");
+       }
+       else {
+          includedExt = null;
+       }
+    }   
 }
