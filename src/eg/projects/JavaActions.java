@@ -41,7 +41,7 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
    public void createSettingsWin() {
       setWin = SettingsWin.adaptableWindow();
       setWin.addFileOption("Name of main class")
-            .addModuleOption("Package path to main class")
+            .addModuleOption("Package containing the main class:")
             .addSourceDirOption()
             .addExecDirOption()
             .addArgsOption()
