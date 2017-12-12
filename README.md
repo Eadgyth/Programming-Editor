@@ -26,7 +26,7 @@ embryonic. Some are:
     for example, an interactive Perl script does not unless the autoflushing of Perl's STDOUT is
     enabled in the script itself.</li>
 <li>The compilation of a Java project and the creation of an executable jar file includes only files
-    indide an assigned project.</li>
+    found in an assigned project.</li>
 <li>The printing to a printer is rudimentary and is rather the blueprint for a printing function.
     The page size is not controlled.</li>
 </ul>
