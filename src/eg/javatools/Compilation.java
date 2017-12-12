@@ -1,4 +1,6 @@
 /**
+ * The compilation of a Java project.
+ * <p>
  * The Java(TM) Compiler is invoked in the method compile() essentially as
  * shown in the docu for the javax.tools.JavaCompiler interface(
  * https://docs.oracle.com/javase/7/docs/api/javax/tools/JavaCompiler.html).
@@ -85,8 +87,10 @@ public class Compilation {
     * Invokes the javac compiler
     *
     * @param root  the root directory of the project
-    * @param execDir  the name of destination directory of the class files
-    * @param sourceDir  the name directory that contains java files or packages
+    * @param execDir  the name of the destination directory for the compiles
+    *       class files
+    * @param sourceDir  the name of the directory that contains java files or
+    *       packages
     * @param includedExt  the array of extensions of files that are included
     *       in the executables folder in addition to class files. May be null.
     */

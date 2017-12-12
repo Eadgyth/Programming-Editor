@@ -37,15 +37,15 @@ public class JarBuilder {
     *
     * @param root  the root directory of the project
     * @param main  the name of the main class
-    * @param packagePath  the package path relative to the root or
-    *       to the sources directory where the main class is found.
-    *       Can be the empty string but cannot be not null
-    * @param execDir  the name of the directory that contains class
-    *       files. Can be the empty string but cannot be null.
-    * @param sourceDir  the name of the directory that contains
-    *       source files. Can be an empty string but cannot be not null.
-    * @param jarName  the name for the jar. If jarName is the empty
-    *       string the name of the main class is used
+    * @param packagePath  the package path relative to the root or to the
+    *       sources directory where the main class is found. Can be the
+    *       empty string but cannot be not null
+    * @param execDir  the name of the directory that contains class files.
+    *       Can be the empty string but cannot be null.
+    * @param sourceDir  the name of the directory that contains source
+    *       files. Can be the empty string but cannot be not null.
+    * @param jarName  the name for the jar. If this is the empty string
+    *       the name of the main class is used
     * @param includedExt  the array of extensions of files that are
     *       included in the jar file in addition to class files. May be
     *       null.
