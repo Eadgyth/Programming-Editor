@@ -26,6 +26,7 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
    private final JarBuilder jar;
 
    private String startCommand = "";
+   private String qualifiedMain = "";
    private String[] includedExt = null;
 
    JavaActions(ConsoleOpenable co, ProcessStarter proc, ConsolePanel consPnl) {
@@ -41,23 +42,23 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
    public void createSettingsWin() {
       setWin = SettingsWin.adaptableWindow();
       setWin.addFileOption("Name of main class")
-            .addModuleOption("Package containing the main class:")
+            .addModuleOption("Package (sub-package path) containing the main class")
             .addSourceDirOption()
             .addExecDirOption()
             .addArgsOption()
-            .addIncludeFilesOption()
+            .addIncludeExtOption("Included non-Java file types (example: .txt, .png)")
             .addBuildOption("jar file")
             .setupWindow();
    }
 
    /**
     * {@inheritDoc}
-    * Creates the start command to run the java project
     */
    @Override
    public boolean configureProject(String dir) {
       boolean success = super.configureProject(dir);
       if (success) {
+         setQualifiedMain();
          setStartCommand();
          setIncludedExtArr();
       }
@@ -66,12 +67,12 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
 
    /**
     * {@inheritDoc}
-    * Creates the start command to run the java project
     */
    @Override
    public boolean retrieveProject(String dir) {
       boolean success = super.retrieveProject(dir);
       if (success) {
+         setQualifiedMain();
          setStartCommand();
          setIncludedExtArr();
       }
@@ -139,9 +140,8 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
       boolean existed = jarFileExists(jarName);
       try {
          consPnl.setText("");
-         jar.createJar(getProjectPath(), getMainFile(), getModuleName(),
-               getExecutableDirName(), getSourceDirName(), jarName,
-               includedExt);
+         jar.createJar(getProjectPath(), jarName, qualifiedMain,
+               getExecutableDirName(), getSourceDirName(), includedExt);
 
          if (!existed) {
             boolean exists = false;
@@ -169,7 +169,41 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
    //
    //--private--/
    //
-
+   
+   private void setQualifiedMain() {
+      StringBuilder sb = new StringBuilder();
+      if (getModuleName().length() > 0) {
+         sb.append(FileUtils.dottedFileSeparators(getModuleName()));
+         sb.append(".");
+      }
+      sb.append(getMainFile());
+      qualifiedMain = sb.toString();
+   }
+   
+   private void setStartCommand() {
+      StringBuilder sb = new StringBuilder("java ");
+      if (getExecutableDirName().length() > 0) {
+         sb.append("-cp " + getExecutableDirName() + " ");
+      }
+      sb.append(qualifiedMain);
+      if (getArgs().length() > 0) {
+         sb.append(" ");
+         sb.append(getArgs());
+      }
+      startCommand = sb.toString();
+   }
+   
+   private void setIncludedExtArr() {
+       if (getIncludedExtensions().length() > 0) {
+          String formatted = getIncludedExtensions();
+          formatted.replace(",", ";");
+          includedExt = formatted.split(";");
+       }
+       else {
+          includedExt = null;
+       }
+   }
+   
    private boolean mainClassFileExists() {
       boolean exists = mainExecFileExists(".class");
       if (!exists) {
@@ -181,31 +215,5 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
    private boolean jarFileExists(String jarName) {
       String execDir = getProjectPath() + F_SEP + getExecutableDirName();
       return new File(execDir + F_SEP + jarName + ".jar").exists();
-   }
-
-   private void setStartCommand() {
-      StringBuilder sb = new StringBuilder("java ");
-      if (getExecutableDirName().length() > 0) {
-         sb.append("-cp " + getExecutableDirName() + " ");
-      }
-      if (getModuleName().length() > 0) {
-         String dotted = FileUtils.dottedFileSeparators(getModuleName());
-         sb.append(dotted + ".");
-      }
-      String main = getMainFile();
-      if (getArgs().length() > 0) {
-         main += " " + getArgs();
-      }
-      sb.append(main);
-      startCommand = sb.toString();
-   }
-   
-   public void setIncludedExtArr() {
-       if (getIncludedExtensions().length() > 0) {
-          includedExt = getIncludedExtensions().split(";");
-       }
-       else {
-          includedExt = null;
-       }
-    }   
+   }  
 }

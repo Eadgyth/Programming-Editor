@@ -51,7 +51,7 @@ public class SettingsWin {
    private boolean useScr = false;
    private boolean useExec = false;
    private boolean useArgs = false;
-   private boolean useIncludeFiles = false;
+   private String includeExtLabel = null;
    private String buildLabel = null;
    private JTextField hasFocus;
 
@@ -87,7 +87,7 @@ public class SettingsWin {
     * @return  this
     */
    public SettingsWin addFileOption(String fileLabel) {
-      this.fileLabel = fileLabel + " (without ext.)";
+      this.fileLabel = fileLabel + " (without extension)";
       return this;
    }
 
@@ -137,12 +137,14 @@ public class SettingsWin {
    
    /**
     * Adds the option to to enter extensions of files to be included
-    * in a build (and compilation)
+    * in a build (and compilation) and set the label for the
+    * correlsponding text field
     *
+    * @param label  the label
     * @return  this
     */
-    public SettingsWin addIncludeFilesOption() {
-       this.useIncludeFiles = true;
+    public SettingsWin addIncludeExtOption(String label) {
+       this.includeExtLabel = label;
        return this;
     }
 
@@ -150,11 +152,11 @@ public class SettingsWin {
     * Adds the option to enter a build name and sets the label for the
     * corresponding text field
     *
-    * @param  buildLabel for the build text field
+    * @param  label  the label
     * @return  this
     */
-   public SettingsWin addBuildOption(String buildLabel) {
-      this.buildLabel = buildLabel;
+   public SettingsWin addBuildOption(String label) {
+      this.buildLabel = label;
       return this;
    }
 
@@ -246,7 +248,7 @@ public class SettingsWin {
     * that are included in a build and compilation. Extensions must
     * be entered in the form .txt,.png with or whithout spaces
     *
-    * @return  the comma separated extensions
+    * @return  the comma or semicolon separated extensions
     */
     public String includedExtInput() {
        return fileExtTf.getText();
@@ -392,7 +394,7 @@ public class SettingsWin {
       // project dir
       structPnl.add(holdLbAndTf(projDirLb, projDirTf));
       
-      structPnl.setBorder(titledBorder("Structure"));
+      structPnl.setBorder(titledBorder("Directory/file structure"));
       return structPnl;
    }
 
@@ -410,8 +412,8 @@ public class SettingsWin {
       JPanel buildPnl = new JPanel(grid);
       //
       // include files option
-      if (useIncludeFiles) {
-         JLabel fileExtLb = new JLabel("Included file types (example: .txt; .png):");
+      if (includeExtLabel != null) {
+         JLabel fileExtLb = new JLabel(includeExtLabel + " :");
          buildPnl.add(holdLbAndTf(fileExtLb, fileExtTf));
       }
       //
@@ -472,7 +474,7 @@ public class SettingsWin {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
          combineAll.add(argsPanel());
       }
-      if (buildLabel != null || useIncludeFiles) {
+      if (buildLabel != null || includeExtLabel != null) {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
          combineAll.add(buildPanel());
       }

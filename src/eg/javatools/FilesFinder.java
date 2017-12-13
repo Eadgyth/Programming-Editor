@@ -30,7 +30,7 @@ public class FilesFinder {
       }
       getFilteredFiles(dir, extension, excludedDirName);
       return resultList;
-   }
+   }      
 
    //
    //--private--/
@@ -52,7 +52,8 @@ public class FilesFinder {
       }
       for (File f : filesInPath) {
          if (f.isDirectory()
-               && (excludedDirName == null || !f.getName().equals(excludedDirName))) {
+             && (excludedDirName.length() == 0
+             || !f.getName().equals(excludedDirName))) {
 
             getFilteredFiles(f.toString(), extension, excludedDirName);
          }

@@ -24,6 +24,8 @@ public class JarBuilder {
 
    private final static String F_SEP = File.separator;
    private final ConsolePanel consPnl;
+   
+   private boolean isManifest = false;
 
    /**
     * @param consPnl  the reference to {@link ConsolePanel}
@@ -36,29 +38,25 @@ public class JarBuilder {
     * Creates a jar file
     *
     * @param root  the root directory of the project
-    * @param main  the name of the main class
-    * @param packagePath  the package path relative to the root or to the
-    *       sources directory where the main class is found. Can be the
-    *       empty string but cannot be not null
+    * @param jarName  the name for the jar file
+    * @param qualifiedMain  the fully qualified name of the main class
     * @param execDir  the name of the directory that contains class files.
     *       Can be the empty string but cannot be null.
     * @param sourceDir  the name of the directory that contains source
     *       files. Can be the empty string but cannot be not null.
-    * @param jarName  the name for the jar. If this is the empty string
-    *       the name of the main class is used
     * @param includedExt  the array of extensions of files that are
     *       included in the jar file in addition to class files. May be
     *       null.
     * @throws IOException  if the process that creates a jar cannot receive
     *       any input
     */
-   public void createJar(String root, String main, String packagePath,
-         String execDir, String sourceDir, String jarName, String[] includedExt)
-               throws IOException {
+   public void createJar(String root, String jarName, String qualifiedMain,
+         String execDir, String sourceDir, String[] includedExt)
+         throws IOException {
 
-      File manifest = new File(root + F_SEP + execDir + F_SEP + "manifest.txt");
-      createManifest(manifest, main, packagePath);
-      List<String> cmd = jarCmd(root, jarName, execDir, sourceDir, includedExt);
+      List<String> cmd = jarCmd(root, jarName, qualifiedMain, execDir, sourceDir,
+            includedExt);
+
       ProcessBuilder pb = new ProcessBuilder(cmd);
       pb.directory(new File(root + F_SEP + execDir));
       pb.redirectErrorStream(true);
@@ -74,27 +72,20 @@ public class JarBuilder {
    }
 
    //
-   //--private---/
+   //--private--/
    //
 
-   private List<String> jarCmd(String root, String jarName, String execDir,
-         String sourceDir, String[] includedExt) {
+   private List<String> jarCmd(String root, String jarName, String qualifiedMain,
+          String execDir, String sourceDir, String[] includedExt) {
 
       List<String> cmd = new ArrayList<>();
-      //
-      // c: create jar file; v: verbose output; f: output to file, not stdout;
-      // m: include manifest info )
-      Collections.addAll(cmd, "jar", "-cvfm", jarName + ".jar", "manifest.txt");
+      Collections.addAll(cmd, "jar", "-cvfe", jarName + ".jar", qualifiedMain);
       String searchRoot = root;
       if (execDir.length() > 0) {
          searchRoot += F_SEP + execDir;
       }
-      String excludedSearchDir = null;
-      if (sourceDir.length() > 0) {
-         excludedSearchDir = sourceDir;
-      }
       List<File> classes
-            = new FilesFinder().filteredFiles(searchRoot, ".class", excludedSearchDir);
+            = new FilesFinder().filteredFiles(searchRoot, ".class", sourceDir);
       List<File> relativeClassFilePaths = relativePaths(searchRoot, classes);
       for (File i : relativeClassFilePaths) {
          cmd.add(i.toString());
@@ -102,13 +93,10 @@ public class JarBuilder {
       if (includedExt != null) {
          for (String ext : includedExt) {
             List<File> includedFiles
-                  = new FilesFinder().filteredFiles(searchRoot, ext, excludedSearchDir);
+                  = new FilesFinder().filteredFiles(searchRoot, ext, sourceDir);
             List<File> relativeInclFilePaths = relativePaths(searchRoot, includedFiles);
             for (File f : relativeInclFilePaths) {
                String path = f.getPath();
-               if (".txt".equals(ext) && path.endsWith("manifest.txt")) {
-                  continue;
-               }
                if (".properties".equals(ext) && path.endsWith("eadconfig.properties")) {
                   continue;
                }
@@ -117,21 +105,6 @@ public class JarBuilder {
          }
       }
       return cmd;
-   }
-
-   private void createManifest(File manifest, String main, String packagePath) {
-      try (PrintWriter write = new PrintWriter(manifest)) {
-         if (packagePath.length() > 0) {
-            String dotted = FileUtils.dottedFileSeparators(packagePath);
-            write.println("Main-Class: " + dotted + "." + main);
-         }
-         else {
-            write.println("Main-Class: " + main);
-         }
-      }
-      catch(IOException e) {
-         FileUtils.logStack(e);
-      }
    }
 
    private List<File> relativePaths(String searchPath, List<File> listOfFiles) {

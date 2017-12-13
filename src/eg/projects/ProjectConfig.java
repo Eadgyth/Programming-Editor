@@ -202,7 +202,7 @@ public abstract class ProjectConfig implements Configurable {
     * Returns the extensions of files to be included in a build or
     * compilation. This is simply the input that was entered in the
     * corresponding text field of the settings window or read in from
-    * a properties file 
+    * a properties file.
     *
     * @return  the extensions. The empty string if no extensions where
     * read in

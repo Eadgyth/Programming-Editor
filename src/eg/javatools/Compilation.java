@@ -102,11 +102,7 @@ public class Compilation {
          Dialogs.errorMessage("The programm may not be run using the JRE in a JDK.");
          return;
       }
-      String excludedSearchDir = null;
-      if (execDir.length() > 0) {
-         excludedSearchDir = execDir;
-      }
-      String targetDir = targetDir(root, execDir);
+      String targetDir = createTargetDir(root, execDir);
       String[] options = new String[] {"-d", targetDir} ;
       Iterable<String> compileOptions = Arrays.asList(options);
       DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
@@ -114,7 +110,7 @@ public class Compilation {
             = compiler.getStandardFileManager(null, null, null);
       Iterable<? extends JavaFileObject> units;
       List<File> classes = new FilesFinder().filteredFiles(root + F_SEP
-            + sourceDir, ".java", excludedSearchDir);
+            + sourceDir, ".java", execDir);
 
       File[] fileArr = classes.toArray(new File[classes.size()]);
       units = fileManager.getJavaFileObjects(fileArr);
@@ -128,7 +124,7 @@ public class Compilation {
          FileUtils.logStack(e);
       }
       if (includedExt != null) {
-         copyIncludedFiles(root, sourceDir, execDir, includedExt, excludedSearchDir);
+         copyIncludedFiles(root, sourceDir, execDir, includedExt);
       }
    }
 
@@ -163,7 +159,7 @@ public class Compilation {
       }
    }
 
-   private String targetDir(String root, String execDir) {
+   private String createTargetDir(String root, String execDir) {
       String targetDir;
       if (execDir.length() > 0) {
          File target = new File(root + F_SEP + execDir);
@@ -177,7 +173,7 @@ public class Compilation {
    }
 
    private void copyIncludedFiles(String root, String sourceDir, String execDir,
-         String[] includedExt, String excludedDir) {
+         String[] includedExt) {
 
       if (sourceDir.length() == 0 && execDir.length() == 0) {
          return;
@@ -188,7 +184,7 @@ public class Compilation {
       }
       for (String ext : includedExt) {
          List<File> includedFiles = new FilesFinder().filteredFiles(searchRoot,
-               ext, excludedDir);
+               ext, execDir);
 
          try {
             for (File f : includedFiles) {
