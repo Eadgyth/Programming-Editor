@@ -174,10 +174,12 @@
                 If no name is specified the name of the main class is used. Note that presently only
                 files found in the assigned project are bundled in a jar when the 'Create jar' option of
                 the program is selected.</li>
-            <li>To include files other than java (or class) files in a compilation and in a jar file the
-                extensions of these files would be specified in the text field 'Included file types'.
+            <li>To include files other than Java files in a compilation and in a jar file the extensions
+                of these files may be be specified in the text field 'Included non-Java file types'.
                 The files are searched in the sources directory (in a compilation) and in the executables
-                directory (for creating a jar) if these directories are defined in the assigned project.
+                directory (for creating a jar) and their sub-directories if these directories are defined
+                in the assigned project. Otherwise the search would start in the root directory of the
+                project.
                 </li>
          </ol>
 
