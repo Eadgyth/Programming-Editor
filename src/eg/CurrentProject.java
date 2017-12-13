@@ -82,7 +82,7 @@ public class CurrentProject {
    }
    
    /**
-    * Tries to retrieve a project whose configuration is saved in the
+    * Tries to retrieve a project whose configuration is saved in an
     * 'eadconfig' file in the project's directory or, if not existent,
     * in the program's prefs file.
     * @see eg.projects.ProjectConfig#retrieveProject(String)
@@ -107,13 +107,8 @@ public class CurrentProject {
          }
       }
       else {
-         if (fromList == current) {
+         if (fromList == current || changeProject(fromList)) {
             current.makeSetWinVisible();
-         }
-         else {
-            if (changeProject(fromList)) {
-               current.makeSetWinVisible();
-            }
          }
       }
    }

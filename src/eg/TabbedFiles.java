@@ -213,8 +213,8 @@ public class TabbedFiles implements Observer {
     * Tries to close all tabs and creates a new tab with a blank document
     * if all previous tabs were closed and the specified boolean is true
     *
-    * @param createBlankDoc  the boolean that indicates if a new blank
-    * document is created
+    * @param createBlankDoc  the boolean that is true to create a new blank
+    * document
     */
    public void closeAll(boolean createBlankDoc) {
       int count = unsavedTab();

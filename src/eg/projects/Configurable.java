@@ -26,7 +26,7 @@ public interface Configurable {
    public void makeSetWinVisible();
    
    /**
-    * If a project can be successfully configured based on the
+    * Returns if a project can be successfully configured based on the
     * entries in this settings window.
     *
     * @param dir  the directory that may equal or may be in the
@@ -36,7 +36,7 @@ public interface Configurable {
    public boolean configureProject(String dir);
    
    /**
-    * If a project stored in a preferences file can be retrieved
+    * Returns if a project stored in a preferences file can be retrieved
     *
     * @param dir  the directory that may equal or may be in the
     * project's root directory
@@ -45,10 +45,11 @@ public interface Configurable {
    public boolean retrieveProject(String dir);
    
    /**
-    * True if the project is configured with a (main) project file. False
-    * means that only the project's root directory is specified
+    * Returns the boolean that indicates if the project uses a (main)
+    * project file. False means that only the project's root directory
+    * is specified
     *
-    * @return  if the project uses a project file
+    * @return  the boolean value
     */
    public boolean usesProjectFile();
    
