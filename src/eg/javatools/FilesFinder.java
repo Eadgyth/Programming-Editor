@@ -1,67 +1,56 @@
 package eg.javatools;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.List;
+
 import java.io.File;
 import java.io.FilenameFilter;
 
 /**
- * Static methods to find and list files in a directory and
- * sub-directories from that
+ * The list of files in a directory and its sub-directories with a given
+ * file extension
  */
 public class FilesFinder {
 
-   private final List<File> resultList = new ArrayList<>();
+   private List<File> resultList;
 
    /**
-    * Returns a <code>List</code> of all files in the specified
-    * directory with the specified extension
+    * Returns a <code>List</code> of all files with the specified
+    * extension in the specified directory and its sub-directories
     *
     * @param dir  the directory
     * @param extension  the file extension. Has the form '.java', for example.
-    * @param excludedDirName  the name of an excluded directory
+    * @param excludedDirName  the name of an exclueded directory
     * @return  the List of the files
     */
    public List<File> filteredFiles(String dir, String extension,
          String excludedDirName) {
 
-      if (!testPath(dir)) {
-         return null;
+      File f = new File(dir);
+      if (!f.exists() || !f.isDirectory()) {
+         throw new IllegalArgumentException(dir + " is not a directory");
       }
-      getFilteredFiles(dir, extension, excludedDirName);
+      resultList = new ArrayList<>();
+      getFilteredFiles(f, extension, excludedDirName);
       return resultList;
-   }      
+   }
 
    //
    //--private--/
    //
 
-   private void getFilteredFiles(String dir, String extension,
-         String excludedDirName) {
-
-      FilenameFilter filter = new FilenameFilter() {
-         @Override
-         public boolean accept(File direct, String name) {
-            return name.endsWith(extension);
-         }
-      };
-      File[] filesInPath = new File(dir).listFiles();
-      File[] targets     = new File(dir).listFiles(filter);
-      for (File f : targets) {
-         resultList.add(f);
-      }
-      for (File f : filesInPath) {
-         if (f.isDirectory()
-             && (excludedDirName.length() == 0
-             || !f.getName().equals(excludedDirName))) {
-
-            getFilteredFiles(f.toString(), extension, excludedDirName);
+   private void getFilteredFiles(File f, String extension, String excl) {
+      FilenameFilter filter = (File dir, String name) -> name.endsWith(extension);
+      File[] list = f.listFiles();
+      File[] targets  = f.listFiles(filter);
+      resultList.addAll(Arrays.asList(targets));
+      for (File fInList : list) {
+         if (fInList.isDirectory()) {
+            if (excl.length() == 0 || !fInList.getName().equals(excl)) {
+                  getFilteredFiles(fInList, extension, excl);
+            }
          }
       }
-   }
-
-   private boolean testPath(String path) {
-      File f = new File(path);
-      return f.exists() && f.isDirectory();
    }
 }
