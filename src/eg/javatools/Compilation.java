@@ -144,7 +144,7 @@ public class Compilation {
          String[] includedExt) {
 
       if (sourceDir.length() == 0 && execDir.length() == 0) {
-         return;
+         return; // no need to copy something
       }
       String searchRoot = root;
       if (sourceDir.length() > 0) {

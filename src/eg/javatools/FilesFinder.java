@@ -25,14 +25,14 @@ public class FilesFinder {
     * @return  the List of the files
     */
    public List<File> filteredFiles(String dir, String extension,
-         String excludedDirName) {
+         String excludedDirName) {         
 
       File f = new File(dir);
       if (!f.exists() || !f.isDirectory()) {
          throw new IllegalArgumentException(dir + " is not a directory");
       }
       resultList = new ArrayList<>();
-      getFilteredFiles(f, extension, excludedDirName);
+      setFilteredFiles(f, extension, excludedDirName);
       return resultList;
    }
 
@@ -40,7 +40,7 @@ public class FilesFinder {
    //--private--/
    //
 
-   private void getFilteredFiles(File f, String extension, String excl) {
+   private void setFilteredFiles(File f, String extension, String excl) {
       FilenameFilter filter = (File dir, String name) -> name.endsWith(extension);
       File[] list = f.listFiles();
       File[] targets  = f.listFiles(filter);
@@ -48,7 +48,7 @@ public class FilesFinder {
       for (File fInList : list) {
          if (fInList.isDirectory()) {
             if (excl.length() == 0 || !fInList.getName().equals(excl)) {
-                  getFilteredFiles(fInList, extension, excl);
+                  setFilteredFiles(fInList, extension, excl);
             }
          }
       }

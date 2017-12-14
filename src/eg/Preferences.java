@@ -179,7 +179,7 @@ public class Preferences {
         prop = new Properties();
         prop.load(reader); 
       }
-      catch (IOException e){
+      catch (IOException e) {
         FileUtils.logStack(e);
       }
       finally {
@@ -197,13 +197,13 @@ public class Preferences {
       Writer writer = null;
       try {
          writer = new FileWriter(file);
-         for (int j = 0; j < allKeys.length; j++) {
-            prop.setProperty(allKeys[j], allValues[j]);
+         for (int i = 0; i < allKeys.length; i++) {
+            prop.setProperty(allKeys[i], allValues[i]);
          }         
          prop.store(writer, null);
       }
       catch (IOException e){
-        FileUtils.logStack(e);
+         FileUtils.logStack(e);
       }
       finally {
          try {
