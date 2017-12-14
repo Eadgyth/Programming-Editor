@@ -262,11 +262,10 @@ public class SyntaxSearch {
       while (start != -1) {
          start = toColor.toLowerCase().indexOf(tag, start);
          if (start != -1) {
-            boolean isStartTag = start > 0 && '<' == toColor.charAt(start - 1);               
+            boolean isStartTag = start > 0 && '<' == toColor.charAt(start - 1);
+            int endPos = start + tag.length();            
             if (isStartTag) {
-               if (toColor.length() > start + tag.length()
-                     && ' ' == toColor.charAt(start + tag.length())) {
-
+               if (toColor.length() > endPos && ' ' == toColor.charAt(endPos)) {
                   for (String s : attributes) {
                       htmlAttribute(s);
                   }
@@ -274,12 +273,10 @@ public class SyntaxSearch {
                }
             }
             boolean isEndTag = !isStartTag && start > 1
-                  && ('/' == toColor.charAt(start - 1)
-                  & '<' == toColor.charAt(start - 2));
+                  && '/' == toColor.charAt(start - 1)
+                  && '<' == toColor.charAt(start - 2);
 
-            if (SyntaxUtils.isWordEnd(toColor, start + tag.length())
-                  && (isStartTag || isEndTag)) {
-
+            if (SyntaxUtils.isWordEnd(toColor, endPos) && (isStartTag || isEndTag)) {
                setCharAttr(start + posStart, tag.length(), Attributes.BLUE_BOLD);
             }
             start += tag.length();
@@ -367,21 +364,22 @@ public class SyntaxSearch {
          if (start != -1) {
             boolean notQuoted = true; // double quotes outdo single quotes
             int length = 0;
-            if (isSingleQuote) {
-               notQuoted = !SyntaxUtils.isInQuotes(toColor, start, DOUBLE_QUOTE);
-            }
+            notQuoted = !isSingleQuote
+                  || !SyntaxUtils.isInQuotes(toColor, start, DOUBLE_QUOTE);
+
             end = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start + 1);
             if (end != -1) {
-               if (isSingleQuote) {
-                  notQuoted = notQuoted
-                        && !SyntaxUtils.isInQuotes(toColor, end, DOUBLE_QUOTE);
-               }
+               notQuoted = !isSingleQuote
+                      || (notQuoted
+                      && !SyntaxUtils.isInQuotes(toColor, end, DOUBLE_QUOTE));
+
                if (notQuoted) {
                   length = end - start + 1;
                   int absStart = start + lineStart;
                   if (isHtml) {
-                     boolean ok = isInBlock("<", ">", absStart);
-                     if (ok) {
+                     int lastTagStart
+                           = SyntaxUtils.lastBlockStart(text, absStart, "<", ">");
+                     if (lastTagStart != -1) {
                         setCharAttr(absStart, length, Attributes.PURPLE_PLAIN);
                      }
                   }
