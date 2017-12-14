@@ -37,20 +37,14 @@ import eg.console.ConsolePanel;
 public class Compilation {
 
    private final static String F_SEP = File.separator;
-   private final static String DIVIDING_LINE;
+   private final static String DIVIDING_LINE
+         = new String(new char[90]).replace('\0', '_');
 
+   private final FilesFinder fFind = new FilesFinder();
    private final ConsolePanel consPnl;
 
    private boolean success = false;
    private String errorSource = "";
-
-   static {
-      String s = "";
-      for (int i = 0; i <= 90; i++) {
-         s += "_";
-      }
-      DIVIDING_LINE = s;
-   }
 
    /**
     * @param consPnl  the reference to {@link ConsolePanel} in whose
@@ -91,8 +85,8 @@ public class Compilation {
     *       class files
     * @param sourceDir  the name of the directory that contains java files or
     *       packages
-    * @param includedExt  the array of extensions of files that are included
-    *       in the executables folder in addition to class files. May be null.
+    * @param includedExt  the array of extensions of files that are copied
+    *       to the executables folder. May be null.
     */
    public void compile(String root, String execDir, String sourceDir,
          String[] includedExt) {
@@ -108,9 +102,10 @@ public class Compilation {
       DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
       StandardJavaFileManager fileManager
             = compiler.getStandardFileManager(null, null, null);
+
       Iterable<? extends JavaFileObject> units;
-      List<File> classes = new FilesFinder().filteredFiles(root + F_SEP
-            + sourceDir, ".java", execDir);
+      List<File> classes = fFind.filteredFiles(root + F_SEP + sourceDir,
+            ".java", execDir);
 
       File[] fileArr = classes.toArray(new File[classes.size()]);
       units = fileManager.getJavaFileObjects(fileArr);
@@ -131,33 +126,6 @@ public class Compilation {
    //
    //--private--/
    //
-
-   private void output(DiagnosticCollector<JavaFileObject> diagnostics) {
-      errorSource = "";
-      if (success) {
-         consPnl.appendText("<<Compilation successful>>");
-      }
-      else {
-         Diagnostic<?> firstSource = diagnostics.getDiagnostics().get(0);
-         if (firstSource != null) {
-            String file = new File(firstSource.getSource().toString()).getName();
-            file = file.substring(0, file.length() - 1);
-            errorSource = "First listed error is found in " + file + ", line "
-                  + firstSource.getLineNumber();
-         }
-         for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
-            consPnl.appendText(diagnostic.getKind().toString() + ":\n");
-            consPnl.appendText(diagnostic.getCode() + ": ");
-            consPnl.appendText(diagnostic.getMessage( null ) + "\n");
-            consPnl.appendText("at line: " + diagnostic.getLineNumber() + "\n");
-            consPnl.appendText("at column: " + diagnostic.getColumnNumber() + "\n");
-            if (diagnostic.getSource() != null) {
-               consPnl.appendText(diagnostic.getSource().toString() + "\n");
-            }
-            consPnl.appendText(DIVIDING_LINE + "\n");
-         }
-      }
-   }
 
    private String createTargetDir(String root, String execDir) {
       String targetDir;
@@ -183,16 +151,14 @@ public class Compilation {
          searchRoot += F_SEP + sourceDir;
       }
       for (String ext : includedExt) {
-         List<File> includedFiles = new FilesFinder().filteredFiles(searchRoot,
-               ext, execDir);
+         List<File> includedFiles = fFind.filteredFiles(searchRoot, ext, execDir);
 
          try {
             for (File f : includedFiles) {
                String source = f.getPath();
-               if (".txt".equals(ext) && source.endsWith("manifest.txt")) {
-                  continue;
-               }
-               if (".properties".equals(ext) && source.endsWith("eadconfig.properties")) {
+               if (".properties".equals(ext)
+                     && source.endsWith("eadconfig.properties")) {
+
                   continue;
                }
                String destination = null;
@@ -210,13 +176,38 @@ public class Compilation {
                   File fDest = new File(destination);
                   java.nio.file.Files.copy(f.toPath(), fDest.toPath(),
                         REPLACE_EXISTING);
-
-                  System.out.println("Copied resources file: " + destination);
                }
             }
          }
          catch (IOException e) {
             FileUtils.logStack(e);
+         }
+      }
+   }
+
+   private void output(DiagnosticCollector<JavaFileObject> diagnostics) {
+      errorSource = "";
+      if (success) {
+         consPnl.appendText("<<Compilation successful>>");
+      }
+      else {
+         Diagnostic<?> firstSource = diagnostics.getDiagnostics().get(0);
+         if (firstSource != null) {
+            String file = new File(firstSource.getSource().toString()).getName();
+            file = file.substring(0, file.length() - 1);
+            errorSource = "First listed error is found in " + file + ", line "
+                  + firstSource.getLineNumber();
+         }
+         for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
+            consPnl.appendText(diagnostic.getKind().toString() + ":\n");
+            consPnl.appendText(diagnostic.getCode() + ": ");
+            consPnl.appendText(diagnostic.getMessage( null ) + "\n");
+            consPnl.appendText("at line: " + diagnostic.getLineNumber() + "\n");
+            consPnl.appendText("at column: " + diagnostic.getColumnNumber() + "\n");
+            if (diagnostic.getSource() != null) {
+               consPnl.appendText(diagnostic.getSource().toString() + "\n");
+            }
+            consPnl.appendText(DIVIDING_LINE + "\n");
          }
       }
    }

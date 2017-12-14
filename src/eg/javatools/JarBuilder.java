@@ -23,6 +23,8 @@ import eg.utils.FileUtils;
 public class JarBuilder {
 
    private final static String F_SEP = File.separator;
+   
+   private final FilesFinder fFind = new FilesFinder();
    private final ConsolePanel consPnl;
    
    private boolean isManifest = false;
@@ -85,19 +87,23 @@ public class JarBuilder {
          searchRoot += F_SEP + execDir;
       }
       List<File> classes
-            = new FilesFinder().filteredFiles(searchRoot, ".class", sourceDir);
-      List<File> relativeClassFilePaths = relativePaths(searchRoot, classes);
+            = fFind.filteredFiles(searchRoot, ".class", sourceDir);
+      List<File> relativeClassFilePaths
+            = relativePaths(searchRoot, classes);
       for (File i : relativeClassFilePaths) {
          cmd.add(i.toString());
       }
       if (includedExt != null) {
          for (String ext : includedExt) {
             List<File> includedFiles
-                  = new FilesFinder().filteredFiles(searchRoot, ext, sourceDir);
-            List<File> relativeInclFilePaths = relativePaths(searchRoot, includedFiles);
+                  = fFind.filteredFiles(searchRoot, ext, sourceDir);
+            List<File> relativeInclFilePaths
+                  = relativePaths(searchRoot, includedFiles);
             for (File f : relativeInclFilePaths) {
                String path = f.getPath();
-               if (".properties".equals(ext) && path.endsWith("eadconfig.properties")) {
+               if (".properties".equals(ext)
+                     && path.endsWith("eadconfig.properties")) {
+
                   continue;
                }
                cmd.add(f.toString());
