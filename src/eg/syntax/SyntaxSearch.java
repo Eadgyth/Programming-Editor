@@ -365,16 +365,16 @@ public class SyntaxSearch {
       while (start != -1 && end != -1) {
          start = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start);
          if (start != -1) {
-            boolean notQuoted = true;
+            boolean notQuoted = true; // double quotes outdo single quotes
             int length = 0;
             if (isSingleQuote) {
-               notQuoted = !SyntaxUtils.isInQuotes(toColor, start, quoteMark);
+               notQuoted = !SyntaxUtils.isInQuotes(toColor, start, DOUBLE_QUOTE);
             }
             end = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start + 1);
             if (end != -1) {
                if (isSingleQuote) {
                   notQuoted = notQuoted
-                        && !SyntaxUtils.isInQuotes(toColor, end, quoteMark);
+                        && !SyntaxUtils.isInQuotes(toColor, end, DOUBLE_QUOTE);
                }
                if (notQuoted) {
                   length = end - start + 1;
