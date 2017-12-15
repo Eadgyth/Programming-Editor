@@ -14,6 +14,7 @@ import java.io.File;
 
 //--Eadgyth--//
 import eg.utils.Dialogs;
+import eg.utils.FileUtils;
 
 import eg.document.FileDocument;
 import eg.ui.MainWin;
@@ -49,7 +50,7 @@ public class TabbedFiles implements Observer {
       docUpdate = new DocumentUpdate(mw, fDoc);
       format.setEditAreaArr(editArea);
       prefs.readPrefs();
-      lang = Languages.valueOf(prefs.getProperty("language"));
+      readLanguageFromPrefs();
       String recentDir = prefs.getProperty("recentPath");
       fc = new FileChooser(recentDir);
 
@@ -417,5 +418,14 @@ public class TabbedFiles implements Observer {
 
    private int nTabs() {
       return tabPane.getTabCount();
+   }
+   
+   private void readLanguageFromPrefs() {
+      try {
+         lang = Languages.valueOf(prefs.getProperty("language"));
+      }
+      catch (IllegalArgumentException e) {
+         lang = Languages.NORMAL_TEXT;
+      }
    }
 }

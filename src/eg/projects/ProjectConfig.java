@@ -259,6 +259,13 @@ public abstract class ProjectConfig implements Configurable {
             storeInPrefs();
          }
       }
+      else {
+         if (prefs == EAD_CONFIG) {
+            Dialogs.errorMessage(
+                  "The eadconfig file found in "
+                  + root + " may be incorrect");
+         }
+      }
    }
 
    private boolean isInProject(String dir, String projRoot) {
@@ -314,7 +321,7 @@ public abstract class ProjectConfig implements Configurable {
          sb.append(moduleDirName);
          sb.append(F_SEP);
       }
-      if (mainFile.length() > 0) {
+      if (useProjectFile) {
          sb.append(mainFile);
          sb.append(".");
          sb.append(ext);

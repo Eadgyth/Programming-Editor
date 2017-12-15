@@ -24,8 +24,9 @@ public class Edit {
 
    private final static Clipboard CLIPBOARD
          = Toolkit.getDefaultToolkit().getSystemClipboard();
-   private static final String[] SPACE_NUMBER = { "1", "2", "3", "4", "5", "6" };
-   
+
+   private static final String[] SPACE_NUMBER = { "0", "1", "2", "3", "4", "5", "6" };
+
    private final Preferences prefs = new Preferences();
 
    private FileDocument fDoc;

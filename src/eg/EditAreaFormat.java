@@ -29,7 +29,7 @@ public class EditAreaFormat {
       prefs.readPrefs();
       isWordwrap = "enabled".equals(prefs.getProperty("wordWrap"));
       font = prefs.getProperty("font");
-      fontSize = Integer.parseInt(prefs.getProperty("fontSize"));
+      readFontSize();
       fontSetWin = new FontSettingWin(font, fontSize);
       fontSetWin.okAct(e -> setFont());
    }
@@ -120,5 +120,14 @@ public class EditAreaFormat {
       prefs.storePrefs("fontSize", String.valueOf(fontSize));
       prefs.storePrefs("font", font);
       fontSetWin.makeVisible(false);
+   }
+   
+   private void readFontSize() {
+      try {
+         fontSize = Integer.parseInt(prefs.getProperty("fontSize"));
+      }
+      catch (NumberFormatException e) {
+         fontSize = 10;
+      }
    }
 }

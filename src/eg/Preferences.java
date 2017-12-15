@@ -9,6 +9,7 @@ import java.io.Writer;
 import java.io.FileWriter;
 
 import eg.utils.FileUtils;
+import eg.utils.Dialogs;
 
 /**
  * The preferences stored in and read from .properties files
@@ -64,21 +65,27 @@ public class Preferences {
     * {@link #readConfig(String)}. These also must be invoked when a
     * property may have changed during runtime.
     *
-    * @param property  the property which a value is searched for
-    * @return  the value for the specified property
+    * @param property  the property
+    * @return  the value for the specified property. The empty string if the
+    * property is missing
     */
    public String getProperty(String property) {
       if (prop == null) {
          throw new IllegalStateException("No properties were read in");
       }
-      return prop.getProperty(property);
+      if (prop.getProperty(property) == null) {
+         return "";
+      }
+      else {
+         return prop.getProperty(property);
+      }
    }
 
    /**
     * Reads in the properties stored in the prefs.properties file
     */
    public void readPrefs() {
-      readProps(PREFS_FILE);
+      readProperties(PREFS_FILE);
    }
    
    /**
@@ -88,7 +95,7 @@ public class Preferences {
     * @param dir  the directory
     */
    public void readConfig(String dir) {
-      readProps(dir + F_SEP + CONFIG_FILE);
+      readProperties(dir + F_SEP + CONFIG_FILE);
    }
 
    /**
@@ -152,7 +159,7 @@ public class Preferences {
       prop = new Properties();
       try {
          writer = new FileWriter(file);
-          for (String allKey : allKeys) {
+         for (String allKey : allKeys) {
               prop.setProperty(allKey, "");
           }         
          prop.store(writer, null);
@@ -171,16 +178,19 @@ public class Preferences {
       }
    }
    
-   private void readProps(String file) { 
-      InputStream reader = null;
-    
+   private void readProperties(String file) { 
+      InputStream reader = null;    
       try {      
         reader = new FileInputStream(file);
         prop = new Properties();
         prop.load(reader); 
       }
       catch (IOException e) {
-        FileUtils.logStack(e);
+         if (PREFS_FILE.equals(file)) {
+            createFile(PREFS_FILE, PREFS_KEYS);
+            Dialogs.warnMessage(PREFS_FILE + " could not be found"
+                  + " and is created without presets.");
+         }
       }
       finally {
          try {
@@ -198,7 +208,12 @@ public class Preferences {
       try {
          writer = new FileWriter(file);
          for (int i = 0; i < allKeys.length; i++) {
-            prop.setProperty(allKeys[i], allValues[i]);
+            if (allValues[i] == null) {
+               prop.setProperty(allKeys[i], "");
+            }
+            else {
+               prop.setProperty(allKeys[i], allValues[i]);
+            }
          }         
          prop.store(writer, null);
       }

@@ -45,7 +45,13 @@ public class ViewSettingWin {
    
    public ViewSettingWin() {
       prefs.readPrefs();
-      selectLaf.setSelectedItem(prefs.getProperty("LaF"));
+      String laf = prefs.getProperty("LaF");
+      if (laf.length() > 0) {
+         selectLaf.setSelectedItem(laf);
+      }
+      else {
+         selectLaf.setSelectedItem(LAF_OPT[1]);
+      }
       selectIconSize.setSelectedItem(prefs.getProperty("iconSize"));
       initFrame();
    }

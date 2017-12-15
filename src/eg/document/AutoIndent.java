@@ -25,7 +25,9 @@ public class AutoIndent {
     * @param indentUnit  the indent unit
     */
    public void setIndentUnit(String indentUnit) {
-      if (indentUnit == null || !indentUnit.matches("[\\s]+")) {
+      if (indentUnit == null
+            || (indentUnit.length() > 0 && !indentUnit.matches("[\\s]+"))) {
+
          throw new IllegalArgumentException(
                "The indent unit must consist of spaces");
       }
