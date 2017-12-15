@@ -155,33 +155,20 @@ public class Preferences {
    //
    
    private void createFile(String file, String[] allKeys) {
-      Writer writer = null;
       prop = new Properties();
-      try {
-         writer = new FileWriter(file);
+      try (FileWriter writer = new FileWriter(file)) {
          for (String allKey : allKeys) {
               prop.setProperty(allKey, "");
           }         
-         prop.store(writer, null);
+          prop.store(writer, null);
       }
       catch (IOException e){
          FileUtils.logStack(e);
       }
-      finally {
-         try {
-            if (writer != null) {
-               writer.close();
-            }
-         } catch (IOException e) {
-            FileUtils.logStack(e);
-         }
-      }
    }
    
-   private void readProperties(String file) { 
-      InputStream reader = null;    
-      try {      
-        reader = new FileInputStream(file);
+   private void readProperties(String file) {
+      try (FileInputStream reader = new FileInputStream(file)) {      
         prop = new Properties();
         prop.load(reader); 
       }
@@ -192,21 +179,10 @@ public class Preferences {
                   + " and is created without presets.");
          }
       }
-      finally {
-         try {
-            if (reader != null) {
-               reader.close();
-            }
-         } catch (IOException e) {
-            FileUtils.logStack(e);
-         }
-      }
    }
    
    private void store(String file, String[] allKeys, String[] allValues) {
-      Writer writer = null;
-      try {
-         writer = new FileWriter(file);
+      try (FileWriter writer = new FileWriter(file)) {
          for (int i = 0; i < allKeys.length; i++) {
             if (allValues[i] == null) {
                prop.setProperty(allKeys[i], "");
@@ -219,15 +195,6 @@ public class Preferences {
       }
       catch (IOException e){
          FileUtils.logStack(e);
-      }
-      finally {
-         try {
-            if (writer != null) {
-               writer.close();
-            }
-         } catch (IOException e) {
-            FileUtils.logStack(e);
-         }
       }
    }
 }
