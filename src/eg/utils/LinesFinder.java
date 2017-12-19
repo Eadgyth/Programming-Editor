@@ -32,7 +32,12 @@ public class LinesFinder {
     * @return  the line
     */
    public static String line(String text, int lineStart, int lineEnd) {
-      return text.substring(lineStart + 1, lineEnd);
+      if (text.length() == 0) {
+         return text;
+      }
+      else {
+         return text.substring(lineStart + 1, lineEnd);
+      }
    }
    
    /**
@@ -70,15 +75,12 @@ public class LinesFinder {
     *
     * @param text  the text
     * @param pos  the position
-    * @return  the newline position. 0 if the line is the first line
+    * @return  the last newline position. -1 if the line is the first line
     */
    public static int lastNewline(String text, int pos) {
       int i = text.lastIndexOf(NEW_LINE, pos);
       if (i == pos) {
          i = text.lastIndexOf(NEW_LINE, pos - 1);
-      }
-      else if (i == -1) {
-         i = 0;
       }
       return i;
    }
