@@ -242,10 +242,11 @@ public class TypingEdit {
    }
    
    private void colorLine() {
-      String toColor = LinesFinder.lineAtPos(text, pos);
-      int posStart = LinesFinder.lastNewline(text, pos) + 1;
+      int lineStart = LinesFinder.lastNewline(text, pos);
+      int lineEnd = LinesFinder.nextNewline(text, pos);
+      String toColor = LinesFinder.line(text, lineStart, lineEnd);
       EventQueue.invokeLater(() ->
-         col.color(text, toColor, pos, posStart));
+         col.color(text, toColor, pos, lineStart + 1));
    }
 
    private void notifyUndoableState() {
