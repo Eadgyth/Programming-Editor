@@ -12,9 +12,6 @@ import eg.utils.LinesFinder;
  * The search and coloring of different syntax elements
  */
 public class SyntaxSearch {
-   
-   private final static char SINGLE_QUOTE = '\'';
-   private final static char DOUBLE_QUOTE = '"';
 
    private final StyledDocument doc;
    private final SimpleAttributeSet normalSet;
@@ -71,7 +68,7 @@ public class SyntaxSearch {
       this.pos = pos;
       this.posStart = posStart;
       isTypeMode = !text.equals(toColor);
-      isMultiline = toColor.contains("\n");
+      isMultiline = LinesFinder.isMultiline(toColor);
       colorable.color(this);
    }
 
@@ -342,21 +339,21 @@ public class SyntaxSearch {
          String[] chunkArr = toColor.split("\n");
          int sum = 0;
          for (String s : chunkArr) {
-            quoted(s, posStart + sum, DOUBLE_QUOTE, isHtml);
-            quoted(s, posStart + sum, SINGLE_QUOTE, isHtml);
+            quoted(s, posStart + sum, SyntaxUtils.DOUBLE_QUOTE, isHtml);
+            quoted(s, posStart + sum, SyntaxUtils.SINGLE_QUOTE, isHtml);
             sum += s.length() + 1;
          }
       }
       else {
-         quoted(toColor, posStart, DOUBLE_QUOTE, isHtml);
-         quoted(toColor, posStart, SINGLE_QUOTE, isHtml);
+         quoted(toColor, posStart, SyntaxUtils.DOUBLE_QUOTE, isHtml);
+         quoted(toColor, posStart, SyntaxUtils.SINGLE_QUOTE, isHtml);
       }
    }
 
    private void quoted(String toColor, int lineStart, char quoteMark,
          boolean isHtml) {
 
-      final boolean isSingleQuote = quoteMark == SINGLE_QUOTE;
+      final boolean isSingleQuote = quoteMark == SyntaxUtils.SINGLE_QUOTE;
       int start = 0;
       int end = 0;
       while (start != -1 && end != -1) {
@@ -365,13 +362,13 @@ public class SyntaxSearch {
             boolean notQuoted = true; // double quotes outdo single quotes
             int length = 0;
             notQuoted = !isSingleQuote
-                  || !SyntaxUtils.isInQuotes(toColor, start, DOUBLE_QUOTE);
+                  || !SyntaxUtils.isInQuotes(toColor, start, SyntaxUtils.DOUBLE_QUOTE);
 
             end = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start + 1);
             if (end != -1) {
                notQuoted = !isSingleQuote
                       || (notQuoted
-                      && !SyntaxUtils.isInQuotes(toColor, end, DOUBLE_QUOTE));
+                      && !SyntaxUtils.isInQuotes(toColor, end, SyntaxUtils.DOUBLE_QUOTE));
 
                if (notQuoted) {
                   length = end - start + 1;
@@ -539,8 +536,8 @@ public class SyntaxSearch {
          line = toColor;
          relStart = pos;
       }
-      return SyntaxUtils.isInQuotes(line, relStart, DOUBLE_QUOTE)
-            || SyntaxUtils.isInQuotes(line, relStart, SINGLE_QUOTE);
+      return SyntaxUtils.isInQuotes(line, relStart, SyntaxUtils.DOUBLE_QUOTE)
+            || SyntaxUtils.isInQuotes(line, relStart, SyntaxUtils.SINGLE_QUOTE);
    }
 
    private void setCharAttr(int start, int length, SimpleAttributeSet set) {

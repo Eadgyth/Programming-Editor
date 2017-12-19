@@ -85,7 +85,7 @@ public class LineNumberDocument {
    private void removeLineNumbers(int prevLineNr, int lineNr) {
       int length = 0;
       for (int i = prevLineNr; i > lineNr; i--) {
-          length += (Integer.toString(i).length() + 1);
+          length += ((int) Math.log10(i) + 1) + 1;
       }
       try {
          doc.remove(doc.getLength() - length, length);

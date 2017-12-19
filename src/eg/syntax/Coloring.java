@@ -8,7 +8,8 @@ import eg.Languages;
 
 /**
  * Maintains a <code>SyntaxSearch</code>, in which the <code>Colorable</code> is
- * set and maybe changed depending on the language
+ * set and maybe changed depending on the language and which can be used to color
+ * text
  * @see SyntaxSearch
  */
 public class Coloring {

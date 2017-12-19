@@ -62,7 +62,7 @@ public class MainWin implements ConsoleOpenable {
 
    private final MenuBar menuBar = new MenuBar();
    private final Toolbar toolbar = new Toolbar();
-   private final ExtTabbedPane tabPane = UiComponents.extTabbedPane();
+   private final ExtTabbedPane tabPane = UiComponents.scolledUnfocusableTabPane();
    private final FileTree fileTree = new FileTree();
    private final ConsolePanel console = new ConsolePanel();
    private final ToolPanel toolPnl = new ToolPanel();

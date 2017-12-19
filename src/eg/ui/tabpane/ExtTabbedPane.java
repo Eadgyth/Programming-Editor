@@ -14,7 +14,7 @@ import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.border.EmptyBorder;
 
 //--Eadgyth-/
-import eg.Constants; 
+import eg.Constants;
 
 /**
  * A JTabbedPane with a close button in the tabs, the possibility
@@ -25,14 +25,12 @@ public class ExtTabbedPane extends JTabbedPane {
 
    private final static FlowLayout FLOW_LAYOUT_LEFT
          = new FlowLayout(FlowLayout.LEFT, 0, 0);
-
    private final static EmptyBorder EMPTY_BORDER = new EmptyBorder(1, 5, 0, 0);
-
    private final ExtTabbedPaneUI ui = new ExtTabbedPaneUI();
 
    private int iTabMouseOver = -1;
    private boolean isShowTabbar;
-   
+
    /**
     * Creates an <code>ExtTabbedPane</code> using the parameterless constructor
     * of the superclass (tab placement at the top) and sets this
@@ -43,13 +41,13 @@ public class ExtTabbedPane extends JTabbedPane {
       super.setUI(ui);
       addMouseMotionListener(mml);
    }
-   
+
    /**
     * Sets the specified boolean that indicates if the tabbar is shown
     * or hidden
     *
-    * @param b  the boolean
-    * @throws IllegalStateException  if <code>b</code> is false and more
+    * @param b  the boolean value, true to show the tabbar
+    * @throws IllegalStateException  if <code>b</code> is false while more
     * than one tab is open
     */
    public void showTabbar(boolean b) {
@@ -75,7 +73,7 @@ public class ExtTabbedPane extends JTabbedPane {
     */
    public void addTab(String title, Component c, JButton closeBt) {
       int index = getTabCount();
-      super.addTab(null, c);
+      addTab(null, c);
       JPanel tabPnl = new JPanel(FLOW_LAYOUT_LEFT);
       tabPnl.setOpaque(false);
       JLabel titleLb = new JLabel(title);
@@ -88,12 +86,36 @@ public class ExtTabbedPane extends JTabbedPane {
       setTabComponentAt(index, tabPnl);
       setSelectedIndex(index);
    }
-   
-   @Override
-   public void setTitleAt(int index, String title) {
+
+   /**
+    * Sets the title at the index in tabs that were added by
+    * {@link #addTab(String,Component,JButton)}
+    *
+    * @param index  the index
+    * @param title  the title
+    */
+   public void setTitle(int index, String title) {
       JPanel p = (JPanel) getTabComponentAt(index);
       JLabel lb = (JLabel) p.getComponent(0);
       lb.setText(title);
+   }
+
+   /**
+    * Returns the index of the tab where the mouse was moved over
+    *
+    * @return  the index
+    */
+   public int iTabMouseOver() {
+      return iTabMouseOver;
+   }
+
+   /**
+    * Returns the boolean that indicates if this tabbar is set visible
+    *
+    * @return  the boolean value
+    */
+   public boolean isShowTabbar() {
+      return isShowTabbar;
    }
 
    /**
@@ -103,39 +125,21 @@ public class ExtTabbedPane extends JTabbedPane {
    public void updateUI() {
        super.setUI(ui);
    }
-   
+
    /**
     * No effect. The UI object is set in this class
     */
    @Override
    public void setUI(TabbedPaneUI ui) {
    }
-   
+
    /**
     * No effect. The placement must remain at the top
     */
    @Override
    public void setTabPlacement(int tabPlacement) {
    }
-   
-   /**
-    * Returns the index of the tab where the mouse was moved over
-    *
-    * @return  the index
-    */
-   public int iTabMouseOver() {
-      return iTabMouseOver;
-   }
-   
-   /**
-    * Returns the boolean that indicates if this tabbar is set visible
-    *
-    * @return  the boolean value
-    */
-   public boolean isShowTabbar() {
-      return isShowTabbar;
-   }
-   
+
    //
    //--private--/
    //

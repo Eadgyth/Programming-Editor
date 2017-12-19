@@ -21,7 +21,8 @@ public class UiComponents {
    /**
     * Creates a <code>JToolBar</code> with the last button (intended for a
     * close button) aligned at the right. The toolbar is not opaque, has
-    * a line border at the bottom and is not floatable
+    * a line border at the bottom and is not floatable. Buttons are not
+    * focusable.
     *
     * @param bts  the array of JButtons added to the toolbar
     * @param tooltips  the array of tooltips for the buttons
@@ -48,11 +49,11 @@ public class UiComponents {
    
    /**
     * Creates an <code>ExtTabbedPane</code> that is scrollable
-    * and not focusable
+    * and not focusable. The
     *
     * @return  a new {@link ExtTabbedPane}
     */
-   public static ExtTabbedPane extTabbedPane() {
+   public static ExtTabbedPane scolledUnfocusableTabPane() {
       ExtTabbedPane tabPane = new ExtTabbedPane();
       tabPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
       tabPane.setFocusable(false);

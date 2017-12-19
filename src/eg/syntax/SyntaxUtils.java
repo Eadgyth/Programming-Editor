@@ -5,8 +5,12 @@ package eg.syntax;
  */
 public class SyntaxUtils {
 
-   private SyntaxUtils() {}
-   
+   /**
+    * The single quote mark */
+   public final static char SINGLE_QUOTE = '\'';
+   /**
+    * The double quote mark */
+   public  final static char DOUBLE_QUOTE = '"';
    /**
     * The "slash-star" block comment start */
    public final static String BLOCK_CMNT_START = "/*";
@@ -51,7 +55,7 @@ public class SyntaxUtils {
          return true;
       }
    }
-   
+
    /**
     * Returns the boolean value that indicates if the character that
     * follows the specified position is not a letter or a digit
@@ -69,7 +73,7 @@ public class SyntaxUtils {
          return true;
       }
    }
-   
+
     /**
     * Returns the length of a word that starts at the specified
     * position and ends with one of the characters in the specified
@@ -112,7 +116,7 @@ public class SyntaxUtils {
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
     * @return  the position of the last block start. -1 if a block end
-    * is closer than a block start or if no block start is found 
+    * is closer than a block start or if no block start is found
     */
    public static int lastBlockStart(String text, int pos, String blockStart,
          String blockEnd) {
@@ -166,7 +170,7 @@ public class SyntaxUtils {
       }
       return nextEnd;
    }
-   
+
    /**
     * Returns if the section starting at the specified position
     * and spanning the specified length is bordered by double quotes
@@ -181,8 +185,10 @@ public class SyntaxUtils {
       boolean isInQuotes = false;
       int endPos = pos + length;
       if (pos > 0 & text.length() > endPos) {
-         isInQuotes = (text.charAt(pos - 1) == '\"' || text.charAt(pos - 1) == '\'')
-            & (text.charAt(endPos) == '\"' || text.charAt(endPos) == '\'');
+         isInQuotes = (text.charAt(pos - 1) == DOUBLE_QUOTE
+               || text.charAt(pos - 1) == SINGLE_QUOTE)
+               & (text.charAt(endPos) == DOUBLE_QUOTE
+               || text.charAt(endPos) == SINGLE_QUOTE);
       }
       return isInQuotes;
    }
@@ -193,8 +199,7 @@ public class SyntaxUtils {
     *
     * @param text  the text
     * @param pos  the position
-    * @param quoteMark  the quoteMark which is either the double or the
-    * single quote
+    * @param quoteMark  the quoteMark
     * @return  the boolean value
     */
    public static boolean isInQuotes(String text, int pos, char quoteMark) {
@@ -222,9 +227,9 @@ public class SyntaxUtils {
       }
       else {
          return false;
-      }     
+      }
    }
-   
+
    /**
     * Returns the next position, relative to the specified position, of the
     * specified string <code>toSearch</code> that is not preceded with a
@@ -242,15 +247,17 @@ public class SyntaxUtils {
       }
       return index;
    }
-   
+
    //
    //--private--/
    //
 
+   private SyntaxUtils() {}
+
    private static boolean isLetterOrDigit(char c) {
       return Character.isLetter(c) || Character.isDigit(c);
    }
-   
+
    private static boolean isEscaped(String text, int pos) {
       if (pos > 0) {
          return text.charAt(pos - 1) == '\\' && !isEscaped(text, pos - 1);

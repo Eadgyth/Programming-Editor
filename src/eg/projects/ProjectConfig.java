@@ -85,7 +85,7 @@ public abstract class ProjectConfig implements Configurable {
       else {
          projectRoot = findRootByTestName(dir);
       }
-      boolean success =  isConfigSuccessful();
+      boolean success = isConfigSuccessful();
       if (success) {
          setWin.setVisible(false);
       }
@@ -188,7 +188,7 @@ public abstract class ProjectConfig implements Configurable {
    protected String getSourceDirName() {
       return sourceDirName;
    }
-   
+
    /**
     * Returns the arguments for a start script
     *
@@ -197,7 +197,7 @@ public abstract class ProjectConfig implements Configurable {
    protected String getArgs() {
       return args;
    }
-   
+
    /**
     * Returns the extensions of files to be included in a build or
     * compilation. This is simply the input that was entered in the
@@ -259,13 +259,6 @@ public abstract class ProjectConfig implements Configurable {
             storeInPrefs();
          }
       }
-      else {
-         if (prefs == EAD_CONFIG) {
-            Dialogs.errorMessage(
-                  "The eadconfig file found in "
-                  + root + " may be incorrect");
-         }
-      }
    }
 
    private boolean isInProject(String dir, String projRoot) {
@@ -321,7 +314,7 @@ public abstract class ProjectConfig implements Configurable {
          sb.append(moduleDirName);
          sb.append(F_SEP);
       }
-      if (useProjectFile) {
+      if (mainFile.length() > 0) {
          sb.append(mainFile);
          sb.append(".");
          sb.append(ext);
@@ -390,20 +383,20 @@ public abstract class ProjectConfig implements Configurable {
    private void deleteConfigFile() {
       File configFile = new File(projectRoot + F_SEP
             + Preferences.CONFIG_FILE);
+
       if (configFile.exists()) {
-         int res = Dialogs.warnConfirmYesNo(
-                 "Saving the 'eadconfig' is disabled."
+         int res = Dialogs.warnConfirmYesNo("Saving the 'eadconfig' is disabled."
                + " Remove the config file?");
 
          if (res == 0) {
             boolean success = configFile.delete();
             if (!success) {
-               Dialogs.warnMessage(
-                     "Deleting the 'eadconfig' file failed");
+               Dialogs.warnMessage("Deleting the 'eadconfig' file failed");
             }
          }
          else {
             setWin.setSaveConfigSelected(true);
+            storeInEadConfig();
          }
       }
    }

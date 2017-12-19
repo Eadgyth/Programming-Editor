@@ -244,9 +244,7 @@ public class CurrentProject {
          if (projToFind == null) {
             for (String opt : PROJ_SUFFIXES) {
                projToFind = selProj.createProject(opt);
-               isFound = projToFind != null
-                     && projToFind.retrieveProject(dir);
-
+               isFound = projToFind != null && projToFind.retrieveProject(dir);
                if (isFound) {
                   break;
                }

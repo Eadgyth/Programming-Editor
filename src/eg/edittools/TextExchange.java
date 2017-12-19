@@ -29,8 +29,8 @@ public class TextExchange {
    private FileDocument sourceDoc;
 
    /**
-    * @param exchangeDoc  the <code>FileDocument</code> which is the
-    * exchange document
+    * @param exchangeDoc  the <code>FileDocument</code> that
+    * represents the exchange document
     */
    public TextExchange(FileDocument exchangeDoc) {
       this.exchangeDoc = exchangeDoc;
@@ -42,7 +42,8 @@ public class TextExchange {
    }
 
    /**
-    * Sets the <code>FileDocument</code> which is the source document
+    * Sets the <code>FileDocument</code> that represents the source
+    * document
     *
     * @param sourceDoc  the <code>FileDocument</code>
     */

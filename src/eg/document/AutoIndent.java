@@ -72,12 +72,12 @@ public class AutoIndent {
     * @param pos  the position
     */
    public void closedBracketIndent(String text, int pos) {
-      if (pos >= indentLength) {
-         if ('}' == text.charAt(pos)) {
-            if (text.substring(pos - indentLength, pos).equals(indentUnit)) {
-               textDoc.remove(pos - indentLength, indentLength);
-            }
-         }
+      if (pos < indentLength || '}' != text.charAt(pos)) {
+         return;
+      }
+      int outdentPos = pos - indentLength;
+      if (text.substring(outdentPos, pos).equals(indentUnit)) {
+         textDoc.remove(outdentPos, indentLength);
       }
    }
 
