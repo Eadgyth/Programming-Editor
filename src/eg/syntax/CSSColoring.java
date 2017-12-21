@@ -9,7 +9,7 @@ public class CSSColoring implements Colorable {
    private final static String[] PROPERTIES = {
       "all",
       "background", "background-attachment", "background-clip", "background-color",
-      "background-image", "background-origin", "background-position",
+      "-backgroundimage", "background-origin", "background-position",
       "background-repreat", "background-size",
       "border", "border-bottom", "border-bottom-color", "border-bottom-left-radius",
       "border-bottom-rigth-radius",  "border-bottom-style", "border-bottom-width",
@@ -25,8 +25,8 @@ public class CSSColoring implements Colorable {
       "counter-reset", "cursor",
       "direction", "display",
       "empty-cells",
-      "float", "font", "font-family", "font-size", "font-size-adjust", "font-stretch",
-      "font-style", "font-synthesis", "font-variant", "font-weight",
+      "float", "font", "font-family", "font-size", "font-size-adjust",
+      "font-stretch", "font-style", "font-synthesis", "font-variant", "font-weight",
       "height",
       "left", "letter-spacing", "line-height", "list-style", "list-style-image",
       "list-style-position", "list-style-type",
@@ -39,7 +39,8 @@ public class CSSColoring implements Colorable {
       "quotes",
       "right",
       "size",
-      "table-layout", "text-align", "text-decoration", "text-indent", "text-transform",
+      "table-layout", "text-align", "text-decoration", "text-indent",
+      "text-transform",
       "top", "transform", "transform-origin", "transition", "transition-delay",
       "transition-duration", "transition-property", "transition-timing-function",
       "unicode-bidi",
@@ -47,13 +48,26 @@ public class CSSColoring implements Colorable {
       "white-space", "widows", "width", "word-spacing",
       "z-index"
    };
+   
+   private final static char[] START_OF_JAVA_CLASS = {
+      '.', '#'
+   };
+   
+   private final static char[] END_OF_JAVA_CLASS = {
+      ' ', '{'
+   };
+   
+   private final static char[] NON_PROP_START = {
+      '-', '.'
+   };
 
    @Override
    public void color(SyntaxSearch search) {
       if (!search.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
-         search.setCharAttrBlack();
-         search.keywordsBlue(HtmlColoring.TAGS, true);
-         search.keywordsRed(PROPERTIES, true);
+         search.setCharAttrBlack();        
+         search.keywordsBlue(HtmlColoring.TAGS, START_OF_JAVA_CLASS, false);
+         search.signedVariables(START_OF_JAVA_CLASS, END_OF_JAVA_CLASS, false);
+         search.keywordsRed(PROPERTIES, NON_PROP_START, true);
          search.bracesGray();
       }
       search.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);

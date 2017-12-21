@@ -24,45 +24,62 @@ public class SyntaxUtils {
    /**
     * Returns the boolean that indicates if the portion of text
     * starting at the specified position and spanning the specified
-    * length does not adjoin to a letter or a digit at the start
-    * and/or at the end
+    * length is a word. A word is defined such that it does not
+    * adjoin to a letter or a digit at the start and/or the end.
     *
     * @param text  the text
     * @param pos  the position
     * @param length  the length
+    * @param nonWordStart  the array of characters that do not precede,
+    * a word, in addition to letters and digits. Can be null
+    * Can be null
+    * a word. Can be null
     * @return  the boolean value
     */
-   public static boolean isWord(String text, int pos, int length) {
-      boolean startMatches = isWordStart(text, pos);
+   public static boolean isWord(String text, int pos, int length,
+         char[] nonWordStart) {
+
+      boolean startMatches = isWordStart(text, pos, nonWordStart);
       boolean endMatches   = isWordEnd(text, pos + length);
       return startMatches && endMatches;
    }
 
    /**
-    * Returns if the character that precedes the specified position
-    * is not a letter or a digit
+    * Returns the boolean that indeicates if the specified position
+    * is a word start
     *
     * @param text  the text
     * @param pos  the position
-    * @return  if <code>pos</code> is a word start
+    * @param nonWordStart  the array of characters that do not precede a word,
+    * in addition to letters and digits. Can be null
+    * @return  the boolean value
+    * @see #isWord(String, int, int, char[])
     */
-   public static boolean isWordStart(String text, int pos) {
+   public static boolean isWordStart(String text, int pos, char[] nonWordStart) {
+      boolean isWord = true;
       if (pos > 0) {
          char c = text.charAt(pos - 1);
-         return !isLetterOrDigit(c);
+         isWord = !isLetterOrDigit(c);
+         if (isWord && nonWordStart != null) {
+            for (int i = 0; i < nonWordStart.length; i++) {
+               if (c == nonWordStart[i]) {
+                  isWord = false;
+                  break;
+               }
+            }
+         }
       }
-      else {
-         return true;
-      }
+      return isWord;      
    }
 
    /**
-    * Returns the boolean value that indicates if the character that
-    * follows the specified position is not a letter or a digit
+    * Returns the boolean that indicates if the character that
+    * follows the specified position is word end
     *
     * @param text  the text
     * @param pos  the position
-    * @return the boolean
+    * @return the boolean value
+    * @see #isWord(String, int, int, char[])
     */
    public static boolean isWordEnd(String text, int pos) {
       if (text.length() > pos) {
@@ -183,11 +200,12 @@ public class SyntaxUtils {
     */
    public static boolean isBorderedByQuotes(String text, int pos, int length) {
       boolean isInQuotes = false;
+      int startPos = pos - 1;
       int endPos = pos + length;
       if (pos > 0 & text.length() > endPos) {
-         isInQuotes = (text.charAt(pos - 1) == DOUBLE_QUOTE
-               || text.charAt(pos - 1) == SINGLE_QUOTE)
-               & (text.charAt(endPos) == DOUBLE_QUOTE
+         isInQuotes = (text.charAt(startPos) == DOUBLE_QUOTE
+               || text.charAt(startPos) == SINGLE_QUOTE)
+               && (text.charAt(endPos) == DOUBLE_QUOTE
                || text.charAt(endPos) == SINGLE_QUOTE);
       }
       return isInQuotes;

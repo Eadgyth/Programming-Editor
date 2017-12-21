@@ -117,6 +117,6 @@ public class TextSearch {
    }
 
    private boolean isWord(String content, String toSearch, int pos) {
-      return eg.syntax.SyntaxUtils.isWord(content, pos, toSearch.length());
+      return eg.syntax.SyntaxUtils.isWord(content, pos, toSearch.length(), null);
    }
 }

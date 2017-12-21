@@ -39,7 +39,7 @@ public class SyntaxSearch {
    }
 
    /**
-    * Sets a <code>Colorable</code> that uses this methods to color 
+    * Sets a <code>Colorable</code> that uses this methods to color
     * syntax elements. If null the text is not colored or any coloring is
     * removed if a <code>Colorable</code> had been set before
     *
@@ -74,17 +74,19 @@ public class SyntaxSearch {
 
    /**
     * (Re-)colors this section of text that is to be colored in
-    * black, plain
+    * black and (re-)sets any characters shown in bold to plain
     */
    public void setCharAttrBlack() {
       setCharAttr(posStart, toColor.length(), normalSet);
    }
 
    /**
-    * Searches keywords and colors them in red
+    * Searches keywords for coloring in red. 
+    * If the boolean <code>reqWord</code> is true coloring requires
+    * that a keyword does not adjoin to a letter or a digit.
     *
     * @param keys  the array of keywords
-    * @param reqWord  if the keyword must be a word
+    * @param reqWord  if  coloring requires that the keyword is a word
     */
    public void keywordsRed(String[] keys, boolean reqWord) {
       for (String s : keys) {
@@ -93,10 +95,12 @@ public class SyntaxSearch {
    }
 
    /**
-    * Searches keywords and colors them in red and displays them in bold
+    * Searches keywords for coloring in red and displaying in bold.
+    * If the boolean <code>reqWord</code> is true coloring requires that
+    * a keyword does not adjoin to a letter or a digit.
     *
     * @param keys  the array of keywords
-    * @param reqWord  if the keyword must be a word
+    * @param reqWord  if  coloring requires that the keyword is a word
     */
    public void keywordsRedBold(String[] keys, boolean reqWord) {
       for (String s : keys) {
@@ -104,11 +108,13 @@ public class SyntaxSearch {
       }
    }
 
-   /**
-    * Searches keywords and colors them in blue
+  /**
+    * Searches keywords for coloring in blue. 
+    * If the boolean <code>reqWord</code> is true coloring requires that
+    * a keyword does not adjoin to a letter or a digit.
     *
     * @param keys  the array of keywords
-    * @param reqWord  if the keyword must be a word
+    * @param reqWord  if  coloring requires that the keyword is a word
     */
    public void keywordsBlue(String[] keys, boolean reqWord) {
       for (String s : keys) {
@@ -117,9 +123,54 @@ public class SyntaxSearch {
    }
 
    /**
+    * Searches keywords for coloring in red. Coloring requires that
+    * a keyword does not adjoin to a letter or digit and, in addition,
+    * is not preceded with a character in <code>nonWordStart</code>.
+    * The boolean <code>inBraces</code> indicates that the keyword must
+    * be found in region that follows an opening brace (if true) or
+    * is outside a region in braces (if false).
+    *
+    * @param keys  the array of keywords
+    * @param nonWordStart  the array of characters that do not precede
+    * colored a keyword. Can be null
+    * @param inBraces  if coloring requires that a keyword is inside or outside
+    * a region in braces
+    */
+   public void keywordsRed(String[] keys, char[] nonWordStart,
+         boolean inBraces) {
+
+      for (String s : keys) {
+         key(s, Attributes.RED_PLAIN, nonWordStart, inBraces);
+      }
+   }
+
+
+   /**
+    * Searches keywords for coloring in blue. Coloring requires that
+    * a keyword does not adjoin to a letter or digit and, in addition,
+    * is not preceded with a character in <code>nonWordStart</code>.
+    * The boolean <code>inBraces</code> indicates that the keyword must
+    * be found in region that follows an opening brace (if true) or
+    * is outside a region in braces (if false).
+    *
+    * @param keys  the array of keywords
+    * @param nonWordStart  the array of characters that do not precede
+    * colored a keyword. Can be null
+    * @param inBraces  if coloring requires that a keyword is inside or
+    * outside a region in braces
+    */
+   public void keywordsBlue(String[] keys, char[] nonWordStart,
+         boolean inBraces) {
+
+      for (String s : keys) {
+         key(s, Attributes.BLUE_PLAIN, nonWordStart, inBraces);
+      }
+   }
+
+   /**
     * Searches variables that start with one of the characters in
     * <code>startChars</code> and end with one of the characters
-    * in <code>endChars</code>. The variables are colored in red
+    * in <code>endChars</code>. The variables are colored in purple
     *
     * @param startChars  the array start characters
     * @param endChars  the array of end characters
@@ -131,8 +182,29 @@ public class SyntaxSearch {
    }
 
    /**
-    * Searches and colors html tags. Tags are colored in blue,
-    * atrributes in red and attribute values in purple
+    * Searches variables that start with one of the characters in
+    * <code>startChars</code> and end with one of the characters in
+    * <code>endChars</code>. The boolean <code>inBraces</code>
+    * indicates that the keyword must be found in region that follows
+    * an opening brace (true) or is outside a region in braces (false).
+    * The variables are colored in purple.
+    *
+    * @param startChars  the array start characters
+    * @param endChars  the array of end characters
+    * @param inBraces  if coloring requires that a keyword is inside or
+    * outside a region in braces
+    */
+   public void signedVariables(char[] startChars, char[] endChars,
+         boolean inBraces) {
+
+      for (char c : startChars) {
+         signedVariable(c, endChars, inBraces);
+      }
+   }
+
+   /**
+    * Searches and colors html tags with attributes. Tags are colored in
+    * blue, atrributes in red and attribute values in purple
     *
     * @param tags  the array of tags
     * @param attributes  the array of attributes
@@ -142,7 +214,7 @@ public class SyntaxSearch {
          htmlTag(s, attributes);
       }
    }
-   
+
    /**
     * Colors sections embedded in a html document by setting a temporary
     * <code>Colorable</code> (for a script or css). The specified strings
@@ -160,7 +232,7 @@ public class SyntaxSearch {
    }
 
    /**
-    * Searches braces and colors them in bold gray
+    * Searches braces for coloring in gray and displaying in bold
     */
    public void bracesGray() {
       key("{", Attributes.GRAY_BOLD, false);
@@ -168,7 +240,7 @@ public class SyntaxSearch {
    }
 
    /**
-    * Searches brackets and colors them in bold blue
+    * Searches brackets for coloring in blue and displaying in bold
     */
    public void bracketsBlue() {
       key("(", Attributes.BLUE_BOLD, false);
@@ -176,27 +248,27 @@ public class SyntaxSearch {
    }
 
    /**
-    * Searches quoted text and colors it in orange. The quote mark is ignored
+    * Searches quoted text for coloring in orange. The quote mark is ignored
     * if a backslash precedes it. This method must not be used for html and must
-    * be called after calling the methods to color keywords, braces and brackets.
+    * be called after the methods that search for keywords, braces and brackets.
     */
    public void quotedText() {
       quotedLineWise(false);
    }
 
    /**
-    * Searches line comments and colors them in green
+    * Searches line comments for coloring in green
     *
     * @param lineCmnt  the string that marks the start of a line comment
-    * @param exceptions  the array of characters that disable the line comment
+    * @param notCmntStart  the array of characters that disable coloring
     * if these precede <code>lineCmt</code>. Can be null.
     */
-   public void lineComments(String lineCmnt, char[] exceptions) {
-      lineCommentsImpl(lineCmnt, exceptions);
+   public void lineComments(String lineCmnt, char[] notCmntStart) {
+      lineCommentsImpl(lineCmnt, notCmntStart);
    }
 
    /**
-    * Searches block comments and colors them in green
+    * Searches block comments for coloring in green
     *
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
@@ -227,7 +299,9 @@ public class SyntaxSearch {
       while (start != -1) {
          start = toColor.indexOf(key, start);
          if (start != -1) {
-            boolean ok = !reqWord || SyntaxUtils.isWord(toColor, start, key.length());
+            boolean ok = !reqWord
+                  || SyntaxUtils.isWord(toColor, start, key.length(), null);
+
             if (ok) {
                setCharAttr(start + posStart, key.length(), set);
             }
@@ -235,16 +309,67 @@ public class SyntaxSearch {
          }
       }
    }
-   
+
+   private void key(String key, SimpleAttributeSet set, char[] nonWordStart,
+         boolean inBraces) {
+
+      int start = 0;
+      while (start != -1) {
+         start = toColor.indexOf(key, start);
+         if (start != -1) {
+            int absStart = start + posStart;
+            int lastBlockStart
+                  = SyntaxUtils.lastBlockStart(text, absStart, "{", "}");
+
+            boolean ok = ((inBraces && lastBlockStart != -1)
+                  || (!inBraces && lastBlockStart == -1))
+                  && SyntaxUtils.isWord(toColor, start, key.length(), nonWordStart);
+
+            if (ok) {
+               setCharAttr(start + posStart, key.length(), set);
+            }
+            start += key.length();
+         }
+      }
+   }      
+
    private void signedVariable(char sign, char[] endChars) {
       int start = 0;
       while (start != -1) {
          start = toColor.indexOf(sign, start);
          int length;
          if (start != -1) {
-            if (SyntaxUtils.isWordStart(toColor, start)) {
+            if (SyntaxUtils.isWordStart(toColor, start, null)) {
                length = SyntaxUtils.wordLength(toColor, start, endChars);
                setCharAttr(start + posStart, length, Attributes.PURPLE_PLAIN);
+               start += length;
+            }
+            else {
+               start++;
+            }
+         }
+      }
+   }
+
+   private void signedVariable(char sign, char[] endChars,
+         boolean inBraces) {
+
+      int start = 0;
+      while (start != -1) {
+         start = toColor.indexOf(sign, start);
+         int length;
+         if (start != -1) {
+            int absStart = start + posStart;
+            int lastBlockStart
+                  = SyntaxUtils.lastBlockStart(text, absStart, "{", "}");
+
+            boolean ok = ((inBraces && lastBlockStart != -1)
+                  || (!inBraces && lastBlockStart == -1))
+                  && SyntaxUtils.isWordStart(toColor, start, null);
+
+            if (ok) {
+               length = SyntaxUtils.wordLength(toColor, start, endChars);
+               setCharAttr(absStart, length, Attributes.PURPLE_PLAIN);
                start += length;
             }
             else {
@@ -260,7 +385,7 @@ public class SyntaxSearch {
          start = toColor.toLowerCase().indexOf(tag, start);
          if (start != -1) {
             boolean isStartTag = start > 0 && '<' == toColor.charAt(start - 1);
-            int endPos = start + tag.length();            
+            int endPos = start + tag.length();
             if (isStartTag) {
                if (toColor.length() > endPos && ' ' == toColor.charAt(endPos)) {
                   for (String s : attributes) {
@@ -390,21 +515,20 @@ public class SyntaxSearch {
       }
    }
 
-   private void lineCommentsImpl(String lineCmnt, char[] exceptions) {
-      final boolean isException = exceptions != null;
+   private void lineCommentsImpl(String lineCmnt, char[] notCmntStart) {
+      final boolean useNotCmnt = notCmntStart != null;
       int start = 0;
       while (start != -1) {
          boolean ok = true;
          int length = 0;
          start = toColor.indexOf(lineCmnt, start);
          if (start != -1) {
-            if (isException) {
-               for (char exc : exceptions) {
-                  if (start > 0) {
-                     ok = toColor.charAt(start - 1) != exc;
-                     if (!ok) {
-                        break;
-                     }
+            if (start > 0 && useNotCmnt) {
+               char c = toColor.charAt(start - 1);
+               for (char not : notCmntStart) {
+                  ok = c != not;
+                  if (!ok) {
+                     break;
                   }
                }
             }
@@ -524,8 +648,8 @@ public class SyntaxSearch {
       int nextEnd = SyntaxUtils.nextBlockEnd(text, pos, blockStart, blockEnd);
       return lastStart != -1 & nextEnd != -1;
    }
-   
-   private boolean isPositionInQuotes(int pos) {      
+
+   private boolean isPositionInQuotes(int pos) {
       String line;
       int relStart;
       if (isMultiline) {
@@ -543,7 +667,7 @@ public class SyntaxSearch {
    private void setCharAttr(int start, int length, SimpleAttributeSet set) {
       doc.setCharacterAttributes(start, length, set, false);
    }
-   
+
    private void setAllCharAttrBlack() {
       setCharAttr(0, doc.getLength(), normalSet);
    }

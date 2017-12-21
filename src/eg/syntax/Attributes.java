@@ -27,7 +27,7 @@ public class Attributes {
    private final static Color GREEN  = new Color(80, 190, 80);
    private final static Color GRAY   = new Color(30, 30, 30);
    private final static Color ORANGE = new Color(220, 100, 50);
-   private final static Color PURPLE = new Color(130, 30, 250);
+   private final static Color PURPLE = new Color(130, 30, 210);
    
    static {
       StyleConstants.setForeground(RED_PLAIN, RED);
