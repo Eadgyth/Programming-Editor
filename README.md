@@ -6,6 +6,11 @@ or types of projects. To illustrate this draft implementations for writing in Pe
 are included.
 <p>Features of the program and documentation can be found under
 <a href="https://eadgyth.github.io/Programming-Editor/">Help and program documentation</a>.
+<br><br>
+<p>
+<img src="docs/images/Windows10SystemLAF.png" width="600"/>
+<img src="docs/images/SimpleEditorView.png" width="400"/>
+<br>
 <p>
 REQUIREMENTS FOR TESTING<br>
 Running the program requires Java 8. For compiling Java code from within the program installing
