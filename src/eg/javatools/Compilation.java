@@ -81,7 +81,7 @@ public class Compilation {
     * Invokes the javac compiler
     *
     * @param root  the root directory of the project
-    * @param execDir  the name of the destination directory for the compiles
+    * @param execDir  the name of the destination directory for the compiled
     *       class files
     * @param sourceDir  the name of the directory that contains java files or
     *       packages
@@ -111,6 +111,7 @@ public class Compilation {
       units = fileManager.getJavaFileObjects(fileArr);
       CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
               compileOptions, null, units);
+
       success = task.call();
       output(diagnostics);
       try {
