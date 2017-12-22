@@ -162,7 +162,7 @@ public class TabbedFiles implements Observer {
       isSave = isSave && fDoc[iTab].setFile(f);
       if (isSave && update) {
          docUpdate.updateForChangedFile(iTab, true);
-         tabPane.setTitleAt(iTab, fDoc[iTab].filename());
+         tabPane.setTitle(iTab, fDoc[iTab].filename());
          prefs.storePrefs("recentPath", fDoc[iTab].dir());
       }   
       return isSave;
