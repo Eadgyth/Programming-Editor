@@ -9,7 +9,7 @@ public class CSSColoring implements Colorable {
    private final static String[] PROPERTIES = {
       "all",
       "background", "background-attachment", "background-clip", "background-color",
-      "-backgroundimage", "background-origin", "background-position",
+      "background-image", "background-origin", "background-position",
       "background-repreat", "background-size",
       "border", "border-bottom", "border-bottom-color", "border-bottom-left-radius",
       "border-bottom-rigth-radius",  "border-bottom-style", "border-bottom-width",
@@ -49,11 +49,11 @@ public class CSSColoring implements Colorable {
       "z-index"
    };
    
-   private final static char[] START_OF_JAVA_CLASS = {
+   private final static char[] CLASS_START = {
       '.', '#'
    };
    
-   private final static char[] END_OF_JAVA_CLASS = {
+   private final static char[] CLASS_END = {
       ' ', '{'
    };
    
@@ -65,8 +65,8 @@ public class CSSColoring implements Colorable {
    public void color(SyntaxSearch search) {
       if (!search.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
          search.setCharAttrBlack();        
-         search.keywordsBlue(HtmlColoring.TAGS, START_OF_JAVA_CLASS, false);
-         search.signedVariables(START_OF_JAVA_CLASS, END_OF_JAVA_CLASS, false);
+         search.keywordsBlue(HtmlColoring.TAGS, CLASS_START, false);
+         search.signedVariablesBlue(CLASS_START, CLASS_END, false);
          search.keywordsRed(PROPERTIES, NON_PROP_START, true);
          search.bracesGray();
       }

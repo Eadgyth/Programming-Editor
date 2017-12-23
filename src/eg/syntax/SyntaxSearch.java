@@ -187,14 +187,14 @@ public class SyntaxSearch {
     * <code>endChars</code>. The boolean <code>inBraces</code>
     * indicates that the keyword must be found in region that follows
     * an opening brace (true) or is outside a region in braces (false).
-    * The variables are colored in purple.
+    * The variables are colored in red.
     *
     * @param startChars  the array start characters
     * @param endChars  the array of end characters
     * @param inBraces  if coloring requires that a keyword is inside or
     * outside a region in braces
     */
-   public void signedVariables(char[] startChars, char[] endChars,
+   public void signedVariablesBlue(char[] startChars, char[] endChars,
          boolean inBraces) {
 
       for (char c : startChars) {
@@ -364,12 +364,11 @@ public class SyntaxSearch {
                   = SyntaxUtils.lastBlockStart(text, absStart, "{", "}");
 
             boolean ok = ((inBraces && lastBlockStart != -1)
-                  || (!inBraces && lastBlockStart == -1))
-                  && SyntaxUtils.isWordStart(toColor, start, null);
+                  || (!inBraces && lastBlockStart == -1));
 
             if (ok) {
                length = SyntaxUtils.wordLength(toColor, start, endChars);
-               setCharAttr(absStart, length, Attributes.PURPLE_PLAIN);
+               setCharAttr(absStart, length, Attributes.BLUE_PLAIN);
                start += length;
             }
             else {
