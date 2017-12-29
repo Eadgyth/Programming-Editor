@@ -3,9 +3,7 @@ package eg;
 import java.util.Properties;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.IOException;
-import java.io.Writer;
 import java.io.FileWriter;
 
 import eg.utils.FileUtils;

@@ -20,12 +20,10 @@ import java.io.IOException;
 
 import java.util.List;
 import java.util.Arrays;
-import java.util.ArrayList;
 
 import static java.nio.file.StandardCopyOption.*;
 
 //--Eadgyth--//
-import eg.Preferences;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 import eg.console.ConsolePanel;

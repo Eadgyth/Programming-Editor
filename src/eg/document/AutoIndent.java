@@ -87,7 +87,7 @@ public class AutoIndent {
 
    private String currentIndent(String text, int pos) {
       String currIndent = "";
-      int lineStart = -1;
+      int lineStart;
       if (pos > 1) {
          lineStart = text.lastIndexOf("\n", pos - 1) + 1;
          char[] line = text.substring(lineStart, pos).toCharArray();

@@ -239,7 +239,8 @@ public final class FileDocument {
    }
    
    /**
-    * Gets the text in this document
+    * Gets the text in this document that is stored in
+    * <code>TypingEdit</code>
     *
     * @return  the text
     */
@@ -249,11 +250,11 @@ public final class FileDocument {
    
    /**
     * Gets the text length in this document
-    *
+    * 
     * @return  the length
     */
    public int getDocLength() {
-      return type.getText().length();
+      return textDoc.length();
    }
    
    /**

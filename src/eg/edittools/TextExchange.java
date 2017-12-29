@@ -2,7 +2,6 @@ package eg.edittools;
 
 import java.io.File;
 import java.awt.EventQueue;
-import javax.swing.JTextPane;
 
 //--Eadgyth--/
 import eg.Preferences;

@@ -53,24 +53,16 @@ public class TextSearch {
     */
    public void searchText(String toSearch) {
       int caret = textArea.getCaretPosition();
-      textArea.setSelectionStart(caret);
-      textArea.setSelectionEnd(caret);
       pos = caret;
       String content = doc.getDocText();
-      boolean notFound = false;
-      int nextStep = 0;
-      int ind = nextIndex(content, toSearch, pos + nextStep);
-      /*
-       * go to start if last match is reached */
-      if (ind == -1 & pos > -1) {
-         pos = 0;
-         nextStep = 0;
+      int ind = nextIndex(content, toSearch, pos);
+      if (ind == -1 & pos > 0) {
+         resetSearchToStart();
          ind = nextIndex(content, toSearch, pos);
       }
       if (ind != -1) {
          pos = ind;
          textArea.select(pos, pos + toSearch.length());
-         nextStep = 1;
       }
       else {
          Dialogs.infoMessage(toSearch + " could not be found", null);

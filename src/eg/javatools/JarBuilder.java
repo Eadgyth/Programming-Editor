@@ -1,7 +1,6 @@
 package eg.javatools;
 
 import java.io.File;
-import java.io.PrintWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
@@ -12,7 +11,6 @@ import java.util.List;
 
 //--Eadgyth--//
 import eg.console.ConsolePanel;
-import eg.utils.FileUtils;
 
 /**
  * The creation of a jar file of a project.
@@ -27,7 +25,7 @@ public class JarBuilder {
    private final FilesFinder fFind = new FilesFinder();
    private final ConsolePanel consPnl;
    
-   private boolean isManifest = false;
+   private final boolean isManifest = false;
 
    /**
     * @param consPnl  the reference to {@link ConsolePanel}
@@ -90,24 +88,22 @@ public class JarBuilder {
             = fFind.filteredFiles(searchRoot, ".class", sourceDir);
       List<File> relativeClassFilePaths
             = relativePaths(searchRoot, classes);
-      for (File i : relativeClassFilePaths) {
-         cmd.add(i.toString());
-      }
+      relativeClassFilePaths.forEach((i) -> {
+          cmd.add(i.toString());
+       });
       if (includedExt != null) {
          for (String ext : includedExt) {
             List<File> includedFiles
                   = fFind.filteredFiles(searchRoot, ext, sourceDir);
             List<File> relativeInclFilePaths
                   = relativePaths(searchRoot, includedFiles);
-            for (File f : relativeInclFilePaths) {
-               String path = f.getPath();
-               if (".properties".equals(ext)
-                     && path.endsWith("eadconfig.properties")) {
-
-                  continue;
-               }
-               cmd.add(f.toString());
-            }
+            relativeInclFilePaths.forEach((f) -> {
+                String path = f.getPath();
+                 if (!(".properties".equals(ext)
+                         && path.endsWith("eadconfig.properties"))) {
+                     cmd.add(f.toString());
+                 }
+             });
          }
       }
       return cmd;

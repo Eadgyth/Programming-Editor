@@ -30,7 +30,8 @@ import eg.utils.FileUtils;
 public class CurrentProject {
 
    private final String NO_FILE_IN_TAB_MESSAGE
-         = "To assign a project open or newly save a file that is part of the project.";
+         = "To assign a project open or newly save a file"
+         + " that is part of the project.";
 
    private final String FILES_NOT_FOUND_MESSAGE
          = "The following files could not be found anymore:";

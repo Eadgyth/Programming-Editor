@@ -320,13 +320,13 @@ public class FileTree extends Observable {
    }
 
    private void setExpanded() {
-      for (TreePath tp : expanded) {
+      expanded.forEach((tp) -> {
          for (int i = 0; i < tree.getRowCount(); i++) {
             if (tp.toString().equals(tree.getPathForRow(i).toString())) {
                tree.expandRow(i);
             }
          }
-      }
+      });
    }
 
    private void initTree() {

@@ -41,7 +41,6 @@ public class ViewSetter {
       boolean show;
       int index;
       String state;
-
       show = viewSetWin.isShowToolbar();
       if (show != isShowToolbar) {
          mw.showToolbar(show);

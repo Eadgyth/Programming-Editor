@@ -25,7 +25,8 @@ public class Edit {
    private final static Clipboard CLIPBOARD
          = Toolkit.getDefaultToolkit().getSystemClipboard();
 
-   private static final String[] SPACE_NUMBER = { "0", "1", "2", "3", "4", "5", "6" };
+   private static final String[] SPACE_NUMBER
+         = { "0", "1", "2", "3", "4", "5", "6" };
 
    private final Preferences prefs = new Preferences();
 
@@ -164,6 +165,7 @@ public class Edit {
       if (sel == null) {
          boolean isAtLineStart
                = LinesFinder.lastNewline(text, start) > start - indentLength;
+
          if (!isAtLineStart && start >= indentLength) {
             if (indentUnit.equals(text.substring(start - indentLength, start))) {
                fDoc.remove(start - indentLength, indentLength);
@@ -226,7 +228,9 @@ public class Edit {
       String inClipboard = "";
       Transferable transf = CLIPBOARD.getContents(null);
       try {
-         if (transf != null && transf.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+         if (transf != null
+               && transf.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+
             inClipboard = (String) transf.getTransferData(DataFlavor.stringFlavor);
          }
       }

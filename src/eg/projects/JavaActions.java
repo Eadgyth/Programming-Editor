@@ -183,7 +183,8 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
    private void setStartCommand() {
       StringBuilder sb = new StringBuilder("java ");
       if (getExecutableDirName().length() > 0) {
-         sb.append("-cp " + getExecutableDirName() + " ");
+         sb.append("-cp ").append(getExecutableDirName());
+         sb.append(" ");
       }
       sb.append(qualifiedMain);
       if (getArgs().length() > 0) {

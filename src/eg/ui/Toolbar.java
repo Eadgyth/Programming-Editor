@@ -144,7 +144,7 @@ public class Toolbar {
          if (i == 1 || i == 8) {
             toolbar.addSeparator();
          }
-         bts[i].setBorder(new EmptyBorder(5, 5, 5, 5));
+         bts[i].setBorder(new EmptyBorder(7, 7, 7, 7));
          bts[i].setToolTipText(toolTips[i]);
          bts[i].setFocusable(false);
          bts[i].setFocusPainted(false);

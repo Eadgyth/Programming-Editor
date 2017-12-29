@@ -40,7 +40,7 @@ public class UiComponents {
             tb.add(Box.createHorizontalGlue());
          }
          tb.add(bts[i]);
-         bts[i].setBorder(new EmptyBorder(2, 5, 0, 5));
+         bts[i].setBorder(new EmptyBorder(2, 7, 0, 7));
          bts[i].setToolTipText(tooltips[i]);
          bts[i].setFocusable(false);
       }

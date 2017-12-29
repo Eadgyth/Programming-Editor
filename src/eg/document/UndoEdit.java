@@ -218,7 +218,7 @@ public class UndoEdit {
       return breakpoints.get(i);
    }
 
-   private KeyListener keyListener = new KeyAdapter() {
+   private final KeyListener keyListener = new KeyAdapter() {
 
       @Override
       public void keyPressed(KeyEvent e) {

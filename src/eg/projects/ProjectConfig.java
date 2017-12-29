@@ -289,7 +289,7 @@ public abstract class ProjectConfig implements Configurable {
 
    private String findRootByFile(String dir, String file) {
       File root = new File(dir);
-      String relToRoot = relToRoot = F_SEP + file;
+      String relToRoot = F_SEP + file;
       String existingPath;
       while (root != null) {
          existingPath = root.getPath() + relToRoot;

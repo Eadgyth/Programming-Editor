@@ -1,11 +1,7 @@
 package eg;
 
-import java.util.List;
-import java.util.ArrayList;
-
 //--Eadgyth--/
 import eg.edittools.AddableEditTool;
-import eg.utils.FileUtils;
 import eg.document.FileDocument;
 import eg.ui.MainWin;
 
@@ -43,13 +39,12 @@ public class DocumentUpdate {
    public void updateForChangedDoc(int i, int nTabs) {
       edit.setFileDocument(fDoc[i]);
       currProj.setFileDocumentAt(i);
-      for (AddableEditTool t : mw.editTools()) {
+      mw.editTools().forEach((t) -> {
          t.setFileDocument(fDoc[i]);
-      }
+      });
       mw.displayFrameTitle(fDoc[i].filepath());
       mw.enableShowTabbar(nTabs == 1);
-      mw.setLanguageSelected(fDoc[i].language(),
-            fDoc[i].filename().length() == 0);
+      mw.setLanguageSelected(fDoc[i].language(), fDoc[i].filename().length() == 0);
       fDoc[i].setFocused();
    }
 

@@ -1,7 +1,5 @@
 package eg.syntax;
 
-import java.awt.Color;
-
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 
@@ -217,8 +215,8 @@ public class SyntaxSearch {
 
    /**
     * Colors sections embedded in a html document by setting a temporary
-    * <code>Colorable</code> (for a script or css). The specified strings
-    * mark the start and end tags for the embedded sections
+    * <code>Colorable</code> (for a javascript or css). The specified
+    * strings mark the start and end tags for the embedded sections
     *
     * @param colTemp  the {@link Colorable}
     * @param startTag  the start tag
@@ -351,9 +349,7 @@ public class SyntaxSearch {
       }
    }
 
-   private void signedVariable(char sign, char[] endChars,
-         boolean inBraces) {
-
+   private void signedVariable(char sign, char[] endChars, boolean inBraces) {
       int start = 0;
       while (start != -1) {
          start = toColor.indexOf(sign, start);
@@ -433,13 +429,11 @@ public class SyntaxSearch {
 
    private void embedInHtml(String startTag, String endTag) {
       int start = 0;
-      int length;
-      int end;
       while (start != -1) {
          start = text.indexOf(startTag, start);
          if (start != -1) {
-            length = 0;
-            end = SyntaxUtils.nextBlockEnd(text, start + 1, startTag, endTag);
+            int length = 0;
+            int end = SyntaxUtils.nextBlockEnd(text, start + 1, startTag, endTag);
             if (end != -1) {
                innerStart = SyntaxUtils.nextBlockEnd(text, start + 1, "<", ">") ;
                innerEnd = end;
@@ -483,7 +477,7 @@ public class SyntaxSearch {
       while (start != -1 && end != -1) {
          start = SyntaxUtils.nextNotEscaped(toColor, quoteMark, start);
          if (start != -1) {
-            boolean notQuoted = true; // double quotes outdo single quotes
+            boolean notQuoted; // double quotes outdo single quotes
             int length = 0;
             notQuoted = !isSingleQuote
                   || !SyntaxUtils.isInQuotes(toColor, start, SyntaxUtils.DOUBLE_QUOTE);

@@ -14,7 +14,6 @@ import java.io.File;
 
 //--Eadgyth--//
 import eg.utils.Dialogs;
-import eg.utils.FileUtils;
 
 import eg.document.FileDocument;
 import eg.ui.MainWin;
@@ -27,8 +26,8 @@ import eg.ui.tabpane.ExtTabbedPane;
  */
 public class TabbedFiles implements Observer {
 
-   private final FileDocument[] fDoc = new FileDocument[10];
-   private final EditArea[] editArea = new EditArea[10];
+   private final FileDocument[] fDoc = new FileDocument[15];
+   private final EditArea[] editArea = new EditArea[15];
    private final Preferences prefs = new Preferences();
    private final FileChooser fc;
    private final MainWin mw;
@@ -221,7 +220,7 @@ public class TabbedFiles implements Observer {
       int count = unsavedTab();
       if (count == nTabs()) {
          int i = count - 1;
-         while( i > -1 ) {     
+         while ( i > -1 ) {     
             tabPane.removeTabAt(i);
             fDoc[i] = null;
             editArea[i] = null;
@@ -295,6 +294,16 @@ public class TabbedFiles implements Observer {
       }
       return isOpenable;
    }
+   
+   private void createDocument() {
+      int n = nTabs();
+      editArea[n] = format.createEditArea();
+      fDoc[n] = new FileDocument(editArea[n], lang);
+      prefs.readPrefs();
+      fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
+      setEditingStateReadables(n);
+      addNewTab("unnamed", editArea[n].editAreaPnl());
+   }
 
    private void createDocument(File f) {
       try {
@@ -314,16 +323,6 @@ public class TabbedFiles implements Observer {
       } 
    }
    
-   private void createDocument() {
-      int n = nTabs();
-      editArea[n] = format.createEditArea();
-      fDoc[n] = new FileDocument(editArea[n], lang);
-      prefs.readPrefs();
-      fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-      setEditingStateReadables(n);
-      addNewTab("unnamed", editArea[n].editAreaPnl());
-   }
-   
    private void addNewTab(String filename, JPanel pnl) {
       JButton closeBt = new JButton(eg.ui.IconFiles.CLOSE_ICON);
       tabPane.addTab(filename, pnl, closeBt);
@@ -334,12 +333,9 @@ public class TabbedFiles implements Observer {
    }
    
    private void setEditingStateReadables(int i) {
-      fDoc[i].setUndoableStateReadable((a, b) ->
-            mw.enableUndoRedo(a, b));
-      fDoc[i].setSelectionStateReadable((b) ->
-            mw.enableCutCopy(b));
-      fDoc[i].setCursorPositionReadable((j, k) ->
-            mw.displayLCursorPosition(j, k));
+      fDoc[i].setUndoableStateReadable((a, b) -> mw.enableUndoRedo(a, b));
+      fDoc[i].setSelectionStateReadable((b) -> mw.enableCutCopy(b));
+      fDoc[i].setCursorPositionReadable((j, k) -> mw.displayLCursorPosition(j, k));
    }
    
    private void removeTab() {

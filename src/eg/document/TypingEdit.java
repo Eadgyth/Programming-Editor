@@ -104,7 +104,7 @@ public class TypingEdit {
    public void enableDocListen(boolean b) {
       isDocListen = b;
       if (b) {
-         textUpdate();
+         updateText();
          textDoc.textArea().setCaretPosition(0);
       }
    }
@@ -236,7 +236,7 @@ public class TypingEdit {
       isAddToUndo = true;
    }
    
-   private void textUpdate() {
+   private void updateText() {
       text = textDoc.getText();
       lineNrDoc.updateLineNumber(text);
    }
@@ -317,7 +317,7 @@ public class TypingEdit {
          }
          event = de.getType();
          pos = de.getOffset();
-         textUpdate();
+         updateText();
          change = text.substring(pos, pos + de.getLength());
          if (isAddToUndo) {
             undo.addEdit(change, pos, true);
@@ -340,7 +340,7 @@ public class TypingEdit {
          event = de.getType();
          pos = de.getOffset();
          change = text.substring(pos, pos + de.getLength());
-         textUpdate();
+         updateText();
          if (isAddToUndo) {
             undo.addEdit(change, pos, false);
             notifyUndoableState();

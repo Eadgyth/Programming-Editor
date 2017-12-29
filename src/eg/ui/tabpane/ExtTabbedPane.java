@@ -21,12 +21,12 @@ import eg.Constants;
  * to show and hide the tab bar and a somewhat changed tab appearance.
  * The tab placement is restricted to be at the top.
  */
-public class ExtTabbedPane extends JTabbedPane {
+public final class ExtTabbedPane extends JTabbedPane {
 
    private final static FlowLayout FLOW_LAYOUT_LEFT
          = new FlowLayout(FlowLayout.LEFT, 0, 0);
    private final static EmptyBorder EMPTY_BORDER = new EmptyBorder(1, 5, 0, 0);
-   private final ExtTabbedPaneUI ui = new ExtTabbedPaneUI();
+   private final ExtTabbedPaneUI tui = new ExtTabbedPaneUI();
 
    private int iTabMouseOver = -1;
    private boolean isShowTabbar;
@@ -37,8 +37,8 @@ public class ExtTabbedPane extends JTabbedPane {
     * {@link ExtTabbedPaneUI}
     */
    public ExtTabbedPane() {
-      ui.setHeight(Constants.BAR_HEIGHT);
-      super.setUI(ui);
+      tui.setHeight(Constants.BAR_HEIGHT);
+      super.setUI(tui);
       addMouseMotionListener(mml);
    }
 
@@ -55,7 +55,7 @@ public class ExtTabbedPane extends JTabbedPane {
          throw new IllegalStateException("Hiding tabs is illegal"
                + " when the number of tabs is larger than one");
       }
-      ui.setShowTabs(b);
+      tui.setShowTabs(b);
       updateUI();
       isShowTabbar = b;
    }
@@ -123,7 +123,7 @@ public class ExtTabbedPane extends JTabbedPane {
     */
    @Override
    public void updateUI() {
-       super.setUI(ui);
+       super.setUI(tui);
    }
 
    /**
