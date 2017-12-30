@@ -1,5 +1,6 @@
 package eg.projects;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -8,14 +9,9 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-import javax.swing.BorderFactory;
-
-import javax.swing.border.TitledBorder;
-import javax.swing.border.LineBorder;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 
 import java.awt.event.ActionListener;
@@ -24,6 +20,7 @@ import java.awt.event.ActionListener;
 import eg.ui.IconFiles;
 import eg.Constants;
 import eg.utils.ScreenParams;
+import eg.utils.UIComponents;
 
 /**
  * The window for the configuration of a project
@@ -394,7 +391,7 @@ public class SettingsWin {
       // project dir
       structPnl.add(holdLbAndTf(projDirLb, projDirTf));
       
-      structPnl.setBorder(titledBorder("Directory/file structure"));
+      structPnl.setBorder(UIComponents.titledBorder("Directory/file structure"));
       return structPnl;
    }
 
@@ -402,7 +399,7 @@ public class SettingsWin {
       JPanel argsPnl = new JPanel( new GridLayout(1, 0));
       JLabel argsLb = new JLabel("Arguments:");
       argsPnl.add(holdLbAndTf(argsLb, argsTf));
-      argsPnl.setBorder(titledBorder("Run"));
+      argsPnl.setBorder(UIComponents.titledBorder("Run"));
       return argsPnl;
    }
 
@@ -424,7 +421,7 @@ public class SettingsWin {
          JLabel buildLb = new JLabel("Name for " + buildLabel +":");
          buildPnl.add(holdLbAndTf(buildLb, buildTf));
       }
-      buildPnl.setBorder(titledBorder("Compilation and build"));
+      buildPnl.setBorder(UIComponents.titledBorder("Compilation and build"));
       return buildPnl;
    }
 
@@ -447,13 +444,6 @@ public class SettingsWin {
       holdPnl.add(lb);
       holdPnl.add(tf);
       return holdPnl;
-   }
-
-   private TitledBorder titledBorder(String title) {
-      TitledBorder tBorder = BorderFactory.createTitledBorder
-            (new LineBorder(Color.BLACK, 1), title);
-      tBorder.setTitleFont(eg.Constants.VERDANA_PLAIN_8);
-      return tBorder;
    }
 
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {

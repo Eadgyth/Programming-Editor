@@ -1,13 +1,17 @@
 package eg.utils;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.JTabbedPane;
 
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 
 //--Eadgyth--//
 import eg.Constants;
@@ -16,7 +20,7 @@ import eg.ui.tabpane.ExtTabbedPane;
 /**
  * Static methods to create specialized UI components
  */
-public class UiComponents {
+public class UIComponents {
 
    /**
     * Creates a <code>JToolBar</code> with the last button (intended for a
@@ -48,6 +52,21 @@ public class UiComponents {
    }
    
    /**
+    * Creates a titled border with the specified title and
+    * a line border in gray
+    *
+    * @param title  the title
+    * @return a new titled border
+    */
+   public static TitledBorder titledBorder(String title) {
+      TitledBorder tBorder = BorderFactory.createTitledBorder
+            (new LineBorder(Constants.GRAY, 1), title);
+
+      tBorder.setTitleFont(eg.Constants.VERDANA_PLAIN_8);
+      return tBorder;
+   }
+   
+   /**
     * Creates an <code>ExtTabbedPane</code> that is scrollable
     * and not focusable. The
     *
@@ -59,4 +78,6 @@ public class UiComponents {
       tabPane.setFocusable(false);
       return tabPane;
    }
+   
+   private UIComponents() {}
 }

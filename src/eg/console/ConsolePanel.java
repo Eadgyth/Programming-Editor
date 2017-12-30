@@ -17,7 +17,7 @@ import javax.swing.event.CaretListener;
 //--Eadgyth--//
 import eg.Constants;
 import eg.ui.IconFiles;
-import eg.utils.UiComponents;
+import eg.utils.UIComponents;
 
 /**
  * The console panel with a text area to write to and to read from and a toolbar.
@@ -185,6 +185,6 @@ public class ConsolePanel {
          "Clear the console",
          "Close the console"
       };
-      return UiComponents.lastBtRightToolbar(bts, tooltips);
+      return UIComponents.lastBtRightToolbar(bts, tooltips);
    }
 }

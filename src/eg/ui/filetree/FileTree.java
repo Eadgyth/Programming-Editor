@@ -39,7 +39,7 @@ import eg.Constants;
 import eg.ui.IconFiles;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
-import eg.utils.UiComponents;
+import eg.utils.UIComponents;
 
 /**
  * The display of a project's file system in a {@code JTree}.
@@ -365,7 +365,7 @@ public class FileTree extends Observable {
          "Update tree",
          "Close the project explorer",
       };
-      return UiComponents.lastBtRightToolbar(bts, tooltips);
+      return UIComponents.lastBtRightToolbar(bts, tooltips);
    }
 
    private final MouseListener mouseListener = new MouseAdapter() {

@@ -38,7 +38,7 @@ import eg.ui.menu.ViewMenu;
 import eg.ui.filetree.FileTree;
 import eg.ui.tabpane.ExtTabbedPane;
 import eg.console.ConsolePanel;
-import eg.utils.UiComponents;
+import eg.utils.UIComponents;
 import eg.utils.ScreenParams;
 import eg.utils.FileUtils;
 
@@ -61,7 +61,7 @@ public class MainWin implements ConsoleOpenable {
 
    private final MenuBar menuBar = new MenuBar();
    private final Toolbar toolbar = new Toolbar();
-   private final ExtTabbedPane tabPane = UiComponents.scolledUnfocusableTabPane();
+   private final ExtTabbedPane tabPane = UIComponents.scolledUnfocusableTabPane();
    private final FileTree fileTree = new FileTree();
    private final ConsolePanel console = new ConsolePanel();
    private final ToolPanel toolPnl = new ToolPanel();
@@ -460,9 +460,9 @@ public class MainWin implements ConsoleOpenable {
    }
    
    private void exit(TabbedFiles tf) {
-       editTools.forEach((t) -> {
-          t.end();
-       });
+      editTools.forEach((t) -> {
+         t.end();
+      });
       if (tf.isAllClosed()) {
          System.exit(0);
       }

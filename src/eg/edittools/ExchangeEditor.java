@@ -23,7 +23,7 @@ import eg.FunctionalAction;
 import eg.ui.EditArea;
 import eg.ui.IconFiles;
 import eg.document.FileDocument;
-import eg.utils.UiComponents;
+import eg.utils.UIComponents;
 
 /**
  * The editing and viewing of text in a separate text area
@@ -120,7 +120,7 @@ public class ExchangeEditor implements AddableEditTool {
       redoBt.setEnabled(false);
       cutBt.setEnabled(false);
       copyBt.setEnabled(false);
-      JToolBar tb = UiComponents.lastBtRightToolbar(bts, toolTips);
+      JToolBar tb = UIComponents.lastBtRightToolbar(bts, toolTips);
       return tb;
    }
 
