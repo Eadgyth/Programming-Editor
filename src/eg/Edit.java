@@ -44,7 +44,7 @@ public class Edit {
    public void setFileDocument(FileDocument fDoc) {
       this.fDoc  = fDoc;
       this.textArea = fDoc.docTextArea();
-      indentUnit = fDoc.getIndentUnit();
+      indentUnit = fDoc.currIndentUnit();
       indentLength = indentUnit.length();
    }
 
@@ -160,7 +160,7 @@ public class Edit {
    public void outdent() {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
-      String text = fDoc.getDocText();
+      String text = fDoc.docText();
       fDoc.enableCodeEditing(false);
       if (sel == null) {
          boolean isAtLineStart
@@ -208,7 +208,7 @@ public class Edit {
     */
    public void clearTrailingSpaces() {
       fDoc.enableCodeEditing(false);
-      String text = fDoc.getDocText();
+      String text = fDoc.docText();
       String[] textArr = text.split("\n");
       int sum = 0;
       for (String s : textArr) {

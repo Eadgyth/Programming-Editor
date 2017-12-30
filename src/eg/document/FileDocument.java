@@ -29,7 +29,7 @@ public final class FileDocument {
    private String filepath = "";
    private String dir = "";
    private Languages lang;
-   private String content = "";
+   private String savedContent = "";
    
    /**
     * Creates a <code>FileDocument</code> with the specified file whose
@@ -43,7 +43,7 @@ public final class FileDocument {
       assignFile(f);
       displayFileContent(f);
       setLanguageBySuffix();
-      setContent();
+      setSavedContent();
    }
 
    /**
@@ -134,7 +134,7 @@ public final class FileDocument {
    }
 
    /**
-    * Gets the path of this file
+    * Gets the filepath of this file
     *
     * @return  the filepath. The empty string of no file has been set
     */
@@ -145,7 +145,7 @@ public final class FileDocument {
    /**
     * Returns the boolean that indicates if a file has been assigned
     *
-    * @return  the boolean
+    * @return  the boolean value, true if a file has been assigned
     */
    public boolean hasFile() {
       return docFile != null;
@@ -173,13 +173,13 @@ public final class FileDocument {
       if (docFile == null) {
          throw new IllegalStateException("No file has been assigned");
       }
-      setContent();
+      setSavedContent();
       return writeToFile(docFile);
    }
 
    /**
-    * Sets the specified file and saves the current text content.
-    * A previous file is replaced
+    * Sets the specified file and saves the current text content to the
+    * same file. Any previously set file is replaced
     *
     * @param f  the file
     * @return  if the content was saved to the file
@@ -187,7 +187,7 @@ public final class FileDocument {
    public boolean setFile(File f) {
       assignFile(f);
       setLanguageBySuffix();
-      setContent();
+      setSavedContent();
       return writeToFile(f);
    }
    
@@ -235,7 +235,7 @@ public final class FileDocument {
     * @return  if the current text is saved
     */
    public boolean isSaved() {
-      return content.equals(type.getText());
+      return savedContent.equals(type.getText());
    }
    
    /**
@@ -244,7 +244,7 @@ public final class FileDocument {
     *
     * @return  the text
     */
-   public String getDocText() {
+   public String docText() {
       return type.getText();
    }
    
@@ -253,12 +253,12 @@ public final class FileDocument {
     * 
     * @return  the length
     */
-   public int getDocLength() {
+   public int docLength() {
       return textDoc.length();
    }
    
    /**
-    * Returns this language
+    * Gets this language
     *
     * @return  this language which is a constant in {@link Languages}
     */
@@ -267,11 +267,11 @@ public final class FileDocument {
    }
    
    /**
-    * Returns the currently set indent unit
+    * Gets the currently set indent unit
     *
     * @return  the indent unit
     */
-   public String getIndentUnit() {
+   public String currIndentUnit() {
       return type.getIndentUnit();
    }
    
@@ -378,8 +378,8 @@ public final class FileDocument {
       return false;
    }
 
-   private void setContent() {
-      content = type.getText();
+   private void setSavedContent() {
+      savedContent = type.getText();
    }
 
    private void assignFile(File f) {
@@ -395,7 +395,7 @@ public final class FileDocument {
          case "java":
            lang = Languages.JAVA;
            break;
-         case "html": case "htm": case "xml":
+         case "html": case "htm": case "xml": // no project associated with xml
             lang = Languages.HTML;
             break;
          case "js":

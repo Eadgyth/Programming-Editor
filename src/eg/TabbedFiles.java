@@ -276,7 +276,7 @@ public class TabbedFiles implements Observer {
          return;
       }
       boolean isBlankFirstTab = nTabs() == 1 && !fDoc[0].hasFile()
-            && fDoc[0].getDocLength() == 0;
+            && fDoc[0].docLength() == 0;
 
       if (isBlankFirstTab) {
          removeTab();

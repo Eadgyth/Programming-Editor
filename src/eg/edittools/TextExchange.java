@@ -96,7 +96,7 @@ public class TextExchange {
     * Clears the exchange document
     */
    public void clear() {
-      exchangeDoc.remove(0, exchangeDoc.getDocLength());
+      exchangeDoc.remove(0, exchangeDoc.docLength());
    }
 
    /**
@@ -106,7 +106,7 @@ public class TextExchange {
     * be saved
     */
    public void save() {
-      if (exchangeDoc.getDocLength() > 0) {
+      if (exchangeDoc.docLength() > 0) {
          int res = Dialogs.confirmYesNo("Keep content in exchange editor?");
          if (0 != res) {
             clear();
