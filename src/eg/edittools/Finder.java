@@ -1,5 +1,6 @@
 package eg.edittools;
 
+//import java.awt.Color;
 import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -9,10 +10,12 @@ import java.awt.event.ItemEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.JLabel;
 
@@ -22,7 +25,7 @@ import eg.document.FileDocument;
 
 //--Eadgyth--/
 import eg.Constants;
-import eg.utils.UiComponents;
+import eg.utils.UIComponents;
 
 /**
  * The search and replace of text
@@ -74,7 +77,7 @@ public class Finder implements AddableEditTool {
       String[] toolTips = new String[] {
          "Close Finder"
       };
-      JToolBar tb = UiComponents.lastBtRightToolbar(bts, toolTips);
+      JToolBar tb = UIComponents.lastBtRightToolbar(bts, toolTips);
       return tb;
    }
    
@@ -84,9 +87,11 @@ public class Finder implements AddableEditTool {
       pnl.add(label("Search for:"));
       setSize(inputTf);
       pnl.add(inputTf);
+      pnl.add(Box.createVerticalStrut(10));
+      pnl.add(radioBtPnl());
       pnl.add(checkBoxPnl());
       pnl.add(buttonsPnl(searchBt));
-      pnl.add(Box.createVerticalStrut(10));
+      pnl.add(Box.createVerticalStrut(20));
       pnl.add(label("Replace by:"));
       setSize(replaceTf);
       pnl.add(replaceTf);
@@ -103,10 +108,28 @@ public class Finder implements AddableEditTool {
       setSize(pnl);
       return pnl;
    }
+   
+   private JPanel radioBtPnl() {
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      JRadioButton upBt = new JRadioButton("up");
+      JRadioButton downBt = new JRadioButton("down", true);
+      upBt.setFocusable(false);
+      downBt.setFocusable(false);
+      ButtonGroup group = new ButtonGroup();
+      group.add(upBt);
+      group.add(downBt);
+      pnl.add(upBt);
+      pnl.add(downBt);
+      pnl.setBorder(UIComponents.titledBorder("Search direction"));
+      setSize(pnl);
+      upBt.addItemListener(e ->
+         search.setUpwardSearch(e.getStateChange() == ItemEvent.SELECTED));
+      return pnl;
+   }
 
    private JPanel checkBoxPnl() {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      JCheckBox cBx = new JCheckBox("Select only words");
+      JCheckBox cBx = new JCheckBox("Find only words");
       cBx.setFocusable(false);
       cBx.addItemListener(e ->
          search.setRequireWord(e.getStateChange() == ItemEvent.SELECTED));
@@ -143,12 +166,12 @@ public class Finder implements AddableEditTool {
 
       @Override
       public void insertUpdate(DocumentEvent documentEvent) {
-         search.resetSearchToStart();
+         search.resetSearch();
       }
 
       @Override
       public void removeUpdate(DocumentEvent documentEvent) {
-         search.resetSearchToStart();
+         search.resetSearch();
       }
    };
 }
