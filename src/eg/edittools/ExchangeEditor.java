@@ -26,7 +26,8 @@ import eg.document.FileDocument;
 import eg.utils.UIComponents;
 
 /**
- * The editing and viewing of text in a separate text area
+ * The <code>AddableEditTool</code> for the editing and viewing of text
+ * in a separate text area
  */
 public class ExchangeEditor implements AddableEditTool {
 

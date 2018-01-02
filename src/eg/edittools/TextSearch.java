@@ -7,13 +7,14 @@ import eg.utils.Dialogs;
 import eg.document.FileDocument;
 
 /**
- * The search of text or words in the <code>FileDocument</code> that
- * is currently viewed in the main editor area
+ * The search and replace of text or words in the <code>FileDocument</code>
+ * that is currently viewed in the main editor area
  */
 public class TextSearch {
    
-   private boolean reqWord;
    private boolean isUpward = false;
+   private boolean reqWord = false;
+   private boolean isCaseSensitive = false;
    private int pos = 0;
 
    private FileDocument doc;
@@ -30,7 +31,8 @@ public class TextSearch {
    }
    
    /**
-    * Sets the boolean which indicates if the search is restricted to words
+    * Sets the boolean which indicates if the search is restricted to word.
+    * Default is not restricted
     *
     * @param b  the boolen value
     */
@@ -40,18 +42,29 @@ public class TextSearch {
    
    /**
     * Sets the boolean that indicates the search direction. This is true
-    * for an upward search and false for a downward search.
+    * for an upward search and false for a downward search. Default is down.
     *
     * @param b  the boolean value
     */
     public void setUpwardSearch(boolean b) {
        isUpward = b;
     }
+    
+    /**
+     * Sets the boolean that indicates if the text search is case
+     * sensitive. This true for sensitivity and false for insensitivity.
+     * Default is insensitive.
+     *
+     * @param b  the boolean value
+     */
+    public void setCaseSensitivity(boolean b) {
+       isCaseSensitive = b;
+    }
    
    /**
     * Resets the search to the start of the document
     */
-   public void resetSearch() {
+   public void resetSearchStart() {
       if (isUpward) {
          pos = doc.docLength() - 1;
       }
@@ -65,16 +78,21 @@ public class TextSearch {
     * The search direction is set in {@link #setUpwardSearch(boolean)}
     * and starts at current caret position
     *
-    * @param toSearch  the string to search
+    * @param searchTerm  the string to search
     */
-   public void searchText(String toSearch) {
+   public void searchText(String searchTerm) {
+      String content = doc.docText();
+      if (!isCaseSensitive) {
+         content = content.toLowerCase();
+         searchTerm = searchTerm.toLowerCase();
+      }
       if (isUpward) {
          pos = textArea.getSelectionStart() - 1;
-         searchTextUp(toSearch);
+         searchTextUp(content, searchTerm);
       }
       else {
          pos = textArea.getCaretPosition();
-         searchTextDown(toSearch);
+         searchTextDown(content, searchTerm);
       }
    }
    
@@ -93,57 +111,57 @@ public class TextSearch {
    //--private--
    //
    
-   private void searchTextUp(String toSearch) {
-      int ind = lastIndex(doc.docText(), toSearch, pos);
-      if (ind == -1 & pos < doc.docLength() - 1) {
-         resetSearch();
-         ind = lastIndex(doc.docText(), toSearch, pos);
+   private void searchTextDown(String content, String searchTerm) {
+      int ind = nextIndex(content, searchTerm, pos);
+      if (ind == -1 & pos > 0) {
+         resetSearchStart();
+         ind = nextIndex(content, searchTerm, pos);
       }
       if (ind != -1) {
          pos = ind;
-         textArea.select(pos, pos + toSearch.length());
+         textArea.select(pos, pos + searchTerm.length());
       }
       else {
-         Dialogs.infoMessage(toSearch + " could not be found", null);
+         Dialogs.infoMessage("\"" + searchTerm + "\" cannot be found.", null);
       }
    }
 
-   private int lastIndex(String content, String toSearch, int pos) {
-      int index = content.lastIndexOf(toSearch, pos);
+   private int nextIndex(String content, String searchTerm, int pos) {
+      int index = content.indexOf(searchTerm, pos);
       if (reqWord) {
-         while (index != -1 && !isWord(content, toSearch, index)) {
-            index = content.lastIndexOf(toSearch, index - 1);
+         while (index != -1 && !isWord(content, searchTerm, index)) {
+            index = content.indexOf(searchTerm, index + 1);
          }
       }
       return index;
    }
    
-   private void searchTextDown(String toSearch) {
-      int ind = nextIndex(doc.docText(), toSearch, pos);
-      if (ind == -1 & pos > 0) {
-         resetSearch();
-         ind = nextIndex(doc.docText(), toSearch, pos);
+   private void searchTextUp(String content, String searchTerm) {
+      int ind = lastIndex(content, searchTerm, pos);
+      if (ind == -1 & pos < content.length() - 1) {
+         resetSearchStart();
+         ind = lastIndex(content, searchTerm, pos);
       }
       if (ind != -1) {
          pos = ind;
-         textArea.select(pos, pos + toSearch.length());
+         textArea.select(pos, pos + searchTerm.length());
       }
       else {
-         Dialogs.infoMessage(toSearch + " could not be found", null);
+         Dialogs.infoMessage("\"" + searchTerm + "\" cannot be found.", null);
       }
    }
 
-   private int nextIndex(String content, String toSearch, int pos) {
-      int index = content.indexOf(toSearch, pos);
+   private int lastIndex(String content, String searchTerm, int pos) {
+      int index = content.lastIndexOf(searchTerm, pos);
       if (reqWord) {
-         while (index != -1 && !isWord(content, toSearch, index)) {
-            index = content.indexOf(toSearch, index + 1);
+         while (index != -1 && !isWord(content, searchTerm, index)) {
+            index = content.lastIndexOf(searchTerm, index - 1);
          }
       }
       return index;
    }
 
-   private boolean isWord(String content, String toSearch, int pos) {
-      return eg.syntax.SyntaxUtils.isWord(content, pos, toSearch.length(), null);
+   private boolean isWord(String content, String searchTerm, int pos) {
+      return eg.syntax.SyntaxUtils.isWord(content, pos, searchTerm.length(), null);
    }
 }

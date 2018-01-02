@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import eg.document.FileDocument;
 
 /**
- * The interface to create an edit tool that has acces to the currently
+ * The interface to create an edit tool that has access to the currently
  * viewed <code>FileDocument</code> and whose view can be added to the
  * <code>ToolPanel</code> in the main window
  */
@@ -41,7 +41,7 @@ public interface AddableEditTool {
    public void setFileDocument(FileDocument fDoc);
    
    /**
-    * Ends this edit tool. Called when the when the program is exited
+    * Ends this edit tool. Called when when the program is exited
     */
    public void end();
 }

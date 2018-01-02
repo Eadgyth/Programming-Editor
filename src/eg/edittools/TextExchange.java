@@ -53,7 +53,7 @@ public class TextExchange {
    /**
     * Copies text selected in the source document and inserts the text
     * at the caret position in the exchange document. The text to copy
-    * replaces selected text
+    * replaces any selected text
     */
    public void copyTextFromSource() {
       String text = sourceDoc.docTextArea().getSelectedText();
@@ -71,7 +71,7 @@ public class TextExchange {
    /**
     * Copies text selected in the exchange document and inserts the text
     * at the caret position in the source document. The text to copy
-    * replaces selected text
+    * replaces any selected text
     */
    public void copyTextToSource() {
       String text = exchangeDoc.docTextArea().getSelectedText();
@@ -84,7 +84,7 @@ public class TextExchange {
 
    /**
     * Changes the language and switches on or off auto-indention depending
-    * on whether or not the language is a coding langauge
+    * on whether or not the language is a coding language
     *
     * @param lang  the language which is a constant in {@link Languages}
     */
@@ -100,7 +100,7 @@ public class TextExchange {
    }
 
    /**
-    * Saves the content contained in the exchange document to file
+    * Saves the content contained in the exchange document to the file
     * 'exchangeContent.txt' which is saved in the program's directory.
     * It is asked before in a dialog to confirm that the content shall
     * be saved
@@ -116,7 +116,7 @@ public class TextExchange {
    }
    
    //
-   //--private--/
+   //--private--
    //
    
    private void copy(FileDocument destination, String text) {

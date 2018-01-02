@@ -28,7 +28,8 @@ import eg.Constants;
 import eg.utils.UIComponents;
 
 /**
- * The search and replace of text
+ * The <code>AddableEditTool</code> for finding and replacing
+ * text
  */
 public class Finder implements AddableEditTool {
 
@@ -84,26 +85,31 @@ public class Finder implements AddableEditTool {
    private JPanel controlsPnl() {
       JPanel pnl = new JPanel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.PAGE_AXIS));
-      pnl.add(label("Search for:"));
+      pnl.add(labelPnl("Search for:"));
       setSize(inputTf);
       pnl.add(inputTf);
       pnl.add(Box.createVerticalStrut(10));
       pnl.add(radioBtPnl());
+      pnl.add(Box.createVerticalStrut(10));
       pnl.add(checkBoxPnl());
+      pnl.add(Box.createVerticalStrut(10));
       pnl.add(buttonsPnl(searchBt));
       pnl.add(Box.createVerticalStrut(20));
-      pnl.add(label("Replace by:"));
+      pnl.add(labelPnl("Replace by:"));
       setSize(replaceTf);
       pnl.add(replaceTf);
+      pnl.add(Box.createVerticalStrut(10));
       pnl.add(buttonsPnl(replaceBt));
       pnl.setBorder(Constants.EMPTY_BORDER);
       inputTf.getDocument().addDocumentListener(docListen);
       return pnl;
    }  
 
-   private JPanel label(String text) {
+   private JPanel labelPnl(String text) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
       JLabel lb = new JLabel(text);
+      lb.setFont(Constants.SANSSERIF_BOLD_9);
+      lb.setForeground(Constants.GRAY);
       pnl.add(lb);
       setSize(pnl);
       return pnl;
@@ -129,11 +135,17 @@ public class Finder implements AddableEditTool {
 
    private JPanel checkBoxPnl() {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      JCheckBox cBx = new JCheckBox("Find only words");
+      JCheckBox cBx = new JCheckBox("Only whole word");
       cBx.setFocusable(false);
       cBx.addItemListener(e ->
          search.setRequireWord(e.getStateChange() == ItemEvent.SELECTED));
+      JCheckBox cBxCase = new JCheckBox("Case sensitive");
+      cBxCase.setFocusable(false);
+      cBxCase.addItemListener(e ->
+         search.setCaseSensitivity(e.getStateChange() == ItemEvent.SELECTED));
       pnl.add(cBx);
+      pnl.add(cBxCase);
+      pnl.setBorder(UIComponents.titledBorder("Search options"));
       setSize(pnl);
       return pnl;
    }
@@ -166,12 +178,12 @@ public class Finder implements AddableEditTool {
 
       @Override
       public void insertUpdate(DocumentEvent documentEvent) {
-         search.resetSearch();
+         search.resetSearchStart();
       }
 
       @Override
       public void removeUpdate(DocumentEvent documentEvent) {
-         search.resetSearch();
+         search.resetSearchStart();
       }
    };
 }
