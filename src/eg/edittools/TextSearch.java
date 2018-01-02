@@ -7,8 +7,8 @@ import eg.utils.Dialogs;
 import eg.document.FileDocument;
 
 /**
- * The search and replace of text or words in the <code>FileDocument</code>
- * that is currently viewed in the main editor area
+ * The search and maybe replacemant of text or words in the
+ * <code>FileDocument</code> that is currently viewed in the main editor area
  */
 public class TextSearch {
    
@@ -31,7 +31,7 @@ public class TextSearch {
    }
    
    /**
-    * Sets the boolean which indicates if the search is restricted to word.
+    * Sets the boolean that indicates if the search is restricted to a word.
     * Default is not restricted
     *
     * @param b  the boolen value
@@ -62,7 +62,8 @@ public class TextSearch {
     }
    
    /**
-    * Resets the search to the start of the document
+    * Resets the search to the start or end of the document depending
+    * on whether the search direction is down- or upward, respectively 
     */
    public void resetSearchStart() {
       if (isUpward) {
