@@ -8,6 +8,12 @@ import java.awt.print.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.standard.MediaSizeName;
+
+import java.text.MessageFormat;
+
 import javax.swing.JTextPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -15,7 +21,6 @@ import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
 
 import javax.swing.text.DefaultCaret;
-import javax.swing.text.StyledDocument;
 
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
@@ -104,20 +109,19 @@ public final class EditArea {
    /**
     * Gets this text area for editing text
     *
-    * @return  this text area
+    * @return  this area for editing text
     */
    public JTextPane textArea() {
       return textArea;
    }
-
+   
    /**
-    * Gets the <code>StyledDocument</code> associated with the area
-    * that displays line numbers
+    * Gets this text area for showing line numbers
     *
-    * @return  the <code>StyledDocument</code>
+    * @return  this area for line numbers
     */
-   public StyledDocument lineNrDoc() {
-      return lineNrArea.getStyledDocument();
+   public JTextPane lineNrArea() {
+      return lineNrArea;
    }
 
    /**
@@ -188,14 +192,15 @@ public final class EditArea {
     */
    public void print() {
       try {
-         textArea.print();
+         MessageFormat footerFormat = new MessageFormat("Page {0}");
+         textArea.print(null, footerFormat, true, null, null, false);
       } catch (PrinterException e) {
          FileUtils.logStack(e);
       }
    }
 
    //
-   //--private--/
+   //--private--
    //
 
    private void showLineNumbers() {

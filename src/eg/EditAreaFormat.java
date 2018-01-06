@@ -54,7 +54,7 @@ public class EditAreaFormat {
    
    /** 
     * Returns a new {@code EditArea} that is initialized with the
-    * current settings
+    * current formatting
     *
     * @return  a new {@link EditArea}
     */

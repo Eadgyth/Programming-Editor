@@ -2,6 +2,8 @@ package eg.document;
 
 import java.awt.Color;
 
+import javax.swing.JTextPane;
+
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
@@ -35,12 +37,14 @@ public class LineNumberDocument {
    }
 
    /**
-    * @param doc  the document associated with the area that displays
+    * @param lineNrArea  the <code>JTextPane</code> that displays the
     * line numbers
     * @param  lineNrWidth  the reference to {@link LineNrWidthAdaptable}
     */
-   public LineNumberDocument(StyledDocument doc, LineNrWidthAdaptable lineNrWidth) {
-      this.doc = doc;
+   public LineNumberDocument(JTextPane lineNrArea,
+         LineNrWidthAdaptable lineNrWidth) {
+
+      this.doc = lineNrArea.getStyledDocument();
       this.lineNrWidth = lineNrWidth;
       Element el = doc.getParagraphElement(0);
       doc.setParagraphAttributes(0, el.getEndOffset(), SET, false);
@@ -64,7 +68,7 @@ public class LineNumberDocument {
    }
 
    //
-   //--private--/
+   //--private--
    //
 
    private void appendLineNumbers(int prevLineNr, int lineNr) {

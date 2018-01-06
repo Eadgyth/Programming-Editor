@@ -10,7 +10,7 @@ import javax.swing.event.CaretEvent;
 //--Eadgyth--//
 import eg.Languages;
 import eg.utils.LinesFinder;
-import eg.syntax.Coloring;
+import eg.syntax.SyntaxHighlighter;
 
 /**
  * Mediates between the editing of the text document and the actions that
@@ -21,7 +21,7 @@ public class TypingEdit {
 
    private final TextDocument textDoc;
    private final LineNumberDocument lineNrDoc;
-   private final Coloring col;
+   private final SyntaxHighlighter syntax;
    private final AutoIndent autoInd;
    private final UndoEdit undo;
 
@@ -49,10 +49,10 @@ public class TypingEdit {
    public TypingEdit(TextDocument textDoc, LineNumberDocument lineNrDoc) {
       this.textDoc = textDoc;
       this.lineNrDoc = lineNrDoc;
-      col = new Coloring(textDoc.doc(), textDoc.attrSet());
+      syntax = new SyntaxHighlighter(textDoc);
       autoInd = new AutoIndent(textDoc);
       undo = new UndoEdit(textDoc);
-      textDoc.doc().addDocumentListener(docListener);
+      textDoc.addDocumentListener(docListener);
       textDoc.textArea().addCaretListener(caretListener);
    }
 
@@ -125,12 +125,12 @@ public class TypingEdit {
     * @param lang  the language which is a constant in {@link Languages}
     */
    public void setEditingMode(Languages lang) {
-      col.setColorable(lang);
+      syntax.selectHighlighter(lang);
       if (lang == Languages.NORMAL_TEXT) {
          enableCodeEditing(false);
       }
       else {
-         colorMultipleLines(null, 0);
+         highlightMultipleLines(null, 0);
          enableCodeEditing(true);
       }
    }
@@ -173,7 +173,7 @@ public class TypingEdit {
     * text is used.
     * @param pos  the pos where <code>section</code> starts
     */
-   public void colorMultipleLines(String section, int pos) {
+   public void highlightMultipleLines(String section, int pos) {
       int posStart = 0;
       if (section == null) {
          section = text;
@@ -182,7 +182,7 @@ public class TypingEdit {
          section = LinesFinder.allLinesAtPos(text, section, pos);
          posStart = LinesFinder.lastNewline(text, pos) + 1;
       }
-      col.color(text, section, pos, posStart);
+      syntax.highlight(text, section, pos, posStart);
    }
    
    /**
@@ -227,26 +227,26 @@ public class TypingEdit {
       notifyUndoableState();
       if (isCodeEditing) {
          if (event.equals(DocumentEvent.EventType.INSERT)) {
-            colorMultipleLines(change, pos);
+            highlightMultipleLines(change, pos);
          }
          else if (event.equals(DocumentEvent.EventType.REMOVE)) {
-            colorLine();
+            highlightLine();
          }
       }
       isAddToUndo = true;
    }
    
    private void updateText() {
-      text = textDoc.getText();
+      text = textDoc.docText();
       lineNrDoc.updateLineNumber(text);
    }
    
-   private void colorLine() {
+   private void highlightLine() {
       int lineStart = LinesFinder.lastNewline(text, pos);
       int lineEnd = LinesFinder.nextNewline(text, pos);
       String toColor = LinesFinder.line(text, lineStart, lineEnd);
       EventQueue.invokeLater(() ->
-         col.color(text, toColor, pos, lineStart + 1));
+         syntax.highlight(text, toColor, pos, lineStart + 1));
    }
 
    private void notifyUndoableState() {
@@ -323,7 +323,7 @@ public class TypingEdit {
             undo.addEdit(change, pos, true);
             notifyUndoableState();
             if (isCodeEditing) {
-               colorLine();
+               highlightLine();
                EventQueue.invokeLater(() -> {
                   autoInd.indent(text, pos);
                   autoInd.closedBracketIndent(text, pos);
@@ -345,7 +345,7 @@ public class TypingEdit {
             undo.addEdit(change, pos, false);
             notifyUndoableState();
             if (isCodeEditing) {
-               colorLine();
+               highlightLine();
             }
          }
       }

@@ -1,9 +1,9 @@
 package eg.syntax;
 
 /**
- * Syntax coloring for Javascript
+ * Syntax highlighting for Javascript
  */
-public class JavascriptColoring implements Colorable {
+public class JavascriptHighlighter implements Highlighter {
    
    // incomplete
    public final static String[] JS_KEYWORDS = {
@@ -25,15 +25,15 @@ public class JavascriptColoring implements Colorable {
    };
 
    @Override
-   public void color(SyntaxSearch search) {
-      if (!search.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
-         search.setCharAttrBlack();
-         search.keywordsRed(JS_KEYWORDS, true);
-         search.bracketsBlue();
-         search.bracesGray();
-         search.quotedText();
-         search.lineComments(SyntaxUtils.LINE_CMNT, null);
+   public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
+      if (!searcher.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
+         searcher.setCharAttrBlack();
+         searcher.keywords(JS_KEYWORDS, true, Attributes.RED_PLAIN);
+         searcher.bracketsBlue();
+         searcher.bracesGray();
+         searcher.quotedText();
+         searcher.lineComments(SyntaxUtils.LINE_CMNT, null);
       }
-      search.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
+      searcher.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
    }
 }

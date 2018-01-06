@@ -1,10 +1,13 @@
 package eg.syntax;
 
 /**
- * Syntax coloring for Html
+ * Syntax highlighting for Html
  */
-public class HtmlColoring implements Colorable {
+public class HTMLHighlighter implements Highlighter {
 
+   /**
+    * The array of HTML tags
+    */
    public final static String[] TAGS = {
       "a", "abbr", "address", "applet", "area", "article", "aside", "audio",
       "b", "base", "bdi", "bdo", "blockquote", "bold", "body", "br", "button",
@@ -60,17 +63,17 @@ public class HtmlColoring implements Colorable {
 
    private final static String BLOCK_CMNT_START = "<!--";
    private final static String BLOCK_CMNT_END = "-->";
-   private final JavascriptColoring jsCol = new JavascriptColoring();
-   private final CSSColoring cssCol = new CSSColoring();
+   private final JavascriptHighlighter js = new JavascriptHighlighter();
+   private final CSSHighlighter css = new CSSHighlighter();
 
    @Override
-   public void color(SyntaxSearch search) {
-      if (!search.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
-         search.setCharAttrBlack();
-         search.htmlTags(TAGS, ATTRIBUTES);
-         search.embedInHtml(jsCol, "<script", "</script>");
-         search.embedInHtml(cssCol, "<style>", "</style>");
+   public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
+      if (!searcher.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
+         searcher.setCharAttrBlack();
+         searcher.htmlTags(TAGS, ATTRIBUTES);
+         searcher.embedInHtml(js, "<script", "</script>");
+         searcher.embedInHtml(css, "<style>", "</style>");
       }
-      search.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
+      searcher.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
    }
 }

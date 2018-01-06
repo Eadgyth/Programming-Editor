@@ -1,9 +1,9 @@
 package eg.syntax;
 
 /**
- * Syntax coloring for Perl
+ * Syntax highlighting for Perl
  */
-public class PerlColoring implements Colorable {
+public class PerlHighlighter implements Highlighter {
    
    private final static char[] START_OF_VAR = {
       '$', '@', '%'
@@ -46,13 +46,13 @@ public class PerlColoring implements Colorable {
    private final static String LINE_CMNT = "#";
    
    @Override
-   public void color(SyntaxSearch search) {
-      search.setCharAttrBlack();
-      search.signedVariables(START_OF_VAR, END_OF_VAR);
-      search.keywordsRedBold(PERL_KEYWORDS, true);
-      search.keywordsRedBold(PERL_OP, false);
-      search.bracesGray();
-      search.quotedText();
-      search.lineComments(LINE_CMNT, START_OF_VAR);
+   public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
+      searcher.setCharAttrBlack();
+      searcher.signedVariables(START_OF_VAR, END_OF_VAR, Attributes.PURPLE_PLAIN);
+      searcher.keywords(PERL_KEYWORDS, true, Attributes.RED_BOLD);
+      searcher.keywords(PERL_OP, false, Attributes.RED_BOLD);
+      searcher.bracesGray();
+      searcher.quotedText();
+      searcher.lineComments(LINE_CMNT, START_OF_VAR);
    }
 }

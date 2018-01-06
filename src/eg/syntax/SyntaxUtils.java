@@ -1,7 +1,7 @@
 package eg.syntax;
 
 /**
- * Static methods to search for text elements
+ * Static variables and methods to search for text elements
  */
 public class SyntaxUtils {
 
@@ -93,12 +93,12 @@ public class SyntaxUtils {
 
     /**
     * Returns the length of a word that starts at the specified
-    * position and ends with one of the characters in the specified
+    * position and ends with one of the characters in
     * <code>endChars</code>
     *
     * @param text  the text
     * @param pos   the position
-    * @param endChars  the array of characters that mark the end of the word
+    * @param endChars  the array of characters that mark the end of a word
     * @return  the length of the word
     */
    public static int wordLength(String text, int pos, char[] endChars) {
@@ -267,7 +267,7 @@ public class SyntaxUtils {
    }
 
    //
-   //--private--/
+   //--private--
    //
 
    private SyntaxUtils() {}

@@ -1,9 +1,9 @@
 package eg.syntax;
 
 /**
- * Syntax coloring for Java
+ * Syntax highlighting for Java
  */
-public class JavaColoring implements Colorable {
+public class JavaHighlighter implements Highlighter {
 
    private final static String[] JAVA_KEYWORDS = {
      "abstract", "assert",
@@ -30,16 +30,16 @@ public class JavaColoring implements Colorable {
    };
 
    @Override
-   public void color(SyntaxSearch search) {
-     if (!search.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
-         search.setCharAttrBlack();
-         search.keywordsBlue(JAVA_ANNOTATIONS, false);
-         search.keywordsRed(JAVA_KEYWORDS, true);
-         search.bracketsBlue();
-         search.bracesGray();
-         search.quotedText();
-         search.lineComments(SyntaxUtils.LINE_CMNT, null);
+   public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
+     if (!searcher.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
+         searcher.setCharAttrBlack();
+         searcher.keywords(JAVA_ANNOTATIONS, false, Attributes.BLUE_PLAIN);
+         searcher.keywords(JAVA_KEYWORDS, true,  Attributes.RED_PLAIN);
+         searcher.bracketsBlue();
+         searcher.bracesGray();
+         searcher.quotedText();
+         searcher.lineComments(SyntaxUtils.LINE_CMNT, null);
      }
-     search.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
+     searcher.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
    }
 }

@@ -1,10 +1,10 @@
 package eg.syntax;
 
 /**
- * Syntax coloring for CSS
+ * Syntax highlighting for CSS
  */
-public class CSSColoring implements Colorable {
-   
+public class CSSHighlighter implements Highlighter {
+
    // complete ?
    private final static String[] PROPERTIES = {
       "all",
@@ -48,28 +48,34 @@ public class CSSColoring implements Colorable {
       "white-space", "widows", "width", "word-spacing",
       "z-index"
    };
-   
+
    private final static char[] CLASS_START = {
       '.', '#'
    };
-   
+
    private final static char[] CLASS_END = {
       ' ', '{'
    };
-   
+
    private final static char[] NON_PROP_START = {
       '-', '.'
    };
 
    @Override
-   public void color(SyntaxSearch search) {
-      if (!search.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
-         search.setCharAttrBlack();        
-         search.keywordsBlue(HtmlColoring.TAGS, CLASS_START, false);
-         search.signedVariablesBlue(CLASS_START, CLASS_END, false);
-         search.keywordsRed(PROPERTIES, NON_PROP_START, true);
-         search.bracesGray();
+   public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
+      if (!searcher.isInBlock(SyntaxUtils.BLOCK_CMNT_START,
+            SyntaxUtils.BLOCK_CMNT_END)) {
+
+         searcher.setCharAttrBlack();
+         searcher.keywords(HTMLHighlighter.TAGS, CLASS_START, false,
+               Attributes.BLUE_PLAIN);
+               
+         searcher.signedVariables(CLASS_START, CLASS_END, false,
+               Attributes.BLUE_PLAIN);
+               
+         searcher.keywords(PROPERTIES, NON_PROP_START, true, Attributes.RED_PLAIN);
+         searcher.bracesGray();
       }
-      search.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
+      searcher.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
    }
 }

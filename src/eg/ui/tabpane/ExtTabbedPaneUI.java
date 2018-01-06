@@ -26,6 +26,7 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
 
    private final static Color BORDER_GRAY = new Color(100, 100, 100);
+   private final static Color LIGHT_GRAY = new Color(150, 150, 200);
    private final static Insets TAB_INSETS_BOTTOM = new Insets(0, 0, 1, 0);
    private final static Insets TAB_INSETS_ZERO = new Insets(0, 0, 0, 0);
    private final static Insets CONTENT_INSETS = new Insets(0, 0, 0, 0);

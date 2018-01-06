@@ -129,7 +129,7 @@ public class TextExchange {
       }
       EventQueue.invokeLater(() -> {
          destination.insert(posToIns, text);
-         destination.colorSection(text, posToIns);
+         destination.highlightSection(text, posToIns);
          destination.enableCodeEditing(true);
       });
    }

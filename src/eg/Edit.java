@@ -99,7 +99,7 @@ public class Edit {
       }
       EventQueue.invokeLater(() -> {
          fDoc.insert(pos, clipboard);
-         fDoc.colorSection(clipboard, pos);
+         fDoc.highlightSection(clipboard, pos);
          fDoc.enableCodeEditing(true);
       });
    }

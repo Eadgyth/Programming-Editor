@@ -43,6 +43,11 @@ public class Toolbar {
       return pnl;
    }
 
+   /**
+    * Sets listeners for file actions
+    *
+    * @param tf  the reference to {@link TabbedFiles}
+    */
    public void setFileActions(TabbedFiles tf) {
       openBt.addActionListener(e -> tf.openFileByChooser());
       saveBt.addActionListener(e -> tf.save(true));
@@ -60,6 +65,11 @@ public class Toolbar {
       compileBt.addActionListener(e -> currProj.saveAllAndCompile());
    }
 
+   /**
+    * Sets listeners for actions to edit text
+    *
+    * @param edit  the reference to {@link Edit}
+    */
    public void setEditTextActions(Edit edit) {
       undoBt.addActionListener(e -> edit.undo());
       redoBt.addActionListener(e -> edit.redo());
@@ -132,7 +142,7 @@ public class Toolbar {
          compileBt, runBt, changeProjBt
       };
       String[] toolTips = new String[] {
-         "Open file", "Save selected file",
+         "Open file", "Save file",
          "Undo", "Redo", "Cut selection", "Copy selection", "Paste",
          "Increase indentation by the set indent length",
          "Reduce indentation by the set indent length",

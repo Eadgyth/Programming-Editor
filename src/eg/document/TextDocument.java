@@ -4,6 +4,8 @@ import java.awt.Color;
 
 import javax.swing.JTextPane;
 
+import javax.swing.event.DocumentListener;
+
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
@@ -31,7 +33,7 @@ public class TextDocument {
    
    /**
     * @param textArea  the <code>JTextPane</code> that displays the
-    * document
+    * document that is edited
     */
    public TextDocument(JTextPane textArea) {
       this.textArea = textArea;
@@ -41,26 +43,46 @@ public class TextDocument {
    }
    
    /**
-    * Gets this <code>StyledDocument</code>
+    * Adds a <code>DocumentListener</code>
     *
-    * @return  this <code>StyledDocument</code>
+    * @param dl  the <code>DocumentListener</code>
     */
-   public StyledDocument doc() {
-      return doc;
+   public void addDocumentListener(DocumentListener dl) {
+      doc.addDocumentListener(dl);
    }
    
    /**
-    * Gets this <code>SimpleAttributeSet</code> which has the attributes
-    * black and plain
+    * (Re-)sets the characters in the section that starts at the specified
+    * position and spans the specified length to black and plain
     *
-    * @return  the <code>SimpleAttributeSet</code>
+    * @param pos  the position
+    * @param length  the length
     */
-   public SimpleAttributeSet attrSet() {
-      return SET;
+   public void setCharAttrBlack(int pos, int length) {
+      setCharAttr(pos, length, SET);
+   }
+
+   /**
+    * (Re-)sets all characters to black and plain
+    */
+   public void setAllCharAttrBlack() {
+      setCharAttr(0, doc.getLength(), SET);
    }
    
    /**
-    * Gets this text area that displays the document's content
+    * Sets the character attributes in the section that starts at the specified
+    * position and spans the specified length
+    *
+    * @param pos  the position
+    * @param length  the length
+    * @param set  the character attributes
+    */
+   public void setCharAttr(int pos, int length, SimpleAttributeSet set) {
+      doc.setCharacterAttributes(pos, length, set, false);
+   }
+   
+   /**
+    * Gets this text area that displays the document
     *
     * @return  the text area
     */
@@ -69,11 +91,11 @@ public class TextDocument {
    }
    
    /**
-    * Gets the text in this documument
+    * Gets the text in this document
     *
     * @return  the text
     */
-   public String getText() {
+   public String docText() {
       String text = null;
       try {
          text = doc.getText(0, doc.getLength());
@@ -89,16 +111,15 @@ public class TextDocument {
     *
     * @return  the length
     */
-   public int length() {
+   public int doclength() {
       return doc.getLength();
    }
 
    /**
-    * Inserts the string <code>toInsert</code> at the specified
-    * position
+    * Inserts a string
     *
-    * @param pos  the position
-    * @param toInsert  the String
+    * @param pos  the position where the string is inserted
+    * @param toInsert  the string
     */
    public void insert(int pos, String toInsert) {
       try {

@@ -152,10 +152,10 @@ public final class FileDocument {
    }
    
    /**
-    * Gets this file
+    * Gets this file. Method must be used only after assigning a
+    * file.
     *
     * @return  the file
-    * @throws  IllegalStateException  if no file has been assigned
     */
    public File docFile() {
       if (docFile == null) {
@@ -165,7 +165,7 @@ public final class FileDocument {
    }
 
    /**
-    * Saves the current text content to this file
+    * Saves the current text content to this file if a file was set
     *
     * @return  if the content was saved
     */
@@ -203,10 +203,10 @@ public final class FileDocument {
          String nextLine = br.readLine();
          while (null != line) {            
             if (null == nextLine) {
-               insert(textDoc.length(), line);
+               insert(textDoc.doclength(), line);
             }
             else {
-               insert(textDoc.length(), line + "\n");
+               insert(textDoc.doclength(), line + "\n");
             }
             line = nextLine;
             nextLine = br.readLine();
@@ -254,7 +254,7 @@ public final class FileDocument {
     * @return  the length
     */
    public int docLength() {
-      return textDoc.length();
+      return textDoc.doclength();
    }
    
    /**
@@ -283,7 +283,7 @@ public final class FileDocument {
    public void changeLanguage(Languages lang) {
       if (hasFile()) {
          throw new IllegalStateException(
-               "The language cannot be changed if a file is already set.");
+               "The language cannot be changed once a file is assigned.");
       }
       this.lang = lang;
       type.setEditingMode(lang);
@@ -305,15 +305,15 @@ public final class FileDocument {
 
    /**
     * Colors a section of the document that starts at the specified
-    * position. Has no effect if this language is not a coding language
+    * position. Has no effect if this language is normal text
     *
     * @param section  the section
     * @param pos  the position
-    * @see TypingEdit #ColorMultipleLines(String, int)
+    * @see TypingEdit#highlightMultipleLines(String, int)
     */
-   public void colorSection(String section, int pos) {
+   public void highlightSection(String section, int pos) {
       if (Languages.NORMAL_TEXT != lang) {
-         type.colorMultipleLines(section, pos);
+         type.highlightMultipleLines(section, pos);
       }
    }
 
@@ -353,12 +353,12 @@ public final class FileDocument {
    }
 
    //
-   //--private--/
+   //--private--
    //
 
    private FileDocument(EditArea editArea) {
       textDoc = new TextDocument(editArea.textArea());
-      LineNumberDocument lineNrDoc = new LineNumberDocument(editArea.lineNrDoc(),
+      LineNumberDocument lineNrDoc = new LineNumberDocument(editArea.lineNrArea(),
             editArea.lineNrWidth());
 
       type = new TypingEdit(textDoc, lineNrDoc);
