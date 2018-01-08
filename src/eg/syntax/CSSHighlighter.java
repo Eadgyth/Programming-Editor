@@ -5,61 +5,74 @@ package eg.syntax;
  */
 public class CSSHighlighter implements Highlighter {
 
-   // complete ?
-   private final static String[] PROPERTIES = {
+   //
+   // Properties
+   private final static String[] PROPS = {
       "all",
-      "background", "background-attachment", "background-clip", "background-color",
-      "background-image", "background-origin", "background-position",
-      "background-repreat", "background-size",
-      "border", "border-bottom", "border-bottom-color", "border-bottom-left-radius",
-      "border-bottom-rigth-radius",  "border-bottom-style", "border-bottom-width",
-      "border-collapse", "border-color", "border-image",  "border-image-outset",
-      "border-image-repeat", "border-image-slice", "border-image-source",
-      "border-image-width", "border-left", "border-left-color", "border-left-style",
-      "border-left-width", "border-radius", "border-right", "border-right-color",
-      "border-right-style", "border-right-width", "border-spacing", "border-style",
-      "border-top", "border-top-color", "border-top-left-radius",
-      "border-top-right-radius", "border-top-style", "border-top-width",
-      "border-width", "bottom", "box-shadow",
+      "bottom", "box-shadow",
       "caption-side", "clear", "clip", "color", "content", "counter-increment",
       "counter-reset", "cursor",
       "direction", "display",
       "empty-cells",
-      "float", "font", "font-family", "font-size", "font-size-adjust",
-      "font-stretch", "font-style", "font-synthesis", "font-variant", "font-weight",
+      "float",
       "height",
-      "left", "letter-spacing", "line-height", "list-style", "list-style-image",
-      "list-style-position", "list-style-type",
-      "margin", "margin-bottom", "margin-left", "margin-right", "margin-top",
+      "left", "letter-spacing", "line-height",
       "max-height", "max-width", "min-height", "min-width",
-      "opacity", "orphans", "outline", "outline-color", "outline-style",
-      "outline-width", "overflow",
-      "padding", "padding-bottom", "padding-left", "padding-right", "padding-top",
+      "opacity", "orphans", "overflow",
       "page-break-after", "page-break-before", "page-break-inside", "position",
       "quotes",
       "right",
       "size",
       "table-layout", "text-align", "text-decoration", "text-indent",
       "text-transform",
-      "top", "transform", "transform-origin", "transition", "transition-delay",
-      "transition-duration", "transition-property", "transition-timing-function",
+      "top", "transform", "transform-origin",
       "unicode-bidi",
       "vertical-align", "visibility",
       "white-space", "widows", "width", "word-spacing",
       "z-index"
    };
-
-   private final static char[] CLASS_START = {
-      '.', '#'
+   //
+   // Property appandages
+   private final static String[] BACKGROUND_PROPS = {
+      "-attachment", "-clip", "-color",
+      "-image", "-origin", "-position",
+      "-repreat", "-size"
    };
-
-   private final static char[] CLASS_END = {
-      ' ', '{'
+   private final static String[] BORDER_PROPS = {
+      "-bottom", "-bottom-color", "-bottom-left-radius",
+      "-bottom-rigth-radius",  "-bottom-style", "-bottom-width",
+      "-collapse", "-color", "-image",  "-image-outset",
+      "-image-repeat", "-image-slice", "-image-source",
+      "-image-width", "-left", "-left-color", "-left-style",
+      "-left-width", "-radius", "-right", "-right-color",
+      "-right-style", "-right-width", "-spacing", "-style",
+      "-top", "-top-color", "-top-left-radius",
+      "-top-right-radius", "-top-style", "-top-width",
+      "-width"
    };
-
-   private final static char[] NON_PROP_START = {
-      '-', '.'
+   private final static String[] TOP_LEFT_RIGHT_BOTTOM_OPT = {
+      "-bottom", "-left", "-right", "-top"
    };
+   private final static String[] FONT_PROPS = {
+      "-family", "-size", "-size-adjust", "-stretch", "-style",
+      "-synthesis", "-variant", "-weight"
+   }; 
+   private final static String[] LIST_PROPS = {
+      "-style", "-style-image", "-style-position", "-style-type"
+   };  
+   private final static String[] MARGIN_PROPS = TOP_LEFT_RIGHT_BOTTOM_OPT;
+   private final static String[] OUTLINE_PROPS = {
+      "-color", "-style", "-width"
+   };
+   private final static String[] PADDING_PROPS = TOP_LEFT_RIGHT_BOTTOM_OPT;
+   private final static String[] TRANSITION_PROPS = {
+      "-delay", "-duration", "-property", "-timing-function"
+   };
+   //
+   // General
+   private final static char[] CLASS_START = {'.', '#'};
+   private final static char[] CLASS_END = {' ', '{'};
+   private final static char[] NON_PROP_START = {'-', '.'};
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
@@ -72,10 +85,35 @@ public class CSSHighlighter implements Highlighter {
                
          searcher.signedVariables(CLASS_START, CLASS_END, false,
                Attributes.BLUE_PLAIN);
+         
+         searcher.extensibleKeyword("background", BACKGROUND_PROPS,
+               NON_PROP_START, true, Attributes.RED_PLAIN);
                
-         searcher.keywords(PROPERTIES, NON_PROP_START, true, Attributes.RED_PLAIN);
+         searcher.extensibleKeyword("border", BORDER_PROPS, NON_PROP_START, true,
+               Attributes.RED_PLAIN);
+               
+         searcher.extensibleKeyword("font", FONT_PROPS, NON_PROP_START, true,
+               Attributes.RED_PLAIN);
+               
+         searcher.extensibleKeyword("list", LIST_PROPS, NON_PROP_START, true,
+               Attributes.RED_PLAIN);
+               
+         searcher.extensibleKeyword("margin", MARGIN_PROPS, NON_PROP_START, true,
+               Attributes.RED_PLAIN);
+               
+         searcher.extensibleKeyword("outline", OUTLINE_PROPS, NON_PROP_START, true,
+               Attributes.RED_PLAIN);
+               
+         searcher.extensibleKeyword("padding", PADDING_PROPS, NON_PROP_START, true,
+               Attributes.RED_PLAIN);
+               
+         searcher.extensibleKeyword("transition", TRANSITION_PROPS,
+               NON_PROP_START, true, Attributes.RED_PLAIN);
+                  
+         searcher.keywords(PROPS, NON_PROP_START, true, Attributes.RED_PLAIN);
          searcher.bracesGray();
       }
-      searcher.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
+      searcher.blockComments(SyntaxUtils.BLOCK_CMNT_START,
+            SyntaxUtils.BLOCK_CMNT_END);
    }
 }
