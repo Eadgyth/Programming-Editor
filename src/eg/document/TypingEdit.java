@@ -10,7 +10,7 @@ import javax.swing.event.CaretEvent;
 //--Eadgyth--//
 import eg.Languages;
 import eg.utils.LinesFinder;
-import eg.syntax.SyntaxHighlighter;
+import eg.syntax.*;
 
 /**
  * Mediates between the editing of the text document and the actions that
@@ -120,16 +120,35 @@ public class TypingEdit {
    }
 
    /**
-    * Set the editing mode that depends on the specified language
+    * Sets the editing mode that depends on the specified language
     *
-    * @param lang  the language which is a constant in {@link Languages}
+    * @param lang  a language in {@link Languages}
     */
    public void setEditingMode(Languages lang) {
-      syntax.selectHighlighter(lang);
       if (lang == Languages.NORMAL_TEXT) {
          enableCodeEditing(false);
+         textDoc.setAllCharAttrBlack();
       }
       else {
+         Highlighter hl = null;
+         switch(lang) {
+            case JAVA:
+               hl = new JavaHighlighter();
+               break;
+            case HTML:
+               hl = new HTMLHighlighter();
+               break;
+            case JAVASCRIPT:
+               hl = new JavascriptHighlighter();
+               break;
+            case CSS:
+               hl = new CSSHighlighter();
+               break;
+            case PERL:
+               hl = new PerlHighlighter();
+               break;
+         }
+         syntax.setHighlighter(hl);
          highlightMultipleLines(null, 0);
          enableCodeEditing(true);
       }
@@ -164,10 +183,11 @@ public class TypingEdit {
    }
 
    /**
-    * Colors the specified <code>section</code> of the document text.
-    * If this section does not encompass full lines, its first and last lines
-    * are completed for coloring. If it is only a part of a single line this
-    * line is as well completed.
+    * Highlights the specified <code>section</code> of the document
+    * text.<br>
+    * If the section does not encompass full lines, its first and last lines
+    * are completed for highlighting. If it is only a part of a single line
+    * this line is as well completed.
     *
     * @param section  a section of the document text. If null the entire
     * text is used.
@@ -175,10 +195,7 @@ public class TypingEdit {
     */
    public void highlightMultipleLines(String section, int pos) {
       int posStart = 0;
-      if (section == null) {
-         section = text;
-      }
-      else {
+      if (section != null) {
          section = LinesFinder.allLinesAtPos(text, section, pos);
          posStart = LinesFinder.lastNewline(text, pos) + 1;
       }
