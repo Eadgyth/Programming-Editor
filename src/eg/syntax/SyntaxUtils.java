@@ -164,8 +164,8 @@ public class SyntaxUtils {
     * @param pos  the position in the text
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
-    * @return  the position of the next block end. -1 if a block start is
-    * closer than a block end or if no block end is found
+    * @return  the position of the next block end. -1 if a block
+    * start is closer than a block end or if no block end is found
     */
    public static int nextBlockEnd(String text, int pos, String blockStart,
          String blockEnd) {
@@ -186,6 +186,27 @@ public class SyntaxUtils {
          nextEnd = -1;
       }
       return nextEnd;
+   }
+   
+   /**
+    * Returns the boolean that is true only if an opening brace
+    * but not a closing brace is found ahead of the specified
+    * position in the case that <code>openingBrace</code> is true
+    * or rather if a closing brace or no brace is found in the case
+    * that <code>openingBrace</code> is false
+    *
+    * @param text  the text
+    * @param pos  the position
+    * @param openingBrace  the boolean that indicates if the last
+    * brace must (true) or must not (false) be an opening brace
+    * @return  the boolean value
+    */ 
+   public static boolean testLastBrace(String text, int pos, boolean openingBrace) {
+      int lastBlockStart
+            = SyntaxUtils.lastBlockStart(text, pos, "{", "}");
+        
+      return (openingBrace && lastBlockStart != -1)
+            || (!openingBrace && lastBlockStart == -1);
    }
 
    /**
