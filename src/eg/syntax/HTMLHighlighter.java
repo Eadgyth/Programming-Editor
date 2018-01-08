@@ -25,22 +25,21 @@ public class HTMLHighlighter implements Highlighter {
       "object", "ol", "optgroup", "option", "output",
       "p", "param", "pre", "progress",
       "rp", "rt", "ruby",
-      "s", "samp", "script", "section", "select", "small", "source", "span", "strong",
-      "style", "sub", "summary", "sup", "svg",
-      "table", "tbody", "textarea", "tfoot", "thead", "time", "title", "td", "th", "tr",
-      "track",
+      "s", "samp", "script", "section", "select", "small", "source", "span",
+      "strong", "style", "sub", "summary", "sup", "svg",
+      "table", "tbody", "textarea", "tfoot", "thead", "time", "title", "td",
+      "th", "tr", "track",
       "ul",
       "video",
       "wbr",
    };
-
    private final static String[] ATTRIBUTES = {
       "accesskey", "abbr", "accept", "accept-charset", "action", "align", "alt",
       "archive", "axis",
       "bgcolor", "border",
       "callpadding", "callspacing", "char", "charset", "checked", "cite", "class",
-      "classid", "code", "codebase", "codetag", "compact", "content", "coords", "cols",
-      "colspan",
+      "classid", "code", "codebase", "codetag", "compact", "content", "coords",
+      "cols", "colspan",
       "data", "datetime", "declare", "defer", "dir", "disabled",
       "enctype",
       "for", "frame", "frameborder",
@@ -60,9 +59,9 @@ public class HTMLHighlighter implements Highlighter {
       "width",
       "xml:lang", "xml:space", "xmlns",
    };
-
    private final static String BLOCK_CMNT_START = "<!--";
    private final static String BLOCK_CMNT_END = "-->";
+
    private final JavascriptHighlighter js = new JavascriptHighlighter();
    private final CSSHighlighter css = new CSSHighlighter();
 
@@ -71,8 +70,8 @@ public class HTMLHighlighter implements Highlighter {
       if (!searcher.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
          searcher.setCharAttrBlack();
          searcher.htmlTags(TAGS, ATTRIBUTES);
-         searcher.embedInHtml(js, "<script", "</script>");
-         searcher.embedInHtml(css, "<style>", "</style>");
+         searcher.embeddedInHtml("<script", "</script>", js);
+         searcher.embeddedInHtml("<style>", "</style>", css);
       }
       searcher.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
    }
