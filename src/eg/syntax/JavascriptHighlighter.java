@@ -6,7 +6,7 @@ package eg.syntax;
 public class JavascriptHighlighter implements Highlighter {
    
    // incomplete
-   public final static String[] JS_KEYWORDS = {
+   private final static String[] JS_KEYWORDS = {
       "abstract",
       "boolean", "break", "byte",
       "case", "catch", "char", "class", "const", "continue",

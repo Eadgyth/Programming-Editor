@@ -304,11 +304,12 @@ public final class FileDocument {
    }
 
    /**
-    * Colors a section of the document that starts at the specified
-    * position. Has no effect if this language is normal text
+    * Highlights the specified <code>section</code> of the document
+    * text.<br>
+    * Has no effect if this language is normal text
     *
     * @param section  the section
-    * @param pos  the position
+    * @param pos  the position where section starts
     * @see TypingEdit#highlightMultipleLines(String, int)
     */
    public void highlightSection(String section, int pos) {
