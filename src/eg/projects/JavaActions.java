@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import java.awt.EventQueue;
 
+import javax.swing.SwingWorker;
+
 //--Eadgyth--//
 import eg.console.*;
 import eg.javatools.*;
@@ -58,9 +60,7 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
    public boolean configureProject(String dir) {
       boolean success = super.configureProject(dir);
       if (success) {
-         setQualifiedMain();
-         setStartCommand();
-         setIncludedExtArr();
+         setCommandParams();
       }
       return success;
    }
@@ -72,9 +72,7 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
    public boolean retrieveProject(String dir) {
       boolean success = super.retrieveProject(dir);
       if (success) {
-         setQualifiedMain();
-         setStartCommand();
-         setIncludedExtArr();
+         setCommandParams();
       }
       return success;
    }
@@ -132,43 +130,47 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
       if (!mainClassFileExists()) {
          return;
       }
-
-      String jarName = getBuildName();
-      if (jarName.length() == 0) {
-         jarName = getMainFile();
-      }
-      boolean existed = jarFileExists(jarName);
-      try {
-         consPnl.setText("");
-         jar.createJar(getProjectPath(), jarName, qualifiedMain,
-               getExecutableDirName(), getSourceDirName(), includedExt);
-
-         if (!existed) {
-            boolean exists = false;
-            while (!exists) {
-               try {
-                  Thread.sleep(200);
-               }
-               catch (InterruptedException e) {
-                  FileUtils.logStack(e);
-               }
-               exists = jarFileExists(jarName);
-            }
+      consPnl.setText("");
+      EventQueue.invokeLater(() -> {
+         String jarName = getBuildName();
+         if (jarName.length() == 0) {
+            jarName = getMainFile();
          }
-         String jarNameFin = jarName;
-         EventQueue.invokeLater(() -> {
-            consPnl.appendText("<<Saved jar file named " + jarNameFin + ">>\n");
-            Dialogs.infoMessage("Saved jar file named " + jarNameFin, null);
-         });
-      }
-      catch (IOException e) {
-         FileUtils.logStack(e);
-      }
+         boolean existed = jarFileExists(jarName);
+         try {
+            jar.createJar(getProjectPath(), jarName, qualifiedMain,
+                  getExecutableDirName(), getSourceDirName(), includedExt);
+   
+            if (!existed) {
+               boolean exists = false;
+               while (!exists) {
+                  try {
+                     Thread.sleep(200);
+                  }
+                  catch (InterruptedException e) {
+                     FileUtils.logStack(e);
+                  }
+                  exists = jarFileExists(jarName);
+               }
+            }
+            consPnl.appendText("<<Saved jar file named " + jarName + ">>\n");
+            Dialogs.infoMessage("Saved jar file named " + jarName, null);
+         }
+         catch (IOException e) {
+            FileUtils.logStack(e);
+         }
+      });
    }
 
    //
-   //--private--/
+   //--private--
    //
+   
+   private void setCommandParams() {
+      setQualifiedMain();
+      setStartCommand();
+      setIncludedExtArr();
+   }
    
    private void setQualifiedMain() {
       StringBuilder sb = new StringBuilder();
