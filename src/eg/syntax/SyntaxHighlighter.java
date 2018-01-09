@@ -41,8 +41,8 @@ public class SyntaxHighlighter {
     * Highlights text
     *
     * @param text  the entire text in the document
-    * @param section  the section to be highlighted. Null or equal to the
-    * entire text to highlight the entire text
+    * @param section  the section to be highlighted. Null or equal to
+    * text to highlight the entire text
     * @param pos  the position where a change happened. 0 if the entire
     * text is highlighted
     * @param posStart  the position where section starts
@@ -59,7 +59,7 @@ public class SyntaxHighlighter {
     * Class is created in the enclosing class and has no public constructor.
     */
    public class SyntaxSearcher {
-      
+
       private final TextDocument textDoc;
 
       private String text = "";
@@ -118,7 +118,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Highlights an extensible keyword if this is a whole word and if 
+       * Highlights an extensible keyword if this is a whole word and if
        * an opening brace is or is rather not found ahead of the keyword,
        * depending on the specfied <code>openingBrace</code>
        *
@@ -241,7 +241,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Highlighs block comments in green
+       * Highlights block comments in green
        *
        * @param blockCmntStart  the string that marks the start of comments
        * @param blockCmntEnd  the string that marks the end of comments
@@ -302,29 +302,45 @@ public class SyntaxHighlighter {
             }
          }
       }
-      
-      private void key(String keyStart, String[] keyExtensions, char[] nonWordStart,
+
+      private void key(String keyBase, String[] keyExtensions, char[] nonWordStart,
             boolean inBraces, SimpleAttributeSet set) {
 
          int start = 0;
          while (start != -1) {
-            start = section.indexOf(keyStart, start);
-            int length;
+            start = section.indexOf(keyBase, start);
+            int length = keyBase.length();
             if (start != -1) {
                int absStart = start + posStart;
                boolean ok = SyntaxUtils.testLastBrace(text, absStart, inBraces)
-                     && SyntaxUtils.isWord(section, start, keyStart.length(),
+                     && SyntaxUtils.isWord(section, start, keyBase.length(),
                            nonWordStart);
 
                if (ok) {
-                  textDoc.setCharAttr(absStart, keyStart.length(), set);
-                  keywords(keyExtensions, false, set);
+                  length += keyExtension(keyExtensions, start + keyBase.length(), set);
+                  textDoc.setCharAttr(absStart, length, set);
                }
-               start += keyStart.length();
+               start += length;
             }
          }
       }
+      
+      private int keyExtension(String[] keyExtensions, int extStart,
+            SimpleAttributeSet set) {
 
+         int length = 0;
+         for (String s : keyExtensions) {
+            boolean found = SyntaxUtils.isWordEnd(section, extStart + s.length())
+                  && extStart == section.indexOf(s, extStart);
+
+            if (found) {
+               length = s.length();
+               break;
+            }
+         }
+         return length;
+      }
+               
       private void signedVariable(char sign, char[] endChars,
             SimpleAttributeSet set) {
 
@@ -591,7 +607,7 @@ public class SyntaxHighlighter {
                blockCmntEnd);
 
          if (innerEnd > 0 && nextEnd > innerEnd) {
-             nextEnd = -1; 
+             nextEnd = -1;
          }
          if (nextEnd != -1) {
             String toUncomment = text.substring(endPos,
@@ -657,7 +673,7 @@ public class SyntaxHighlighter {
          return SyntaxUtils.isInQuotes(line, relStart, SyntaxUtils.DOUBLE_QUOTE)
                || SyntaxUtils.isInQuotes(line, relStart, SyntaxUtils.SINGLE_QUOTE);
       }
-      
+
       private void setTextParams(String text, String section, int pos, int posStart) {
          this.text = text;
          if (section == null) {
@@ -669,7 +685,7 @@ public class SyntaxHighlighter {
          isTypeMode = text.length() > section.length();
          isMultiline = LinesFinder.isMultiline(section);
       }
-      
+
       private SyntaxSearcher(TextDocument textDoc) {
          this.textDoc = textDoc;
       }
