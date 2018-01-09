@@ -121,8 +121,9 @@ public class FileTree extends Observable {
    }
 
    /**
-    * Udates the tree at the currently shown root. Called when it is expected
-    * that one or more nodes have to be removed or added
+    * Updates the tree at the currently shown root. This root may by a
+    * subdirectory of the actual project root. Called when it is expected
+    * that one or more nodes were removed or added
     */
    public void updateTree() {
       getExpandedNodes();

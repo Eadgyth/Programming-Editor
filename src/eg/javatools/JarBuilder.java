@@ -24,8 +24,6 @@ public class JarBuilder {
    
    private final FilesFinder fFind = new FilesFinder();
    private final ConsolePanel consPnl;
-   
-   private final boolean isManifest = false;
 
    /**
     * @param consPnl  the reference to {@link ConsolePanel}
@@ -72,7 +70,7 @@ public class JarBuilder {
    }
 
    //
-   //--private--/
+   //--private--
    //
 
    private List<String> jarCmd(String root, String jarName, String qualifiedMain,

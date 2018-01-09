@@ -225,7 +225,7 @@ public class CurrentProject {
          updateFileTree();
       }
       finally {
-         EventQueue.invokeLater(() -> mw.setDefaultCursor());
+         EventQueue.invokeLater(() ->  mw.setDefaultCursor());
       }
    }
 
