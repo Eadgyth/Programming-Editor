@@ -41,8 +41,8 @@ public class SyntaxHighlighter {
     * Highlights text
     *
     * @param text  the entire text in the document
-    * @param section  the section to be highlighted. Null or equal to
-    * text to highlight the entire text
+    * @param section  the section to be highlighted. Is equal to text to
+    * highlight the entire text
     * @param pos  the position where a change happened. 0 if the entire
     * text is highlighted
     * @param posStart  the position where section starts
@@ -676,9 +676,6 @@ public class SyntaxHighlighter {
 
       private void setTextParams(String text, String section, int pos, int posStart) {
          this.text = text;
-         if (section == null) {
-            section = text;
-         }
          this.section = section;
          this.pos = pos;
          this.posStart = posStart;
