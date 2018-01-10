@@ -11,7 +11,7 @@ import javax.swing.KeyStroke;
 
 //--Eadgyth--//
 import eg.Edit;
-import eg.TabbedFiles;
+import eg.TabbedDocuments;
 import eg.Languages;
 import eg.Preferences;
 import eg.ui.IconFiles;
@@ -91,11 +91,11 @@ public class EditMenu {
    /**
     * Sets the listeners for actions to select the language
     *
-    * @param tf  the reference to {@link TabbedFiles}
+    * @param td  the reference to {@link TabbedDocuments}
     */
-   public void setChangeLanguageAction(TabbedFiles tf) {
+   public void setChangeLanguageActions(TabbedDocuments td) {
       for (JCheckBoxMenuItem item : selectLangChBxItm) {
-         item.addActionListener(e -> setLanguage(e, tf));
+         item.addActionListener(e -> setLanguage(e, td));
       }
    }
 
@@ -145,10 +145,10 @@ public class EditMenu {
    }
 
    //
-   //--private--/
+   //--private--
    //
 
-   private void setLanguage(ActionEvent e, TabbedFiles tf) {
+   private void setLanguage(ActionEvent e, TabbedDocuments tf) {
       for (int i = 0; i < selectLangChBxItm.length; i++) {
          if (e.getSource() == selectLangChBxItm[i]) {
             Languages lang = Languages.values()[i];

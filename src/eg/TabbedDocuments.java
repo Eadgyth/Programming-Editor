@@ -16,15 +16,16 @@ import java.io.File;
 import eg.utils.Dialogs;
 
 import eg.document.FileDocument;
+import eg.document.EditingStateReadable;
 import eg.ui.MainWin;
 import eg.ui.EditArea;
 import eg.ui.tabpane.ExtTabbedPane;
 
 /**
- * The control of file operations that require knowledge of the documents in
+ * The control of operations that require knowledge of the documents in
  * the tabs
  */
-public class TabbedFiles implements Observer {
+public class TabbedDocuments implements Observer {
 
    private final FileDocument[] fDoc = new FileDocument[15];
    private final EditArea[] editArea = new EditArea[15];
@@ -39,10 +40,11 @@ public class TabbedFiles implements Observer {
     * The index of the selected tab */
    private int iTab = -1;
    /*
-    * The language read from prefs and set in the Languge menu */
+    * The language initially read from prefs and maybe set in the
+    * Languge menu */
    private Languages lang;
 
-   public TabbedFiles(EditAreaFormat format, MainWin mw) {
+   public TabbedDocuments(EditAreaFormat format, MainWin mw) {
       this.format = format;
       this.mw = mw;
       tabPane = mw.tabPane();
@@ -104,13 +106,14 @@ public class TabbedFiles implements Observer {
    }
 
    /**
-    * Saves the text content of the selected tab.
+    * Saves the text content in the selected document.
     * <p>{@link #saveAs(boolean)} is called if the selected tab is
     * unnamed or if the content was read in from a file that no longer
     * exists on the hard drive.
     *
     * @param update  if the view (e.g. tab title, file view) is
-    * updated and if it is tried to retrieve a project
+    * updated and if it is tried to retrieve a project. This applies
+    * to "save as mode" only
     * @return  if the text content was saved
     */
    public boolean save(boolean update) {
@@ -246,7 +249,7 @@ public class TabbedFiles implements Observer {
    }
    
    /**
-    * Tries to close all tabs
+    * Closes all tabs
     *
     * @return  the boolean value that indicates if all tabs were
     * closed
@@ -268,7 +271,7 @@ public class TabbedFiles implements Observer {
    }
 
    //
-   //--private--/
+   //--private--//
    //
 
    private void open(File f) {
@@ -301,7 +304,7 @@ public class TabbedFiles implements Observer {
       fDoc[n] = new FileDocument(editArea[n], lang);
       prefs.readPrefs();
       fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-      setEditingStateReadables(n);
+      fDoc[n].setEditingStateReadable(editReadable);
       addNewTab("unnamed", editArea[n].editAreaPnl());
    }
 
@@ -313,7 +316,7 @@ public class TabbedFiles implements Observer {
          fDoc[n] = new FileDocument(editArea[n], f);
          prefs.readPrefs();
          fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-         setEditingStateReadables(n);
+         fDoc[n].setEditingStateReadable(editReadable);
          addNewTab(fDoc[n].filename(), editArea[n].editAreaPnl());
          docUpdate.updateForChangedFile(n, false);
          prefs.storePrefs("recentPath", fDoc[n].dir());
@@ -330,12 +333,6 @@ public class TabbedFiles implements Observer {
          iTab = tabPane.iTabMouseOver();
          close(true);
       });
-   }
-   
-   private void setEditingStateReadables(int i) {
-      fDoc[i].setUndoableStateReadable((a, b) -> mw.enableUndoRedo(a, b));
-      fDoc[i].setSelectionStateReadable((b) -> mw.enableCutCopy(b));
-      fDoc[i].setCursorPositionReadable((j, k) -> mw.displayLCursorPosition(j, k));
    }
    
    private void removeTab() {
@@ -424,4 +421,27 @@ public class TabbedFiles implements Observer {
          lang = Languages.NORMAL_TEXT;
       }
    }
+   
+   private final EditingStateReadable editReadable = new EditingStateReadable() {
+
+      @Override
+      public void setChangeState(boolean isChange) {
+         mw.enableSave(isChange);
+      }
+      
+      @Override
+      public void setUndoableState(boolean canUndo, boolean canRedo) {
+         mw.enableUndoRedo(canUndo, canRedo);
+      }
+      
+      @Override
+      public void setSelectionState(boolean isSelection) {
+         mw.enableCutCopy(isSelection);
+      }
+      
+      @Override
+      public void setCursorPosition(int line, int col) {
+         mw.displayLCursorPosition(line, col);
+      }
+   };
 }

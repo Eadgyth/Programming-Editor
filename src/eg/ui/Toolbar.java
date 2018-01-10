@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 //--Eadgyth--
-import eg.TabbedFiles;
+import eg.TabbedDocuments;
 import eg.CurrentProject;
 import eg.Edit;
 
@@ -46,11 +46,11 @@ public class Toolbar {
    /**
     * Sets listeners for file actions
     *
-    * @param tf  the reference to {@link TabbedFiles}
+    * @param td  the reference to {@link TabbedDocuments}
     */
-   public void setFileActions(TabbedFiles tf) {
-      openBt.addActionListener(e -> tf.openFileByChooser());
-      saveBt.addActionListener(e -> tf.save(true));
+   public void setFileActions(TabbedDocuments td) {
+      openBt.addActionListener(e -> td.openFileByChooser());
+      saveBt.addActionListener(e -> td.save(true));
    }
 
    /**
@@ -112,6 +112,16 @@ public class Toolbar {
       cutBt.setEnabled(b);
       copyBt.setEnabled(b);
    }
+   
+   /**
+    * Sets the boolean that specifies if the button for saving actions
+    * is enabled or disabled
+    *
+    * @param b  the boolean value
+    */
+    public void enableSaveBt(boolean b) {
+       saveBt.setEnabled(b);
+    }
 
    /**
     * Sets the booleans that specify if the buttons for undoing and

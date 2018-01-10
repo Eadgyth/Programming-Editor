@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 //--Eadgyth--/
 import eg.Constants;
-import eg.TabbedFiles;
+import eg.TabbedDocuments;
 import eg.CurrentProject;
 import eg.Edit;
 import eg.EditAreaFormat;
@@ -205,7 +205,7 @@ public class MainWin implements ConsoleOpenable {
    }
 
    /**
-    * Sets the booleans that specify if undoing and redoing actions
+    * Sets the booleans that specifies if undoing and redoing actions
     * are enabled or disabled
     *
     * @param isUndo  the boolean value for undo actions
@@ -214,6 +214,17 @@ public class MainWin implements ConsoleOpenable {
    public void enableUndoRedo(boolean isUndo, boolean isRedo) {
       toolbar.enableUndoRedoBts(isUndo, isRedo);
       menuBar.editMenu().enableUndoRedoItms(isUndo, isRedo);
+   }
+   
+   /**
+    * Sets the boolean that specifies if save actions
+    * are enabled or disabled
+    *
+    * @param b  the boolean value
+    */
+   public void enableSave(boolean b) {
+      toolbar.enableSaveBt(b);
+      menuBar.fileMenu().enableSaveItm(b);
    }
 
    /**
@@ -318,20 +329,20 @@ public class MainWin implements ConsoleOpenable {
    /**
     * Sets listeners for file actions
     *
-    * @param tf  the reference to {@link TabbedFiles}
+    * @param td  the reference to {@link TabbedDocuments}
     */
-   public void setFileActions(TabbedFiles tf) {
-      menuBar.fileMenu().setActions(tf);
-      menuBar.fileMenu().setExitActions(e -> exit(tf));
-      menuBar.editMenu().setChangeLanguageAction(tf);
-      toolbar.setFileActions(tf);
-      fileTree.addObserver(tf);
+   public void setFileActions(TabbedDocuments td) {
+      menuBar.fileMenu().setActions(td);
+      menuBar.fileMenu().setExitActions(e -> exit(td));
+      menuBar.editMenu().setChangeLanguageActions(td);
+      toolbar.setFileActions(td);
+      fileTree.addObserver(td);
       
-      winListen(new WindowAdapter() {
+      winListener(new WindowAdapter() {
 
          @Override
          public void windowClosing(WindowEvent we) {
-            exit(tf);
+            exit(td);
          }
       });
    }
@@ -395,7 +406,7 @@ public class MainWin implements ConsoleOpenable {
       console.setCloseAct(e -> vm.doConsoleItmAct(false));
    }
    
-   private void winListen(WindowListener wl) {
+   private void winListener(WindowListener wl) {
       frame.addWindowListener(wl);
    }
 
@@ -459,11 +470,11 @@ public class MainWin implements ConsoleOpenable {
       }
    }
    
-   private void exit(TabbedFiles tf) {
+   private void exit(TabbedDocuments td) {
       editTools.forEach((t) -> {
          t.end();
       });
-      if (tf.isAllClosed()) {
+      if (td.isAllClosed()) {
          System.exit(0);
       }
    }

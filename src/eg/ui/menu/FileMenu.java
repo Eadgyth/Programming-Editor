@@ -8,8 +8,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-//--Eadgyth--//
-import eg.TabbedFiles;
+//--Eadgyth--
+import eg.TabbedDocuments;
 import eg.ui.IconFiles;
 
 /**
@@ -51,18 +51,18 @@ public class FileMenu {
     * Sets listeners for file actions defined in <code>TabbedFiles</code>
     * except for the action to exit the program
     *
-    * @param tf  the reference to {@link TabbedFiles}
+    * @param td  the reference to {@link TabbedDocuments}
     */
-   public void setActions(TabbedFiles tf) {
-      newFileItm.addActionListener(e -> tf.createBlankDocument());
-      openItm.addActionListener(e -> tf.openFileByChooser());
-      closeItm.addActionListener(e -> tf.close(true));
-      closeAllItm.addActionListener(e -> tf.closeAll(true));
-      saveItm.addActionListener(e -> tf.save(true));     
-      saveAllItm.addActionListener(e -> tf.saveAll());
-      saveAsItm.addActionListener(e -> tf.saveAs(true));
-      saveCopyItm.addActionListener(e -> tf.saveCopy());
-      printItm.addActionListener(e -> tf.print());
+   public void setActions(TabbedDocuments td) {
+      newFileItm.addActionListener(e -> td.createBlankDocument());
+      openItm.addActionListener(e -> td.openFileByChooser());
+      closeItm.addActionListener(e -> td.close(true));
+      closeAllItm.addActionListener(e -> td.closeAll(true));
+      saveItm.addActionListener(e -> td.save(true));     
+      saveAllItm.addActionListener(e -> td.saveAll());
+      saveAsItm.addActionListener(e -> td.saveAs(true));
+      saveCopyItm.addActionListener(e -> td.saveCopy());
+      printItm.addActionListener(e -> td.print());
    }
    
    /**
@@ -73,6 +73,16 @@ public class FileMenu {
    public void setExitActions(ActionListener al) {
       exitItm.addActionListener(al);
    }
+   
+   /**
+    * Sets the boolean that specifies if the item for saving actions
+    * is enabled or disabled
+    *
+    * @param b  the boolean value
+    */
+    public void enableSaveItm(boolean b) {
+       saveItm.setEnabled(b);
+    }
    
    //
    //--private--/

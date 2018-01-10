@@ -8,7 +8,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
-//--Eadgyth--/
+//--Eadgyth--//
 import eg.ui.MainWin;
 import eg.ui.ViewSettingWin;
 import eg.utils.FileUtils;
@@ -30,9 +30,9 @@ public class Eadgyth {
       ViewSettingWin  viewSetWin = new ViewSettingWin();
       ViewSetter      viewSet    = new ViewSetter(viewSetWin, mw);
       EditAreaFormat  format     = new EditAreaFormat(viewSetWin);
-      TabbedFiles     tabFiles   = new TabbedFiles(format, mw);
+      TabbedDocuments tabDocs    = new TabbedDocuments(format, mw);
 
-      mw.setFileActions(tabFiles);
+      mw.setFileActions(tabDocs);
       mw.setViewSettingWinAction(viewSetWin);
       mw.setFormatActions(format);
       viewSetWin.setOkAct(e -> {
@@ -42,7 +42,7 @@ public class Eadgyth {
       });      
       EventQueue.invokeLater(() -> {
          mw.makeVisible();
-         tabFiles.createBlankDocument();
+         tabDocs.createBlankDocument();
       });
    }
    
