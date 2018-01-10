@@ -23,6 +23,7 @@ import eg.FunctionalAction;
 import eg.ui.EditArea;
 import eg.ui.IconFiles;
 import eg.document.FileDocument;
+import eg.document.EditingStateReadable;
 import eg.utils.UIComponents;
 
 /**
@@ -52,8 +53,7 @@ public class ExchangeEditor implements AddableEditTool {
       editAreaPnl = ea.editAreaPnl();
       FileDocument fd = new FileDocument(ea, Languages.NORMAL_TEXT);
       exch = new TextExchange(fd);
-      fd.setUndoableStateReadable((a, b) -> enableUndoRedo(a, b));
-      fd.setSelectionStateReadable((b) -> enableCutCopy(b));
+      fd.setEditingStateReadable(editReadable);
       edit.setFileDocument(fd);
    }
 
@@ -73,10 +73,8 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    /**
-    * {@inheritDoc}.
-    * <p>
-    * Saves the content in the exchange editor to the file 'exchangeContent.txt'
-    * in the program folder
+    * Saves the content in the exchange editor to the file
+    * 'exchangeContent.txt' in the program folder
     */
    @Override
    public void end() {
@@ -84,7 +82,7 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    //
-   //--private--/
+   //--private--
    //
 
    private void enableUndoRedo(boolean isUndo, boolean isRedo) {
@@ -126,14 +124,14 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    private JPanel controlsPnl() {
-      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 1, 1));
       pnl.add(buttonPnl());
       pnl.add(setLangBox());
       return pnl;
    }
 
    private JPanel buttonPnl() {
-      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 1));
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
       JButton[] bts = new JButton[] {
          setTextBt, insertTextBt
       };
@@ -148,9 +146,9 @@ public class ExchangeEditor implements AddableEditTool {
       }
       return pnl;
    }
-   
+
    private JPanel setLangBox() {
-      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
       String[] opt = new String[Languages.values().length];
       for (int i = 0; i < opt.length; i++) {
          opt[i] = Languages.values()[i].display();
@@ -214,4 +212,23 @@ public class ExchangeEditor implements AddableEditTool {
       exchPnl.getInputMap(isInput).put(ks, key);
       exchPnl.getActionMap().put(key, bt.getAction());
    }
+
+   private final EditingStateReadable editReadable = new EditingStateReadable() {
+
+      @Override
+      public void setChangeState(boolean isChange) {}
+
+      @Override
+      public void setUndoableState(boolean canUndo, boolean canRedo) {
+         enableUndoRedo(canUndo, canRedo);
+      }
+
+      @Override
+      public void setSelectionState(boolean isSelection) {
+         enableCutCopy(isSelection);
+      }
+
+      @Override
+      public void setCursorPosition(int line, int col) {}
+   };
 }

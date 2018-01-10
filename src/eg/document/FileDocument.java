@@ -28,8 +28,8 @@ public final class FileDocument {
    private String filename = "";
    private String filepath = "";
    private String dir = "";
+   String content = "";
    private Languages lang;
-   private String savedContent = "";
    
    /**
     * Creates a <code>FileDocument</code> with the specified file whose
@@ -42,8 +42,8 @@ public final class FileDocument {
       this(editArea);
       assignFile(f);
       displayFileContent(f);
+      content = type.getText();
       setLanguageBySuffix();
-      setSavedContent();
    }
 
    /**
@@ -60,30 +60,12 @@ public final class FileDocument {
    }
    
    /**
-    * Sets a <code>SelectionStateReadable</code>
+    * Sets an <code>EditingStateReadable</code>
     *
-    * @param ssr  a {@link SelectionStateReadable}
+    * @param esr  a {@link EditingStateReadable}
     */
-   public void setSelectionStateReadable(SelectionStateReadable ssr) {
-      type.setSelectionStateReadable(ssr);
-   }
-   
-   /**
-    * Sets an <code>UndoableStateReadable</code>
-    *
-    * @param usr  an {@link UndoableStateReadable}
-    */
-   public void setUndoableStateReadable(UndoableStateReadable usr) {
-      type.setUndoableStateReadable(usr);
-   }
-   
-   /**
-    * Sets a <code>CursorPositionReadable</code>
-    *
-    * @param cpr  a {@link CursorPositionReadable}
-    */
-   public void setCursorPositionReadable(CursorPositionReadable cpr) {
-      type.setCursorPositionReadable(cpr);
+   public void setEditingStateReadable(EditingStateReadable esr) {
+      type.setEditingStateReadable(esr);
    }
    
    /**
@@ -173,13 +155,14 @@ public final class FileDocument {
       if (docFile == null) {
          throw new IllegalStateException("No file has been assigned");
       }
-      setSavedContent();
+      type.resetChangeState();
+      content = type.getText();
       return writeToFile(docFile);
    }
 
    /**
     * Sets the specified file and saves the current text content to the
-    * same file. Any previously set file is replaced
+    * this file. Any previously set file reference is replaced
     *
     * @param f  the file
     * @return  if the content was saved to the file
@@ -187,7 +170,8 @@ public final class FileDocument {
    public boolean setFile(File f) {
       assignFile(f);
       setLanguageBySuffix();
-      setSavedContent();
+      type.resetChangeState();
+      content = type.getText();
       return writeToFile(f);
    }
    
@@ -221,7 +205,8 @@ public final class FileDocument {
    }
    
    /**
-    * Saves the current content to the specified file but does not set the file
+    * Saves the current content to the specified file but does not set
+    * the file
     *
     * @param f  the file which the current content is saved to
     */
@@ -235,7 +220,7 @@ public final class FileDocument {
     * @return  if the current text is saved
     */
    public boolean isSaved() {
-      return savedContent.equals(type.getText());
+      return type.getText().equals(content);
    }
    
    /**
@@ -377,10 +362,6 @@ public final class FileDocument {
          FileUtils.logStack(e);
       }
       return false;
-   }
-
-   private void setSavedContent() {
-      savedContent = type.getText();
    }
 
    private void assignFile(File f) {

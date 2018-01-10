@@ -25,10 +25,7 @@ public class TypingEdit {
    private final AutoIndent autoInd;
    private final UndoEdit undo;
 
-   private UndoableStateReadable usr;
-   private SelectionStateReadable ssr;
-   private CursorPositionReadable cpr;
-
+   private EditingStateReadable esr;
    private boolean isDocListen = true;
    private boolean isAddToUndo = true;
    private boolean isCodeEditing = false;
@@ -36,6 +33,7 @@ public class TypingEdit {
    private int pos = 0;
    private String text = "";
    private String change = "";
+   private boolean isChange = false;
    private boolean isSelectionTmp = false;
    private boolean canUndoTmp = false;
    private boolean canRedoTmp = false;
@@ -55,44 +53,18 @@ public class TypingEdit {
       textDoc.addDocumentListener(docListener);
       textDoc.textArea().addCaretListener(caretListener);
    }
-
-   /**
-    * Sets an <code>UndoableStateReadable</code> if none was set before
-    *
-    * @param usr  an {@link UndoableStateReadable}
-    */
-   public void setUndoableStateReadable(UndoableStateReadable usr) {
-      if (this.usr != null) {
-         throw new IllegalStateException(
-               "An UndoableStateReadable is already set");
-      }
-      this.usr = usr;
-   }
-
-  /**
-    * Sets a <code>SelectionStateReadable</code> if none was set before
-    *
-    * @param ssr  a {@link SelectionStateReadable}
-    */
-   public void setSelectionStateReadable(SelectionStateReadable ssr) {
-      if (this.ssr != null) {
-         throw new IllegalStateException(
-               "A SelectionStateReadable is already set");
-      }
-      this.ssr = ssr;
-   }
    
    /**
-    * Sets a <code>CursorPositionReadable</code> if none was set before
+    * Sets an <code>EditingStateReadable</code>
     *
-    * @param cpr  a {@link CursorPositionReadable}
+    * @param esr  a {@link EditingStateReadable}
     */
-   public void setCursorPositionReadable(CursorPositionReadable cpr) {
-      if (this.cpr != null) {
+   public void setEditingStateReadable(EditingStateReadable esr) {
+       if (this.esr != null) {
          throw new IllegalStateException(
-               "A CursorPositionReadable is already set");
+               "A SavedStateReadable is already set");
       }
-      this.cpr = cpr;
+      this.esr = esr;
    }
 
    /**
@@ -155,13 +127,22 @@ public class TypingEdit {
    }
    
    /**
-    * Gets the text in the document which is updated in the insert- and remove
-    * methods of this <code>DocumentListener</code>
+    * Gets the text in the document which is updated in the insert- and
+    * remove methods of this <code>DocumentListener</code>
     *
     * @return  the text
     */
    public String getText() {
       return text;
+   }
+   
+   /**
+    * Resets this flag that indicates that text is being changed and
+    * calls {@link EditingStateReadable#setChangeState(boolean)}
+    */
+   public void resetChangeState() {
+      isChange = false;
+      esr.setChangeState(isChange);
    }
 
    /**
@@ -191,7 +172,8 @@ public class TypingEdit {
     *
     * @param section  a section of the document text. If null the entire
     * text is used.
-    * @param pos  the pos where <code>section</code> starts
+    * @param pos  the pos where <code>section</code> starts. Must be 0 if
+    * section is null
     */
    public void highlightMultipleLines(String section, int pos) {
       int posStart = 0;
@@ -199,22 +181,22 @@ public class TypingEdit {
          section = LinesFinder.allLinesAtPos(text, section, pos);
          posStart = LinesFinder.lastNewline(text, pos) + 1;
       }
+      else {
+         section = text;
+      }
       syntax.highlight(text, section, pos, posStart);
    }
    
    /**
-    * Reads the current parameters that are set in {@link SelectionStateReadable},
-    * {@link UndoableStateReadable} and {@link CursorPositionReadable}
+    * Reads the current parameters by calling the methods defined in
+    * {@link EditingStateReadable}
     */
    public void readEditingState() {
-      if (cpr != null) {
-         cpr.setPosition(lineNr, colNr);
-      }
-      if (usr != null) {
-         usr.setUndoableState(canUndoTmp, canRedoTmp);
-      }
-      if (ssr != null) {
-         ssr.setSelectionState(isSelectionTmp);
+      if (esr != null) {
+         esr.setChangeState(isChange);
+         esr.setCursorPosition(lineNr, colNr);
+         esr.setUndoableState(canUndoTmp, canRedoTmp);
+         esr.setSelectionState(isSelectionTmp);
       }
    }
 
@@ -237,7 +219,7 @@ public class TypingEdit {
    }
 
    //
-   //--private--/
+   //--private--
    //
 
    private void updateAfterUndoRedo() {
@@ -256,6 +238,7 @@ public class TypingEdit {
    private void updateText() {
       text = textDoc.docText();
       lineNrDoc.updateLineNumber(text);
+      notifyChangeState();
    }
    
    private void highlightLine() {
@@ -265,9 +248,19 @@ public class TypingEdit {
       EventQueue.invokeLater(() ->
          syntax.highlight(text, toColor, pos, lineStart + 1));
    }
+   
+   private void notifyChangeState() {
+      if (esr == null) {
+         return;
+      }
+      if (!isChange) {
+         isChange = true;
+         esr.setChangeState(isChange);
+      }
+   }
 
    private void notifyUndoableState() {
-      if (usr == null) {
+      if (esr == null) {
          return;
       }
       boolean isUndoableChange = canUndoTmp != undo.canUndo();
@@ -279,21 +272,24 @@ public class TypingEdit {
          canRedoTmp = undo.canRedo();
       }
       if (isUndoableChange || isRedoableChange) {
-         usr.setUndoableState(canUndoTmp, canRedoTmp);
+         esr.setUndoableState(canUndoTmp, canRedoTmp);
       }
    }
 
    private void notifySelectionState(boolean isSelection) {
-      if (ssr == null) {
+      if (esr == null) {
          return;
       }
       if (isSelectionTmp != isSelection) {
          isSelectionTmp = isSelection;
-         ssr.setSelectionState(isSelectionTmp);
+         esr.setSelectionState(isSelectionTmp);
       }
    }
    
    private void notifyCursorPosition(int caret) {
+      if (esr == null) {
+         return;
+      }
       int lastNewLine = LinesFinder.lastNewline(text, caret);
       lineNr = LinesFinder.lineNrAtPos(text, caret);
       if (lastNewLine == -1) {
@@ -302,9 +298,7 @@ public class TypingEdit {
       else {
          colNr = caret - lastNewLine;
       }
-      if (cpr != null) {
-         cpr.setPosition(lineNr, colNr);
-      }
+      esr.setCursorPosition(lineNr, colNr);
    }
 
    private void markUndoBreakpoint(int caret) {
@@ -368,9 +362,7 @@ public class TypingEdit {
       }
 
       @Override
-      public void changedUpdate(DocumentEvent de) {
-         // nothing to do
-      }
+      public void changedUpdate(DocumentEvent de) {}
    };
    
    private final CaretListener caretListener = (CaretEvent ce) -> {
