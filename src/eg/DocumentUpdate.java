@@ -1,6 +1,6 @@
 package eg;
 
-//--Eadgyth--/
+//--Eadgyth--//
 import eg.edittools.AddableEditTool;
 import eg.document.FileDocument;
 import eg.ui.MainWin;
@@ -56,20 +56,12 @@ public class DocumentUpdate {
     * @param updateFiletree  if the file tree needs to be updated
     */
    public void updateForChangedFile(int i, boolean updateFiletree) {
-      retrieveProject(i);
+      currProj.setFileDocumentAt(i);
+      currProj.retrieveProject();
       mw.setLanguageSelected(fDoc[i].language(), false);
       mw.displayFrameTitle(fDoc[i].filepath());
       if (updateFiletree) {
          currProj.updateFileTree();
       }
-   }
-
-   //
-   //--private--/
-   //
-
-   private void retrieveProject(int i) {
-      currProj.setFileDocumentAt(i);
-      currProj.retrieveProject();
    }
 }
