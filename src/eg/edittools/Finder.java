@@ -57,10 +57,11 @@ public class Finder implements AddableEditTool {
       search.setFileDocument(fDoc);
    }
    
+   /**
+    * Has no effect in this class
+    */
    @Override
-   public void end() {
-      // nothing
-   }
+   public void end() {}
 
    //
    //--private--/
