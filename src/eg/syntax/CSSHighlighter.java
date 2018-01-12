@@ -111,7 +111,7 @@ public class CSSHighlighter implements Highlighter {
                NON_PROP_START, true, Attributes.RED_PLAIN);
                   
          searcher.keywords(PROPS, NON_PROP_START, true, Attributes.RED_PLAIN);
-         searcher.bracesGray();
+         searcher.braces();
       }
       searcher.blockComments(SyntaxUtils.BLOCK_CMNT_START,
             SyntaxUtils.BLOCK_CMNT_END);

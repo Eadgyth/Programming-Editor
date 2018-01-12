@@ -7,13 +7,13 @@ package eg.document;
 public interface EditingStateReadable {
 
    /**
-    * Sets the boolean that, if true, indicates that the text content is
-    * being changed. False indicates that the "change state" has been
-    * reset which would be the case when the text has been saved.
+    * Sets the boolean that, if true, indicates that the document
+    * is in change. False indicates that the "in change state" is
+    * reset which should be the case when the documents text is saved.
     *
     * @param b  the boolean value
     */
-   public void setChangeState(boolean b);
+   public void setInChangeState(boolean b);
    
    /**
     * Sets the booleans that indicate if edits can be redone and/or

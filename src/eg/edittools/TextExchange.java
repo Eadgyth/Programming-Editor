@@ -116,7 +116,7 @@ public class TextExchange {
    }
    
    //
-   //--private--
+   //--private--//
    //
    
    private void copy(FileDocument destination, String text) {
@@ -129,7 +129,7 @@ public class TextExchange {
       }
       EventQueue.invokeLater(() -> {
          destination.insert(posToIns, text);
-         destination.highlightSection(text, posToIns);
+         destination.highlightSection(text);
          destination.enableCodeEditing(true);
       });
    }

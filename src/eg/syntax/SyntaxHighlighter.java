@@ -2,7 +2,7 @@ package eg.syntax;
 
 import javax.swing.text.SimpleAttributeSet;
 
-//--Eadgyth--
+//--Eadgyth--//
 import eg.utils.LinesFinder;
 import eg.document.TextDocument;
 
@@ -43,13 +43,13 @@ public class SyntaxHighlighter {
     * @param text  the entire text in the document
     * @param section  the section to be highlighted. Is equal to text to
     * highlight the entire text
-    * @param pos  the position where a change happened. 0 if the entire
+    * @param chgPos  the position where a change happened. 0 if the entire
     * text is highlighted
-    * @param posStart  the position where section starts
+    * @param scnPos  the position where section starts
     * @throws NullPointerException  if no {@link Highlighter} is set
     */
-   public void highlight(String text, String section, int pos, int posStart) {
-      searcher.setTextParams(text, section, pos, posStart);
+   public void highlight(String text, String section, int chgPos, int scnPos) {
+      searcher.setTextParams(text, section, chgPos, scnPos);
       hl.highlight(searcher);
    }
 
@@ -64,8 +64,8 @@ public class SyntaxHighlighter {
 
       private String text = "";
       private String section = "";
-      private int pos;
-      private int posStart;
+      private int chgPos;
+      private int scnPos;
       private boolean isTypeMode = false;
       private boolean isMultiline = true;
       private boolean isHighlightBlockCmnt = true;
@@ -77,7 +77,7 @@ public class SyntaxHighlighter {
        * black and plain
        */
       public void setCharAttrBlack() {
-         textDoc.setCharAttrBlack(posStart, section.length());
+         textDoc.setCharAttrBlack(scnPos, section.length());
       }
 
      /**
@@ -206,7 +206,7 @@ public class SyntaxHighlighter {
       /**
        * Highlights braces in gray and bold
        */
-      public void bracesGray() {
+      public void braces() {
          key("{", false, Attributes.GRAY_BOLD);
          key("}", false, Attributes.GRAY_BOLD);
       }
@@ -214,7 +214,7 @@ public class SyntaxHighlighter {
       /**
        * Highlights brackets in blue and bold
        */
-      public void bracketsBlue() {
+      public void brackets() {
          key("(", false, Attributes.BLUE_BOLD);
          key(")", false, Attributes.BLUE_BOLD);
       }
@@ -260,11 +260,11 @@ public class SyntaxHighlighter {
        * @return  the boolean value
        */
       public boolean isInBlock(String blockStart, String blockEnd) {
-         return isInBlock(blockStart, blockEnd, pos);
+         return isInBlock(blockStart, blockEnd, chgPos);
       }
 
       //
-      //--private--
+      //--private--//
       //
 
       private void key(String key, boolean reqWord, SimpleAttributeSet set) {
@@ -276,7 +276,7 @@ public class SyntaxHighlighter {
                      || SyntaxUtils.isWord(section, start, key.length(), null);
 
                if (ok) {
-                  textDoc.setCharAttr(start + posStart, key.length(), set);
+                  textDoc.setCharAttr(start + scnPos, key.length(), set);
                }
                start += key.length();
             }
@@ -290,7 +290,7 @@ public class SyntaxHighlighter {
          while (start != -1) {
             start = section.indexOf(key, start);
             if (start != -1) {
-               int absStart = start + posStart;
+               int absStart = start + scnPos;
                boolean ok = SyntaxUtils.testLastBrace(text, absStart, inBraces)
                      && SyntaxUtils.isWord(section, start, key.length(),
                            nonWordStart);
@@ -311,7 +311,7 @@ public class SyntaxHighlighter {
             start = section.indexOf(keyBase, start);
             int length = keyBase.length();
             if (start != -1) {
-               int absStart = start + posStart;
+               int absStart = start + scnPos;
                boolean ok = SyntaxUtils.testLastBrace(text, absStart, inBraces)
                      && SyntaxUtils.isWord(section, start, keyBase.length(),
                            nonWordStart);
@@ -351,7 +351,7 @@ public class SyntaxHighlighter {
             if (start != -1) {
                if (SyntaxUtils.isWordStart(section, start, null)) {
                   length = SyntaxUtils.wordLength(section, start, endChars);
-                  textDoc.setCharAttr(start + posStart, length, set);
+                  textDoc.setCharAttr(start + scnPos, length, set);
                   start += length;
                }
                else {
@@ -369,7 +369,7 @@ public class SyntaxHighlighter {
             start = section.indexOf(sign, start);
             int length;
             if (start != -1) {
-               int absStart = start + posStart;
+               int absStart = start + scnPos;
                boolean ok = SyntaxUtils.testLastBrace(text, absStart, inBraces);
                if (ok) {
                   length = SyntaxUtils.wordLength(section, start, endChars);
@@ -409,7 +409,7 @@ public class SyntaxHighlighter {
                      && (isStartTag || isEndTag);
 
                if (ok) {
-                  textDoc.setCharAttr(start + posStart, tag.length(),
+                  textDoc.setCharAttr(start + scnPos, tag.length(),
                         Attributes.BLUE_BOLD);
                }
                start += tag.length();
@@ -422,7 +422,7 @@ public class SyntaxHighlighter {
          while (start != -1) {
             start = section.indexOf(keyword, start);
             if (start != -1) {
-               int absStart = start + posStart;
+               int absStart = start + scnPos;
                int lastTagStart
                      = SyntaxUtils.lastBlockStart(text, absStart, "<", ">");
                int lastTagEndStart = text.lastIndexOf("</", absStart);
@@ -456,7 +456,7 @@ public class SyntaxHighlighter {
                   innerEnd = end;
                   if (innerStart != -1 ) {
                      String section = text.substring(innerStart, end);
-                     setTextParams(text, section, pos, innerStart);
+                     setTextParams(text, section, chgPos, innerStart);
                      hlSection.highlight(this);
                      length = section.length();
                   }
@@ -475,14 +475,14 @@ public class SyntaxHighlighter {
             String[] chunkArr = section.split("\n");
             int sum = 0;
             for (String s : chunkArr) {
-               quoted(s, posStart + sum, SyntaxUtils.DOUBLE_QUOTE, isHtml);
-               quoted(s, posStart + sum, SyntaxUtils.SINGLE_QUOTE, isHtml);
+               quoted(s, scnPos + sum, SyntaxUtils.DOUBLE_QUOTE, isHtml);
+               quoted(s, scnPos + sum, SyntaxUtils.SINGLE_QUOTE, isHtml);
                sum += s.length() + 1;
             }
          }
          else {
-            quoted(section, posStart, SyntaxUtils.DOUBLE_QUOTE, isHtml);
-            quoted(section, posStart, SyntaxUtils.SINGLE_QUOTE, isHtml);
+            quoted(section, scnPos, SyntaxUtils.DOUBLE_QUOTE, isHtml);
+            quoted(section, scnPos, SyntaxUtils.SINGLE_QUOTE, isHtml);
          }
       }
 
@@ -551,7 +551,7 @@ public class SyntaxHighlighter {
                   else {
                      length = section.length() - start;
                   }
-                  textDoc.setCharAttr(start + posStart, length,
+                  textDoc.setCharAttr(start + scnPos, length,
                         Attributes.GREEN_PLAIN);
                }
                start += length + 1;
@@ -674,11 +674,11 @@ public class SyntaxHighlighter {
                || SyntaxUtils.isInQuotes(line, relStart, SyntaxUtils.SINGLE_QUOTE);
       }
 
-      private void setTextParams(String text, String section, int pos, int posStart) {
+      private void setTextParams(String text, String section, int chgPos, int scnPos) {
          this.text = text;
          this.section = section;
-         this.pos = pos;
-         this.posStart = posStart;
+         this.chgPos = chgPos;
+         this.scnPos = scnPos;
          isTypeMode = text.length() > section.length();
          isMultiline = LinesFinder.isMultiline(section);
       }

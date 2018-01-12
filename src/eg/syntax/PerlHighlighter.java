@@ -51,7 +51,7 @@ public class PerlHighlighter implements Highlighter {
       searcher.signedVariables(START_OF_VAR, END_OF_VAR, Attributes.PURPLE_PLAIN);
       searcher.keywords(PERL_KEYWORDS, true, Attributes.RED_BOLD);
       searcher.keywords(PERL_OP, false, Attributes.RED_BOLD);
-      searcher.bracesGray();
+      searcher.braces();
       searcher.quotedText();
       searcher.lineComments(LINE_CMNT, START_OF_VAR);
    }

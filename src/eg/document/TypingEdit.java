@@ -30,10 +30,10 @@ public class TypingEdit {
    private boolean isAddToUndo = true;
    private boolean isCodeEditing = false;
    private DocumentEvent.EventType event;
-   private int pos = 0;
+   private int chgPos = 0;
    private String text = "";
    private String change = "";
-   private boolean isChange = false;
+   private boolean isInChange = false;
    private boolean isSelectionTmp = false;
    private boolean canUndoTmp = false;
    private boolean canRedoTmp = false;
@@ -121,7 +121,7 @@ public class TypingEdit {
                break;
          }
          syntax.setHighlighter(hl);
-         highlightMultipleLines(null, 0);
+         highlightSection(null);
          enableCodeEditing(true);
       }
    }
@@ -138,11 +138,11 @@ public class TypingEdit {
    
    /**
     * Resets this flag that indicates that text is being changed and
-    * calls {@link EditingStateReadable#setChangeState(boolean)}
+    * calls {@link EditingStateReadable#setInChangeState(boolean)}
     */
-   public void resetChangeState() {
-      isChange = false;
-      esr.setChangeState(isChange);
+   public void resetInChangeState() {
+      isInChange = false;
+      esr.setInChangeState(isInChange);
    }
 
    /**
@@ -164,36 +164,33 @@ public class TypingEdit {
    }
 
    /**
-    * Highlights the specified <code>section</code> of the document
-    * text.<br>
-    * If the section does not encompass full lines, its first and last lines
-    * are completed for highlighting. If it is only a part of a single line
-    * this line is as well completed.
+    * Highlights the specified <code>section</code> of the document text
+    * <p>
+    * If the <code>section</code> does not encompass full lines, its first
+    * and last lines are completed for highlighting. If it is only a part
+    * of a single line this line is as well completed.
     *
-    * @param section  a section of the document text. If null the entire
-    * text is used.
-    * @param pos  the pos where <code>section</code> starts. Must be 0 if
-    * section is null
+    * @param section  the section. Null to highlight the entire text
     */
-   public void highlightMultipleLines(String section, int pos) {
-      int posStart = 0;
+   public void highlightSection(String section) {
+      int sectionStart = 0;
       if (section != null) {
-         section = LinesFinder.allLinesAtPos(text, section, pos);
-         posStart = LinesFinder.lastNewline(text, pos) + 1;
+         section = LinesFinder.allLinesAtPos(text, section, chgPos);
+         sectionStart = LinesFinder.lastNewline(text, chgPos) + 1;
       }
       else {
          section = text;
       }
-      syntax.highlight(text, section, pos, posStart);
+      syntax.highlight(text, section, chgPos, sectionStart);
    }
    
    /**
-    * Reads the current parameters by calling the methods defined in
+    * Reads the current editing state by calling the methods defined in
     * {@link EditingStateReadable}
     */
    public void readEditingState() {
       if (esr != null) {
-         esr.setChangeState(isChange);
+         esr.setInChangeState(isInChange);
          esr.setCursorPosition(lineNr, colNr);
          esr.setUndoableState(canUndoTmp, canRedoTmp);
          esr.setSelectionState(isSelectionTmp);
@@ -223,10 +220,10 @@ public class TypingEdit {
    //
 
    private void updateAfterUndoRedo() {
-      notifyUndoableState();
+      outputUndoableState();
       if (isCodeEditing) {
          if (event.equals(DocumentEvent.EventType.INSERT)) {
-            highlightMultipleLines(change, pos);
+            highlightSection(change);
          }
          else if (event.equals(DocumentEvent.EventType.REMOVE)) {
             highlightLine();
@@ -238,28 +235,28 @@ public class TypingEdit {
    private void updateText() {
       text = textDoc.docText();
       lineNrDoc.updateLineNumber(text);
-      notifyChangeState();
+      outputInChangeState();
    }
    
    private void highlightLine() {
-      int lineStart = LinesFinder.lastNewline(text, pos);
-      int lineEnd = LinesFinder.nextNewline(text, pos);
+      int lineStart = LinesFinder.lastNewline(text, chgPos);
+      int lineEnd = LinesFinder.nextNewline(text, chgPos);
       String toColor = LinesFinder.line(text, lineStart, lineEnd);
       EventQueue.invokeLater(() ->
-         syntax.highlight(text, toColor, pos, lineStart + 1));
+         syntax.highlight(text, toColor, chgPos, lineStart + 1));
    }
    
-   private void notifyChangeState() {
+   private void outputInChangeState() {
       if (esr == null) {
          return;
       }
-      if (!isChange) {
-         isChange = true;
-         esr.setChangeState(isChange);
+      if (!isInChange) {
+         isInChange = true;
+         esr.setInChangeState(isInChange);
       }
    }
 
-   private void notifyUndoableState() {
+   private void outputUndoableState() {
       if (esr == null) {
          return;
       }
@@ -276,7 +273,7 @@ public class TypingEdit {
       }
    }
 
-   private void notifySelectionState(boolean isSelection) {
+   private void outputSelectionState(boolean isSelection) {
       if (esr == null) {
          return;
       }
@@ -286,7 +283,7 @@ public class TypingEdit {
       }
    }
    
-   private void notifyCursorPosition(int caret) {
+   private void outputCursorPosition(int caret) {
       if (esr == null) {
          return;
       }
@@ -306,14 +303,14 @@ public class TypingEdit {
          return;
       }
       if (caret > 0) {
-         boolean isStop = false;
+         boolean isBreakpoint = false;
          if (event.equals(DocumentEvent.EventType.INSERT)) {
-            isStop = caret - pos != 1;
+            isBreakpoint = caret - chgPos != 1;
          }
          else if (event.equals(DocumentEvent.EventType.REMOVE)) {
-            isStop = caret - pos != 0;
+            isBreakpoint = caret - chgPos != 0;
          }
-         if (isStop) {
+         if (isBreakpoint) {
             undo.markBreakpoint();
          }
       }
@@ -327,17 +324,17 @@ public class TypingEdit {
             return;
          }
          event = de.getType();
-         pos = de.getOffset();
+         chgPos = de.getOffset();
          updateText();
-         change = text.substring(pos, pos + de.getLength());
+         change = text.substring(chgPos, chgPos + de.getLength());
          if (isAddToUndo) {
-            undo.addEdit(change, pos, true);
-            notifyUndoableState();
+            undo.addEdit(change, chgPos, true);
+            outputUndoableState();
             if (isCodeEditing) {
                highlightLine();
                EventQueue.invokeLater(() -> {
-                  autoInd.indent(text, pos);
-                  autoInd.closedBracketIndent(text, pos);
+                  autoInd.indent(text, chgPos);
+                  autoInd.closedBracketIndent(text, chgPos);
                });
             }
          }
@@ -349,12 +346,12 @@ public class TypingEdit {
             return;
          }
          event = de.getType();
-         pos = de.getOffset();
-         change = text.substring(pos, pos + de.getLength());
+         chgPos = de.getOffset();
+         change = text.substring(chgPos, chgPos + de.getLength());
          updateText();
          if (isAddToUndo) {
-            undo.addEdit(change, pos, false);
-            notifyUndoableState();
+            undo.addEdit(change, chgPos, false);
+            outputUndoableState();
             if (isCodeEditing) {
                highlightLine();
             }
@@ -366,8 +363,8 @@ public class TypingEdit {
    };
    
    private final CaretListener caretListener = (CaretEvent ce) -> {
-      notifySelectionState(ce.getDot() != ce.getMark());
-      notifyCursorPosition(ce.getDot());
+      outputSelectionState(ce.getDot() != ce.getMark());
+      outputCursorPosition(ce.getDot());
       markUndoBreakpoint(ce.getDot());
    };
 }

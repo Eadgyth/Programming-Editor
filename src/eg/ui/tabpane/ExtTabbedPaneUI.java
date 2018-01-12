@@ -32,7 +32,10 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
    private final static Insets CONTENT_INSETS = new Insets(0, 0, 0, 0);
 
    private boolean isShowTabs = true;
-   private int tabHeight = 20;
+   private int tabHeight;
+   //
+   // 15 magic, is max size of documents
+   private boolean[] markedIndices = new boolean[15];
    
    /**
     * Sets the height of the tabs. Default is 20 pt.
@@ -40,7 +43,7 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
     * @param height  the height
     */
    public void setHeight(int height) {
-      tabHeight = height;
+      tabHeight = height;      
    }
 
    /**
@@ -84,7 +87,7 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
 
    @Override
    protected void paintTabBackground(Graphics g, int tabPlacement,
-       int tabIndex, int x, int y, int w, int h, boolean isSelected) {
+         int tabIndex, int x, int y, int w, int h, boolean isSelected) {
 
       if (!isShowTabs) {
          return;

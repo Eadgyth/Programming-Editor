@@ -155,7 +155,7 @@ public final class FileDocument {
       if (docFile == null) {
          throw new IllegalStateException("No file has been assigned");
       }
-      type.resetChangeState();
+      type.resetInChangeState();
       content = type.getText();
       return writeToFile(docFile);
    }
@@ -170,7 +170,7 @@ public final class FileDocument {
    public boolean setFile(File f) {
       assignFile(f);
       setLanguageBySuffix();
-      type.resetChangeState();
+      type.resetInChangeState();
       content = type.getText();
       return writeToFile(f);
    }
@@ -294,12 +294,11 @@ public final class FileDocument {
     * Has no effect if this language is normal text
     *
     * @param section  the section
-    * @param pos  the position where section starts
-    * @see TypingEdit#highlightMultipleLines(String, int)
+    * @see TypingEdit#highlightSection(String)
     */
-   public void highlightSection(String section, int pos) {
+   public void highlightSection(String section) {
       if (Languages.NORMAL_TEXT != lang) {
-         type.highlightMultipleLines(section, pos);
+         type.highlightSection(section);
       }
    }
 

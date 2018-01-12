@@ -425,7 +425,7 @@ public class TabbedDocuments implements Observer {
    private final EditingStateReadable editReadable = new EditingStateReadable() {
 
       @Override
-      public void setChangeState(boolean isChange) {
+      public void setInChangeState(boolean isChange) {
          mw.enableSave(isChange);
       }
       

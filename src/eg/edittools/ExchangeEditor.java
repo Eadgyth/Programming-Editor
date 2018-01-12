@@ -216,7 +216,7 @@ public class ExchangeEditor implements AddableEditTool {
    private final EditingStateReadable editReadable = new EditingStateReadable() {
 
       @Override
-      public void setChangeState(boolean isChange) {}
+      public void setInChangeState(boolean isChange) {}
 
       @Override
       public void setUndoableState(boolean canUndo, boolean canRedo) {

@@ -10,16 +10,29 @@ import java.util.List;
 /**
  * The undo and redo editing.
  * <p>
- * Calling undo undoes edits until a breakpoint is reached. The next
- * undo would proceed to the next breakpoint etc.. Redo runs in the
- * same way in the opposite direction. Breakpoints are added when the
- * text change is a newline, when the direction, that is insertion and
- * removal, changes and when the change is longer than one character.
- * Additional occasions for breakpoints can be added from outside by
- * {@link #markBreakpoint()}. Adding a new edit while edits are undone
- * (and not redone) removes the undone edits.
+ * A change to the text is named edit. This can be an insertion or a
+ * deletion and it can be a single character or a larger chunk of text.
+ * Calling undo undoes edits in reverse order until a breakpoint is
+ * reached. More precisely, undoing edits stops before an edit whose
+ * index is the value of the lastly added breakpoint. A subsequent
+ * undo action then continues to undo edits up to the second last
+ * breakpoint etc.. Redo actions redo undone edits and stop before the
+ * same breakpoints just in reverse order.<br>
+ * Edits are marked as breakpoints in the following cases:
+ * <ul>
+ * <li> The edit is is newline.
+ * <li> The edit type, insertion and removal, has changed. However, if
+ *      an insertion follows a removal that was not triggerd by pressing
+ *      the delete or backspace keys, that is selected text was replaced,
+ *      the removal is not marked.
+ * <li> The edit type has not changed but the edit is longer than one
+ *      character.
+ * <li> A mark was added from outside by calling {@link #markBreakpoint()}.
+ * </ul>
  * <p>
- * Created in {@link TypingEdit} which adds edits and also adds
+ * Undone edits are always removed if a new edit is added.
+ * <p>
+ * Created in {@link TypingEdit} which adds edits and also marks
  * breakpoints when the cursor is moved with the mouse or cursor keys.
  */
 public class UndoEdit {
@@ -47,11 +60,10 @@ public class UndoEdit {
    /**
     * Adds an edit
     *
-    * @param change  the text change which may be an insertion or a
-    * removal
-    * @param pos  the position where the change happened
-    * @param isInsert  true if the change is an insertion, false if it
-    * is a removal
+    * @param change  the text content of the edit
+    * @param pos  the position of the edit in the document
+    * @param isInsert  specifies if the edit is an insertion or
+    * a deletion
     */
    void addEdit(String change, int pos, boolean isInsert) {
       trim();
@@ -164,9 +176,8 @@ public class UndoEdit {
    }
 
    /**
-    * Marks that the last edit will be a breakpoint as soon as another
-    * edit is added. This is effectless if the edit is already a
-    * breakpoint
+    * Marks that the recently added edit will be a breakpoint as soon
+    * as another edit is added
     */
    public void markBreakpoint() {
       if (edits.size() > 0) {
@@ -175,7 +186,7 @@ public class UndoEdit {
    }
 
    //
-   //--private--/
+   //--private--//
    //
 
    private void addBreakpoint() {
@@ -189,7 +200,7 @@ public class UndoEdit {
 
    private void trim() {
       if (iEd == edits.size() - 1) {
-         return;
+         return; // no edits are undone (or all undone edits are redone)
       }
       for (int i = edits.size() - 1; i > iEd; i--) {
          edits.remove(i);

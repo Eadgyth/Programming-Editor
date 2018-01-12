@@ -64,8 +64,8 @@ public final class EditArea {
 
    /**
     * @param isWordwrap  true to enable, false to disable wordwrap
-    * @param isLineNumbers  true to show line numbering. Is effectless if
-    * wordwrap is enabled
+    * @param isLineNumbers  true to show, false to hide line numbers.
+    *       If true also showing line numbers is disabled
     * @param font  the name of the initial font
     * @param fontSize  the size of the initial font
     */
@@ -86,7 +86,6 @@ public final class EditArea {
       else {
          disableWordwrap(isLineNumbers);
       }
-
       textArea.addFocusListener(new FocusAdapter() {
 
          @Override
@@ -125,7 +124,8 @@ public final class EditArea {
    }
 
    /**
-    * Gets this implemented method in <code>LineNrWidthAdaptable</code>
+    * Gets this implemented method specified in
+    * <code>LineNrWidthAdaptable</code>
     *
     * @return  the implemented method
     */
@@ -200,7 +200,7 @@ public final class EditArea {
    }
 
    //
-   //--private--
+   //--private--//
    //
 
    private void showLineNumbers() {

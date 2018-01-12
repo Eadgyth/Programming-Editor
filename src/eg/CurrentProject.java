@@ -160,8 +160,7 @@ public class CurrentProject {
             updateFileTree();
          }
          else {
-            Dialogs.errorMessage(
-                  fDoc[iCurr].filename()
+            Dialogs.errorMessage(fDoc[iCurr].filename()
                   + ":\nThe file could not be found anymore");
          }
       }
@@ -194,8 +193,7 @@ public class CurrentProject {
             updateFileTree();
          }
          else {
-            Dialogs.errorMessage(
-                  FILES_NOT_FOUND_MESSAGE + missingFiles);
+            Dialogs.errorMessage(FILES_NOT_FOUND_MESSAGE + missingFiles);
          }
       }
       finally {
@@ -230,7 +228,7 @@ public class CurrentProject {
    }
 
    //
-   //--private--/
+   //--private--//
    //
    
    private void retrieveProject(String dir) {

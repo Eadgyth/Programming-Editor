@@ -29,8 +29,8 @@ public class JavascriptHighlighter implements Highlighter {
       if (!searcher.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
          searcher.setCharAttrBlack();
          searcher.keywords(JS_KEYWORDS, true, Attributes.RED_PLAIN);
-         searcher.bracketsBlue();
-         searcher.bracesGray();
+         searcher.brackets();
+         searcher.braces();
          searcher.quotedText();
          searcher.lineComments(SyntaxUtils.LINE_CMNT, null);
       }
