@@ -42,11 +42,11 @@ public class InfoWin {
       okButton.add(okBt);
       
       text.setBackground(Color.white);
-      text.setBorder(eg.Constants.EMPTY_BORDER);
+      text.setBorder(eg.Constants.EMPTY_BORDER_5);
       text.add(titleLb);
       text.add(infoLb);
 
-      combine.setBorder(Constants.EMPTY_BORDER);
+      combine.setBorder(Constants.EMPTY_BORDER_5);
       combine.add(text, BorderLayout.CENTER);
       combine.add(okButton, BorderLayout.SOUTH);
             

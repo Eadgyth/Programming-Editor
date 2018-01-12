@@ -33,7 +33,7 @@ public class Constants {
    public final static Color GRAY = new Color(100, 100, 100);
 
    /**
-    * The ligher gray color */
+    * The ligh gray color */
    public final static Color LIGHT_GRAY = new Color(200, 200, 200);
 
    //
@@ -45,7 +45,11 @@ public class Constants {
 
    /**
     * The empty border with thickness of 5 pt */
-   public final static Border EMPTY_BORDER = new EmptyBorder(5, 5, 5, 5);
+   public final static Border EMPTY_BORDER_5 = new EmptyBorder(5, 5, 5, 5);
+   
+   /**
+    * The empty border with thickness of 10 pt */
+   public final static Border EMPTY_BORDER_10 = new EmptyBorder(10, 10, 10, 10);
 
    /**
     * The <code>MatteBorder</code> with inset of 1 pt in light gray at the top */

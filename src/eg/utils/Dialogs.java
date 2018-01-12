@@ -122,7 +122,7 @@ public class Dialogs {
       JPanel pnl = new JPanel(new GridLayout(2, 1));
       JLabel lb = new JLabel(message);
       lb.setFont(new Font("Arial", Font.PLAIN, ScreenParams.scaledSize(9)));
-      lb.setBorder(eg.Constants.EMPTY_BORDER);
+      lb.setBorder(eg.Constants.EMPTY_BORDER_5);
       pnl.add(lb);
       JPanel holdCBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
       holdCBox.add(cBox);

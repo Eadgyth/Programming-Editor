@@ -64,7 +64,7 @@ public class Finder implements AddableEditTool {
    public void end() {}
 
    //
-   //--private--/
+   //--private--//
    //
 
    private void initFinderPnl(JButton closeBt) {
@@ -101,8 +101,8 @@ public class Finder implements AddableEditTool {
       pnl.add(replaceTf);
       pnl.add(Box.createVerticalStrut(10));
       pnl.add(buttonsPnl(replaceBt));
-      pnl.setBorder(Constants.EMPTY_BORDER);
-      inputTf.getDocument().addDocumentListener(docListen);
+      pnl.setBorder(Constants.EMPTY_BORDER_10);
+      inputTf.getDocument().addDocumentListener(docListener);
       return pnl;
    }  
 
@@ -171,7 +171,7 @@ public class Finder implements AddableEditTool {
       replaceBt.addActionListener(e -> search.replaceSel(replaceTf.getText()));
    }
 
-   DocumentListener docListen = new DocumentListener() {
+   DocumentListener docListener = new DocumentListener() {
 
       @Override
       public void changedUpdate(DocumentEvent documentEvent) {
