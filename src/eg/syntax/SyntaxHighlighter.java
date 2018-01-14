@@ -38,7 +38,7 @@ public class SyntaxHighlighter {
    }
 
    /**
-    * Highlights text
+    * Highlights text elements
     *
     * @param text  the entire text in the document
     * @param section  the section to be highlighted. Is equal to text to
@@ -199,7 +199,9 @@ public class SyntaxHighlighter {
        * @param endTag  the end tag of embedded sections
        * @param hlSection  the {@link Highlighter} for embedded sections
        */
-      public void embeddedInHtml(String startTag, String endTag, Highlighter hlSection) {
+      public void embeddedInHtml(String startTag, String endTag,
+            Highlighter hlSection) {
+
          embedInHtmlImpl(startTag, endTag, hlSection);
       }
 
@@ -243,24 +245,29 @@ public class SyntaxHighlighter {
       /**
        * Highlights block comments in green
        *
-       * @param blockCmntStart  the string that marks the start of comments
-       * @param blockCmntEnd  the string that marks the end of comments
+       * @param blockCmntStart  the string that marks the start of a comment
+       * @param blockCmntEnd  the string that marks the end of a comment
        */
       public void blockComments(String blockCmntStart, String blockCmntEnd) {
          blockCommentsImpl(blockCmntStart, blockCmntEnd);
       }
 
       /**
-       * Returns the boolean that is true if this position where a change
-       * happened is found in a block of text that is delimited by the
-       * specified strings
+       * Returns the boolean that, if true, indicates that the position where
+       * a change happened is found inside a block comment. Returns false
+       * regardless of the position if this section to be highlighted is multiline
        *
-       * @param blockStart  the block start
-       * @param blockEnd  the block end
+       * @param blockCmntStart  the string that marks the start of a comment
+       * @param blockCmntEnd  the string that marks the end of a comment
        * @return  the boolean value
        */
-      public boolean isInBlock(String blockStart, String blockEnd) {
-         return isInBlock(blockStart, blockEnd, chgPos);
+      public boolean isInBlockCmnt(String blockCmntStart, String blockCmntEnd) {
+         if (isMultiline) {
+            return false;
+         }
+         else {
+            return isInBlock(blockCmntStart, blockCmntEnd, chgPos);
+         }
       }
 
       //
@@ -324,7 +331,7 @@ public class SyntaxHighlighter {
             }
          }
       }
-      
+
       private int keyExtension(String[] keyExtensions, int extStart,
             SimpleAttributeSet set) {
 
@@ -340,7 +347,7 @@ public class SyntaxHighlighter {
          }
          return length;
       }
-               
+
       private void signedVariable(char sign, char[] endChars,
             SimpleAttributeSet set) {
 
@@ -674,7 +681,9 @@ public class SyntaxHighlighter {
                || SyntaxUtils.isInQuotes(line, relStart, SyntaxUtils.SINGLE_QUOTE);
       }
 
-      private void setTextParams(String text, String section, int chgPos, int scnPos) {
+      private void setTextParams(String text, String section, int chgPos,
+            int scnPos) {
+
          this.text = text;
          this.section = section;
          this.chgPos = chgPos;

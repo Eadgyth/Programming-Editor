@@ -1,6 +1,5 @@
 package eg;
 
-import java.awt.EventQueue;
 import java.awt.Toolkit;
 
 import java.awt.datatransfer.Clipboard;
@@ -69,7 +68,7 @@ public class Edit {
       int start = textArea.getSelectionStart();
       int end = textArea.getSelectionEnd();
       setClipboard();
-      fDoc.remove(start, end - start);
+      fDoc.remove(start, end - start, true);
    }
 
    /**
@@ -92,16 +91,8 @@ public class Edit {
          return;
       }
       String sel = textArea.getSelectedText();
-      int pos = textArea.getSelectionStart();
-      fDoc.enableCodeEditing(false);
-      if (sel != null) {
-         fDoc.remove(pos, sel.length());
-      }
-      EventQueue.invokeLater(() -> {
-         fDoc.insert(pos, clipboard);
-         fDoc.highlightSection(clipboard);
-         fDoc.enableCodeEditing(true);
-      });
+      int pos = textArea.getSelectionStart();      
+      fDoc.insert(pos, clipboard, sel);
    }
 
    /**
@@ -138,20 +129,18 @@ public class Edit {
    public void indent()  {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
-      fDoc.enableCodeEditing(false);
       if (sel == null) {
-         fDoc.insert(start, indentUnit);
+         fDoc.insert(start, indentUnit, null);
       }
       else {
          String[] selArr = sel.split("\n");
          int sum = 0;
          for (String s : selArr) {
             int lineLength = s.length() + indentLength;
-            fDoc.insert(start + sum, indentUnit);
+            fDoc.insert(start + sum, indentUnit, null);
             sum += lineLength + 1;
          }
       }
-      fDoc.enableCodeEditing(true);
    }
 
    /**
@@ -161,14 +150,13 @@ public class Edit {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
       String text = fDoc.docText();
-      fDoc.enableCodeEditing(false);
       if (sel == null) {
          boolean isAtLineStart
                = LinesFinder.lastNewline(text, start) > start - indentLength;
 
          if (!isAtLineStart && start >= indentLength) {
             if (indentUnit.equals(text.substring(start - indentLength, start))) {
-               fDoc.remove(start - indentLength, indentLength);
+               fDoc.remove(start - indentLength, indentLength, true);
             }
             else {
                textArea.setCaretPosition(start - indentLength);
@@ -192,7 +180,7 @@ public class Edit {
             int sum = 0;
             for (String s : selArr) {
                if (s.startsWith(indentUnit)) {
-                  fDoc.remove(start + sum, indentLength);
+                  fDoc.remove(start + sum, indentLength, true);
                   sum += (s.length() - indentLength) + 1;
                } else {
                   sum += s.length() + 1;
@@ -200,28 +188,25 @@ public class Edit {
             }
          }
       }
-      fDoc.enableCodeEditing(true);
    }
 
    /**
     * Clears trailing spaces
     */
    public void clearTrailingSpaces() {
-      fDoc.enableCodeEditing(false);
       String text = fDoc.docText();
       String[] textArr = text.split("\n");
       int sum = 0;
       for (String s : textArr) {
          int startOfSpaces = startOfTrailingSpaces(s);
          int spacesLength = s.length() - startOfSpaces;
-         fDoc.remove(startOfSpaces + sum, spacesLength);
+         fDoc.remove(startOfSpaces + sum, spacesLength, false);
          sum += startOfSpaces + 1;
       }
-      fDoc.enableCodeEditing(true);
    }
 
    //
-   //--private--/
+   //--private--//
    //
 
    private String getClipboard() {

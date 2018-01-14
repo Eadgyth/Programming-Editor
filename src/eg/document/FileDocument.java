@@ -1,5 +1,7 @@
 package eg.document;
 
+import java.awt.EventQueue;
+
 import javax.swing.JTextPane;
 
 import java.io.File;
@@ -15,9 +17,11 @@ import eg.utils.FileUtils;
 import eg.ui.EditArea;
 
 /**
- * Represents the document that is either initialized with a language and
- * which a file may be assigned to afterwards or is initialized with a file
- * which defines the then unchangeable language.
+ * Represents the editable document which a file may be assigned to
+ * and which uses the class <code>TypingEdit</code> to edit text
+ * depending on the language and to provide undoing changes of the
+ * text content
+ * @see TypingEdit
  */
 public final class FileDocument {
 
@@ -34,21 +38,26 @@ public final class FileDocument {
    /**
     * Creates a <code>FileDocument</code> with the specified file whose
     * content is displayed.
+    * <p>
+    * The file defines that language which remains unchangeable unless
+    * another file that would define another language is set.
     *
     * @param editArea  a new {@link EditArea}
     * @param f  the file
     */
    public FileDocument(EditArea editArea, File f) {
       this(editArea);
-      assignFile(f);
-      displayFileContent(f);
+      displayFileContentImpl(f);
+      setFileParams(f);
       content = type.getText();
       setLanguageBySuffix();
    }
 
    /**
     * Creates a blank <code>FileDocument</code> with the specified
-    * language
+    * language.
+    * <p>
+    * A file may be set afterwards which then may change the language.
     *
     * @param editArea  a new {@link EditArea}
     * @param lang  a language in {@link Languages}
@@ -125,31 +134,33 @@ public final class FileDocument {
    }
    
    /**
-    * Returns the boolean that indicates if a file has been assigned
+    * Returns the boolean that, if true, indicates that a file is set
     *
-    * @return  the boolean value, true if a file has been assigned
+    * @return  the boolean value
     */
    public boolean hasFile() {
       return docFile != null;
    }
    
    /**
-    * Gets this file. Method must be used only after assigning a
-    * file.
+    * Gets this file if a file is set or throws an exception
     *
     * @return  the file
+    * @throws  IllegalStateException  if no file is set
     */
-   public File docFile() {
+  public File docFile() {
       if (docFile == null) {
-         throw new IllegalStateException("No file has been assigned");
+         throw new IllegalStateException("No file has been set");
       }
       return docFile;
    }
 
    /**
-    * Saves the current text content to this file if a file was set
+    * Saves the current text content to this file or throws an
+    * exception if no file is set
     *
     * @return  if the content was saved
+    * @throws  IllegalStateException  if no file is set
     */
    public boolean saveFile() {
       if (docFile == null) {
@@ -161,14 +172,14 @@ public final class FileDocument {
    }
 
    /**
-    * Sets the specified file and saves the current text content to the
-    * this file. Any previously set file reference is replaced
+    * Sets the specified file and saves the current text content
+    * to the file. A previously set file is replaced.
     *
     * @param f  the file
     * @return  if the content was saved to the file
     */
    public boolean setFile(File f) {
-      assignFile(f);
+      setFileParams(f);
       setLanguageBySuffix();
       type.resetInChangeState();
       content = type.getText();
@@ -176,46 +187,33 @@ public final class FileDocument {
    }
    
    /**
-    * Displays the content of the specified file but does not set the file
+    * Displays the content of the specified file but does not assign the
+    * file to this
     *
     * @param f  the file
+    * @throws IllegalStateException  if a file is already set
     */
    public void displayFileContent(File f) {
-      type.enableDocListen(false);
-      try (BufferedReader br = new BufferedReader(new FileReader(f))) {
-         String line = br.readLine();
-         String nextLine = br.readLine();
-         while (null != line) {            
-            if (null == nextLine) {
-               insert(textDoc.doclength(), line);
-            }
-            else {
-               insert(textDoc.doclength(), line + "\n");
-            }
-            line = nextLine;
-            nextLine = br.readLine();
-         }
+      if (docFile != null) {
+         throw new IllegalStateException("Cannot diplay file content"
+               + " A file is already set");
       }
-      catch (IOException e) {
-         FileUtils.logStack(e);
-      }
-      finally {
-         type.enableDocListen(true);
-      }
+      displayFileContentImpl(f);
    }
    
    /**
-    * Saves the current content to the specified file but does not set
-    * the file
+    * Saves the current text content to the specified file but does
+    * not set the file
     *
-    * @param f  the file which the current content is saved to
+    * @param f  the file
     */
    public void saveCopy(File f) {
       writeToFile(f);
    }
    
    /**
-    * Returns if the text equals the text since the last saving point
+    * Returns if the current text equals the text  at the last
+    * saving point
     *
     * @return  if the current text is saved
     */
@@ -224,8 +222,7 @@ public final class FileDocument {
    }
    
    /**
-    * Gets the text in this document that is stored in
-    * <code>TypingEdit</code>
+    * Gets the text of this document
     *
     * @return  the text
     */
@@ -234,12 +231,12 @@ public final class FileDocument {
    }
    
    /**
-    * Gets the text length in this document
+    * Gets the length of the text of this document
     * 
     * @return  the length
     */
    public int docLength() {
-      return textDoc.doclength();
+      return type.getText().length();
    }
    
    /**
@@ -266,40 +263,36 @@ public final class FileDocument {
     * @param lang  the language which is a constant in {@link eg.Languages}
     */
    public void changeLanguage(Languages lang) {
-      if (hasFile()) {
+      if (null != docFile) {
          throw new IllegalStateException(
                "The language cannot be changed once a file is assigned.");
       }
       this.lang = lang;
       type.setEditingMode(lang);
    }
-
+   
    /**
-    * Sets the boolean that specifies if actions in responce to the editing
-    * of source code are enabled.<br>
-    * These actions are syntax coloring and auto-indentation.
+    * Inserts the string <code>toInsert</code> at the specified position
+    * and also replaces the string <code>toReplace</code>
     *
-    * @param b  the boolean value. Has no effect if this language is normal
-    * text
+    * @param pos  the position
+    * @param toInsert  the String to insert
+    * @param toReplace  the String to replace. Can be null
     */
-   public void enableCodeEditing(boolean b) {
-      if (Languages.NORMAL_TEXT != lang) {
-         type.enableCodeEditing(b);
-      }
+   public void insert(int pos, String toInsert, String toReplace) {
+      type.insert(pos, toInsert, toReplace); 
    }
 
    /**
-    * Highlights the specified <code>section</code> of the document
-    * text.<br>
-    * Has no effect if this language is normal text
+    * Removes text
     *
-    * @param section  the section
-    * @see TypingEdit#highlightSection(String)
+    * @param pos  the position where the text to be removed starts
+    * @param length  the length of text to be removed
+    * @param reqCodeEditing  if actions to edit source code in
+    * response to the removal are required; true to require
     */
-   public void highlightSection(String section) {
-      if (Languages.NORMAL_TEXT != lang) {
-         type.highlightSection(section);
-      }
+   public void remove(int pos, int length, boolean reqCodeEditing) {
+      type.remove(pos, length, reqCodeEditing);
    }
 
    /**
@@ -316,29 +309,8 @@ public final class FileDocument {
       type.redo();
    }
 
-   /**
-    * Inserts the specified string at the specified position
-    *
-    * @param pos  the position
-    * @param toInsert  the String
-    */
-   public void insert(int pos, String toInsert) {
-      textDoc.insert(pos, toInsert);
-   }
-
-   /**
-    * Removes text with the specified length that starts at the specified
-    * position
-    *
-    * @param pos  the position
-    * @param length  the length
-    */
-   public void remove(int pos, int length) {
-      textDoc.remove(pos, length);
-   }
-
    //
-   //--private--
+   //--private--//
    //
 
    private FileDocument(EditArea editArea) {
@@ -347,6 +319,30 @@ public final class FileDocument {
             editArea.lineNrWidth());
 
       type = new TypingEdit(textDoc, lineNrDoc);
+   }
+   
+   private void displayFileContentImpl(File f) {
+      type.enableDocListen(false);
+      try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+         String line = br.readLine();
+         String nextLine = br.readLine();
+         while (null != line) {            
+            if (null == nextLine) {
+               textDoc.insert(textDoc.doclength(), line);
+            }
+            else {
+               textDoc.insert(textDoc.doclength(), line + "\n");
+            }
+            line = nextLine;
+            nextLine = br.readLine();
+         }
+      }
+      catch (IOException e) {
+         FileUtils.logStack(e);
+      }
+      finally {
+         type.enableDocListen(true);
+      }
    }
 
    private boolean writeToFile(File f) {
@@ -363,7 +359,7 @@ public final class FileDocument {
       return false;
    }
 
-   private void assignFile(File f) {
+   private void setFileParams(File f) {
       docFile = f;
       filename = f.getName();
       filepath = f.toString();

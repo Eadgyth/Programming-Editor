@@ -163,7 +163,7 @@ public class TabbedDocuments implements Observer {
       }     
       isSave = isSave && fDoc[iTab].setFile(f);
       if (isSave && update) {
-         docUpdate.updateForChangedFile(iTab, true);
+         docUpdate.changeFile(iTab, true);
          tabPane.setTitle(iTab, fDoc[iTab].filename());
          prefs.storePrefs("recentPath", fDoc[iTab].dir());
       }   
@@ -318,7 +318,7 @@ public class TabbedDocuments implements Observer {
          fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
          fDoc[n].setEditingStateReadable(editReadable);
          addNewTab(fDoc[n].filename(), editArea[n].editAreaPnl());
-         docUpdate.updateForChangedFile(n, false);
+         docUpdate.changeFile(n, false);
          prefs.storePrefs("recentPath", fDoc[n].dir());
       }
       finally {
@@ -362,7 +362,7 @@ public class TabbedDocuments implements Observer {
    private void changedTabUpdate() {
       format.setEditAreaAt(iTab);
       mw.setWordWrapSelected(editArea[iTab].isWordwrap());
-      docUpdate.updateForChangedDoc(iTab, nTabs());
+      docUpdate.changeDocument(iTab, nTabs());
    }
    
    private boolean isFileOpen(File f) {

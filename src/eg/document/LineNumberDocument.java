@@ -68,7 +68,7 @@ public class LineNumberDocument {
    }
 
    //
-   //--private--
+   //--private--//
    //
 
    private void appendLineNumbers(int prevLineNr, int lineNr) {

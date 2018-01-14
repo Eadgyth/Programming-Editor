@@ -29,7 +29,7 @@ public class TypingEdit {
    private boolean isDocListen = true;
    private boolean isAddToUndo = true;
    private boolean isCodeEditing = false;
-   private DocumentEvent.EventType event;
+   private boolean isInsert;
    private int chgPos = 0;
    private String text = "";
    private String change = "";
@@ -82,16 +82,6 @@ public class TypingEdit {
    }
 
    /**
-    * Sets the boolean that specified if actions in responce to the
-    * editing of source code are enabled or disabled
-    *
-    * @param b  the boolean value which is true to enable
-    */
-   public void enableCodeEditing(boolean b) {
-      isCodeEditing = b;
-   }
-
-   /**
     * Sets the editing mode that depends on the specified language
     *
     * @param lang  a language in {@link Languages}
@@ -121,7 +111,7 @@ public class TypingEdit {
                break;
          }
          syntax.setHighlighter(hl);
-         highlightSection(null);
+         syntax.highlight(text, text, 0, 0);
          enableCodeEditing(true);
       }
    }
@@ -162,26 +152,42 @@ public class TypingEdit {
    public String getIndentUnit() {
       return autoInd.getIndentUnit();
    }
-
+   
    /**
-    * Highlights the specified <code>section</code> of the document text
-    * <p>
-    * If the <code>section</code> does not encompass full lines, its first
-    * and last lines are completed for highlighting. If it is only a part
-    * of a single line this line is as well completed.
+    * Inserts the string <code>toInsert</code> at the
+    * specified position and also replaces the string
+    * <code>toReplace</code>.<br>
     *
-    * @param section  the section. Null to highlight the entire text
+    * @param pos  the position
+    * @param toInsert  the String to insert
+    * @param toReplace  the String to replace. Can be null
     */
-   public void highlightSection(String section) {
-      int sectionStart = 0;
-      if (section != null) {
-         section = LinesFinder.allLinesAtPos(text, section, chgPos);
-         sectionStart = LinesFinder.lastNewline(text, chgPos) + 1;
+   public void insert(int pos, String toInsert, String toReplace) {
+      boolean isCodeEditingHelper = isCodeEditing;
+      enableCodeEditing(false);
+      if (toReplace != null) {
+         textDoc.remove(pos, toReplace.length());
       }
-      else {
-         section = text;
+      textDoc.insert(pos, toInsert);
+      if (isCodeEditingHelper) {
+         highlightInsert();
+         enableCodeEditing(true);
       }
-      syntax.highlight(text, section, chgPos, sectionStart);
+   }
+   
+   /**
+    * Removes text
+    *
+    * @param pos  the position where the text to be removed starts
+    * @param length  the length of text to be removed
+    * @param reqCodeEditing  if actions to edit source code in
+    * response to the removal are required, true to require
+    */
+   public void remove(int pos, int length, boolean reqCodeEditing) {
+      boolean isCodeEditingHelper = isCodeEditing;
+      enableCodeEditing(reqCodeEditing);
+      textDoc.remove(pos, length);
+      enableCodeEditing(isCodeEditingHelper);
    }
    
    /**
@@ -216,16 +222,16 @@ public class TypingEdit {
    }
 
    //
-   //--private--
+   //--private--//
    //
 
    private void updateAfterUndoRedo() {
       outputUndoableState();
       if (isCodeEditing) {
-         if (event.equals(DocumentEvent.EventType.INSERT)) {
-            highlightSection(change);
+         if (isInsert) {
+            highlightInsert();
          }
-         else if (event.equals(DocumentEvent.EventType.REMOVE)) {
+         else {
             highlightLine();
          }
       }
@@ -244,6 +250,20 @@ public class TypingEdit {
       String toColor = LinesFinder.line(text, lineStart, lineEnd);
       EventQueue.invokeLater(() ->
          syntax.highlight(text, toColor, chgPos, lineStart + 1));
+   }
+   
+   private void highlightInsert() {
+      String lines;
+      int linesStart = 0;
+      if (change.length() > 0) {
+         lines = LinesFinder.allLinesAtPos(text, change, chgPos);
+         linesStart = LinesFinder.lastNewline(text, chgPos) + 1;
+         syntax.highlight(text, lines, chgPos, linesStart);
+      }
+   }
+   
+   private void enableCodeEditing(boolean b) {
+      isCodeEditing = b;
    }
    
    private void outputInChangeState() {
@@ -299,15 +319,15 @@ public class TypingEdit {
    }
 
    private void markUndoBreakpoint(int caret) {
-      if (!isAddToUndo || event == null) {
+      if (!isAddToUndo) {
          return;
       }
       if (caret > 0) {
          boolean isBreakpoint = false;
-         if (event.equals(DocumentEvent.EventType.INSERT)) {
+         if (isInsert) {
             isBreakpoint = caret - chgPos != 1;
          }
-         else if (event.equals(DocumentEvent.EventType.REMOVE)) {
+         else {
             isBreakpoint = caret - chgPos != 0;
          }
          if (isBreakpoint) {
@@ -323,12 +343,12 @@ public class TypingEdit {
          if (!isDocListen) {
             return;
          }
-         event = de.getType();
+         isInsert = true;
          chgPos = de.getOffset();
          updateText();
          change = text.substring(chgPos, chgPos + de.getLength());
          if (isAddToUndo) {
-            undo.addEdit(change, chgPos, true);
+            undo.addEdit(change, chgPos, isInsert);
             outputUndoableState();
             if (isCodeEditing) {
                highlightLine();
@@ -345,12 +365,12 @@ public class TypingEdit {
          if (!isDocListen) {
             return;
          }
-         event = de.getType();
+         isInsert = false;
          chgPos = de.getOffset();
          change = text.substring(chgPos, chgPos + de.getLength());
          updateText();
          if (isAddToUndo) {
-            undo.addEdit(change, chgPos, false);
+            undo.addEdit(change, chgPos, isInsert);
             outputUndoableState();
             if (isCodeEditing) {
                highlightLine();

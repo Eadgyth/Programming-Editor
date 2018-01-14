@@ -45,6 +45,7 @@ public class CurrentProject {
    private final ProcessStarter proc;
    private final List<ProjectActions> projList = new ArrayList<>();
    private final FileDocument[] fDoc;
+   //private final boolean
 
    private ProjectActions current;
    private int iCurr;

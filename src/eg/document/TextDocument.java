@@ -95,7 +95,7 @@ public class TextDocument {
     *
     * @return  the text
     */
-   public String docText() {
+    public String docText() {
       String text = null;
       try {
          text = doc.getText(0, doc.getLength());
@@ -107,7 +107,7 @@ public class TextDocument {
    }
    
    /**
-    * Gets the length of this document text
+    * Gets the length of the text of the document
     *
     * @return  the length
     */
@@ -131,11 +131,10 @@ public class TextDocument {
    }
 
    /**
-    * Removes text of the specified length at the specified
-    * position
+    * Removes text
     *
-    * @param pos  the position
-    * @param length  the length
+    * @param pos  the position where the text to be removed starts
+    * @param length  the length of text to be removed
     */
    public void remove(int pos, int length) {
       try {

@@ -26,7 +26,7 @@ public class JavascriptHighlighter implements Highlighter {
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
-      if (!searcher.isInBlock(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
+      if (!searcher.isInBlockCmnt(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
          searcher.setCharAttrBlack();
          searcher.keywords(JS_KEYWORDS, true, Attributes.RED_PLAIN);
          searcher.brackets();

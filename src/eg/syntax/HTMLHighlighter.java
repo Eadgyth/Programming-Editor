@@ -67,7 +67,7 @@ public class HTMLHighlighter implements Highlighter {
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
-      if (!searcher.isInBlock(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
+      if (!searcher.isInBlockCmnt(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
          searcher.setCharAttrBlack();
          searcher.htmlTags(TAGS, ATTRIBUTES);
          searcher.embeddedInHtml("<script", "</script>", js);

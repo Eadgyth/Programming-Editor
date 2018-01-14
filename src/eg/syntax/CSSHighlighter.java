@@ -76,7 +76,7 @@ public class CSSHighlighter implements Highlighter {
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
-      if (!searcher.isInBlock(SyntaxUtils.BLOCK_CMNT_START,
+      if (!searcher.isInBlockCmnt(SyntaxUtils.BLOCK_CMNT_START,
             SyntaxUtils.BLOCK_CMNT_END)) {
 
          searcher.setCharAttrBlack();

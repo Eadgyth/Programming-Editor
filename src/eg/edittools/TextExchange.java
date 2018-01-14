@@ -58,9 +58,9 @@ public class TextExchange {
    public void copyTextFromSource() {
       String text = sourceDoc.docTextArea().getSelectedText();
       if (text == null) {
-         String filename = "unnamed";
-         if (sourceDoc.hasFile()) {
-            filename = sourceDoc.filename();
+         String filename = sourceDoc.filename();
+         if (filename.length() == 0) {
+            filename = "unnamed";
          }
          Dialogs.warnMessage("No text is selected in " + filename);
          return;
@@ -96,7 +96,7 @@ public class TextExchange {
     * Clears the exchange document
     */
    public void clear() {
-      exchangeDoc.remove(0, exchangeDoc.docLength());
+      exchangeDoc.remove(0, exchangeDoc.docLength(), false);
    }
 
    /**
@@ -123,14 +123,6 @@ public class TextExchange {
       destination.docTextArea().requestFocusInWindow();
       String toReplace = destination.docTextArea().getSelectedText();
       int posToIns = destination.docTextArea().getSelectionStart();
-      destination.enableCodeEditing(false);
-      if (toReplace != null) {
-         destination.remove(posToIns, toReplace.length());
-      }
-      EventQueue.invokeLater(() -> {
-         destination.insert(posToIns, text);
-         destination.highlightSection(text);
-         destination.enableCodeEditing(true);
-      });
+      destination.insert(posToIns, text, toReplace);
    }
 }

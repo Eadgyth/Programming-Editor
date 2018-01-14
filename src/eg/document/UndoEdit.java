@@ -12,8 +12,8 @@ import java.util.List;
  * <p>
  * A change to the text is named edit. This can be an insertion or a
  * deletion and it can be a single character or a larger chunk of text.
- * Calling undo undoes edits in reverse order until a breakpoint is
- * reached. More precisely, undoing edits stops before an edit whose
+ * Calling undo undoes edits in reverse order until the last breakpoint
+ * is reached. More precisely, undoing edits stops before an edit whose
  * index is the value of the lastly added breakpoint. A subsequent
  * undo action then continues to undo edits up to the second last
  * breakpoint etc.. Redo actions redo undone edits and stop before the
@@ -21,8 +21,8 @@ import java.util.List;
  * Edits are marked as breakpoints in the following cases:
  * <ul>
  * <li> The edit is is newline.
- * <li> The edit type, insertion and removal, has changed. However, if
- *      an insertion follows a removal that was not triggerd by pressing
+ * <li> The edit type, insertion and removal, changes. However, if an
+ *      insertion follows a removal that was not triggerd by pressing
  *      the delete or backspace keys, that is selected text was replaced,
  *      the removal is not marked.
  * <li> The edit type has not changed but the edit is longer than one

@@ -35,6 +35,10 @@ public class Constants {
    /**
     * The ligh gray color */
    public final static Color LIGHT_GRAY = new Color(200, 200, 200);
+   
+   /**
+    * The very ligh gray color */
+   public final static Color VERY_LIGHT_GRAY = new Color(250, 250, 250);
 
    //
    // Borders
