@@ -13,9 +13,10 @@ import eg.utils.LinesFinder;
 import eg.syntax.*;
 
 /**
- * Mediates between the editing of the text document and the actions that
- * happen in response.
- * <p> Created in {@link FileDocument}
+ * Mediates between the editing of the document by typing in, removing,
+ * pasting or replacing text and actions that happen in response.
+ * <p>
+ * Created in {@link EditableDocument}
  */
 public class TypingEdit {
 
@@ -26,6 +27,7 @@ public class TypingEdit {
    private final UndoEdit undo;
 
    private EditingStateReadable esr;
+
    private boolean isDocListen = true;
    private boolean isAddToUndo = true;
    private boolean isCodeEditing = false;
@@ -57,7 +59,7 @@ public class TypingEdit {
    /**
     * Sets an <code>EditingStateReadable</code>
     *
-    * @param esr  a {@link EditingStateReadable}
+    * @param esr  an {@link EditingStateReadable}
     */
    public void setEditingStateReadable(EditingStateReadable esr) {
        if (this.esr != null) {
@@ -88,8 +90,8 @@ public class TypingEdit {
     */
    public void setEditingMode(Languages lang) {
       if (lang == Languages.NORMAL_TEXT) {
-         enableCodeEditing(false);
          textDoc.setAllCharAttrBlack();
+         isCodeEditing = false;
       }
       else {
          Highlighter hl = null;
@@ -112,7 +114,7 @@ public class TypingEdit {
          }
          syntax.setHighlighter(hl);
          syntax.highlight(text, text, 0, 0);
-         enableCodeEditing(true);
+         isCodeEditing = true;
       }
    }
    
@@ -154,9 +156,21 @@ public class TypingEdit {
    }
    
    /**
-    * Inserts the string <code>toInsert</code> at the
-    * specified position and also replaces the string
-    * <code>toReplace</code>.<br>
+    * Enables/disables merging text changes to a single undoable
+    * unit
+    *
+    * @param b  sets the boolean value that is true to enable and false
+    *           to disable merging
+    * @see UndoEdit
+    * @see UndoEdit #disableBreakpoints(boolean b)
+    */
+   public void enableMergedUndo(boolean b) {
+      undo.setAddBreakpointsDisabled(b);
+   }
+   
+   /**
+    * Inserts the string <code>toInsert</code> at the specified position
+    * and also replaces the string <code>toReplace</code>
     *
     * @param pos  the position
     * @param toInsert  the String to insert
@@ -164,14 +178,14 @@ public class TypingEdit {
     */
    public void insert(int pos, String toInsert, String toReplace) {
       boolean isCodeEditingHelper = isCodeEditing;
-      enableCodeEditing(false);
+      isCodeEditing = false;
       if (toReplace != null) {
          textDoc.remove(pos, toReplace.length());
       }
       textDoc.insert(pos, toInsert);
       if (isCodeEditingHelper) {
          highlightInsert();
-         enableCodeEditing(true);
+         isCodeEditing = true;
       }
    }
    
@@ -185,9 +199,9 @@ public class TypingEdit {
     */
    public void remove(int pos, int length, boolean reqCodeEditing) {
       boolean isCodeEditingHelper = isCodeEditing;
-      enableCodeEditing(reqCodeEditing);
+      isCodeEditing = reqCodeEditing;
       textDoc.remove(pos, length);
-      enableCodeEditing(isCodeEditingHelper);
+      isCodeEditing = isCodeEditingHelper;
    }
    
    /**
@@ -260,10 +274,6 @@ public class TypingEdit {
          linesStart = LinesFinder.lastNewline(text, chgPos) + 1;
          syntax.highlight(text, lines, chgPos, linesStart);
       }
-   }
-   
-   private void enableCodeEditing(boolean b) {
-      isCodeEditing = b;
    }
    
    private void outputInChangeState() {

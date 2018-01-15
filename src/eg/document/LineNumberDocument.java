@@ -16,8 +16,8 @@ import eg.utils.LinesFinder;
 import eg.ui.LineNrWidthAdaptable;
 
 /**
- * The document that contains line numbers.
- * <p>Created in {@link FileDocument}
+ * The document that displays line numbers.
+ * <p>Created in {@link EditableDocument}
  */
 public class LineNumberDocument {
 

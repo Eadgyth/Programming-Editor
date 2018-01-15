@@ -15,7 +15,7 @@ import java.io.File;
 //--Eadgyth--//
 import eg.utils.Dialogs;
 
-import eg.document.FileDocument;
+import eg.document.EditableDocument;
 import eg.document.EditingStateReadable;
 import eg.ui.MainWin;
 import eg.ui.EditArea;
@@ -27,7 +27,7 @@ import eg.ui.tabpane.ExtTabbedPane;
  */
 public class TabbedDocuments implements Observer {
 
-   private final FileDocument[] fDoc = new FileDocument[15];
+   private final EditableDocument[] edtDoc = new EditableDocument[15];
    private final EditArea[] editArea = new EditArea[15];
    private final Preferences prefs = new Preferences();
    private final FileChooser fc;
@@ -48,7 +48,7 @@ public class TabbedDocuments implements Observer {
       this.format = format;
       this.mw = mw;
       tabPane = mw.tabPane();
-      docUpdate = new DocumentUpdate(mw, fDoc);
+      docUpdate = new DocumentUpdate(mw, edtDoc);
       format.setEditAreaArr(editArea);
       prefs.readPrefs();
       readLanguageFromPrefs();
@@ -67,7 +67,7 @@ public class TabbedDocuments implements Observer {
     */
    public void changeLanguage(Languages lang) {
       this.lang = lang;
-      fDoc[iTab].changeLanguage(lang);
+      edtDoc[iTab].changeLanguage(lang);
       mw.displayLanguage(lang);
    }
 
@@ -117,11 +117,11 @@ public class TabbedDocuments implements Observer {
     * @return  if the text content was saved
     */
    public boolean save(boolean update) {
-      if (!fDoc[iTab].hasFile() || !fDoc[iTab].docFile().exists()) {
+      if (!edtDoc[iTab].hasFile() || !edtDoc[iTab].docFile().exists()) {
          return saveAs(update);
       }
       else {
-         return fDoc[iTab].saveFile();
+         return edtDoc[iTab].saveFile();
       }
    }
 
@@ -131,12 +131,12 @@ public class TabbedDocuments implements Observer {
    public void saveAll() {
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < nTabs(); i++) {
-         if (fDoc[i].hasFile()) {
-            if (fDoc[i].docFile().exists()) {
-               fDoc[i].saveFile();
+         if (edtDoc[i].hasFile()) {
+            if (edtDoc[i].docFile().exists()) {
+               edtDoc[i].saveFile();
             }
             else {
-               sb.append(fDoc[i].filename());
+               sb.append(edtDoc[i].filename());
                sb.append("\n");
             }
          }
@@ -156,16 +156,16 @@ public class TabbedDocuments implements Observer {
     * @return  if the text content was saved
     */
    public boolean saveAs(boolean update) {
-      File f = fc.fileToSave(fDoc[iTab].filepath());
+      File f = fc.fileToSave(edtDoc[iTab].filepath());
       boolean isSave = f != null;
       if (isSave && f.exists()) {
          isSave = 0 == replaceOption(f);
       }     
-      isSave = isSave && fDoc[iTab].setFile(f);
+      isSave = isSave && edtDoc[iTab].setFile(f);
       if (isSave && update) {
          docUpdate.changeFile(iTab, true);
-         tabPane.setTitle(iTab, fDoc[iTab].filename());
-         prefs.storePrefs("recentPath", fDoc[iTab].dir());
+         tabPane.setTitle(iTab, edtDoc[iTab].filename());
+         prefs.storePrefs("recentPath", edtDoc[iTab].dir());
       }   
       return isSave;
    }
@@ -175,13 +175,13 @@ public class TabbedDocuments implements Observer {
     * that is selected in the file chooser
     */
    public void saveCopy() {
-      File f = fc.fileToSave(fDoc[iTab].filepath());
+      File f = fc.fileToSave(edtDoc[iTab].filepath());
       boolean isSave = f != null;
       if (isSave && f.exists()) {
          isSave = 0 == replaceOption(f);
       }     
       if (isSave) {
-         fDoc[iTab].saveCopy(f);
+         edtDoc[iTab].saveCopy(f);
       }
    }
 
@@ -194,7 +194,7 @@ public class TabbedDocuments implements Observer {
     * document is created
     */
    public void close(boolean createBlankDoc) {
-      boolean removable = fDoc[iTab].isSaved();
+      boolean removable = edtDoc[iTab].isSaved();
       if (!removable) {
          int res = saveOrCloseOption(iTab);
          if (JOptionPane.YES_OPTION == res) {
@@ -225,7 +225,7 @@ public class TabbedDocuments implements Observer {
          int i = count - 1;
          while ( i > -1 ) {     
             tabPane.removeTabAt(i);
-            fDoc[i] = null;
+            edtDoc[i] = null;
             editArea[i] = null;
             i--;
          }
@@ -278,8 +278,8 @@ public class TabbedDocuments implements Observer {
       if (isFileOpen(f) || isMaxTabNumber()) {
          return;
       }
-      boolean isBlankFirstTab = nTabs() == 1 && !fDoc[0].hasFile()
-            && fDoc[0].docLength() == 0;
+      boolean isBlankFirstTab = nTabs() == 1 && !edtDoc[0].hasFile()
+            && edtDoc[0].docLength() == 0;
 
       if (isBlankFirstTab) {
          removeTab();
@@ -301,10 +301,10 @@ public class TabbedDocuments implements Observer {
    private void createDocument() {
       int n = nTabs();
       editArea[n] = format.createEditArea();
-      fDoc[n] = new FileDocument(editArea[n], lang);
+      edtDoc[n] = new EditableDocument(editArea[n], lang);
       prefs.readPrefs();
-      fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-      fDoc[n].setEditingStateReadable(editReadable);
+      edtDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
+      edtDoc[n].setEditingStateReadable(editReadable);
       addNewTab("unnamed", editArea[n].editAreaPnl());
    }
 
@@ -313,13 +313,13 @@ public class TabbedDocuments implements Observer {
          mw.setBusyCursor();
          int n = nTabs();
          editArea[n] = format.createEditArea();
-         fDoc[n] = new FileDocument(editArea[n], f);
+         edtDoc[n] = new EditableDocument(editArea[n], f);
          prefs.readPrefs();
-         fDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-         fDoc[n].setEditingStateReadable(editReadable);
-         addNewTab(fDoc[n].filename(), editArea[n].editAreaPnl());
+         edtDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
+         edtDoc[n].setEditingStateReadable(editReadable);
+         addNewTab(edtDoc[n].filename(), editArea[n].editAreaPnl());
          docUpdate.changeFile(n, false);
-         prefs.storePrefs("recentPath", fDoc[n].dir());
+         prefs.storePrefs("recentPath", edtDoc[n].dir());
       }
       finally {
          mw.setDefaultCursor();
@@ -339,11 +339,11 @@ public class TabbedDocuments implements Observer {
       int count = iTab;
       tabPane.removeTabAt(iTab);
       for (int i = count; i < nTabs(); i++) {
-         fDoc[i] = fDoc[i + 1];
+         edtDoc[i] = edtDoc[i + 1];
          editArea[i] = editArea[i + 1];
       }
       int n = nTabs();    
-      fDoc[n] = null;
+      edtDoc[n] = null;
       editArea[n] = null;
       if (n > 0) {
          iTab = tabPane.getSelectedIndex();
@@ -368,7 +368,7 @@ public class TabbedDocuments implements Observer {
    private boolean isFileOpen(File f) {
       boolean isFileOpen = false;
       for (int i = 0; i < nTabs(); i++) {
-         if (fDoc[i].filepath().equals(f.toString())) {
+         if (edtDoc[i].filepath().equals(f.toString())) {
            isFileOpen = true;
            Dialogs.infoMessage(f.getName() + " is already open.", null);
            break;
@@ -378,7 +378,7 @@ public class TabbedDocuments implements Observer {
    }
    
    private boolean isMaxTabNumber() {
-      boolean isMax = nTabs() == fDoc.length;
+      boolean isMax = nTabs() == edtDoc.length;
       if (isMax) {
          Dialogs.errorMessage("The maximum number of tabs is reached.");
       }
@@ -388,7 +388,7 @@ public class TabbedDocuments implements Observer {
    private int unsavedTab() {
       int i;
       for (i = 0; i < nTabs(); i++) {
-         if (!fDoc[i].isSaved()) {
+         if (!edtDoc[i].isSaved()) {
             break;
          }
       }
@@ -396,7 +396,7 @@ public class TabbedDocuments implements Observer {
    }
 
    private int saveOrCloseOption(int i) {
-      String filename = fDoc[i].filename();
+      String filename = edtDoc[i].filename();
       if (filename.length() == 0) {
          filename = "unnamed";
       }

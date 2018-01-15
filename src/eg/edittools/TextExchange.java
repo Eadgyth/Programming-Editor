@@ -6,14 +6,15 @@ import java.awt.EventQueue;
 //--Eadgyth--/
 import eg.Preferences;
 import eg.Languages;
-import eg.document.FileDocument;
+import eg.document.EditableDocument;
 import eg.utils.Dialogs;
 
 /**
- * The exchange of text between one <code>FileDocument</code> set in the
- * constructor and a settable object of <code>FileDocument</code>. The first
- * is named 'exchange document' and the second 'source document'. The source
- * document is the document currently viewed in the main editor area
+ * The exchange of text between one <code>EditableDocument</code> set in
+ * the constructor and a settable object of <code>EditableDocument</code>.
+ * The first is named 'exchange document' and the second 'source document'.
+ * The source document is the document currently viewed in the main editor
+ * area
  */
 public class TextExchange {
 
@@ -22,16 +23,16 @@ public class TextExchange {
          = new File(System.getProperty("user.dir")
          + F_SEP + "exchangeContent.txt");
 
-   private final FileDocument exchangeDoc;
+   private final EditableDocument exchangeDoc;
    private final Preferences prefs = new Preferences();
 
-   private FileDocument sourceDoc;
+   private EditableDocument sourceDoc;
 
    /**
-    * @param exchangeDoc  the <code>FileDocument</code> that
+    * @param exchangeDoc  the <code>EditableDocument</code> that
     * represents the exchange document
     */
-   public TextExchange(FileDocument exchangeDoc) {
+   public TextExchange(EditableDocument exchangeDoc) {
       this.exchangeDoc = exchangeDoc;
       prefs.readPrefs();
       exchangeDoc.setIndentUnit(prefs.getProperty("indentUnit"));
@@ -41,12 +42,12 @@ public class TextExchange {
    }
 
    /**
-    * Sets the <code>FileDocument</code> that represents the source
+    * Sets the <code>EditableDocument</code> that represents the source
     * document
     *
-    * @param sourceDoc  the <code>FileDocument</code>
+    * @param sourceDoc  the <code>EditableDocument</code>
     */
-   public void setSourceDocument(FileDocument sourceDoc) {
+   public void setSourceDocument(EditableDocument sourceDoc) {
       this.sourceDoc  = sourceDoc;
    }
 
@@ -119,7 +120,7 @@ public class TextExchange {
    //--private--//
    //
    
-   private void copy(FileDocument destination, String text) {
+   private void copy(EditableDocument destination, String text) {
       destination.docTextArea().requestFocusInWindow();
       String toReplace = destination.docTextArea().getSelectedText();
       int posToIns = destination.docTextArea().getSelectionStart();

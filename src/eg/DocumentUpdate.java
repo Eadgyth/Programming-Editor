@@ -2,7 +2,7 @@ package eg;
 
 //--Eadgyth--//
 import eg.edittools.AddableEditTool;
-import eg.document.FileDocument;
+import eg.document.EditableDocument;
 import eg.ui.MainWin;
 
 /** 
@@ -18,17 +18,17 @@ public class DocumentUpdate {
    private final MainWin mw;
    private final Edit edit;
    private final CurrentProject currProj;
-   private final FileDocument[] fDoc;
+   private final EditableDocument[] edtDoc;
 
    /**
     * @param mw  the reference to {@link MainWin}
-    * @param fDoc  the array of {@link FileDocument}
+    * @param edtDoc  the array of {@link EditableDocument}
     */
-   public DocumentUpdate(MainWin mw, FileDocument[] fDoc) {
+   public DocumentUpdate(MainWin mw, EditableDocument[] edtDoc) {
       this.mw = mw;
-      this.fDoc = fDoc;
+      this.edtDoc = edtDoc;
       edit = new Edit();
-      currProj = new CurrentProject(mw, fDoc);
+      currProj = new CurrentProject(mw, edtDoc);
       mw.setEditTextActions(edit);
       mw.setProjectActions(currProj);
    }
@@ -41,15 +41,15 @@ public class DocumentUpdate {
     * @param nTabs  the number of open tabs
     */
    public void changeDocument(int i, int nTabs) {
-      edit.setFileDocument(fDoc[i]);
-      currProj.setFileDocumentAt(i);
+      edit.setDocument(edtDoc[i]);
+      currProj.setDocumentAt(i);
       mw.editTools().forEach((t) -> {
-         t.setFileDocument(fDoc[i]);
+         t.setEditableDocument(edtDoc[i]);
       });
-      mw.displayFrameTitle(fDoc[i].filepath());
+      mw.displayFrameTitle(edtDoc[i].filepath());
       mw.enableShowTabbar(nTabs == 1);
-      mw.setLanguageSelected(fDoc[i].language(), !fDoc[i].hasFile());
-      fDoc[i].setFocused();
+      mw.setLanguageSelected(edtDoc[i].language(), !edtDoc[i].hasFile());
+      edtDoc[i].setFocused();
    }
 
    /**
@@ -60,10 +60,10 @@ public class DocumentUpdate {
     * @param updateFiletree  if the file tree needs to be updated
     */
    public void changeFile(int i, boolean updateFiletree) {
-      currProj.setFileDocumentAt(i);
+      currProj.setDocumentAt(i);
       currProj.retrieveProject();
-      mw.setLanguageSelected(fDoc[i].language(), false);
-      mw.displayFrameTitle(fDoc[i].filepath());
+      mw.setLanguageSelected(edtDoc[i].language(), false);
+      mw.displayFrameTitle(edtDoc[i].filepath());
       if (updateFiletree) {
          currProj.updateFileTree();
       }

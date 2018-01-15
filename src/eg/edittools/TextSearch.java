@@ -4,11 +4,12 @@ import javax.swing.JTextPane;
 
 //--Eadgyth--/
 import eg.utils.Dialogs;
-import eg.document.FileDocument;
+import eg.document.EditableDocument;
 
 /**
  * The search and maybe replacemant of text or words in the
- * <code>FileDocument</code> that is currently viewed in the main editor area
+ * <code>EditableDocument</code> that is currently viewed in the main
+ * editor area
  */
 public class TextSearch {
    
@@ -17,15 +18,15 @@ public class TextSearch {
    private boolean isCaseSensitive = false;
    private int pos = 0;
 
-   private FileDocument doc;
+   private EditableDocument doc;
    private JTextPane textArea;
    
    /**
-    * Sets the <code>FileDocument</code> which text in searched in
+    * Sets the <code>EditableDocument</code> which text in searched in
     *
-    * @param doc  the <code>FileDocument</code>
+    * @param doc  the <code>EditableDocument</code>
     */
-   public void setFileDocument(FileDocument doc) {
+   public void setDocument(EditableDocument doc) {
       this.doc = doc;
       this.textArea = doc.docTextArea();
    }

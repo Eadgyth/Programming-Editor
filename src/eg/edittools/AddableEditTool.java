@@ -5,11 +5,11 @@ import java.awt.Component;
 import javax.swing.JButton;
 
 //--Eadgyth--/
-import eg.document.FileDocument;
+import eg.document.EditableDocument;
 
 /**
  * The interface to create an "edit tool" that has access to the currently
- * viewed <code>FileDocument</code> and whose view can be added to the
+ * viewed <code>EditableDocument</code> and whose view can be added to the
  * <code>ToolPanel</code> in the main window
  */
 public interface AddableEditTool {
@@ -33,12 +33,12 @@ public interface AddableEditTool {
    public Component toolComponent();
    
    /**
-    * Sets the <code>FileDocument</code> that is currently viewed in the
+    * Sets the <code>EditableDocument</code> that is currently viewed in the
     * editor
     *
-    * @param fDoc  the {@link FileDocument}
+    * @param edtDoc  the {@link EditableDocument}
     */
-   public void setFileDocument(FileDocument fDoc);
+   public void setEditableDocument(EditableDocument edtDoc);
    
    /**
     * Ends the edit tool. Called when the program is exited

@@ -17,13 +17,14 @@ import eg.utils.FileUtils;
 import eg.ui.EditArea;
 
 /**
- * Represents the editable document which a file may be assigned to
- * and which uses the class <code>TypingEdit</code> to edit text
- * depending on the language and to provide undoing changes of the
- * text content
- * @see TypingEdit
+ * Represents the editable document.
+ * <p>
+ * Uses {@link TypingEdit} for actions that shall happen in response to
+ * text changes. These actions comprise the creation of undoable changes,
+ * line numbering and, if the language is a supported coding language,
+ * syntax highlighting and auto-indentation.
  */
-public final class FileDocument {
+public final class EditableDocument {
 
    private final TypingEdit type;
    private final TextDocument textDoc;
@@ -34,10 +35,10 @@ public final class FileDocument {
    private String dir = "";
    String content = "";
    private Languages lang;
-   
+
    /**
-    * Creates a <code>FileDocument</code> with the specified file whose
-    * content is displayed.
+    * Creates a <code>EditableDocument</code> with the specified file whose
+    * content is displayed in the text area.
     * <p>
     * The file defines that language which remains unchangeable unless
     * another file that would define another language is set.
@@ -45,7 +46,7 @@ public final class FileDocument {
     * @param editArea  a new {@link EditArea}
     * @param f  the file
     */
-   public FileDocument(EditArea editArea, File f) {
+   public EditableDocument(EditArea editArea, File f) {
       this(editArea);
       displayFileContentImpl(f);
       setFileParams(f);
@@ -54,7 +55,7 @@ public final class FileDocument {
    }
 
    /**
-    * Creates a blank <code>FileDocument</code> with the specified
+    * Creates a blank <code>EditableDocument</code> with the specified
     * language.
     * <p>
     * A file may be set afterwards which then may change the language.
@@ -62,21 +63,21 @@ public final class FileDocument {
     * @param editArea  a new {@link EditArea}
     * @param lang  a language in {@link Languages}
     */
-   public FileDocument(EditArea editArea, Languages lang) {
+   public EditableDocument(EditArea editArea, Languages lang) {
       this(editArea);
       this.lang = lang;
       type.setEditingMode(lang);
    }
-   
+
    /**
     * Sets an <code>EditingStateReadable</code>
     *
-    * @param esr  a {@link EditingStateReadable}
+    * @param esr  the reference to {@link EditingStateReadable}
     */
    public void setEditingStateReadable(EditingStateReadable esr) {
       type.setEditingStateReadable(esr);
    }
-   
+
    /**
     * Sets the indent unit which consists of spaces
     *
@@ -85,7 +86,7 @@ public final class FileDocument {
    public void setIndentUnit(String indentUnit) {
       type.setIndentUnit(indentUnit);
    }
-   
+
    /**
     * Asks the text area that shows this document to gain focus and reads
     * the current editing state
@@ -95,7 +96,7 @@ public final class FileDocument {
       textDoc.textArea().requestFocusInWindow();
       type.readEditingState();
    }
-   
+
    /**
     * Gets the text area that displays this document
     *
@@ -104,7 +105,7 @@ public final class FileDocument {
     public JTextPane docTextArea() {
        return textDoc.textArea();
     }
-    
+
    /**
     * Gets the name of this file
     *
@@ -114,7 +115,7 @@ public final class FileDocument {
    public String filename() {
       return filename;
    }
-   
+
    /**
     * Gets the parent directory of this file
     *
@@ -132,7 +133,7 @@ public final class FileDocument {
    public String filepath() {
       return filepath;
    }
-   
+
    /**
     * Returns the boolean that, if true, indicates that a file is set
     *
@@ -141,7 +142,7 @@ public final class FileDocument {
    public boolean hasFile() {
       return docFile != null;
    }
-   
+
    /**
     * Gets this file if a file is set or throws an exception
     *
@@ -185,7 +186,7 @@ public final class FileDocument {
       content = type.getText();
       return writeToFile(f);
    }
-   
+
    /**
     * Displays the content of the specified file but does not assign the
     * file to this
@@ -200,7 +201,7 @@ public final class FileDocument {
       }
       displayFileContentImpl(f);
    }
-   
+
    /**
     * Saves the current text content to the specified file but does
     * not set the file
@@ -210,7 +211,7 @@ public final class FileDocument {
    public void saveCopy(File f) {
       writeToFile(f);
    }
-   
+
    /**
     * Returns if the current text equals the text  at the last
     * saving point
@@ -220,7 +221,7 @@ public final class FileDocument {
    public boolean isSaved() {
       return type.getText().equals(content);
    }
-   
+
    /**
     * Gets the text of this document
     *
@@ -229,16 +230,16 @@ public final class FileDocument {
    public String docText() {
       return type.getText();
    }
-   
+
    /**
     * Gets the length of the text of this document
-    * 
+    *
     * @return  the length
     */
    public int docLength() {
       return type.getText().length();
    }
-   
+
    /**
     * Gets this language
     *
@@ -247,7 +248,7 @@ public final class FileDocument {
    public Languages language() {
       return lang;
    }
-   
+
    /**
     * Gets the currently set indent unit
     *
@@ -256,7 +257,7 @@ public final class FileDocument {
    public String currIndentUnit() {
       return type.getIndentUnit();
    }
-   
+
    /**
     * Changes the language if no file has been assigned
     *
@@ -270,17 +271,30 @@ public final class FileDocument {
       this.lang = lang;
       type.setEditingMode(lang);
    }
-   
+
+   /**
+    * Enables merging then following text changes to a single undoable
+    * unit such that the normal structuring of text changes into
+    * undoable units is overridden.
+    *
+    * @param b  sets the boolean value that is true to enable merging
+    *           and false to return to the default disabled merging
+    * @see TypingEdit #enableMergedUndo(boolean)
+    */
+   public void enableMergedUndo(boolean b) {
+      type.enableMergedUndo(b);
+   }
+
    /**
     * Inserts the string <code>toInsert</code> at the specified position
-    * and also replaces the string <code>toReplace</code>
+    * and also replaces the string <code>toReplace</code>.
     *
     * @param pos  the position
     * @param toInsert  the String to insert
     * @param toReplace  the String to replace. Can be null
     */
    public void insert(int pos, String toInsert, String toReplace) {
-      type.insert(pos, toInsert, toReplace); 
+      type.insert(pos, toInsert, toReplace);
    }
 
    /**
@@ -313,20 +327,20 @@ public final class FileDocument {
    //--private--//
    //
 
-   private FileDocument(EditArea editArea) {
+   private EditableDocument(EditArea editArea) {
       textDoc = new TextDocument(editArea.textArea());
       LineNumberDocument lineNrDoc = new LineNumberDocument(editArea.lineNrArea(),
             editArea.lineNrWidth());
 
       type = new TypingEdit(textDoc, lineNrDoc);
    }
-   
+
    private void displayFileContentImpl(File f) {
       type.enableDocListen(false);
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
          String line = br.readLine();
          String nextLine = br.readLine();
-         while (null != line) {            
+         while (null != line) {
             if (null == nextLine) {
                textDoc.insert(textDoc.doclength(), line);
             }

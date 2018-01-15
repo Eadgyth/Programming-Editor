@@ -22,7 +22,7 @@ import eg.Edit;
 import eg.FunctionalAction;
 import eg.ui.EditArea;
 import eg.ui.IconFiles;
-import eg.document.FileDocument;
+import eg.document.EditableDocument;
 import eg.document.EditingStateReadable;
 import eg.utils.UIComponents;
 
@@ -51,10 +51,10 @@ public class ExchangeEditor implements AddableEditTool {
    public ExchangeEditor() {
       EditArea ea = new EditArea(false, false, "Consolas", 9);
       editAreaPnl = ea.editAreaPnl();
-      FileDocument fd = new FileDocument(ea, Languages.NORMAL_TEXT);
-      exch = new TextExchange(fd);
-      fd.setEditingStateReadable(editReadable);
-      edit.setFileDocument(fd);
+      EditableDocument ed = new EditableDocument(ea, Languages.NORMAL_TEXT);
+      exch = new TextExchange(ed);
+      ed.setEditingStateReadable(editReadable);
+      edit.setDocument(ed);
    }
 
    @Override
@@ -68,8 +68,8 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    @Override
-   public void setFileDocument(FileDocument fDoc) {
-      exch.setSourceDocument(fDoc);
+   public void setEditableDocument(EditableDocument edtDoc) {
+      exch.setSourceDocument(edtDoc);
    }
 
    /**

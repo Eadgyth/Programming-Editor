@@ -21,7 +21,7 @@ import javax.swing.JLabel;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import eg.document.FileDocument;
+import eg.document.EditableDocument;
 
 //--Eadgyth--/
 import eg.Constants;
@@ -53,8 +53,8 @@ public class Finder implements AddableEditTool {
    }
    
    @Override
-   public void setFileDocument(FileDocument fDoc) {
-      search.setFileDocument(fDoc);
+   public void setEditableDocument(EditableDocument edtDoc) {
+      search.setDocument(edtDoc);
    }
    
    /**

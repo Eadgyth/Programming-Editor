@@ -14,7 +14,7 @@ import java.io.IOException;
 
 //--Eadgyth--/
 import eg.utils.*;
-import eg.document.FileDocument;
+import eg.document.EditableDocument;
 
 /**
  * The editing of the document in the selected tab
@@ -29,21 +29,21 @@ public class Edit {
 
    private final Preferences prefs = new Preferences();
 
-   private FileDocument fDoc;
+   private EditableDocument edtDoc;
    private JTextPane textArea;
    private String indentUnit;
    private int indentLength;
 
    /**
-    * Sets the <code>FileDocument</code> that is edited and its current
-    * indentation unit
+    * Sets the <code>EditableDocument</code> that is edited and its
+    * current indentation unit
     *
-    * @param fDoc  the {@link FileDocument}
+    * @param edtDoc  the {@link EditableDocument}
     */
-   public void setFileDocument(FileDocument fDoc) {
-      this.fDoc  = fDoc;
-      this.textArea = fDoc.docTextArea();
-      indentUnit = fDoc.currIndentUnit();
+   public void setDocument(EditableDocument edtDoc) {
+      this.edtDoc  = edtDoc;
+      this.textArea = edtDoc.docTextArea();
+      indentUnit = edtDoc.currIndentUnit();
       indentLength = indentUnit.length();
    }
 
@@ -51,14 +51,14 @@ public class Edit {
     * Performs an undo action
     */
    public void undo() {
-      fDoc.undo();
+      edtDoc.undo();
    }
 
    /**
     * Performs a redo action
     */
    public void redo() {
-      fDoc.redo();
+      edtDoc.redo();
    }
 
    /**
@@ -68,7 +68,7 @@ public class Edit {
       int start = textArea.getSelectionStart();
       int end = textArea.getSelectionEnd();
       setClipboard();
-      fDoc.remove(start, end - start, true);
+      edtDoc.remove(start, end - start, true);
    }
 
    /**
@@ -92,7 +92,7 @@ public class Edit {
       }
       String sel = textArea.getSelectedText();
       int pos = textArea.getSelectionStart();      
-      fDoc.insert(pos, clipboard, sel);
+      edtDoc.insert(pos, clipboard, sel);
    }
 
    /**
@@ -118,7 +118,7 @@ public class Edit {
          for (int i = 0; i < indentLength; i++) {
             indentUnit += " ";
          }
-         fDoc.setIndentUnit(indentUnit);
+         edtDoc.setIndentUnit(indentUnit);
          prefs.storePrefs("indentUnit", indentUnit);
       }
    }
@@ -130,16 +130,18 @@ public class Edit {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
       if (sel == null) {
-         fDoc.insert(start, indentUnit, null);
+         edtDoc.insert(start, indentUnit, null);
       }
       else {
+         edtDoc.enableMergedUndo(true);
          String[] selArr = sel.split("\n");
          int sum = 0;
          for (String s : selArr) {
             int lineLength = s.length() + indentLength;
-            fDoc.insert(start + sum, indentUnit, null);
+            edtDoc.insert(start + sum, indentUnit, null);
             sum += lineLength + 1;
          }
+         edtDoc.enableMergedUndo(false);
       }
    }
 
@@ -149,14 +151,14 @@ public class Edit {
    public void outdent() {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
-      String text = fDoc.docText();
+      String text = edtDoc.docText();
       if (sel == null) {
          boolean isAtLineStart
                = LinesFinder.lastNewline(text, start) > start - indentLength;
 
          if (!isAtLineStart && start >= indentLength) {
             if (indentUnit.equals(text.substring(start - indentLength, start))) {
-               fDoc.remove(start - indentLength, indentLength, true);
+               edtDoc.remove(start - indentLength, indentLength, true);
             }
             else {
                textArea.setCaretPosition(start - indentLength);
@@ -177,15 +179,17 @@ public class Edit {
             }
          }
          if (selArr[0].startsWith(" ") && isIndentConsistent(selArr)) {
+            edtDoc.enableMergedUndo(true);
             int sum = 0;
             for (String s : selArr) {
                if (s.startsWith(indentUnit)) {
-                  fDoc.remove(start + sum, indentLength, true);
+                  edtDoc.remove(start + sum, indentLength, true);
                   sum += (s.length() - indentLength) + 1;
                } else {
                   sum += s.length() + 1;
                }
             }
+            edtDoc.enableMergedUndo(false);
          }
       }
    }
@@ -194,13 +198,13 @@ public class Edit {
     * Clears trailing spaces
     */
    public void clearTrailingSpaces() {
-      String text = fDoc.docText();
+      String text = edtDoc.docText();
       String[] textArr = text.split("\n");
       int sum = 0;
       for (String s : textArr) {
          int startOfSpaces = startOfTrailingSpaces(s);
          int spacesLength = s.length() - startOfSpaces;
-         fDoc.remove(startOfSpaces + sum, spacesLength, false);
+         edtDoc.remove(startOfSpaces + sum, spacesLength, false);
          sum += startOfSpaces + 1;
       }
    }

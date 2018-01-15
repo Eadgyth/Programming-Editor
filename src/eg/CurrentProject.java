@@ -11,7 +11,7 @@ import eg.ui.MainWin;
 import eg.projects.ProjectActions;
 import eg.projects.SelectedProject;
 
-import eg.document.FileDocument;
+import eg.document.EditableDocument;
 
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
@@ -21,11 +21,11 @@ import eg.utils.FileUtils;
  * <p>
  * A project is represented by an object of type {@link ProjectActions}
  * and is configured and assigned to this current project when the
- * {@link FileDocument} that is selected at the time is part of that
+ * {@link EditableDocument} that is selected at the time is part of that
  * project.<br>
  * Several projects can be configured and would be maintained. Any of
  * these can be (re-)assigned to this current project if the selected
- * <code>FileDocument</code> is part of it.
+ * <code>EditableDocument</code> is part of it.
  */
 public class CurrentProject {
 
@@ -44,7 +44,7 @@ public class CurrentProject {
    private final SelectedProject selProj;
    private final ProcessStarter proc;
    private final List<ProjectActions> projList = new ArrayList<>();
-   private final FileDocument[] fDoc;
+   private final EditableDocument[] edtDoc;
    //private final boolean
 
    private ProjectActions current;
@@ -53,28 +53,28 @@ public class CurrentProject {
 
    /**
     * @param mw  the reference to {@link MainWin}
-    * @param fDoc  the array of {@link FileDocument}
+    * @param edtDoc  the array of {@link EditableDocument}
     */
-   public CurrentProject(MainWin mw, FileDocument[] fDoc) {
+   public CurrentProject(MainWin mw, EditableDocument[] edtDoc) {
       this.mw = mw;
-      this.fDoc = fDoc;
+      this.edtDoc = edtDoc;
       proc = new ProcessStarter(mw.console());
       selProj = new SelectedProject(mw, proc, mw.console());
    }
 
    /**
-    * Selects an element from this array of <code>FileDocument</code> by the
-    * specified index
+    * Selects an element from this array of <code>EditableDocument</code> by
+    * the specified index
     *
     * @param i  the index
     */
-   public void setFileDocumentAt(int i) {
+   public void setDocumentAt(int i) {
       iCurr = i;
-      docExt = FileUtils.fileExtension(fDoc[iCurr].filename());
-      ProjectActions inList = selectFromList(fDoc[iCurr].dir(), true);
+      docExt = FileUtils.fileExtension(edtDoc[iCurr].filename());
+      ProjectActions inList = selectFromList(edtDoc[iCurr].dir(), true);
       mw.enableChangeProject(inList != null);
       if (current != null) {
-         if (!current.isInProject(fDoc[iCurr].dir())) {
+         if (!current.isInProject(edtDoc[iCurr].dir())) {
             mw.enableSrcCodeActions(false, false, false);
          }
          else {
@@ -90,18 +90,18 @@ public class CurrentProject {
     * @see eg.projects.ProjectConfig#retrieveProject(String)
     */
    public void retrieveProject() {
-      retrieveProject(fDoc[iCurr].dir());
+      retrieveProject(edtDoc[iCurr].dir());
    }
 
    /**
     * Opens the window of the <code>SettingsWin</code> object that belongs
     * to a project.
-    * <p>Depending on the currently set <code>FileDocument</code> the opened
-    * window belongs to the currently active project, to one of this listed
-    * projects or to a project that can be newly assigned.
+    * <p>Depending on the currently set <code>EditableDocument</code> the
+    * opened window belongs to the currently active project, to one of this
+    * listed projects or to a project that can be newly assigned.
     */
    public void openSettingsWindow() {
-      ProjectActions fromList = selectFromList(fDoc[iCurr].dir(), false);
+      ProjectActions fromList = selectFromList(edtDoc[iCurr].dir(), false);
       if (fromList == null) {
          int res = Dialogs.confirmYesNo("Set new project?");
          if (0 == res) {
@@ -119,32 +119,32 @@ public class CurrentProject {
     * Assigns a new project
     */
    public void assignProject() {
-      ProjectActions fromList = selectFromList(fDoc[iCurr].dir(), false);
+      ProjectActions fromList = selectFromList(edtDoc[iCurr].dir(), false);
       if (fromList == null) {
          assignProjectImpl();
       }
       else {
          Dialogs.warnMessage(
-               fDoc[iCurr].filename() + " belongs to the project "
+               edtDoc[iCurr].filename() + " belongs to the project "
                + fromList.getProjectName());
       }
    }
 
    /**
     * Sets active the project from this List of configured projects
-    * which the currently selected <code>FileDocument</code> belongs to
+    * which the currently selected <code>EditableDocument</code> belongs to
     */
    public void changeProject() {
-      ProjectActions fromList = selectFromList(fDoc[iCurr].dir(), true);
+      ProjectActions fromList = selectFromList(edtDoc[iCurr].dir(), true);
       changeProject(fromList);
    }
 
    /**
-    * Updates the file tree if the selected <code>FileDocument</code>
+    * Updates the file tree if the selected <code>EditableDocument</code>
     * belongs to this current project
     */
    public void updateFileTree() {
-      if (current != null && current.isInProject(fDoc[iCurr].dir())) {
+      if (current != null && current.isInProject(edtDoc[iCurr].dir())) {
          EventQueue.invokeLater(() -> mw.fileTree().updateTree());
       }
    }
@@ -155,13 +155,13 @@ public class CurrentProject {
    public void saveAndCompile() {
       try {
          mw.setBusyCursor();
-         if (fDoc[iCurr].docFile().exists()) {
-            fDoc[iCurr].saveFile();
+         if (edtDoc[iCurr].docFile().exists()) {
+            edtDoc[iCurr].saveFile();
             current.compile();
             updateFileTree();
          }
          else {
-            Dialogs.errorMessage(fDoc[iCurr].filename()
+            Dialogs.errorMessage(edtDoc[iCurr].filename()
                   + ":\nThe file could not be found anymore");
          }
       }
@@ -178,14 +178,14 @@ public class CurrentProject {
       try {
          mw.setBusyCursor();
          StringBuilder missingFiles = new StringBuilder();
-         for (FileDocument f : fDoc) {
-            boolean isProjSrc = f != null && current.isInProject(f.dir());
+         for (EditableDocument d : edtDoc) {
+            boolean isProjSrc = d != null && current.isInProject(d.dir());
             if (isProjSrc) {
-                if (f.docFile().exists()) {
-                    f.saveFile();
+                if (d.docFile().exists()) {
+                    d.saveFile();
                 } else {
                     missingFiles.append("\n");
-                    missingFiles.append(f.filename());
+                    missingFiles.append(d.filename());
                 }
             }
          }
@@ -210,7 +210,7 @@ public class CurrentProject {
          current.runProject();
       }
       else {
-         current.runProject(fDoc[iCurr].filepath());
+         current.runProject(edtDoc[iCurr].filepath());
       }
    }
 
@@ -270,7 +270,7 @@ public class CurrentProject {
    }
 
    private void assignProjectImpl() {
-      if (!fDoc[iCurr].hasFile()) {
+      if (!edtDoc[iCurr].hasFile()) {
          Dialogs.infoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          return;
       }
@@ -287,7 +287,7 @@ public class CurrentProject {
    
    private ProjectActions selectByExtension() {
       String selectedExt
-            = Dialogs.comboBoxOpt(wrongExtentionMessage(fDoc[iCurr].filename()),
+            = Dialogs.comboBoxOpt(wrongExtentionMessage(edtDoc[iCurr].filename()),
             "File extension", PROJ_SUFFIXES, null, true);
 
       if (selectedExt != null) {
@@ -326,7 +326,7 @@ public class CurrentProject {
    }
 
    private void configureProject(ProjectActions projToConf) {
-      if (projToConf.configureProject(fDoc[iCurr].dir())) {
+      if (projToConf.configureProject(edtDoc[iCurr].dir())) {
          current = projToConf;
          current.storeConfiguration();
          projList.add(current);

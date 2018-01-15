@@ -16,7 +16,7 @@ import eg.utils.FileUtils;
 
 /**
  * The text document that is edited.<br>
- * Created in {@link FileDocument}
+ * Created in {@link EditableDocument}
  */
 public class TextDocument {
    

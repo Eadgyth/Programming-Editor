@@ -12,12 +12,12 @@ import java.util.List;
  * <p>
  * A change to the text is named edit. This can be an insertion or a
  * deletion and it can be a single character or a larger chunk of text.
- * Calling undo undoes edits in reverse order until the last breakpoint
- * is reached. More precisely, undoing edits stops before an edit whose
- * index is the value of the lastly added breakpoint. A subsequent
- * undo action then continues to undo edits up to the second last
- * breakpoint etc.. Redo actions redo undone edits and stop before the
- * same breakpoints just in reverse order.<br>
+ * Calling undo undoes the added edits in reverse order until a
+ * breakpoint is reached. More precisely, undoing edits stops before
+ * an edit whose index is the value of the lastly added breakpoint. A
+ * subsequent undo action then continues to undo edits up to the second
+ * last breakpoint etc.. Redo actions redo undone edits and stop before
+ * the same breakpoints just in reverse order.<br>
  * Edits are marked as breakpoints in the following cases:
  * <ul>
  * <li> The edit is is newline.
@@ -47,6 +47,7 @@ public class UndoEdit {
    private int iEd = -1;
    private int iBr = -1;
    private boolean isBreak = false;
+   private boolean isMerge = false;
    private boolean isDeleteTyped = false;
 
    /**
@@ -184,23 +185,43 @@ public class UndoEdit {
          isBreak = true;
       }
    }
+   
+   /**
+    * Controls if breakpoints are added. If the specified boolean 
+    * is true adding breakpoints is disabled. False returns to
+    * adding breakpoints which is also the default.
+    *
+    * @param b  the boolean value
+    */
+   public void setAddBreakpointsDisabled(boolean b) {
+      if (b) {
+         int iLastBreak = breakpoints.size() - 1;
+         if (iLastBreak == -1 || iEd != breakPt(iLastBreak)) {
+            breakpoints.add(iEd);
+            iBr = breakpoints.size() - 1;
+         }
+      }
+      isMerge = b;
+   }
 
    //
    //--private--//
    //
 
    private void addBreakpoint() {
-      int iLastBreak = breakpoints.size() - 1;
-      if (iLastBreak > -1 && iEd - 1 == breakPt(iLastBreak)) {
+      if (isMerge) {
          return;
       }
-      breakpoints.add(iEd - 1);
-      iBr = breakpoints.size() - 1;
+      int iLastBreak = breakpoints.size() - 1;
+      if (iLastBreak == -1 || iEd - 1 != breakPt(iLastBreak)) {
+         breakpoints.add(iEd - 1);
+         iBr = breakpoints.size() - 1;
+      }
    }
 
    private void trim() {
       if (iEd == edits.size() - 1) {
-         return; // no edits are undone (or all undone edits are redone)
+         return; // no edits are undone or all undone edits are redone
       }
       for (int i = edits.size() - 1; i > iEd; i--) {
          edits.remove(i);
