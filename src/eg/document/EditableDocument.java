@@ -20,9 +20,7 @@ import eg.ui.EditArea;
  * Represents the editable document.
  * <p>
  * Uses {@link TypingEdit} for actions that shall happen in response to
- * text changes. These actions comprise the creation of undoable changes,
- * line numbering and, if the language is a supported coding language,
- * syntax highlighting and auto-indentation.
+ * text changes.
  */
 public final class EditableDocument {
 
@@ -33,14 +31,13 @@ public final class EditableDocument {
    private String filename = "";
    private String filepath = "";
    private String dir = "";
-   String content = "";
+   String savedContent = "";
    private Languages lang;
 
    /**
-    * Creates a <code>EditableDocument</code> with the specified file whose
-    * content is displayed in the text area.
+    * Creates an <code>EditableDocument</code> with the specified file.
     * <p>
-    * The file defines that language which remains unchangeable unless
+    * The file defines the language which remains unchangeable unless
     * another file that would define another language is set.
     *
     * @param editArea  a new {@link EditArea}
@@ -50,7 +47,7 @@ public final class EditableDocument {
       this(editArea);
       displayFileContentImpl(f);
       setFileParams(f);
-      content = type.getText();
+      savedContent = type.getText();
       setLanguageBySuffix();
    }
 
@@ -168,7 +165,7 @@ public final class EditableDocument {
          throw new IllegalStateException("No file has been assigned");
       }
       type.resetInChangeState();
-      content = type.getText();
+      savedContent = type.getText();
       return writeToFile(docFile);
    }
 
@@ -183,7 +180,7 @@ public final class EditableDocument {
       setFileParams(f);
       setLanguageBySuffix();
       type.resetInChangeState();
-      content = type.getText();
+      savedContent = type.getText();
       return writeToFile(f);
    }
 
@@ -213,13 +210,13 @@ public final class EditableDocument {
    }
 
    /**
-    * Returns if the current text equals the text  at the last
+    * Returns if the current text equals the text at the last
     * saving point
     *
     * @return  if the current text is saved
     */
    public boolean isSaved() {
-      return type.getText().equals(content);
+      return type.getText().equals(savedContent);
    }
 
    /**
@@ -274,39 +271,48 @@ public final class EditableDocument {
 
    /**
     * Enables merging then following text changes to a single undoable
-    * unit such that the normal structuring of text changes into
-    * undoable units is overridden.
+    * unit such that the default division of changes into undoable
+    * units is ignored.
     *
-    * @param b  sets the boolean value that is true to enable merging
-    *           and false to return to the default disabled merging
-    * @see TypingEdit #enableMergedUndo(boolean)
+    * @param b  the boolean value. True to enable, false to re-disable
+    * merging
+    * @see TypingEdit #disableBreakpointAdding(boolean)
     */
-   public void enableMergedUndo(boolean b) {
-      type.enableMergedUndo(b);
+   public void enableMerging(boolean b) {
+      type.disableBreakpointAdding(b);
    }
-
+   
    /**
-    * Inserts the string <code>toInsert</code> at the specified position
-    * and also replaces the string <code>toReplace</code>.
+    * Inserts the specified string at the specified position
     *
     * @param pos  the position
     * @param toInsert  the String to insert
-    * @param toReplace  the String to replace. Can be null
     */
-   public void insert(int pos, String toInsert, String toReplace) {
-      type.insert(pos, toInsert, toReplace);
+   public void insert(int pos, String toInsert) {
+      type.insert(pos, toInsert);
+   }
+
+    /**
+    * Replaces a section of the documemnt with the specified string
+    *
+    * @param pos  the position where the section to be replaced starts
+    * @param length  the length of the section
+    * @param toInsert  the String to insert
+    */
+   public void replace(int pos, int length, String toInsert) {
+      type.replace(pos, length, toInsert);
    }
 
    /**
-    * Removes text
+    * Removes a section from the document
     *
-    * @param pos  the position where the text to be removed starts
-    * @param length  the length of text to be removed
-    * @param reqCodeEditing  if actions to edit source code in
-    * response to the removal are required; true to require
+    * @param pos  the position where the section starts
+    * @param length  the length of the section
+    * @param useHighlighting  if syntax highlighting of the line that
+    * includes the position is done
     */
-   public void remove(int pos, int length, boolean reqCodeEditing) {
-      type.remove(pos, length, reqCodeEditing);
+   public void remove(int pos, int length, boolean useHighlighting) {
+      type.remove(pos, length, useHighlighting);
    }
 
    /**
@@ -336,7 +342,7 @@ public final class EditableDocument {
    }
 
    private void displayFileContentImpl(File f) {
-      type.enableDocListen(false);
+      type.enableDocUpdate(false);
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
          String line = br.readLine();
          String nextLine = br.readLine();
@@ -355,7 +361,7 @@ public final class EditableDocument {
          FileUtils.logStack(e);
       }
       finally {
-         type.enableDocListen(true);
+         type.enableDocUpdate(true);
       }
    }
 

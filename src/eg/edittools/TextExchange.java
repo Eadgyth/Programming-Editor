@@ -123,7 +123,9 @@ public class TextExchange {
    private void copy(EditableDocument destination, String text) {
       destination.docTextArea().requestFocusInWindow();
       String toReplace = destination.docTextArea().getSelectedText();
-      int posToIns = destination.docTextArea().getSelectionStart();
-      destination.insert(posToIns, text, toReplace);
+      int pos = destination.docTextArea().getSelectionStart();
+      int end = destination.docTextArea().getSelectionEnd();
+      int length = end - pos;
+      destination.replace(pos, length, text);
    }
 }

@@ -10,30 +10,36 @@ import java.util.List;
 /**
  * The undo and redo editing.
  * <p>
- * A change to the text is named edit. This can be an insertion or a
- * deletion and it can be a single character or a larger chunk of text.
- * Calling undo undoes the added edits in reverse order until a
- * breakpoint is reached. More precisely, undoing edits stops before
- * an edit whose index is the value of the lastly added breakpoint. A
- * subsequent undo action then continues to undo edits up to the second
- * last breakpoint etc.. Redo actions redo undone edits and stop before
- * the same breakpoints just in reverse order.<br>
- * Edits are marked as breakpoints in the following cases:
+ * An undoable change to the text (edit) is characterized by its text
+ * content, type (insertion or removal) and position.
+ * <p>
+ * The sequence of edits is divided into larger undoable units by means
+ * of breakpoints. A breakpoint may be added when a new edit is added
+ * and its value then is the index of the edit that was added previously.
+ * An undo action undoes the edits behind a breakpoint (or all if there
+ * is none) in reverse order. Accordingly, a redo action redoes the edits
+ * in front of a breakpoint (or all if there is none) in forward direction.
+ * The starting point of an action is always the edit were undoing or
+ * redoing has stopped before.
+ * <p>
+ * When a new edit is added also a breakpoint is added if...
  * <ul>
- * <li> The edit is is newline.
- * <li> The edit type, insertion and removal, changes. However, if an
- *      insertion follows a removal that was not triggerd by pressing
- *      the delete or backspace keys, that is selected text was replaced,
- *      the removal is not marked.
- * <li> The edit type has not changed but the edit is longer than one
- *      character.
- * <li> A mark was added from outside by calling {@link #markBreakpoint()}.
+ * <li> The content of the previous edit is just newline character.
+ * <li> The type of the new edit differs from the type of the
+ *      previous edit. However, no breakpoint is added if an insertion
+ *      follows a removal that was not triggerd by pressing the delete
+ *      or backspace keys.
+ * <li> The content is longer than one character.
+ * <li> A mark was set by {@link #markBreakpoint()}.
  * </ul>
  * <p>
- * Undone edits are always removed if a new edit is added.
+ * An undoable unit may as well be formed by disabling breakpoint adding.
+ * For this {@link #disableBreakpointAdding(boolean)} is invoked before
+ * and after adding the edits to be inluded in the undoable unit.
  * <p>
- * Created in {@link TypingEdit} which adds edits and also marks
- * breakpoints when the cursor is moved with the mouse or cursor keys.
+ * Any undone edits are always removed when a new edit is added.
+ * <p>
+ * Created in {@link TypingEdit}.
  */
 public class UndoEdit {
 
@@ -46,7 +52,7 @@ public class UndoEdit {
 
    private int iEd = -1;
    private int iBr = -1;
-   private boolean isBreak = false;
+   private boolean isMark = false;
    private boolean isMerge = false;
    private boolean isDeleteTyped = false;
 
@@ -72,12 +78,12 @@ public class UndoEdit {
       positions.add(pos);
       eventTypes.add(isInsert);
       iEd = edits.size() - 1;
-      if (isBreak) {
+      if (isMark) {
          addBreakpoint();
-         isBreak = false;
+         isMark = false;
       }
       if ("\n".equals(change)) {
-         isBreak = true;
+         isMark = true;
       }
       else {
          if (iEd > 0) {
@@ -99,7 +105,7 @@ public class UndoEdit {
    }
 
    /**
-    * Returns the boolean that indicates if edits can be undone
+    * Returns if edits can be undone
     *
     * @return  the boolean value
     */
@@ -108,7 +114,7 @@ public class UndoEdit {
    }
 
    /**
-    * Returns the boolean that indicates if edits can be redone
+    * Returns if edits can be redone
     *
     * @return  the boolean value
     */
@@ -177,28 +183,31 @@ public class UndoEdit {
    }
 
    /**
-    * Marks that the recently added edit will be a breakpoint as soon
-    * as another edit is added
+    * Marks that a breakpoint will be added as soon as another edit is added
     */
    public void markBreakpoint() {
       if (edits.size() > 0) {
-         isBreak = true;
+         isMark = true;
       }
    }
    
    /**
-    * Controls if breakpoints are added. If the specified boolean 
-    * is true adding breakpoints is disabled. False returns to
-    * adding breakpoints which is also the default.
+    * Disables or re-enables adding breakpoints. If disabled also
+    * a breakpoint with the value of the index of the last edit is added
+    * (if the same breakpoint is not already set).
+    * If disabled a mark is set by invoking {@link #markBreakpoint}
     *
-    * @param b  the boolean value
+    * @param b  the boolean value. True to disable, false to re-enable
     */
-   public void setAddBreakpointsDisabled(boolean b) {
+   public void disableBreakpointAdding(boolean b) {
       if (b) {
          int iLastBreak = breakpoints.size() - 1;
          if (iLastBreak == -1 || iEd != breakPt(iLastBreak)) {
             breakpoints.add(iEd);
             iBr = breakpoints.size() - 1;
+         }
+         else {
+            markBreakpoint();
          }
       }
       isMerge = b;

@@ -91,8 +91,10 @@ public class Edit {
          return;
       }
       String sel = textArea.getSelectedText();
-      int pos = textArea.getSelectionStart();      
-      edtDoc.insert(pos, clipboard, sel);
+      int pos = textArea.getSelectionStart();
+      int end = textArea.getSelectionEnd();
+      int length = end - pos;
+      edtDoc.replace(pos, length, clipboard);
    }
 
    /**
@@ -130,18 +132,18 @@ public class Edit {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
       if (sel == null) {
-         edtDoc.insert(start, indentUnit, null);
+         edtDoc.insert(start, indentUnit);
       }
       else {
-         edtDoc.enableMergedUndo(true);
+         edtDoc.enableMerging(true);
          String[] selArr = sel.split("\n");
          int sum = 0;
          for (String s : selArr) {
             int lineLength = s.length() + indentLength;
-            edtDoc.insert(start + sum, indentUnit, null);
+            edtDoc.insert(start + sum, indentUnit);
             sum += lineLength + 1;
          }
-         edtDoc.enableMergedUndo(false);
+         edtDoc.enableMerging(false);
       }
    }
 
@@ -179,7 +181,7 @@ public class Edit {
             }
          }
          if (selArr[0].startsWith(" ") && isIndentConsistent(selArr)) {
-            edtDoc.enableMergedUndo(true);
+            edtDoc.enableMerging(true);
             int sum = 0;
             for (String s : selArr) {
                if (s.startsWith(indentUnit)) {
@@ -189,7 +191,7 @@ public class Edit {
                   sum += s.length() + 1;
                }
             }
-            edtDoc.enableMergedUndo(false);
+            edtDoc.enableMerging(false);
          }
       }
    }

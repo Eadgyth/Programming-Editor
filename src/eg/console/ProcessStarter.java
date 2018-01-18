@@ -21,7 +21,7 @@ import javax.swing.SwingWorker;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 
-//--Eadgyth--/
+//--Eadgyth--//
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 
@@ -36,7 +36,12 @@ public class ProcessStarter {
    private String workingDirName = new File(workingDir).getName();
    private String previousCmd = "";
    private int caretPos = 0;
+   /*
+    * The text set in the console after a process is started;
+    * includes the output of the process */
    private String consoleText = "";
+   /*
+    * Indicates if the process was forcibly quit, if so -1 */
    private int apparentExitVal = 0;
    private boolean isActive = false;
    private Process process;

@@ -13,8 +13,11 @@ import eg.utils.LinesFinder;
 import eg.syntax.*;
 
 /**
- * Mediates between the editing of the document by typing in, removing,
- * pasting or replacing text and actions that happen in response.
+ * The mediation between the editing of the document by typing in, removing,
+ * pasting or replacing text and the actions that happen in response.
+ * These actions comprise the creation of undoable changes,
+ * line numbering and, if the language is a supported coding language,
+ * syntax highlighting and auto-indentation.
  * <p>
  * Created in {@link EditableDocument}
  */
@@ -28,7 +31,7 @@ public class TypingEdit {
 
    private EditingStateReadable esr;
 
-   private boolean isDocListen = true;
+   private boolean isDocUpdate = true;
    private boolean isAddToUndo = true;
    private boolean isCodeEditing = false;
    private boolean isInsert;
@@ -70,13 +73,13 @@ public class TypingEdit {
    }
 
    /**
-    * Sets the boolean that specifies if the update methods in this
+    * Sets the boolean that controls if the update methods in this
     * <code>DocumentListener</code> are enabled or disabled
     *
-    * @param b  the boolean value which is true to enable
+    * @param b  the boolean value. True to enable, false to disable
     */
-   public void enableDocListen(boolean b) {
-      isDocListen = b;
+   public void enableDocUpdate(boolean b) {
+      isDocUpdate = b;
       if (b) {
          updateText();
          textDoc.textArea().setCaretPosition(0);
@@ -156,31 +159,44 @@ public class TypingEdit {
    }
    
    /**
-    * Enables/disables merging text changes to a single undoable
-    * unit
+    * Sets the boolean that disables or re-enables adding breakpoints 
     *
-    * @param b  sets the boolean value that is true to enable and false
-    *           to disable merging
+    * @param b  the boolean value. True to disable, false to re-enable
     * @see UndoEdit
-    * @see UndoEdit #disableBreakpoints(boolean b)
+    * @see UndoEdit #disableBreakpointAdding(boolean)
     */
-   public void enableMergedUndo(boolean b) {
-      undo.setAddBreakpointsDisabled(b);
+   public void disableBreakpointAdding(boolean b) {
+      undo.disableBreakpointAdding(b);
    }
    
    /**
-    * Inserts the string <code>toInsert</code> at the specified position
-    * and also replaces the string <code>toReplace</code>
+    * Inserts the specified string at the specified position
     *
     * @param pos  the position
-    * @param toInsert  the String to insert
-    * @param toReplace  the String to replace. Can be null
+    * @param toInsert  the string
     */
-   public void insert(int pos, String toInsert, String toReplace) {
+   public void insert(int pos, String toInsert) {
       boolean isCodeEditingHelper = isCodeEditing;
       isCodeEditing = false;
-      if (toReplace != null) {
-         textDoc.remove(pos, toReplace.length());
+      textDoc.insert(pos, toInsert);
+      if (isCodeEditingHelper) {
+         highlightInsert();
+         isCodeEditing = true;
+      }
+   }
+   
+   /**
+    * Replaces a section of the documemnt with the specified string
+    *
+    * @param pos  the position where the section to be replaced starts
+    * @param length  the length of the section
+    * @param toInsert  the String to insert
+    */
+   public void replace(int pos, int length, String toInsert) {
+      boolean isCodeEditingHelper = isCodeEditing;
+      isCodeEditing = false;
+      if (length != 0) {
+         textDoc.remove(pos, length);
       }
       textDoc.insert(pos, toInsert);
       if (isCodeEditingHelper) {
@@ -190,31 +206,18 @@ public class TypingEdit {
    }
    
    /**
-    * Removes text
+    * Removes a section from the document
     *
-    * @param pos  the position where the text to be removed starts
-    * @param length  the length of text to be removed
-    * @param reqCodeEditing  if actions to edit source code in
-    * response to the removal are required, true to require
+    * @param pos  the position where the section starts
+    * @param length  the length of the section
+    * @param useHighlighting  if syntax highlighting of the line that
+    * includes the position is done
     */
-   public void remove(int pos, int length, boolean reqCodeEditing) {
+   public void remove(int pos, int length, boolean useHighlighting) {
       boolean isCodeEditingHelper = isCodeEditing;
-      isCodeEditing = reqCodeEditing;
+      isCodeEditing = useHighlighting;
       textDoc.remove(pos, length);
       isCodeEditing = isCodeEditingHelper;
-   }
-   
-   /**
-    * Reads the current editing state by calling the methods defined in
-    * {@link EditingStateReadable}
-    */
-   public void readEditingState() {
-      if (esr != null) {
-         esr.setInChangeState(isInChange);
-         esr.setCursorPosition(lineNr, colNr);
-         esr.setUndoableState(canUndoTmp, canRedoTmp);
-         esr.setSelectionState(isSelectionTmp);
-      }
    }
 
    /**
@@ -233,6 +236,19 @@ public class TypingEdit {
       isAddToUndo = false;
       undo.redo();
       updateAfterUndoRedo();
+   }
+   
+   /**
+    * Reads the current editing state by calling the methods defined in
+    * {@link EditingStateReadable}
+    */
+   public void readEditingState() {
+      if (esr != null) {
+         esr.setInChangeState(isInChange);
+         esr.setCursorPosition(lineNr, colNr);
+         esr.setUndoableState(canUndoTmp, canRedoTmp);
+         esr.setSelectionState(isSelectionTmp);
+      }
    }
 
    //
@@ -350,7 +366,7 @@ public class TypingEdit {
 
       @Override
       public void insertUpdate(DocumentEvent de) {
-         if (!isDocListen) {
+         if (!isDocUpdate) {
             return;
          }
          isInsert = true;
@@ -372,7 +388,7 @@ public class TypingEdit {
 
       @Override
       public void removeUpdate(DocumentEvent de) {
-         if (!isDocListen) {
+         if (!isDocUpdate) {
             return;
          }
          isInsert = false;

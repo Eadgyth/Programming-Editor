@@ -15,7 +15,8 @@ import javax.swing.text.StyleConstants;
 import eg.utils.FileUtils;
 
 /**
- * The text document that is edited.<br>
+ * The document that is displayed in the text area that is edited.
+ * <p>
  * Created in {@link EditableDocument}
  */
 public class TextDocument {
