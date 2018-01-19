@@ -34,21 +34,25 @@ public class TabbedDocuments implements Observer {
    private final MainWin mw;
    private final ExtTabbedPane tabPane;
    private final EditAreaFormat format;
-   private final DocumentUpdate docUpdate;
+   private final Edit edit;
+   private final CurrentProject currProj;
 
    /*
     * The index of the selected tab */
    private int iTab = -1;
    /*
     * The language initially read from prefs and maybe set in the
-    * Languge menu */
+    * Language menu */
    private Languages lang;
 
    public TabbedDocuments(EditAreaFormat format, MainWin mw) {
       this.format = format;
       this.mw = mw;
       tabPane = mw.tabPane();
-      docUpdate = new DocumentUpdate(mw, edtDoc);
+      edit = new Edit();
+      currProj = new CurrentProject(mw, edtDoc);
+      mw.setEditTextActions(edit);
+      mw.setProjectActions(currProj);
       format.setEditAreaArr(editArea);
       prefs.readPrefs();
       readLanguageFromPrefs();
@@ -159,11 +163,11 @@ public class TabbedDocuments implements Observer {
       File f = fc.fileToSave(edtDoc[iTab].filepath());
       boolean isSave = f != null;
       if (isSave && f.exists()) {
-         isSave = 0 == replaceOption(f);
+         isSave = 0 == replaceFileOption(f);
       }     
       isSave = isSave && edtDoc[iTab].setFile(f);
       if (isSave && update) {
-         docUpdate.changeFile(iTab, true);
+         changedFileUpdate(true);
          tabPane.setTitle(iTab, edtDoc[iTab].filename());
          prefs.storePrefs("recentPath", edtDoc[iTab].dir());
       }   
@@ -178,7 +182,7 @@ public class TabbedDocuments implements Observer {
       File f = fc.fileToSave(edtDoc[iTab].filepath());
       boolean isSave = f != null;
       if (isSave && f.exists()) {
-         isSave = 0 == replaceOption(f);
+         isSave = 0 == replaceFileOption(f);
       }     
       if (isSave) {
          edtDoc[iTab].saveCopy(f);
@@ -318,7 +322,7 @@ public class TabbedDocuments implements Observer {
          edtDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
          edtDoc[n].setEditingStateReadable(editReadable);
          addNewTab(edtDoc[n].filename(), editArea[n].editAreaPnl());
-         docUpdate.changeFile(n, false);
+         changedFileUpdate(false);
          prefs.storePrefs("recentPath", edtDoc[n].dir());
       }
       finally {
@@ -362,7 +366,25 @@ public class TabbedDocuments implements Observer {
    private void changedTabUpdate() {
       format.setEditAreaAt(iTab);
       mw.setWordWrapSelected(editArea[iTab].isWordwrap());
-      docUpdate.changeDocument(iTab, nTabs());
+      edit.setDocument(edtDoc[iTab]);
+      currProj.setDocumentAt(iTab);
+      mw.editTools().forEach((t) -> {
+         t.setEditableDocument(edtDoc[iTab]);
+      });
+      mw.displayFrameTitle(edtDoc[iTab].filepath());
+      mw.enableShowTabbar(nTabs() == 1);
+      mw.setLanguageSelected(edtDoc[iTab].language(), !edtDoc[iTab].hasFile());
+      edtDoc[iTab].setFocused();
+   }
+   
+   private void changedFileUpdate(boolean updateFiletree) {
+      currProj.setDocumentAt(iTab);
+      currProj.retrieveProject();
+      mw.setLanguageSelected(edtDoc[iTab].language(), false);
+      mw.displayFrameTitle(edtDoc[iTab].filepath());
+      if (updateFiletree) {
+         currProj.updateFileTree();
+      }
    }
    
    private boolean isFileOpen(File f) {
@@ -404,7 +426,7 @@ public class TabbedDocuments implements Observer {
             ("Save changes in " + filename + " ?");
    }
    
-   private int replaceOption(File f) {
+   private int replaceFileOption(File f) {
       return Dialogs.warnConfirmYesNo(
              f.getName() + " already exists.\nReplace file?");
    }
