@@ -63,9 +63,9 @@ public final class EditArea {
    private int scrollPos;
 
    /**
-    * @param isWordwrap  true to enable, false to disable wordwrap
+    * @param isWordwrap  true to enable, false to disable wordwrap.
     * @param isLineNumbers  true to show, false to hide line numbers.
-    *       If true also showing line numbers is disabled
+    * This is effectless if isWordwrap is true.
     * @param font  the name of the initial font
     * @param fontSize  the size of the initial font
     */
@@ -106,25 +106,25 @@ public final class EditArea {
    }
 
    /**
-    * Gets this text area for editing text
+    * Gets this text area that displays the editable text
     *
-    * @return  this area for editing text
+    * @return  the text area
     */
    public JTextPane textArea() {
       return textArea;
    }
    
    /**
-    * Gets this text area for showing line numbers
+    * Gets this text area that displays the line numbers
     *
-    * @return  this area for line numbers
+    * @return  the text area
     */
    public JTextPane lineNrArea() {
       return lineNrArea;
    }
 
    /**
-    * Gets this implemented method specified in
+    * Gets this implemented method that is specified in
     * <code>LineNrWidthAdaptable</code>
     *
     * @return  the implemented method
@@ -134,42 +134,54 @@ public final class EditArea {
    }
 
    /**
-    * Returns the boolean that indicates if wordwrap is enabled in this
-    * text area
+    * Returns if wordwrap is enabled
     *
-    * @return  the boolean
+    * @return  the boolean value
     */
    public boolean isWordwrap() {
       return isWordwrap;
    }
-
+   
+   /**
+    * Shows or hides the area that displays line numbers, depending on
+    * the specified boolean value
+    *
+    * @param b  the boolean valie. True to show
+    * @throws IllegalStateException  if wordwrap is currently enabled
+    */
+   public void showLineNumbers(boolean b) {
+      if (isWordwrap) {
+         throw new IllegalStateException("Word-wrapping is currently"
+               + " enabled. Showing or hiding line numbers is not possible.");
+      }   
+      if (b) {
+         showLineNumbersImpl();
+      }
+      else {
+         hideLineNumbersImpl();
+      }
+   }
+   
    /**
     * Enables wordwrap. Invoking this method also hides the area that
     * displays line numbers
     */
    public void enableWordwrap() {
-      editAreaPnl.remove(lineNrScroll);
-      removeCenterComponent();
-      wordwrapScoll.setViewportView(textArea);
-      editAreaPnl.add(wordwrapScoll, BorderLayout.CENTER);
-      setScrollPos(wordwrapScoll);
-      textArea.requestFocusInWindow();
-      revalidate();
-      isWordwrap = true;
+      enableWordwrapImpl();
    }
    
    /**
-    * Disables wordwrap and makes the area to show line numbers visible
-    * if the specified boolean is true
+    * Disables wordwrap and makes the area that displays line numbers
+    * visible if the specified boolean is true
     *
-    * @param b  the boolean value
+    * @param isLineNumbers  the boolean value
     */
-   public void disableWordwrap(boolean b) {
-      if (b) {
-         showLineNumbers();
+   public void disableWordwrap(boolean isLineNumbers) {
+      if (isLineNumbers) {
+         showLineNumbersImpl();
       }
       else {
-         hideLineNumbers();
+         hideLineNumbersImpl();
       }
    }
    
@@ -203,7 +215,7 @@ public final class EditArea {
    //--private--//
    //
 
-   private void showLineNumbers() {
+   private void showLineNumbersImpl() {
       removeCenterComponent();
       disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
       linkedLineNrScroll.setViewportView(disabledWordwrapPnl);
@@ -215,7 +227,7 @@ public final class EditArea {
       isWordwrap = false;
    }
    
-   private void hideLineNumbers() {
+   private void hideLineNumbersImpl() {
       editAreaPnl.remove(lineNrScroll);
       removeCenterComponent();
       disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
@@ -225,6 +237,17 @@ public final class EditArea {
       textArea.requestFocusInWindow();
       revalidate();
       isWordwrap = false;
+   }
+   
+   private void enableWordwrapImpl() {
+      editAreaPnl.remove(lineNrScroll);
+      removeCenterComponent();
+      wordwrapScoll.setViewportView(textArea);
+      editAreaPnl.add(wordwrapScoll, BorderLayout.CENTER);
+      setScrollPos(wordwrapScoll);
+      textArea.requestFocusInWindow();
+      revalidate();
+      isWordwrap = true;
    }
    
    private void adaptLineNrWidth(int prevLineNr, int lineNr) {

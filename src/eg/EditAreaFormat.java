@@ -70,8 +70,7 @@ public class EditAreaFormat {
    }
    
    /**
-    * Changes the wordwrap state of the selected
-    * <code>EditArea</code>
+    * Changes the wordwrap state of the selected <code>EditArea</code>
     *
     * @param isWordwrap  if wordwrap is enabled
     */
@@ -88,7 +87,7 @@ public class EditAreaFormat {
    }
 
    /**
-    * Applies the selection in this {@link ViewSettingWin} to
+    * Applies the selection in this <code>ViewSettingWin</code> to
     * show or hide line numbers
     */
    public void applySetWinOk() {
@@ -97,7 +96,7 @@ public class EditAreaFormat {
          isShowLineNr = show;
          for (EditArea ea : editArea) {
             if (ea != null && !ea.isWordwrap()) {
-               ea.disableWordwrap(isShowLineNr);
+               ea.showLineNumbers(isShowLineNr);
             }
          }
          String state = isShowLineNr ? "show" : "hide";
@@ -106,7 +105,7 @@ public class EditAreaFormat {
    }
    
    //
-   //--private--/
+   //--private--//
    //
    
    private void setFont() {
