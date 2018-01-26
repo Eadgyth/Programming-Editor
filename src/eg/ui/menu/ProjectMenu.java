@@ -8,13 +8,14 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 //--Eadgyth--//
-import eg.CurrentProject;
+import eg.Projects;
 
 import eg.ui.IconFiles;
 
 /**
  * The menu for project actions.
- * <p> Created in {@link MenuBar}
+ * <p>
+ * Created in {@link MenuBar}
  */
 public class ProjectMenu {
 
@@ -47,18 +48,18 @@ public class ProjectMenu {
    }
 
    /**
-    * Sets listeners for actions defined in <code>CurrentProject</code>
+    * Sets listeners for actions defined in <code>Projects</code>
     *
-    * @param currProj  the reference to {@link CurrentProject}
+    * @param p  the reference to {@link Projects}
     */
-   public void setActions(CurrentProject currProj) {
-      setProject.addActionListener(e -> currProj.openSettingsWindow());
-      changeProj.addActionListener(e -> currProj.changeProject());
-      newProj.addActionListener(e -> currProj.assignProject());
-      run.addActionListener(e -> currProj.runProj());
-      build.addActionListener(e -> currProj.buildProj());
-      SaveCompile.addActionListener(e -> currProj.saveAndCompile());
-      SaveAllCompile.addActionListener(e -> currProj.saveAllAndCompile());
+   public void setActions(Projects p) {
+      setProject.addActionListener(e -> p.openSettingsWindow());
+      changeProj.addActionListener(e -> p.changeProject());
+      newProj.addActionListener(e -> p.assignProject());
+      run.addActionListener(e -> p.runProj());
+      build.addActionListener(e -> p.buildProj());
+      SaveCompile.addActionListener(e -> p.saveAndCompile());
+      SaveAllCompile.addActionListener(e -> p.saveAllAndCompile());
    }
 
    /**

@@ -37,7 +37,7 @@ public class FilesFinder {
    }
 
    //
-   //--private--/
+   //--private--//
    //
 
    private void setFilteredFiles(File f, String extension, String excl) {

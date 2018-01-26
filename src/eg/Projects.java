@@ -8,26 +8,24 @@ import java.awt.EventQueue;
 //--Eadgyth--//
 import eg.console.*;
 import eg.ui.MainWin;
+import eg.ui.ConsoleOpenable;
 import eg.projects.ProjectActions;
-import eg.projects.SelectedProject;
-
+import eg.projects.ProjectSelector;
 import eg.document.EditableDocument;
-
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 
 /**
- * The configuration and execution of actions of projects.
+ * The configured projects.
  * <p>
- * A project is represented by an object of type {@link ProjectActions}
- * and is configured and assigned to this current project when the
- * {@link EditableDocument} that is selected at the time is part of that
- * project.<br>
- * Several projects can be configured and would be maintained. Any of
- * these can be (re-)assigned to this current project if the selected
- * <code>EditableDocument</code> is part of it.
+ * A project is represented by an object of {@link ProjectActions}.
+ * <p>
+ * Several projects can be stored and any of these can be selected
+ * for the execution of its implemented actions. Storing or selecting
+ * projects depends on the document, that is the object of
+ * {@link EditableDocument}, which is selected at a time.
  */
-public class CurrentProject {
+public class Projects {
 
    private final String NO_FILE_IN_TAB_MESSAGE
          = "To assign a project open or newly save a file"
@@ -35,31 +33,30 @@ public class CurrentProject {
 
    private final String FILES_NOT_FOUND_MESSAGE
          = "The following files could not be found anymore:";
-         
+
    private final static String[] PROJ_SUFFIXES = {
       "htm", "html", "java", "pl"
    };
 
    private final MainWin mw;
-   private final SelectedProject selProj;
+   private final ProjectSelector selector;
    private final ProcessStarter proc;
    private final List<ProjectActions> projList = new ArrayList<>();
    private final EditableDocument[] edtDoc;
-   //private final boolean
 
    private ProjectActions current;
-   private int iCurr;
+   private int iDoc;
    private String docExt = "";
 
    /**
     * @param mw  the reference to {@link MainWin}
     * @param edtDoc  the array of {@link EditableDocument}
     */
-   public CurrentProject(MainWin mw, EditableDocument[] edtDoc) {
+   public Projects(MainWin mw, EditableDocument[] edtDoc) {
       this.mw = mw;
       this.edtDoc = edtDoc;
       proc = new ProcessStarter(mw.console());
-      selProj = new SelectedProject(mw, proc, mw.console());
+      selector = new ProjectSelector(mw.consoleOpener(), proc, mw.console());
    }
 
    /**
@@ -69,12 +66,12 @@ public class CurrentProject {
     * @param i  the index
     */
    public void setDocumentAt(int i) {
-      iCurr = i;
-      docExt = FileUtils.fileExtension(edtDoc[iCurr].filename());
-      ProjectActions inList = selectFromList(edtDoc[iCurr].dir(), true);
+      iDoc = i;
+      docExt = FileUtils.fileExtension(edtDoc[iDoc].filename());
+      ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), true);
       mw.enableChangeProject(inList != null);
       if (current != null) {
-         if (!current.isInProject(edtDoc[iCurr].dir())) {
+         if (!current.isInProject(edtDoc[iDoc].dir())) {
             mw.enableSrcCodeActions(false, false, false);
          }
          else {
@@ -82,15 +79,15 @@ public class CurrentProject {
          }
       }
    }
-   
+
    /**
     * Tries to retrieve a project whose configuration is saved in an
     * 'eadconfig' file in the project's directory or, if not existent,
     * in the program's prefs file.
-    * @see eg.projects.ProjectConfig#retrieveProject(String)
+    * @see eg.projects.AbstractProject#retrieveProject(String)
     */
    public void retrieveProject() {
-      retrieveProject(edtDoc[iCurr].dir());
+      retrieveProject(edtDoc[iDoc].dir());
    }
 
    /**
@@ -101,7 +98,7 @@ public class CurrentProject {
     * listed projects or to a project that can be newly assigned.
     */
    public void openSettingsWindow() {
-      ProjectActions fromList = selectFromList(edtDoc[iCurr].dir(), false);
+      ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), false);
       if (fromList == null) {
          int res = Dialogs.confirmYesNo("Set new project?");
          if (0 == res) {
@@ -119,13 +116,13 @@ public class CurrentProject {
     * Assigns a new project
     */
    public void assignProject() {
-      ProjectActions fromList = selectFromList(edtDoc[iCurr].dir(), false);
+      ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), false);
       if (fromList == null) {
          assignProjectImpl();
       }
       else {
          Dialogs.warnMessage(
-               edtDoc[iCurr].filename() + " belongs to the project "
+               edtDoc[iDoc].filename() + " belongs to the project "
                + fromList.getProjectName());
       }
    }
@@ -135,7 +132,7 @@ public class CurrentProject {
     * which the currently selected <code>EditableDocument</code> belongs to
     */
    public void changeProject() {
-      ProjectActions fromList = selectFromList(edtDoc[iCurr].dir(), true);
+      ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), true);
       changeProject(fromList);
    }
 
@@ -144,7 +141,7 @@ public class CurrentProject {
     * belongs to this current project
     */
    public void updateFileTree() {
-      if (current != null && current.isInProject(edtDoc[iCurr].dir())) {
+      if (current != null && current.isInProject(edtDoc[iDoc].dir())) {
          EventQueue.invokeLater(() -> mw.fileTree().updateTree());
       }
    }
@@ -155,14 +152,16 @@ public class CurrentProject {
    public void saveAndCompile() {
       try {
          mw.setBusyCursor();
-         if (edtDoc[iCurr].docFile().exists()) {
-            edtDoc[iCurr].saveFile();
+         if (edtDoc[iDoc].docFile().exists()) {
+            edtDoc[iDoc].saveFile();
             current.compile();
             updateFileTree();
          }
          else {
-            Dialogs.errorMessage(edtDoc[iCurr].filename()
-                  + ":\nThe file could not be found anymore");
+            Dialogs.errorMessage(
+                  edtDoc[iDoc].filename()
+                  + ":\nThe file could not be found anymore",
+                  "Missing file");
          }
       }
       finally {
@@ -194,7 +193,9 @@ public class CurrentProject {
             updateFileTree();
          }
          else {
-            Dialogs.errorMessage(FILES_NOT_FOUND_MESSAGE + missingFiles);
+            Dialogs.errorMessage(
+                  FILES_NOT_FOUND_MESSAGE + missingFiles,
+                  "Missing files");
          }
       }
       finally {
@@ -210,7 +211,7 @@ public class CurrentProject {
          current.runProject();
       }
       else {
-         current.runProject(edtDoc[iCurr].filepath());
+         current.runProject(edtDoc[iDoc].filepath());
       }
    }
 
@@ -231,19 +232,19 @@ public class CurrentProject {
    //
    //--private--//
    //
-   
+
    private void retrieveProject(String dir) {
       if (current != null && current.isInProject(dir)) {
          return;
       }
       EventQueue.invokeLater(() -> {
-         ProjectActions projToFind = selProj.createProject(docExt);
+         ProjectActions projToFind = selector.createProject(docExt);
          boolean isFound = projToFind != null
                && projToFind.retrieveProject(dir);
 
          if (projToFind == null) {
             for (String opt : PROJ_SUFFIXES) {
-               projToFind = selProj.createProject(opt);
+               projToFind = selector.createProject(opt);
                isFound = projToFind != null && projToFind.retrieveProject(dir);
                if (isFound) {
                   break;
@@ -270,11 +271,11 @@ public class CurrentProject {
    }
 
    private void assignProjectImpl() {
-      if (!edtDoc[iCurr].hasFile()) {
+      if (!edtDoc[iDoc].hasFile()) {
          Dialogs.infoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          return;
       }
-      ProjectActions projNew = selProj.createProject(docExt);
+      ProjectActions projNew = selector.createProject(docExt);
       if (projNew == null) {
          projNew = selectByExtension();
       }
@@ -284,14 +285,14 @@ public class CurrentProject {
          projFin.setConfiguringAction(e -> configureProject(projFin));
       }
    }
-   
+
    private ProjectActions selectByExtension() {
       String selectedExt
-            = Dialogs.comboBoxOpt(wrongExtentionMessage(edtDoc[iCurr].filename()),
+            = Dialogs.comboBoxOpt(wrongExtentionMessage(edtDoc[iDoc].filename()),
             "File extension", PROJ_SUFFIXES, null, true);
 
       if (selectedExt != null) {
-         return selProj.createProject(selectedExt);
+         return selector.createProject(selectedExt);
       }
       else {
          return null;
@@ -326,15 +327,15 @@ public class CurrentProject {
    }
 
    private void configureProject(ProjectActions projToConf) {
-      if (projToConf.configureProject(edtDoc[iCurr].dir())) {
+      if (projToConf.configureProject(edtDoc[iDoc].dir())) {
          current = projToConf;
          current.storeConfiguration();
          projList.add(current);
          updateProjectSetting(current);
          updateFileTree();
-      }      
+      }
    }
- 
+
    private String wrongExtentionMessage(String filename) {
       return
             "<html>"
@@ -355,28 +356,28 @@ public class CurrentProject {
 
    private void enableActions(ProjectActions projToSet) {
       switch (className(projToSet)) {
-         case "JavaActions":
+         case "JavaProject":
             mw.enableSrcCodeActions(true, true, true);
             break;
-         case "HtmlActions":
+         case "HtmlProject":
             mw.enableSrcCodeActions(false, true, false);
             break;
-         case "PerlActions":
+         case "PerlProject":
             mw.enableSrcCodeActions(false, true, false);
             break;
       }
    }
-   
+
    private void setBuildLabel(ProjectActions projToSet) {
       switch (className(projToSet)) {
-         case "JavaActions":
+         case "JavaProject":
             mw.setBuildLabel("Create jar");
             break;
          default:
             mw.setBuildLabel("Build");
       }
    }
-   
+
    private String className(ProjectActions projToSet) {
       return projToSet.getClass().getSimpleName();
    }

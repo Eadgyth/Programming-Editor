@@ -22,8 +22,7 @@ import eg.ui.EditArea;
 import eg.ui.tabpane.ExtTabbedPane;
 
 /**
- * The control of operations that require knowledge of the documents in
- * the tabs
+ * The documents in the tabs
  */
 public class TabbedDocuments implements Observer {
 
@@ -35,24 +34,28 @@ public class TabbedDocuments implements Observer {
    private final ExtTabbedPane tabPane;
    private final EditAreaFormat format;
    private final Edit edit;
-   private final CurrentProject currProj;
+   private final Projects proj;
 
    /*
     * The index of the selected tab */
    private int iTab = -1;
    /*
-    * The language initially read from prefs and maybe set in the
-    * Language menu */
+    * The language that is initially read from prefs and that may be
+    * changed by selection in the Edit>Language menu */
    private Languages lang;
 
+   /**
+    * @param format  the reference to {@link EditAreaFormat}
+    * @param mw  the reference to {@link MainWin}
+    */
    public TabbedDocuments(EditAreaFormat format, MainWin mw) {
       this.format = format;
       this.mw = mw;
       tabPane = mw.tabPane();
       edit = new Edit();
-      currProj = new CurrentProject(mw, edtDoc);
       mw.setEditTextActions(edit);
-      mw.setProjectActions(currProj);
+      proj = new Projects(mw, edtDoc);
+      mw.setProjectActions(proj);
       format.setEditAreaArr(editArea);
       prefs.readPrefs();
       readLanguageFromPrefs();
@@ -76,7 +79,7 @@ public class TabbedDocuments implements Observer {
    }
 
    /**
-    * Opens a new tab with a blank document
+    * Creates a new tab with a blank document
     */
    public void createBlankDocument() {
       if (isTabOpenable()) {
@@ -85,7 +88,8 @@ public class TabbedDocuments implements Observer {
    }
 
    /**
-    * Opens a file that is double clicked in <code>FileTree</code>
+    * Opens a tab with a file that is double clicked in
+    * <code>FileTree</code>
     */
    @Override
    public void update(Observable o, Object arg) {
@@ -94,7 +98,7 @@ public class TabbedDocuments implements Observer {
    }
 
    /**
-    * Opens a file that is selected in the file chooser.
+    * Opens a tab with a file that is selected in the file chooser
     */
    public void openFileByChooser() {
       File f = fc.fileToOpen();
@@ -111,13 +115,13 @@ public class TabbedDocuments implements Observer {
 
    /**
     * Saves the text content in the selected document.
-    * <p>{@link #saveAs(boolean)} is called if the selected tab is
-    * unnamed or if the content was read in from a file that no longer
-    * exists on the hard drive.
+    * <p>
+    * {@link #saveAs(boolean)} is called if the selected tab is
+    * unnamed or if the content was read in from a file that no
+    * longer exists on the hard drive.
     *
-    * @param update  if the view (e.g. tab title, file view) is
-    * updated and if it is tried to retrieve a project. This applies
-    * to "save as mode" only
+    * @param update  true to update the main window and this
+    * {@link Projects} in case a new file is saved
     * @return  if the text content was saved
     */
    public boolean save(boolean update) {
@@ -155,8 +159,8 @@ public class TabbedDocuments implements Observer {
     * Saves the text content in the selected document as a new file
     * that is specified in the file chooser
     *
-    * @param update  if the view (e.g. tab title, file view) is
-    * updated and it is tried to retrieve a project
+    * @param update  true to update the main window and this
+    * {@link Projects} because of the chnaged file
     * @return  if the text content was saved
     */
    public boolean saveAs(boolean update) {
@@ -176,7 +180,7 @@ public class TabbedDocuments implements Observer {
 
    /**
     * Saves a copy of the content in the selected document to the file
-    * that is selected in the file chooser
+    * that is specified in the file chooser
     */
    public void saveCopy() {
       File f = fc.fileToSave(edtDoc[iTab].filepath());
@@ -190,12 +194,11 @@ public class TabbedDocuments implements Observer {
    }
 
    /**
-    * Tries to close the currently viewed tab and creates a tab with a
-    * new blank document if the closed tab was the only open one and the
-    * specified boolean is true
+    * Tries to close the currently viewed tab
     *
-    * @param createBlankDoc  the boolean that indicates if a new blank
-    * document is created
+    * @param createBlankDoc  the boolean that is true to create a new
+    * blank document in the case that the tab to be closed is the only
+    * open tab.
     */
    public void close(boolean createBlankDoc) {
       boolean removable = edtDoc[iTab].isSaved();
@@ -217,11 +220,10 @@ public class TabbedDocuments implements Observer {
    }
 
    /**
-    * Tries to close all tabs and creates a new tab with a blank document
-    * if all previous tabs were closed and the specified boolean is true
+    * Tries to close all tabs
     *
     * @param createBlankDoc  the boolean that is true to create a new blank
-    * document
+    * document if the last tab was closed
     */
    public void closeAll(boolean createBlankDoc) {
       int count = unsavedTab();
@@ -253,10 +255,10 @@ public class TabbedDocuments implements Observer {
    }
    
    /**
-    * Closes all tabs
+    * Tries to close all tabs
     *
-    * @return  the boolean value that indicates if all tabs were
-    * closed
+    * @return  the boolean value that, if true, indicates that all tabs
+    * were closed
     */
    public boolean isAllClosed() {
       closeAll(false);
@@ -367,7 +369,7 @@ public class TabbedDocuments implements Observer {
       format.setEditAreaAt(iTab);
       mw.setWordWrapSelected(editArea[iTab].isWordwrap());
       edit.setDocument(edtDoc[iTab]);
-      currProj.setDocumentAt(iTab);
+      proj.setDocumentAt(iTab);
       mw.editTools().forEach((t) -> {
          t.setEditableDocument(edtDoc[iTab]);
       });
@@ -378,12 +380,12 @@ public class TabbedDocuments implements Observer {
    }
    
    private void changedFileUpdate(boolean updateFiletree) {
-      currProj.setDocumentAt(iTab);
-      currProj.retrieveProject();
+      proj.setDocumentAt(iTab);
+      proj.retrieveProject();
       mw.setLanguageSelected(edtDoc[iTab].language(), false);
       mw.displayFrameTitle(edtDoc[iTab].filepath());
       if (updateFiletree) {
-         currProj.updateFileTree();
+         proj.updateFileTree();
       }
    }
    
@@ -402,7 +404,7 @@ public class TabbedDocuments implements Observer {
    private boolean isMaxTabNumber() {
       boolean isMax = nTabs() == edtDoc.length;
       if (isMax) {
-         Dialogs.errorMessage("The maximum number of tabs is reached.");
+         Dialogs.errorMessage("The maximum number of tabs is reached.", null);
       }
       return isMax;
    }

@@ -8,7 +8,7 @@ public interface ConsoleOpenable {
    /**
     * Returns if the console panel is open
     *
-    * @return  if the console is open
+    * @return  the boolan value, true if open
     */
    public boolean isConsoleOpen();
    

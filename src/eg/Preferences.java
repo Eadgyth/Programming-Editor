@@ -18,13 +18,12 @@ public class Preferences {
     * The name of the config file that is stored in a project folder.
     * The value is eadconfig.properties.
     */
-   public final static String CONFIG_FILE = "eadconfig.properties";
+   public final static String EAD_CONFIG_FILE = "eadconfig.properties";
 
    private final static String PREFS_FILE = "prefs.properties";
    private final static String F_SEP = File.separator;
    
    private final static String[] PREFS_KEYS = {
-      "recentProject",
       "recentPath",
       "font",
       "fontSize",
@@ -37,21 +36,22 @@ public class Preferences {
       "wordWrap",
       "showTabs",
       "iconSize",
-      "recentMain",
-      "recentModule",
-      "recentSourceDir",
-      "recentExecDir",
-      "recentIncludedExt",
-      "recentBuildName"
+      "projectRoot",
+      "mainProjectFile",
+      "namespace",
+      "sourceDir",
+      "execDir",
+      "includedFiles",
+      "buildName"
    };
    
-   private final static String[] CONFIG_KEYS = {
-      "recentMain",
-      "recentModule",
-      "recentSourceDir",
-      "recentExecDir",
-      "recentIncludedExt",
-      "recentBuildName"
+   private final static String[] EAD_CONFIG_KEYS = {
+      "mainProjectFile",
+      "namespace",
+      "sourceDir",
+      "execDir",
+      "includedFiles",
+      "buildName"
    };
 
    private Properties prop = null;
@@ -93,7 +93,7 @@ public class Preferences {
     * @param dir  the directory
     */
    public void readConfig(String dir) {
-      readProperties(dir + F_SEP + CONFIG_FILE);
+      readProperties(dir + F_SEP + EAD_CONFIG_FILE);
    }
 
    /**
@@ -118,34 +118,34 @@ public class Preferences {
    }
 
    /**
-    * Stores a new value for the specified property in a config.properties
-    * file saved in the specified directory. Creates the file if it does not
-    * exist
+    * Stores a new value for the specified property in an
+    * "eadconfig.properties" file that is saved in the specified
+    * directory. Creates the file if it does not exist
     *
     * @param propToUpdate  the property
     * @param newValue  the new value for the property
     * @param dir  the directory
     */
-   public void storeConfig(String propToUpdate, String newValue,
+   public void storeEadConfig(String propToUpdate, String newValue,
          String dir) {
       
-      String configFile = dir + F_SEP + CONFIG_FILE;
+      String configFile = dir + F_SEP + EAD_CONFIG_FILE;
       if (!new File(configFile).exists()) {
-         createFile(configFile, CONFIG_KEYS);
+         createFile(configFile, EAD_CONFIG_KEYS);
       }
  
       readConfig(dir);      
-      String[] allValues = new String[CONFIG_KEYS.length];
+      String[] allValues = new String[EAD_CONFIG_KEYS.length];
       for (int i = 0; i < allValues.length; i++) {
-         allValues[i] = prop.getProperty(CONFIG_KEYS[i]);
+         allValues[i] = prop.getProperty(EAD_CONFIG_KEYS[i]);
       }
-      for (int i = 0; i < CONFIG_KEYS.length; i++) {
-         if (CONFIG_KEYS[i].equals(propToUpdate)) {
+      for (int i = 0; i < EAD_CONFIG_KEYS.length; i++) {
+         if (EAD_CONFIG_KEYS[i].equals(propToUpdate)) {
             allValues[i] = newValue;
             break;
          }
       }
-      store(configFile, CONFIG_KEYS, allValues);
+      store(configFile, EAD_CONFIG_KEYS, allValues);
    }
    
    //

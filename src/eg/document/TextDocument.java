@@ -34,13 +34,22 @@ public class TextDocument {
    
    /**
     * @param textArea  the <code>JTextPane</code> that displays the
-    * document that is edited
+    * document
     */
    public TextDocument(JTextPane textArea) {
       this.textArea = textArea;
       doc = textArea.getStyledDocument();
       Element el = doc.getParagraphElement(0);
       doc.setParagraphAttributes(0, el.getEndOffset(), SET, false);
+   }
+   
+   /**
+    * Gets the text area that displays the document
+    *
+    * @return  the text area
+    */
+   public JTextPane textArea() {
+      return textArea;
    }
    
    /**
@@ -53,42 +62,32 @@ public class TextDocument {
    }
    
    /**
-    * (Re-)sets the characters in the section that starts at the specified
-    * position and spans the specified length to black and plain
+    * (Re-)sets the characters in a section of the document to black
+    * and plain
     *
-    * @param pos  the position
-    * @param length  the length
+    * @param pos  the position where the section start
+    * @param length  the length of the section
     */
    public void setCharAttrBlack(int pos, int length) {
       setCharAttr(pos, length, SET);
    }
 
    /**
-    * (Re-)sets all characters to black and plain
+    * (Re-)sets the characters in the entire document to black and plain
     */
    public void setAllCharAttrBlack() {
       setCharAttr(0, doc.getLength(), SET);
    }
    
    /**
-    * Sets the character attributes in the section that starts at the specified
-    * position and spans the specified length
+    * Sets character attributes in a section of the document
     *
-    * @param pos  the position
-    * @param length  the length
+    * @param pos  the position where the section starts
+    * @param length  the length of the section
     * @param set  the character attributes
     */
    public void setCharAttr(int pos, int length, SimpleAttributeSet set) {
       doc.setCharacterAttributes(pos, length, set, false);
-   }
-   
-   /**
-    * Gets this text area that displays the document
-    *
-    * @return  the text area
-    */
-   public JTextPane textArea() {
-      return textArea;
    }
    
    /**

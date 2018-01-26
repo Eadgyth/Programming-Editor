@@ -11,17 +11,18 @@ import java.util.List;
 
 //--Eadgyth--//
 import eg.console.ConsolePanel;
+import eg.utils.Dialogs;
 
 /**
- * The creation of a jar file of a project.
+ * The creation of an executable jar file.
  * <p>
- * The jar is saved in the folder containing the class files (packages)
- * which is the classpath.
+ * The jar file is saved in the directory that is specified as executables
+ * directory or in the root directory of a project.
  */
 public class JarBuilder {
 
    private final static String F_SEP = File.separator;
-   
+
    private final FilesFinder fFind = new FilesFinder();
    private final ConsolePanel consPnl;
 
@@ -39,21 +40,21 @@ public class JarBuilder {
     * @param jarName  the name for the jar file
     * @param qualifiedMain  the fully qualified name of the main class
     * @param execDir  the name of the directory that contains class files.
-    *       Can be the empty string but cannot be null.
+    * Can be the empty string but cannot be null.
     * @param sourceDir  the name of the directory that contains source
-    *       files. Can be the empty string but cannot be not null.
-    * @param includedExt  the array of extensions of files that are
-    *       included in the jar file in addition to class files. May be
-    *       null.
+    * files. Can be the empty string but cannot be not null.
+    * @param includedFiles  the array of filenames and/or extensions of files
+    * that are included in the jar file in addition to class files. May be
+    * null.
     * @throws IOException  if the process that creates a jar cannot receive
-    *       any input
+    * any input
     */
    public void createJar(String root, String jarName, String qualifiedMain,
-         String execDir, String sourceDir, String[] includedExt)
+         String execDir, String sourceDir, String[] includedFiles)
          throws IOException {
 
       List<String> cmd = jarCmd(root, jarName, qualifiedMain, execDir, sourceDir,
-            includedExt);
+            includedFiles);
 
       ProcessBuilder pb = new ProcessBuilder(cmd);
       pb.directory(new File(root + F_SEP + execDir));
@@ -70,11 +71,11 @@ public class JarBuilder {
    }
 
    //
-   //--private--
+   //--private--//
    //
 
    private List<String> jarCmd(String root, String jarName, String qualifiedMain,
-          String execDir, String sourceDir, String[] includedExt) {
+          String execDir, String sourceDir, String[] includedFiles) {
 
       List<String> cmd = new ArrayList<>();
       Collections.addAll(cmd, "jar", "-cvfe", jarName + ".jar", qualifiedMain);
@@ -88,20 +89,33 @@ public class JarBuilder {
             = relativePaths(searchRoot, classes);
       relativeClassFilePaths.forEach((i) -> {
           cmd.add(i.toString());
-       });
-      if (includedExt != null) {
-         for (String ext : includedExt) {
-            List<File> includedFiles
-                  = fFind.filteredFiles(searchRoot, ext, sourceDir);
-            List<File> relativeInclFilePaths
-                  = relativePaths(searchRoot, includedFiles);
-            relativeInclFilePaths.forEach((f) -> {
-                String path = f.getPath();
-                 if (!(".properties".equals(ext)
-                         && path.endsWith("eadconfig.properties"))) {
-                     cmd.add(f.toString());
-                 }
-             });
+      });
+      if (includedFiles != null) {
+         for (String fStr : includedFiles) {
+            List<File> included
+                  = fFind.filteredFiles(searchRoot, fStr, sourceDir);
+
+            if (included.size() == 0) {
+               Dialogs.errorMessage(
+                     "<html>"
+                     + "\"" + fStr + "\" could not be found.<br>"
+                     + "This is indicated as file or file type to be included"
+                     + " in a jar file."
+                     + "</html>",
+                     null);
+            }
+            else {
+               List<File> relativeInclFilePaths
+                     = relativePaths(searchRoot, included);
+
+               relativeInclFilePaths.forEach((f) -> {
+                  String path = f.getPath();
+                    if (!path.endsWith("eadconfig.properties")) {
+
+                        cmd.add(f.toString());
+                    }
+                });
+             }
          }
       }
       return cmd;

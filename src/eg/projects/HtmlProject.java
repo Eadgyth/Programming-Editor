@@ -7,33 +7,26 @@ import java.io.IOException;
 import eg.utils.FileUtils;
 
 /**
- * Represents a project to write a webpage in HTML
+ * Represents a project to open HTML files contained in the project's root directory
+ * in the default browser
  */
-public final class HtmlActions extends ProjectConfig implements ProjectActions {
+public final class HtmlProject extends AbstractProject implements ProjectActions {
 
-   public HtmlActions(String fileExtension) {
+   public HtmlProject(String fileExtension) {
       super(fileExtension, false);
    }
 
   @Override
    public void createSettingsWin() {
-      setWin = SettingsWin.projectRootWindow();
+      setWin = SettingsWin.basicWindow();
    }
 
-   /**
-    * {@inheritDoc}.
-    * Creates the path for the html file to show it in a fil browser
-    */
    @Override
    public boolean configureProject(String dir) {
       boolean success = super.configureProject(dir);
       return success;
    }
 
-   /**
-    * {@inheritDoc}.
-    * Creates the path for the html file to show it in a fil browser
-    */
    @Override
    public boolean retrieveProject(String dir) {
       boolean success = super.retrieveProject(dir);
@@ -41,8 +34,10 @@ public final class HtmlActions extends ProjectConfig implements ProjectActions {
    }
 
    /**
-    * {@inheritDoc}.
-    * Shows the html file in the default file browser
+    * Shows the HTML file that is specified by the filepath
+    * in the default file browser
+    *
+    * @param filepath  the filepath
     */
    @Override
    public void runProject(String filepath) {

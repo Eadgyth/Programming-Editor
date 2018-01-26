@@ -31,11 +31,10 @@ public class SettingsWin {
    private final static Dimension DIM_SPACER = ScreenParams.scaledDimension(0, 20);
 
    private final JFrame frame = new JFrame("Project settings");
+   private final JTextField projDirTf    = new JTextField();
    private final JTextField fileTf       = new JTextField();
-   private final JTextField moduleTf     = new JTextField();
    private final JTextField sourcesDirTf = new JTextField();
    private final JTextField execDirTf    = new JTextField();
-   private final JTextField projDirTf    = new JTextField();
    private final JTextField argsTf       = new JTextField();
    private final JTextField fileExtTf    = new JTextField();
    private final JTextField buildTf      = new JTextField();
@@ -44,7 +43,6 @@ public class SettingsWin {
    private final JCheckBox  saveConfig   = new JCheckBox();
 
    private String fileLabel = null;
-   private String moduleLabel = null;
    private boolean useScr = false;
    private boolean useExec = false;
    private boolean useArgs = false;
@@ -53,12 +51,12 @@ public class SettingsWin {
    private JTextField hasFocus;
 
    /**
-    * Returns a new SettingsWin where only the name for a project root can be
-    * entered
+    * Returns a new SettingsWin in which only the name for the root
+    * directory of a project can be entered
     *
     * @return  a new SettingsWin
     */
-   public static SettingsWin projectRootWindow() {
+   public static SettingsWin basicWindow() {
       return new SettingsWin(true);
    }
 
@@ -67,9 +65,9 @@ public class SettingsWin {
     * from the methods that add input options.
     * <p>
     * The method {@link #setupWindow()} must be invoked (lastly) to initialize
-    * the window. Calling only this method yields a SettingsWin that equals to
-    * a {@link #projectRootWindow()}.
-    * <p>
+    * the window. Calling only this method yields a SettingsWin that equals a
+    * {@link #basicWindow()}.
+    *
     * @return  a new SettingsWin
     */
    public static SettingsWin adaptableWindow() {
@@ -85,18 +83,6 @@ public class SettingsWin {
     */
    public SettingsWin addFileOption(String fileLabel) {
       this.fileLabel = fileLabel + " (without extension)";
-      return this;
-   }
-
-   /**
-    * Adds the option to enter a name for a module/subdirectory and
-    * sets the label for the corresponding text field
-    *
-    * @param moduleLabel  the label
-    * @return  this
-    */
-   public SettingsWin addModuleOption(String moduleLabel) {
-      this.moduleLabel = moduleLabel;
       return this;
    }
 
@@ -133,14 +119,14 @@ public class SettingsWin {
    }
    
    /**
-    * Adds the option to to enter extensions of files to be included
-    * in a build (and compilation) and set the label for the
-    * correlsponding text field
+    * Adds the option to to enter names (or extensions) of files to
+    * be included in a build (and compilation) and set the label for
+    * the corresponding text field
     *
     * @param label  the label
     * @return  this
     */
-    public SettingsWin addIncludeExtOption(String label) {
+    public SettingsWin addIncludeFilesOption(String label) {
        this.includeExtLabel = label;
        return this;
     }
@@ -178,109 +164,100 @@ public class SettingsWin {
    }
 
    /**
-    * Makes this frame visible or invisible, depending on the
-    * specified boolean value 
+    * Makes this frame visible or invisible
     *
-    * @param b  the boolean
+    * @param b  the boolean value that is true to make the
+    * frame visible, false to make it invisible
     */
    public void setVisible(boolean b) {
-      fileTf.requestFocusInWindow();
+      projDirTf.requestFocusInWindow();
       frame.setVisible(b);
    }
 
    /**
     * Returns the input in the text field for the name of a project
     * file
-    * @return  the the name of a project file
+    *
+    * @return  the input
     */
-   public String projectFileNameInput() {
-      return fileTf.getText();
-   }
-
-   /**
-    * Returns the input in the text field for the name of a module/package
-    * @return  the name of a module/package
-    */
-   public String moduleNameInput() {
-      return moduleTf.getText();
+   public String fileNameInput() {
+      return fileTf.getText().trim();
    }
 
    /**
     * Returns the input in the text field for the name of a directory for
     * source files
-    * @return  the name of a directory for source files
+    *
+    * @return  the input
     */
    public String sourcesDirNameInput() {
-      return sourcesDirTf.getText();
+      return sourcesDirTf.getText().trim();
    }
 
    /**
     * Returns the input in the text field for the name of a directory for
     * executables
-    * @return  the name of a directory for executables
+    *
+    * @return  the input
     */
    public String execDirNameInput() {
-      return execDirTf.getText();
+      return execDirTf.getText().trim();
    }
 
    /**
     * Returns the input in the text field for the name of a project root
     * directory
-    * @return  the name of a project root directory
+    *
+    * @return  the input
     */
    public String projDirNameInput() {
-      return projDirTf.getText();
+      return projDirTf.getText().trim();
    }
 
    /**
     * Returns the input in the text field for arguments
-    * @return  the arguments
+    *
+    * @return  the input
     */
    public String argsInput() {
-      return argsTf.getText();
+      return argsTf.getText().trim();
    }
    
    /**
-    * Returns the input in the text field for extensions of files
-    * that are included in a build and compilation. Extensions must
-    * be entered in the form .txt,.png with or whithout spaces
+    * Returns the input in the text field for files that are included
+    * in a build and a compilation. The input is formatted as comma
+    * separated if file names are separaed by spaces or semicolons.
     *
-    * @return  the comma or semicolon separated extensions
+    * @return  the input
     */
-    public String includedExtInput() {
-       return fileExtTf.getText();
+    public String includedFilesInput() {
+       return fileExtTf.getText().trim().replaceAll("[\\s,;]+", ",");
     }
 
    /**
     * Returns the input in the text field for a name of a build
-    * @return  a name of a build
+    *
+    * @return  the input
     */
    public String buildNameInput() {
-      return buildTf.getText();
+      return buildTf.getText().trim();
    }
 
    /**
     * Shows in the corresponding text field the name of the main project
     * file
-    * @param fileName  the name of the main project
+    *
+    * @param fileName  the name
     */
    public void displayFile(String fileName) {
       fileTf.setText(fileName);
    }
 
    /**
-    * Shows in the corresponding text field the name of a
-    * module/package/namespace
-    * @param moduleName  the name of a module/package/namespace
-    */
-   public void displayModule(String moduleName) {
-      moduleTf.setText(moduleName);
-   }
-
-   /**
     * Shows in the corresponding text field the name of the directory that
     * contains source files
-    * @param dirName  the name of the directory for source files
+    *
+    * @param dirName  the name
     */
    public void displaySourcesDir(String dirName) {
       sourcesDirTf.setText(dirName);
@@ -289,7 +266,8 @@ public class SettingsWin {
    /**
     * Shows in the corresponding text field the name of the directory
     * where executables are saved
-    * @param in  the name of the directory for executable files
+    *
+    * @param in  the name
     */
    public void displayExecDir(String in) {
       execDirTf.setText(in);
@@ -306,26 +284,29 @@ public class SettingsWin {
    }
    
    /**
-    * Shows in the corresponding text field the extensions of files
-    * that are included in a build and compilation
+    * Shows in the corresponding text field the string that contains
+    * files that are included in a build and compilation
     *
     * @param in  the file extensions
     */
-   public void displayIncludedExt(String in) {
+   public void displayIncludedFiles(String in) {
       fileExtTf.setText(in);
    }
 
    /**
     * Shows in the corresponding text field the name of a build
-    * @param in  the name of a build
+    *
+    * @param in  the name
     */
    public void displayBuildName(String in) {
       buildTf.setText(in);
    }
 
    /**
-    * @return  if the checkbox to save the text field inputs to a
-    * local config file is selected
+    * Returns if the option to save the configuration in an
+    * "eadconfig" file is selected in the correponding checkbox
+    *
+    * @return  the boolean value that is true if selected
     */
    public boolean isSaveConfig() {
       return saveConfig.isSelected();
@@ -340,7 +321,7 @@ public class SettingsWin {
    }
 
    //
-   //--private--/
+   //--private--//
    //
    
    private SettingsWin(boolean initWindow) {
@@ -353,7 +334,10 @@ public class SettingsWin {
       int gridSize = 1;
       GridLayout grid = new GridLayout(gridSize, 0);
       JPanel structPnl = new JPanel(grid);
+      //
+      // project dir
       JLabel projDirLb = new JLabel("Name of project root:");
+      structPnl.add(holdLbAndTf(projDirLb, projDirTf));
       //
       // project file option
       if (fileLabel != null) {
@@ -361,15 +345,6 @@ public class SettingsWin {
          grid.setRows(gridSize);
          JLabel fileLb = new JLabel(fileLabel + ":");
          structPnl.add(holdLbAndTf(fileLb, fileTf));
-         projDirLb.setText("Name of project root (input not rqd.):");
-      }
-      //
-      // module/package option
-      if (moduleLabel != null) {
-         gridSize++;
-         grid.setRows(gridSize);
-         JLabel moduleLb = new JLabel(moduleLabel + ":");
-         structPnl.add(holdLbAndTf(moduleLb, moduleTf));
       }
       //
       // sources dir option
@@ -387,9 +362,6 @@ public class SettingsWin {
          JLabel execDirLb = new JLabel("Name of executables directory:");
          structPnl.add(holdLbAndTf(execDirLb, execDirTf));
       }
-      //
-      // project dir
-      structPnl.add(holdLbAndTf(projDirLb, projDirTf));
       
       structPnl.setBorder(UIComponents.titledBorder("Directory/file structure"));
       return structPnl;

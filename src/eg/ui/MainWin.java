@@ -25,7 +25,7 @@ import java.util.ArrayList;
 //--Eadgyth--/
 import eg.Constants;
 import eg.TabbedDocuments;
-import eg.CurrentProject;
+import eg.Projects;
 import eg.Edit;
 import eg.EditAreaFormat;
 import eg.Preferences;
@@ -45,7 +45,7 @@ import eg.utils.FileUtils;
 /**
  * The main window
  */
-public class MainWin implements ConsoleOpenable {
+public class MainWin {
 
    private final static Cursor BUSY_CURSOR
          = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
@@ -79,16 +79,6 @@ public class MainWin implements ConsoleOpenable {
       initFrame();
       setViewActions();
       initShowTabbar();
-   }
-
-   @Override
-   public boolean isConsoleOpen() {
-      return menuBar.viewMenu().isConsoleItmSelected();
-   }
-
-   @Override
-   public void openConsole() {
-      menuBar.viewMenu().doConsoleItmAct(true);
    }
 
    /**
@@ -133,6 +123,15 @@ public class MainWin implements ConsoleOpenable {
     public List<AddableEditTool> editTools() {
        return editTools;
     }
+    
+   /**
+    * Gets this <code>ConsoleOpenable</code>
+    *
+    * @return  this {@link ConsoleOpenable}
+    */
+   public ConsoleOpenable consoleOpener() {
+      return consoleOpener;
+   }
 
    /**
     * Displays text in the title bar
@@ -386,11 +385,11 @@ public class MainWin implements ConsoleOpenable {
    /**
     * Sets listeners for project actions
     *
-    * @param cp  the reference to {@link CurrentProject}
+    * @param p  the reference to {@link Projects}
     */
-   public void setProjectActions(CurrentProject cp) {
-      menuBar.projectMenu().setActions(cp);
-      toolbar.setProjectActions(cp);
+   public void setProjectActions(Projects p) {
+      menuBar.projectMenu().setActions(p);
+      toolbar.setProjectActions(p);
    }
 
    //
@@ -514,6 +513,19 @@ public class MainWin implements ConsoleOpenable {
                showToolPnl(true);
             }, i);
    }
+   
+   private ConsoleOpenable consoleOpener = new ConsoleOpenable() {
+
+      @Override
+      public boolean isConsoleOpen() {
+         return menuBar.viewMenu().isConsoleItmSelected();
+      }
+   
+      @Override
+      public void openConsole() {
+         menuBar.viewMenu().doConsoleItmAct(true);
+      }
+   };
 
    private void initFrame() {
       initSplitPane();

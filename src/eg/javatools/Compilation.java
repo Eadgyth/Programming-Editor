@@ -80,18 +80,20 @@ public class Compilation {
     *
     * @param root  the root directory of the project
     * @param execDir  the name of the destination directory for the compiled
-    *       class files
+    * class files
     * @param sourceDir  the name of the directory that contains java files or
-    *       packages
-    * @param includedExt  the array of extensions of files that are copied
-    *       to the executables folder. May be null.
+    * packages
+    * @param includedFiles  the array of filenames and/or extensions of files
+    * that are copied to the executables folder. May be null.
     */
    public void compile(String root, String execDir, String sourceDir,
-         String[] includedExt) {
+         String[] includedFiles) {
 
       JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
       if (compiler == null) {
-         Dialogs.errorMessage("The programm may not be run using the JRE in a JDK.");
+         Dialogs.errorMessage(
+               "The programm may not be run using the JRE in a JDK.", null);
+
          return;
       }
       String targetDir = createTargetDir(root, execDir);
@@ -117,13 +119,13 @@ public class Compilation {
       } catch (IOException e) {
          FileUtils.logStack(e);
       }
-      if (includedExt != null) {
-         copyIncludedFiles(root, sourceDir, execDir, includedExt);
+      if (includedFiles != null) {
+         copyIncludedFiles(root, sourceDir, execDir, includedFiles);
       }
    }
 
    //
-   //--private--/
+   //--private--//
    //
 
    private String createTargetDir(String root, String execDir) {
@@ -140,46 +142,54 @@ public class Compilation {
    }
 
    private void copyIncludedFiles(String root, String sourceDir, String execDir,
-         String[] includedExt) {
+         String[] includedFiles) {
 
       if (sourceDir.length() == 0 && execDir.length() == 0) {
-         return; // no need to copy something
+         return; // no need to copy anything
       }
       String searchRoot = root;
       if (sourceDir.length() > 0) {
          searchRoot += F_SEP + sourceDir;
       }
-      for (String ext : includedExt) {
-         List<File> includedFiles = fFind.filteredFiles(searchRoot, ext, execDir);
-
-         try {
-            for (File f : includedFiles) {
-               String source = f.getPath();
-               if (".properties".equals(ext)
-                     && source.endsWith("eadconfig.properties")) {
-
-                  continue;
-               }
-               String destination = null;
-               if (sourceDir.length() > 0 && execDir.length() > 0) {
-                  destination = source.replace(sourceDir, execDir);
-               }
-               else if (sourceDir.length() == 0 && execDir.length() > 0) {
-                  String relativePath = source.substring(root.length() + 1);
-                  destination = root + F_SEP + execDir + F_SEP + relativePath;
-               }
-               else if (sourceDir.length() > 0 && execDir.length() == 0) {
-                  destination = source.replace(sourceDir, "");
-               }
-               if (destination != null) {
-                  File fDest = new File(destination);
-                  java.nio.file.Files.copy(f.toPath(), fDest.toPath(),
-                        REPLACE_EXISTING);
+      for (String fStr : includedFiles) {
+         List<File> included = fFind.filteredFiles(searchRoot, fStr, execDir);
+         if (included.size() == 0) {
+            Dialogs.errorMessage(
+                  "<html>"
+                  + "\"" + fStr + "\" could not be found.<br>"
+                  + "This is indicated as file or file type to be included"
+                  + " in a compilation."
+                  + "</html>",
+                  null);
+         }
+         else {
+            try {
+               for (File f : included) {
+                  String source = f.getPath();
+                  if (source.endsWith("eadconfig.properties")) {
+                     continue;
+                  }
+                  String destination = null;
+                  if (sourceDir.length() > 0 && execDir.length() > 0) {
+                     destination = source.replace(sourceDir, execDir);
+                  }
+                  else if (sourceDir.length() == 0 && execDir.length() > 0) {
+                     String relativePath = source.substring(root.length() + 1);
+                     destination = root + F_SEP + execDir + F_SEP + relativePath;
+                  }
+                  else if (sourceDir.length() > 0 && execDir.length() == 0) {
+                     destination = source.replace(sourceDir, "");
+                  }
+                  if (destination != null) {
+                     File fDest = new File(destination);
+                     java.nio.file.Files.copy(f.toPath(), fDest.toPath(),
+                           REPLACE_EXISTING);
+                  }
                }
             }
-         }
-         catch (IOException e) {
-            FileUtils.logStack(e);
+            catch (IOException e) {
+               FileUtils.logStack(e);
+            }
          }
       }
    }

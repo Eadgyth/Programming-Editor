@@ -6,23 +6,23 @@ import eg.ui.ConsoleOpenable;
 /**
  * The selection and creation of an object of type {@code ProjectActions}
  */
-public class SelectedProject {
+public class ProjectSelector {
 
    private final ConsoleOpenable co;
    private final ProcessStarter proc;
    private final ConsolePanel console;
 
    /**
-    * Creates a <code>SelectedProject</code> and sets the references
-    * that may be used by <code>ProjectActions</code>
+    * Sets the references which (or part of which) may be used by
+    * a selected <code>ProjectActions</code>
     *
     * @param co  the {@link ConsoleOpenable}
     * @param proc  the {@link ProcessStarter}
-    * @param console  the {@link ConsolePanel} tht is also shared
+    * @param console  the {@link ConsolePanel} that is also shared
     * by <code>ProcessStarter</code>
     */
-   public SelectedProject(ConsoleOpenable co,
-         ProcessStarter proc, ConsolePanel console) {
+   public ProjectSelector(ConsoleOpenable co, ProcessStarter proc,
+         ConsolePanel console) {
 
       this.co = co;
       this.proc = proc;
@@ -30,24 +30,24 @@ public class SelectedProject {
    }
 
    /**
-    * Returns a <code>ProjectActions</code> selected based on the file
-    * extension
+    * Returns a <code>ProjectActions</code> selected based on the extension
+    * of files which a project is to be assigned to
     *
     * @param ext  the file extension
-    * @return  a new {@link ProjectActions}. Null if <code>suffix</code>
-    * does not specify a project
+    * @return  a new {@link ProjectActions}. Null if the extension does
+    * not specify a project
     */
    public ProjectActions createProject(String ext) {
       ProjectActions newProj = null;
       switch (ext) {
          case "java":
-            newProj = new JavaActions(co, proc, console);
+            newProj = new JavaProject(co, proc, console);
             break;
          case "html": case "htm":
-            newProj = new HtmlActions(ext);
+            newProj = new HtmlProject(ext);
             break;
          case "pl": case "pm":
-            newProj = new PerlActions(co, proc);
+            newProj = new PerlProject(co, proc);
             break;
       }
       if (newProj != null) {

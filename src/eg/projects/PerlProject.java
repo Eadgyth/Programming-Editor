@@ -9,14 +9,14 @@ import eg.console.*;
 /**
  * Represents a programming project in Perl
  */
-public final class PerlActions extends ProjectConfig implements ProjectActions {
+public final class PerlProject extends AbstractProject implements ProjectActions {
 
    private final ConsoleOpenable co;
    private final ProcessStarter proc;
 
    private String startCommand = "";
 
-   PerlActions(ConsoleOpenable co, ProcessStarter proc) {
+   PerlProject(ConsoleOpenable co, ProcessStarter proc) {
       super("pl", true);
       this.co = co;
       this.proc = proc;
@@ -73,7 +73,7 @@ public final class PerlActions extends ProjectConfig implements ProjectActions {
    //
 
    private void setStartCommand() {
-      String main = getMainFile() + ".pl";
+      String main = getMainFileName() + ".pl";
       if (getArgs().length() > 0) {
          main += " " + getArgs();
       }

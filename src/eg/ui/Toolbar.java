@@ -9,7 +9,7 @@ import javax.swing.border.EmptyBorder;
 
 //--Eadgyth--
 import eg.TabbedDocuments;
-import eg.CurrentProject;
+import eg.Projects;
 import eg.Edit;
 
 /**
@@ -57,12 +57,12 @@ public class Toolbar {
     * Sets listeners for actions to change project and to run and
     * compile a project
     *
-    * @param currProj  the reference to {@link CurrentProject}
+    * @param p  the reference to {@link Projects}
     */
-   public void setProjectActions(CurrentProject currProj) {
-      changeProjBt.addActionListener(e -> currProj.changeProject());
-      runBt.addActionListener(e -> currProj.runProj());
-      compileBt.addActionListener(e -> currProj.saveAllAndCompile());
+   public void setProjectActions(Projects p) {
+      changeProjBt.addActionListener(e -> p.changeProject());
+      runBt.addActionListener(e -> p.runProj());
+      compileBt.addActionListener(e -> p.saveAllAndCompile());
    }
 
    /**

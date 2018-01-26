@@ -236,7 +236,7 @@ public class FileTree extends Observable {
             model.removeNodeFromParent(selectedNode);
          }
          else {
-            Dialogs.errorMessage("Deleting " + f.getName() + " failed");
+            Dialogs.errorMessage("Deleting " + f.getName() + " failed", null);
          }
       }
    }
@@ -251,7 +251,7 @@ public class FileTree extends Observable {
             model.removeNodeFromParent(selectedNode);
          }
          else {
-            Dialogs.errorMessage("Deleting " + f.getName() + " failed.");
+            Dialogs.errorMessage("Deleting " + f.getName() + " failed.", null);
          }
       }
    }
@@ -274,7 +274,7 @@ public class FileTree extends Observable {
                   parent, parent.getChildCount());
          }
          else {
-            Dialogs.errorMessage("Creating " + newDir.getName() + " failed");
+            Dialogs.errorMessage("Creating " + newDir.getName() + " failed", null);
          }
       }
    }

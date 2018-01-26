@@ -17,7 +17,7 @@ import eg.ui.ConsoleOpenable;
 /**
  * Represents a programming project in Java
  */
-public final class JavaActions extends ProjectConfig implements ProjectActions {
+public final class JavaProject extends AbstractProject implements ProjectActions {
 
    private final static String F_SEP = File.separator;
 
@@ -29,9 +29,10 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
 
    private String startCommand = "";
    private String qualifiedMain = "";
-   private String[] includedExt = null;
+   private String[] includedFiles = null;
+   private boolean isIncludedFilesTested = false;
 
-   JavaActions(ConsoleOpenable co, ProcessStarter proc, ConsolePanel consPnl) {
+   JavaProject(ConsoleOpenable co, ProcessStarter proc, ConsolePanel consPnl) {
       super("java", true);
       this.co = co;
       this.proc = proc;
@@ -43,19 +44,15 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
    @Override
    public void createSettingsWin() {
       setWin = SettingsWin.adaptableWindow();
-      setWin.addFileOption("Name of main class")
-            .addModuleOption("Package (sub-package path) containing the main class")
+      setWin.addFileOption("Name of main class file")
             .addSourceDirOption()
             .addExecDirOption()
             .addArgsOption()
-            .addIncludeExtOption("Included non-Java file types (example: .txt, .png)")
+            .addIncludeFilesOption("Included non-Java files or file types")
             .addBuildOption("jar file")
             .setupWindow();
    }
 
-   /**
-    * {@inheritDoc}
-    */
    @Override
    public boolean configureProject(String dir) {
       boolean success = super.configureProject(dir);
@@ -65,9 +62,6 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
       return success;
    }
 
-   /**
-    * {@inheritDoc}
-    */
    @Override
    public boolean retrieveProject(String dir) {
       boolean success = super.retrieveProject(dir);
@@ -78,15 +72,18 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
    }
 
    /**
-    * Compiles java files
+    * Compiles java files and shows output in the console panel
     */
    @Override
    public void compile() {
+      if (!containIncludedFilesPeriod()) {
+         return;
+      }
       consPnl.setText("<<Compile " + getProjectName() + ">>\n");
       EventQueue.invokeLater(() -> {
          if (proc.isProcessEnded()) {
             comp.compile(getProjectPath(), getExecutableDirName(), getSourceDirName(),
-                  includedExt);
+                  includedFiles);
 
             consPnl.setCaretUneditable(0);
             if (!co.isConsoleOpen()) {
@@ -127,20 +124,20 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
     */
    @Override
    public void build() {
-      if (!mainClassFileExists()) {
+      if (!mainClassFileExists() || !containIncludedFilesPeriod()) {
          return;
       }
       consPnl.setText("");
       EventQueue.invokeLater(() -> {
          String jarName = getBuildName();
          if (jarName.length() == 0) {
-            jarName = getMainFile();
+            jarName = getMainFileName();
          }
          boolean existed = jarFileExists(jarName);
          try {
             jar.createJar(getProjectPath(), jarName, qualifiedMain,
-                  getExecutableDirName(), getSourceDirName(), includedExt);
-   
+                  getExecutableDirName(), getSourceDirName(), includedFiles);
+
             if (!existed) {
                boolean exists = false;
                while (!exists) {
@@ -163,60 +160,86 @@ public final class JavaActions extends ProjectConfig implements ProjectActions {
    }
 
    //
-   //--private--
+   //--private--//
    //
-   
+
    private void setCommandParams() {
       setQualifiedMain();
       setStartCommand();
-      setIncludedExtArr();
+      setIncludedFilesArr();
    }
-   
+
    private void setQualifiedMain() {
       StringBuilder sb = new StringBuilder();
-      if (getModuleName().length() > 0) {
-         sb.append(FileUtils.dottedFileSeparators(getModuleName()));
-         sb.append(".");
+      if (getNamespace().length() > 0) {
+         sb.append(FileUtils.dottedFileSeparators(getNamespace())).append(".");
       }
-      sb.append(getMainFile());
+      sb.append(getMainFileName());
       qualifiedMain = sb.toString();
    }
-   
+
    private void setStartCommand() {
       StringBuilder sb = new StringBuilder("java ");
       if (getExecutableDirName().length() > 0) {
-         sb.append("-cp ").append(getExecutableDirName());
-         sb.append(" ");
+         sb.append("-cp ").append(getExecutableDirName()).append(" ");
       }
       sb.append(qualifiedMain);
       if (getArgs().length() > 0) {
-         sb.append(" ");
-         sb.append(getArgs());
+         sb.append(" ").append(getArgs());
       }
       startCommand = sb.toString();
    }
-   
-   private void setIncludedExtArr() {
-       if (getIncludedExtensions().length() > 0) {
-          String formatted = getIncludedExtensions();
-          formatted.replace(",", ";");
-          includedExt = formatted.split(";");
+
+   private void setIncludedFilesArr() {
+       if (getIncludedFiles().length() == 0) {
+          includedFiles = null;
        }
        else {
-          includedExt = null;
+          includedFiles = getIncludedFiles().split(",");
+          isIncludedFilesTested = false;
        }
    }
-   
+
    private boolean mainClassFileExists() {
       boolean exists = mainExecFileExists(".class");
       if (!exists) {
-         Dialogs.warnMessage("A compiled main class file could not be found");
+         Dialogs.warnMessage("A compiled main class file could not be found.");
       }
       return exists;
+   }
+
+   private boolean containIncludedFilesPeriod() {
+      boolean isOk = true;
+      if (includedFiles != null && !isIncludedFilesTested) {
+         System.out.println("test");
+         for (String s : includedFiles) {
+            if (s.length() < 2 || !s.contains(".")) {
+               Dialogs.errorMessage(
+                   "<html>"
+                   + "The term \"" + s + "\" which is indicated as file or file type"
+                   + " to be included in a compilation and a jar file cannot be"
+                   + " used.<br>"
+                   + "<ul>"
+                   + "<li>Names of files must contain the extension."
+                   + "<li>To include all files of a given type their extension"
+                   + "  must contain the preceding period (ex.: .png)."
+                   + "</ul>"
+                   + "</html>",
+                   "Included files in compilation and jar file");
+
+               isOk = false;
+               break;
+            }
+            else {
+               isIncludedFilesTested = true;
+            }
+         }
+      }
+      return isOk;
    }
 
    private boolean jarFileExists(String jarName) {
       String execDir = getProjectPath() + F_SEP + getExecutableDirName();
       return new File(execDir + F_SEP + jarName + ".jar").exists();
-   }  
+   }
 }

@@ -55,9 +55,10 @@ public class Dialogs {
     * Shows an error message
     *
     * @param message  the error message
+    * @param title  the title for the dialog
     */
-   public static void errorMessage(String message) {
-      JOptionPane.showMessageDialog(null, message, null,
+   public static void errorMessage(String message, String title) {
+      JOptionPane.showMessageDialog(null, message, title,
            JOptionPane.PLAIN_MESSAGE, IconFiles.ERROR_ICON);
    }
 
@@ -71,6 +72,7 @@ public class Dialogs {
    public static int confirmYesNoCancel(String message) {
       int result = JOptionPane.showConfirmDialog(null, message, null,
             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
       return result;
    }
 
@@ -83,6 +85,7 @@ public class Dialogs {
    public static int confirmYesNo(String message) {
       int result = JOptionPane.showConfirmDialog(null, message, null,
             JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+
       return result;
    }
    
