@@ -3,27 +3,14 @@ package eg.projects;
 import java.awt.event.ActionListener;
 
 /**
- * The interface that defines a configured project.
- * <p>
- * "Configuration" initially means that files can be associated with
- * a project. It than means to set variables needed to perform actions
- * that are defined in {@link ProjectActions}. The minimally required
- * variable is the root directory of a project. Depending on the object
- * that represents a project variables that specify a main project
- * file and the purpose of sub-directories of the project root may be
- * needed. Parameters required to configure a project are entered in
- * a settings window.
- * <p>
- * A "successful" configuration depends on whether the project root can
- * be found but may additionally depend on the existence of a particular
- * file in a given directory structure.
+ * The interface that defnes a configured project
  */
 public interface Configurable {
    
    /**
-    * Creates an object the defines a settings window
+    * Builds the content of the settings window
     */
-   public void createSettingsWin();
+   public void buildSettingsWindow();
    
    /**
     * Sets the <code>ActionListener</code> that is called when
@@ -36,11 +23,11 @@ public interface Configurable {
    /**
     * Makes this settings window visible
     */
-   public void makeSetWinVisible();
+   public void makeSettingsWindowVisible();
    
    /**
     * Returns if a project can be successfully configured based on the
-    * entries in this settings window and the specified directory.
+    * entries in this settings window and the specified directory
     *
     * @param dir  the directory that may be or be contained in the
     * presumed root directory of the project
@@ -51,7 +38,7 @@ public interface Configurable {
    
    /**
     * Returns if a project stored in a preferences file can be retrieved
-    * based on the specified directory.
+    * based on the specified directory
     *
     * @param dir  the directory that may be or be contained in the
     * presumed root directory of the project
@@ -61,7 +48,7 @@ public interface Configurable {
    public boolean retrieveProject(String dir);
    
    /**
-    * Returns if the project uses a main project file.
+    * Returns if the project uses a main project file
     *
     * @return  the boolean value. True if a project file is used.
     */
@@ -71,7 +58,7 @@ public interface Configurable {
     * Returns if the specified directory belongs to the project
     *
     * @param dir  the directory
-    * @return  the boolean value that id true if the directory is or is
+    * @return  the boolean value that is true if the directory is or is
     * contained in the project root
     */
    public boolean isInProject(String dir);

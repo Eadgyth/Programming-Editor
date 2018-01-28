@@ -11,39 +11,35 @@ import eg.utils.Dialogs;
 /**
  * The configuration of a project.
  * <p>
- * An overriding project works in combination with an object of
- * {@link SettingsWin}. This object is adapted to display the needed
- * input options.
+ * This class works in combination with an object of
+ * {@link SettingsWindow} where values required for a configuration
+ * are entered.
  * <p>
- * The parameters that describe the configuration of a project are
- * stored in the "prefs.properties" file in the program folder and
- * optionally in an "eadconfig.properies" file that is stored in the
- * root folder of the project.
+ * The processed parameters that describe the configuration of a
+ * project are stored in the "prefs.properties" file in the program
+ * folder and optionally in an "eadconfig.properies" file that is
+ * stored in the root folder of a project.
  */
 public abstract class AbstractProject implements Configurable {
-
+   
    /**
-    * The object of <code>SettingsWin</code> associated with this project.
-    * Is initially null.
+    * The object of <code>InputOptionsBuilder</code> which a project
+    * uses to build the content of this <code>SettingsWindow</code>
+    *
+    * @see SettingsWindow.InputOptionsBuilder
     */
-   protected SettingsWin setWin = null;
-
-   private final static String F_SEP = File.separator;
-   /*
-    * Reads prefs from the program's Prefs file */
+   protected final SettingsWindow.InputOptionsBuilder inputOptions;
+   
+   private final static String F_SEP = File.separator;      
    private final static Preferences PREFS = new Preferences();
-   /*
-    * Reads prefs from an 'eadconfig' file that may be saved in a project */
-   private final static Preferences EAD_CONFIG = new Preferences();
-   /*
-    * The extension of source files used in a preject */
+   private final static Preferences EAD_PROJ = new Preferences();
+   private final SettingsWindow sw;  
    private final String ext;
-   /*
-    * Indicates if a project uses a main project file */
    private final boolean useProjectFile;
+
    //
-   // Variables available to a project and partly to classes that
-   // have a reference to the project
+   // Variables available to a project and partly to a class that
+   // creates a project
    private String projectRoot = "";
    private String mainFileName = "";
    private String namespace = "";
@@ -53,23 +49,37 @@ public abstract class AbstractProject implements Configurable {
    private String includedFiles = "";
    private String buildName = "";
    //
-   // Variables to control the configuration */
+   // Variables to control the configuration
    private String rootToTest = "";
-   private boolean usePathToMain = false;
+   private boolean isPathname = false;
    private boolean isNameConflict = false;
-
+   
+   /**
+    * {@inheritDoc}.
+    * <p>
+    * The window shows the text field to enter the name of the presumed
+    * root directory of the project. An overriding method may use this
+    * {@link SettingsWindow.InputOptionsBuilder} to build a window with
+    * additional input options but must not call
+    * <code>super.buildSettingsWindow()</code>
+    */
    @Override
-   public void setConfiguringAction(ActionListener al) {
-      setWin.okAct(al);
+   public void buildSettingsWindow() {
+      inputOptions.buildWindow();
    }
 
    @Override
-   public void makeSetWinVisible() {
-      setWin.setVisible(true);
+   public final void setConfiguringAction(ActionListener al) {
+      sw.okAct(al);
    }
 
    @Override
-   public boolean configureProject(String dir) {
+   public final void makeSettingsWindowVisible() {
+      sw.setVisible(true);
+   }
+
+   @Override
+   public final boolean configureProject(String dir) {
       String root = findRoot(dir);
       if (root.length() > 0) {
          if (useProjectFile) {
@@ -81,71 +91,76 @@ public abstract class AbstractProject implements Configurable {
       }
       boolean success = isConfigSuccessful();
       if (success) {
-         setWin.setVisible(false);
+         setCommandParameters();
+         sw.setVisible(false);
       }
       return success;
    }
 
    /**
-    * {@inheritDoc}
+    * {@inheritDoc}.
     * <p>
-    * First it is tried to find an "eadconfig" file in <code>dir</code>
-    * or further upward the directory path and, if this is not present,
-    * it is tested <code>dir</code> is part of the recent project saved
-    * in the "prefs" file in the program folder.
+    * First it is tried to find an "eadproject" file in <code>dir</code>
+    * or further upward the directory path and, if this is not found,
+    * it is tested if <code>dir</code> is contained in the recent project
+    * saved in the "prefs" file in the program folder.
     */
    @Override
-   public boolean retrieveProject(String dir) {
-      String root = findRootByFile(dir, Preferences.EAD_CONFIG_FILE);
+   public final boolean retrieveProject(String dir) {
+      String root = findRootByFile(dir, Preferences.EAD_PROJ_FILE);
       if (root.length() > 0) {
-         setWin.setSaveConfigSelected(true);
-         EAD_CONFIG.readConfig(root);
-         configByPropertiesFile(root, EAD_CONFIG);
+         sw.setSaveEadprojectSelected(true);
+         EAD_PROJ.readEadproject(root);
+         configByPropertiesFile(root, EAD_PROJ);
       }
       else {
-         setWin.setSaveConfigSelected(false);
+         sw.setSaveEadprojectSelected(false);
          PREFS.readPrefs();
          root = PREFS.getProperty("projectRoot");
          if (isInProject(dir, root)) {
              configByPropertiesFile(root, PREFS);
          }
       }
-      return projectRoot.length() > 0;
+      boolean success = projectRoot.length() > 0;
+      if (success) {
+         setCommandParameters();
+      }
+      return success;
    }
 
    @Override
-   public boolean usesProjectFile() {
+   public final boolean usesProjectFile() {
       return useProjectFile;
    }
 
    @Override
-   public boolean isInProject(String dir) {
+   public final boolean isInProject(String dir) {
       return isInProject(dir, projectRoot);
    }
 
    @Override
-   public String getProjectPath() {
+   public final String getProjectPath() {
       return projectRoot;
    }
 
    @Override
-   public String getProjectName() {
+   public final String getProjectName() {
       File f = new File(projectRoot);
       return f.getName();
    }
 
    @Override
-   public String getExecutableDirName() {
+   public final String getExecutableDirName() {
       return execDirName;
    }
 
    @Override
-   public String getSourceFileExtension() {
+   public final String getSourceFileExtension() {
       return ext;
    }
 
    @Override
-   public void storeConfiguration() {
+   public final void storeConfiguration() {
       storeConfigurationImpl();
    }
 
@@ -160,7 +175,17 @@ public abstract class AbstractProject implements Configurable {
    protected AbstractProject(String extension, boolean useProjectFile) {
       ext = extension;
       this.useProjectFile = useProjectFile;
+      sw = new SettingsWindow();
+      inputOptions = sw.getInputOptionsBuilder();
    }
+   
+   /**
+    * Sets command parameters that are necessary for actions defined in
+    * <code>ProjectActions</code>
+    *
+    * @see ProjectActions
+    */
+   protected abstract void setCommandParameters();
 
    /**
     * Returns the name of the project's main file (without extension)
@@ -228,12 +253,12 @@ public abstract class AbstractProject implements Configurable {
     * @return  the boolean value that is true if exists
     */
    protected boolean mainExecFileExists(String ext) {
-      StringBuilder sb = new StringBuilder(projectRoot + F_SEP);
+      StringBuilder sb = new StringBuilder(projectRoot + "/");
       if (execDirName.length() > 0) {
-         sb.append(execDirName).append(F_SEP);
+         sb.append(execDirName).append("/");
       }
       if (namespace.length() > 0) {
-         sb.append(namespace).append(F_SEP);
+         sb.append(namespace).append("/");
       }
       sb.append(mainFileName).append(ext);
       File f = new File(sb.toString());
@@ -248,7 +273,7 @@ public abstract class AbstractProject implements Configurable {
       rootToTest = "";
       File root = new File(dir);
       String existingName;
-      String rootInput = setWin.projDirNameInput();
+      String rootInput = sw.projDirNameInput();
       while (root != null) {
          existingName = root.getName();
          if (rootInput.equals(existingName) && root.exists()) {
@@ -263,10 +288,10 @@ public abstract class AbstractProject implements Configurable {
       namespace = "";
       isNameConflict = false;
       getTextFieldsInput();
-      if (!usePathToMain) {
+      if (!isPathname) {
          String sourceRoot = root;
          if (sourceDirName.length() > 0) {
-            sourceRoot = sourceRoot + F_SEP + sourceDirName;
+            sourceRoot = sourceRoot + "/" + sourceDirName;
          }
          findNamespace(sourceRoot, mainFileName + "." + ext);
          if (namespace.length() > 0) {
@@ -280,7 +305,7 @@ public abstract class AbstractProject implements Configurable {
          }
       }
       else {
-         File fToTest = new File(root + F_SEP + pathRelToRoot());
+         File fToTest = new File(root + "/" + pathRelToRoot());
          if (fToTest.exists()) {
             rootToTest = root;
          }
@@ -288,13 +313,13 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private void getTextFieldsInput() {
-      String mainFileInput = setWin.fileNameInput();
+      String mainFileInput = sw.fileNameInput();
       splitMainFilePath(mainFileInput);
-      sourceDirName = setWin.sourcesDirNameInput();
-      execDirName = setWin.execDirNameInput();
-      args = setWin.argsInput();
-      includedFiles = setWin.includedFilesInput();
-      buildName = setWin.buildNameInput();
+      sourceDirName = sw.sourcesDirNameInput();
+      execDirName = sw.execDirNameInput();
+      args = sw.argsInput();
+      includedFiles = sw.includedFilesInput();
+      buildName = sw.buildNameInput();
    }
 
    private void findNamespace(String sourceRoot, String name) {
@@ -321,23 +346,27 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private void configByPropertiesFile(String root, Preferences prefs) {
+      String extToTest = prefs.getProperty("sourceExtension");
+      if (!ext.equals(extToTest)) {
+         return;
+      }
       String mainFileInput = prefs.getProperty("mainProjectFile");
       splitMainFilePath(mainFileInput);
-      if (usePathToMain) {
-         setWin.displayFile(namespace + "/" + mainFileName);
+      if (isPathname) {
+         sw.displayFile(namespace + F_SEP + mainFileName);
       }
       else {
-         setWin.displayFile(mainFileName);
+         sw.displayFile(mainFileName);
          namespace = prefs.getProperty("namespace");
       }
       sourceDirName = prefs.getProperty("sourceDir");
-      setWin.displaySourcesDir(sourceDirName);
+      sw.displaySourcesDir(sourceDirName);
       execDirName = prefs.getProperty("execDir");
-      setWin.displayExecDir(execDirName);
+      sw.displayExecDir(execDirName);
       includedFiles = prefs.getProperty("includedFiles");
-      setWin.displayIncludedFiles(includedFiles);
+      sw.displayIncludedFiles(includedFiles);
       buildName = prefs.getProperty("buildName");
-      setWin.displayBuildName(buildName);
+      sw.displayBuildName(buildName);
 
       File fToTest = new File(root + F_SEP + pathRelToRoot());
       if (fToTest.exists()) {
@@ -346,8 +375,8 @@ public abstract class AbstractProject implements Configurable {
 
          if (ok) {
             projectRoot = root;
-            setWin.displayProjDirName(getProjectName());
-            if (prefs == EAD_CONFIG) {
+            sw.displayProjDirName(getProjectName());
+            if (prefs == EAD_PROJ) {
                storeInPrefs();
             }
          }
@@ -358,13 +387,15 @@ public abstract class AbstractProject implements Configurable {
       String formatted = mainFileInput.replace("\\", "/");
       int lastSepPos = formatted.lastIndexOf("/", mainFileInput.length());
       if (lastSepPos != -1) {
-         namespace = formatted.substring(0, lastSepPos);
+         namespace = formatted.substring(0, lastSepPos).replaceAll("/",
+               java.util.regex.Matcher.quoteReplacement(F_SEP));
+
          mainFileName = formatted.substring(lastSepPos + 1);
-         usePathToMain = true;
+         isPathname = true;
       }
       else {
          mainFileName = mainFileInput;
-         usePathToMain = false;
+         isPathname = false;
       }
    }
 
@@ -385,10 +416,10 @@ public abstract class AbstractProject implements Configurable {
    private String pathRelToRoot() {
       StringBuilder sb = new StringBuilder();
       if (sourceDirName.length() > 0) {
-         sb.append(sourceDirName).append(F_SEP);
+         sb.append(sourceDirName).append("/");
       }
       if (namespace.length() > 0) {
-         sb.append(namespace).append(F_SEP);
+         sb.append(namespace).append("/");
       }
       if (mainFileName.length() > 0) {
          sb.append(mainFileName).append(".").append(ext);
@@ -415,8 +446,12 @@ public abstract class AbstractProject implements Configurable {
             Dialogs.warnMessageOnTop(nameConflictMessage());
          }
          else {
-            Dialogs.warnMessageOnTop(
-                  "The entries cannot be matched with an existing file.");
+            if (useProjectFile) {
+               Dialogs.warnMessageOnTop(INPUT_ERROR_GENERAL);
+            }
+            else {
+               Dialogs.warnMessageOnTop(INPUT_ERROR_PROJ_ROOT);
+            }
          }
       }
       else {
@@ -432,7 +467,7 @@ public abstract class AbstractProject implements Configurable {
          throw new IllegalStateException("The project is not configured");
       }
       storeInPrefs();
-      storeInEadConfig();
+      storeInEadprojectFile();
    }
 
    private void storeInPrefs() {
@@ -441,8 +476,9 @@ public abstract class AbstractProject implements Configurable {
       PREFS.storePrefs("execDir", execDirName);
       PREFS.storePrefs("includedFiles", includedFiles);
       PREFS.storePrefs("buildName", buildName);
-      if (usePathToMain) {
-         PREFS.storePrefs("mainProjectFile", namespace + "/" + mainFileName);
+      PREFS.storePrefs("sourceExtension", ext);
+      if (isPathname) {
+         PREFS.storePrefs("mainProjectFile", namespace + F_SEP + mainFileName);
          PREFS.storePrefs("namespace", "");
       }
       else {
@@ -451,60 +487,73 @@ public abstract class AbstractProject implements Configurable {
       }
    }
 
-   private void storeInEadConfig() {
-      if (setWin.isSaveConfig()) {
-         EAD_CONFIG.storeEadConfig("sourceDir", sourceDirName, projectRoot);
-         EAD_CONFIG.storeEadConfig("execDir", execDirName, projectRoot);
-         EAD_CONFIG.storeEadConfig("includedFiles", includedFiles, projectRoot);
-         EAD_CONFIG.storeEadConfig("buildName", buildName, projectRoot);
-         if (usePathToMain) {
-            EAD_CONFIG.storeEadConfig("mainProjectFile", namespace + "/" + mainFileName,
+   private void storeInEadprojectFile() {
+      if (sw.isSaveToEadproject()) {
+         EAD_PROJ.storeEadproject("sourceDir", sourceDirName, projectRoot);
+         EAD_PROJ.storeEadproject("execDir", execDirName, projectRoot);
+         EAD_PROJ.storeEadproject("includedFiles", includedFiles, projectRoot);
+         EAD_PROJ.storeEadproject("buildName", buildName, projectRoot);
+         EAD_PROJ.storeEadproject("sourceExtension", ext, projectRoot);
+         if (isPathname) {
+            EAD_PROJ.storeEadproject("mainProjectFile", namespace + F_SEP + mainFileName,
                   projectRoot);
-            EAD_CONFIG.storeEadConfig("namespace", "", projectRoot);
+            EAD_PROJ.storeEadproject("namespace", "", projectRoot);
          }
          else {
-            EAD_CONFIG.storeEadConfig("mainProjectFile", mainFileName, projectRoot);
-            EAD_CONFIG.storeEadConfig("namespace", namespace, projectRoot);
+            EAD_PROJ.storeEadproject("mainProjectFile", mainFileName, projectRoot);
+            EAD_PROJ.storeEadproject("namespace", namespace, projectRoot);
          }
       }
       else {
-         deleteConfigFile();
+         deleteEadprojectFile();
       }
    }
 
-   private void deleteConfigFile() {
-      File configFile = new File(projectRoot + F_SEP
-            + Preferences.EAD_CONFIG_FILE);
-
+   private void deleteEadprojectFile() {
+      File configFile = new File(projectRoot + "/" + Preferences.EAD_PROJ_FILE);
       if (configFile.exists()) {
-         int res = Dialogs.warnConfirmYesNo(
-               "Saving the 'eadconfig' is disabled."
-               + " Remove the config file?");
-
+         int res = Dialogs.warnConfirmYesNo(DELETE_EAD_PROJ_OPT);
          if (res == 0) {
             boolean success = configFile.delete();
             if (!success) {
-               Dialogs.warnMessage("Deleting the 'eadconfig' file failed");
+               Dialogs.warnMessage("Deleting the \"eadproject\" file failed");
             }
          }
          else {
-            setWin.setSaveConfigSelected(true);
-            storeInEadConfig();
+            sw.setSaveEadprojectSelected(true);
+            storeInEadprojectFile();
          }
       }
    }
+   
+   //
+   //--Strings for messages
+   //
 
    private String nameConflictMessage() {
       return
          "<html>"
          + "The filename \"" + mainFileName + "\" seems to exist more"
          + " than once in the project.<br>"
-         + "<ul>"
-         + "<li>If this name should be maintained its pathname relative"
-         + " to the source root must be specified in the text field"
-         + " for the filename.<br>"
-         + "(The source root is the sources directory if available or"
-         + " the root directory of the project otherwise)."
+         + "<br>"
+         + "If this name should be maintained its pathname relative"
+         + " to the source root must be specified.<br>"
+         + "The source root is the sources directory if available or"
+         + " the root directory of the project."
          + "</html>";
    }
+   
+   private final static String DELETE_EAD_PROJ_OPT
+         =  "<html>"
+         + "Saving the project settings in the project folder is"
+         + " no more selected.<br>"
+         + " Remove the \"eadproject\" file?"
+         + "</html>";
+   
+   private final static String INPUT_ERROR_PROJ_ROOT
+         =  "The entry for the project root cannot be matched with an"
+         + " existing file.";
+        
+   private final static String INPUT_ERROR_GENERAL
+         =  "The entries cannot be matched with an existing file.";
 }

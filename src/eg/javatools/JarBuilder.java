@@ -21,8 +21,7 @@ import eg.utils.Dialogs;
  */
 public class JarBuilder {
 
-   private final static String F_SEP = File.separator;
-
+   private final static String F_SEP = File.separator;  
    private final FilesFinder fFind = new FilesFinder();
    private final ConsolePanel consPnl;
 
@@ -57,7 +56,7 @@ public class JarBuilder {
             includedFiles);
 
       ProcessBuilder pb = new ProcessBuilder(cmd);
-      pb.directory(new File(root + F_SEP + execDir));
+      pb.directory(new File(root + "/" + execDir));
       pb.redirectErrorStream(true);
       Process p = pb.start();
       try (BufferedReader br = new BufferedReader(
@@ -81,7 +80,7 @@ public class JarBuilder {
       Collections.addAll(cmd, "jar", "-cvfe", jarName + ".jar", qualifiedMain);
       String searchRoot = root;
       if (execDir.length() > 0) {
-         searchRoot += F_SEP + execDir;
+         searchRoot += "/" + execDir;
       }
       List<File> classes
             = fFind.filteredFiles(searchRoot, ".class", sourceDir);
@@ -97,12 +96,8 @@ public class JarBuilder {
 
             if (included.size() == 0) {
                Dialogs.errorMessage(
-                     "<html>"
-                     + "\"" + fStr + "\" could not be found.<br>"
-                     + "This is indicated as file or file type to be included"
-                     + " in a jar file."
-                     + "</html>",
-                     null);
+                    "\"" + fStr + "\" could not be found.",
+                    null);
             }
             else {
                List<File> relativeInclFilePaths

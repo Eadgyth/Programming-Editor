@@ -23,38 +23,11 @@ public final class PerlProject extends AbstractProject implements ProjectActions
    }
    
    @Override
-   public void createSettingsWin() {
-      setWin = SettingsWin.adaptableWindow();
-      setWin.addFileOption("Name of Perl script")
+   public void buildSettingsWindow() {
+      inputOptions.addFileOption("Name of Perl script")
             .addSourceDirOption()
             .addArgsOption()
-            .setupWindow();
-   }
-
-   /**
-    * {@inheritDoc}
-    * <p>Creates the start command to run the Perl script
-    */
-   @Override
-   public boolean configureProject(String dir) {
-      boolean success = super.configureProject(dir);
-      if (success) {
-         setStartCommand();
-      }
-      return success;
-   }
-
-   /**
-    * {@inheritDoc}
-    * Creates the start command to run the Perl script
-    */
-   @Override
-   public boolean retrieveProject(String dir) {
-      boolean success = super.retrieveProject(dir);
-      if (success) {
-         setStartCommand();
-      }
-      return success;
+            .buildWindow();
    }
 
    /**
@@ -67,12 +40,9 @@ public final class PerlProject extends AbstractProject implements ProjectActions
       }
       proc.startProcess(startCommand);
    }
-
-   //
-   //--private--/
-   //
-
-   private void setStartCommand() {
+   
+   @Override
+   protected void setCommandParameters() {
       String main = getMainFileName() + ".pl";
       if (getArgs().length() > 0) {
          main += " " + getArgs();

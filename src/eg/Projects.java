@@ -27,17 +27,6 @@ import eg.utils.FileUtils;
  */
 public class Projects {
 
-   private final String NO_FILE_IN_TAB_MESSAGE
-         = "To assign a project open or newly save a file"
-         + " that is part of the project.";
-
-   private final String FILES_NOT_FOUND_MESSAGE
-         = "The following files could not be found anymore:";
-
-   private final static String[] PROJ_SUFFIXES = {
-      "htm", "html", "java", "pl"
-   };
-
    private final MainWin mw;
    private final ProjectSelector selector;
    private final ProcessStarter proc;
@@ -82,7 +71,7 @@ public class Projects {
 
    /**
     * Tries to retrieve a project whose configuration is saved in an
-    * 'eadconfig' file in the project's directory or, if not existent,
+    * 'eadproject' file in the project folder or, if not existent,
     * in the program's prefs file.
     * @see eg.projects.AbstractProject#retrieveProject(String)
     */
@@ -107,7 +96,7 @@ public class Projects {
       }
       else {
          if (fromList == current || changeProject(fromList)) {
-            current.makeSetWinVisible();
+            current.makeSettingsWindowVisible();
          }
       }
    }
@@ -161,7 +150,7 @@ public class Projects {
             Dialogs.errorMessage(
                   edtDoc[iDoc].filename()
                   + ":\nThe file could not be found anymore",
-                  "Missing file");
+                  "Missing files");
          }
       }
       finally {
@@ -239,16 +228,20 @@ public class Projects {
       }
       EventQueue.invokeLater(() -> {
          ProjectActions projToFind = selector.createProject(docExt);
-         boolean isFound = projToFind != null
-               && projToFind.retrieveProject(dir);
-
-         if (projToFind == null) {
-            for (String opt : PROJ_SUFFIXES) {
-               projToFind = selector.createProject(opt);
-               isFound = projToFind != null && projToFind.retrieveProject(dir);
+         boolean isFound = false;
+         if (projToFind != null) {
+            isFound = projToFind.retrieveProject(dir);
+         }
+         else {
+            for (String exts : ProjectSelector.PROJ_EXTENSIONS) {
+               projToFind = selector.createProject(exts);
+               isFound = projToFind.retrieveProject(dir);
                if (isFound) {
                   break;
                }
+               else {
+                 projToFind = null;
+              } 
             }
          }
          if (isFound) {
@@ -281,15 +274,15 @@ public class Projects {
       }
       if (projNew != null) {
          ProjectActions projFin = projNew;
-         projFin.makeSetWinVisible();
+         projFin.makeSettingsWindowVisible();
          projFin.setConfiguringAction(e -> configureProject(projFin));
       }
    }
 
    private ProjectActions selectByExtension() {
       String selectedExt
-            = Dialogs.comboBoxOpt(wrongExtentionMessage(edtDoc[iDoc].filename()),
-            "File extension", PROJ_SUFFIXES, null, true);
+            = Dialogs.comboBoxOpt(wrongExtensionMessage(edtDoc[iDoc].filename()),
+            "File extension", ProjectSelector.PROJ_EXTENSIONS, null, true);
 
       if (selectedExt != null) {
          return selector.createProject(selectedExt);
@@ -336,15 +329,6 @@ public class Projects {
       }
    }
 
-   private String wrongExtentionMessage(String filename) {
-      return
-            "<html>"
-            + filename + " does not define a project category.<br>"
-            + "If the file belongs to a project select the"
-            + " extension of source files:"
-            + "</html>";
-   }
-
    private void updateProjectSetting(ProjectActions projToSet) {
       proc.setWorkingDir(projToSet.getProjectPath());
       enableActions(projToSet);
@@ -381,4 +365,24 @@ public class Projects {
    private String className(ProjectActions projToSet) {
       return projToSet.getClass().getSimpleName();
    }
+
+   //
+   //--Strings for messages
+   //
+
+   private final String NO_FILE_IN_TAB_MESSAGE
+         = "To assign a project open or newly save a file"
+         + " that is part of the project.";
+
+   private final String FILES_NOT_FOUND_MESSAGE
+         = "The following files could not be found anymore:";
+         
+   private String wrongExtensionMessage(String filename) {
+      return
+         "<html>"
+         + filename + " does not define a project category.<br>"
+         + "If the file belongs to a project select the"
+         + " extension of source files:"
+         + "</html>";
+    }
 }

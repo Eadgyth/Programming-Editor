@@ -19,8 +19,6 @@ import eg.ui.ConsoleOpenable;
  */
 public final class JavaProject extends AbstractProject implements ProjectActions {
 
-   private final static String F_SEP = File.separator;
-
    private final ConsoleOpenable co;
    private final ProcessStarter proc;
    private final ConsolePanel consPnl;
@@ -30,7 +28,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    private String startCommand = "";
    private String qualifiedMain = "";
    private String[] includedFiles = null;
-   private boolean isIncludedFilesTested = false;
+   private boolean isIncludedFilesTested = true;
 
    JavaProject(ConsoleOpenable co, ProcessStarter proc, ConsolePanel consPnl) {
       super("java", true);
@@ -42,33 +40,14 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    }
 
    @Override
-   public void createSettingsWin() {
-      setWin = SettingsWin.adaptableWindow();
-      setWin.addFileOption("Name of main class file")
+   public void buildSettingsWindow() {
+      inputOptions.addFileOption("Name of main class file")
             .addSourceDirOption()
             .addExecDirOption()
             .addArgsOption()
             .addIncludeFilesOption("Included non-Java files or file types")
             .addBuildOption("jar file")
-            .setupWindow();
-   }
-
-   @Override
-   public boolean configureProject(String dir) {
-      boolean success = super.configureProject(dir);
-      if (success) {
-         setCommandParams();
-      }
-      return success;
-   }
-
-   @Override
-   public boolean retrieveProject(String dir) {
-      boolean success = super.retrieveProject(dir);
-      if (success) {
-         setCommandParams();
-      }
-      return success;
+            .buildWindow();
    }
 
    /**
@@ -76,7 +55,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void compile() {
-      if (!containIncludedFilesPeriod()) {
+      if (isIncludedFilesError()) {
          return;
       }
       consPnl.setText("<<Compile " + getProjectName() + ">>\n");
@@ -124,7 +103,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void build() {
-      if (!mainClassFileExists() || !containIncludedFilesPeriod()) {
+      if (!mainClassFileExists() || isIncludedFilesError()) {
          return;
       }
       consPnl.setText("");
@@ -158,16 +137,17 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          }
       });
    }
-
-   //
-   //--private--//
-   //
-
-   private void setCommandParams() {
+   
+   @Override
+   protected void setCommandParameters() {
       setQualifiedMain();
       setStartCommand();
       setIncludedFilesArr();
    }
+
+   //
+   //--private--//
+   //
 
    private void setQualifiedMain() {
       StringBuilder sb = new StringBuilder();
@@ -208,38 +188,42 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       return exists;
    }
 
-   private boolean containIncludedFilesPeriod() {
-      boolean isOk = true;
-      if (includedFiles != null && !isIncludedFilesTested) {
+   private boolean isIncludedFilesError() {
+      boolean isError = false;
+      if  (includedFiles != null && !isIncludedFilesTested) {
          System.out.println("test");
          for (String s : includedFiles) {
             if (s.length() < 2 || !s.contains(".")) {
                Dialogs.errorMessage(
-                   "<html>"
-                   + "The term \"" + s + "\" which is indicated as file or file type"
-                   + " to be included in a compilation and a jar file cannot be"
-                   + " used.<br>"
-                   + "<ul>"
-                   + "<li>Names of files must contain the extension."
-                   + "<li>To include all files of a given type their extension"
-                   + "  must contain the preceding period (ex.: .png)."
-                   + "</ul>"
-                   + "</html>",
-                   "Included files in compilation and jar file");
-
-               isOk = false;
+                  "<html>"
+                  + "The term \"" + s + "\" which is indicated as file or file type"
+                  + " to be included in a compilation and a jar file cannot be"
+                  + " used.<br>"
+                  + "<ul>"
+                  + "<li>Filenames must contain the extension."
+                  + "<li>To include all files of a given type their extensions"
+                  + "  must contain the preceding period (ex.: .png)."
+                  + "</ul>"
+                  + "</html>",
+                  "Included files in a compilation and a jar file");
+   
+               isIncludedFilesTested = false;
+               isError = true;
                break;
             }
             else {
                isIncludedFilesTested = true;
+               isError = false;
             }
          }
       }
-      return isOk;
+      return isError;
    }
 
    private boolean jarFileExists(String jarName) {
-      String execDir = getProjectPath() + F_SEP + getExecutableDirName();
-      return new File(execDir + F_SEP + jarName + ".jar").exists();
+      String f = getProjectPath() + "/" + getExecutableDirName() + "/"
+            + jarName + ".jar";
+
+      return new File(f).exists();
    }
 }

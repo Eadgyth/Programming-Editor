@@ -34,7 +34,6 @@ import eg.console.ConsolePanel;
  */
 public class Compilation {
 
-   private final static String F_SEP = File.separator;
    private final static String DIVIDING_LINE
          = new String(new char[90]).replace('\0', '_');
 
@@ -104,7 +103,7 @@ public class Compilation {
             = compiler.getStandardFileManager(null, null, null);
 
       Iterable<? extends JavaFileObject> units;
-      List<File> classes = fFind.filteredFiles(root + F_SEP + sourceDir,
+      List<File> classes = fFind.filteredFiles(root + "/" + sourceDir,
             ".java", execDir);
 
       File[] fileArr = classes.toArray(new File[classes.size()]);
@@ -131,9 +130,9 @@ public class Compilation {
    private String createTargetDir(String root, String execDir) {
       String targetDir;
       if (execDir.length() > 0) {
-         File target = new File(root + F_SEP + execDir);
+         File target = new File(root + "/" + execDir);
          target.mkdirs();
-         targetDir = root + F_SEP + execDir;
+         targetDir = root + "/" + execDir;
       }
       else {
          targetDir = root;
@@ -149,24 +148,22 @@ public class Compilation {
       }
       String searchRoot = root;
       if (sourceDir.length() > 0) {
-         searchRoot += F_SEP + sourceDir;
+         searchRoot += "/" + sourceDir;
       }
       for (String fStr : includedFiles) {
          List<File> included = fFind.filteredFiles(searchRoot, fStr, execDir);
          if (included.size() == 0) {
             Dialogs.errorMessage(
-                  "<html>"
-                  + "\"" + fStr + "\" could not be found.<br>"
-                  + "This is indicated as file or file type to be included"
-                  + " in a compilation."
-                  + "</html>",
+                  "\"" + fStr + "\" could not be found.",
                   null);
          }
          else {
             try {
                for (File f : included) {
                   String source = f.getPath();
-                  if (source.endsWith("eadconfig.properties")) {
+                  if (sourceDir.length() == 0
+                        && source.endsWith("eadconfig.properties")) {
+
                      continue;
                   }
                   String destination = null;
@@ -175,7 +172,7 @@ public class Compilation {
                   }
                   else if (sourceDir.length() == 0 && execDir.length() > 0) {
                      String relativePath = source.substring(root.length() + 1);
-                     destination = root + F_SEP + execDir + F_SEP + relativePath;
+                     destination = root + "/" + execDir + "/" + relativePath;
                   }
                   else if (sourceDir.length() > 0 && execDir.length() == 0) {
                      destination = source.replace(sourceDir, "");

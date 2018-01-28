@@ -10,7 +10,7 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 
-//--Eadgyth--/
+//--Eadgyth--//
 import eg.ui.IconFiles;
 
 /**
@@ -38,7 +38,7 @@ public class Dialogs {
       JOptionPane.showMessageDialog(null, message, null,
             JOptionPane.PLAIN_MESSAGE, IconFiles.WARNING_ICON);
    }
-   
+
    /**
     * Shows a warning message that is shown on top of all windows
     *
@@ -59,7 +59,7 @@ public class Dialogs {
     */
    public static void errorMessage(String message, String title) {
       JOptionPane.showMessageDialog(null, message, title,
-           JOptionPane.PLAIN_MESSAGE, IconFiles.ERROR_ICON);
+            JOptionPane.PLAIN_MESSAGE, IconFiles.ERROR_ICON);
    }
 
    /**
@@ -88,7 +88,7 @@ public class Dialogs {
 
       return result;
    }
-   
+
     /**
     * Shows a confirmation dialog with Yes and No options
     *
@@ -99,6 +99,7 @@ public class Dialogs {
       int result = JOptionPane.showConfirmDialog(null, message, null,
             JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
             IconFiles.WARNING_ICON);
+
       return result;
    }
 

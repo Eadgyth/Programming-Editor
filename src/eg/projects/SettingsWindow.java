@@ -23,9 +23,9 @@ import eg.utils.ScreenParams;
 import eg.utils.UIComponents;
 
 /**
- * The window for the configuration of a project
+ * The window that shows input options for the configuration of a project
  */
-public class SettingsWin {
+public class SettingsWindow {
 
    private final static Dimension DIM_TF = ScreenParams.scaledDimension(200, 16);
    private final static Dimension DIM_SPACER = ScreenParams.scaledDimension(0, 20);
@@ -48,110 +48,12 @@ public class SettingsWin {
    private boolean useArgs = false;
    private String includeExtLabel = null;
    private String buildLabel = null;
-   private JTextField hasFocus;
 
-   /**
-    * Returns a new SettingsWin in which only the name for the root
-    * directory of a project can be entered
-    *
-    * @return  a new SettingsWin
-    */
-   public static SettingsWin basicWindow() {
-      return new SettingsWin(true);
-   }
+   public InputOptionsBuilder getInputOptionsBuilder() {
+      SettingsWindow.InputOptionsBuilder optBuilder
+            = new SettingsWindow.InputOptionsBuilder(this);
 
-   /**
-    * Returns a new SettingsWin whose content is set up afterwards by choosing
-    * from the methods that add input options.
-    * <p>
-    * The method {@link #setupWindow()} must be invoked (lastly) to initialize
-    * the window. Calling only this method yields a SettingsWin that equals a
-    * {@link #basicWindow()}.
-    *
-    * @return  a new SettingsWin
-    */
-   public static SettingsWin adaptableWindow() {
-      return new SettingsWin(false);
-   }
-   
-   /**
-    * Adds the option to enter a name for the main project file and
-    * sets the label for the corresponding text field
-    *
-    * @param fileLabel  the label
-    * @return  this
-    */
-   public SettingsWin addFileOption(String fileLabel) {
-      this.fileLabel = fileLabel + " (without extension)";
-      return this;
-   }
-
-   /**
-    * Adds the option to enter a name of a directory where source
-    * files are stored
-    *
-    * @return  this
-    */
-   public SettingsWin addSourceDirOption() {
-      this.useScr = true;
-      return  this;
-   }
-
-   /**
-    * Adds the option to enter a name of a directory where executable
-    * files are stored
-    *
-    * @return  this
-    */
-   public SettingsWin addExecDirOption() {
-      useExec = true;
-      return this;
-   }
-
-   /**
-    * Adds the option to enter arguments for a start script
-    *
-    * @return  this
-    */
-   public SettingsWin addArgsOption() {
-      this.useArgs = true;
-      return this;
-   }
-   
-   /**
-    * Adds the option to to enter names (or extensions) of files to
-    * be included in a build (and compilation) and set the label for
-    * the corresponding text field
-    *
-    * @param label  the label
-    * @return  this
-    */
-    public SettingsWin addIncludeFilesOption(String label) {
-       this.includeExtLabel = label;
-       return this;
-    }
-
-   /**
-    * Adds the option to enter a build name and sets the label for the
-    * corresponding text field
-    *
-    * @param  label  the label
-    * @return  this
-    */
-   public SettingsWin addBuildOption(String label) {
-      this.buildLabel = label;
-      return this;
-   }
-
-   /**
-    * Sets up this frame
-    */
-   public void setupWindow() {
-      if (frame.getContentPane().getComponentCount() > 0) {
-         throw new IllegalStateException(
-               "The frame of SettingsWin is already initialized");
-      }
-      initWindow();
+      return optBuilder;
    }
 
    /**
@@ -222,7 +124,7 @@ public class SettingsWin {
    public String argsInput() {
       return argsTf.getText().trim();
    }
-   
+
    /**
     * Returns the input in the text field for files that are included
     * in a build and a compilation. The input is formatted as comma
@@ -282,7 +184,7 @@ public class SettingsWin {
    public void displayProjDirName(String in) {
       projDirTf.setText(in);
    }
-   
+
    /**
     * Shows in the corresponding text field the string that contains
     * files that are included in a build and compilation
@@ -303,31 +205,33 @@ public class SettingsWin {
    }
 
    /**
-    * Returns if the option to save the configuration in an
-    * "eadconfig" file is selected in the correponding checkbox
+    * Returns if the option to save project parameters to an
+    * \"eadproject\" file is selected in the correponding checkbox
     *
     * @return  the boolean value that is true if selected
     */
-   public boolean isSaveConfig() {
+   public boolean isSaveToEadproject() {
       return saveConfig.isSelected();
    }
 
    /**
-    * @param isSelected  true select the checkbox for saving text
-    * field inputs to a local config file
+    * @param isSelected  true select the checkbox for saving project
+    * parameters to a \"eadproject\" file
     */
-   public void setSaveConfigSelected(boolean isSelected) {
+   public void setSaveEadprojectSelected(boolean isSelected) {
       saveConfig.setSelected(isSelected);
    }
 
    //
    //--private--//
    //
-   
-   private SettingsWin(boolean initWindow) {
-      if (initWindow) {
-         initWindow();
+
+   private void buildWindow() {
+      if (frame.getContentPane().getComponentCount() > 0) {
+         throw new IllegalStateException(
+               "The settings window has been initialized already");
       }
+      initWindow();
    }
 
    private JPanel structurePanel() {
@@ -362,7 +266,7 @@ public class SettingsWin {
          JLabel execDirLb = new JLabel("Name of executables directory:");
          structPnl.add(holdLbAndTf(execDirLb, execDirTf));
       }
-      
+
       structPnl.setBorder(UIComponents.titledBorder("Directory/file structure"));
       return structPnl;
    }
@@ -440,7 +344,8 @@ public class SettingsWin {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
          combineAll.add(buildPanel());
       }
-      combineAll.add(checkBxPnl(saveConfig, "Save configuration in the project"));
+      combineAll.add(checkBxPnl(saveConfig, "Save settings to \"eadproject\" file"
+            + " in the project folder"));
       combineAll.add(Box.createRigidArea(DIM_SPACER));
       combineAll.add(buttonsPanel());
       return combineAll;
@@ -455,5 +360,100 @@ public class SettingsWin {
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
       frame.getContentPane().add(combineAll());
       frame.pack();
+   }
+
+   /**
+    * The building of the content of <code>SettingsWindow</code> with
+    * selectable input options.
+    * <p>
+    * Is created in {@link SettingsWindow}
+    */
+   public static class InputOptionsBuilder {
+
+      private SettingsWindow sw;
+
+      private InputOptionsBuilder(SettingsWindow sw) {
+         this.sw = sw;
+      }
+
+      /**
+       * Adds the option to enter a name for the main project file and
+       * sets the label for the corresponding text field
+       *
+       * @param fileLabel  the label
+       * @return  this
+       */
+      public InputOptionsBuilder addFileOption(String fileLabel) {
+         sw.fileLabel = fileLabel + " (without extension)";
+         return this;
+      }
+
+      /**
+       * Adds the option to enter a name of a directory where source
+       * files are stored
+       *
+       * @return  this
+       */
+      public InputOptionsBuilder addSourceDirOption() {
+         sw.useScr = true;
+         return  this;
+      }
+
+      /**
+       * Adds the option to enter a name of a directory where executable
+       * files are stored
+       *
+       * @return  this
+       */
+      public InputOptionsBuilder addExecDirOption() {
+         sw.useExec = true;
+         return this;
+      }
+
+      /**
+       * Adds the option to enter arguments for a start script
+       *
+       * @return  this
+       */
+      public InputOptionsBuilder addArgsOption() {
+         sw.useArgs = true;
+         return this;
+      }
+
+      /**
+       * Adds the option to enter names or extensions of files to be
+       * included in a build/compilation and set the label for the
+       * corresponding text field
+       *
+       * @param label  the label
+       * @return  this
+       */
+       public InputOptionsBuilder addIncludeFilesOption(String label) {
+          sw.includeExtLabel = label;
+          return this;
+       }
+
+      /**
+       * Adds the option to enter a build name and sets the label for the
+       * corresponding text field
+       *
+       * @param  label  the label
+       * @return  this
+       */
+      public InputOptionsBuilder addBuildOption(String label) {
+         sw.buildLabel = label;
+         return this;
+      }
+
+      /**
+       * Builds the window content of <code>SettingsWindow</code>.
+       * <p>
+       * If none of the methods to add input options has been invoked
+       * the window shows only the field to enter the name of a root
+       * directory of a project.
+       */
+      public void buildWindow() {
+         sw.buildWindow();
+      }
    }
 }

@@ -7,6 +7,13 @@ import eg.ui.ConsoleOpenable;
  * The selection and creation of an object of type {@code ProjectActions}
  */
 public class ProjectSelector {
+   
+   /**
+    * The extension of files that can define a project category
+    */
+   public final static String[] PROJ_EXTENSIONS = {
+      "htm", "html", "java", "pl"
+   };
 
    private final ConsoleOpenable co;
    private final ProcessStarter proc;
@@ -31,11 +38,11 @@ public class ProjectSelector {
 
    /**
     * Returns a <code>ProjectActions</code> selected based on the extension
-    * of files which a project is to be assigned to
+    * of files which define the project caterory
     *
     * @param ext  the file extension
     * @return  a new {@link ProjectActions}. Null if the extension does
-    * not specify a project
+    * not identify a project category
     */
    public ProjectActions createProject(String ext) {
       ProjectActions newProj = null;
@@ -51,7 +58,7 @@ public class ProjectSelector {
             break;
       }
       if (newProj != null) {
-         newProj.createSettingsWin();
+         newProj.buildSettingsWindow();
       }
       return newProj;
    }

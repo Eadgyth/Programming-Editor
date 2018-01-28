@@ -15,13 +15,12 @@ import eg.utils.Dialogs;
 public class Preferences {
    
    /**
-    * The name of the config file that is stored in a project folder.
-    * The value is eadconfig.properties.
+    * The name of the eadproject file that may be stored in a project folder.
+    * The value is <code>eadproject.properties</code>.
     */
-   public final static String EAD_CONFIG_FILE = "eadconfig.properties";
+   public final static String EAD_PROJ_FILE = "eadproject.properties";
 
    private final static String PREFS_FILE = "prefs.properties";
-   private final static String F_SEP = File.separator;
    
    private final static String[] PREFS_KEYS = {
       "recentPath",
@@ -42,7 +41,8 @@ public class Preferences {
       "sourceDir",
       "execDir",
       "includedFiles",
-      "buildName"
+      "buildName",
+      "sourceExtension"
    };
    
    private final static String[] EAD_CONFIG_KEYS = {
@@ -51,7 +51,8 @@ public class Preferences {
       "sourceDir",
       "execDir",
       "includedFiles",
-      "buildName"
+      "buildName",
+      "sourceExtension"
    };
 
    private Properties prop = null;
@@ -59,9 +60,9 @@ public class Preferences {
    /**
     * Returns the saved value for the specified property.
     * <p>
-    * One of the 'read' methods must be used before: {@link #readPrefs()},
-    * {@link #readConfig(String)}. These also must be invoked when a
-    * property may have changed during runtime.
+    * One of the "read" methods must be used before: {@link #readPrefs()},
+    * {@link #readEadproject(String)}. These also must be invoked to read
+    * a property that may have changed during runtime.
     *
     * @param property  the property
     * @return  the value for the specified property. The empty string if the
@@ -69,7 +70,8 @@ public class Preferences {
     */
    public String getProperty(String property) {
       if (prop == null) {
-         throw new IllegalStateException("No properties were read in");
+         throw new IllegalStateException("The property " + property
+               + " could not be read");
       }
       if (prop.getProperty(property) == null) {
          return "";
@@ -87,13 +89,13 @@ public class Preferences {
    }
    
    /**
-    * Reads in the properties stored in a config.properties file found
+    * Reads in the properties stored in a eadproject.properties file found
     * in the specified directory
     *
     * @param dir  the directory
     */
-   public void readConfig(String dir) {
-      readProperties(dir + F_SEP + EAD_CONFIG_FILE);
+   public void readEadproject(String dir) {
+      readProperties(dir + "/" + EAD_PROJ_FILE);
    }
 
    /**
@@ -119,22 +121,22 @@ public class Preferences {
 
    /**
     * Stores a new value for the specified property in an
-    * "eadconfig.properties" file that is saved in the specified
+    * "eadproject.properties" file that is saved in the specified
     * directory. Creates the file if it does not exist
     *
     * @param propToUpdate  the property
     * @param newValue  the new value for the property
     * @param dir  the directory
     */
-   public void storeEadConfig(String propToUpdate, String newValue,
+   public void storeEadproject(String propToUpdate, String newValue,
          String dir) {
       
-      String configFile = dir + F_SEP + EAD_CONFIG_FILE;
-      if (!new File(configFile).exists()) {
-         createFile(configFile, EAD_CONFIG_KEYS);
+      String projectFile = dir + "/" + EAD_PROJ_FILE;
+      if (!new File(projectFile).exists()) {
+         createFile(projectFile, EAD_CONFIG_KEYS);
       }
  
-      readConfig(dir);      
+      readEadproject(dir);      
       String[] allValues = new String[EAD_CONFIG_KEYS.length];
       for (int i = 0; i < allValues.length; i++) {
          allValues[i] = prop.getProperty(EAD_CONFIG_KEYS[i]);
@@ -145,7 +147,7 @@ public class Preferences {
             break;
          }
       }
-      store(configFile, EAD_CONFIG_KEYS, allValues);
+      store(projectFile, EAD_CONFIG_KEYS, allValues);
    }
    
    //

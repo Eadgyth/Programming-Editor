@@ -12,25 +12,8 @@ import eg.utils.FileUtils;
  */
 public final class HtmlProject extends AbstractProject implements ProjectActions {
 
-   public HtmlProject(String fileExtension) {
+   HtmlProject(String fileExtension) {
       super(fileExtension, false);
-   }
-
-  @Override
-   public void createSettingsWin() {
-      setWin = SettingsWin.basicWindow();
-   }
-
-   @Override
-   public boolean configureProject(String dir) {
-      boolean success = super.configureProject(dir);
-      return success;
-   }
-
-   @Override
-   public boolean retrieveProject(String dir) {
-      boolean success = super.retrieveProject(dir);
-      return success;
    }
 
    /**
@@ -57,4 +40,7 @@ public final class HtmlProject extends AbstractProject implements ProjectActions
          FileUtils.logStack(e);
       }
    }
+   
+   @Override
+   protected void setCommandParameters() {}
 }

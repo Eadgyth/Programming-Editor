@@ -1,7 +1,7 @@
 package eg.projects;
 
 /**
- * The interface to perform actions in a project
+ * The interface that defines actions in a project
  */
 public interface ProjectActions extends Configurable {
    
