@@ -28,7 +28,6 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    private String startCommand = "";
    private String qualifiedMain = "";
    private String[] includedFiles = null;
-   private boolean isIncludedFilesTested = true;
 
    JavaProject(ConsoleOpenable co, ProcessStarter proc, ConsolePanel consPnl) {
       super("java", true);
@@ -55,9 +54,6 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void compile() {
-      if (isIncludedFilesError()) {
-         return;
-      }
       consPnl.setText("<<Compile " + getProjectName() + ">>\n");
       EventQueue.invokeLater(() -> {
          if (proc.isProcessEnded()) {
@@ -103,7 +99,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void build() {
-      if (!mainClassFileExists() || isIncludedFilesError()) {
+      if (!mainClassFileExists()) {
          return;
       }
       consPnl.setText("");
@@ -176,7 +172,6 @@ public final class JavaProject extends AbstractProject implements ProjectActions
        }
        else {
           includedFiles = getIncludedFiles().split(",");
-          isIncludedFilesTested = false;
        }
    }
 
@@ -186,38 +181,6 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          Dialogs.warnMessage("A compiled main class file could not be found.");
       }
       return exists;
-   }
-
-   private boolean isIncludedFilesError() {
-      boolean isError = false;
-      if  (includedFiles != null && !isIncludedFilesTested) {
-         System.out.println("test");
-         for (String s : includedFiles) {
-            if (s.length() < 2 || !s.contains(".")) {
-               Dialogs.errorMessage(
-                  "<html>"
-                  + "The term \"" + s + "\" which is indicated as file or file type"
-                  + " to be included in a compilation and a jar file cannot be"
-                  + " used.<br>"
-                  + "<ul>"
-                  + "<li>Filenames must contain the extension."
-                  + "<li>To include all files of a given type their extensions"
-                  + "  must contain the preceding period (ex.: .png)."
-                  + "</ul>"
-                  + "</html>",
-                  "Included files in a compilation and a jar file");
-   
-               isIncludedFilesTested = false;
-               isError = true;
-               break;
-            }
-            else {
-               isIncludedFilesTested = true;
-               isError = false;
-            }
-         }
-      }
-      return isError;
    }
 
    private boolean jarFileExists(String jarName) {

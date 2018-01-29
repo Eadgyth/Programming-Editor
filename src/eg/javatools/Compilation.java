@@ -2,8 +2,8 @@
  * The compilation of a Java project.
  * <p>
  * The Java(TM) Compiler is invoked in the method compile() essentially as
- * shown in the docu for the javax.tools.JavaCompiler interface(
- * https://docs.oracle.com/javase/7/docs/api/javax/tools/JavaCompiler.html).
+ * shown in the docu for the javax.tools.JavaCompiler interface
+ * (https://docs.oracle.com/javase/7/docs/api/javax/tools/JavaCompiler.html).
  */
 package eg.javatools;
 
@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static java.nio.file.StandardCopyOption.*;
@@ -151,18 +152,20 @@ public class Compilation {
          searchRoot += "/" + sourceDir;
       }
       for (String fStr : includedFiles) {
-         List<File> included = fFind.filteredFiles(searchRoot, fStr, execDir);
-         if (included.size() == 0) {
-            Dialogs.errorMessage(
-                  "\"" + fStr + "\" could not be found.",
-                  null);
+         List<File> included = null;
+         if (fStr.contains(".")) {
+            included = fFind.filteredFiles(searchRoot, fStr, execDir);
+         }
+         if (included == null || included.size() == 0) {
+            Dialogs.errorMessage(FileUtils.notFoundMessage(fStr),
+                  "Included non-Java files");
          }
          else {
             try {
                for (File f : included) {
                   String source = f.getPath();
                   if (sourceDir.length() == 0
-                        && source.endsWith("eadconfig.properties")) {
+                        && source.endsWith("eadproject.properties")) {
 
                      continue;
                   }

@@ -31,6 +31,30 @@ public class FileUtils {
    }
    
    /**
+    * Returns a "not found" message depending on whether the specified
+    * name is an extension (starts with a period) or not
+    *
+    * @return  the message
+    */
+   public static String notFoundMessage(String name) {
+      if (!name.contains(".")) {
+         return 
+            "<html>"
+            + "\"" + name + "\" cannot be used.<br><br>"
+            + "Filenames must contain the extension.<br>"
+            + "To include all files of a given type extensions must"
+            + " begin with the period."
+            + "</html>";
+      }
+      if (name.startsWith(".")) {
+         return "No files with the extension \"" + name + "\" were found";
+      }
+      else {
+         return "\"" + name + "\" was not found";
+      }
+   }
+   
+   /**
     * Replaces slashes in the specified string (forward or backward) with
     * periods
     *

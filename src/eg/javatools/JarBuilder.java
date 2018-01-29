@@ -21,7 +21,7 @@ import eg.utils.Dialogs;
  */
 public class JarBuilder {
 
-   private final static String F_SEP = File.separator;  
+   private final static String F_SEP = File.separator;
    private final FilesFinder fFind = new FilesFinder();
    private final ConsolePanel consPnl;
 
@@ -91,26 +91,28 @@ public class JarBuilder {
       });
       if (includedFiles != null) {
          for (String fStr : includedFiles) {
-            List<File> included
-                  = fFind.filteredFiles(searchRoot, fStr, sourceDir);
-
-            if (included.size() == 0) {
-               Dialogs.errorMessage(
-                    "\"" + fStr + "\" could not be found.",
-                    null);
+            List<File> included = null;
+            if (fStr.contains(".")) {
+               included = fFind.filteredFiles(searchRoot, fStr, sourceDir);
+            }
+            if (included == null || included.size() == 0) {
+               Dialogs.errorMessage(eg.utils.FileUtils.notFoundMessage(fStr),
+                    "Inluded non-Java files");
             }
             else {
                List<File> relativeInclFilePaths
                      = relativePaths(searchRoot, included);
 
-               relativeInclFilePaths.forEach((f) -> {
+               for (File f : relativeInclFilePaths) {
                   String path = f.getPath();
-                    if (!path.endsWith("eadconfig.properties")) {
+                  if (execDir.length() == 0
+                          && !path.endsWith("eadproject.properties")) {
 
-                        cmd.add(f.toString());
-                    }
-                });
-             }
+                     continue;
+                  }
+                  cmd.add(f.toString());
+               }
+            }
          }
       }
       return cmd;

@@ -17,7 +17,7 @@ import eg.utils.Dialogs;
  * <p>
  * The processed parameters that describe the configuration of a
  * project are stored in the "prefs.properties" file in the program
- * folder and optionally in an "eadconfig.properies" file that is
+ * folder and optionally in an "eadproject.properies" file that is
  * stored in the root folder of a project.
  */
 public abstract class AbstractProject implements Configurable {

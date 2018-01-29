@@ -35,6 +35,15 @@ public class FilesFinder {
       setFilteredFiles(f, extension, excludedDirName);
       return resultList;
    }
+   
+   public static String notFoundMessage(String name) {
+      if (name.startsWith(".")) {
+         return "No files with the extension " + name + " was found";
+      }
+      else {
+         return name + " was not found";
+      }
+   }
 
    //
    //--private--//
