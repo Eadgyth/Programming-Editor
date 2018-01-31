@@ -42,7 +42,8 @@ public class Compilation {
    private final ConsolePanel consPnl;
 
    private boolean success = false;
-   private String errorSource = "";
+   private String firstCompileError = "";
+   private String copyError = "";
 
    /**
     * @param consPnl  the reference to {@link ConsolePanel} in whose
@@ -71,23 +72,33 @@ public class Compilation {
     *
     * @return  the message
     */
-   public String getFirstErrSource() {
-      return errorSource;
+   public String getFirstCompileErr() {
+      return firstCompileError;
+   }
+   
+   /**
+    * Returns the error message that indicates that non-Java files
+    * for copying are not found
+    *
+    * @return  the message or the empty empty string
+    */
+   public String getCopyErr() {
+      return copyError;
    }
 
    /**
     * Invokes the javac compiler
     *
     * @param root  the root directory of the project
-    * @param execDir  the name of the destination directory for the compiled
-    * class files
-    * @param sourceDir  the name of the directory that contains java files or
-    * packages
-    * @param includedFiles  the array of filenames and/or extensions of files
-    * that are copied to the executables folder. May be null.
+    * @param execDir  the name of the destination directory for the
+    * compiled class files
+    * @param sourceDir  the name of the directory that contains java files
+    * or packages
+    * @param nonJavaExt  the array of extensions of files that are copied
+    * to the compilation folder. May be null.
     */
    public void compile(String root, String execDir, String sourceDir,
-         String[] includedFiles) {
+         String[] nonJavaExt) {
 
       JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
       if (compiler == null) {
@@ -119,8 +130,8 @@ public class Compilation {
       } catch (IOException e) {
          FileUtils.logStack(e);
       }
-      if (includedFiles != null) {
-         copyIncludedFiles(root, sourceDir, execDir, includedFiles);
+      if (nonJavaExt != null) {
+         copyFiles(root, sourceDir, execDir, nonJavaExt);
       }
    }
 
@@ -141,9 +152,10 @@ public class Compilation {
       return targetDir;
    }
 
-   private void copyIncludedFiles(String root, String sourceDir, String execDir,
-         String[] includedFiles) {
+   private void copyFiles(String root, String sourceDir, String execDir,
+         String[] nonJavaExt) {
 
+      copyError = "";
       if (sourceDir.length() == 0 && execDir.length() == 0) {
          return; // no need to copy anything
       }
@@ -151,18 +163,15 @@ public class Compilation {
       if (sourceDir.length() > 0) {
          searchRoot += "/" + sourceDir;
       }
-      for (String fStr : includedFiles) {
-         List<File> included = null;
-         if (fStr.contains(".")) {
-            included = fFind.filteredFiles(searchRoot, fStr, execDir);
-         }
-         if (included == null || included.size() == 0) {
-            Dialogs.errorMessage(FileUtils.notFoundMessage(fStr),
-                  "Included non-Java files");
+      for (String ext : nonJavaExt) {
+         List<File> toCopy = fFind.filteredFiles(searchRoot, ext, execDir);
+         if (toCopy.size() == 0) {
+            copyError = "Files with extension \"" + ext
+                      + "\" for copying to the compilation were not found";
          }
          else {
             try {
-               for (File f : included) {
+               for (File f : toCopy) {
                   String source = f.getPath();
                   if (sourceDir.length() == 0
                         && source.endsWith("eadproject.properties")) {
@@ -192,10 +201,13 @@ public class Compilation {
             }
          }
       }
+      if (copyError.length() > 0) {
+         consPnl.appendText("\n<<Note: " + copyError + ">>");
+      }
    }
 
    private void output(DiagnosticCollector<JavaFileObject> diagnostics) {
-      errorSource = "";
+      firstCompileError = "";
       if (success) {
          consPnl.appendText("<<Compilation successful>>");
       }
@@ -204,7 +216,7 @@ public class Compilation {
          if (firstSource != null) {
             String file = new File(firstSource.getSource().toString()).getName();
             file = file.substring(0, file.length() - 1);
-            errorSource = "First listed error is found in " + file + ", line "
+            firstCompileError = "First listed error is found in " + file + ", line "
                   + firstSource.getLineNumber();
          }
          for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {

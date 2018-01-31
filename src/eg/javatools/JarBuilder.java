@@ -11,7 +11,6 @@ import java.util.List;
 
 //--Eadgyth--//
 import eg.console.ConsolePanel;
-import eg.utils.Dialogs;
 
 /**
  * The creation of an executable jar file.
@@ -24,12 +23,24 @@ public class JarBuilder {
    private final static String F_SEP = File.separator;
    private final FilesFinder fFind = new FilesFinder();
    private final ConsolePanel consPnl;
+   
+   private String includedFilesErr = "";
 
    /**
     * @param consPnl  the reference to {@link ConsolePanel}
     */
    public JarBuilder(ConsolePanel consPnl) {
       this.consPnl = consPnl;
+   }
+   
+   /**
+    * Returns the error message that indicates that non-Java files
+    * for inclusion are not found
+    *
+    * @return  the message or the empty empty string
+    */
+   public String getIncudedFilesErr() {
+      return includedFilesErr;
    }
 
    /**
@@ -39,34 +50,25 @@ public class JarBuilder {
     * @param jarName  the name for the jar file
     * @param qualifiedMain  the fully qualified name of the main class
     * @param execDir  the name of the directory that contains class files.
-    * Can be the empty string but cannot be null.
+    * Can be the empty string but cannot be null
     * @param sourceDir  the name of the directory that contains source
-    * files. Can be the empty string but cannot be not null.
-    * @param includedFiles  the array of filenames and/or extensions of files
-    * that are included in the jar file in addition to class files. May be
-    * null.
+    * files. Can be the empty string but cannot be not null
+    * @param nonClassExt  the array of extensions of files that are included
+    * in the jar file in addition to class files. May be null
     * @throws IOException  if the process that creates a jar cannot receive
     * any input
     */
    public void createJar(String root, String jarName, String qualifiedMain,
-         String execDir, String sourceDir, String[] includedFiles)
+         String execDir, String sourceDir, String[] nonClassExt)
          throws IOException {
 
       List<String> cmd = jarCmd(root, jarName, qualifiedMain, execDir, sourceDir,
-            includedFiles);
+            nonClassExt);
 
       ProcessBuilder pb = new ProcessBuilder(cmd);
       pb.directory(new File(root + "/" + execDir));
       pb.redirectErrorStream(true);
       Process p = pb.start();
-      try (BufferedReader br = new BufferedReader(
-            new InputStreamReader(p.getInputStream()))) {
-
-         String ch;
-         while((ch = br.readLine()) != null) {
-            consPnl.appendText(ch + "\n");
-         }
-      }
    }
 
    //
@@ -74,10 +76,10 @@ public class JarBuilder {
    //
 
    private List<String> jarCmd(String root, String jarName, String qualifiedMain,
-          String execDir, String sourceDir, String[] includedFiles) {
+          String execDir, String sourceDir, String[] nonClassExt) {
 
       List<String> cmd = new ArrayList<>();
-      Collections.addAll(cmd, "jar", "-cvfe", jarName + ".jar", qualifiedMain);
+      Collections.addAll(cmd, "jar", "-cfe", jarName + ".jar", qualifiedMain);
       String searchRoot = root;
       if (execDir.length() > 0) {
          searchRoot += "/" + execDir;
@@ -89,24 +91,23 @@ public class JarBuilder {
       relativeClassFilePaths.forEach((i) -> {
           cmd.add(i.toString());
       });
-      if (includedFiles != null) {
-         for (String fStr : includedFiles) {
-            List<File> included = null;
-            if (fStr.contains(".")) {
-               included = fFind.filteredFiles(searchRoot, fStr, sourceDir);
-            }
-            if (included == null || included.size() == 0) {
-               Dialogs.errorMessage(eg.utils.FileUtils.notFoundMessage(fStr),
-                    "Inluded non-Java files");
+      includedFilesErr = "";
+      if (nonClassExt != null) {
+         for (String ext : nonClassExt) {
+            List<File> toInclude = fFind.filteredFiles(searchRoot, ext, sourceDir);
+            if (toInclude.size() == 0) {
+               includedFilesErr =
+                     "Files with extension \"" + ext + "\" for inclusion"
+                     + " in the jar were not found";
             }
             else {
                List<File> relativeInclFilePaths
-                     = relativePaths(searchRoot, included);
+                     = relativePaths(searchRoot, toInclude);
 
                for (File f : relativeInclFilePaths) {
                   String path = f.getPath();
                   if (execDir.length() == 0
-                          && !path.endsWith("eadproject.properties")) {
+                        && !path.endsWith("eadproject.properties")) {
 
                      continue;
                   }

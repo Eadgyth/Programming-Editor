@@ -10,6 +10,7 @@ public class AutoIndent {
 
    private String indentUnit = "";
    private int indentLength = 0;
+   private boolean isOutdentEnabled = false;
 
    /**
     * @param textDoc  the reference to {@link TextDocument}
@@ -54,14 +55,14 @@ public class AutoIndent {
     * @param pos  the position
     */
    public void indent(String text, int pos) {
-      if ('\n' != text.charAt(pos)) {
-         return;
+      boolean isNewLine = '\n' == text.charAt(pos);
+      if (isNewLine) {
+         String currIndent = currentIndent(text, pos);
+         if (pos > 1 && '{' == text.charAt(pos - 1)) {
+            currIndent += indentUnit;
+         }
+         textDoc.insert(pos + 1, currIndent);
       }
-      String currIndent = currentIndent(text, pos);
-      if (pos > 1 && '{' == text.charAt(pos - 1)) {
-         currIndent += indentUnit;
-      }
-      textDoc.insert(pos + 1, currIndent);
    }
 
    /**
@@ -82,7 +83,7 @@ public class AutoIndent {
    }
 
    //
-   //--private--/
+   //--private--//
    //
 
    private String currentIndent(String text, int pos) {

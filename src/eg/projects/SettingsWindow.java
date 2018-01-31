@@ -36,7 +36,7 @@ public class SettingsWindow {
    private final JTextField sourcesDirTf = new JTextField();
    private final JTextField execDirTf    = new JTextField();
    private final JTextField argsTf       = new JTextField();
-   private final JTextField fileExtTf    = new JTextField();
+   private final JTextField searchExtTf    = new JTextField();
    private final JTextField buildTf      = new JTextField();
    private final JButton    okBt         = new JButton("   OK   ");
    private final JButton    cancelBt     = new JButton("Cancel");
@@ -46,7 +46,7 @@ public class SettingsWindow {
    private boolean useScr = false;
    private boolean useExec = false;
    private boolean useArgs = false;
-   private String includeExtLabel = null;
+   private String searchExtLabel = null;
    private String buildLabel = null;
 
    public InputOptionsBuilder getInputOptionsBuilder() {
@@ -126,14 +126,17 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input in the text field for files that are included
-    * in a build and a compilation. The input is formatted as comma
-    * separated if file names are separaed by spaces or semicolons.
+    * Returns the input in the text field for file extensions that
+    * may be used for a file search.
+    * <p>
+    * Extensions may be entered as comma, semicolon or space separated
+    * but the returnd string is formatted as comma separated in either
+    * case.
     *
     * @return  the input
     */
-    public String includedFilesInput() {
-       return fileExtTf.getText().trim().replaceAll("[\\s,;]+", ",");
+    public String searchExtensionsInput() {
+       return searchExtTf.getText().trim().replaceAll("[\\s,;]+", ",");
     }
 
    /**
@@ -187,16 +190,16 @@ public class SettingsWindow {
 
    /**
     * Shows in the corresponding text field the string that contains
-    * files that are included in a build and compilation
+    * extensions that may be used for a file search
     *
     * @param in  the file extensions
     */
-   public void displayIncludedFiles(String in) {
-      fileExtTf.setText(in);
+   public void displaySearchExtensions(String in) {
+      searchExtTf.setText(in);
    }
 
    /**
-    * Shows in the corresponding text field the name of a build
+    * Shows in the corresponding text field the name for a build
     *
     * @param in  the name
     */
@@ -215,8 +218,11 @@ public class SettingsWindow {
    }
 
    /**
-    * @param isSelected  true select the checkbox for saving project
-    * parameters to a \"eadproject\" file
+    * Sets the boolean that specifies if the checkbox for selecting
+    * if project parameters are saved in an "eadproject" file is
+    * set selected
+    *
+    * @param isSelected  the boolean value. True to select
     */
    public void setSaveEadprojectSelected(boolean isSelected) {
       saveConfig.setSelected(isSelected);
@@ -285,9 +291,9 @@ public class SettingsWindow {
       JPanel buildPnl = new JPanel(grid);
       //
       // include files option
-      if (includeExtLabel != null) {
-         JLabel fileExtLb = new JLabel(includeExtLabel + " :");
-         buildPnl.add(holdLbAndTf(fileExtLb, fileExtTf));
+      if (searchExtLabel != null) {
+         JLabel searchExtLb = new JLabel(searchExtLabel + " :");
+         buildPnl.add(holdLbAndTf(searchExtLb, searchExtTf));
       }
       //
       // set build name option
@@ -340,7 +346,7 @@ public class SettingsWindow {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
          combineAll.add(argsPanel());
       }
-      if (buildLabel != null || includeExtLabel != null) {
+      if (buildLabel != null || searchExtLabel != null) {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
          combineAll.add(buildPanel());
       }
@@ -421,15 +427,15 @@ public class SettingsWindow {
       }
 
       /**
-       * Adds the option to enter names or extensions of files to be
-       * included in a build/compilation and set the label for the
-       * corresponding text field
+       * Adds the option to enter extensions of files that may be used
+       * for a file search and set the label for the corresponding text
+       * field
        *
        * @param label  the label
        * @return  this
        */
-       public InputOptionsBuilder addIncludeFilesOption(String label) {
-          sw.includeExtLabel = label;
+       public InputOptionsBuilder addSearchExtensionsOption(String label) {
+          sw.searchExtLabel = label;
           return this;
        }
 

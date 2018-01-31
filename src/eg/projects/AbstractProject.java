@@ -15,9 +15,9 @@ import eg.utils.Dialogs;
  * {@link SettingsWindow} where values required for a configuration
  * are entered.
  * <p>
- * The processed parameters that describe the configuration of a
- * project are stored in the "prefs.properties" file in the program
- * folder and optionally in an "eadproject.properies" file that is
+ * Parameters that describe the configuration of a project are
+ * stored in the "prefs.properties" file in the program folder
+ * and optionally in an "eadproject.properies" file that is
  * stored in the root folder of a project.
  */
 public abstract class AbstractProject implements Configurable {
@@ -46,7 +46,7 @@ public abstract class AbstractProject implements Configurable {
    private String execDirName = "";
    private String sourceDirName = "";
    private String args = "";
-   private String includedFiles = "";
+   private String searchExtensions = "";
    private String buildName = "";
    //
    // Variables to control the configuration
@@ -227,14 +227,18 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns the string that contains the input for files that are
-    * included in a build and a compilation. The input is formatted as
-    * comma separated.
+    * Returns the array that contains extensions that may be used for
+    * a file search
     *
-    * @return  the input. The empty string if no files are given
+    * @return  the array or null of no extensions are given
     */
-   protected String getIncludedFiles() {
-      return includedFiles;
+   protected String[] getSearchExtensions() {
+      if (searchExtensions.length() == 0) {
+          return null;
+       }
+       else {
+          return searchExtensions.split(",");
+       }
    }
 
    /**
@@ -318,7 +322,7 @@ public abstract class AbstractProject implements Configurable {
       sourceDirName = sw.sourcesDirNameInput();
       execDirName = sw.execDirNameInput();
       args = sw.argsInput();
-      includedFiles = sw.includedFilesInput();
+      searchExtensions = sw.searchExtensionsInput();
       buildName = sw.buildNameInput();
    }
 
@@ -363,8 +367,8 @@ public abstract class AbstractProject implements Configurable {
       sw.displaySourcesDir(sourceDirName);
       execDirName = prefs.getProperty("execDir");
       sw.displayExecDir(execDirName);
-      includedFiles = prefs.getProperty("includedFiles");
-      sw.displayIncludedFiles(includedFiles);
+      searchExtensions = prefs.getProperty("includedFiles");
+      sw.displaySearchExtensions(searchExtensions);
       buildName = prefs.getProperty("buildName");
       sw.displayBuildName(buildName);
 
@@ -474,7 +478,7 @@ public abstract class AbstractProject implements Configurable {
       PREFS.storePrefs("projectRoot", projectRoot);
       PREFS.storePrefs("sourceDir", sourceDirName);
       PREFS.storePrefs("execDir", execDirName);
-      PREFS.storePrefs("includedFiles", includedFiles);
+      PREFS.storePrefs("includedFiles", searchExtensions);
       PREFS.storePrefs("buildName", buildName);
       PREFS.storePrefs("sourceExtension", ext);
       if (isPathname) {
@@ -491,7 +495,7 @@ public abstract class AbstractProject implements Configurable {
       if (sw.isSaveToEadproject()) {
          EAD_PROJ.storeEadproject("sourceDir", sourceDirName, projectRoot);
          EAD_PROJ.storeEadproject("execDir", execDirName, projectRoot);
-         EAD_PROJ.storeEadproject("includedFiles", includedFiles, projectRoot);
+         EAD_PROJ.storeEadproject("includedFiles", searchExtensions, projectRoot);
          EAD_PROJ.storeEadproject("buildName", buildName, projectRoot);
          EAD_PROJ.storeEadproject("sourceExtension", ext, projectRoot);
          if (isPathname) {

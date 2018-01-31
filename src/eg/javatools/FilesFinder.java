@@ -7,6 +7,9 @@ import java.util.List;
 import java.io.File;
 import java.io.FilenameFilter;
 
+//--Eadgyth--//
+import eg.utils.Dialogs;
+
 /**
  * The list of files in a directory and its sub-directories with a given
  * file extension
@@ -20,13 +23,18 @@ public class FilesFinder {
     * extension in the specified directory and its sub-directories
     *
     * @param dir  the directory
-    * @param extension  the file extension. Has the form '.java', for example.
-    * @param excludedDirName  the name of an exclueded directory
+    * @param extension  the file extension which starts with a period.
+    * @param excludedDirName  the name of a directory that is excluded
+    * from the search
     * @return  the List of the files
     */
    public List<File> filteredFiles(String dir, String extension,
          String excludedDirName) {         
 
+      if (!extension.startsWith(".")) {
+         throw new IllegalArgumentException(extension + " must be specified"
+               + " with preceding peroid");
+      }
       File f = new File(dir);
       if (!f.exists() || !f.isDirectory()) {
          throw new IllegalArgumentException(dir + " is not a directory");
@@ -34,15 +42,6 @@ public class FilesFinder {
       resultList = new ArrayList<>();
       setFilteredFiles(f, extension, excludedDirName);
       return resultList;
-   }
-   
-   public static String notFoundMessage(String name) {
-      if (name.startsWith(".")) {
-         return "No files with the extension " + name + " was found";
-      }
-      else {
-         return name + " was not found";
-      }
    }
 
    //
@@ -61,5 +60,17 @@ public class FilesFinder {
             }
          }
       }
+   }
+   
+   private String notFoundMessage(String extension) {
+      return "No files with the extension\"" + extension + "\" were found";
+   }
+
+   private String noExtensionMessage(String extension) {
+       return 
+         "<html>"
+         + extension + " cannot be used.<br>"
+         + "Extensions must be specified with a preceding period."
+         + "</html>";
    }
 }

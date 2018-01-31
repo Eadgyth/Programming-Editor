@@ -173,14 +173,11 @@
             <li>An executable java archive (jar) may be created by selecting 'Project' > 'Create jar'.
                 The jar file is saved in the executable's folder or, if no such folder is available, in
                 the project's root folder. A name for the jar file can be specified in the settings window.
-                If no name is specified the name of the main class is used. Note that presently files
-                outside of the source root cannot be included in a jar file when the 'Create jar' option
-                of the program is selected.</li>
-            <li>To include files other than Java files in a compilation and in a jar file the names of
-                of these files (with extension) may be specified in the text field 'Included non-Java
-                files or file types'. Also, just file extensions (with preceding period) may be specified
-                to include all files with these extensions. Filenames and extension can be separeted by
-                spaces, commas or semicolons.</li>
+                If no name is specified the name of the main class is used.</li>
+            <li>To include files other than .java files in a compilation and .class files in a jar archive
+                the extensions of these files may be specified in the text field 'Extensions of included
+                non-Java files'. Extension can be separeted by spaces, commas or semicolons and must begin
+                with the period.</li>
          </ol>
 
          <h4 id="PerlProject">Testing a Perl script</h4>

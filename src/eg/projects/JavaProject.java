@@ -27,7 +27,8 @@ public final class JavaProject extends AbstractProject implements ProjectActions
 
    private String startCommand = "";
    private String qualifiedMain = "";
-   private String[] includedFiles = null;
+   private String[] nonJavaExt = null;
+   private boolean isNonJavaExtTested = true;
 
    JavaProject(ConsoleOpenable co, ProcessStarter proc, ConsolePanel consPnl) {
       super("java", true);
@@ -44,7 +45,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
             .addSourceDirOption()
             .addExecDirOption()
             .addArgsOption()
-            .addIncludeFilesOption("Included non-Java files or file types")
+            .addSearchExtensionsOption("Extensions of included non-Java files")
             .addBuildOption("jar file")
             .buildWindow();
    }
@@ -54,26 +55,35 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void compile() {
+      if (!isNonJavaExtCorrect()) {
+         return;
+      }
       consPnl.setText("<<Compile " + getProjectName() + ">>\n");
       EventQueue.invokeLater(() -> {
          if (proc.isProcessEnded()) {
-            comp.compile(getProjectPath(), getExecutableDirName(), getSourceDirName(),
-                  includedFiles);
+            comp.compile(getProjectPath(), getExecutableDirName(),
+                  getSourceDirName(), nonJavaExt);
 
             consPnl.setCaretUneditable(0);
             if (!co.isConsoleOpen()) {
                if (!comp.isCompiled()) {
-                  int res = Dialogs.warnConfirmYesNo(
-                        "Compilation failed.\n"
-                        + comp.getFirstErrSource() + ".\n"
-                        + "Open the console window to view messages?");
-
+                  StringBuilder msg = new StringBuilder("Compilation failed\n");
+                  msg.append(comp.getFirstCompileErr()).append(".");
+                  if (comp.getCopyErr().length() > 0) {
+                     msg.append("\n\nNote: ").append(comp.getCopyErr()).append(".");
+                  }
+                  msg.append("\n\nOpen the console window to view messages?\n");
+                  int res = Dialogs.warnConfirmYesNo(msg.toString());
                   if (0 == res) {
                      co.openConsole();
                   }
                }
                else {
-                  Dialogs.infoMessage("Compilation successful", null);
+                  StringBuilder msg = new StringBuilder("Compilation successful\n");
+                  if (comp.getCopyErr().length() > 0) {
+                     msg.append("\nNote: ").append(comp.getCopyErr()).append(".");
+                  }
+                  Dialogs.infoMessage(msg.toString(), null);
                }
             }
          }
@@ -99,7 +109,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void build() {
-      if (!mainClassFileExists()) {
+      if (!mainClassFileExists() || !isNonJavaExtCorrect()) {
          return;
       }
       consPnl.setText("");
@@ -111,7 +121,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          boolean existed = jarFileExists(jarName);
          try {
             jar.createJar(getProjectPath(), jarName, qualifiedMain,
-                  getExecutableDirName(), getSourceDirName(), includedFiles);
+                  getExecutableDirName(), getSourceDirName(), nonJavaExt);
 
             if (!existed) {
                boolean exists = false;
@@ -125,20 +135,31 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                   exists = jarFileExists(jarName);
                }
             }
-            consPnl.appendText("<<Saved jar file named " + jarName + ">>\n");
-            Dialogs.infoMessage("Saved jar file named " + jarName, null);
+            if (co.isConsoleOpen()) {
+               consPnl.appendText("<<Saved jar file named " + jarName + ">>");
+               if (jar.getIncudedFilesErr().length() > 0) {
+                  consPnl.appendText("\n<<Note: " + jar.getIncudedFilesErr() + ">>");
+               }
+            }
+            else {
+               StringBuilder msg = new StringBuilder("Saved jar file named " + jarName);
+               if (jar.getIncudedFilesErr().length() > 0) {
+                  msg.append("\n\nNote: ").append(jar.getIncudedFilesErr()).append(".");
+               }
+               Dialogs.infoMessage(msg.toString(), null);
+            }
          }
          catch (IOException e) {
             FileUtils.logStack(e);
          }
       });
    }
-   
+
    @Override
    protected void setCommandParameters() {
       setQualifiedMain();
       setStartCommand();
-      setIncludedFilesArr();
+      setNonJavaExtensions();
    }
 
    //
@@ -166,13 +187,9 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       startCommand = sb.toString();
    }
 
-   private void setIncludedFilesArr() {
-       if (getIncludedFiles().length() == 0) {
-          includedFiles = null;
-       }
-       else {
-          includedFiles = getIncludedFiles().split(",");
-       }
+   private void setNonJavaExtensions() {
+      nonJavaExt = getSearchExtensions();
+      isNonJavaExtTested = nonJavaExt == null;
    }
 
    private boolean mainClassFileExists() {
@@ -188,5 +205,29 @@ public final class JavaProject extends AbstractProject implements ProjectActions
             + jarName + ".jar";
 
       return new File(f).exists();
+   }
+
+   private boolean isNonJavaExtCorrect() {
+      if (isNonJavaExtTested) {
+         return true;
+      }
+      boolean ok = true;
+      for (String s : getSearchExtensions()) {
+         if (!s.startsWith(".")) {
+            showWrongExtMessage(s);
+            ok = false;
+            break;
+         }               
+      }
+      isNonJavaExtTested = ok;
+      return ok;
+   }
+
+   private void showWrongExtMessage(String ext) {
+      Dialogs.errorMessage(
+            "\"" + ext + "\" cannot be used.\n"
+            + "An extension must begin with a period.",
+
+            "Extensions of included non-Java files");
    }
 }
