@@ -168,8 +168,9 @@
                 displayed in the console panel. If the tested program asks for input through a command
                 line this is entered in the text area of the console panel. A tested program can be
                 forcibly quit by clicking the 'stop' symbol in the tool bar of the console panel.</li>
-            <li>Arguments for a start script may be entered in the text field 'Arguments' (separated by
-                single spaces) in the settings window ('Project' > ' Project settings').</li>
+            <li>Arguments (those that would be passed to the main method) may be entered in the text
+                field 'Arguments' (separated by spaces) in the settings window ('Project' > ' Project
+                settings').</li>
             <li>An executable java archive (jar) may be created by selecting 'Project' > 'Create jar'.
                 The jar file is saved in the executable's folder or, if no such folder is available, in
                 the project's root folder. A name for the jar file can be specified in the settings window.
@@ -184,16 +185,17 @@
          <ol>
             <li>Save changes to the script and select 'Run' in the 'Project' menu.
             </li>
-            <li>Any output (error) is shown in the console panel. NOTE: there is a limitation when the
+            <li>Any output (error) is shown in the console panel.<br> NOTE: there is a limitation when the
                 script asks for input through a command line. In that case any output from the script
-                expected before the user input is asked for (like "Enter your name:") is not printed
-                (more precisely it's printed only after all inputs were made). The output would be
-                shown as expected (as far as tested) if the autoflushing of Perl's STDOUT is turned on
-                in the script itself. The other possibilty is, of course, to start the command
-                line/terminal of the OS to test the script (see <a href="#Console">Using the console</a>).
+                expected before the input is asked for (like "Enter your name:") is not printed or, more
+                precisely, it's printed only after all inputs were made. However, the output would be
+                shown as expected if the autoflushing of Perl's STDOUT is turned on in the script itself.
+                A way to do this (for testing purposes) is to begin the script with the line
+                "STDOUT->autoflush(1);". The other possibilty is, of course, to start the command-line/terminal
+                of the  OS to test the script (see <a href="#Console">Using the console</a>).
             </li>
-            <li>Arguments for a start script may be entered in the text field 'Arguments'
-                (separated by single spaces) in the settings window ('Project' > 'Project settings').
+            <li>Arguments (those that are used as command-line options) may be entered in the text field
+               'Arguments' (separated by spaces) in the settings window ('Project' > 'Project settings').
             </li>
          </ol>
 
