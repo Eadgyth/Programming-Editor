@@ -72,7 +72,7 @@ public class ProcessStarter {
     * Starts a process in this working directory
     *
     * @param cmd  the start command in which the arguments are separated
-    * by single spaces
+    * by spaces
     */
    public void startProcess(String cmd) {
       apparentExitVal = 0;
@@ -170,11 +170,11 @@ public class ProcessStarter {
       if (cmd != null && cmd.length() > 0) {
          consPnl.enableRunBt(false);
          startProcess(cmd);
+         previousCmd = cmd;
       }
       else {
          consPnl.enableRunBt(false);
       }
-      previousCmd = cmd;
    }
 
    private void startPreviousCmd() {

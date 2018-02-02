@@ -1,18 +1,19 @@
 package eg.utils;
 
 /**
- * Static methods to search for line parameters
+ * Static methods to search for lines and line parameters
  */
 public class LinesFinder {
    
    private final static char NEW_LINE = '\n';
    
    /**
-    * Returns the line which includes the specified position. The line
-    * starts at the position that follows the last newline
+    * Returns the content of the line that contains the specified
+    * position. The content starts at the position that follows
+    * the last newline
     *
     * @param text  the text
-    * @param pos  the pos that is in the searched line
+    * @param pos  the pos
     * @return  the line
     */
    public static String lineAtPos(String text, int pos) {
@@ -22,9 +23,9 @@ public class LinesFinder {
    }
    
    /**
-    * Returns the line between the specified line start and line end
-    * positions. The line starts at the position that follows the last
-    * newline. Is called by {@link #lineAtPos}
+    * Returns the content of the line between the specified line start
+    * and line end positions. The line starts at the position that 
+    * follows the last newline.
     *
     * @param text  the text
     * @param lineStart  the start position
@@ -41,7 +42,7 @@ public class LinesFinder {
    }
    
    /**
-    * Returns the full lines of text which include the specified section
+    * Returns the full lines of text that contain the specified section
     *
     * @param  text  the text
     * @param section  the section
@@ -86,13 +87,14 @@ public class LinesFinder {
    }
    
    /**
-    * Returns the position of the next newline after the specified
+    * Returns the position of the next newline behind the specified
     * position
     *
     * @param text  the text
     * @param pos  the position relative to which the next newline
     * is searched
-    * @return  the position of the next newline character
+    * @return  the position of the next newline character. The length
+    * of text if no newline character is found
     */
    public static int nextNewline(String text, int pos) {
       int i = text.indexOf(NEW_LINE, pos);
@@ -103,13 +105,11 @@ public class LinesFinder {
    }
    
    /**
-    * Returns the number of the line where the specified position
-    * is located
+    * Returns the number of the line that contains the specified position
     *
     * @param text  the text
-    * @param pos  the position in the text
-    * @return  the number of the line where the specified
-    * position is located
+    * @param pos  the position
+    * @return  the number
     */ 
    public static int lineNrAtPos(String text, int pos) {
       int count = 0;
@@ -128,12 +128,12 @@ public class LinesFinder {
    }
    
    /**
-    * Returns the number of lines of the specified text
+    * Returns the count of lines in the specified text
     *
     * @param text  the text
     * @return  the line number
     */
-   public static int lineNumber(String text) {
+   public static int lineCount(String text) {
       int count = 1;
       int i = 0;
       while (i != -1) {
@@ -148,7 +148,7 @@ public class LinesFinder {
    
    /**
     * Returns the boolean that indicates if the specified text
-    * contains at least one newline
+    * contains at least one newline character
     *
     * @param text  the text
     * @return  the boolean value

@@ -28,8 +28,7 @@ public class EditAreaFormat {
       isShowLineNr = viewSetWin.isShowLineNumbers();
       prefs.readPrefs();
       isWordwrap = "enabled".equals(prefs.getProperty("wordWrap"));
-      font = prefs.getProperty("font");
-      readFontSize();
+      initFont();
       fontSetWin = new FontSettingWin(font, fontSize);
       fontSetWin.okAct(e -> setFont());
    }
@@ -121,7 +120,8 @@ public class EditAreaFormat {
       fontSetWin.makeVisible(false);
    }
    
-   private void readFontSize() {
+   private void initFont() {
+      font = prefs.getProperty("font");
       try {
          fontSize = Integer.parseInt(prefs.getProperty("fontSize"));
       }

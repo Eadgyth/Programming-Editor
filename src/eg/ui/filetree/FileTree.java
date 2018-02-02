@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.JScrollPane;
@@ -402,7 +403,7 @@ public class FileTree extends Observable {
             boolean sel, boolean expanded, boolean leaf, int row,
             boolean hasFocus) {
 
-        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
+         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
               row, hasFocus);
 
         if (value instanceof DefaultMutableTreeNode) {

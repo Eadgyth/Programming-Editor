@@ -101,11 +101,12 @@ public class SyntaxHighlighter {
        * on the specfied <code>openingBrace</code>
        *
        * @param keys  the array of keywords
-       * @param nonWordStart  the array of characters that the keyword must
-       * not be preceded with, in addition to digits and letters. Can be null
-       * @param openingBrace  true if an opening brace must be found ahead of
-       * keywords, false if rather no opening brace or a closing brace must be
-       * found
+       * @param nonWordStart  the array of characters that the keyword
+       * must not be preceded with, in addition to digits and letters. Can
+       * be null
+       * @param openingBrace  true if an opening brace must be found ahead
+       * of keywords, false if rather no opening brace or a closing brace
+       * must be found
        * @param set  the <code>SimpleAttributeSet</code> set on the
        * keywords
        */
@@ -123,12 +124,14 @@ public class SyntaxHighlighter {
        * depending on the specfied <code>openingBrace</code>
        *
        * @param keyBase  the base keyword
-       * @param keyExtensions  the array of strings that may extend the keyword
-       * @param nonWordStart  the array of characters that the keyword must not
-       * be preceded with, in addition to digits and letters. Can be null
-       * @param openingBrace  true if an opening brace must be found ahead of
-       * keywords, false if rather no opening brace or a closing brace must be
-       * found
+       * @param keyExtensions  the array of strings that may extend the
+       * keyword
+       * @param nonWordStart  the array of characters that the keyword
+       * must not be preceded with, in addition to digits and letters. Can
+       * be null
+       * @param openingBrace  true if an opening brace must be found ahead
+       * of keywords, false if rather no opening brace or a closing brace
+       * must be found
        * @param set  the <code>SimpleAttributeSet</code> set on the
        * keywords
        */
@@ -165,9 +168,9 @@ public class SyntaxHighlighter {
        *
        * @param startChars  the array start characters
        * @param endChars  the array of end characters
-       * @param openingBrace  true if an opening brace must be found ahead of
-       * keywords, false if rather no opening brace or a closing brace must be
-       * found
+       * @param openingBrace  true if an opening brace must be found ahead
+       * of keywords, false if rather no opening brace or a closing brace
+       * must be found
        * @param set  the <code>SimpleAttributeSet</code> set on the
        * variables
        */
@@ -251,11 +254,24 @@ public class SyntaxHighlighter {
       public void blockComments(String blockCmntStart, String blockCmntEnd) {
          blockCommentsImpl(blockCmntStart, blockCmntEnd);
       }
+      
+      /**
+       * Sets sections to plain and black that are exceptionally not to be
+       * highlighted
+       *
+       * @param unHghlStart  the string that marks the start of the section
+       * @param unHghlEnd  the array of characters that mark the end of the
+       * section
+       */
+      public void unHighlight(String unHghlStart, char[] unHghlEnd) {
+         unHighlightImpl(unHghlStart, unHghlEnd);
+      }
 
       /**
-       * Returns the boolean that, if true, indicates that the position where
-       * a change happened is found inside a block comment. Returns false
-       * regardless of the position if this section to be highlighted is multiline
+       * Returns the boolean that, if true, indicates that the position
+       * where a change happened is found inside a block comment. Returns
+       * false regardless of the position if this section to be highlighted
+       * is multiline
        *
        * @param blockCmntStart  the string that marks the start of a comment
        * @param blockCmntEnd  the string that marks the end of a comment
@@ -657,6 +673,26 @@ public class SyntaxHighlighter {
             isHighlightBlockCmnt = false;
             highlight(text, section, pos, pos);
             isHighlightBlockCmnt = true;
+         }
+      }
+      
+      private void unHighlightImpl(String unHghlStart, char[] unHghlEnd) {
+         int start = 0;
+         while (start != -1) {
+            start = section.indexOf(unHghlStart, start);
+            int length;
+            if (start != -1) {
+               int absStart = start + scnPos;
+               boolean ok = SyntaxUtils.isWordStart(section, start, null);
+               if (ok) {
+                  length = SyntaxUtils.wordLength(section, start, unHghlEnd);
+                  textDoc.setCharAttrBlack(absStart, length);
+                  start += length;
+               }
+               else {
+                  start++;
+               }
+            }
          }
       }
 

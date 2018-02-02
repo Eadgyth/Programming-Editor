@@ -5,6 +5,8 @@ package eg.syntax;
  */
 public class PerlHighlighter implements Highlighter {
    
+   private final static String LINE_CMNT = "#";
+
    private final static char[] START_OF_VAR = {
       '$', '@', '%'
    };
@@ -13,7 +15,11 @@ public class PerlHighlighter implements Highlighter {
       ' ', '\\', '(', ')', ';', '='
    };
    
-   final static String[] PERL_KEYWORDS = {
+   private final static char[] END_OF_QW = {
+      ')'
+   };
+   
+   final static String[] KEYWORDS = {
       "cmp", "chomp", "continue", "CORE", "cos",
       "do",
       "else", "elsif", "eq", "exp",
@@ -26,33 +32,29 @@ public class PerlHighlighter implements Highlighter {
       "rand",
       "sin", "sqrt", "sub", "substr",
       "unless", "until",
-      "while",     
+      "while"   
    };
    
-   final static String[] PERL_OP = {
+   final static String[] STRING_OP = {
       " and ",
+      " cmp ",
       " eq ",
       " ge ", " gt ",
       " le ", " lt ",
       " ne ",
       " or ",
-      " q ", " qq ", " qr ", " qw ", " qx ",
-      " s ",
-      " tr ",
-      " xor ",
-      " y "
+      " xor "
    };
-   
-   private final static String LINE_CMNT = "#";
    
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
       searcher.setCharAttrBlack();
       searcher.signedVariables(START_OF_VAR, END_OF_VAR, Attributes.PURPLE_PLAIN);
-      searcher.keywords(PERL_KEYWORDS, true, Attributes.RED_BOLD);
-      searcher.keywords(PERL_OP, false, Attributes.RED_BOLD);
+      searcher.keywords(KEYWORDS, true, Attributes.RED_BOLD);
+      searcher.keywords(STRING_OP, false, Attributes.RED_BOLD);
       searcher.braces();
       searcher.quotedText();
+      searcher.unHighlight("qw(", END_OF_QW);
       searcher.lineComments(LINE_CMNT, START_OF_VAR);
    }
 }

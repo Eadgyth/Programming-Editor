@@ -58,7 +58,7 @@ public class LineNumberDocument {
     * @param text  the text of the document
     */
    public void updateLineNumber(String text) {
-      int nNew = LinesFinder.lineNumber(text);
+      int nNew = LinesFinder.lineCount(text);
       if (nNew > nOld) {
          appendLineNumbers(nOld, nNew);
       }

@@ -90,17 +90,17 @@ public class Dialogs {
    }
 
     /**
-    * Shows a confirmation dialog with Yes and No options
+    * Shows a warning confirmation dialog with Yes and No options
     *
     * @param message  the message for the dialog
     * @return  the Yes or No option specified in <code>JOptionPane</code>
     */
    public static int warnConfirmYesNo(String message) {
-      int result = JOptionPane.showConfirmDialog(null, message, null,
-            JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-            IconFiles.WARNING_ICON);
+      int res = JOptionPane.showConfirmDialog(null, message, null,
+                JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+                IconFiles.WARNING_ICON);
 
-      return result;
+      return res;
    }
 
    /**
@@ -164,6 +164,7 @@ public class Dialogs {
 
       Object resObj = JOptionPane.showInputDialog(null, message, title,
             JOptionPane.PLAIN_MESSAGE, null, null, initText);
+
       if (resObj != null) {
          return resObj.toString();
       }

@@ -14,7 +14,7 @@ public final class PerlProject extends AbstractProject implements ProjectActions
    private final ConsoleOpenable co;
    private final ProcessStarter proc;
 
-   private String startCommand = "";
+   private String startCmd = "";
 
    PerlProject(ConsoleOpenable co, ProcessStarter proc) {
       super("pl", true);
@@ -30,15 +30,12 @@ public final class PerlProject extends AbstractProject implements ProjectActions
             .buildWindow();
    }
 
-   /**
-    * Runs the Perl script and shows output in the console panel
-    */
    @Override
    public void runProject() {
       if (!co.isConsoleOpen()) {
          co.openConsole();
       }
-      proc.startProcess(startCommand);
+      proc.startProcess(startCmd);
    }
    
    @Override
@@ -47,14 +44,13 @@ public final class PerlProject extends AbstractProject implements ProjectActions
       if (getArgs().length() > 0) {
          main += " " + getArgs();
       }
+      startCmd = "perl ";
       if (getSourceDirName().length() == 0 ) {
-         startCommand = "perl " + main;
+         startCmd += main;
       }
       else {
-         startCommand = "perl "
-               + getSourceDirName()
-               + File.separator
-               + main;
+         String pathToMain = getSourceDirName() + "/" + main;
+         startCmd += pathToMain;
       }
    }
 }

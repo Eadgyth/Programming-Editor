@@ -22,10 +22,10 @@ public class SyntaxUtils {
    public final static String LINE_CMNT = "//";
 
    /**
-    * Returns the boolean that indicates if the portion of text
-    * starting at the specified position and spanning the specified
-    * length is a word. A word is defined such that it does not
-    * adjoin to a letter or a digit at the start and/or the end.
+    * Returns the boolean that indicates if the portion of text starting
+    * at the specified position and spanning the specified length is a
+    * word. A word is defined such that it does not adjoin to a letter
+    * or a digit at the start and/or the end.
     *
     * @param text  the text
     * @param pos  the position
@@ -50,7 +50,8 @@ public class SyntaxUtils {
     *
     * @param text  the text
     * @param pos  the position
-    * @param nonWordStart  the array of characters that do not precede a word,
+    * @param nonWordStart  the array of characters that do not precede
+    * a word,
     * in addition to letters and digits. Can be null
     * @return  the boolean value
     * @see #isWord(String, int, int, char[])
@@ -73,8 +74,8 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the boolean that indicates if the character that
-    * follows the specified position is word end
+    * Returns the boolean that indicates if the character that follows
+    * the specified position is word end
     *
     * @param text  the text
     * @param pos  the position
@@ -92,9 +93,8 @@ public class SyntaxUtils {
    }
 
     /**
-    * Returns the length of a word that starts at the specified
-    * position and ends with one of the characters in
-    * <code>endChars</code>
+    * Returns the length of a word that starts at the specified position 
+    * and ends with one of the characters in <code>endChars</code>
     *
     * @param text  the text
     * @param pos   the position
@@ -189,11 +189,11 @@ public class SyntaxUtils {
    }
    
    /**
-    * Returns the boolean that is true only if an opening brace
-    * but not a closing brace is found ahead of the specified
-    * position in the case that <code>openingBrace</code> is true
-    * or rather if a closing brace or no brace is found in the case
-    * that <code>openingBrace</code> is false
+    * Returns the boolean that is true if an opening brace but not a
+    * closing brace is found ahead of the specified position in the
+    * case that the specified <code>openingBrace</code> is true or
+    * rather if a closing brace or no brace is found in the case that
+    * <code>openingBrace</code> is false
     *
     * @param text  the text
     * @param pos  the position
@@ -210,8 +210,8 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns if the section starting at the specified position
-    * and spanning the specified length is bordered by double quotes
+    * Returns if the section starting at the specified position and
+    * spanning the specified length is bordered by double quotes
     *
     * @param text  the text
     * @param pos  the position

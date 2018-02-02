@@ -61,8 +61,8 @@ public class Preferences {
     * Returns the saved value for the specified property.
     * <p>
     * One of the "read" methods must be used before: {@link #readPrefs()},
-    * {@link #readEadproject(String)}. These also must be invoked to read
-    * a property that may have changed during runtime.
+    * {@link #readEadproject(String)}. These also must be newly invoked to
+    * read a property that may have changed during runtime.
     *
     * @param property  the property
     * @return  the value for the specified property. The empty string if the
@@ -71,9 +71,10 @@ public class Preferences {
    public String getProperty(String property) {
       if (prop == null) {
          throw new IllegalStateException("The property " + property
-               + " could not be read");
+               + " could not be read. No properties were read.");
       }
       if (prop.getProperty(property) == null) {
+         System.out.println("missing");
          return "";
       }
       else {
