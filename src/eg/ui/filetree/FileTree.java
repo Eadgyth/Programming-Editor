@@ -336,7 +336,6 @@ public class FileTree extends Observable {
       tree.setRootVisible(false);
       tree.setFont(Constants.SANSSERIF_PLAIN_9);
       tree.setBorder(new LineBorder(Color.WHITE, 5));
-      tree.setBackground(Constants.VERY_LIGHT_GRAY);
       tree.setCellRenderer(new TreeRenderer());
       tree.setToggleClickCount(0);
       tree.expandRow(0);

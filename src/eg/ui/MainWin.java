@@ -412,7 +412,7 @@ public class MainWin {
    private void showConsole(boolean b) {
       if (b) {
          splitVert.setDividerSize(6);
-         splitVert.setRightComponent(console.consolePnl());
+         splitVert.setBottomComponent(console.consolePnl());
          if (dividerLocVert == 0) {
             dividerLocVert = (int)(frame.getHeight() * 0.65);
          }
@@ -421,37 +421,37 @@ public class MainWin {
       else {
          dividerLocVert = splitVert.getDividerLocation();
          splitVert.setDividerSize(0);
-         splitVert.setRightComponent(null);
-      }
-   }
-
-   private void showToolPnl(boolean b) {
-      if (b) {
-         splitHorAll.setDividerSize(6);
-         splitHorAll.setRightComponent(toolPnl.panel());
-      }
-      else {
-         splitHorAll.setDividerSize(0);
-         splitHorAll.setRightComponent(null);
+         splitVert.setBottomComponent(null);
       }
    }
 
    private void showFileView(boolean b) {
       if (b) {
-         splitHor.setDividerSize(6);
-         splitHor.setLeftComponent(fileTree.fileTreePnl());
+         splitHorAll.setDividerSize(6);
+         splitHorAll.setLeftComponent(fileTree.fileTreePnl());
          if (dividerLocHor == 0) {
             dividerLocHor = (int)(frame.getWidth() * 0.22);
          }
-         splitHor.setDividerLocation(dividerLocHor);
+         splitHorAll.setDividerLocation(dividerLocHor);
       }
       else {
-         dividerLocHor = splitHor.getDividerLocation();
-         splitHor.setDividerSize(0);
-         splitHor.setLeftComponent(null);
+         dividerLocHor = splitHorAll.getDividerLocation();
+         splitHorAll.setDividerSize(0);
+         splitHorAll.setLeftComponent(null);
       }
    }
 
+   private void showToolPnl(boolean b) {
+      if (b) {
+         splitHor.setDividerSize(6);
+         splitHor.setRightComponent(toolPnl.panel()); 
+      }
+      else {
+         splitHor.setDividerSize(0);
+         splitHor.setRightComponent(null);
+      }
+   }
+   
    private void showTabbar(boolean show) {
       tabPane.showTabbar(show);
       String state = show ? "show" : "hide";
@@ -540,18 +540,17 @@ public class MainWin {
    }
 
    private void initSplitPane() {
-      splitHor = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
-           null, tabPane);
+      splitHor = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, tabPane, null);
       splitHor.setDividerSize(0);
       splitHor.setBorder(null);
-      splitVert = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true,
-           splitHor, null);
+      splitHor.setResizeWeight(1);
+      splitVert = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, splitHor, null);
       splitVert.setDividerSize(0);
       splitVert.setResizeWeight(0);
       splitVert.setBorder(null);
-      splitHorAll = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
-            splitVert, null);
-      splitHorAll.setResizeWeight(1);
+      splitHorAll = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, null,
+            splitVert);
+      splitHorAll.setResizeWeight(0);
       splitHorAll.setDividerSize(0);
       splitHorAll.setBorder(null);
    }

@@ -136,7 +136,7 @@ public class ExchangeEditor implements AddableEditTool {
          setTextBt, insertTextBt
       };
       String[] toolTips = new String[] {
-         "Copy text selected file to the exchange editor",
+         "Copy text from selected file to the exchange editor",
          "Copy text from exchange editor to selected file",
       };
       for (int i = 0; i < bts.length; i++) {
