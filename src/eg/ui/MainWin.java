@@ -204,8 +204,8 @@ public class MainWin {
    }
 
    /**
-    * Sets the booleans that specifies if undoing and redoing actions
-    * are enabled or disabled
+    * Sets the booleans that specify if undoing and redoing actions
+    * are enabled (true) or disabled
     *
     * @param isUndo  the boolean value for undo actions
     * @param isRedo  the boolean value for redo actions
@@ -216,8 +216,8 @@ public class MainWin {
    }
    
    /**
-    * Sets the boolean that specifies if save actions
-    * are enabled or disabled
+    * Sets the boolean that specifies if save actions are enabled (true)
+    * or disabled
     *
     * @param b  the boolean value
     */
@@ -228,7 +228,7 @@ public class MainWin {
 
    /**
     * Sets the boolean that specifies if cutting and copying actions
-    * are enabled or disabled
+    * are enabled (true) or disabled
     *
     * @param b  the boolean value
     */
@@ -239,7 +239,7 @@ public class MainWin {
 
    /**
     * Sets the boolean that specifies if actions to set the visiblity
-    * of the tabbar are enabled or disabled
+    * of the tabbar are enabled (true) or disabled
     *
     * @param b  the boolean value
     */
@@ -249,7 +249,7 @@ public class MainWin {
 
    /**
     * Sets the boolean that specifies if actions to change project are
-    * enabled or disabled
+    * enabled (true) or disabled
     *
     * @param b  the boolean value
     */
@@ -260,7 +260,7 @@ public class MainWin {
 
    /**
     * Sets the booleans that specify if actions to compile, run and
-    * build a project are enabled or disabled
+    * build a project are enabled (true) or disabled
     *
     * @param isCompile  the boolean value for compile actions
     * @param isRun  the boolean value for run actions
@@ -276,7 +276,7 @@ public class MainWin {
    }
 
    /**
-    * Sets the boolean that specified if the toolbar is shown
+    * Sets the boolean that specified if the toolbar is shown (true)
     * or hidden
     *
     * @param b  the boolean value
@@ -292,7 +292,7 @@ public class MainWin {
    }
 
    /**
-    * Sets the boolean that specified if the statusbar is shown
+    * Sets the boolean that specified if the statusbar is shown (true)
     * or hidden
     *
     * @param b  the boolean value
@@ -357,7 +357,7 @@ public class MainWin {
    }
 
    /**
-    * Sets the listener for actions to opens the window for the view
+    * Sets the listener for actions to open the window for view
     * preferences
     *
     * @param viewSetWin  the reference to <code>ViewSettingWin</code>
@@ -393,7 +393,7 @@ public class MainWin {
    }
 
    //
-   //--private--/
+   //--private--//
    //
 
    private void setViewActions() {

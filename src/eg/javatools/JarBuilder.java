@@ -107,7 +107,7 @@ public class JarBuilder {
                for (File f : relativeInclFilePaths) {
                   String path = f.getPath();
                   if (execDir.length() == 0
-                        && !path.endsWith("eadproject.properties")) {
+                        && path.endsWith("eadproject.properties")) {
 
                      continue;
                   }

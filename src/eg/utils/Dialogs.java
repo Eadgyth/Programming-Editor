@@ -118,7 +118,7 @@ public class Dialogs {
    public static String comboBoxOpt(String message, String title,
          String[] options, String preselected, boolean isWarning) {
 
-      JComboBox cBox = new JComboBox(options);
+      JComboBox<String> cBox = new JComboBox<>(options);
       if (preselected != null) {
          cBox.setSelectedItem(preselected);
       }

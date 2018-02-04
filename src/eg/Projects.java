@@ -82,14 +82,19 @@ public class Projects {
    /**
     * Opens the window of the <code>SettingsWin</code> object that belongs
     * to a project.
-    * <p>Depending on the currently set <code>EditableDocument</code> the
-    * opened window belongs to the currently active project, to one of this
-    * listed projects or to a project that can be newly assigned.
+    * <p>
+    * Depending on the currently set <code>EditableDocument</code> the
+    * window belongs to the currently active project, to one of this
+    * listed projects or to a project that can be newly configured.
     */
    public void openSettingsWindow() {
+      if (!edtDoc[iDoc].hasFile()) {
+         Dialogs.infoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
+         return;
+      }
       ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), false);
       if (fromList == null) {
-         int res = Dialogs.confirmYesNo("Set new project?");
+         int res = Dialogs.confirmYesNo("Assign new project?");
          if (0 == res) {
             assignProjectImpl();
          }

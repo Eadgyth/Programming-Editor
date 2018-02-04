@@ -212,22 +212,40 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          return true;
       }
       boolean ok = true;
-      for (String s : getSearchExtensions()) {
-         if (!s.startsWith(".")) {
-            showWrongExtMessage(s);
-            ok = false;
-            break;
-         }               
+      if (getSourceDirName().length() == 0
+            || getExecutableDirName().length() == 0) {
+
+         nonJavaFilesNotSupportedMessage();
+         ok = false;
+      }
+      else {
+         for (String s : getSearchExtensions()) {
+            if (!s.startsWith(".")) {
+               wrongExtMessage(s);
+               ok = false;
+               break;
+            }               
+         }
       }
       isNonJavaExtTested = ok;
       return ok;
    }
 
-   private void showWrongExtMessage(String ext) {
+   private void wrongExtMessage(String ext) {
       Dialogs.errorMessage(
             "\"" + ext + "\" cannot be used.\n"
             + "An extension must begin with a period.",
-
+            //
+            // title
             "Extensions of included non-Java files");
    }
+   
+   private void nonJavaFilesNotSupportedMessage() {
+      Dialogs.errorMessage(
+         "Including non-java files is supported only if the project"
+         + " contains separate directories for source files and for class files.",
+         //
+         // title
+         "Including non-java files not supported");
+      }
 }

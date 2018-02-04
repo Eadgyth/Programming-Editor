@@ -158,7 +158,7 @@ public class ProcessStarter {
             });
          }
       };
-      consPnl.addCaretListen(caretListener);
+      consPnl.addCaretListener(caretListener);
    }
 
    private void startNewCmd() {

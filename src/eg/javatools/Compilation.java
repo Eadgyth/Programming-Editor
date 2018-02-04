@@ -64,9 +64,9 @@ public class Compilation {
    }
 
    /**
-    * Gets a shortened error message which only includes the source
-    * file and the line number of the first compilation error from
-    * the entire list of errors.<br>
+    * Gets a shortened error message which indicates the source
+    * file and the line number in the first listed compilation
+    * error.<br>
     * The entire list of errors messages is printed to this
     * <code>ConsolePanel</code>.
     *
@@ -156,13 +156,11 @@ public class Compilation {
          String[] nonJavaExt) {
 
       copyError = "";
-      if (sourceDir.length() == 0 && execDir.length() == 0) {
-         return; // no need to copy anything
+      if (sourceDir.length() == 0 || execDir.length() == 0) {
+         throw new IllegalArgumentException(
+               "Including non-java file requires a sources and a classes directory");
       }
-      String searchRoot = root;
-      if (sourceDir.length() > 0) {
-         searchRoot += "/" + sourceDir;
-      }
+      String searchRoot = root + "/" + sourceDir;
       for (String ext : nonJavaExt) {
          List<File> toCopy = fFind.filteredFiles(searchRoot, ext, execDir);
          if (toCopy.size() == 0) {
@@ -172,23 +170,8 @@ public class Compilation {
          else {
             try {
                for (File f : toCopy) {
-                  String source = f.getPath();
-                  if (sourceDir.length() == 0
-                        && source.endsWith("eadproject.properties")) {
-
-                     continue;
-                  }
-                  String destination = null;
-                  if (sourceDir.length() > 0 && execDir.length() > 0) {
-                     destination = source.replace(sourceDir, execDir);
-                  }
-                  else if (sourceDir.length() == 0 && execDir.length() > 0) {
-                     String relativePath = source.substring(root.length() + 1);
-                     destination = root + "/" + execDir + "/" + relativePath;
-                  }
-                  else if (sourceDir.length() > 0 && execDir.length() == 0) {
-                     destination = source.replace(sourceDir, "");
-                  }
+                  String source = f.getPath();                
+                  String destination = source.replace(sourceDir, execDir);                
                   if (destination != null) {
                      File fDest = new File(destination);
                      java.nio.file.Files.copy(f.toPath(), fDest.toPath(),

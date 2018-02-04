@@ -136,15 +136,31 @@ public class ConsolePanel {
       stopBt.setEnabled(isActive);
    }
 
-   public void enableRunBt(boolean isEnabled) {
-      runBt.setEnabled(isEnabled);
+   /**
+    * Sets the boolean that specifies if run actions are enabled (true)
+    * or disabled
+    *
+    * @param b  the boolean  value
+    */
+   public void enableRunBt(boolean b) {
+      runBt.setEnabled(b);
    }
 
+   /**
+    * Adds a <code>KeyListener</code> to this text area
+    *
+    * @param keyListener  the <code>KeyListener</code>
+    */
    public void addKeyListen(KeyListener keyListener) {
       area.addKeyListener(keyListener);
    }
 
-   public void addCaretListen(CaretListener caretListener) {
+   /**
+    * Adds a <code>CaretListener</code> to this text area
+    *
+    * @param CaretListener  the <code>CaretListener</code>
+    */
+   public void addCaretListener(CaretListener caretListener) {
       area.addCaretListener(caretListener);
    }
    
