@@ -158,7 +158,7 @@ public class ConsolePanel {
    /**
     * Adds a <code>CaretListener</code> to this text area
     *
-    * @param CaretListener  the <code>CaretListener</code>
+    * @param caretListener  the <code>CaretListener</code>
     */
    public void addCaretListener(CaretListener caretListener) {
       area.addCaretListener(caretListener);

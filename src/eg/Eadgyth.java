@@ -58,8 +58,8 @@ public class Eadgyth {
    private static void setLaf() {
       Preferences prefs = new Preferences();
       prefs.readPrefs();
-      String os = prefs.getProperty("LaF");
-      if (os.length() > 0 && os.equals(prefs.getProperty("LaF"))) {
+      String laf = prefs.getProperty("LaF");
+      if (laf.length() > 0 && laf.equals("System")) {
          try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
          }

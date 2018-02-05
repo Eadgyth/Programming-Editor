@@ -146,7 +146,7 @@ public final class EditableDocument {
     * @return  the file
     * @throws  IllegalStateException  if no file is set
     */
-  public File docFile() {
+   public File docFile() {
       if (docFile == null) {
          throw new IllegalStateException("No file has been set");
       }
@@ -182,21 +182,6 @@ public final class EditableDocument {
       type.resetInChangeState();
       savedContent = type.getText();
       return writeToFile(f);
-   }
-
-   /**
-    * Displays the content of the specified file but does not assign the
-    * file to this
-    *
-    * @param f  the file
-    * @throws IllegalStateException  if a file is already set
-    */
-   public void displayFileContent(File f) {
-      if (docFile != null) {
-         throw new IllegalStateException("Cannot diplay file content"
-               + " A file is already set");
-      }
-      displayFileContentImpl(f);
    }
 
    /**
@@ -309,9 +294,13 @@ public final class EditableDocument {
     * @param pos  the position where the section starts
     * @param length  the length of the section
     * @param useHighlighting  if syntax highlighting of the line that
-    * includes the position is done
+    * contains the position is done. Is effectless if this language
+    * is not a coding language
     */
    public void remove(int pos, int length, boolean useHighlighting) {
+      if (lang == Languages.NORMAL_TEXT) {
+         useHighlighting = false;
+      }
       type.remove(pos, length, useHighlighting);
    }
 

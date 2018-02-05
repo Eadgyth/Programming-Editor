@@ -86,6 +86,7 @@ public final class EditArea {
       else {
          disableWordwrap(isLineNumbers);
       }
+
       textArea.addFocusListener(new FocusAdapter() {
 
          @Override
@@ -113,7 +114,7 @@ public final class EditArea {
    public JTextPane textArea() {
       return textArea;
    }
-   
+
    /**
     * Gets this text area that displays the line numbers
     *
@@ -141,7 +142,7 @@ public final class EditArea {
    public boolean isWordwrap() {
       return isWordwrap;
    }
-   
+
    /**
     * Shows or hides the area that displays line numbers, depending on
     * the specified boolean value
@@ -153,7 +154,7 @@ public final class EditArea {
       if (isWordwrap) {
          throw new IllegalStateException("Word-wrapping is currently"
                + " enabled. Showing or hiding line numbers is not possible.");
-      }   
+      }
       if (b) {
          showLineNumbersImpl();
       }
@@ -161,7 +162,7 @@ public final class EditArea {
          hideLineNumbersImpl();
       }
    }
-   
+
    /**
     * Enables wordwrap. Invoking this method also hides the area that
     * displays line numbers
@@ -169,7 +170,7 @@ public final class EditArea {
    public void enableWordwrap() {
       enableWordwrapImpl();
    }
-   
+
    /**
     * Disables wordwrap and makes the area that displays line numbers
     * visible if the specified boolean is true
@@ -184,7 +185,7 @@ public final class EditArea {
          hideLineNumbersImpl();
       }
    }
-   
+
    /**
     * Sets the font in this area for editing text and this area that displays
     * line numbers
@@ -226,7 +227,7 @@ public final class EditArea {
       revalidate();
       isWordwrap = false;
    }
-   
+
    private void hideLineNumbersImpl() {
       editAreaPnl.remove(lineNrScroll);
       removeCenterComponent();
@@ -238,7 +239,7 @@ public final class EditArea {
       revalidate();
       isWordwrap = false;
    }
-   
+
    private void enableWordwrapImpl() {
       editAreaPnl.remove(lineNrScroll);
       removeCenterComponent();
@@ -249,7 +250,7 @@ public final class EditArea {
       revalidate();
       isWordwrap = true;
    }
-   
+
    private void adaptLineNrWidth(int prevLineNr, int lineNr) {
       if ((int) Math.log10(prevLineNr) - (int) Math.log10(lineNr) != 0) {
          revalidate();
@@ -260,7 +261,7 @@ public final class EditArea {
       editAreaPnl.revalidate();
       editAreaPnl.repaint();
    }
-   
+
    private void removeCenterComponent() {
       BorderLayout layout = (BorderLayout) editAreaPnl.getLayout();
       JScrollPane c = (JScrollPane) layout.getLayoutComponent(BorderLayout.CENTER);

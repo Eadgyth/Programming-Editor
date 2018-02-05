@@ -1,13 +1,21 @@
 package eg.edittools;
 
 import java.io.File;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import java.awt.EventQueue;
 
 //--Eadgyth--/
+import eg.FileChooser;
 import eg.Preferences;
 import eg.Languages;
 import eg.document.EditableDocument;
 import eg.utils.Dialogs;
+import eg.utils.FileUtils;
 
 /**
  * The exchange of text between one <code>EditableDocument</code> set in
@@ -18,13 +26,12 @@ import eg.utils.Dialogs;
  */
 public class TextExchange {
 
-   private final static String F_SEP = File.separator;
-   private final static File BACK_UP
-         = new File(System.getProperty("user.dir")
-         + F_SEP + "exchangeContent.txt");
+   private final static File BACK_UP = new File(System.getProperty("user.dir")
+         + "/" + "exchangeContent.txt");
 
    private final EditableDocument exchangeDoc;
    private final Preferences prefs = new Preferences();
+   private final FileChooser fc;
 
    private EditableDocument sourceDoc;
 
@@ -35,9 +42,11 @@ public class TextExchange {
    public TextExchange(EditableDocument exchangeDoc) {
       this.exchangeDoc = exchangeDoc;
       prefs.readPrefs();
+      String recentDir = prefs.getProperty("recentPath");
+      fc = new FileChooser(recentDir);
       exchangeDoc.setIndentUnit(prefs.getProperty("indentUnit"));
       if (BACK_UP.exists()) {
-         exchangeDoc.displayFileContent(BACK_UP);
+         loadFileContent(BACK_UP);
       }
    }
 
@@ -63,7 +72,7 @@ public class TextExchange {
          if (filename.length() == 0) {
             filename = "unnamed";
          }
-         Dialogs.warnMessage("No text is selected in " + filename);
+         Dialogs.warnMessage("No text is selected in \"" + filename + "\"");
          return;
       }
       copy(exchangeDoc, text);
@@ -81,6 +90,29 @@ public class TextExchange {
          return;
       }
       copy(sourceDoc, text);
+   }
+   
+   /**
+    * Loads the content of a file that is selected in the file chooser
+    */
+   public void loadFile() {
+      File f = fc.fileToOpen();
+      if (f == null) {
+         return;
+      }
+      if (!f.exists()) {
+         Dialogs.warnMessage(f.getName() + " was not found.");
+      }
+      int res = 0;
+      if (exchangeDoc.docLength() > 0) {
+         res = Dialogs.confirmYesNo(
+               "The current text will be replaced.\n"
+               + " Continue?");
+      }
+      if (res == 0) {
+         clear();
+         loadFileContent(f);
+      }
    }
 
    /**
@@ -127,5 +159,25 @@ public class TextExchange {
       int end = destination.docTextArea().getSelectionEnd();
       int length = end - pos;
       destination.replace(pos, length, text);
+   }
+   
+   private void loadFileContent(File f) {
+      try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+         String line = br.readLine();
+         String nextLine = br.readLine();
+         while (null != line) {
+            if (null == nextLine) {
+               exchangeDoc.insert(exchangeDoc.docLength(), line);
+            }
+            else {
+               exchangeDoc.insert(exchangeDoc.docLength(), line + "\n");
+            }
+            line = nextLine;
+            nextLine = br.readLine();
+         }
+      }
+      catch (IOException e) {
+         FileUtils.logStack(e);
+      }
    }
 }

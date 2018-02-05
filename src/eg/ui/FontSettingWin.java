@@ -18,7 +18,7 @@ import javax.swing.JButton;
 import eg.Constants;
 
 /**
- * A diaolog for setting the font and font size
+ * A dialog for setting the font and font size
  */
 public class FontSettingWin {
 

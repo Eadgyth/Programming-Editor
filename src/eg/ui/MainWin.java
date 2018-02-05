@@ -444,7 +444,7 @@ public class MainWin {
    private void showToolPnl(boolean b) {
       if (b) {
          splitHor.setDividerSize(6);
-         splitHor.setRightComponent(toolPnl.panel()); 
+         splitHor.setRightComponent(toolPnl.toolPanel()); 
       }
       else {
          splitHor.setDividerSize(0);

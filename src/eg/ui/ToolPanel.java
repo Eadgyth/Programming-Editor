@@ -25,7 +25,7 @@ public class ToolPanel {
     *
     * @return  the <code>JPanel</code>
     */
-   public JPanel panel() {
+   public JPanel toolPanel() {
       return pnl;
    }
    

@@ -52,8 +52,9 @@ public final class ExtTabbedPane extends JTabbedPane {
     */
    public void showTabbar(boolean b) {
       if (!b && getTabCount() > 1) {
-         throw new IllegalStateException("Hiding tabs is illegal"
-               + " when the number of tabs is larger than one");
+         throw new IllegalStateException(
+               "Hiding tabs is not allowed since more than "
+               + " one tab is open");
       }
       tui.setShowTabs(b);
       updateUI();

@@ -1,6 +1,7 @@
 package eg.edittools;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 
@@ -32,17 +33,18 @@ import eg.utils.UIComponents;
  */
 public class ExchangeEditor implements AddableEditTool {
 
-   private final JPanel exchPnl       = new JPanel(new BorderLayout());
-   private final JButton setTextBt    = new JButton("Copy from file");
-   private final JButton insertTextBt = new JButton("Copy to file");
-   private final JButton undoBt       = new JButton();
-   private final JButton redoBt       = new JButton();
-   private final JButton cutBt        = new JButton();
-   private final JButton copyBt       = new JButton();
-   private final JButton pasteBt      = new JButton();
-   private final JButton indentBt     = new JButton();
-   private final JButton outdentBt    = new JButton();
-   private final JButton clearBt      = new JButton(IconFiles.CLEAR_ICON);
+   private final JPanel exchPnl     = new JPanel(new BorderLayout());
+   private final JButton loadBt     = new JButton("Load file...");
+   private final JButton copyFromBt = new JButton("Copy from ");
+   private final JButton copyToBt   = new JButton("Copy to");
+   private final JButton undoBt     = new JButton();
+   private final JButton redoBt     = new JButton();
+   private final JButton cutBt      = new JButton();
+   private final JButton copyBt     = new JButton();
+   private final JButton pasteBt    = new JButton();
+   private final JButton indentBt   = new JButton();
+   private final JButton outdentBt  = new JButton();
+   private final JButton clearBt    = new JButton(IconFiles.CLEAR_ICON);
 
    private final JPanel editAreaPnl;
    private final TextExchange exch;
@@ -82,27 +84,17 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    //
-   //--private--
+   //--private--/
    //
 
-   private void enableUndoRedo(boolean isUndo, boolean isRedo) {
-      undoBt.setEnabled(isUndo);
-      redoBt.setEnabled(isRedo);
-   }
-
-   private void enableCutCopy(boolean b) {
-      cutBt.setEnabled(b);
-      copyBt.setEnabled(b);
-   }
-
    private void initExchangePnl(JButton closeBt) {
+      setBtnActions();
+      enableUndoRedo(false, false);
+      enableCutCopy(false);
       editAreaPnl.setBorder(Constants.MATTE_TOP);
       exchPnl.add(toolbar(closeBt), BorderLayout.NORTH);
       exchPnl.add(editAreaPnl, BorderLayout.CENTER);
       exchPnl.add(controlsPnl(), BorderLayout.SOUTH);
-      setBtnActions();
-      enableUndoRedo(false, false);
-      enableCutCopy(false);
    }
 
    private JToolBar toolbar(JButton closeBt) {
@@ -115,10 +107,6 @@ public class ExchangeEditor implements AddableEditTool {
          "Increase indentation", "Reduce indentation",
          "Clear the text area", "Close the exchange editor"
       };
-      undoBt.setEnabled(false);
-      redoBt.setEnabled(false);
-      cutBt.setEnabled(false);
-      copyBt.setEnabled(false);
       JToolBar tb = UIComponents.lastBtRightToolbar(bts, toolTips);
       return tb;
    }
@@ -129,15 +117,16 @@ public class ExchangeEditor implements AddableEditTool {
       pnl.add(setLangBox());
       return pnl;
    }
-
+   
    private JPanel buttonPnl() {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
       JButton[] bts = new JButton[] {
-         setTextBt, insertTextBt
+         loadBt, copyFromBt, copyToBt
       };
       String[] toolTips = new String[] {
-         "Copy text from selected file to the exchange editor",
-         "Copy text from exchange editor to selected file",
+         "Load file content",
+         "Copy text from the document in main editor",
+         "Copy text to the document in main editor",
       };
       for (int i = 0; i < bts.length; i++) {
          bts[i].setFocusable(false);
@@ -148,26 +137,37 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    private JPanel setLangBox() {
-      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
       String[] opt = new String[Languages.values().length];
       for (int i = 0; i < opt.length; i++) {
          opt[i] = Languages.values()[i].display();
       }
-      JComboBox cb = new JComboBox(opt);
+      JComboBox<String> cb = new JComboBox<>(opt);
       cb.addItemListener(ie -> {
          if (ie.getStateChange() == ItemEvent.SELECTED) {
             exch.changeCodeEditing(Languages.values()[cb.getSelectedIndex()]);
          }
       });
-      cb.setFont(Constants.VERDANA_PLAIN_8);
+      //cb.setFont(Constants.VERDANA_PLAIN_8);
       cb.setFocusable(false);
       pnl.add(cb);
       return pnl;
    }
+   
+   private void enableUndoRedo(boolean isUndo, boolean isRedo) {
+      undoBt.setEnabled(isUndo);
+      redoBt.setEnabled(isRedo);
+   }
+
+   private void enableCutCopy(boolean b) {
+      cutBt.setEnabled(b);
+      copyBt.setEnabled(b);
+   }
 
    private void setBtnActions() {
-      setTextBt.addActionListener(e -> exch.copyTextFromSource());
-      insertTextBt.addActionListener(e -> exch.copyTextToSource());
+      loadBt.addActionListener(e -> exch.loadFile());
+      copyFromBt.addActionListener(e -> exch.copyTextFromSource());
+      copyToBt.addActionListener(e -> exch.copyTextToSource());
 
       undoBt.setAction(new FunctionalAction("", IconFiles.UNDO_ICON,
             e -> edit.undo()));
