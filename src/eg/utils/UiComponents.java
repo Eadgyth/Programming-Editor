@@ -34,8 +34,6 @@ public class UIComponents {
     */
    public static JToolBar lastBtRightToolbar(JButton[] bts, String[] tooltips) {
       JToolBar tb = new JToolBar(JToolBar.HORIZONTAL);
-      Dimension dim = new Dimension(0, Constants.BAR_HEIGHT);
-      tb.setPreferredSize(dim);
       tb.setOpaque(false);
       tb.setBorder(null);
       tb.setFloatable(false);     
@@ -44,7 +42,7 @@ public class UIComponents {
             tb.add(Box.createHorizontalGlue());
          }
          tb.add(bts[i]);
-         bts[i].setBorder(new EmptyBorder(2, 7, 0, 7));
+         bts[i].setBorder(new EmptyBorder(5, 7, 5, 7));
          bts[i].setToolTipText(tooltips[i]);
          bts[i].setFocusable(false);
       }
