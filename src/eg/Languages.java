@@ -10,13 +10,10 @@ public enum Languages {
    HTML("Html"),
    JAVA("Java"),
    JAVASCRIPT("Javascript"),
-   PERL("Perl");
+   PERL("Perl"),
+   R("R");
    
    private final String display;
-   
-   private Languages(String display) {
-      this.display = display;
-   }
    
    /**
     * Returns the display value associated with a language
@@ -26,5 +23,9 @@ public enum Languages {
     */
    public String display() {
       return display;
+   }
+   
+   private Languages(String display) {
+      this.display = display;
    }
 }

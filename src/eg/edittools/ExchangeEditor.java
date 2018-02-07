@@ -103,7 +103,9 @@ public class ExchangeEditor implements AddableEditTool {
          indentBt, outdentBt, clearBt, closeBt
       };
       String[] toolTips = new String[] {
-         "Undo", "Redo", "Cut selection", "Copy selection", "Paste",
+         "Undo", "Redo",
+         "Cut selection",
+         "Copy", "Paste",
          "Increase indentation", "Reduce indentation",
          "Clear the text area", "Close the exchange editor"
       };
@@ -137,7 +139,7 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    private JPanel setLangBox() {
-      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
       String[] opt = new String[Languages.values().length];
       for (int i = 0; i < opt.length; i++) {
          opt[i] = Languages.values()[i].display();
@@ -148,7 +150,6 @@ public class ExchangeEditor implements AddableEditTool {
             exch.changeCodeEditing(Languages.values()[cb.getSelectedIndex()]);
          }
       });
-      //cb.setFont(Constants.VERDANA_PLAIN_8);
       cb.setFocusable(false);
       pnl.add(cb);
       return pnl;

@@ -36,7 +36,8 @@ public class SettingsWindow {
    private final JTextField sourcesDirTf = new JTextField();
    private final JTextField execDirTf    = new JTextField();
    private final JTextField argsTf       = new JTextField();
-   private final JTextField searchExtTf    = new JTextField();
+   private final JTextField startOptTf   = new JTextField();
+   private final JTextField searchExtTf  = new JTextField();
    private final JTextField buildTf      = new JTextField();
    private final JButton    okBt         = new JButton("   OK   ");
    private final JButton    cancelBt     = new JButton("Cancel");
@@ -45,6 +46,7 @@ public class SettingsWindow {
    private String fileLabel = null;
    private boolean useScr = false;
    private boolean useExec = false;
+   private boolean useStartOpt = false;
    private boolean useArgs = false;
    private String searchExtLabel = null;
    private String buildLabel = null;
@@ -114,6 +116,15 @@ public class SettingsWindow {
     */
    public String projDirNameInput() {
       return projDirTf.getText().trim();
+   }
+
+   /**
+    * Returns the input in the text field for arguments
+    *
+    * @return  the input
+    */
+   public String startOptInput() {
+      return startOptTf.getText().trim();
    }
 
    /**
@@ -278,9 +289,24 @@ public class SettingsWindow {
    }
 
    private JPanel argsPanel() {
-      JPanel argsPnl = new JPanel( new GridLayout(1, 0));
-      JLabel argsLb = new JLabel("Arguments:");
-      argsPnl.add(holdLbAndTf(argsLb, argsTf));
+      int gridSize = 1;
+      GridLayout grid = new GridLayout(gridSize, 0);
+      JPanel argsPnl = new JPanel(grid);
+      //
+      // start options
+      if (useStartOpt) {
+         JLabel startOptLb = new JLabel("Start options:");
+         argsPnl.add(holdLbAndTf(startOptLb, startOptTf));
+      }
+      //
+      // arguments
+      if (useArgs) {
+         gridSize++;
+         grid.setRows(gridSize);
+         JLabel argsLb = new JLabel("Arguments:");
+         argsPnl.add(holdLbAndTf(argsLb, argsTf));
+      }
+
       argsPnl.setBorder(UIComponents.titledBorder("Run"));
       return argsPnl;
    }
@@ -342,7 +368,7 @@ public class SettingsWindow {
       combineAll.setLayout(new BoxLayout(combineAll, BoxLayout.Y_AXIS));
       combineAll.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
       combineAll.add(structurePanel());
-      if (useArgs) {
+      if (useStartOpt || useArgs) {
          combineAll.add(Box.createRigidArea(DIM_SPACER));
          combineAll.add(argsPanel());
       }
@@ -413,6 +439,16 @@ public class SettingsWindow {
        */
       public InputOptionsBuilder addExecDirOption() {
          sw.useExec = true;
+         return this;
+      }
+      
+      /**
+       * Adds the option to enter arguments for a start script
+       *
+       * @return  this
+       */
+      public InputOptionsBuilder addStartOptOption() {
+         sw.useStartOpt = true;
          return this;
       }
 

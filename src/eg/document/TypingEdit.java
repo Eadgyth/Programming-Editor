@@ -67,7 +67,7 @@ public class TypingEdit {
    public void setEditingStateReadable(EditingStateReadable esr) {
        if (this.esr != null) {
          throw new IllegalStateException(
-               "A SavedStateReadable is already set");
+               "An EditingStateReadable is already set");
       }
       this.esr = esr;
    }
@@ -113,6 +113,9 @@ public class TypingEdit {
                break;
             case PERL:
                hl = new PerlHighlighter();
+               break;
+            case R:
+               hl = new RHighlighter();
                break;
          }
          syntax.setHighlighter(hl);

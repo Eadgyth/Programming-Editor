@@ -12,7 +12,7 @@ public class ProjectSelector {
     * The extension of files that can define a project category
     */
    public final static String[] PROJ_EXTENSIONS = {
-      "htm", "html", "java", "pl"
+      "htm", "html", "java", "pl", "R"
    };
 
    private final ConsoleOpenable co;
@@ -56,6 +56,8 @@ public class ProjectSelector {
          case "pl": case "pm":
             newProj = new PerlProject(co, proc);
             break;
+         case "R":
+            newProj = new RProject(co, proc);
       }
       if (newProj != null) {
          newProj.buildSettingsWindow();

@@ -45,6 +45,7 @@ public abstract class AbstractProject implements Configurable {
    private String namespace = "";
    private String execDirName = "";
    private String sourceDirName = "";
+   private String startOptions = "";
    private String args = "";
    private String searchExtensions = "";
    private String buildName = "";
@@ -216,6 +217,15 @@ public abstract class AbstractProject implements Configurable {
    protected String getSourceDirName() {
       return sourceDirName;
    }
+   
+   /**
+    * Returns the options for a start script
+    *
+    * @return  the options. The empty string if no arguments are given
+    */
+   protected String getStartOptions() {
+      return startOptions;
+   }
 
    /**
     * Returns the arguments for a start script
@@ -321,6 +331,7 @@ public abstract class AbstractProject implements Configurable {
       splitMainFilePath(mainFileInput);
       sourceDirName = sw.sourcesDirNameInput();
       execDirName = sw.execDirNameInput();
+      startOptions = sw.startOptInput();
       args = sw.argsInput();
       searchExtensions = sw.searchExtensionsInput();
       buildName = sw.buildNameInput();

@@ -3,12 +3,11 @@ package eg.projects;
 import java.io.File;
 import java.io.IOException;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.utils.FileUtils;
 
 /**
- * Represents a project to open HTML files contained in the project's root directory
- * in the default browser
+ * Represents a coding project in HTML
  */
 public final class HtmlProject extends AbstractProject implements ProjectActions {
 
@@ -41,6 +40,9 @@ public final class HtmlProject extends AbstractProject implements ProjectActions
       }
    }
    
+   /**
+    * Not used
+    */
    @Override
    protected void setCommandParameters() {}
 }

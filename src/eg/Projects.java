@@ -354,6 +354,8 @@ public class Projects {
          case "PerlProject":
             mw.enableSrcCodeActions(false, true, false);
             break;
+         case "RProject":
+            mw.enableSrcCodeActions(false, true, false);
       }
    }
 

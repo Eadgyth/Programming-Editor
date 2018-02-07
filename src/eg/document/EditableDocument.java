@@ -393,6 +393,9 @@ public final class EditableDocument {
          case "pl": case "pm":
             lang = Languages.PERL;
             break;
+         case "R":
+            lang = Languages.R;
+            break;
          default:
             lang = Languages.NORMAL_TEXT;
       }
