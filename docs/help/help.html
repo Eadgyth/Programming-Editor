@@ -9,25 +9,25 @@
          }
          header, footer {
             padding: 1em;
-            color: #b1010;
             background-color: #55bfec;
          }
-         article {
-            padding: 1em;
+         h1, h2, h3, h4 {
+            margin-left: 20px;
          }
          p {
+            margin-left: 20px;
             font-size: 0.95em;
          }
          a {
             font-size: 0.95em;
          }
          ul:not(.summaries) li {
-               font-size: 0.95em;
-               margin-top: 1em;
+            font-size: 0.95em;
+            margin-top: 1em;
          }
          ol li {
-               font-size: 0.95em;
-               margin-top: 1em;
+            font-size: 0.95em;
+            margin-top: 1em;
          }
          div {
             width: 100%;
@@ -36,6 +36,12 @@
          nav ul a {
              text-decoration: none;
          }
+         hr {
+            height: 10px;
+            color:#55bfec;
+            background-color:#55bfec;
+            border: none;
+         }
       </style>
    </head>
    <body>
@@ -43,59 +49,64 @@
          <header>
             <a name="ancor"></a>
             <h4>Eadgyth Programming-Editor</h4>
-            <h2>Help</h2>
+            <h1>Help</h1>
          </header>
-         <article>
-         <h3>Content</h3>
+         <h2>Content</h2>
          <nav>
             <ul class="summaries">
                <li><a href="#Requirements">Requirements</a><br></li>
-               <li><a href="#RunProject">Running a project</a>
+               <li><a href="#ProjectCategories">Project categories</a>
+               <li><a href="#Projects">Projects</a>
                   <ul class="summaries">
-                     <li><a href="#ProjectTypes">Types of projects</a>
                      <li><a href="#Config">Assign files as project</a>
                      <li><a href="#ChangeProjects">Changing between projects</a></li>
                      <li><a href="#Retrieve">Retrieving projects</a>
                      <li><a href="#Language">Setting the language</a>
                   </ul></li>
+               <li><a href="#TestingCode">Testing source code</a>
                <li><a href="#Console">Using the console</a></li>
                <li><a href="#Explorer">Using the project explorer</a></li>
             </ul>
          </nav>
-
+         <br>
          <hr>
 
          <!--Requirements-->
-         <h3 id="Requirements">Requirements</h3>
+         <h2 id="Requirements">Requirements</h2>
          <p>See also <a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
-               README</a> 
+               README</a>
          </p>
          <p>For a programming project the computer is set up in the same way as if any
             text editor is used for coding and the tested program would be run from a command
-            line. Presently, programming projects can be defined for Java and Perl.
+            line. Presently, programming projects can be defined for Java, R and Perl.
          </p>
          <p>
             To compile Java files by simply clicking the 'compile' button or selecting the
             corresponding option in the menu it must be made sure that the program is run
             using the Java Runtime environement (JRE) contained in the Java Development Kit (JDK).
          </p>
-
+         <br>
+         <p><a href="#ancor">Back to top</a></p>
          <hr>
 
-         <!--Run project-->
-         <h3 id="RunProject">Running a project</h3>
-
-         <h4 id="ProjectTypes">Types of projects</h4>
+         <h2 id="ProjectCategories">Project categories</h2>
          <p>Projects of the following types can be assigned to the program:
          </p>
          <nav>
             <ul class="summaries">
                <li>Java (<a href="#JavaProject">Testing Java code and creating a jar file</a>)</li>
                <li>Perl (<a href="#PerlProject">Testing a Perl script</a>)</li>
+               <li>R (<a href="#RProject">Testing an R script</a>)</li>
                <li>HTML (<a href="#HtmlProject">Viewing HTML code in a browser</a>)</li>
             </ul>
          </nav>
-        
+         <br>
+         <p><a href="#ancor">Back to top</a></p>
+         <hr>
+
+         <!--Run project-->
+         <h2 id="Projects">Projects</h2>
+
          <h4 id="Config">Assign files to a project</h4>
          <ol>
             <li>Open a file from or save a new file to the directory that is the presumed
@@ -106,8 +117,8 @@
                 'Name of project root'. If HTML files are to be assigned to a project go
                 to step 7.</li>
             <li>Enter the name of the main source file in the corresponding text field (this
-                applies to Java and Perl but not Html). The main file does not have to be the
-                currently selected file and even not be opened but must exist.</li>
+                applies to Java, R, and Perl but not Html). The main file does not have to be
+                the currently selected file and even not be opened but must exist.</li>
             <li>If source files (or packages in the case of a Java project) are saved in a
                 separate sub-directory of the presumed root of the project the name of this
                 directory must be entered in the field 'Name of sources directory'.</li>
@@ -118,10 +129,11 @@
                 menu.</li>
             <li>Click ok. If entries are correct, that is the named project root matches the
                 name of an existing directory (for HTML) and this root also contains the named
-                main source file (for Java and Perl) the files in the project can be viewed in
+                main source file (for Java and Perl), the files in the project can be viewed in
                 the 'Project explorer'. This is opened by selecting 'View' > 'Project explorer'.
                 </li>
          </ol>
+         <br>
 
          <h4 id="ChangeProjects">Changing between projects</h4>
          <ul>
@@ -132,6 +144,7 @@
                 the project to be set active and then selecting 'Project' > 'Change project' or,
                 to additionally view or modify the settings, 'Project' > 'Project settings'.</li>
          </ul>
+         <br>
 
          <h4 id="Retrieve">Retrieving projects</h4>
          <ul>
@@ -148,13 +161,11 @@
                 active, a marked project is loaded and can be set active by selecting 'Project' >
                 'Change project'.</li>
          </ul>
+         <br>
+         <p><a href="#ancor">Back to top</a></p>
+         <hr>
 
-         <h4 id="Language">Setting the language</h4>
-         <ul>
-            <li>The language is defined based on the extension of an opened or newly saved file.</li>
-            <li>Selecting the language in the Edit menu ('Edit' > 'Language') sets the default
-                for blank documents (unnamed tabs).</li>
-         </ul>
+         <h2 id="TestingCode">Testing source code</h2>
 
          <h4 id="JavaProject">Testing Java code and creating a jar file</h4>
          <ol>
@@ -163,7 +174,7 @@
                 asked to open the console panel to view messages. Note that presently files outside of
                 the source root cannot be included in a compilation when these options to compile a
                 project are used.</li>
-            <li>If the compilation was successful the Java program can be run for testing by selecting 
+            <li>If the compilation was successful the Java program can be run for testing by selecting
                 'Run' in the 'Project' menu. The output and error messages from the tested program are
                 displayed in the console panel. If the tested program asks for input through a command
                 line this is entered in the text area of the console panel. A tested program can be
@@ -177,10 +188,11 @@
                 window. If no name is specified the name of the main class is used.</li>
             <li>To include files other than .java files in a compilation and .class files in a jar
                 archive the extensions of these files may be specified in the text field 'Extensions
-                of included non-Java files'. Extension can be separeted by spaces, commas or semicolons
+                of included non-Java files'. Extensions can be separeted by spaces, commas or semicolons
                 and must begin with the period. Including non-Java files is supported if the project
-                contains a separate directories for java source files and for class files. (</li>
+                contains separate directories for .java source files and for .class files. (</li>
          </ol>
+         <br>
 
          <h4 id="PerlProject">Testing a Perl script</h4>
          <ol>
@@ -193,12 +205,23 @@
                 shown as expected if the autoflushing of Perl's STDOUT is turned on in the script itself.
                 A way to do this (for testing purposes) is to begin the script with the line
                 "STDOUT->autoflush(1);". The other possibilty is, of course, to start the command-line/terminal
-                of the  OS to test the script (see <a href="#Console">Using the console</a>).
-            </li>
-            <li>Arguments (those that are used as command-line options) may be entered in the text field
+                of the  OS to test the script (see <a href="#Console">Using the console</a>).</li>
+            <li>Arguments (those that are used as command-line arguments) may be entered in the text field
                'Arguments' (separated by spaces) in the settings window ('Project' > 'Project settings').
             </li>
          </ol>
+         <br>
+
+         <h4 id="RProject">Testing an R script</h4>
+         <ol>
+            <li>Save changes to the script and select 'Run' in the 'Project' menu. Internally, the script
+                is started using the "Rscript" command.</li>
+            <li>Options for a start command (those that are used as command-line options) may be entered in
+                the text field 'Start options' in the settings window ('Project' > 'Project settings').</li>
+            <li>Arguments (those that are used as command-line arguments) may be entered in the text field
+               'Arguments' (separated by spaces) in the settings window.</li>
+         </ol>
+         <br>
 
          <h4 id="HtmlProject">Viewing HTML code in a web browser</h4>
          <ol>
@@ -206,11 +229,12 @@
                 html file in the default web browser.
             </li>
          </ol>
-         <a href="#ancor">Back to top</a>
+         <br>
+         <p><a href="#ancor">Back to top</a></p>
          <hr>
 
          <!--Console-->
-         <h3 id="Console">Using the console</h3>
+         <h2 id="Console">Using the console</h2>
          <p>The console area shall show messages after compilation of a project and the output of a
             program that is tested.</p>
          <p>In addition, self-chosen system commands entered in a dialog can be run in the current
@@ -228,18 +252,19 @@
          <ol>
             <li>Open the console panel in the menu 'View' > 'Console'.
             </li>
-            <li>Press the button 'Cmd...' and enter a command in the shown dialog window. Klick ok in
+            <li>Press the button 'Cmd...' and enter a command in the shown dialog window. Click ok in
                 the dialog window to run the command.
             </li>
             <li>To run a previous command press the '>' button; to change a command open the command
                 dialog again by clicking 'Cmd...'.
             </li>
          </ol>
-         <a href="#ancor">Back to top</a>
+         <br>
+         <p><a href="#ancor">Back to top</a></p>
          <hr>
 
          <!--File explorer-->
-         <h3 id="Explorer">Using the project explorer</h3>
+         <h2 id="Explorer">Using the project explorer</h2>
          <p>The project explorer is opened by selecting 'View' > 'Project explorer'. It shows the file
             system of a project once one is assigned.<br>
             The explorer always shows the project that is currently set active. A few operations are
@@ -269,8 +294,9 @@
                 "manually" by clicking the 'refresh' symbol.
             </li>
           </ul>
-          <a href="#ancor">Back to top</a>
-          </article>
+          <br>
+          <p><a href="#ancor">Back to top</a></p>
+          <br>
           <footer>
             <p>
                Contact: <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a><br>
