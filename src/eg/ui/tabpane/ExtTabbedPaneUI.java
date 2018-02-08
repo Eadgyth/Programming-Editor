@@ -33,12 +33,9 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
 
    private boolean isShowTabs = true;
    private int tabHeight;
-   //
-   // 15 magic, is max size of documents
-   private boolean[] markedIndices = new boolean[15];
    
    /**
-    * Sets the height of the tabs. Default is 20 pt.
+    * Sets the height of the tabs
     *
     * @param height  the height
     */

@@ -55,6 +55,12 @@ public class Constants {
     * The <code>MatteBorder</code> with inset of 1 pt in light gray at the top */
    public final static Border MATTE_TOP = new MatteBorder(1, 0, 0, 0,
          Constants.LIGHT_GRAY);
+         
+   /**
+    * The <code>MatteBorder</code> with inset of 1 pt in light gray at the top
+    * and bottom */
+   public final static Border MATTE_TOP_BOTTOM = new MatteBorder(1, 0, 1, 0,
+         Constants.LIGHT_GRAY);
 
    //
    // Fonts

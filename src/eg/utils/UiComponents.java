@@ -24,34 +24,37 @@ public class UIComponents {
 
    /**
     * Creates a <code>JToolBar</code> with the last button (intended for a
-    * close button) aligned at the right. The toolbar is not opaque, has
-    * a line border at the bottom and is not floatable. Buttons are not
-    * focusable.
+    * close button) aligned at the right. Besides the toolar is set up as
+    * in {@link#toolbar(JButton[],String[])}
     *
-    * @param bts  the array of JButtons added to the toolbar
-    * @param tooltips  the array of tooltips for the buttons
+    * @param bts  the array of JButtons
+    * @param tooltips  the array of tooltips
     * @return  a new <code>JToolBar</code>
     */
-   public static JToolBar lastBtRightToolbar(JButton[] bts, String[] tooltips) {
+   public static JToolBar lastBtRightToolbar(JButton[] bts, String[] tooltips) {     
       JToolBar tb = new JToolBar(JToolBar.HORIZONTAL);
-      tb.setOpaque(false);
-      tb.setBorder(null);
-      tb.setFloatable(false);     
-      for (int i = 0; i < bts.length; i++) {
-         if (i == bts.length - 1) {
-            tb.add(Box.createHorizontalGlue());
-         }
-         tb.add(bts[i]);
-         bts[i].setBorder(new EmptyBorder(5, 7, 5, 7));
-         bts[i].setToolTipText(tooltips[i]);
-         bts[i].setFocusable(false);
-      }
+      setupToolbar(tb, bts, tooltips, true);
       return tb;
    }
    
    /**
-    * Creates a titled border with the specified title and
-    * a line border in gray
+    * Creates a <code>JToolBar</code>. The toolbar is not opaque, has
+    * no border and is not floatable. Buttons are not focusable and
+    * have an empty border.
+    *
+    * @param bts  the array of JButtons
+    * @param tooltips  the array of tooltips
+    * @return  a new <code>JToolBar</code>
+    */
+   public static JToolBar toolbar(JButton[] bts, String[] tooltips) {
+      JToolBar tb = new JToolBar(JToolBar.HORIZONTAL);
+      setupToolbar(tb, bts, tooltips, false);
+      return tb;
+   }
+   
+   /**
+    * Creates a titled border with the specified title shown with scaled
+    * font size and a line border in gray
     *
     * @param title  the title
     * @return a new titled border
@@ -66,7 +69,7 @@ public class UIComponents {
    
    /**
     * Creates an <code>ExtTabbedPane</code> that is scrollable
-    * and not focusable. The
+    * and not focusable
     *
     * @return  a new {@link ExtTabbedPane}
     */
@@ -78,8 +81,25 @@ public class UIComponents {
    }
    
    //
-   //--private--
+   //--private--/
    //
    
    private UIComponents() {}
+   
+   private static void setupToolbar(JToolBar tb, JButton[] bts, String[] tooltips,
+         boolean isLastButtonRight) {
+
+      tb.setOpaque(false);
+      tb.setBorder(null);
+      tb.setFloatable(false);
+      for (int i = 0; i < bts.length; i++) {
+         if (isLastButtonRight && i == bts.length - 1) {
+            tb.add(Box.createHorizontalGlue());
+         }
+         tb.add(bts[i]);
+         bts[i].setBorder(new EmptyBorder(5, 7, 5, 7));
+         bts[i].setToolTipText(tooltips[i]);
+         bts[i].setFocusable(false);
+      }
+   }
 }

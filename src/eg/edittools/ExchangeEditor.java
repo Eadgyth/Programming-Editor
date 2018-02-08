@@ -3,6 +3,7 @@ package eg.edittools;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 
 import java.awt.event.ActionEvent;
@@ -91,36 +92,52 @@ public class ExchangeEditor implements AddableEditTool {
       setBtnActions();
       enableUndoRedo(false, false);
       enableCutCopy(false);
-      editAreaPnl.setBorder(Constants.MATTE_TOP);
-      exchPnl.add(toolbar(closeBt), BorderLayout.NORTH);
+      editAreaPnl.setBorder(Constants.MATTE_TOP_BOTTOM);
+      exchPnl.add(closingToolbar(closeBt), BorderLayout.NORTH);
       exchPnl.add(editAreaPnl, BorderLayout.CENTER);
-      exchPnl.add(controlsPnl(), BorderLayout.SOUTH);
+      JPanel pnl = new JPanel(new BorderLayout());
+      pnl.add(editToolbar(), BorderLayout.CENTER);
+      pnl.add(controlsPnl(), BorderLayout.SOUTH);
+      exchPnl.add(pnl, BorderLayout.SOUTH);
    }
 
-   private JToolBar toolbar(JButton closeBt) {
+   private JToolBar closingToolbar(JButton closeBt) {
       JButton[] bts = new JButton[] {
-         undoBt, redoBt, cutBt, copyBt, pasteBt,
-         indentBt, outdentBt, clearBt, closeBt
+         closeBt
       };
       String[] toolTips = new String[] {
-         "Undo", "Redo",
-         "Cut selection",
-         "Copy", "Paste",
-         "Increase indentation", "Reduce indentation",
-         "Clear the text area", "Close the exchange editor"
+         "Close the exchange editor"
       };
       JToolBar tb = UIComponents.lastBtRightToolbar(bts, toolTips);
+      Dimension dim = new Dimension(0, Constants.BAR_HEIGHT);
+      tb.setPreferredSize(dim);
       return tb;
    }
+   
+   private JToolBar editToolbar() {
+      JButton[] bts = new JButton[] {
+         undoBt, redoBt, cutBt, copyBt, pasteBt,
+         indentBt, outdentBt, clearBt
+      };
+      String[] toolTips = new String[] {
+         "Undo (Ctrl+Z)", "Redo (Ctrl+Y)",
+         "Cut selection (Ctrl+X)",
+         "Copy (Ctrl+C)", "Paste (Ctrl+P)",
+         "Increase indentation(Ctrl+M)", "Reduce indentation (Ctrl+L)",
+         "Clear the text area",
+      };
+      JToolBar tb = UIComponents.toolbar(bts, toolTips);
+      return tb;
+   }       
 
    private JPanel controlsPnl() {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 1, 1));
-      pnl.add(buttonPnl());
+      pnl.add(setTextToolbar());
       pnl.add(setLangBox());
       return pnl;
    }
    
-   private JPanel buttonPnl() {
+   private JToolBar setTextToolbar() {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
       JButton[] bts = new JButton[] {
          loadBt, copyFromBt, copyToBt
@@ -130,12 +147,8 @@ public class ExchangeEditor implements AddableEditTool {
          "Copy text from the document in main editor",
          "Copy text to the document in main editor",
       };
-      for (int i = 0; i < bts.length; i++) {
-         bts[i].setFocusable(false);
-         bts[i].setToolTipText(toolTips[i]);
-         pnl.add(bts[i]);
-      }
-      return pnl;
+      JToolBar tb = UIComponents.toolbar(bts, toolTips);
+      return tb;
    }
 
    private JPanel setLangBox() {
