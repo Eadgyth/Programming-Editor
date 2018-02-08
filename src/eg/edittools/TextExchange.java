@@ -46,7 +46,7 @@ public class TextExchange {
       fc = new FileChooser(recentDir);
       exchangeDoc.setIndentUnit(prefs.getProperty("indentUnit"));
       if (BACK_UP.exists()) {
-         loadFileContent(BACK_UP);
+         exchangeDoc.displayFileContent(BACK_UP);
       }
    }
 
@@ -162,6 +162,7 @@ public class TextExchange {
    }
    
    private void loadFileContent(File f) {
+      exchangeDoc.enableMerging(true);
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
          String line = br.readLine();
          String nextLine = br.readLine();
@@ -178,6 +179,9 @@ public class TextExchange {
       }
       catch (IOException e) {
          FileUtils.logStack(e);
+      }
+      finally {
+         exchangeDoc.enableMerging(false);
       }
    }
 }

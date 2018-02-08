@@ -183,6 +183,16 @@ public final class EditableDocument {
       savedContent = type.getText();
       return writeToFile(f);
    }
+   
+   /**
+    * Diplays the content of the specified file.
+    * The file is not set and the text insertion is not undoable
+    *
+    * @param f  the file
+    */
+   public void displayFileContent(File f) {
+      displayFileContentImpl(f);
+   }
 
    /**
     * Saves the current text content to the specified file but does
