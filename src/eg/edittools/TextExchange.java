@@ -34,6 +34,7 @@ public class TextExchange {
    private final FileChooser fc;
 
    private EditableDocument sourceDoc;
+   private boolean isBackupSet = false;
 
    /**
     * @param exchangeDoc  the <code>EditableDocument</code> that
@@ -45,8 +46,15 @@ public class TextExchange {
       String recentDir = prefs.getProperty("recentPath");
       fc = new FileChooser(recentDir);
       exchangeDoc.setIndentUnit(prefs.getProperty("indentUnit"));
-      if (BACK_UP.exists()) {
+      /*if (BACK_UP.exists()) {
          exchangeDoc.displayFileContent(BACK_UP);
+      }*/
+   }
+   
+   public void setBackupText() {
+      if (!isBackupSet && BACK_UP.exists()) {
+         exchangeDoc.displayFileContent(BACK_UP);
+         isBackupSet = true;
       }
    }
 
@@ -139,6 +147,9 @@ public class TextExchange {
     * be saved
     */
    public void save() {
+      if (!isBackupSet) {
+         return;
+      }
       if (exchangeDoc.docLength() > 0) {
          int res = Dialogs.confirmYesNo("Keep content in exchange editor?");
          if (0 != res) {
@@ -149,7 +160,7 @@ public class TextExchange {
    }
    
    //
-   //--private--//
+   //--private--/
    //
    
    private void copy(EditableDocument destination, String text) {

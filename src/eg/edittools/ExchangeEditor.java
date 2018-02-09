@@ -67,6 +67,7 @@ public class ExchangeEditor implements AddableEditTool {
 
    @Override
    public Component toolComponent() {
+      exch.setBackupText();
       return exchPnl;
    }
 
