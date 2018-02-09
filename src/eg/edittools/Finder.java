@@ -38,9 +38,10 @@ public class Finder implements AddableEditTool {
    private final JTextField replaceTf = new JTextField();
    private final JButton searchBt     = new JButton("Find");
    private final JButton replaceBt    = new JButton("Replace");
+   private final JButton replaceAllBt = new JButton("Replace all");
 
    private final TextSearch search = new TextSearch();
-   
+
    @Override
    public void createTool(JButton closeBt) {
       initFinderPnl(closeBt);
@@ -51,12 +52,12 @@ public class Finder implements AddableEditTool {
    public Component toolComponent() {
       return finderPnl;
    }
-   
+
    @Override
    public void setEditableDocument(EditableDocument edtDoc) {
       search.setDocument(edtDoc);
    }
-   
+
    /**
     * Has no effect in this class
     */
@@ -68,10 +69,11 @@ public class Finder implements AddableEditTool {
    //
 
    private void initFinderPnl(JButton closeBt) {
+      enableButtons(false);
       finderPnl.add(toolbar(closeBt), BorderLayout.NORTH);
       finderPnl.add(controlsPnl(), BorderLayout.CENTER);
    }
-   
+
    private JToolBar toolbar(JButton closeBt) {
       JButton[] bts = new JButton[] {
          closeBt
@@ -82,7 +84,7 @@ public class Finder implements AddableEditTool {
       JToolBar tb = UIComponents.lastBtRightToolbar(bts, toolTips);
       return tb;
    }
-   
+
    private JPanel controlsPnl() {
       JPanel pnl = new JPanel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.PAGE_AXIS));
@@ -100,11 +102,11 @@ public class Finder implements AddableEditTool {
       setSize(replaceTf);
       pnl.add(replaceTf);
       pnl.add(Box.createVerticalStrut(10));
-      pnl.add(buttonsPnl(replaceBt));
+      pnl.add(buttonsPnl(replaceBt, replaceAllBt));
       pnl.setBorder(Constants.EMPTY_BORDER_10);
       inputTf.getDocument().addDocumentListener(docListener);
       return pnl;
-   }  
+   }
 
    private JPanel labelPnl(String text) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -115,7 +117,7 @@ public class Finder implements AddableEditTool {
       setSize(pnl);
       return pnl;
    }
-   
+
    private JPanel radioBtPnl() {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
       JRadioButton upBt = new JRadioButton("up");
@@ -151,10 +153,12 @@ public class Finder implements AddableEditTool {
       return pnl;
    }
 
-   private JPanel buttonsPnl(JButton bt) {
+   private JPanel buttonsPnl(JButton... bt) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      bt.setFocusable(false);
-      pnl.add(bt);
+      for (int i = 0; i < bt.length; i++) {
+         bt[i].setFocusable(false);
+         pnl.add(bt[i]);
+      }
       setSize(pnl);
       return pnl;
    }
@@ -164,11 +168,25 @@ public class Finder implements AddableEditTool {
       dim.width = Integer.MAX_VALUE;
       c.setMaximumSize(dim);
    }
-   
+
    private void setActions() {
-      searchBt.addActionListener(e -> search.searchText(inputTf.getText()));
-      inputTf.addActionListener(e -> search.searchText(inputTf.getText()));
-      replaceBt.addActionListener(e -> search.replaceSel(replaceTf.getText()));
+      searchBt.addActionListener(e -> search.searchText(
+            inputTf.getText()));
+
+      inputTf.addActionListener(e -> search.searchText(
+            inputTf.getText()));
+
+      replaceBt.addActionListener(e -> search.replace(
+            inputTf.getText(), replaceTf.getText()));
+
+      replaceAllBt.addActionListener(e -> search.replaceAll(
+            inputTf.getText().trim(), replaceTf.getText()));
+   }
+   
+   private void enableButtons(boolean b) {
+      searchBt.setEnabled(b);
+      replaceBt.setEnabled(b);
+      replaceAllBt.setEnabled(b);
    }
 
    DocumentListener docListener = new DocumentListener() {
@@ -179,12 +197,14 @@ public class Finder implements AddableEditTool {
 
       @Override
       public void insertUpdate(DocumentEvent documentEvent) {
-         search.resetSearchStart();
+         boolean enable = inputTf.getText().length() > 0;
+         enableButtons(enable);
       }
 
       @Override
       public void removeUpdate(DocumentEvent documentEvent) {
-         search.resetSearchStart();
+         boolean enable = inputTf.getText().length() > 0;
+         enableButtons(enable);
       }
    };
 }

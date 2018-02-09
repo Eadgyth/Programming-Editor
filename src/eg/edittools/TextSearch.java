@@ -99,19 +99,84 @@ public class TextSearch {
    }
    
    /**
-    * Replaces text selected in this document with the specified string
+    * Replaces text
     *
-    * @param replaceWith  the string
+    * @param searchTerm  search term that is replaced
+    * @param replacement  the replacement for the search term
     */
-   public void replaceSel(String replaceWith) {
-      if (textArea.getSelectedText() != null) {
-         textArea.replaceSelection(replaceWith);
+   public void replace(String searchTerm, String replacement) {
+      if (searchTerm.length() == 0) {
+         return;
+      }
+      String sel = textArea.getSelectedText();
+      if (sel == null) {
+         searchText(searchTerm);
+      }
+      else {
+         //
+         // check selection since selection may be made "by hand"
+         boolean isSearchTermSelected = false;
+         if (isCaseSensitive) {
+            isSearchTermSelected = sel.equals(searchTerm);
+         }
+         else {
+            isSearchTermSelected = sel.equalsIgnoreCase(searchTerm);
+         }
+         if (!isSearchTermSelected) {
+            searchText(searchTerm);
+         }
+         else {
+            textArea.replaceSelection(replacement);
+            searchText(searchTerm);
+         }
       }
    }
    
+   /**
+    * Replaces all occurrences of the specified search term
+    *
+    * @param searchTerm  the search term
+    * @param replacement  the replacement for the search term
+    */
+   public void replaceAll(String searchTerm, String replacement) {
+      if (searchTerm.length() == 0) {
+         return;
+      }
+      String content = doc.docText();
+      if (!isCaseSensitive) {
+         content = content.toLowerCase();
+         searchTerm = searchTerm.toLowerCase();
+      }
+      doc.enableMerging(true);
+      int count = 0;
+      int diff = searchTerm.length() - replacement.length();
+      int sumDiff = 0;
+      int ind = 0;
+      while (ind != -1) {
+         ind = nextIndex(content, searchTerm, ind);
+         if (ind != -1) {
+            count++;
+            doc.replace(ind - sumDiff, searchTerm.length(), replacement);
+            sumDiff += diff;
+            textArea.setCaretPosition(ind - sumDiff + diff + replacement.length());
+            ind += replacement.length();
+         }
+      }
+      doc.enableMerging(false);
+      
+      if (count > 0) {
+         Dialogs.infoMessage("\"" + searchTerm + "\" was replaced "
+               + count + " times.", null);
+      }
+      else {
+         Dialogs.infoMessage("\"" + searchTerm + "\" was not found.", null);
+      }
+      textArea.requestFocusInWindow();
+   }
+   
    //
-   //--private--
-   //
+   //--private--/
+   //       
    
    private void searchTextDown(String content, String searchTerm) {
       int ind = nextIndex(content, searchTerm, pos);
@@ -124,7 +189,8 @@ public class TextSearch {
          textArea.select(pos, pos + searchTerm.length());
       }
       else {
-         Dialogs.infoMessage("\"" + searchTerm + "\" cannot be found.", null);
+         Dialogs.infoMessage("\"" + searchTerm + "\" was not found.", null);
+         textArea.requestFocusInWindow();
       }
    }
 
@@ -149,7 +215,8 @@ public class TextSearch {
          textArea.select(pos, pos + searchTerm.length());
       }
       else {
-         Dialogs.infoMessage("\"" + searchTerm + "\" cannot be found.", null);
+         Dialogs.infoMessage("\"" + searchTerm + "\" was not found.", null);
+         textArea.requestFocusInWindow();
       }
    }
 
