@@ -192,12 +192,11 @@ public class UndoEdit {
    }
    
    /**
-    * Disables or re-enables adding breakpoints. If disabled also
-    * a breakpoint with the value of the index of the last edit is added
-    * (if the same breakpoint is not already set).
-    * If disabled a mark is set by invoking {@link #markBreakpoint}
+    * Disables or re-enables adding breakpoints. Edits added
+    * after disabling until re-enabling are "framed" by breakpoints
     *
-    * @param b  the boolean value. True to disable, false to re-enable
+    * @param b  the boolean value that is true to disable,
+    * false to re-enable
     */
    public void disableBreakpointAdding(boolean b) {
       if (b) {
@@ -206,9 +205,9 @@ public class UndoEdit {
             breakpoints.add(iEd);
             iBr = breakpoints.size() - 1;
          }
-         else {
-            markBreakpoint();
-         }
+      }
+      else {
+         markBreakpoint();
       }
       isMerge = b;
    }

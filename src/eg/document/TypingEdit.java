@@ -351,17 +351,15 @@ public class TypingEdit {
       if (!isAddToUndo) {
          return;
       }
-      if (caret > 0) {
-         boolean isBreakpoint = false;
-         if (isInsert) {
-            isBreakpoint = caret - chgPos != 1;
-         }
-         else {
-            isBreakpoint = caret - chgPos != 0;
-         }
-         if (isBreakpoint) {
-            undo.markBreakpoint();
-         }
+      boolean isBreakpoint = false;
+      if (isInsert) {
+         isBreakpoint = caret - chgPos != 1;
+      }
+      else {
+         isBreakpoint = caret - chgPos != 0;
+      }
+      if (isBreakpoint) {
+         undo.markBreakpoint();
       }
    }
 
@@ -383,7 +381,7 @@ public class TypingEdit {
                highlightLine();
                EventQueue.invokeLater(() -> {
                   autoInd.indent(text, chgPos);
-                  autoInd.closedBracketIndent(text, chgPos);
+                  autoInd.outdent(text, chgPos);
                });
             }
          }
