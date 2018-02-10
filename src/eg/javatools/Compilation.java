@@ -18,6 +18,8 @@ import javax.tools.StandardJavaFileManager;
 import java.io.File;
 import java.io.IOException;
 
+import java.nio.file.Files;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -174,7 +176,11 @@ public class Compilation {
                   String destination = source.replace(sourceDir, execDir);                
                   if (destination != null) {
                      File fDest = new File(destination);
-                     java.nio.file.Files.copy(f.toPath(), fDest.toPath(),
+                     File destDir = fDest.getParentFile();
+                     if (!destDir.exists()) {
+                        destDir.mkdirs();
+                     }
+                     Files.copy(f.toPath(), fDest.toPath(),
                            REPLACE_EXISTING);
                   }
                }
