@@ -1,7 +1,8 @@
 package eg.document;
 
 /**
- * The auto-indentation which works with spaces.<br>
+ * The auto-indentation which works with spaces.
+ * <p>
  * Created in {@link TypingEdit}
  */
 public class AutoIndent {
@@ -10,7 +11,6 @@ public class AutoIndent {
 
    private String indentUnit = "";
    private int indentLength = 0;
-   private boolean isOutdentEnabled = false;
 
    /**
     * @param textDoc  the reference to {@link TextDocument}
@@ -46,10 +46,10 @@ public class AutoIndent {
    }
 
    /**
-    * Does indentation if the character at the specified position
-    * is a newline. The indentation corresponds to the indentation
-    * at the previous line or is increased by this indent unit if
-    * an opening brace precedes the newline character
+    * Inserts an indentation corresponding to the previous line if
+    * the character at the specified position is a newline. The indentation
+    * is increased by an indent unit if an opening brace precedes the
+    * newline character
     *
     * @param text  the text
     * @param pos  the position
@@ -57,7 +57,7 @@ public class AutoIndent {
    public void indent(String text, int pos) {
       boolean isNewLine = '\n' == text.charAt(pos);
       if (isNewLine) {
-         String currIndent = currentIndent(text, pos);
+         String currIndent = currentIndentAt(text, pos);
          if (pos > 1 && '{' == text.charAt(pos - 1)) {
             currIndent += indentUnit;
          }
@@ -67,26 +67,30 @@ public class AutoIndent {
 
    /**
     * Reduces the indentation by this indent unit if the character at
-    * the specified position is a closing brace
+    * the specified position is a closing brace and if the current
+    * indentation can be reduced 
     *
     * @param text  the text
     * @param pos  the position
     */
-   public void closedBracketIndent(String text, int pos) {
+   public void outdent(String text, int pos) {
       if (pos < indentLength || '}' != text.charAt(pos)) {
          return;
       }
       int outdentPos = pos - indentLength;
-      if (text.substring(outdentPos, pos).equals(indentUnit)) {
+      boolean ok = isOutdent(text, pos)
+            && text.substring(outdentPos, pos).equals(indentUnit);
+
+      if (ok) {
          textDoc.remove(outdentPos, indentLength);
       }
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
-   private String currentIndent(String text, int pos) {
+   private String currentIndentAt(String text, int pos) {
       String currIndent = "";
       int lineStart;
       if (pos > 1) {
@@ -98,4 +102,20 @@ public class AutoIndent {
       }
       return currIndent;
    }
+   
+   private boolean isOutdent(String text, int pos) {
+      int lastOpeningPos = text.lastIndexOf('{', pos - 1);
+      int lastClosingPos = text.lastIndexOf('}', pos - 1);
+      String indentAtChange = currentIndentAt(text, pos);
+      String indentAtBraceAhead = "";
+      if (lastOpeningPos > lastClosingPos) {
+         indentAtBraceAhead = currentIndentAt(text, lastOpeningPos);
+         return indentAtChange.length()
+               - indentAtBraceAhead.length() >= indentLength;
+      }
+      else {
+         indentAtBraceAhead = currentIndentAt(text, lastClosingPos);
+         return indentAtChange.length() >= indentAtBraceAhead.length();
+      }
+   }      
 }
