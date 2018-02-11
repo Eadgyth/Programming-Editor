@@ -1,119 +1,84 @@
 <!DOCTYPE html>
 <html>
-   <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-      <title>Eadgyth docu</title>
-      <style>
-         * {
-            font-family: sans-serif;
-         }
-         div.container {
-            width: 100%;
-            border: 1px solid gray;
-         }
-         header, footer {
-            padding: 1em;
-            color: #b1010;
-            background-color: #55bfec;
-         }
-         nav {
-            float: left;
-            max-width: 300px;
-            margin: 0;
-            padding: 1em;
-         }
-         nav ul a {
-            text-decoration: none;
-            font-size: 90%;
-         }
-         article ul li {
-            margin-top: 0.5em;
-         }
-         article {
-            margin-left: 170px;
-            border-left: 1px solid gray;
-            padding: 1em;
-            overflow: hidden;
-         }
-      </style>
-   </head>
-   <body>
-      <div class="container">
-         <header>
-            <h2>Eadgyth Programming-Editor</h2>
-            <h3>A simple source code text editor</h3>
-         </header>
-         <nav>
-            <h4>Help and program documentation</h4>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+   <title>Eadgyth docu</title>
+   <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+   <div class="container">
+      <header>
+         <h2>Eadgyth Programming-Editor</h2>
+         <h3>A simple source code text editor</h3>
+      </header>
+      <nav class="leftPanel">
+         <h4>Help and program documentation</h4>
+         <ul>
+         <li><a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
+                README</a></li>
+         <li><a href="help/help.html">Help to use Eadgyth</a></li>
+         <li><a href="javadoc/index.html">Overview of the code (javadoc)</a></li>
+         <li><a href="https://github.com/Eadgyth/Programming-Editor">
+                Source code and program download at Github</a></li>
+         </ul>
+      </nav>
+      <article>
+         <img src="images/EadgythIcon.png" width="60"/>
+         <h2>Features</h2>
+         <h4>Text editing</h4>
+         <ul>
+         <li>Working with several open files in tabs. The tabbar may be hidden to work
+             with a single document.</li>
+         <li>Enabling and disabling word-wrapping (word-wrap not with line-numbering,
+             however).</li>
+         <li>Undo/redo.</li>
+         <li>A basic find/replace function.</li>
+         <li>Clearing end-of-line (trailing) white spaces.</li>
+         <li>An "exchange editor" pane to edit text in a separate view and to facilitate
+             the exchange of text within a file or between files</li>
+         <li>A basic syntax highlighting for Java, Perl, R, HTML, Javascript and CSS, the
+             last two also embedded in an HTML document.</li>
+         <li>A basic auto-indentation.</li>
+         <li>Block-wise increase or decrease of the indentation.</li>
+         </ul>
+         <h4>Testing source code</h4>
+         <ul>
+         <li>A simple and flexible assignment of files as coding project.</li>
             <ul>
-               <li><a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
-                      README</a></li>
-               <li><a href="help/help.html">Help to use Eadgyth</a></li>
-               <li><a href="javadoc/index.html">Overview of the code (javadoc)</a></li>
-               <li><a href="https://github.com/Eadgyth/Programming-Editor">
-                      Source code and program download at Github</a></li>
+            <li>A project may be simply the location of source files.</li>
+            <li>The program also works with a given directory structure of a project.
+                This may include folders for source files or for executable files.
+                Also packages and sub-packages (in a Java project) are taken into
+                account.</li>
+            <li>A number of projects can be assigned and one can easily switch between
+                projects.</li>
+            <li>Retrieval of already defined projects after newly starting the program.</li>
             </ul>
-         </nav>
-         <article>
-            <img src="images/EadgythIcon.png" width="60"/>
-            <h2>Features</h2>
-            <h4>Text editing</h4>
+         <li>Pre-defined actions on a project by simply using menu selections or buttons.
             <ul>
-               <li>Working with several open files in tabs. The tabbar may be hidden to work
-                   with a single document.</li>
-               <li>Enabling and disabling word-wrapping (word-wrap not with line-numbering,
-                   however).</li>
-               <li>Undo/redo.</li>
-               <li>A basic find/replace function.</li>
-               <li>Clearing end-of-line (trailing) white spaces.</li>
-               <li>An "exchange editor" pane to edit text in a separate view and to facilitate
-                   the exchange of text within a file or between files</li>
-               <li>A basic syntax highlighting for Java, Perl, R, HTML, Javascript and CSS, the
-                   last two also embedded in an HTML document.</li>
-               <li>A basic auto-indentation.</li>
-               <li>Block-wise increase or decrease of the indentation.</li>
+            <li>Compiling and testing Java code and bundling a Java program in an executable
+                jar file. Non-Java files may be included in a compilation and in a jar.</li>
+            <li>Testing a Perl script.</li>
+            <li>Testing an R script.</li>
+            <li>Viewing Html code in the default web browser.</li>
             </ul>
-            <h4>Testing source code</h4>
-            <ul>
-               <li>A simple and flexible assignment of files as coding project.</li>
-                  <ul>
-                     <li>A project may be simply the location of source files.</li>
-                     <li>The program also works with a given directory structure of a project.
-                         This may include folders for source files or for executable files.
-                         Also packages and sub-packages (in a Java project) are taken into
-                         account.</li>
-                     <li>A number of projects can be assigned and one can easily switch between
-                         projects.</li>
-                     <li>Retrieval of already defined projects after newly starting the program.
-                         </li>
-                  </ul>
-               <li>Pre-defined actions on a project by simply using menu selections or buttons.
-                  <ul>
-                     <li>Compiling and testing Java code and bundling a Java program in an executable
-                         jar file. Non-Java files may be included in a compilation and in a jar.</li>
-                     <li>Testing a Perl script.</li>
-                     <li>Testing an R script.</li>
-                     <li>Viewing Html code in the default web browser.</li>
-                  </ul>
-               <li>A basic console to view the output and error messages during compiling and
-                   testing a Java or Perl program. If the tested program asks for input this
-                   can be entered in the text area of the console (for a limitation when an
-                   interactive Perl script is tested see
-                   <a href="help/help.html#PerlProject">Testing a Perl script</a>.</li>
-               <li>Running self-chosen system commands in the current working directory. These
-                   may be used for actions on a project that are not pre-defined.</li>
-            </ul>
-            <h4>Other</h4>
-            <ul>
-              <li>A file explorer that shows the files of the project that is set active.
-                  It offers to open files, delete files and to create directories</i>
-            </ul> 
-         </article>
-         <footer>
-            <p>
-               Contact: <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a>
-            </p>
-         </footer>
-      </div>
-   </body>
+         <li>A basic console to view the output and error messages during compiling and
+             testing a Java or Perl program. If the tested program asks for input this
+             can be entered in the text area of the console (for a limitation when an
+             interactive Perl script is tested see
+             <a href="help/help.html#PerlProject">Testing a Perl script</a>.</li>
+         <li>Running self-chosen system commands in the current working directory. These
+             may be used for actions on a project that are not pre-defined.</li>
+         </ul>
+         <h4>Other</h4>
+         <ul>
+           <li>A file explorer that shows the files of the project that is set active.
+               It offers to open files, delete files and to create directories</i>
+         </ul> 
+      </article>
+      <footer>
+         <p>Contact: <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a></p>
+      </footer>
+   </div>
+</body>
 </html>
