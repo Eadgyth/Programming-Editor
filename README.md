@@ -24,9 +24,9 @@ the JDK 8 is required. Further, it must be ensured that the program is run using
 in the JDK, not the public JRE. It also can be run using Java 9, but with some problems with regard
 to the graphical interface (as seen on Windows 10).
 <p>
-The program is started by clicking the jar-file 'Eadgyth.jar". This file  must be found in the
-same folder as the prefs.properties file and the Resources folder, just like found in the
-'EadgythProgram' folder in this repository.
+The program is started by clicking the jar-file 'Eadgyth.jar". This file must be found in the
+same folder as the prefs.properties file just like found in the 'EadgythProgram' folder in this
+repository.
 <p>
 LIMITATIONS<br>
 While the limitations are certainly countless some functions that are already present are still
@@ -36,10 +36,11 @@ embryonic. Some are:
     to work in the console area of the program. Interactive programs in Java seem to work fine but,
     for example, an interactive Perl script does not unless the autoflushing of Perl's STDOUT is
     enabled in the script itself.</li>
-<li>The compilation of a Java project and the creation of an executable jar file includes only files
-    found in an assigned project.</li>
+<li>The compilation and the creation of an executable jar file of a Java project include only files
+    found in a source directoy but not in exteral libraries if the pre-defined actions in the menu
+    or the toolbar are selected.</li>
 <li>The printing to a printer is rudimentary and is rather the blueprint for a printing function.
-    The page size is not controlled.</li>
+    The font size relative to the page size is not controlled.</li>
 </ul>
 <p>
 IDEAS FOR FURTHER DEVELOPEMENT<br>
@@ -51,5 +52,9 @@ IDEAS FOR FURTHER DEVELOPEMENT<br>
    window and it has access to the file in the selected tab (the interface replaces the plugin
    interface in previous commits).</li>
 </ul>
+<p>
+ACKLOWLEDGEMENT<br>
+The program uses icons from
+<a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.
 <p>
 LICENSE: MIT, see LICENSE<br>
