@@ -17,10 +17,10 @@ run in the program. The lower screenshot shows the simple editor view.
 <br>
 <p>
 REQUIREMENTS FOR TESTING<br>
-Running the program requires Java 8. For compiling Java code from within the program installing
-the JDK 8 is required. Further, it must be ensured that the program is run using the JRE contained
-in the JDK, not the public JRE. It also can be run using Java 9, but with some problems with regard
-to the graphical interface (as seen on Windows 10).
+Running the program requires Java 8. For compiling Java code by the built-in compile option
+installing the JDK 8 is required and it must be ensured that the program is run using the JRE
+contained in the JDK. Running it using Java 9 causes some problems with regard to the graphical
+interface (as far as seen on Windows 10).
 <p>
 The program is started by clicking the jar-file 'Eadgyth.jar". This file must be found in the
 same folder as the prefs.properties file just like found in the 'EadgythProgram' folder in this
@@ -38,6 +38,8 @@ Among the countless limitations at the present stage some need mention:
     selected.</li>
 <li>The printing to a printer is rudimentary and is rather the blueprint for a printing function.
     The font size relative to the page size is not controlled.</li>
+<li>The program is so far tested on Windows by the author (me). I would appriciate feedback from
+    somebody who tried it on other platforms.</li>
 </ul>
 <p>
 IDEAS FOR FURTHER DEVELOPEMENT<br>
