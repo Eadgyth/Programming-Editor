@@ -17,7 +17,7 @@
          <ul class="summaries">
          <li><a href="#Requirements">Requirements</a><br></li>
          <li><a href="#ProjectCategories">Project categories</a>
-         <li><a href="#Projects">Projects</a>
+         <li><a href="#Projects">Working with projects</a>
             <ul class="summaries">
             <li><a href="#Config">Assign files as project</a>
             <li><a href="#ChangeProjects">Changing between projects</a></li>
@@ -69,9 +69,9 @@
       <hr>
 
       <!--Run project-->
-      <h2 id="Projects">Projects</h2>
+      <h2 id="Projects">Working with projects</h2>
 
-      <h4 id="Config">Assign files to a project</h4>
+      <h4 id="Config">Assign files as project</h4>
       <ol>
       <li>Open a file from or save a new file to the directory that is the presumed
           root directory of the project. The file may also be saved in a sub-directory
@@ -133,11 +133,11 @@
 
       <h4 id="JavaProject">Testing Java code and creating a jar file</h4>
       <ol>
-      <li>Compile the source file(s) by selecting either 'Save selected source file and compile'
-          or 'Save all source files and compile' in the 'Project' menu. If errors occured it is
-          asked to open the console panel to view messages. Note that presently files outside of
-          the source root cannot be included in a compilation when these options to compile a
-          project are used.</li>
+      <li>Compile the source file(s) by selecting either 'Save selected file and compile project'
+          or 'Save all open project files and compile project' in the 'Project' menu or by clicking
+          the corresponding buttons in the toolbar. If errors occured it is asked to open the
+          console panel to view messages. Note that presently files outside of the source root
+          cannot be included in a compilation when these options to compile a project are used.</li>
       <li>If the compilation was successful the Java program can be run for testing by selecting
           'Run' in the 'Project' menu. The output and error messages from the tested program are
           displayed in the console panel. If the tested program asks for input through a command
@@ -154,22 +154,23 @@
           archive the extensions of these files may be specified in the text field 'Extensions
           of included non-Java files'. Extensions can be separeted by spaces, commas or semicolons
           and must begin with the period. Including non-Java files is supported if the project
-          contains separate directories for .java source files and for .class files. (</li>
+          contains separate directories for .java source files (where the non-Java files must be
+          found) and for .class files. (</li>
       </ol>
       <br>
 
       <h4 id="PerlProject">Testing a Perl script</h4>
       <ol>
-      <li>Save changes to the script and select 'Run' in the 'Project' menu.
+      <li>Save changes to the Perl script and select 'Run' in the 'Project' menu.
       </li>
       <li>Any output (error) is shown in the console panel.<br> NOTE: there is a limitation when the
           script asks for input through a command line. In that case any output from the script
-          expected before the input is asked for (like "Enter your name:") is not printed or, more
-          precisely, is printed only after all inputs were made. However, the output would be
-          shown as expected if the autoflushing of Perl's STDOUT is turned on in the script itself.
-          A way to do this (for testing purposes) is to begin the script with the line
-          "STDOUT->autoflush(1);". The other possibilty is, of course, to start the command-line/terminal
-          of the OS to test the script (see <a href="#Console">Using the console</a>).</li>
+          expected before the input is asked for (like "Enter your name:") is only printed after all
+          inputs were made. However, the output would be shown as expected if the autoflushing of
+          Perl's STDOUT is turned on in the script itself. A way to do this (for testing purposes) is
+          to begin the script with the line "STDOUT->autoflush(1);". The other possibilty is, of course,
+          to start the command-line/terminal of the OS to test the script (see
+          <a href="#Console">Using the console</a>).</li>
       <li>Arguments (those that are used as command-line arguments) may be entered in the text field
          'Arguments' (separated by spaces) in the settings window ('Project' > 'Project settings').
       </li>
@@ -257,15 +258,15 @@
           in the file view. Changes made from outside the program would be updated
           "manually" by clicking the 'refresh' symbol.
       </li>
-       </ul>
-       <br>
-       <p><a href="#ancor">Back to top</a></p>
-       <br>
-       <footer>
-         <p>
-         Contact: <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a><br>
-         (<i>A message is welcome if the program does not work as suggested in this help</i>)
-         </p>
+      </ul>
+      <br>
+      <p><a href="#ancor">Back to top</a></p>
+      <br>
+      <footer>
+        <p>
+        Contact: <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a><br>
+        (<i>A message is welcome if the program does not work as suggested in this help</i>)
+        </p>
       </footer>
    </div>
 </body>

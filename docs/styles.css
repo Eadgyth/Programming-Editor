@@ -1,7 +1,7 @@
 * {
    font-family: sans-serif;
 }
-div.container {
+div {
    width: 100%;
    border: 1px solid gray;
 }
@@ -11,8 +11,9 @@ header, footer {
    background-color: #55bfec;
 }
 p {
-   margin-left: 20px;
    font-size: 0.95em;
+   margin-left: 20px;
+   margin-right: 50px;
 }
 h1, h2, h3, h4 {
    margin-left: 20px;
@@ -26,17 +27,19 @@ nav.leftPanel {
    margin: 0;
    padding: 1em;
 }
+nav ul a {
+   text-decoration: none;
+   font-size: 90%;
+}
 ol li {
    font-size: 0.95em;
    margin-top: 1em;
+   margin-right: 50px;
 }
 ul:not(.summaries) li {
    font-size: 0.95em;
    margin-top: 1em;
-}
-nav ul a {
-   text-decoration: none;
-   font-size: 90%;
+   margin-right: 50px;
 }
 hr {
    height: 10px;
@@ -44,12 +47,8 @@ hr {
    background-color:#55bfec;
    border: none;
 }
-div {
-   width: 100%;
-   border: 1px solid gray;
-}
-article {
-   margin-left: 170px;
+article.right {
+   margin-left: 160px;
    border-left: 1px solid gray;
    padding: 1em;
    overflow: hidden;
