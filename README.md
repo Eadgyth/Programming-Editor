@@ -39,7 +39,7 @@ Among the countless limitations at the present stage some need mention:
 <li>The printing to a printer is rudimentary and is rather the blueprint for a printing function.
     The font size relative to the page size is not controlled.</li>
 <li>The program is so far tested on Windows by the author (me). I would appriciate feedback from
-    somebody who tried it on other platforms.</li>
+    somebody who may have tried it on other platforms.</li>
 </ul>
 <p>
 IDEAS FOR FURTHER DEVELOPEMENT<br>
