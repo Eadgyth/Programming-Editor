@@ -6,6 +6,9 @@ time simple to work with as much as possible. It is already possible to easily a
 as a "coding project", to easily switch between a number of set projects at runtime and to
 retrieve projects when the program is newly started.
 <p>
+A list of the features of the program and documentation can be found under
+<a href="https://eadgyth.github.io/Programming-Editor/">Help and documentation</a>.
+<p>
 REQUIREMENTS FOR TESTING<br>
 Running the program requires Java 8. For compiling Java code by the built-in compile option
 installing the JDK 8 is required and it must be ensured that the program is run using the JRE
@@ -47,8 +50,7 @@ The program uses icons from
 <a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.
 <p>
 LICENSE: MIT, see LICENSE<br>
-A list of the features of the program and documentation can be found under
-<a href="https://eadgyth.github.io/Programming-Editor/">Help and documentation</a>.
+<p>
 <p>
 The first screenshot shows a Java project that has a typical directory structure and that is
 run in the program. The lower screenshot shows the simple editor view.
