@@ -18,8 +18,8 @@ import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 
 /**
- * The exchange of text between one <code>EditableDocument</code> set in
- * the constructor and a settable object of <code>EditableDocument</code>.
+ * The exchange of text between an <code>EditableDocument</code> set in
+ * the constructor and a variable <code>EditableDocument</code>.
  * The first is named 'exchange document' and the second 'source document'.
  * The source document is the document currently viewed in the main editor
  * area
@@ -27,7 +27,7 @@ import eg.utils.FileUtils;
 public class TextExchange {
 
    private final static File BACK_UP = new File(System.getProperty("user.dir")
-         + "/" + "exchangeContent.txt");
+         + "/exchangeContent.txt");
 
    private final EditableDocument exchangeDoc;
    private final Preferences prefs = new Preferences();
@@ -46,11 +46,12 @@ public class TextExchange {
       String recentDir = prefs.getProperty("recentPath");
       fc = new FileChooser(recentDir);
       exchangeDoc.setIndentUnit(prefs.getProperty("indentUnit"));
-      /*if (BACK_UP.exists()) {
-         exchangeDoc.displayFileContent(BACK_UP);
-      }*/
    }
    
+   /**
+    * Sets in the exchange document the content in the back-up file
+    * "exchangeContent.txt". This is only done one time.
+    */
    public void setBackupText() {
       if (!isBackupSet && BACK_UP.exists()) {
          exchangeDoc.displayFileContent(BACK_UP);
@@ -124,8 +125,7 @@ public class TextExchange {
    }
 
    /**
-    * Changes the language and switches on or off auto-indention depending
-    * on whether or not the language is a coding language
+    * Changes the code editing mode
     *
     * @param lang  the language which is a constant in {@link Languages}
     */
@@ -141,10 +141,9 @@ public class TextExchange {
    }
 
    /**
-    * Saves the content contained in the exchange document to the file
-    * 'exchangeContent.txt' which is saved in the program's directory.
-    * It is asked before in a dialog to confirm that the content shall
-    * be saved
+    * Saves the content in the exchange document to the file
+    * 'exchangeContent.txt' in the program's directory if it is
+    * confirmed to do so
     */
    public void save() {
       if (!isBackupSet) {

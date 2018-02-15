@@ -19,11 +19,6 @@ import eg.utils.FileUtils;
  * The configured projects.
  * <p>
  * A project is represented by an object of {@link ProjectActions}.
- * <p>
- * Several projects can be stored and any of these can be selected
- * for the execution of its implemented actions. Storing or selecting
- * projects depends on the document, that is the object of
- * {@link EditableDocument}, which is selected at a time.
  */
 public class Projects {
 
@@ -32,7 +27,6 @@ public class Projects {
    private final ProcessStarter proc;
    private final List<ProjectActions> projList = new ArrayList<>();
    private final EditableDocument[] edtDoc;
-
    private ProjectActions current;
    private int iDoc;
    private String docExt = "";
@@ -71,8 +65,8 @@ public class Projects {
 
    /**
     * Tries to retrieve a project whose configuration is saved in an
-    * 'eadproject' file in the project folder or, if not existent,
-    * in the program's prefs file.
+    * 'eadproject' file in the project folder or, if such file is not
+    * existent, in the program's prefs file.
     * @see eg.projects.AbstractProject#retrieveProject(String)
     */
    public void retrieveProject() {
@@ -80,12 +74,12 @@ public class Projects {
    }
 
    /**
-    * Opens the window of the <code>SettingsWin</code> object that belongs
+    * Opens the window of the <code>SettingsWindow</code> object that belongs
     * to a project.
     * <p>
     * Depending on the currently set <code>EditableDocument</code> the
     * window belongs to the currently active project, to one of this
-    * listed projects or to a project that can be newly configured.
+    * listed projects or to a project that can be newly assigned.
     */
    public void openSettingsWindow() {
       if (!edtDoc[iDoc].hasFile()) {
@@ -122,8 +116,8 @@ public class Projects {
    }
 
    /**
-    * Sets active the project from this List of configured projects
-    * which the currently selected <code>EditableDocument</code> belongs to
+    * Sets active the project which the currently selected
+    * <code>EditableDocument</code> belongs to
     */
    public void changeProject() {
       ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), true);
@@ -132,7 +126,7 @@ public class Projects {
 
    /**
     * Updates the file tree if the selected <code>EditableDocument</code>
-    * belongs to this current project
+    * belongs to currently active project
     */
    public void updateFileTree() {
       if (current != null && current.isInProject(edtDoc[iDoc].dir())) {
@@ -141,7 +135,8 @@ public class Projects {
    }
 
    /**
-    * Saves the selected file and compiles the project
+    * Saves the selected file of the currently active project and
+    * compiles the project
     */
    public void saveAndCompile() {
       try {
@@ -164,7 +159,7 @@ public class Projects {
    }
 
    /**
-    * Saves all open files of this current project and compiles
+    * Saves all open files of the currently active project and compiles
     * the project
     */
    public void saveAllAndCompile() {
@@ -198,7 +193,7 @@ public class Projects {
    }
 
    /**
-    * Runs this current project
+    * Runs the currently active project
     */
    public void runProj() {
       if (current.usesProjectFile()) {
@@ -210,7 +205,7 @@ public class Projects {
    }
 
    /**
-    * Creates a build of this current project
+    * Creates a build of the currently active project
     */
    public void buildProj() {
       try {
@@ -224,7 +219,7 @@ public class Projects {
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private void retrieveProject(String dir) {

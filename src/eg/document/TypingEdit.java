@@ -15,9 +15,9 @@ import eg.syntax.*;
 /**
  * The mediation between the editing of the document by typing in, removing,
  * pasting or replacing text and the actions that happen in response.
- * These actions comprise the creation of undoable changes,
- * line numbering and, if the language is a supported coding language,
- * syntax highlighting and auto-indentation.
+ * These actions comprise the creation of undoable changes, line numbering
+ * and, if the language is a supported coding language, syntax highlighting
+ * and auto-indentation.
  * <p>
  * Created in {@link EditableDocument}
  */

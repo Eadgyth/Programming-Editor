@@ -161,10 +161,7 @@ public class Toolbar {
       };
       for (int i = 0; i < bts.length; i++) {
          toolbar.add(bts[i]);
-         if (i == 1 || i == 8) {
-            toolbar.addSeparator();
-         }
-         bts[i].setBorder(new EmptyBorder(7, 7, 7, 7));
+         bts[i].setBorder(new EmptyBorder(10, 8, 10, 8));
          bts[i].setToolTipText(toolTips[i]);
          bts[i].setFocusable(false);
          bts[i].setFocusPainted(false);

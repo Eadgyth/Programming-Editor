@@ -22,7 +22,9 @@ import eg.ui.EditArea;
 import eg.ui.tabpane.ExtTabbedPane;
 
 /**
- * The documents in the tabs
+ * The documents in the tabs.
+ * <p>
+ * Documents are represented by objects of {@link EditableDocument}
  */
 public class TabbedDocuments implements Observer {
 
@@ -229,7 +231,7 @@ public class TabbedDocuments implements Observer {
       int count = unsavedTab();
       if (count == nTabs()) {
          int i = count - 1;
-         while ( i > -1 ) {     
+         while (i > -1) {     
             tabPane.removeTabAt(i);
             edtDoc[i] = null;
             editArea[i] = null;

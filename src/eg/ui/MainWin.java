@@ -260,7 +260,7 @@ public class MainWin {
 
    /**
     * Sets the booleans that specify if actions to compile, run and
-    * build a project are enabled (true) or disabled
+    * build a project are enabled or disabled
     *
     * @param isCompile  the boolean value for compile actions
     * @param isRun  the boolean value for run actions
@@ -276,10 +276,10 @@ public class MainWin {
    }
 
    /**
-    * Sets the boolean that specified if the toolbar is shown (true)
-    * or hidden
+    * Shows or hides the toolbar
     *
-    * @param b  the boolean value
+    * @param b  the boolean value that is true to show and false to
+    * hide the toolbar
     */
    public void showToolbar(boolean b) {
       if (b) {
@@ -291,11 +291,11 @@ public class MainWin {
       frame.revalidate();
    }
 
-   /**
-    * Sets the boolean that specified if the statusbar is shown (true)
-    * or hidden
+  /**
+    * Shows or hides the statusbar
     *
-    * @param b  the boolean value
+    * @param b  the boolean value that is true to show and false to
+    * hide the statusbar
     */
    public void showStatusbar(boolean b) {
       if (b) {
@@ -393,7 +393,7 @@ public class MainWin {
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private void setViewActions() {

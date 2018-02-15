@@ -7,7 +7,7 @@ import eg.utils.Dialogs;
 import eg.document.EditableDocument;
 
 /**
- * The search and maybe replacemant of text or words in the
+ * The search and replacemant of text or words in the
  * <code>EditableDocument</code> that is currently viewed in the main
  * editor area
  */
@@ -42,8 +42,8 @@ public class TextSearch {
    }
    
    /**
-    * Sets the boolean that indicates the search direction. This is true
-    * for an upward search and false for a downward search. Default is down.
+    * Sets the boolean that indicates the search direction. True for
+    * upward and false for downward. Default is downward.
     *
     * @param b  the boolean value
     */
@@ -53,8 +53,7 @@ public class TextSearch {
     
     /**
      * Sets the boolean that indicates if the text search is case
-     * sensitive. This true for sensitivity and false for insensitivity.
-     * Default is insensitive.
+     * sensitive. Default is insensitive.
      *
      * @param b  the boolean value
      */
@@ -63,24 +62,10 @@ public class TextSearch {
     }
    
    /**
-    * Resets the search to the start or end of the document depending
-    * on whether the search direction is down- or upward, respectively 
-    */
-   public void resetSearchStart() {
-      if (isUpward) {
-         pos = doc.docLength() - 1;
-      }
-      else {
-         pos = 0;
-      }
-   }
-   
-   /**
-    * Searches the specified string in this document.
-    * The search direction is set in {@link #setUpwardSearch(boolean)}
-    * and starts at current caret position
+    * Searches the next occurence of the search term and, if found,
+    * selects it
     *
-    * @param searchTerm  the string to search
+    * @param searchTerm  the search term
     */
    public void searchText(String searchTerm) {
       String content = doc.docText();
@@ -99,9 +84,10 @@ public class TextSearch {
    }
    
    /**
-    * Replaces text
+    * Replaces a selected search term or searches the next occurrence
+    * of the search term and, if found, selects it
     *
-    * @param searchTerm  search term that is replaced
+    * @param searchTerm  the search term
     * @param replacement  the replacement for the search term
     */
    public void replace(String searchTerm, String replacement) {
@@ -133,7 +119,7 @@ public class TextSearch {
    }
    
    /**
-    * Replaces all occurrences of the specified search term
+    * Replaces all occurrences of the search term
     *
     * @param searchTerm  the search term
     * @param replacement  the replacement for the search term
@@ -232,5 +218,14 @@ public class TextSearch {
 
    private boolean isWord(String content, String searchTerm, int pos) {
       return eg.syntax.SyntaxUtils.isWord(content, pos, searchTerm.length(), null);
+   }
+   
+   private void resetSearchStart() {
+      if (isUpward) {
+         pos = doc.docLength() - 1;
+      }
+      else {
+         pos = 0;
+      }
    }
 }

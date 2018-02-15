@@ -7,10 +7,7 @@ import javax.swing.ImageIcon;
 import eg.Preferences;
 
 /*
- * Static ImageIcons for buttons etc.
- * <p>
- * Next to a few home-made ICONS the majority is from the
- * Tango Desktop Project
+ * Static <code>ImageIcons</code>
  */
 public class IconFiles {
 
@@ -32,7 +29,7 @@ public class IconFiles {
       }
    }
 
-   // Tango ICONS
+   // Tango icons
    public final static ImageIcon OPEN_ICON
          = ICONS.createIcon(TANGO_DIR + "document-open.png");
    public final static ImageIcon CLOSE_ICON
@@ -66,7 +63,7 @@ public class IconFiles {
    public final static ImageIcon WARNING_ICON
          = ICONS.createIcon(TANGO_DIR + "dialog-warning.png");
 
-   // Eadgyth ICONS
+   // Eadgyth icons
    public final static ImageIcon CHANGE_PROJ_ICON
          = ICONS.createIcon(EAD_DIR + "changeProj.png" );
    public final static ImageIcon RUN_ICON
