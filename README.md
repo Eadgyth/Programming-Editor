@@ -51,6 +51,7 @@ The program uses icons from
 <p>
 LICENSE: MIT, see LICENSE<br>
 <p>
+<hr>
 <p>
 The first screenshot shows a Java project that has a typical directory structure and that is
 run in the program. The lower screenshot shows the simple editor view.
