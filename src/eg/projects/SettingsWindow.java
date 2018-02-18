@@ -289,6 +289,7 @@ public class SettingsWindow {
    }
 
    private JPanel argsPanel() {
+      int count = 0;
       int gridSize = 1;
       GridLayout grid = new GridLayout(gridSize, 0);
       JPanel argsPnl = new JPanel(grid);
@@ -297,12 +298,15 @@ public class SettingsWindow {
       if (useStartOpt) {
          JLabel startOptLb = new JLabel("Start options:");
          argsPnl.add(holdLbAndTf(startOptLb, startOptTf));
+         count++;
       }
       //
       // arguments
       if (useArgs) {
-         gridSize++;
-         grid.setRows(gridSize);
+         if (count == gridSize) {
+            gridSize++;
+            grid.setRows(gridSize);
+         }
          JLabel argsLb = new JLabel("Arguments:");
          argsPnl.add(holdLbAndTf(argsLb, argsTf));
       }
@@ -312,6 +316,7 @@ public class SettingsWindow {
    }
 
    private JPanel buildPanel() {
+      int count = 0;
       int gridSize = 1;
       GridLayout grid = new GridLayout(gridSize, 0);
       JPanel buildPnl = new JPanel(grid);
@@ -320,12 +325,15 @@ public class SettingsWindow {
       if (searchExtLabel != null) {
          JLabel searchExtLb = new JLabel(searchExtLabel + " :");
          buildPnl.add(holdLbAndTf(searchExtLb, searchExtTf));
+         count++;
       }
       //
       // set build name option
       if (buildLabel != null) {
-         gridSize++;
-         grid.setRows(gridSize);
+         if (count == gridSize) {
+            gridSize++;
+            grid.setRows(gridSize);
+         }
          JLabel buildLb = new JLabel("Name for " + buildLabel +":");
          buildPnl.add(holdLbAndTf(buildLb, buildTf));
       }
