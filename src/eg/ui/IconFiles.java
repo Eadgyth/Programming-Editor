@@ -1,6 +1,5 @@
 package eg.ui;
 
-import java.io.File;
 import javax.swing.ImageIcon;
 
 //--Eadgyth--//

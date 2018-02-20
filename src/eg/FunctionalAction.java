@@ -7,8 +7,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Icon;
 
 /**
- * The Action whose ActionPerformed method uses the ActionListener
- * specified in the constructor
+ * The action whose <code>actionPerformed</code> method uses
+ * the <code>ActionListener</code> specified in the constructor
  */
 public class FunctionalAction extends AbstractAction {
       

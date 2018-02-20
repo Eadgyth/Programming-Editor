@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static java.nio.file.StandardCopyOption.*;
@@ -165,7 +164,7 @@ public class Compilation {
       String searchRoot = root + "/" + sourceDir;
       for (String ext : nonJavaExt) {
          List<File> toCopy = fFind.filteredFiles(searchRoot, ext, execDir);
-         if (toCopy.size() == 0) {
+         if (toCopy.isEmpty()) {
             copyError = "Files with extension \"" + ext
                       + "\" for copying to the compilation were not found";
          }

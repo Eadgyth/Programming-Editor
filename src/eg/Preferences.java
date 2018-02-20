@@ -59,7 +59,7 @@ public class Preferences {
    
    /**
     * Creates a <code>Preferences</code> that has read in the
-    * preferences in the programs "prefs.properties" file
+    * preferences in the "prefs.properties" file of the program
     *
     * @return a new <code>Preferences</code>
     */
@@ -71,7 +71,7 @@ public class Preferences {
    
    /**
     * Creates a <code>Preferences</code> that has not read in
-    * any entries in a properties file
+    * any preferences
     *
     * @return a new <code>Preferences</code>
     */
@@ -82,10 +82,11 @@ public class Preferences {
    
    /**
     * Returns the saved value for the specified property.
+    * Shows an error message if the property is missing and then returns the
+    * empty string.
     *
     * @param property  the property
-    * @return  the value for the specified property. The empty string if the
-    * property is missing
+    * @return  the value for the specified property
     */
    public String getProperty(String property) {
       if (prop == null) {
@@ -105,15 +106,15 @@ public class Preferences {
    }
 
    /**
-    * Reads in the properties stored in the prefs.properties file
+    * Reads in the properties stored in the "prefs.properties file"
     */
    public void readPrefs() {
       readProperties(PREFS_FILE);
    }
    
    /**
-    * Reads in the properties stored in a eadproject.properties file found
-    * in the specified directory
+    * Reads in the properties stored in an "eadproject.properties" file that
+    * is saved in the specified directory
     *
     * @param dir  the directory
     */
@@ -122,8 +123,9 @@ public class Preferences {
    }
 
    /**
-    * Stores a new value for the specified property in the prefs.properties
-    * file
+    * Stores a new value for the specified property in the "prefs.properties"
+    * file of the program
+    *
     * @param propToUpdate  the property
     * @param newValue  the new value for the property to update
     */

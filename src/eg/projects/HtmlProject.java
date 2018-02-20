@@ -14,6 +14,11 @@ public final class HtmlProject extends AbstractProject implements ProjectActions
    HtmlProject(String fileExtension) {
       super(fileExtension, false);
    }
+   
+   @Override
+   public void buildSettingsWindow() {
+      inputOptions.buildWindow();
+   }
 
    /**
     * Shows the HTML file that is specified by the filepath

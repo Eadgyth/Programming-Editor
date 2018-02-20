@@ -255,7 +255,7 @@ public class TypingEdit {
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private void updateAfterUndoRedo() {
@@ -286,11 +286,9 @@ public class TypingEdit {
    }
    
    private void highlightInsert() {
-      String lines;
-      int linesStart = 0;
       if (change.length() > 0) {
-         lines = LinesFinder.allLinesAtPos(text, change, chgPos);
-         linesStart = LinesFinder.lastNewline(text, chgPos) + 1;
+         String lines = LinesFinder.allLinesAtPos(text, change, chgPos);
+         int linesStart = LinesFinder.lastNewline(text, chgPos) + 1;
          syntax.highlight(text, lines, chgPos, linesStart);
       }
    }
@@ -351,7 +349,7 @@ public class TypingEdit {
       if (!isAddToUndo) {
          return;
       }
-      boolean isBreakpoint = false;
+      boolean isBreakpoint;
       if (isInsert) {
          isBreakpoint = caret - chgPos != 1;
       }

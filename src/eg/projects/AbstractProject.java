@@ -54,20 +54,6 @@ public abstract class AbstractProject implements Configurable {
    private String rootToTest = "";
    private boolean isPathname = false;
    private boolean isNameConflict = false;
-   
-   /**
-    * {@inheritDoc}.
-    * <p>
-    * The window shows the text field to enter the name of the presumed
-    * root directory of the project. An overriding method may use this
-    * {@link SettingsWindow.InputOptionsBuilder} to build a window with
-    * additional input options but must not call
-    * <code>super.buildSettingsWindow()</code>
-    */
-   @Override
-   public void buildSettingsWindow() {
-      inputOptions.buildWindow();
-   }
 
    @Override
    public final void setConfiguringAction(ActionListener al) {

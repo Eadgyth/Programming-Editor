@@ -8,10 +8,6 @@ import java.awt.print.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.MediaSizeName;
-
 import java.text.MessageFormat;
 
 import javax.swing.JTextPane;

@@ -5,10 +5,9 @@ import java.util.ArrayList;
 
 import java.awt.EventQueue;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.console.*;
 import eg.ui.MainWin;
-import eg.ui.ConsoleOpenable;
 import eg.projects.ProjectActions;
 import eg.projects.ProjectSelector;
 import eg.document.EditableDocument;
@@ -16,7 +15,7 @@ import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 
 /**
- * The configured projects.
+ * The projects that files in a given directory are part of.
  * <p>
  * A project is represented by an object of {@link ProjectActions}.
  */
@@ -27,6 +26,7 @@ public class Projects {
    private final ProcessStarter proc;
    private final List<ProjectActions> projList = new ArrayList<>();
    private final EditableDocument[] edtDoc;
+
    private ProjectActions current;
    private int iDoc;
    private String docExt = "";
@@ -229,10 +229,10 @@ public class Projects {
       EventQueue.invokeLater(() -> {
          ProjectActions projToFind = selector.createProject(docExt);
          boolean isFound = false;
-         if (projToFind != null) {
+         /*if (projToFind != null) {
             isFound = projToFind.retrieveProject(dir);
          }
-         else {
+         else {*/
             for (String exts : ProjectSelector.PROJ_EXTENSIONS) {
                projToFind = selector.createProject(exts);
                isFound = projToFind.retrieveProject(dir);
@@ -243,7 +243,7 @@ public class Projects {
                  projToFind = null;
               } 
             }
-         }
+        // }
          if (isFound) {
             ProjectActions projFin = projToFind;
             if (current == null) {

@@ -121,7 +121,7 @@ public class ProcessStarter {
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private void sendOutput(PrintWriter out) {

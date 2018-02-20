@@ -3,7 +3,10 @@ package eg.projects;
 import java.awt.event.ActionListener;
 
 /**
- * The interface that defnes a configured project
+ * The interface that defines a configured project.
+ * <p>
+ * The implementing class works in combination with an object that defines a
+ * a window where settings for a project are entered.
  */
 public interface Configurable {
    

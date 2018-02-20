@@ -155,10 +155,10 @@ public class Finder implements AddableEditTool {
 
    private JPanel buttonsPnl(JButton... bt) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      for (int i = 0; i < bt.length; i++) {
-         bt[i].setFocusable(false);
-         pnl.add(bt[i]);
-      }
+       for (JButton bts : bt) {
+           bts.setFocusable(false);
+           pnl.add(bts);
+       }
       setSize(pnl);
       return pnl;
    }

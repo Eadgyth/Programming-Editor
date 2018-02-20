@@ -513,7 +513,7 @@ public class MainWin {
             }, i);
    }
    
-   private ConsoleOpenable consoleOpener = new ConsoleOpenable() {
+   private final ConsoleOpenable consoleOpener = new ConsoleOpenable() {
 
       @Override
       public boolean isConsoleOpen() {

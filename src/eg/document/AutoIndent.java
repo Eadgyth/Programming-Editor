@@ -107,7 +107,7 @@ public class AutoIndent {
       int lastOpeningPos = text.lastIndexOf('{', pos - 1);
       int lastClosingPos = text.lastIndexOf('}', pos - 1);
       String indentAtChange = currentIndentAt(text, pos);
-      String indentAtBraceAhead = "";
+      String indentAtBraceAhead;
       if (lastOpeningPos > lastClosingPos) {
          indentAtBraceAhead = currentIndentAt(text, lastOpeningPos);
          return indentAtChange.length()

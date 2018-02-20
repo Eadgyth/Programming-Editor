@@ -26,7 +26,7 @@ public class FileChooser {
    }
 
    /**
-    * Opens the chooser to open a file and returns a File object
+    * Opens the chooser for opening a file and returns a File object
     *
     * @return  a File object. Null if cancel was clicked or the
     * chooser window was closed
@@ -42,7 +42,7 @@ public class FileChooser {
    }
    
    /**
-    * Opens the chooser to save a file and returns a File object
+    * Opens the chooser for saving a file and returns a File object
     *
     * @param presetFile  the filename that is shown in the text
     * field to specify a file. Can be Null or the empty string

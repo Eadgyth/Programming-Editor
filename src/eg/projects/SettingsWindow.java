@@ -410,7 +410,7 @@ public class SettingsWindow {
     */
    public static class InputOptionsBuilder {
 
-      private SettingsWindow sw;
+      private final SettingsWindow sw;
 
       private InputOptionsBuilder(SettingsWindow sw) {
          this.sw = sw;
