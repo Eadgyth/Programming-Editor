@@ -12,7 +12,7 @@ public class ViewSetter {
 
    private final MainWin mw;
    private final ViewSettingWin viewSetWin;
-   private final Preferences prefs = new Preferences();
+   private final Preferences prefs = Preferences.prefs();
 
    private boolean isShowToolbar;
    private boolean isShowStatusbar;

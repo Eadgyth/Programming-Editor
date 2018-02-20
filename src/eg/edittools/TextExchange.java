@@ -30,7 +30,7 @@ public class TextExchange {
          + "/exchangeContent.txt");
 
    private final EditableDocument exchangeDoc;
-   private final Preferences prefs = new Preferences();
+   private final Preferences prefs = Preferences.readProgramPrefs();
    private final FileChooser fc;
 
    private EditableDocument sourceDoc;
@@ -42,7 +42,6 @@ public class TextExchange {
     */
    public TextExchange(EditableDocument exchangeDoc) {
       this.exchangeDoc = exchangeDoc;
-      prefs.readPrefs();
       String recentDir = prefs.getProperty("recentPath");
       fc = new FileChooser(recentDir);
       exchangeDoc.setIndentUnit(prefs.getProperty("indentUnit"));

@@ -58,11 +58,30 @@ public class Preferences {
    private Properties prop = null;
    
    /**
+    * Creates a <code>Preferences</code> that has read in the
+    * preferences in the programs "prefs.properties" file
+    *
+    * @return a new <code>Preferences</code>
+    */
+   public static Preferences readProgramPrefs() {
+      Preferences progrPrefs = new Preferences();
+      progrPrefs.readPrefs();
+      return progrPrefs;
+   }
+   
+   /**
+    * Creates a <code>Preferences</code> that has not read in
+    * any entries in a properties file
+    *
+    * @return a new <code>Preferences</code>
+    */
+   public static Preferences prefs() {
+      Preferences prefs = new Preferences();
+      return prefs;
+   }
+   
+   /**
     * Returns the saved value for the specified property.
-    * <p>
-    * One of the "read" methods must be used before: {@link #readPrefs()},
-    * {@link #readEadproject(String)}. These also must be newly invoked to
-    * read a property that may have changed during runtime.
     *
     * @param property  the property
     * @return  the value for the specified property. The empty string if the
@@ -71,10 +90,13 @@ public class Preferences {
    public String getProperty(String property) {
       if (prop == null) {
          throw new IllegalStateException("The property " + property
-               + " could not be read. No properties were read.");
+               + " could not be read in.");
       }
       if (prop.getProperty(property) == null) {
-         System.out.println("missing");
+         Dialogs.errorMessage("The preference for \"" + property
+               + "\" could not be found.",
+               "Error reading preferences file");
+
          return "";
       }
       else {
@@ -154,6 +176,8 @@ public class Preferences {
    //
    //--private--/
    //
+   
+   private Preferences() {}
    
    private void createFile(String file, String[] allKeys) {
       prop = new Properties();

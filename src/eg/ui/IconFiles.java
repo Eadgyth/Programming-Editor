@@ -17,7 +17,7 @@ public class IconFiles {
    private final static String EAD_DIR;
    
    static {
-      Preferences prefs = new Preferences();
+      Preferences prefs = Preferences.readProgramPrefs();
       prefs.readPrefs();
       if ("22 x 22".equals(prefs.getProperty("iconSize"))) {
          TANGO_DIR = ICONS_DIR + "Tango/large/";

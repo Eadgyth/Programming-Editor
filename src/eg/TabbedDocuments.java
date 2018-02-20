@@ -30,7 +30,7 @@ public class TabbedDocuments implements Observer {
 
    private final EditableDocument[] edtDoc = new EditableDocument[15];
    private final EditArea[] editArea = new EditArea[15];
-   private final Preferences prefs = new Preferences();
+   private final Preferences prefs = Preferences.readProgramPrefs();
    private final FileChooser fc;
    private final MainWin mw;
    private final ExtTabbedPane tabPane;
@@ -59,13 +59,15 @@ public class TabbedDocuments implements Observer {
       proj = new Projects(mw, edtDoc);
       mw.setProjectActions(proj);
       format.setEditAreaArr(editArea);
-      prefs.readPrefs();
-      readLanguageFromPrefs();
+      setLanguage();
       String recentDir = prefs.getProperty("recentPath");
       fc = new FileChooser(recentDir);
-
       tabPane.addChangeListener((ChangeEvent ce) -> {
-          changeTabEvent(ce);
+         JTabbedPane sourceTb = (JTabbedPane) ce.getSource();
+         iTab = sourceTb.getSelectedIndex();
+         if (iTab > -1) {
+            changedTabUpdate();
+         }
       });
    }
 
@@ -100,7 +102,7 @@ public class TabbedDocuments implements Observer {
    }
 
    /**
-    * Opens a tab with a file that is selected in the file chooser
+    * Opens a tab with a file selected in the file chooser
     */
    public void openFileByChooser() {
       File f = fc.fileToOpen();
@@ -244,12 +246,12 @@ public class TabbedDocuments implements Observer {
       else {
          tabPane.setSelectedIndex(count);
          int res = saveOrCloseOption(count);
-         if (res == JOptionPane.YES_OPTION) {
+         if (JOptionPane.YES_OPTION == res) {
             if (save(false)) {
                closeAll(createBlankDoc);
             }
          }
-         else if (res == JOptionPane.NO_OPTION) {
+         else if (JOptionPane.NO_OPTION == res) {
             removeTab();
             closeAll(createBlankDoc);
          }
@@ -279,7 +281,7 @@ public class TabbedDocuments implements Observer {
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private void open(File f) {
@@ -310,9 +312,7 @@ public class TabbedDocuments implements Observer {
       int n = nTabs();
       editArea[n] = format.createEditArea();
       edtDoc[n] = new EditableDocument(editArea[n], lang);
-      prefs.readPrefs();
-      edtDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-      edtDoc[n].setEditingStateReadable(editReadable);
+      setupDocument(n);
       addNewTab("unnamed", editArea[n].editAreaPnl());
    }
 
@@ -322,9 +322,7 @@ public class TabbedDocuments implements Observer {
          int n = nTabs();
          editArea[n] = format.createEditArea();
          edtDoc[n] = new EditableDocument(editArea[n], f);
-         prefs.readPrefs();
-         edtDoc[n].setIndentUnit(prefs.getProperty("indentUnit"));
-         edtDoc[n].setEditingStateReadable(editReadable);
+         setupDocument(n);
          addNewTab(edtDoc[n].filename(), editArea[n].editAreaPnl());
          changedFileUpdate(false);
          prefs.storePrefs("recentPath", edtDoc[n].dir());
@@ -332,6 +330,12 @@ public class TabbedDocuments implements Observer {
       finally {
          mw.setDefaultCursor();
       } 
+   }
+   
+   private void setupDocument(int index) {
+      prefs.readPrefs();
+      edtDoc[index].setIndentUnit(prefs.getProperty("indentUnit"));
+      edtDoc[index].setEditingStateReadable(editReadable);
    }
    
    private void addNewTab(String filename, JPanel pnl) {
@@ -355,14 +359,6 @@ public class TabbedDocuments implements Observer {
       editArea[n] = null;
       if (n > 0) {
          iTab = tabPane.getSelectedIndex();
-         changedTabUpdate();
-      }
-   }
-   
-   private void changeTabEvent(ChangeEvent changeEvent) {
-      JTabbedPane sourceTb = (JTabbedPane) changeEvent.getSource();
-      iTab = sourceTb.getSelectedIndex();
-      if (iTab > -1) {
          changedTabUpdate();
       }
    }
@@ -439,13 +435,14 @@ public class TabbedDocuments implements Observer {
       return tabPane.getTabCount();
    }
    
-   private void readLanguageFromPrefs() {
+   private void setLanguage() {
       try {
          lang = Languages.valueOf(prefs.getProperty("language"));
       }
       catch (IllegalArgumentException e) {
          lang = Languages.NORMAL_TEXT;
       }
+      mw.setLanguageSelected(lang, false);
    }
    
    private final EditingStateReadable editReadable = new EditingStateReadable() {

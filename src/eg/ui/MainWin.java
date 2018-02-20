@@ -66,7 +66,7 @@ public class MainWin {
    private final ConsolePanel console = new ConsolePanel();
    private final ToolPanel toolPnl = new ToolPanel();
    private final List<AddableEditTool> editTools = new ArrayList<>();
-   private final Preferences prefs = new Preferences();
+   private final Preferences prefs = Preferences.readProgramPrefs();
 
    private JSplitPane splitHorAll;
    private JSplitPane splitHor;
@@ -479,7 +479,6 @@ public class MainWin {
    }
 
    private void initShowTabbar() {
-      prefs.readPrefs();
       boolean show = "show".equals(prefs.getProperty("showTabs"));
       tabPane.showTabbar(show);
       menuBar.viewMenu().selectTabsItm(show);

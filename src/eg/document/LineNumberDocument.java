@@ -75,8 +75,7 @@ public class LineNumberDocument {
    private void appendLineNumbers(int prevLineNr, int lineNr) {
       lineNrBuilder.setLength(0);
       for (int i = prevLineNr + 1; i <= lineNr; i++) {
-         lineNrBuilder.append(Integer.toString(i));
-         lineNrBuilder.append("\n");
+         lineNrBuilder.append(Integer.toString(i)).append("\n");
       }
       try {
          doc.insertString(doc.getLength(), lineNrBuilder.toString(), SET);

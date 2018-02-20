@@ -27,7 +27,7 @@ public class Edit {
    private static final String[] SPACE_NUMBER
          = { "0", "1", "2", "3", "4", "5", "6" };
 
-   private final Preferences prefs = new Preferences();
+   private final Preferences prefs = Preferences.prefs();
 
    private EditableDocument edtDoc;
    private JTextPane textArea;

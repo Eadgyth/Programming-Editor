@@ -56,8 +56,7 @@ public class Eadgyth {
    }
 
    private static void setLaf() {
-      Preferences prefs = new Preferences();
-      prefs.readPrefs();
+      Preferences prefs = Preferences.readProgramPrefs();
       String laf = prefs.getProperty("LaF");
       if (laf.length() > 0 && laf.equals("System")) {
          try {

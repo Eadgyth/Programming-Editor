@@ -11,7 +11,7 @@ public class EditAreaFormat {
    
    private final ViewSettingWin viewSetWin;
    private final FontSettingWin fontSetWin;
-   private final Preferences prefs = new Preferences();
+   private final Preferences prefs = Preferences.readProgramPrefs();
 
    private EditArea[] editArea;
    private int iCurr; 
@@ -26,7 +26,6 @@ public class EditAreaFormat {
    public EditAreaFormat(ViewSettingWin viewSetWin) {
       this.viewSetWin = viewSetWin;
       isShowLineNr = viewSetWin.isShowLineNumbers();
-      prefs.readPrefs();
       isWordwrap = "enabled".equals(prefs.getProperty("wordWrap"));
       initFont();
       fontSetWin = new FontSettingWin(font, fontSize);

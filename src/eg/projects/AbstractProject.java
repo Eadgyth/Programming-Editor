@@ -31,8 +31,8 @@ public abstract class AbstractProject implements Configurable {
    protected final SettingsWindow.InputOptionsBuilder inputOptions;
    
    private final static String F_SEP = File.separator;      
-   private final static Preferences PREFS = new Preferences();
-   private final static Preferences EAD_PROJ = new Preferences();
+   private final static Preferences PREFS = Preferences.readProgramPrefs();
+   private final static Preferences EAD_PROJ = Preferences.prefs();
    private final SettingsWindow sw;  
    private final String ext;
    private final boolean useProjectFile;

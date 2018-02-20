@@ -43,7 +43,6 @@ public class EditMenu {
    private final JCheckBoxMenuItem[] selectLangChBxItm
                                            = new JCheckBoxMenuItem[Languages.values().length];
 
-   private final Preferences prefs = new Preferences();
 
    public EditMenu() {
       assembleMenu();
@@ -110,7 +109,7 @@ public class EditMenu {
       undoItm.setEnabled(isUndo);
       redoItm.setEnabled(isRedo);
    }
-   
+
    /**
     * Sets the boolean that specifies if the items for cutting and
     * copying actions are enabled or disabled
@@ -145,14 +144,14 @@ public class EditMenu {
    }
 
    //
-   //--private--
+   //--private--/
    //
 
-   private void setLanguage(ActionEvent e, TabbedDocuments tf) {
+   private void setLanguage(ActionEvent e, TabbedDocuments td) {
       for (int i = 0; i < selectLangChBxItm.length; i++) {
          if (e.getSource() == selectLangChBxItm[i]) {
             Languages lang = Languages.values()[i];
-            tf.changeLanguage(lang);
+            td.changeLanguage(lang);
             selectLangChBxItm[i].setEnabled(false);
          }
          else {
@@ -181,15 +180,9 @@ public class EditMenu {
       menu.add(changeIndentItm);
       menu.add(clearSpacesItm);
       menu.addSeparator();
-      prefs.readPrefs();
       for (int i = 0; i < selectLangChBxItm.length; i++) {
-         selectLangChBxItm[i] = new JCheckBoxMenuItem(Languages.values()[i].display());
-         if (prefs.getProperty("language").equals(
-               eg.Languages.values()[i].toString())) {
-
-            selectLangChBxItm[i].setSelected(true);
-            selectLangChBxItm[i].setEnabled(false);
-         }
+         selectLangChBxItm[i] = new JCheckBoxMenuItem(
+               Languages.values()[i].display());
       }
       menu.add(languageMenu);
       for (JCheckBoxMenuItem itm : selectLangChBxItm) {

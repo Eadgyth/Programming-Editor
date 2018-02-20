@@ -33,7 +33,7 @@ public class ViewSettingWin {
          = eg.utils.ScreenParams.scaledDimension(230, 0);
 
    private final JFrame frame = new JFrame("View preferences");
-   private final Preferences prefs = new Preferences();
+   private final Preferences prefs = Preferences.readProgramPrefs();
    
    private final JCheckBox checkLineNumbers       = new JCheckBox();
    private final JCheckBox checkToolbar           = new JCheckBox();
@@ -43,7 +43,6 @@ public class ViewSettingWin {
    private final JButton   okBt                   = new JButton("OK");
    
    public ViewSettingWin() {
-      prefs.readPrefs();
       String laf = prefs.getProperty("LaF");
       if (laf.length() > 0) {
          selectLaf.setSelectedItem(laf);
