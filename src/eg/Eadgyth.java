@@ -16,7 +16,6 @@ import eg.utils.FileUtils;
 /**
  * Contains the main method
  * <p>
- * @version 1.0 beta
  * @author Malte Bussiek, m.bussiek@web.de
  */
 public class Eadgyth {
