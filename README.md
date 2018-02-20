@@ -15,10 +15,6 @@ installing the JDK 8 is required and it must be ensured that the program is run 
 contained in the JDK. Running it using Java 9 causes some problems with regard to the graphical
 interface (as far as seen on Windows 10).
 <p>
-The program is started by clicking the jar-file 'Eadgyth.jar". This file must be found in the
-same folder as the prefs.properties file just like found in the 'EadgythProgram' folder in this
-repository.
-<p>
 LIMITATIONS<br>
 Among the countless limitations at the present stage some need mention:
 <ul>
