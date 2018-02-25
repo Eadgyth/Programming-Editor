@@ -31,7 +31,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    private boolean isNonJavaExtTested = true;
 
    JavaProject(ConsoleOpenable co, ProcessStarter proc, ConsolePanel consPnl) {
-      super("java", true);
+      super(ProjectTypes.JAVA, true, "java");
       this.co = co;
       this.proc = proc;
       this.consPnl = consPnl;
@@ -41,12 +41,12 @@ public final class JavaProject extends AbstractProject implements ProjectActions
 
    @Override
    public void buildSettingsWindow() {
-      inputOptions.addFileOption("Name of main class file")
-            .addSourceDirOption()
-            .addExecDirOption()
-            .addArgsOption()
-            .addSearchExtensionsOption("Extensions of included non-Java files")
-            .addBuildOption("jar file")
+      inputOptions.addFileInput("Name of main class file")
+            .addSourceDirInput()
+            .addExecDirInput()
+            .addCmdArgsInput()
+            .addExtensionsInput("Extensions of included non-Java files")
+            .addBuildNameInput("jar file")
             .buildWindow();
    }
 
@@ -181,14 +181,14 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          sb.append("-cp ").append(getExecutableDirName()).append(" ");
       }
       sb.append(qualifiedMain);
-      if (getArgs().length() > 0) {
-         sb.append(" ").append(getArgs());
+      if (getCmdArgs().length() > 0) {
+         sb.append(" ").append(getCmdArgs());
       }
       startCommand = sb.toString();
    }
 
    private void setNonJavaExtensions() {
-      nonJavaExt = getSearchExtensions();
+      nonJavaExt = getFileExtensions();
       isNonJavaExtTested = nonJavaExt == null;
    }
 
@@ -219,7 +219,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          ok = false;
       }
       else {
-         for (String s : getSearchExtensions()) {
+         for (String s : getFileExtensions()) {
             if (!s.startsWith(".")) {
                wrongExtMessage(s);
                ok = false;

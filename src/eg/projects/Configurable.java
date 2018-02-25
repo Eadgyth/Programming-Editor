@@ -51,6 +51,13 @@ public interface Configurable {
    public boolean retrieveProject(String dir);
    
    /**
+    * Returns the type of project
+    *
+    * @return  the type of project which is a constant in {@link ProjectTypes}
+    */
+   public ProjectTypes getProjectType();
+   
+   /**
     * Returns if the project uses a main project file
     *
     * @return  the boolean value. True if a project file is used.
@@ -87,13 +94,6 @@ public interface Configurable {
     * @return  the name
     */
    public String getExecutableDirName();
-   
-   /**
-    * Returns the extension of source files used in the project
-    *
-    * @return  the file extension
-    */
-   public String getSourceFileExtension();
    
    /**
     * Stores the configuration in a properties file

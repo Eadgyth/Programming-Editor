@@ -23,7 +23,7 @@ import eg.Constants;
 public class FontSettingWin {
 
    private final static String[] FONT_SIZES = {
-      "8", "9", "10", "11", "12", "13", "14", "15", "16", "18", "20"
+     "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"
    };
 
    private final JFrame frame = new JFrame("Font");

@@ -67,6 +67,14 @@ public class Constants {
 
    /**
     * The font sans-serif, plain, size 9 pt (scaled) */
+   public final static Font SANSSERIF_PLAIN_8
+         = new Font("SansSerif", Font.PLAIN, scaledSize(8.0));
+   /**
+    * The font sans-serif, bold, size 8 pt (scaled) */
+   public final static Font SANSSERIF_BOLD_8
+         = new Font("SansSerif", Font.BOLD, scaledSize(8.0));
+   /**
+    * The font sans-serif, plain, size 9 pt (scaled) */
    public final static Font SANSSERIF_PLAIN_9
          = new Font("SansSerif", Font.PLAIN, scaledSize(9.0));
    /**
@@ -81,10 +89,6 @@ public class Constants {
     * The font verdana, plain, size 9 pt (scaled) */
    public final static Font VERDANA_PLAIN_8
          = new Font("Verdana", Font.PLAIN, scaledSize(8.0));
-   /**
-    * The font consolas, plain, size 9 pt (scaled) */
-   public final static Font CONSOLAS_PLAIN_9
-         = new Font("Consolas", Font.PLAIN, scaledSize(9.0));
 
    //
    // Strings

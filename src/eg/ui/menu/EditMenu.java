@@ -183,11 +183,9 @@ public class EditMenu {
       for (int i = 0; i < selectLangChBxItm.length; i++) {
          selectLangChBxItm[i] = new JCheckBoxMenuItem(
                Languages.values()[i].display());
+         languageMenu.add(selectLangChBxItm[i]);
       }
       menu.add(languageMenu);
-      for (JCheckBoxMenuItem itm : selectLangChBxItm) {
-         languageMenu.add(itm);
-      }
       menu.setMnemonic(KeyEvent.VK_E);
    }
 

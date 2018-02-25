@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Enumeration;
 import java.util.Observable;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.Constants;
 import eg.ui.IconFiles;
 import eg.utils.Dialogs;
@@ -60,7 +60,8 @@ public class FileTree extends Observable {
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
    private final JButton upBt        = new JButton(UIManager.getIcon(
-                                       "FileChooser.upFolderIcon"));
+         "FileChooser.upFolderIcon"));
+
    private final JButton   renewBt   = new JButton(IconFiles.REFRESH_ICON);
    private final JButton   closeBt   = new JButton(IconFiles.CLOSE_ICON);
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
@@ -333,7 +334,7 @@ public class FileTree extends Observable {
    private void initTree() {
       tree = new JTree(model);
       tree.setRootVisible(false);
-      tree.setFont(Constants.SANSSERIF_PLAIN_9);
+      tree.setFont(Constants.VERDANA_PLAIN_8);
       tree.setBorder(new LineBorder(Color.WHITE, 5));
       tree.setCellRenderer(new TreeRenderer());
       tree.setToggleClickCount(0);

@@ -209,7 +209,7 @@ public final class EditArea {
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private void showLineNumbersImpl() {

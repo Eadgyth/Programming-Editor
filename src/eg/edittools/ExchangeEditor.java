@@ -51,7 +51,7 @@ public class ExchangeEditor implements AddableEditTool {
    private final Edit edit = new Edit();
 
    public ExchangeEditor() {
-      EditArea ea = new EditArea(false, false, "Consolas", 9);
+      EditArea ea = new EditArea(false, false, "Consolas", 8);
       editAreaPnl = ea.editAreaPnl();
       EditableDocument ed = new EditableDocument(ea, Languages.NORMAL_TEXT);
       exch = new TextExchange(ed);

@@ -44,7 +44,7 @@ public class ConsolePanel {
       scroll.setViewportView(area);
       scroll.setBorder(Constants.MATTE_TOP);
       area.setBorder(Constants.EMPTY_BORDER_5);
-      area.setFont(Constants.VERDANA_PLAIN_8);
+      area.setFont(Constants.SANSSERIF_PLAIN_8);
       area.setForeground(areaFontColor);
       area.setEditable(false);
       toolbar = createToolbar();

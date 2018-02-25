@@ -62,6 +62,10 @@ public class FileChooser {
       }
       return f;
    }
+   
+   //
+   //--private--/
+   //
 
    private void initChooserOpen(String startingDir) {
       chOpen = new JFileChooser(startingDir);

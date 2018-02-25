@@ -33,8 +33,9 @@ public abstract class AbstractProject implements Configurable {
    private final static String F_SEP = File.separator;      
    private final static Preferences PREFS = Preferences.readProgramPrefs();
    private final static Preferences EAD_PROJ = Preferences.prefs();
-   private final SettingsWindow sw;  
-   private final String ext;
+   private final SettingsWindow sw;
+   private final ProjectTypes projType;
+   private final String sourceExtension;
    private final boolean useProjectFile;
 
    //
@@ -47,7 +48,7 @@ public abstract class AbstractProject implements Configurable {
    private String sourceDirName = "";
    private String startOptions = "";
    private String args = "";
-   private String searchExtensions = "";
+   private String extensions = "";
    private String buildName = "";
    //
    // Variables to control the configuration
@@ -114,6 +115,11 @@ public abstract class AbstractProject implements Configurable {
       }
       return success;
    }
+   
+   @Override
+   public final ProjectTypes getProjectType() {
+      return projType;
+   }
 
    @Override
    public final boolean usesProjectFile() {
@@ -142,25 +148,22 @@ public abstract class AbstractProject implements Configurable {
    }
 
    @Override
-   public final String getSourceFileExtension() {
-      return ext;
-   }
-
-   @Override
    public final void storeConfiguration() {
       storeConfigurationImpl();
    }
 
    /**
-    * Creates an <code>AbstractProject</code>.
-    * Sets the file extension of source files and the boolean that,
-    * if true, indicates that the project uses a main file.
-    *
-    * @param extension  the extension
-    * @param useProjectFile  the boolean value
+    * @param projType  the project type which is a valaue in {@link ProjectTypes}
+    * @param useProjectFile  the boolean value that is true to indicate the project
+    * uses a main project file
+    * @param sourceExtension  the extension of source files (or of the main file if
+    * extensions differ). Null if no main project file is used
     */
-   protected AbstractProject(String extension, boolean useProjectFile) {
-      ext = extension;
+   protected AbstractProject(ProjectTypes projType, boolean useProjectFile,
+         String sourceExtension) {
+            
+      this.projType = projType;
+      this.sourceExtension = sourceExtension;
       this.useProjectFile = useProjectFile;
       sw = new SettingsWindow();
       inputOptions = sw.getInputOptionsBuilder();
@@ -205,35 +208,35 @@ public abstract class AbstractProject implements Configurable {
    }
    
    /**
-    * Returns the options for a start script
+    * Returns command options
     *
-    * @return  the options. The empty string if no arguments are given
+    * @return  the options. The empty string if no options are given
     */
-   protected String getStartOptions() {
+   protected String getCmdOptions() {
       return startOptions;
    }
 
    /**
-    * Returns the arguments for a start script
+    * Returns command arguments
     *
     * @return  the arguments. The empty string if no arguments are given
     */
-   protected String getArgs() {
+   protected String getCmdArgs() {
       return args;
    }
 
    /**
-    * Returns the array that contains extensions that may be used for
-    * a file search
+    * Returns the array that contains file extensions which may be used
+    * for a file search
     *
     * @return  the array or null of no extensions are given
     */
-   protected String[] getSearchExtensions() {
-      if (searchExtensions.length() == 0) {
+   protected String[] getFileExtensions() {
+      if (extensions.length() == 0) {
           return null;
        }
        else {
-          return searchExtensions.split(",");
+          return extensions.split(",");
        }
    }
 
@@ -293,7 +296,7 @@ public abstract class AbstractProject implements Configurable {
          if (sourceDirName.length() > 0) {
             sourceRoot = sourceRoot + "/" + sourceDirName;
          }
-         findNamespace(sourceRoot, mainFileName + "." + ext);
+         findNamespace(sourceRoot, mainFileName + "." + sourceExtension);
          if (namespace.length() > 0) {
             if (namespace.length() > sourceRoot.length()) {
                namespace = namespace.substring(sourceRoot.length() + 1);
@@ -317,9 +320,9 @@ public abstract class AbstractProject implements Configurable {
       splitMainFilePath(mainFileInput);
       sourceDirName = sw.sourcesDirNameInput();
       execDirName = sw.execDirNameInput();
-      startOptions = sw.startOptInput();
-      args = sw.argsInput();
-      searchExtensions = sw.searchExtensionsInput();
+      startOptions = sw.cmdOptionsInput();
+      args = sw.cmdArgsInput();
+      extensions = sw.extensionsInput();
       buildName = sw.buildNameInput();
    }
 
@@ -347,8 +350,8 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private void configByPropertiesFile(String root, Preferences prefs) {
-      String extToTest = prefs.getProperty("sourceExtension");
-      if (!ext.equals(extToTest)) {
+      String projTypeToTest = prefs.getProperty("projectType");
+      if (!projTypeToTest.equals(projType.toString())) {
          return;
       }
       String mainFileInput = prefs.getProperty("mainProjectFile");
@@ -364,8 +367,8 @@ public abstract class AbstractProject implements Configurable {
       sw.displaySourcesDir(sourceDirName);
       execDirName = prefs.getProperty("execDir");
       sw.displayExecDir(execDirName);
-      searchExtensions = prefs.getProperty("includedFiles");
-      sw.displaySearchExtensions(searchExtensions);
+      extensions = prefs.getProperty("includedFiles");
+      sw.displayExtensions(extensions);
       buildName = prefs.getProperty("buildName");
       sw.displayBuildName(buildName);
 
@@ -423,7 +426,7 @@ public abstract class AbstractProject implements Configurable {
          sb.append(namespace).append("/");
       }
       if (mainFileName.length() > 0) {
-         sb.append(mainFileName).append(".").append(ext);
+         sb.append(mainFileName).append(".").append(sourceExtension);
       }
       return sb.toString();
    }
@@ -475,9 +478,9 @@ public abstract class AbstractProject implements Configurable {
       PREFS.storePrefs("projectRoot", projectRoot);
       PREFS.storePrefs("sourceDir", sourceDirName);
       PREFS.storePrefs("execDir", execDirName);
-      PREFS.storePrefs("includedFiles", searchExtensions);
+      PREFS.storePrefs("includedFiles", extensions);
       PREFS.storePrefs("buildName", buildName);
-      PREFS.storePrefs("sourceExtension", ext);
+      PREFS.storePrefs("projectType", projType.toString());
       if (isPathname) {
          PREFS.storePrefs("mainProjectFile", namespace + F_SEP + mainFileName);
          PREFS.storePrefs("namespace", "");
@@ -492,11 +495,12 @@ public abstract class AbstractProject implements Configurable {
       if (sw.isSaveToEadproject()) {
          EAD_PROJ.storeEadproject("sourceDir", sourceDirName, projectRoot);
          EAD_PROJ.storeEadproject("execDir", execDirName, projectRoot);
-         EAD_PROJ.storeEadproject("includedFiles", searchExtensions, projectRoot);
+         EAD_PROJ.storeEadproject("includedFiles", extensions, projectRoot);
          EAD_PROJ.storeEadproject("buildName", buildName, projectRoot);
-         EAD_PROJ.storeEadproject("sourceExtension", ext, projectRoot);
+         EAD_PROJ.storeEadproject("projectType", projType.toString(), projectRoot);
          if (isPathname) {
-            EAD_PROJ.storeEadproject("mainProjectFile", namespace + F_SEP + mainFileName,
+            EAD_PROJ.storeEadproject("mainProjectFile", namespace + F_SEP
+                  + mainFileName,
                   projectRoot);
             EAD_PROJ.storeEadproject("namespace", "", projectRoot);
          }

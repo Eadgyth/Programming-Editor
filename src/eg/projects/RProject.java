@@ -19,16 +19,16 @@ public final class RProject extends AbstractProject implements ProjectActions {
    private String startCmd = "";
 
    RProject(ConsoleOpenable co, ProcessStarter proc) {
-      super("R", true);
+      super(ProjectTypes.R, true, "R");
       this.co = co;
       this.proc = proc;
    }
    
    @Override
    public void buildSettingsWindow() {
-      inputOptions.addFileOption("Name of R script")
-         .addStartOptOption()
-         .addArgsOption()
+      inputOptions.addFileInput("Name of R script")
+         .addCmdOptionsInput()
+         .addCmdArgsInput()
          .buildWindow();
    }
 
@@ -43,12 +43,12 @@ public final class RProject extends AbstractProject implements ProjectActions {
    @Override
    protected void setCommandParameters() {
       String main = getMainFileName() + ".R";
-      if (getArgs().length() > 0) {
-         main += " " + getArgs();
+      if (getCmdArgs().length() > 0) {
+         main += " " + getCmdArgs();
       }
       startCmd = "Rscript ";
-      if (getStartOptions().length() > 0) {
-         startCmd += getStartOptions() + " ";
+      if (getCmdOptions().length() > 0) {
+         startCmd += getCmdOptions() + " ";
       }
       startCmd += main;
    }

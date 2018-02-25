@@ -58,6 +58,7 @@
       </p>
       <nav>
          <ul class="summaries">
+         <li>Generic</li>
          <li>Java (<a href="#JavaProject">Testing Java code and creating a jar file</a>)</li>
          <li>Perl (<a href="#PerlProject">Testing a Perl script</a>)</li>
          <li>R (<a href="#RProject">Testing an R script</a>)</li>
@@ -65,21 +66,30 @@
          </ul>
       </nav>
       <br>
+      <br>
       <p><a href="#ancor">Back to top</a></p>
       <hr>
 
       <!--Run project-->
       <h2 id="Projects">Working with projects</h2>
+      <p>A 'project' is initially just the definition of a working directory (project root).
+         For a given project category certain actions (at least for running a project) are
+         pre-defined.<br>
+         The project category 'Generic' does not pre-define any actions and would be chosen
+         for using self-defined system commands in the console only
+         (see <a href="#Console">Using the console</a>).</p>
 
       <h4 id="Config">Assign files as project</h4>
       <ol>
-      <li>Open a file from or save a new file to the directory that is the presumed
-          root directory of the project. The file may also be saved in a sub-directory
-          path contained in that root.</li>
-      <li>Open the settings window by selecting 'Project' > 'Assign as project'.</li>
+      <li>Open a file from or save a new file to the directory that is the presumed root
+          directory of the project. The file may also be saved in a sub-directory path
+          contained in that root.</li>
+      <li>While a file that is presumed to be part of the project is view in the editor open
+          the project settings window by selecting 'Project' > 'Assign as project by category...'.
+          The inout options shown in the settings window depend on the project category.</li>
       <li>Enter the name of the presumed root directory of the project in the text field
-          'Name of project root'. If HTML files are to be assigned to a project go
-          to step 7.</li>
+          'Name of project root'. If the project category is 'Generic' or 'HTML' go to
+          step 7.</li>
       <li>Enter the name of the main source file in the corresponding text field (this
           applies to Java, R, and Perl but not Html). The main file does not have to be
           the currently selected file and even not be opened but must exist.</li>
@@ -92,8 +102,8 @@
           by clicking the 'compile' button or selecting the corresponding option in the
           menu.</li>
       <li>Click ok. If entries are correct, that is the named project root matches the
-          name of an existing directory (for HTML) and this root also contains the named
-          main source file (for Java, Perl and R), the files in the project can be viewed
+          name of an existing directory (for Generic and HTML) and this root also contains the
+          named main source file (for Java, Perl and R), the files in the project can be viewed
           in the 'Project explorer'. This is opened by selecting 'View' > 'Project explorer'.
           </li>
       </ol>
@@ -101,9 +111,9 @@
 
       <h4 id="ChangeProjects">Changing between projects</h4>
       <ul>
-      <li>'Project' > 'Assign as project' is selected to assign an additional project. The
-          file that is supposed to be part of the new project must be in the selected tab.
-          </li>
+      <li>'Project' > 'Assign as project by category..' is selected to assign an additional
+          project. The file that is supposed to be part of the new project must be in the
+          selected tab.</li>
       <li>Changing between already set projects is done by selecting a file that is part of
           the project to be set active and then selecting 'Project' > 'Change project' or,
           to additionally view or modify the settings, 'Project' > 'Project settings'.</li>
@@ -205,13 +215,13 @@
       <p>In addition, self-chosen system commands entered in a dialog can be run in the current
          working directory (the project's root directory).</p>
       <p>A run process can be forcibly quit by clicking the 'stop' symbol.</p>
-      <p>The console does not emulate the terminal of the operating system! However,
-         it is possible (or rather not prohibited) to run the system's terminal in the console
-         by running the command that starts the terminal (e.g., cmd.exe in Windows). It is
-         important to note that a tested program thereupon started from this terminal CANNOT be
-         forcibly quit by clicking the 'stop' symbol.</p>
-      <p>Hint: using the command to start "THE" terminal (in Windows this would be cmd.exe /c start)
-         presets the working directory for the terminal to the project's root directory.</p>
+      <p>The console does not emulate the terminal of the operating system! However, it is possible
+         (or rather not prohibited) to run the system's terminal in the console by running the
+         command that starts the terminal (e.g., cmd.exe in Windows). It is important to note that
+         a tested program thereupon started from this terminal CANNOT be forcibly quit by clicking
+         the 'stop' symbol.</p>
+      <p>Hint: using the command to start "THE" terminal window (in Windows this would be cmd.exe
+         /c start) presets the working directory for the terminal to the project's root directory.</p>
 
       <h4>To run a system command...</h4>
       <ol>

@@ -7,13 +7,6 @@ import eg.ui.ConsoleOpenable;
  * The selection and creation of an object of type {@code ProjectActions}
  */
 public class ProjectSelector {
-   
-   /**
-    * The extension of files that can define a project category
-    */
-   public final static String[] PROJ_EXTENSIONS = {
-      "htm", "html", "java", "pl", "R"
-   };
 
    private final ConsoleOpenable co;
    private final ProcessStarter proc;
@@ -37,27 +30,30 @@ public class ProjectSelector {
    }
 
    /**
-    * Returns a <code>ProjectActions</code> selected based on the extension
-    * of files which define the project caterory
+    * Returns a <code>ProjectActions</code> selected based on the project type
+    * defined in <code>ProjectTypes</code>
     *
-    * @param ext  the file extension
-    * @return  a new {@link ProjectActions}. Null if the extension does
-    * not identify a project category
+    * @param projType  the project type which is a valaue in {@link ProjectTypes}
+    * @return  a new {@link ProjectActions}
     */
-   public ProjectActions createProject(String ext) {
+   public ProjectActions createProject(ProjectTypes projType) {
       ProjectActions newProj = null;
-      switch (ext) {
-         case "java":
+      switch (projType) {
+         case JAVA:
             newProj = new JavaProject(co, proc, console);
             break;
-         case "html": case "htm":
-            newProj = new HtmlProject(ext);
+         case HTML:
+            newProj = new HtmlProject();
             break;
-         case "pl": case "pm":
+         case PERL:
             newProj = new PerlProject(co, proc);
             break;
-         case "R":
+         case R:
             newProj = new RProject(co, proc);
+            break;
+         case GENERIC:
+            newProj = new GenericProject();
+            break;
       }
       if (newProj != null) {
          newProj.buildSettingsWindow();

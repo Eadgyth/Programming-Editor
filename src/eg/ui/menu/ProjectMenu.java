@@ -9,6 +9,7 @@ import javax.swing.KeyStroke;
 
 //--Eadgyth--//
 import eg.Projects;
+import eg.projects.ProjectTypes;
 
 import eg.ui.IconFiles;
 
@@ -19,19 +20,22 @@ import eg.ui.IconFiles;
  */
 public class ProjectMenu {
 
-   private final JMenu     menu           = new JMenu("Project");
-   private final JMenuItem SaveCompile    = new JMenuItem(
+   private final JMenu menu = new JMenu("Project");
+   private final JMenuItem SaveCompileItm = new JMenuItem(
          "Save selected file and compile project");
 
-   private final JMenuItem SaveAllCompile = new JMenuItem(
-         "Save all open project files and compile project", IconFiles.COMPILE_ICON);
+   private final JMenuItem SaveAllCompileItm = new JMenuItem(
+         "Save all open project files and compile project",
+         IconFiles.COMPILE_ICON);
 
-   private final JMenuItem run            = new JMenuItem("Run", IconFiles.RUN_ICON);
-   private final JMenuItem build          = new JMenuItem("Build");
-   private final JMenuItem newProj        = new JMenuItem("Assign as project");
-   private final JMenuItem setProject     = new JMenuItem("Project settings");
-   private final JMenuItem changeProj     = new JMenuItem(
-         "Change project", IconFiles.CHANGE_PROJ_ICON);
+   private final JMenuItem runItm = new JMenuItem("Run", IconFiles.RUN_ICON);
+
+   private final JMenuItem buildItm        = new JMenuItem("Build");
+   private final JMenu assignProjMenu      = new JMenu("Assign as project by category...");
+   private final JMenuItem[] assignProjItm = new JMenuItem[ProjectTypes.values().length];
+   private final JMenuItem openSetWinItm   = new JMenuItem("Project settings");
+   private final JMenuItem changeProjItm   = new JMenuItem("Change project",
+         IconFiles.CHANGE_PROJ_ICON);
 
    public ProjectMenu() {
       assembleMenu();
@@ -53,13 +57,15 @@ public class ProjectMenu {
     * @param p  the reference to {@link Projects}
     */
    public void setActions(Projects p) {
-      setProject.addActionListener(e -> p.openSettingsWindow());
-      changeProj.addActionListener(e -> p.changeProject());
-      newProj.addActionListener(e -> p.assignProject());
-      run.addActionListener(e -> p.runProj());
-      build.addActionListener(e -> p.buildProj());
-      SaveCompile.addActionListener(e -> p.saveAndCompile());
-      SaveAllCompile.addActionListener(e -> p.saveAllAndCompile());
+      for (JMenuItem itm : assignProjItm) {
+         itm.addActionListener(e -> assignProject(e, p));
+      }
+      openSetWinItm.addActionListener(e -> p.openSettingsWindow());
+      changeProjItm.addActionListener(e -> p.changeProject());
+      runItm.addActionListener(e -> p.runProj());
+      buildItm.addActionListener(e -> p.buildProj());
+      SaveCompileItm.addActionListener(e -> p.saveAndCompile());
+      SaveAllCompileItm.addActionListener(e -> p.saveAllAndCompile());
    }
 
    /**
@@ -69,7 +75,17 @@ public class ProjectMenu {
     * @param b  the boolean value
     */
    public void enableChangeProjItm(boolean b) {
-      changeProj.setEnabled(b);
+      changeProjItm.setEnabled(b);
+   }
+   
+   /**
+    * Sets the boolean that indicates if actions to open the project settings
+    * are enabled
+    *
+    * @param b  the boolean value
+    */
+   public void enableOpenSetWinItm(boolean b) {
+      openSetWinItm.setEnabled(b);
    }
 
    /**
@@ -83,10 +99,10 @@ public class ProjectMenu {
    public void enableSrcCodeActionItms(boolean isCompile, boolean isRun,
          boolean isBuild) {
 
-      SaveCompile.setEnabled(isCompile);
-      SaveAllCompile.setEnabled(isCompile);
-      run.setEnabled(isRun);
-      build.setEnabled(isBuild);
+      SaveCompileItm.setEnabled(isCompile);
+      SaveAllCompileItm.setEnabled(isCompile);
+      runItm.setEnabled(isRun);
+      buildItm.setEnabled(isBuild);
    }
 
    /**
@@ -95,32 +111,46 @@ public class ProjectMenu {
     * @param label  the label
     */
    public void setBuildLabel(String label) {
-      build.setText(label);
+      buildItm.setText(label);
    }
 
    //
    //--private--/
    //
+   
+   private void assignProject(ActionEvent e, Projects p) {
+      for (int i = 0; i < assignProjItm.length; i++) {
+         if (e.getSource() == assignProjItm[i]) {
+            ProjectTypes projType = ProjectTypes.values()[i];
+            p.assignProject(projType);
+         }
+      }
+   }
 
    private void assembleMenu() {
-      menu.add(SaveCompile);
-      menu.add(SaveAllCompile);
-      menu.add(run);
+      menu.add(SaveCompileItm);
+      menu.add(SaveAllCompileItm);
+      menu.add(runItm);
       menu.addSeparator();
-      menu.add(build);
+      menu.add(buildItm);
       menu.addSeparator();
-      menu.add(newProj);
-      menu.add(setProject);
-      menu.add(changeProj);
+      menu.add(assignProjMenu);
+      for (int i = 0; i < assignProjItm.length; i++) {
+         assignProjItm[i] = new JMenuItem(ProjectTypes.values()[i].display());
+         assignProjMenu.add(assignProjItm[i]);
+      }
+      menu.add(openSetWinItm);
+      menu.add(changeProjItm);
       menu.setMnemonic(KeyEvent.VK_P);
-      changeProj.setEnabled(false);
+      openSetWinItm.setEnabled(false);
+      changeProjItm.setEnabled(false);
       enableSrcCodeActionItms(false, false, false);
    }
 
    private void shortCuts() {
-      SaveAllCompile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,
+      SaveAllCompileItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,
             ActionEvent.CTRL_MASK));
-      run.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
+      runItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
             ActionEvent.CTRL_MASK));
    }
 }

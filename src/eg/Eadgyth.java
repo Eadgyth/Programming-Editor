@@ -8,7 +8,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.ui.MainWin;
 import eg.ui.ViewSettingWin;
 import eg.utils.FileUtils;
@@ -16,7 +16,6 @@ import eg.utils.FileUtils;
 /**
  * Contains the main method
  * <p>
- * @version 1.0 beta
  * @author Malte Bussiek, m.bussiek@web.de
  */
 public class Eadgyth {
@@ -52,7 +51,7 @@ public class Eadgyth {
       UIManager.put("MenuItem.font", Constants.SANSSERIF_PLAIN_9);
       UIManager.put("CheckBoxMenuItem.font", Constants.SANSSERIF_PLAIN_9);
       UIManager.put("SplitPaneDivider.border", new EmptyBorder(0, 0, 0, 0));
-      UIManager.put("Tree.rowHeight", eg.utils.ScreenParams.scaledSize(15));
+      UIManager.put("Tree.rowHeight", eg.utils.ScreenParams.scaledSize(14));
    }
 
    private static void setLaf() {

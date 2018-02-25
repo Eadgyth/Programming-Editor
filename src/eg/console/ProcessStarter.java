@@ -9,6 +9,7 @@ import java.io.File;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import java.awt.EventQueue;
 
@@ -31,7 +32,8 @@ import eg.utils.FileUtils;
 public class ProcessStarter {
 
    private final ConsolePanel consPnl;
-
+   private final HashMap cmdMap = new HashMap();
+   
    private String workingDir = System.getProperty("user.home");
    private String workingDirName = new File(workingDir).getName();
    private String previousCmd = "";
@@ -51,6 +53,7 @@ public class ProcessStarter {
     * @param consPnl  the reference to {@link ConsolePanel}
     */
    public ProcessStarter(ConsolePanel consPnl) {
+      cmdMap.put(workingDir, previousCmd);
       this.consPnl = consPnl;
       consPnl.setCmdAct(e -> startNewCmd());
       consPnl.setRunAct(e -> startPreviousCmd());
@@ -66,6 +69,14 @@ public class ProcessStarter {
       this.workingDir = workingDir;
       File f = new File(workingDir);
       this.workingDirName = f.getName();
+      if (cmdMap.containsKey(workingDir)) {
+         previousCmd = (String) cmdMap.get(workingDir);
+         consPnl.enableRunBt(previousCmd.length() > 0);
+      }
+      else {
+         previousCmd = "";
+         consPnl.enableRunBt(false);
+      }     
    }
 
    /**
@@ -167,13 +178,16 @@ public class ProcessStarter {
             + " working directory (" + workingDirName + ")",
             "Run", previousCmd);
 
-      if (cmd != null && cmd.length() > 0) {
-         consPnl.enableRunBt(false);
-         startProcess(cmd);
+      if (cmd != null) {
          previousCmd = cmd;
-      }
-      else {
-         consPnl.enableRunBt(false);
+         cmdMap.put(workingDir, cmd);
+         if (cmd.length() > 0) {
+            consPnl.enableRunBt(false);
+            startProcess(cmd);
+         }
+         else {
+            consPnl.enableRunBt(previousCmd.length() > 0);
+         }       
       }
    }
 

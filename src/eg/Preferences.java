@@ -42,7 +42,7 @@ public class Preferences {
       "execDir",
       "includedFiles",
       "buildName",
-      "sourceExtension"
+      "projectType"
    };
    
    private final static String[] EAD_CONFIG_KEYS = {
@@ -52,7 +52,7 @@ public class Preferences {
       "execDir",
       "includedFiles",
       "buildName",
-      "sourceExtension"
+      "projectType"
    };
 
    private Properties prop = null;

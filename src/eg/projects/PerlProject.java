@@ -17,16 +17,16 @@ public final class PerlProject extends AbstractProject implements ProjectActions
    private String startCmd = "";
 
    PerlProject(ConsoleOpenable co, ProcessStarter proc) {
-      super("pl", true);
+      super(ProjectTypes.PERL, true, "pl");
       this.co = co;
       this.proc = proc;
    }
    
    @Override
    public void buildSettingsWindow() {
-      inputOptions.addFileOption("Name of Perl script")
-            .addSourceDirOption()
-            .addArgsOption()
+      inputOptions.addFileInput("Name of Perl script")
+            .addSourceDirInput()
+            .addCmdArgsInput()
             .buildWindow();
    }
 
@@ -41,8 +41,8 @@ public final class PerlProject extends AbstractProject implements ProjectActions
    @Override
    protected void setCommandParameters() {
       String main = getMainFileName() + ".pl";
-      if (getArgs().length() > 0) {
-         main += " " + getArgs();
+      if (getCmdArgs().length() > 0) {
+         main += " " + getCmdArgs();
       }
       startCmd = "perl ";
       if (getSourceDirName().length() == 0 ) {

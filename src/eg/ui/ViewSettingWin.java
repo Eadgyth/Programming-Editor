@@ -193,7 +193,7 @@ public class ViewSettingWin {
 
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
       JLabel lb = new JLabel(title);
-      lb.setFont(Constants.SANSSERIF_BOLD_9);
+      lb.setFont(Constants.SANSSERIF_BOLD_8);
       lb.setPreferredSize(LABEL_DIM);
       JPanel pnl = new JPanel(); 
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));     
@@ -206,7 +206,7 @@ public class ViewSettingWin {
    
    private JPanel comboBxPnl(JComboBox comboBox, String title) {
       JLabel lb = new JLabel(title);
-      lb.setFont(Constants.SANSSERIF_BOLD_9);
+      lb.setFont(Constants.SANSSERIF_BOLD_8);
       lb.setPreferredSize(LABEL_DIM);
       comboBox.setFont(Constants.SANSSERIF_PLAIN_9);
       JPanel pnl = new JPanel();

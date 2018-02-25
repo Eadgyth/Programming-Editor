@@ -152,12 +152,13 @@ public class MainWin {
    }
 
    /**
-    * Displays the project name in the status bar
+    * Displays the project name and type in the status bar
     *
     * @param projName  the name
+    * @param projType  the type
     */
-   public void displayProjectName(String projName) {
-      projectLb.setText("Active project: " + projName);
+   public void displayProjectName(String projName, String projType) {
+      projectLb.setText("Active project: " + projName + " (" + projType + ")");
    }
 
    /**
@@ -256,6 +257,16 @@ public class MainWin {
    public void enableChangeProject(boolean b) {
       menuBar.projectMenu().enableChangeProjItm(b);
       toolbar.enableChangeProjBt(b);
+   }
+   
+   /**
+    * Sets the boolean that specifies if actions to change project are
+    * enabled (true) or disabled
+    *
+    * @param b  the boolean value
+    */
+   public void enableOpenProjSettingActions(boolean b) {
+      menuBar.projectMenu().enableOpenSetWinItm(b);
    }
 
    /**
@@ -575,7 +586,7 @@ public class MainWin {
       statusBar.add(wordwrapLb);
       statusBar.add(Box.createRigidArea(width5));
       statusBar.add(cursorPosLb);
-      displayProjectName("none");
+      projectLb.setText("Active project: none");
    }
 
    private void setLbFont(JLabel[] lb) {

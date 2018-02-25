@@ -11,8 +11,8 @@ import eg.utils.FileUtils;
  */
 public final class HtmlProject extends AbstractProject implements ProjectActions {
 
-   HtmlProject(String fileExtension) {
-      super(fileExtension, false);
+   HtmlProject() {
+      super(ProjectTypes.HTML, false, null);
    }
    
    @Override
@@ -29,7 +29,7 @@ public final class HtmlProject extends AbstractProject implements ProjectActions
    @Override
    public void runProject(String filepath) {
       File htmlFile = new File(filepath);
-      if (!filepath.endsWith(getSourceFileExtension())) {
+      if (!filepath.endsWith(".html") && !filepath.endsWith(".htm")) {
          eg.utils.Dialogs.warnMessage(
                htmlFile.getName() + " cannot be opened in a browser");
 

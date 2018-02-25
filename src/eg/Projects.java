@@ -10,6 +10,7 @@ import eg.console.*;
 import eg.ui.MainWin;
 import eg.projects.ProjectActions;
 import eg.projects.ProjectSelector;
+import eg.projects.ProjectTypes;
 import eg.document.EditableDocument;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
@@ -29,7 +30,7 @@ public class Projects {
 
    private ProjectActions current;
    private int iDoc;
-   private String docExt = "";
+   private boolean isReplaceProj = false;
 
    /**
     * @param mw  the reference to {@link MainWin}
@@ -50,15 +51,17 @@ public class Projects {
     */
    public void setDocumentAt(int i) {
       iDoc = i;
-      docExt = FileUtils.fileExtension(edtDoc[iDoc].filename());
-      ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), true);
-      mw.enableChangeProject(inList != null);
-      if (current != null) {
-         if (!current.isInProject(edtDoc[iDoc].dir())) {
-            mw.enableSrcCodeActions(false, false, false);
-         }
-         else {
-            enableActions(current);
+      ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), false);
+      mw.enableOpenProjSettingActions(inList != null);
+      if (inList != null) {
+         if (current != null) {
+            mw.enableChangeProject(inList != current);
+            if (!current.isInProject(edtDoc[iDoc].dir())) {
+               mw.enableSrcCodeActions(false, false, false);
+            }
+            else {
+               enableActions();
+            }
          }
       }
    }
@@ -82,18 +85,8 @@ public class Projects {
     * listed projects or to a project that can be newly assigned.
     */
    public void openSettingsWindow() {
-      if (!edtDoc[iDoc].hasFile()) {
-         Dialogs.infoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
-         return;
-      }
       ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), false);
-      if (fromList == null) {
-         int res = Dialogs.confirmYesNo("Assign new project?");
-         if (0 == res) {
-            assignProjectImpl();
-         }
-      }
-      else {
+      if (fromList != null) {
          if (fromList == current || changeProject(fromList)) {
             current.makeSettingsWindowVisible();
          }
@@ -102,16 +95,42 @@ public class Projects {
 
    /**
     * Assigns a new project
+    *
+    * @param projType  the project type which is a valaue in {@link ProjectTypes}
     */
-   public void assignProject() {
+   public void assignProject(ProjectTypes projType) {
       ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), false);
       if (fromList == null) {
-         assignProjectImpl();
+         assignProjectImpl(projType);
       }
       else {
-         Dialogs.warnMessage(
-               edtDoc[iDoc].filename() + " belongs to the project "
-               + fromList.getProjectName());
+         if (fromList == current) {
+            isReplaceProj = projType != fromList.getProjectType();
+            if (isReplaceProj) {
+               int res = Dialogs.confirmYesNo(
+                     replaceProjectMessage(
+                           edtDoc[iDoc].filename(),
+                           fromList.getProjectName(),
+                           projType.display()));
+
+               if (0 == res) {
+                  assignProjectImpl(projType);
+               }
+            }
+            else {
+               Dialogs.infoMessage(
+                     projectAssignedMessage(
+                           edtDoc[iDoc].filename(),
+                           fromList.getProjectName(),
+                           fromList.getProjectType().display()),
+                     "Note");
+            }
+         }
+         else {
+            if (changeProject(fromList)) {
+               assignProjectImpl(projType);
+            }               
+         }
       }
    }
 
@@ -148,8 +167,7 @@ public class Projects {
          }
          else {
             Dialogs.errorMessage(
-                  edtDoc[iDoc].filename()
-                  + ":\nThe file could not be found anymore",
+                  fileNotFoundMessage(edtDoc[iDoc].filename()),
                   "Missing files");
          }
       }
@@ -183,7 +201,7 @@ public class Projects {
          }
          else {
             Dialogs.errorMessage(
-                  FILES_NOT_FOUND_MESSAGE + missingFiles,
+                  filesNotFoundMessage(missingFiles.toString()),
                   "Missing files");
          }
       }
@@ -227,23 +245,18 @@ public class Projects {
          return;
       }
       EventQueue.invokeLater(() -> {
-         ProjectActions projToFind = selector.createProject(docExt);
+         ProjectActions projToFind = null;
          boolean isFound = false;
-         /*if (projToFind != null) {
+         for (ProjectTypes t : ProjectTypes.values()) {
+            projToFind = selector.createProject(t);
             isFound = projToFind.retrieveProject(dir);
-         }
-         else {*/
-            for (String exts : ProjectSelector.PROJ_EXTENSIONS) {
-               projToFind = selector.createProject(exts);
-               isFound = projToFind.retrieveProject(dir);
-               if (isFound) {
-                  break;
-               }
-               else {
-                 projToFind = null;
-              } 
+            if (isFound) {
+               break;
             }
-        // }
+            else {
+              projToFind = null;
+           }
+         }
          if (isFound) {
             ProjectActions projFin = projToFind;
             if (current == null) {
@@ -263,40 +276,24 @@ public class Projects {
       });
    }
 
-   private void assignProjectImpl() {
+   private void assignProjectImpl(ProjectTypes projType) {
       if (!edtDoc[iDoc].hasFile()) {
          Dialogs.infoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
          return;
       }
-      ProjectActions projNew = selector.createProject(docExt);
-      if (projNew == null) {
-         projNew = selectByExtension();
-      }
-      if (projNew != null) {
-         ProjectActions projFin = projNew;
+      ProjectActions toAssign = selector.createProject(projType);
+      if (toAssign != null) {
+         ProjectActions projFin = toAssign;
          projFin.makeSettingsWindowVisible();
          projFin.setConfiguringAction(e -> configureProject(projFin));
       }
    }
 
-   private ProjectActions selectByExtension() {
-      String selectedExt
-            = Dialogs.comboBoxOpt(wrongExtensionMessage(edtDoc[iDoc].filename()),
-            "File extension", ProjectSelector.PROJ_EXTENSIONS, null, true);
-
-      if (selectedExt != null) {
-         return selector.createProject(selectedExt);
-      }
-      else {
-         return null;
-      }
-   }
-
    private boolean changeProject(ProjectActions toChangeTo) {
-      int result = Dialogs.confirmYesNo(
-            "Switch to project " + toChangeTo.getProjectName() + "?");
+      int res = Dialogs.confirmYesNo(
+            switchProjectMessage(toChangeTo.getProjectName()));
 
-      if (result == 0) {
+      if (res == 0) {
          current = toChangeTo;
          current.storeConfiguration();
          updateProjectSetting(current);
@@ -321,6 +318,10 @@ public class Projects {
 
    private void configureProject(ProjectActions projToConf) {
       if (projToConf.configureProject(edtDoc[iDoc].dir())) {
+         if (isReplaceProj) {
+            projList.remove(current);
+            isReplaceProj = false;
+         }
          current = projToConf;
          current.storeConfiguration();
          projList.add(current);
@@ -331,32 +332,39 @@ public class Projects {
 
    private void updateProjectSetting(ProjectActions projToSet) {
       proc.setWorkingDir(projToSet.getProjectPath());
-      enableActions(projToSet);
-      setBuildLabel(projToSet);
-      mw.displayProjectName(projToSet.getProjectName());
+      enableActions();
+      setBuildLabel();
+      mw.displayProjectName(projToSet.getProjectName(),
+            projToSet.getProjectType().display());
+
       mw.fileTree().setDeletableDirName(projToSet.getExecutableDirName());
       mw.fileTree().setProjectTree(projToSet.getProjectPath());
+      mw.enableChangeProject(false);
+      mw.enableOpenProjSettingActions(true);
    }
 
-   private void enableActions(ProjectActions projToSet) {
-      switch (className(projToSet)) {
-         case "JavaProject":
+   private void enableActions() {
+      switch (current.getProjectType()) {
+         case GENERIC:
+            mw.enableSrcCodeActions(false, false, false);
+            break;
+         case JAVA:
             mw.enableSrcCodeActions(true, true, true);
             break;
-         case "HtmlProject":
+         case HTML:
             mw.enableSrcCodeActions(false, true, false);
             break;
-         case "PerlProject":
+         case PERL:
             mw.enableSrcCodeActions(false, true, false);
             break;
-         case "RProject":
+         case R:
             mw.enableSrcCodeActions(false, true, false);
       }
    }
 
-   private void setBuildLabel(ProjectActions projToSet) {
-      switch (className(projToSet)) {
-         case "JavaProject":
+   private void setBuildLabel() {
+      switch (current.getProjectType()) {
+         case JAVA:
             mw.setBuildLabel("Create jar");
             break;
          default:
@@ -364,27 +372,37 @@ public class Projects {
       }
    }
 
-   private String className(ProjectActions projToSet) {
-      return projToSet.getClass().getSimpleName();
-   }
-
    //
    //--Strings for messages
    //
 
    private final String NO_FILE_IN_TAB_MESSAGE
-         = "To assign a project open or newly save a file"
-         + " that is part of the project.";
-
-   private final String FILES_NOT_FOUND_MESSAGE
-         = "The following files could not be found anymore:";
+         = "Open or newly save a file that is part of the project to be assigned.";
          
-   private String wrongExtensionMessage(String filename) {
-      return
-         "<html>"
-         + filename + " does not define a project category.<br>"
-         + "If the file belongs to a project select the"
-         + " extension of source files:"
-         + "</html>";
-    }
+   private String replaceProjectMessage(String filename, String projName,
+         String newProjDispl) {
+   
+      return  filename + " belongs to the project " + projName +".\n"
+            + "Remove " + projName + " and assign a new project"
+            + " of the category \"" + newProjDispl + "\"?";
+   }
+         
+   private String projectAssignedMessage(String filename, String projName,
+         String currProjDispl) {
+ 
+      return edtDoc[iDoc].filename() + " already belongs to the project "
+           + projName + " in the category \"" + currProjDispl + "\".";
+   }
+         
+   private String fileNotFoundMessage(String filename) {
+      return filename + ":\nThe file could not be found anymore";
+   }
+  
+   private String filesNotFoundMessage(String filenames) {
+      return "The following files could not be found anymore:" + filenames;
+   }
+         
+   private String switchProjectMessage(String projName) {
+      return  "Switch to project " + projName + "?";
+   }         
 }

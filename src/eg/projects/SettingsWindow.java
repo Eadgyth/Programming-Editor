@@ -27,29 +27,29 @@ import eg.utils.UIComponents;
  */
 public class SettingsWindow {
 
-   private final static Dimension DIM_TF = ScreenParams.scaledDimension(200, 16);
-   private final static Dimension DIM_SPACER = ScreenParams.scaledDimension(0, 20);
+   private final static Dimension DIM_TF = ScreenParams.scaledDimension(200, 14);
+   private final static Dimension DIM_SPACER = ScreenParams.scaledDimension(0, 14);
 
    private final JFrame frame = new JFrame("Project settings");
    private final JTextField projDirTf    = new JTextField();
    private final JTextField fileTf       = new JTextField();
    private final JTextField sourcesDirTf = new JTextField();
    private final JTextField execDirTf    = new JTextField();
-   private final JTextField argsTf       = new JTextField();
-   private final JTextField startOptTf   = new JTextField();
-   private final JTextField searchExtTf  = new JTextField();
-   private final JTextField buildTf      = new JTextField();
+   private final JTextField cmdArgsTf    = new JTextField();
+   private final JTextField cmdOptionsTf = new JTextField();
+   private final JTextField extensionsTf = new JTextField();
+   private final JTextField buildNameTf  = new JTextField();
    private final JButton    okBt         = new JButton("   OK   ");
    private final JButton    cancelBt     = new JButton("Cancel");
    private final JCheckBox  saveConfig   = new JCheckBox();
 
    private String fileLabel = null;
-   private boolean useScr = false;
-   private boolean useExec = false;
-   private boolean useStartOpt = false;
-   private boolean useArgs = false;
-   private String searchExtLabel = null;
-   private String buildLabel = null;
+   private boolean useSrcDir = false;
+   private boolean useExecDir = false;
+   private boolean useCmdOptions = false;
+   private boolean useCmdArgs = false;
+   private String extensionsLabel = null;
+   private String buildNameLabel = null;
 
    public InputOptionsBuilder getInputOptionsBuilder() {
       SettingsWindow.InputOptionsBuilder optBuilder
@@ -123,8 +123,8 @@ public class SettingsWindow {
     *
     * @return  the input
     */
-   public String startOptInput() {
-      return startOptTf.getText().trim();
+   public String cmdOptionsInput() {
+      return cmdOptionsTf.getText().trim();
    }
 
    /**
@@ -132,13 +132,13 @@ public class SettingsWindow {
     *
     * @return  the input
     */
-   public String argsInput() {
-      return argsTf.getText().trim();
+   public String cmdArgsInput() {
+      return cmdArgsTf.getText().trim();
    }
 
    /**
-    * Returns the input in the text field for file extensions that
-    * may be used for a file search.
+    * Returns the input in the text field for file extensions that may
+    * be used for a file search.
     * <p>
     * Extensions may be entered as comma, semicolon or space separated
     * but the returnd string is formatted as comma separated in either
@@ -146,8 +146,8 @@ public class SettingsWindow {
     *
     * @return  the input
     */
-    public String searchExtensionsInput() {
-       return searchExtTf.getText().trim().replaceAll("[\\s,;]+", ",");
+    public String extensionsInput() {
+       return extensionsTf.getText().trim().replaceAll("[\\s,;]+", ",");
     }
 
    /**
@@ -156,7 +156,7 @@ public class SettingsWindow {
     * @return  the input
     */
    public String buildNameInput() {
-      return buildTf.getText().trim();
+      return buildNameTf.getText().trim();
    }
 
    /**
@@ -205,8 +205,8 @@ public class SettingsWindow {
     *
     * @param in  the file extensions
     */
-   public void displaySearchExtensions(String in) {
-      searchExtTf.setText(in);
+   public void displayExtensions(String in) {
+      extensionsTf.setText(in);
    }
 
    /**
@@ -215,12 +215,12 @@ public class SettingsWindow {
     * @param in  the name
     */
    public void displayBuildName(String in) {
-      buildTf.setText(in);
+      buildNameTf.setText(in);
    }
 
    /**
     * Returns if the option to save project parameters to an
-    * \"eadproject\" file is selected in the correponding checkbox
+    * "eadproject" file is selected in the correponding checkbox
     *
     * @return  the boolean value that is true if selected
     */
@@ -240,7 +240,7 @@ public class SettingsWindow {
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private void buildWindow() {
@@ -251,144 +251,144 @@ public class SettingsWindow {
       initWindow();
    }
 
-   private JPanel structurePanel() {
+   private JPanel structurePnl() {
       int gridSize = 1;
       GridLayout grid = new GridLayout(gridSize, 0);
-      JPanel structPnl = new JPanel(grid);
+      JPanel pnl = new JPanel(grid);
       //
       // project dir
       JLabel projDirLb = new JLabel("Name of project root:");
-      structPnl.add(holdLbAndTf(projDirLb, projDirTf));
+      pnl.add(holdLbAndTf(projDirLb, projDirTf));
       //
       // project file option
       if (fileLabel != null) {
          gridSize++;
          grid.setRows(gridSize);
          JLabel fileLb = new JLabel(fileLabel + ":");
-         structPnl.add(holdLbAndTf(fileLb, fileTf));
+         pnl.add(holdLbAndTf(fileLb, fileTf));
       }
       //
       // sources dir option
-      if (useScr) {
+      if (useSrcDir) {
          gridSize++;
          grid.setRows(gridSize);
          JLabel sourcesDirLb = new JLabel("Name of sources directory:");
-         structPnl.add(holdLbAndTf(sourcesDirLb, sourcesDirTf));
+         pnl.add(holdLbAndTf(sourcesDirLb, sourcesDirTf));
       }
       //
       // executable dir option
-      if (useExec) {
+      if (useExecDir) {
          gridSize++;
          grid.setRows(gridSize);
          JLabel execDirLb = new JLabel("Name of executables directory:");
-         structPnl.add(holdLbAndTf(execDirLb, execDirTf));
+         pnl.add(holdLbAndTf(execDirLb, execDirTf));
       }
 
-      structPnl.setBorder(UIComponents.titledBorder("Directory/file structure"));
-      return structPnl;
+      pnl.setBorder(UIComponents.titledBorder("Directory/file structure"));
+      return pnl;
    }
 
-   private JPanel argsPanel() {
+   private JPanel commandPnl() {
       int count = 0;
       int gridSize = 1;
       GridLayout grid = new GridLayout(gridSize, 0);
-      JPanel argsPnl = new JPanel(grid);
+      JPanel pnl = new JPanel(grid);
       //
       // start options
-      if (useStartOpt) {
-         JLabel startOptLb = new JLabel("Start options:");
-         argsPnl.add(holdLbAndTf(startOptLb, startOptTf));
+      if (useCmdOptions) {
+         JLabel cmdOptLb = new JLabel("Command options:");
+         pnl.add(holdLbAndTf(cmdOptLb, cmdOptionsTf));
          count++;
       }
       //
       // arguments
-      if (useArgs) {
+      if (useCmdArgs) {
          if (count == gridSize) {
             gridSize++;
             grid.setRows(gridSize);
          }
-         JLabel argsLb = new JLabel("Arguments:");
-         argsPnl.add(holdLbAndTf(argsLb, argsTf));
+         JLabel cmdArgsLb = new JLabel("Command arguments:");
+         pnl.add(holdLbAndTf(cmdArgsLb, cmdArgsTf));
       }
 
-      argsPnl.setBorder(UIComponents.titledBorder("Run"));
-      return argsPnl;
+      pnl.setBorder(UIComponents.titledBorder("Run"));
+      return pnl;
    }
 
-   private JPanel buildPanel() {
+   private JPanel compileAndBuildPnl() {
       int count = 0;
       int gridSize = 1;
       GridLayout grid = new GridLayout(gridSize, 0);
-      JPanel buildPnl = new JPanel(grid);
+      JPanel pnl = new JPanel(grid);
       //
       // include files option
-      if (searchExtLabel != null) {
-         JLabel searchExtLb = new JLabel(searchExtLabel + " :");
-         buildPnl.add(holdLbAndTf(searchExtLb, searchExtTf));
+      if (extensionsLabel != null) {
+         JLabel extLb = new JLabel(extensionsLabel + ":");
+         pnl.add(holdLbAndTf(extLb, extensionsTf));
          count++;
       }
       //
       // set build name option
-      if (buildLabel != null) {
+      if (buildNameLabel != null) {
          if (count == gridSize) {
             gridSize++;
             grid.setRows(gridSize);
          }
-         JLabel buildLb = new JLabel("Name for " + buildLabel +":");
-         buildPnl.add(holdLbAndTf(buildLb, buildTf));
+         JLabel buildLb = new JLabel("Name for " + buildNameLabel +":");
+         pnl.add(holdLbAndTf(buildLb, buildNameTf));
       }
-      buildPnl.setBorder(UIComponents.titledBorder("Compilation and build"));
-      return buildPnl;
+      pnl.setBorder(UIComponents.titledBorder("Compilation and build"));
+      return pnl;
    }
 
    private JPanel buttonsPanel() {
-      JPanel buttons = new JPanel(new FlowLayout());
-      buttons.add(okBt);
-      buttons.add(cancelBt);
+      JPanel pnl = new JPanel(new FlowLayout());
+      pnl.add(okBt);
+      pnl.add(cancelBt);
       frame.getRootPane().setDefaultButton(okBt);
       cancelBt.addActionListener(e -> {
          frame.setVisible(false);
       });
-      return buttons;
+      return pnl;
    }
 
    private JPanel holdLbAndTf(JLabel lb, JTextField tf) {
-      JPanel holdPnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-      lb.setFont(eg.Constants.SANSSERIF_BOLD_9);
-      tf.setFont(eg.Constants.SANSSERIF_PLAIN_9);
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+      lb.setFont(eg.Constants.SANSSERIF_BOLD_8);
+      tf.setFont(eg.Constants.SANSSERIF_PLAIN_8);
       tf.setPreferredSize(DIM_TF);
-      holdPnl.add(lb);
-      holdPnl.add(tf);
-      return holdPnl;
+      pnl.add(lb);
+      pnl.add(tf);
+      return pnl;
    }
 
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
-      JPanel holdPnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       JLabel label = new JLabel(title);
-      label.setFont(Constants.SANSSERIF_BOLD_9);
-      holdPnl.add(label);
-      holdPnl.add(checkBox);
-      return holdPnl;
+      label.setFont(Constants.SANSSERIF_BOLD_8);
+      pnl.add(label);
+      pnl.add(checkBox);
+      return pnl;
    }
 
-   private JPanel combineAll() {
-      JPanel combineAll = new JPanel();
-      combineAll.setLayout(new BoxLayout(combineAll, BoxLayout.Y_AXIS));
-      combineAll.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-      combineAll.add(structurePanel());
-      if (useStartOpt || useArgs) {
-         combineAll.add(Box.createRigidArea(DIM_SPACER));
-         combineAll.add(argsPanel());
+   private JPanel combinedPnl() {
+      JPanel pnl = new JPanel();
+      pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
+      pnl.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+      pnl.add(structurePnl());
+      if (useCmdOptions || useCmdArgs) {
+         pnl.add(Box.createRigidArea(DIM_SPACER));
+         pnl.add(commandPnl());
       }
-      if (buildLabel != null || searchExtLabel != null) {
-         combineAll.add(Box.createRigidArea(DIM_SPACER));
-         combineAll.add(buildPanel());
+      if (buildNameLabel != null || extensionsLabel != null) {
+         pnl.add(Box.createRigidArea(DIM_SPACER));
+         pnl.add(compileAndBuildPnl());
       }
-      combineAll.add(checkBxPnl(saveConfig, "Save settings to \"eadproject\" file"
-            + " in the project folder"));
-      combineAll.add(Box.createRigidArea(DIM_SPACER));
-      combineAll.add(buttonsPanel());
-      return combineAll;
+      pnl.add(checkBxPnl(saveConfig,
+            "Save settings to \"eadproject\" file in the project folder"));
+      pnl.add(Box.createRigidArea(DIM_SPACER));
+      pnl.add(buttonsPanel());
+      return pnl;
    }
 
    private void initWindow() {
@@ -398,7 +398,7 @@ public class SettingsWindow {
       frame.setVisible(false);
       frame.setAlwaysOnTop(true);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
-      frame.getContentPane().add(combineAll());
+      frame.getContentPane().add(combinedPnl());
       frame.pack();
    }
 
@@ -420,10 +420,11 @@ public class SettingsWindow {
        * Adds the option to enter a name for the main project file and
        * sets the label for the corresponding text field
        *
-       * @param fileLabel  the label
+       * @param fileLabel  the label which the term "(without extension)" is
+       * added to
        * @return  this
        */
-      public InputOptionsBuilder addFileOption(String fileLabel) {
+      public InputOptionsBuilder addFileInput(String fileLabel) {
          sw.fileLabel = fileLabel + " (without extension)";
          return this;
       }
@@ -434,8 +435,8 @@ public class SettingsWindow {
        *
        * @return  this
        */
-      public InputOptionsBuilder addSourceDirOption() {
-         sw.useScr = true;
+      public InputOptionsBuilder addSourceDirInput() {
+         sw.useSrcDir = true;
          return  this;
       }
 
@@ -445,53 +446,53 @@ public class SettingsWindow {
        *
        * @return  this
        */
-      public InputOptionsBuilder addExecDirOption() {
-         sw.useExec = true;
+      public InputOptionsBuilder addExecDirInput() {
+         sw.useExecDir = true;
          return this;
       }
       
       /**
-       * Adds the option to enter arguments for a start script
+       * Adds the option to enter command options
        *
        * @return  this
        */
-      public InputOptionsBuilder addStartOptOption() {
-         sw.useStartOpt = true;
+      public InputOptionsBuilder addCmdOptionsInput() {
+         sw.useCmdOptions = true;
          return this;
       }
 
       /**
-       * Adds the option to enter arguments for a start script
+       * Adds the option to enter command arguments
        *
        * @return  this
        */
-      public InputOptionsBuilder addArgsOption() {
-         sw.useArgs = true;
+      public InputOptionsBuilder addCmdArgsInput() {
+         sw.useCmdArgs = true;
          return this;
       }
 
       /**
        * Adds the option to enter extensions of files that may be used
-       * for a file search and set the label for the corresponding text
+       * for a file search and sets the label for the corresponding text
        * field
        *
        * @param label  the label
        * @return  this
        */
-       public InputOptionsBuilder addSearchExtensionsOption(String label) {
-          sw.searchExtLabel = label;
+       public InputOptionsBuilder addExtensionsInput(String label) {
+          sw.extensionsLabel = label;
           return this;
        }
 
       /**
        * Adds the option to enter a build name and sets the label for the
-       * corresponding text field
+       * corresponding text field.
        *
-       * @param  label  the label
+       * @param  label  the label that specifies the kind of build
        * @return  this
        */
-      public InputOptionsBuilder addBuildOption(String label) {
-         sw.buildLabel = label;
+      public InputOptionsBuilder addBuildNameInput(String label) {
+         sw.buildNameLabel = label;
          return this;
       }
 
