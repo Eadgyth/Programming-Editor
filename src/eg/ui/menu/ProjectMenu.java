@@ -69,8 +69,8 @@ public class ProjectMenu {
    }
 
    /**
-    * Sets the boolean that indicates if actions to change project are
-    * enabled
+    * Sets the boolean that indicates if the item for actions to change
+    * project are enabled
     *
     * @param b  the boolean value
     */
@@ -79,8 +79,8 @@ public class ProjectMenu {
    }
    
    /**
-    * Sets the boolean that indicates if actions to open the project settings
-    * are enabled
+    * Sets the boolean that indicates if the item for actions to open the
+    *  project settings window are enabled
     *
     * @param b  the boolean value
     */
@@ -106,7 +106,7 @@ public class ProjectMenu {
    }
 
    /**
-    * Sets the specified label for the item for building actions
+    * Sets the label for the item for building actions
     *
     * @param label  the label
     */

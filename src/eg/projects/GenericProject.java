@@ -22,6 +22,9 @@ public final class GenericProject extends AbstractProject implements ProjectActi
          inputOptions.buildWindow();
    }
    
+   /**
+    * Not implemented
+    */
    @Override
    protected void setCommandParameters() {}
 }

@@ -16,7 +16,7 @@ import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 
 /**
- * The projects that files in a given directory are part of.
+ * The assigned projects.
  * <p>
  * A project is represented by an object of {@link ProjectActions}.
  */
@@ -25,8 +25,8 @@ public class Projects {
    private final MainWin mw;
    private final ProjectSelector selector;
    private final ProcessStarter proc;
-   private final List<ProjectActions> projList = new ArrayList<>();
    private final EditableDocument[] edtDoc;
+   private final List<ProjectActions> projList = new ArrayList<>();
 
    private ProjectActions current;
    private int iDoc;
@@ -73,30 +73,46 @@ public class Projects {
     * @see eg.projects.AbstractProject#retrieveProject(String)
     */
    public void retrieveProject() {
-      retrieveProject(edtDoc[iDoc].dir());
-   }
-
-   /**
-    * Opens the window of the <code>SettingsWindow</code> object that belongs
-    * to a project.
-    * <p>
-    * Depending on the currently set <code>EditableDocument</code> the
-    * window belongs to the currently active project, to one of this
-    * listed projects or to a project that can be newly assigned.
-    */
-   public void openSettingsWindow() {
-      ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), false);
-      if (fromList != null) {
-         if (fromList == current || changeProject(fromList)) {
-            current.makeSettingsWindowVisible();
-         }
+      String dir = edtDoc[iDoc].dir();
+      if (current != null && current.isInProject(dir)) {
+         return;
       }
+      EventQueue.invokeLater(() -> {
+         ProjectActions projToFind = null;
+         boolean isFound = false;
+         for (ProjectTypes t : ProjectTypes.values()) {
+            projToFind = selector.createProject(t);
+            isFound = projToFind.retrieveProject(dir);
+            if (isFound) {
+               break;
+            }
+            else {
+              projToFind = null;
+           }
+         }
+         if (isFound) {
+            ProjectActions projFin = projToFind;
+            if (current == null) {
+               current = projFin;
+               current.setConfiguringAction(e -> configureProject(current));
+               projList.add(current);
+               updateProjectSetting(current);
+            }
+            else {
+               if (selectFromList(dir, true) == null) {
+                  projFin.setConfiguringAction(e -> configureProject(projFin));
+                  projList.add(projFin);
+                  changeProject(projFin);
+               }
+            }
+         }
+      });
    }
 
    /**
     * Assigns a new project
     *
-    * @param projType  the project type which is a valaue in {@link ProjectTypes}
+    * @param projType  the project type which has a valaue in {@link ProjectTypes}
     */
    public void assignProject(ProjectTypes projType) {
       ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), false);
@@ -129,7 +145,24 @@ public class Projects {
          else {
             if (changeProject(fromList)) {
                assignProjectImpl(projType);
-            }               
+            }
+         }
+      }
+   }
+
+   /**
+    * Opens the window of the <code>SettingsWindow</code> object that belongs
+    * to a project.
+    * <p>
+    * Depending on the currently set <code>EditableDocument</code> the
+    * window belongs to the currently active project or to one of this
+    * listed projects.
+    */
+   public void openSettingsWindow() {
+      ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), false);
+      if (fromList != null) {
+         if (fromList == current || changeProject(fromList)) {
+            current.makeSettingsWindowVisible();
          }
       }
    }
@@ -240,42 +273,6 @@ public class Projects {
    //--private--/
    //
 
-   private void retrieveProject(String dir) {
-      if (current != null && current.isInProject(dir)) {
-         return;
-      }
-      EventQueue.invokeLater(() -> {
-         ProjectActions projToFind = null;
-         boolean isFound = false;
-         for (ProjectTypes t : ProjectTypes.values()) {
-            projToFind = selector.createProject(t);
-            isFound = projToFind.retrieveProject(dir);
-            if (isFound) {
-               break;
-            }
-            else {
-              projToFind = null;
-           }
-         }
-         if (isFound) {
-            ProjectActions projFin = projToFind;
-            if (current == null) {
-               current = projFin;
-               current.setConfiguringAction(e -> configureProject(current));
-               projList.add(current);
-               updateProjectSetting(current);
-            }
-            else {
-               if (selectFromList(dir, true) == null) {
-                  projFin.setConfiguringAction(e -> configureProject(projFin));
-                  projList.add(projFin);
-                  changeProject(projFin);
-               }
-            }
-         }
-      });
-   }
-
    private void assignProjectImpl(ProjectTypes projType) {
       if (!edtDoc[iDoc].hasFile()) {
          Dialogs.infoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
@@ -378,31 +375,31 @@ public class Projects {
 
    private final String NO_FILE_IN_TAB_MESSAGE
          = "Open or newly save a file that is part of the project to be assigned.";
-         
+
    private String replaceProjectMessage(String filename, String projName,
          String newProjDispl) {
-   
+
       return  filename + " belongs to the project " + projName +".\n"
             + "Remove " + projName + " and assign a new project"
             + " of the category \"" + newProjDispl + "\"?";
    }
-         
+
    private String projectAssignedMessage(String filename, String projName,
          String currProjDispl) {
- 
+
       return edtDoc[iDoc].filename() + " already belongs to the project "
            + projName + " in the category \"" + currProjDispl + "\".";
    }
-         
+
    private String fileNotFoundMessage(String filename) {
       return filename + ":\nThe file could not be found anymore";
    }
-  
+
    private String filesNotFoundMessage(String filenames) {
       return "The following files could not be found anymore:" + filenames;
    }
-         
+
    private String switchProjectMessage(String projName) {
       return  "Switch to project " + projName + "?";
-   }         
+   }
 }

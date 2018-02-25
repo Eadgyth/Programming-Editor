@@ -119,7 +119,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input in the text field for arguments
+    * Returns the input in the text field for command options
     *
     * @return  the input
     */
@@ -128,7 +128,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input in the text field for arguments
+    * Returns the input in the text field for command arguments
     *
     * @return  the input
     */

@@ -46,7 +46,7 @@ public final class HtmlProject extends AbstractProject implements ProjectActions
    }
    
    /**
-    * Not used
+    * Not implemented
     */
    @Override
    protected void setCommandParameters() {}
