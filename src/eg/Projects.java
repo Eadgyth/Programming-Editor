@@ -54,18 +54,57 @@ public class Projects {
       ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), false);
       mw.enableOpenProjSettingActions(inList != null);
       if (inList != null) {
-         if (current != null) {
-            mw.enableChangeProject(inList != current);
-            if (!current.isInProject(edtDoc[iDoc].dir())) {
-               mw.enableSrcCodeActions(false, false, false);
-            }
-            else {
-               enableActions();
-            }
+         mw.enableChangeProject(inList != current);
+         if (!current.isInProject(edtDoc[iDoc].dir())) {
+            mw.enableSrcCodeActions(false, false, false);
+         }
+         else {
+            enableActions();
          }
       }
    }
 
+   /**
+    * Assigns a new project
+    *
+    * @param projType  the project type which has a valaue in {@link ProjectTypes}
+    */
+   public void assignProject(ProjectTypes projType) {
+      ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), false);
+      if (fromList == null) {
+         assignProjectImpl(projType);
+      }
+      else {
+         if (fromList == current) {
+            isReplaceProj = projType != fromList.getProjectType();
+            if (isReplaceProj) {
+               int res = Dialogs.confirmYesNo(
+                     replaceProjectMessage(
+                           edtDoc[iDoc].filename(),
+                           fromList.getProjectName(),
+                           projType.display()));
+
+               if (0 == res) {
+                  assignProjectImpl(projType);
+               }
+            }
+            else {
+               Dialogs.infoMessage(
+                     projectAssignedMessage(
+                           edtDoc[iDoc].filename(),
+                           fromList.getProjectName(),
+                           fromList.getProjectType().display()),
+                     "Note");
+            }
+         }
+         else {
+            if (changeProject(fromList)) {
+               assignProject(projType);
+            }
+         }
+      }
+   }
+   
    /**
     * Tries to retrieve a project whose configuration is saved in an
     * 'eadproject' file in the project folder or, if such file is not
@@ -110,47 +149,6 @@ public class Projects {
    }
 
    /**
-    * Assigns a new project
-    *
-    * @param projType  the project type which has a valaue in {@link ProjectTypes}
-    */
-   public void assignProject(ProjectTypes projType) {
-      ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), false);
-      if (fromList == null) {
-         assignProjectImpl(projType);
-      }
-      else {
-         if (fromList == current) {
-            isReplaceProj = projType != fromList.getProjectType();
-            if (isReplaceProj) {
-               int res = Dialogs.confirmYesNo(
-                     replaceProjectMessage(
-                           edtDoc[iDoc].filename(),
-                           fromList.getProjectName(),
-                           projType.display()));
-
-               if (0 == res) {
-                  assignProjectImpl(projType);
-               }
-            }
-            else {
-               Dialogs.infoMessage(
-                     projectAssignedMessage(
-                           edtDoc[iDoc].filename(),
-                           fromList.getProjectName(),
-                           fromList.getProjectType().display()),
-                     "Note");
-            }
-         }
-         else {
-            if (changeProject(fromList)) {
-               assignProjectImpl(projType);
-            }
-         }
-      }
-   }
-
-   /**
     * Opens the window of the <code>SettingsWindow</code> object that belongs
     * to a project.
     * <p>
@@ -168,7 +166,7 @@ public class Projects {
    }
 
    /**
-    * Sets active the project which the currently selected
+    * Changes to the project which the currently selected
     * <code>EditableDocument</code> belongs to
     */
    public void changeProject() {
