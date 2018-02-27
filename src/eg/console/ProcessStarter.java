@@ -22,28 +22,29 @@ import javax.swing.SwingWorker;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 
 /**
- * The starting of an external process
+ * The starting of a external processes
  */
 public class ProcessStarter {
 
    private final ConsolePanel consPnl;
-   private final HashMap cmdMap = new HashMap();
+   /*
+    * Accociates working directories with commands entered in the dialog */
+   private final HashMap<String, String> cmdMap = new HashMap<>();
    
    private String workingDir = System.getProperty("user.home");
    private String workingDirName = new File(workingDir).getName();
    private String previousCmd = "";
    private int caretPos = 0;
    /*
-    * The text set in the console after a process is started;
-    * includes the output of the process */
+    * The text set in the console after a process is started */
    private String consoleText = "";
    /*
-    * Indicates if the process was forcibly quit, if so -1 */
+    * Indicates if a process was forcibly quit, if so -1 */
    private int apparentExitVal = 0;
    private boolean isActive = false;
    private Process process;
@@ -53,8 +54,8 @@ public class ProcessStarter {
     * @param consPnl  the reference to {@link ConsolePanel}
     */
    public ProcessStarter(ConsolePanel consPnl) {
-      cmdMap.put(workingDir, previousCmd);
       this.consPnl = consPnl;
+      cmdMap.put(workingDir, previousCmd);
       consPnl.setCmdAct(e -> startNewCmd());
       consPnl.setRunAct(e -> startPreviousCmd());
       consPnl.setStopAct(e -> endProcess());
@@ -70,7 +71,7 @@ public class ProcessStarter {
       File f = new File(workingDir);
       this.workingDirName = f.getName();
       if (cmdMap.containsKey(workingDir)) {
-         previousCmd = (String) cmdMap.get(workingDir);
+         previousCmd = cmdMap.get(workingDir);
          consPnl.enableRunBt(previousCmd.length() > 0);
       }
       else {
@@ -125,8 +126,8 @@ public class ProcessStarter {
       boolean isEnded = process == null;
       if (!isEnded) {
          Dialogs.warnMessage(
-               "The currently running process must"
-               + " be quit firstly to start a new process.");
+               "A currently running process must be quit"
+               + " before a new process can be started.");
       }
       return isEnded;
    }
@@ -134,7 +135,7 @@ public class ProcessStarter {
    //
    //--private--/
    //
-
+   
    private void sendOutput(PrintWriter out) {
       KeyListener keyListener = new KeyAdapter() {
 
@@ -174,9 +175,10 @@ public class ProcessStarter {
 
    private void startNewCmd() {
       String cmd = Dialogs.textFieldInput(
-            "Enter a system command that is executed in the current"
+            "Enter a system command which is executed in the current"
             + " working directory (" + workingDirName + ")",
-            "Run", previousCmd);
+            "Run",
+            previousCmd);
 
       if (cmd != null) {
          previousCmd = cmd;
@@ -219,7 +221,7 @@ public class ProcessStarter {
    }
 
    private class CaptureInput extends SwingWorker<Void, String> {
-      PrintWriter out; // to close after program exited
+      PrintWriter out; // to close after process ended
       InputStream is = process.getInputStream();
       InputStreamReader isr = new InputStreamReader(is);
       BufferedReader reader = new BufferedReader(isr);
