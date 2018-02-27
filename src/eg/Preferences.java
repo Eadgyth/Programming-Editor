@@ -56,6 +56,7 @@ public class Preferences {
    };
 
    private Properties prop = null;
+   private String notFound = "";
    
    /**
     * Creates a <code>Preferences</code> that has read in the
@@ -91,13 +92,17 @@ public class Preferences {
    public String getProperty(String property) {
       if (prop == null) {
          throw new IllegalStateException("The property " + property
-               + " could not be read in.");
+               + " could not be read in. Properties is not initialized");
       }
-      if (prop.getProperty(property) == null) {
-         Dialogs.errorMessage("The preference for \"" + property
-               + "\" could not be found.",
-               "Error reading preferences file");
-
+      String res = prop.getProperty(property);
+      if (res == null) {   
+         if (!notFound.equals(property)) {
+            Dialogs.errorMessage("The property \"" + property
+                  + "\" could not be found.",
+                  "Error reading preferences file");
+            
+            notFound = property;
+         }
          return "";
       }
       else {
