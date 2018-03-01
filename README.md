@@ -12,7 +12,7 @@ A list of the features of the program and documentation can be found under
 REQUIREMENTS FOR TESTING<br>
 The compiled program (an executable jar file) can be found at
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">releases</a>. The jar archive
-was build by the program itself but has been also successfully build in Netbeans.
+was build by the program itself but has also been successfully build in Netbeans.
 <p>
 Running (and compiling) the program requires Java 8. Running it using Java 9 causes some problems
 with regard to the graphical interface (at least under Windows).
