@@ -10,10 +10,15 @@ A list of the features of the program and documentation can be found under
 <a href="https://eadgyth.github.io/Programming-Editor/">Help and documentation</a>.
 <p>
 REQUIREMENTS FOR TESTING<br>
-Running the program requires Java 8. For compiling Java code by the built-in compile option
-installing the JDK 8 is required and it must be ensured that the program is run using the JRE
-contained in the JDK. Running it using Java 9 causes some problems with regard to the graphical
-interface (as far as seen on Windows 10).
+The compiled program (an executable jar file) can be found at
+<a href="https://github.com/Eadgyth/Programming-Editor/releases">releases</a>. The jar archive
+was build by the program itself but has also been successfully build in Netbeans.
+<p>
+Running (and compiling) the program requires Java 8. Running it using Java 9 causes some problems
+with regard to the graphical interface (at least under Windows).
+<p>
+For compiling Java code by the compile option in the program it must be made sure that the
+program is run using the JRE contained in the JDK.
 <p>
 LIMITATIONS<br>
 Among the countless limitations at the present stage some need mention:
