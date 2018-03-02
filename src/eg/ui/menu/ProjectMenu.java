@@ -31,7 +31,7 @@ public class ProjectMenu {
    private final JMenuItem runItm = new JMenuItem("Run", IconFiles.RUN_ICON);
 
    private final JMenuItem buildItm        = new JMenuItem("Build");
-   private final JMenu assignProjMenu      = new JMenu("Assign as project by category...");
+   private final JMenu assignProjMenu      = new JMenu("Assign as project");
    private final JMenuItem[] assignProjItm = new JMenuItem[ProjectTypes.values().length];
    private final JMenuItem openSetWinItm   = new JMenuItem("Project settings");
    private final JMenuItem changeProjItm   = new JMenuItem("Change project",

@@ -153,11 +153,12 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * @param projType  the project type which is a valaue in {@link ProjectTypes}
-    * @param useProjectFile  the boolean value that is true to indicate the project
-    * uses a main project file
-    * @param sourceExtension  the extension of source files (or of the main file if
-    * extensions differ). Null if no main project file is used
+    * @param projType  the project type which has a valaue in
+    * {@link ProjectTypes}
+    * @param useProjectFile  the boolean value that is true to indicate that
+    * the project uses a main project file
+    * @param sourceExtension  the extension of source files (or of the main
+    * file if extensions differ). Null if no main project file is used
     */
    protected AbstractProject(ProjectTypes projType, boolean useProjectFile,
          String sourceExtension) {
@@ -250,9 +251,11 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns if the main executable file exists
+    * Returns if the main executable file exists. The file is searched
+    * in the executables directory if it is specified or in the project
+    * root directory
     *
-    * @param ext  the extension of executable file (with period)
+    * @param ext  the extension of executable file (with starting period)
     * @return  the boolean value that is true if exists
     */
    protected boolean mainExecFileExists(String ext) {
@@ -302,7 +305,7 @@ public abstract class AbstractProject implements Configurable {
                namespace = namespace.substring(sourceRoot.length() + 1);
             }
             else {
-               namespace = "";
+               namespace = ""; // no subdir in source root
             }
             rootToTest = root;
          }
@@ -317,7 +320,7 @@ public abstract class AbstractProject implements Configurable {
 
    private void getTextFieldsInput() {
       String mainFileInput = sw.fileNameInput();
-      splitMainFilePath(mainFileInput);
+      splitMainFileInput(mainFileInput);
       sourceDirName = sw.sourcesDirNameInput();
       execDirName = sw.execDirNameInput();
       startOptions = sw.cmdOptionsInput();
@@ -355,7 +358,7 @@ public abstract class AbstractProject implements Configurable {
          return;
       }
       String mainFileInput = prefs.getProperty("mainProjectFile");
-      splitMainFilePath(mainFileInput);
+      splitMainFileInput(mainFileInput);
       if (isPathname) {
          sw.displayFile(namespace + F_SEP + mainFileName);
       }
@@ -387,19 +390,18 @@ public abstract class AbstractProject implements Configurable {
       }
    }
 
-   private void splitMainFilePath(String mainFileInput) {
+   private void splitMainFileInput(String mainFileInput) {
       String formatted = mainFileInput.replace("\\", "/");
       int lastSepPos = formatted.lastIndexOf("/", mainFileInput.length());
-      if (lastSepPos != -1) {
+      isPathname = lastSepPos != -1;
+      if (isPathname) {
          namespace = formatted.substring(0, lastSepPos).replaceAll("/",
                java.util.regex.Matcher.quoteReplacement(F_SEP));
 
          mainFileName = formatted.substring(lastSepPos + 1);
-         isPathname = true;
       }
       else {
          mainFileName = mainFileInput;
-         isPathname = false;
       }
    }
 

@@ -70,18 +70,18 @@ public class Projects {
     * @param projType  the project type which has a valaue in {@link ProjectTypes}
     */
    public void assignProject(ProjectTypes projType) {
-      ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), false);
-      if (fromList == null) {
+      ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), false);
+      if (inList == null) {
          assignProjectImpl(projType);
       }
       else {
-         if (fromList == current) {
-            isReplaceProj = projType != fromList.getProjectType();
+         if (inList == current) {
+            isReplaceProj = projType != inList.getProjectType();
             if (isReplaceProj) {
                int res = Dialogs.confirmYesNo(
                      replaceProjectMessage(
                            edtDoc[iDoc].filename(),
-                           fromList.getProjectName(),
+                           inList.getProjectName(),
                            projType.display()));
 
                if (0 == res) {
@@ -92,13 +92,13 @@ public class Projects {
                Dialogs.infoMessage(
                      projectAssignedMessage(
                            edtDoc[iDoc].filename(),
-                           fromList.getProjectName(),
-                           fromList.getProjectType().display()),
+                           inList.getProjectName(),
+                           inList.getProjectType().display()),
                      "Note");
             }
          }
          else {
-            if (changeProject(fromList)) {
+            if (changeProject(inList)) {
                assignProject(projType);
             }
          }
@@ -157,9 +157,9 @@ public class Projects {
     * listed projects.
     */
    public void openSettingsWindow() {
-      ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), false);
-      if (fromList != null) {
-         if (fromList == current || changeProject(fromList)) {
+      ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), false);
+      if (inList != null) {
+         if (inList == current || changeProject(inList)) {
             current.makeSettingsWindowVisible();
          }
       }
@@ -170,8 +170,8 @@ public class Projects {
     * <code>EditableDocument</code> belongs to
     */
    public void changeProject() {
-      ProjectActions fromList = selectFromList(edtDoc[iDoc].dir(), true);
-      changeProject(fromList);
+      ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), true);
+      changeProject(inList);
    }
 
    /**
@@ -311,13 +311,13 @@ public class Projects {
       return inList;
    }
 
-   private void configureProject(ProjectActions projToConf) {
-      if (projToConf.configureProject(edtDoc[iDoc].dir())) {
+   private void configureProject(ProjectActions toConfig) {
+      if (toConfig.configureProject(edtDoc[iDoc].dir())) {
          if (isReplaceProj) {
             projList.remove(current);
             isReplaceProj = false;
          }
-         current = projToConf;
+         current = toConfig;
          current.storeConfiguration();
          projList.add(current);
          updateProjectSetting(current);
@@ -325,15 +325,15 @@ public class Projects {
       }
    }
 
-   private void updateProjectSetting(ProjectActions projToSet) {
-      proc.setWorkingDir(projToSet.getProjectPath());
+   private void updateProjectSetting(ProjectActions toUpdate) {
+      proc.setWorkingDir(toUpdate.getProjectPath());
       enableActions();
       setBuildLabel();
-      mw.displayProjectName(projToSet.getProjectName(),
-            projToSet.getProjectType().display());
+      mw.displayProjectName(toUpdate.getProjectName(),
+            toUpdate.getProjectType().display());
 
-      mw.fileTree().setDeletableDirName(projToSet.getExecutableDirName());
-      mw.fileTree().setProjectTree(projToSet.getProjectPath());
+      mw.fileTree().setDeletableDirName(toUpdate.getExecutableDirName());
+      mw.fileTree().setProjectTree(toUpdate.getProjectPath());
       mw.enableChangeProject(false);
       mw.enableOpenProjSettingActions(true);
    }

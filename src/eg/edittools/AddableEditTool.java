@@ -15,16 +15,17 @@ import eg.document.EditableDocument;
 public interface AddableEditTool {
    
    /**
-    * Creates the edit tool.
+    * Initializes the Component that represents the graphical view of the tool.
+    * <p>
     * The specified button has got the action to close the tool panel added
     * and must be shown in the view.
     *
     * @param closeBt  the closing button
     */
-   public void createTool(JButton closeBt);
+   public void initToolComponent(JButton closeBt);
 
    /**
-    * Gets the Component that represents the view of the tool.
+    * Gets the Component that represents the graphical view of the tool.
     * The Component is displayed in the main window when it is selected
     * in the menu.
     *

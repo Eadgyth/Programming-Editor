@@ -641,7 +641,7 @@ public class SyntaxHighlighter {
       }
 
       private void removedBlockCmntEnd(int startPos, String blockCmntStart) {
-          if (!isTypeMode) {
+         if (!isTypeMode) {
             return;
          }
          int nextStart = text.indexOf(blockCmntStart, startPos + 1);

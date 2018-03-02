@@ -27,8 +27,9 @@ import eg.utils.FileUtils;
 import eg.utils.ScreenParams;
 
 /**
- * The editor view that defines a JPanel that contains the text area for editing
- * text and the area that displays line numbers
+ * The editor view which defines a JPanel that contains the text area for
+ * editing text and the area that displays line numbers.
+ * The usual shortcuts for cut, copy, paste and select all are disabled 
  */
 public final class EditArea {
 

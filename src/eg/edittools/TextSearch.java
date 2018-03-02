@@ -100,7 +100,7 @@ public class TextSearch {
       }
       else {
          //
-         // check selection since selection may be made "by hand"
+         // check selection since a selection may be made "by hand"
          boolean isSearchTermSelected;
          if (isCaseSensitive) {
             isSearchTermSelected = sel.equals(searchTerm);

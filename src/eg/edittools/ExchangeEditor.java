@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.EventQueue;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -20,6 +21,7 @@ import javax.swing.JComponent;
 import eg.Constants;
 import eg.Languages;
 import eg.Edit;
+import eg.Preferences;
 import eg.FunctionalAction;
 import eg.ui.EditArea;
 import eg.ui.IconFiles;
@@ -46,6 +48,7 @@ public class ExchangeEditor implements AddableEditTool {
    private final JButton outdentBt  = new JButton();
    private final JButton clearBt    = new JButton(IconFiles.CLEAR_ICON);
 
+   private final Preferences prefs = Preferences.readProgramPrefs();
    private final JPanel editAreaPnl;
    private final TextExchange exch;
    private final Edit edit = new Edit();
@@ -54,13 +57,14 @@ public class ExchangeEditor implements AddableEditTool {
       EditArea ea = new EditArea(false, false, "Consolas", 8);
       editAreaPnl = ea.editAreaPnl();
       EditableDocument ed = new EditableDocument(ea, Languages.NORMAL_TEXT);
-      exch = new TextExchange(ed);
+      ed.setIndentUnit(prefs.getProperty("indentUnit"));
       ed.setEditingStateReadable(editReadable);
+      exch = new TextExchange(ed);
       edit.setDocument(ed);
    }
 
    @Override
-   public void createTool(JButton closeBt) {
+   public void initToolComponent(JButton closeBt) {
       initExchangePnl(closeBt);
    }
 
@@ -179,7 +183,6 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    private void setBtnActions() {
-      loadBt.addActionListener(e -> exch.loadFile());
       copyFromBt.addActionListener(e -> exch.copyTextFromSource());
       copyToBt.addActionListener(e -> exch.copyTextToSource());
 
@@ -219,6 +222,12 @@ public class ExchangeEditor implements AddableEditTool {
             KeyEvent.VK_L, ActionEvent.CTRL_MASK), "L_pressed");
 
       clearBt.addActionListener(e -> exch.clear());
+      
+      EventQueue.invokeLater(() -> {
+         String recentDir = prefs.getProperty("recentPath");
+         exch.setFileChooser(new eg.FileChooser(recentDir));
+         loadBt.addActionListener(e -> exch.loadFile());
+      });
    }
 
    private void setKeyBinding(JButton bt, KeyStroke ks, String key) {

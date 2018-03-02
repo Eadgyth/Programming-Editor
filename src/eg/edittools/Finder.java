@@ -43,7 +43,7 @@ public class Finder implements AddableEditTool {
    private final TextSearch search = new TextSearch();
 
    @Override
-   public void createTool(JButton closeBt) {
+   public void initToolComponent(JButton closeBt) {
       initFinderPnl(closeBt);
       setActions();
    }

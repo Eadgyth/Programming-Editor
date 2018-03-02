@@ -8,7 +8,6 @@ import java.io.IOException;
 
 //--Eadgyth--/
 import eg.FileChooser;
-import eg.Preferences;
 import eg.Languages;
 import eg.document.EditableDocument;
 import eg.utils.Dialogs;
@@ -27,9 +26,8 @@ public class TextExchange {
          + "/exchangeContent.txt");
 
    private final EditableDocument exchangeDoc;
-   private final Preferences prefs = Preferences.readProgramPrefs();
-   private final FileChooser fc;
-
+   
+   private FileChooser fc;
    private EditableDocument sourceDoc;
    private boolean isBackupSet = false;
 
@@ -39,9 +37,10 @@ public class TextExchange {
     */
    public TextExchange(EditableDocument exchangeDoc) {
       this.exchangeDoc = exchangeDoc;
-      String recentDir = prefs.getProperty("recentPath");
-      fc = new FileChooser(recentDir);
-      exchangeDoc.setIndentUnit(prefs.getProperty("indentUnit"));
+   }
+   
+   public void setFileChooser(FileChooser fc) {
+      this.fc = fc;
    }
    
    /**

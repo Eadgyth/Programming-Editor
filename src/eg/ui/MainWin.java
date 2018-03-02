@@ -516,12 +516,13 @@ public class MainWin {
       closeBt.setAction(new FunctionalAction("", IconFiles.CLOSE_ICON,
             e -> showToolPnl(false)));
 
-      tool.createTool(closeBt);
+      tool.initToolComponent(closeBt);
       menuBar.editMenu().setEditToolsActions(
-            e -> {
-               toolPnl.addComponent(tool.toolComponent());
-               showToolPnl(true);
-            }, i);
+         e -> {
+            toolPnl.addComponent(tool.toolComponent());
+            showToolPnl(true);
+         },
+         i);
    }
    
    private final ConsoleOpenable consoleOpener = new ConsoleOpenable() {

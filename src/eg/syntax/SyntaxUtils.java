@@ -288,7 +288,7 @@ public class SyntaxUtils {
    }
 
    //
-   //--private--
+   //--private--/
    //
 
    private SyntaxUtils() {}
