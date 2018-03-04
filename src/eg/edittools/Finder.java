@@ -41,11 +41,15 @@ public class Finder implements AddableEditTool {
    private final JButton replaceAllBt = new JButton("Replace all");
 
    private final TextSearch search = new TextSearch();
+   
+   public Finder() {
+      initFinderPnl();
+      setActions();
+   }
 
    @Override
-   public void initToolComponent(JButton closeBt) {
-      initFinderPnl(closeBt);
-      setActions();
+   public void addClosingAction(JButton closeBt) {
+      finderPnl.add(toolbar(closeBt), BorderLayout.NORTH);
    }
 
    @Override
@@ -68,9 +72,8 @@ public class Finder implements AddableEditTool {
    //--private--//
    //
 
-   private void initFinderPnl(JButton closeBt) {
+   private void initFinderPnl() {
       enableButtons(false);
-      finderPnl.add(toolbar(closeBt), BorderLayout.NORTH);
       finderPnl.add(controlsPnl(), BorderLayout.CENTER);
    }
 

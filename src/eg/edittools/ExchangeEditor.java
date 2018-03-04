@@ -61,11 +61,12 @@ public class ExchangeEditor implements AddableEditTool {
       ed.setEditingStateReadable(editReadable);
       exch = new TextExchange(ed);
       edit.setDocument(ed);
+      initExchangePnl();
    }
 
    @Override
-   public void initToolComponent(JButton closeBt) {
-      initExchangePnl(closeBt);
+   public void addClosingAction(JButton closeBt) {
+       exchPnl.add(closingToolbar(closeBt), BorderLayout.NORTH);
    }
 
    @Override
@@ -92,12 +93,11 @@ public class ExchangeEditor implements AddableEditTool {
    //--private--/
    //
 
-   private void initExchangePnl(JButton closeBt) {
+   private void initExchangePnl() {
       setBtnActions();
       enableUndoRedo(false, false);
       enableCutCopy(false);
       editAreaPnl.setBorder(Constants.MATTE_TOP_BOTTOM);
-      exchPnl.add(closingToolbar(closeBt), BorderLayout.NORTH);
       exchPnl.add(editAreaPnl, BorderLayout.CENTER);
       JPanel pnl = new JPanel(new BorderLayout());
       pnl.add(editToolbar(), BorderLayout.CENTER);

@@ -516,7 +516,7 @@ public class MainWin {
       closeBt.setAction(new FunctionalAction("", IconFiles.CLOSE_ICON,
             e -> showToolPnl(false)));
 
-      tool.initToolComponent(closeBt);
+      tool.addClosingAction(closeBt);
       menuBar.editMenu().setEditToolsActions(
          e -> {
             toolPnl.addComponent(tool.toolComponent());
