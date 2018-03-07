@@ -67,7 +67,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
             consPnl.setCaretUneditable(0);
             if (!co.isConsoleOpen()) {
                if (!comp.isCompiled()) {
-                  StringBuilder msg = new StringBuilder("Compilation failed\n");
+                  StringBuilder msg = new StringBuilder("Compilation failed..\n");
                   msg.append(comp.getFirstCompileErr()).append(".");
                   if (comp.getCopyErr().length() > 0) {
                      msg.append("\n\nNote: ").append(comp.getCopyErr()).append(".");
@@ -79,7 +79,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                   }
                }
                else {
-                  StringBuilder msg = new StringBuilder("Compilation successful\n");
+                  StringBuilder msg = new StringBuilder("Compilation successful.\n");
                   if (comp.getCopyErr().length() > 0) {
                      msg.append("\nNote: ").append(comp.getCopyErr()).append(".");
                   }

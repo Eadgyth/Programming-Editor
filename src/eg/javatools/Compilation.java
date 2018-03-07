@@ -55,7 +55,7 @@ public class Compilation {
    }
 
    /**
-    * Returns the boolean that indicates if the java files could be
+    * Returns the boolean that indicates if java files could be
     * compiled successfully
     *
     * @return  the boolean value which true in the case of success
@@ -71,7 +71,8 @@ public class Compilation {
     * The entire list of errors messages is printed to this
     * <code>ConsolePanel</code>.
     *
-    * @return  the message
+    * @return  the message or the empty empty string of there is no
+    * error
     */
    public String getFirstCompileErr() {
       return firstCompileError;
@@ -81,7 +82,8 @@ public class Compilation {
     * Returns the error message that indicates that non-Java files
     * for copying are not found
     *
-    * @return  the message or the empty empty string
+    * @return  the message or the empty empty string of there is no
+    * error
     */
    public String getCopyErr() {
       return copyError;
@@ -96,7 +98,7 @@ public class Compilation {
     * @param sourceDir  the name of the directory that contains java files
     * or packages
     * @param nonJavaExt  the array of extensions of files that are copied
-    * to the compilation folder. May be null.
+    * to the compilation. May be null.
     */
    public void compile(String root, String execDir, String sourceDir,
          String[] nonJavaExt) {
@@ -137,7 +139,7 @@ public class Compilation {
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private String createTargetDir(String root, String execDir) {
@@ -159,7 +161,8 @@ public class Compilation {
       copyError = "";
       if (sourceDir.length() == 0 || execDir.length() == 0) {
          throw new IllegalArgumentException(
-               "Including non-java file requires a sources and a classes directory");
+               "Including non-java file requires a sources and a classes directory"
+               + " to be defined");
       }
       String searchRoot = root + "/" + sourceDir;
       for (String ext : nonJavaExt) {

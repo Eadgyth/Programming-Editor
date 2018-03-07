@@ -8,26 +8,26 @@ import javax.swing.JButton;
 import eg.document.EditableDocument;
 
 /**
- * The interface to create an "edit tool" that has access to the currently
- * viewed <code>EditableDocument</code> and whose view can be added to the
- * <code>ToolPanel</code> in the main window
+ * The interface that defines an "edit tool" whose graphical component can be
+ * added to the <code>ToolPanel</code> in the main window
+ * @see eg.ui.ToolPanel
  */
 public interface AddableEditTool {
    
    /**
-    * Adds the action to close the view of the tool component.
+    * Adds the action to close the <code>ToolPanel</code> of the main window.
     * <p>
-    * The specified button has got the action to close the tool panel added
-    * and must be shown in the view.
+    * The specified button has got the closing action added and must be
+    * shown in the graphical view.
     *
     * @param closeBt  the closing button
     */
    public void addClosingAction(JButton closeBt);
 
    /**
-    * Gets the Component that represents the graphical view of the tool.
-    * The Component is displayed in the main window when it is selected
-    * in the menu.
+    * Gets the <code>Component</code> that represents the graphical view of
+    * the tool. Called when the <code>AddableEditTool</code> is selected
+    * in the "Edit" menu
     *
     * @return  the <code>Component</code>
     */
