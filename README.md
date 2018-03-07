@@ -1,5 +1,5 @@
 The motivation for writing this program is to have a text editor that helps coding in many ways
-but that is at the same time simple to work with as much as possible.
+but that is at the same time simple to work with as much as possible. It is written in Java.
 <p>
 A list of the features of the program and documentation can be found under
 <a href="https://eadgyth.github.io/Programming-Editor/">Help and documentation</a>.
