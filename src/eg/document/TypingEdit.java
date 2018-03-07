@@ -7,7 +7,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.Languages;
 import eg.utils.LinesFinder;
 import eg.syntax.*;
@@ -15,9 +15,6 @@ import eg.syntax.*;
 /**
  * The mediation between the editing of the document by typing in, removing,
  * pasting or replacing text and the actions that happen in response.
- * These actions comprise the creation of undoable changes, line numbering
- * and, if the language is a supported coding language, syntax highlighting
- * and auto-indentation.
  * <p>
  * Created in {@link EditableDocument}
  */
@@ -35,8 +32,8 @@ public class TypingEdit {
    private boolean isAddToUndo = true;
    private boolean isCodeEditing = false;
    private boolean isInsert;
-   private int chgPos = 0;
    private String text = "";
+   private int chgPos = 0;
    private String change = "";
    private boolean isInChange = false;
    private boolean isSelectionTmp = false;
@@ -222,6 +219,19 @@ public class TypingEdit {
       textDoc.remove(pos, length);
       isCodeEditing = isCodeEditingHelper;
    }
+   
+    /**
+    * Reads the current editing state by calling the methods defined in
+    * {@link EditingStateReadable}
+    */
+   public void readEditingState() {
+      if (esr != null) {
+         esr.setInChangeState(isInChange);
+         esr.setCursorPosition(lineNr, colNr);
+         esr.setUndoableState(canUndoTmp, canRedoTmp);
+         esr.setSelectionState(isSelectionTmp);
+      }
+   }
 
    /**
     * Performs an undo action
@@ -240,19 +250,6 @@ public class TypingEdit {
       undo.redo();
       updateAfterUndoRedo();
    }
-   
-   /**
-    * Reads the current editing state by calling the methods defined in
-    * {@link EditingStateReadable}
-    */
-   public void readEditingState() {
-      if (esr != null) {
-         esr.setInChangeState(isInChange);
-         esr.setCursorPosition(lineNr, colNr);
-         esr.setUndoableState(canUndoTmp, canRedoTmp);
-         esr.setSelectionState(isSelectionTmp);
-      }
-   }
 
    //
    //--private--/
@@ -262,7 +259,8 @@ public class TypingEdit {
       outputUndoableState();
       if (isCodeEditing) {
          if (isInsert) {
-            highlightInsert();
+            syntax.highlight(text, text, 0, 0);
+            //highlightInsert();
          }
          else {
             highlightLine();
