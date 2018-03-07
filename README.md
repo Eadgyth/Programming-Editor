@@ -1,10 +1,5 @@
-<p>Eadgyth is a simple source code text editor with a built-in possibility to compile java
-code and to run code written in Java, Perl and R for testing. It is written in Java.
-<p>
-The motivation is to have an editor that helps coding in many ways but that is at the same
-time simple to work with as much as possible. It is already possible to easily assign files
-as a "coding project", to easily switch between a number of set projects at runtime and to
-retrieve projects when the program is newly started.
+The motivation for writing this program is to have a text editor that helps coding in many ways
+but that is at the same time simple to work with as much as possible.
 <p>
 A list of the features of the program and documentation can be found under
 <a href="https://eadgyth.github.io/Programming-Editor/">Help and documentation</a>.
