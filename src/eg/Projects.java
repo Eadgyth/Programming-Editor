@@ -13,7 +13,6 @@ import eg.projects.ProjectSelector;
 import eg.projects.ProjectTypes;
 import eg.document.EditableDocument;
 import eg.utils.Dialogs;
-import eg.utils.FileUtils;
 
 /**
  * The assigned projects.
@@ -67,7 +66,8 @@ public class Projects {
    /**
     * Assigns a new project
     *
-    * @param projType  the project type which has a valaue in {@link ProjectTypes}
+    * @param projType  the project type which has a valaue in
+    * {@link ProjectTypes}
     */
    public void assignProject(ProjectTypes projType) {
       ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), false);
@@ -78,10 +78,11 @@ public class Projects {
          if (inList == current) {
             isReplaceProj = projType != inList.getProjectType();
             if (isReplaceProj) {
-               int res = Dialogs.confirmYesNo(
+               int res = Dialogs.warnConfirmYesNo(
                      replaceProjectMessage(
                            edtDoc[iDoc].filename(),
                            inList.getProjectName(),
+                           inList.getProjectType().display(),
                            projType.display()));
 
                if (0 == res) {
@@ -94,7 +95,7 @@ public class Projects {
                            edtDoc[iDoc].filename(),
                            inList.getProjectName(),
                            inList.getProjectType().display()),
-                     "Note");
+                     null);
             }
          }
          else {
@@ -273,7 +274,7 @@ public class Projects {
 
    private void assignProjectImpl(ProjectTypes projType) {
       if (!edtDoc[iDoc].hasFile()) {
-         Dialogs.infoMessage(NO_FILE_IN_TAB_MESSAGE, "Note");
+         Dialogs.infoMessage(NO_FILE_IN_TAB_MESSAGE, null);
          return;
       }
       ProjectActions toAssign = selector.createProject(projType);
@@ -372,12 +373,15 @@ public class Projects {
    //
 
    private final String NO_FILE_IN_TAB_MESSAGE
-         = "Open or newly save a file that is part of the project to be assigned.";
+         = "To assign a project open or save a new file that is part"
+         + " of the project.\n"
+         + "If files are viewed in tabs the file also must be selected.";
 
    private String replaceProjectMessage(String filename, String projName,
-         String newProjDispl) {
+         String previousProjDispl, String newProjDispl) {
 
-      return  filename + " belongs to the project " + projName +".\n"
+      return  filename + " belongs to the " + previousProjDispl + " project \""
+            + projName +"\".\n"
             + "Remove " + projName + " and assign a new project"
             + " of the category \"" + newProjDispl + "\"?";
    }

@@ -186,7 +186,7 @@ public class TypingEdit {
    }
    
    /**
-    * Replaces a section of the documemnt with the specified string
+    * Replaces a section of the document with the specified string
     *
     * @param pos  the position where the section to be replaced starts
     * @param length  the length of the section
@@ -376,8 +376,7 @@ public class TypingEdit {
             if (isCodeEditing) {
                highlightLine();
                EventQueue.invokeLater(() -> {
-                  autoInd.indent(text, chgPos);
-                  autoInd.outdent(text, chgPos);
+                  autoInd.adjustIndent(text, chgPos);
                });
             }
          }

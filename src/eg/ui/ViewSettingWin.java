@@ -204,7 +204,7 @@ public class ViewSettingWin {
       return pnl;
    }
    
-   private JPanel comboBxPnl(JComboBox comboBox, String title) {
+   private JPanel comboBxPnl(JComboBox<String> comboBox, String title) {
       JLabel lb = new JLabel(title);
       lb.setFont(Constants.SANSSERIF_BOLD_8);
       lb.setPreferredSize(LABEL_DIM);

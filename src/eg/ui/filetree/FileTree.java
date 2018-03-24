@@ -302,7 +302,7 @@ public class FileTree extends Observable {
 
    private DefaultMutableTreeNode searchNode(String nodeStr) {
       DefaultMutableTreeNode node;
-      Enumeration e = root.breadthFirstEnumeration();
+      Enumeration<?> e = root.breadthFirstEnumeration();
       while (e.hasMoreElements()) {
          node = (DefaultMutableTreeNode) e.nextElement();
          if (nodeStr.equals(node.getUserObject().toString())) {

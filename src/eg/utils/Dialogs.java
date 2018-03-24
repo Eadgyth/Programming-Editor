@@ -75,7 +75,7 @@ public class Dialogs {
 
       return result;
    }
-
+   
    /**
     * Shows a confirmation dialog with Yes and No options
     *
@@ -85,6 +85,20 @@ public class Dialogs {
    public static int confirmYesNo(String message) {
       int result = JOptionPane.showConfirmDialog(null, message, null,
             JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+      return result;
+   }
+   
+   /**
+    * Shows an info kind of confirmation dialog with Yes and No options
+    *
+    * @param message  the message for the dialog
+    * @return  the Yes or No option specified in <code>JOptionPane</code>
+    */
+   public static int infoConfirmYesNo(String message) {
+      int result = JOptionPane.showConfirmDialog(null, message, null,
+            JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+            IconFiles.INFO_ICON);
 
       return result;
    }

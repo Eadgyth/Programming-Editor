@@ -46,37 +46,33 @@ public class AutoIndent {
    }
 
    /**
-    * Inserts an indentation corresponding to the previous line if
-    * the character at the specified position is a newline. The indentation
-    * is increased by an indent unit if an opening brace precedes the
-    * newline character
+    * Maintains or adjusts the indentation
     *
     * @param text  the text
     * @param pos  the position
     */
-   public void indent(String text, int pos) {
-      boolean isNewLine = '\n' == text.charAt(pos);
-      if (isNewLine) {
-         String currIndent = currentIndentAt(text, pos);
-         if (pos > 1 && '{' == text.charAt(pos - 1)) {
-            currIndent += indentUnit;
-         }
-         textDoc.insert(pos + 1, currIndent);
+   public void adjustIndent(String text, int pos) {
+      if ('\n' == text.charAt(pos)) {
+         indent(text, pos);
+      }
+      else if (pos >= indentLength && '}' == text.charAt(pos)) {
+         outdent(text, pos);
       }
    }
 
-   /**
-    * Reduces the indentation by this indent unit if the character at
-    * the specified position is a closing brace and if the current
-    * indentation can be reduced 
-    *
-    * @param text  the text
-    * @param pos  the position
-    */
-   public void outdent(String text, int pos) {
-      if (pos < indentLength || '}' != text.charAt(pos)) {
-         return;
+   //
+   //--private--/
+   //
+
+   private void indent(String text, int pos) {
+      String currIndent = currentIndentAt(text, pos);
+      if (pos > 1 && '{' == text.charAt(pos - 1)) {
+         currIndent += indentUnit;
       }
+      textDoc.insert(pos + 1, currIndent);
+   }
+
+   private void outdent(String text, int pos) {
       int outdentPos = pos - indentLength;
       boolean ok = isOutdent(text, pos)
             && text.substring(outdentPos, pos).equals(indentUnit);
@@ -86,23 +82,6 @@ public class AutoIndent {
       }
    }
 
-   //
-   //--private--/
-   //
-
-   private String currentIndentAt(String text, int pos) {
-      String currIndent = "";
-      int lineStart;
-      if (pos > 1) {
-         lineStart = text.lastIndexOf("\n", pos - 1) + 1;
-         char[] line = text.substring(lineStart, pos).toCharArray();
-         for (int i = 0; i < line.length && line[i] == ' '; i++) {
-            currIndent += " ";
-         }
-      }
-      return currIndent;
-   }
-   
    private boolean isOutdent(String text, int pos) {
       int lastOpeningPos = text.lastIndexOf('{', pos - 1);
       int lastClosingPos = text.lastIndexOf('}', pos - 1);
@@ -117,5 +96,18 @@ public class AutoIndent {
          indentAtBraceAhead = currentIndentAt(text, lastClosingPos);
          return indentAtChange.length() >= indentAtBraceAhead.length();
       }
-   }      
+   }
+
+   private String currentIndentAt(String text, int pos) {
+      String currIndent = "";
+      int lineStart;
+      if (pos > 1) {
+         lineStart = text.lastIndexOf("\n", pos - 1) + 1;
+         char[] line = text.substring(lineStart, pos).toCharArray();
+         for (int i = 0; i < line.length && line[i] == ' '; i++) {
+            currIndent += " ";
+         }
+      }
+      return currIndent;
+   }
 }

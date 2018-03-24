@@ -84,15 +84,15 @@
       <li>Open a file from or save a new file to the directory that is the presumed root
           directory of the project. The file may also be saved in a sub-directory path
           contained in that root.</li>
-      <li>While a file that is presumed to be part of the project is view in the editor open
-          the project settings window by selecting 'Project' > 'Assign as project by category...'.
-          The inout options shown in the settings window depend on the project category.</li>
+      <li>While a file that is presumed to be part of the project is viewed in the editor open
+          the project settings window by selecting 'Project' > 'Assign as project'. The input
+          options shown in the settings window depend on the project category.</li>
       <li>Enter the name of the presumed root directory of the project in the text field
           'Name of project root'. If the project category is 'Generic' or 'HTML' go to
           step 7.</li>
       <li>Enter the name of the main source file in the corresponding text field (this
-          applies to Java, R, and Perl but not Html). The main file does not have to be
-          the currently selected file and even not be opened but must exist.</li>
+          applies to Java, R, and Perl). The main file does not have to be the currently
+          selected file and even not be opened but must exist.</li>
       <li>If source files (or packages in the case of a Java project) are saved in a
           separate sub-directory of the presumed root of the project the name of this
           directory must be entered in the field 'Name of sources directory'.</li>
@@ -102,17 +102,17 @@
           by clicking the 'compile' button or selecting the corresponding option in the
           menu.</li>
       <li>Click ok. If entries are correct, that is the named project root matches the
-          name of an existing directory (for Generic and HTML) and this root also contains the
-          named main source file (for Java, Perl and R), the files in the project can be viewed
-          in the 'Project explorer'. This is opened by selecting 'View' > 'Project explorer'.
-          </li>
+          name of an existing directory (for Generic and HTML) and this root also contains
+          the named main source file (for Java, Perl and R), the files in the project can be
+          viewed in the 'Project explorer'. This is opened by selecting 'View' > 'Project
+          explorer'.</li>
       </ol>
       <br>
 
       <h4 id="ChangeProjects">Changing between projects</h4>
       <ul>
-      <li>'Project' > 'Assign as project by category..' is selected to assign an additional
-          project. The file that is supposed to be part of the new project must be in the
+      <li>'Project' > 'Assign as project' is selected to assign an additional project.
+          The file that is supposed to be part of the new project must be in the
           selected tab.</li>
       <li>Changing between already set projects is done by selecting a file that is part of
           the project to be set active and then selecting 'Project' > 'Change project' or,
@@ -143,11 +143,14 @@
 
       <h4 id="JavaProject">Testing Java code and creating a jar file</h4>
       <ol>
-      <li>Compile the source file(s) by selecting either 'Save selected file and compile project'
-          or 'Save all open project files and compile project' in the 'Project' menu or by clicking
-          the corresponding buttons in the toolbar. If errors occured it is asked to open the
-          console panel to view messages. Note that presently files outside of the source root
-          cannot be included in a compilation when these options to compile a project are used.</li>
+      <li>Compile the source file(s) by selecting 'Save all open project files and compile
+          project' in the 'Project' menu or by clicking the corresponding button in the toolbar.
+          If errors occured it is asked to open the console panel to view messages. Note that
+          presently files outside of the source root cannot be included in a compilation when
+          these options to compile a project are used.</li>
+      <li>To include warnings, -Xlint compiler options may be entered in the 'Project Settings'
+          window. The corresponding input field is found by selecting the tab 'Compilation and
+          build."</li>
       <li>If the compilation was successful the Java program can be run for testing by selecting
           'Run' in the 'Project' menu. The output and error messages from the tested program are
           displayed in the console panel. If the tested program asks for input through a command
@@ -155,7 +158,7 @@
           forcibly quit by clicking the 'stop' symbol in the tool bar of the console panel.</li>
       <li>Arguments (those that would be passed to the main method) may be entered in the text
           field 'Arguments' (separated by spaces) in the settings window ('Project' > ' Project
-          settings').</li>
+          settings'). This is found by selecting the tab 'Run'.</li>
       <li>An executable java archive (jar) may be created by selecting 'Project' > 'Create jar'.
           The jar file is saved in the executables folder or, if no such folder is available, in
           the project's root folder. A name for the jar file can be specified in the settings
@@ -163,9 +166,9 @@
       <li>To include files other than .java files in a compilation and .class files in a jar
           archive the extensions of these files may be specified in the text field 'Extensions
           of included non-Java files'. Extensions can be separeted by spaces, commas or semicolons
-          and must begin with the period. Including non-Java files is supported if the project
-          contains separate directories for .java source files (where the non-Java files must be
-          found) and for .class files. (</li>
+          and must begin with the period. Including non-Java files is supported only if the project
+          contains separate directories for .java source files (where also the non-Java files
+          must be found) and for .class files. (</li>
       </ol>
       <br>
 

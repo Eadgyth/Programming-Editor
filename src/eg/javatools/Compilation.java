@@ -1,10 +1,3 @@
-/**
- * The compilation of a Java project.
- * <p>
- * The Java(TM) Compiler is invoked in the method compile() essentially as
- * shown in the docu for the javax.tools.JavaCompiler interface
- * (https://docs.oracle.com/javase/7/docs/api/javax/tools/JavaCompiler.html).
- */
 package eg.javatools;
 
 import javax.tools.Diagnostic;
@@ -25,7 +18,7 @@ import java.util.Arrays;
 
 import static java.nio.file.StandardCopyOption.*;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 import eg.console.ConsolePanel;
@@ -39,12 +32,15 @@ public class Compilation {
    private final static String DIVIDING_LINE
          = new String(new char[90]).replace('\0', '_');
 
+   private final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
    private final FilesFinder fFind = new FilesFinder();
    private final ConsolePanel consPnl;
-
+   
    private boolean success = false;
-   private String firstCompileError = "";
-   private String copyError = "";
+   private String firstCompileErr = "";
+   private boolean isNonErrMessage = false;
+   private String copyFilesErr = "";
+   private String optionErr = "";
 
    /**
     * @param consPnl  the reference to {@link ConsolePanel} in whose
@@ -65,82 +61,124 @@ public class Compilation {
    }
 
    /**
-    * Gets a shortened error message which indicates the source
-    * file and the line number in the first listed compilation
+    * Gets a shortened error message which indicates the source file
+    * and the line number in the first listed compilation
     * error.<br>
-    * The entire list of errors messages is printed to this
-    * <code>ConsolePanel</code>.
+    * The entire list of messages, error or other kind, is printed to
+    * this <code>ConsolePanel</code>.
     *
-    * @return  the message or the empty empty string of there is no
+    * @return  the message or the empty empty string if there is no
     * error
     */
    public String getFirstCompileErr() {
-      return firstCompileError;
+      return firstCompileErr;
    }
-   
+
    /**
-    * Returns the error message that indicates that non-Java files
-    * for copying are not found
+    * Returns if messages of a kind other than error are present
+    *
+    * @return  the boolean value which is true if messages are present
+    */
+   public boolean isNonErrMessage() {
+      return isNonErrMessage;
+   }
+
+   /**
+    * Returns the error message that indicates that an error occured
+    * during copying non-java files
     *
     * @return  the message or the empty empty string of there is no
     * error
     */
-   public String getCopyErr() {
-      return copyError;
+   public String getCopyFilesErr() {
+      return copyFilesErr;
+   }
+   
+   /**
+    * Returns the error message that indicates that the input for
+    * the Xlint compiler option is invalid
+    *
+    * @return  the message or the empty string of there is no
+    * error
+    */
+   public String getOptionErr() {
+      return optionErr;
    }
 
    /**
     * Invokes the javac compiler
     *
     * @param root  the root directory of the project
-    * @param execDir  the name of the destination directory for the
-    * compiled class files
+    * @param execDir  the name of the destination directory for the compiled
+    * class files/packages
     * @param sourceDir  the name of the directory that contains java files
     * or packages
-    * @param nonJavaExt  the array of extensions of files that are copied
-    * to the compilation. May be null.
+    * @param nonJavaExt  the array of extensions of files that are copied to
+    * the compilation. Requires that both a sources and a classes directory
+    * is present. May be null.
+    * @param xlintOption  the Xlint compiler option. Other options are ignored.
     */
    public void compile(String root, String execDir, String sourceDir,
-         String[] nonJavaExt) {
+         String[] nonJavaExt, String xlintOption) {
 
-      JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
       if (compiler == null) {
          Dialogs.errorMessage(
                "The programm may not be run using the JRE in a JDK.", null);
 
          return;
       }
-      String targetDir = createTargetDir(root, execDir);
-      String[] options = new String[] {"-d", targetDir} ;
-      Iterable<String> compileOptions = Arrays.asList(options);
-      DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+      reset();
+      DiagnosticCollector<JavaFileObject> diagnostics
+            = new DiagnosticCollector<>();
       StandardJavaFileManager fileManager
             = compiler.getStandardFileManager(null, null, null);
-
-      Iterable<? extends JavaFileObject> units;
+      //
+      // Java files
       List<File> classes = fFind.filteredFiles(root + "/" + sourceDir,
             ".java", execDir);
-
-      File[] fileArr = classes.toArray(new File[classes.size()]);
-      units = fileManager.getJavaFileObjects(fileArr);
-      CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
-              compileOptions, null, units);
-
-      success = task.call();
-      output(diagnostics);
+      File[] fileArr = classes.toArray(new File[classes.size()]);      
+      Iterable<? extends JavaFileObject>units
+            = fileManager.getJavaFileObjects(fileArr);      
+      //
+      // Compiler options   
+      String targetDir = createTargetDir(root, execDir);
+      Iterable<String> compileOptions = options(targetDir, xlintOption);
+      //
+      // compile
       try {
-         fileManager.close();
-      } catch (IOException e) {
-         FileUtils.logStack(e);
+         CompilationTask task = compiler.getTask(null, fileManager, diagnostics, compileOptions,
+               null, units);
+
+         success = task.call();
+         if (nonJavaExt != null) {
+            copyFiles(root, sourceDir, execDir, nonJavaExt);
+         }
+         printDiagnostics(diagnostics);
       }
-      if (nonJavaExt != null) {
-         copyFiles(root, sourceDir, execDir, nonJavaExt);
+      catch (IllegalArgumentException | IllegalStateException e) {
+          firstCompileErr = e.getMessage();
+          consPnl.appendText(firstCompileErr + "\n");
+      }
+      finally {
+         try {
+            fileManager.close();
+         } catch (IOException e) {
+            FileUtils.logStack(e);
+         }
       }
    }
 
    //
    //--private--/
    //
+   
+   private void reset() {
+      success = false;
+      firstCompileErr = "";
+      isNonErrMessage = false;
+      copyFilesErr = "";
+      optionErr = "";
+   }
 
    private String createTargetDir(String root, String execDir) {
       String targetDir;
@@ -155,27 +193,63 @@ public class Compilation {
       return targetDir;
    }
 
+   private Iterable<String> options(String targetDir, String xlintOption) {
+      String[] opt;
+      if (xlintOption.length() == 0) {
+         opt = new String[] {"-d", targetDir};
+      }
+      else {
+         boolean ok = true;
+         String[] test = xlintOption.split("\\s+");
+         for (String s : test) {
+            ok = s.startsWith("-Xlint")
+                  && -1 < compiler.isSupportedOption(s);
+            if (!ok) {
+               break;
+            }
+         }
+         if (ok) {
+            opt = new String[2 + test.length]; // 2 for -d and target dir
+            opt[0] = "-d";
+            opt[1] = targetDir;
+            for (int i = 2; i < opt.length; i++) {
+               opt[i] = test[i - 2];
+            }
+         }
+         else {
+            opt = new String[] {"-d", targetDir};
+            optionErr = "\"" + xlintOption + "\" cannot be used as"
+                     + " Xlint compiler option and was ignored";
+
+            consPnl.appendText("<<" + optionErr + ">>\n");
+         }
+      }
+      return Arrays.asList(opt);
+   }
+
    private void copyFiles(String root, String sourceDir, String execDir,
          String[] nonJavaExt) {
 
-      copyError = "";
       if (sourceDir.length() == 0 || execDir.length() == 0) {
          throw new IllegalArgumentException(
-               "Including non-java file requires a sources and a classes directory"
-               + " to be defined");
+               "A sources and a classes directory must be"
+               + " defined for copying non-java files");
       }
       String searchRoot = root + "/" + sourceDir;
       for (String ext : nonJavaExt) {
          List<File> toCopy = fFind.filteredFiles(searchRoot, ext, execDir);
          if (toCopy.isEmpty()) {
-            copyError = "Files with extension \"" + ext
-                      + "\" for copying to the compilation were not found";
+            copyFilesErr
+                  = "Files with extension \"" + ext
+                  + "\" for copying to the compilation were not found.";
+
+            consPnl.appendText("<<" + copyFilesErr + ">>\n");
          }
          else {
             try {
                for (File f : toCopy) {
-                  String source = f.getPath();                
-                  String destination = source.replace(sourceDir, execDir);                
+                  String source = f.getPath();
+                  String destination = source.replace(sourceDir, execDir);
                   if (destination != null) {
                      File fDest = new File(destination);
                      File destDir = fDest.getParentFile();
@@ -192,23 +266,25 @@ public class Compilation {
             }
          }
       }
-      if (copyError.length() > 0) {
-         consPnl.appendText("\n<<Note: " + copyError + ">>");
-      }
    }
 
-   private void output(DiagnosticCollector<JavaFileObject> diagnostics) {
-      firstCompileError = "";
+   private void printDiagnostics(DiagnosticCollector<JavaFileObject> diagnostics) {
       if (success) {
-         consPnl.appendText("<<Compilation successful>>");
+         consPnl.appendText("<<Compilation successful>>\n");
       }
-      else {
+      consPnl.appendText("\n");
+      if (diagnostics.getDiagnostics().size() > 0) {
          Diagnostic<?> firstSource = diagnostics.getDiagnostics().get(0);
          if (firstSource != null) {
             String file = new File(firstSource.getSource().toString()).getName();
             file = file.substring(0, file.length() - 1);
-            firstCompileError = "First listed error is found in " + file + ", line "
-                  + firstSource.getLineNumber();
+            if (firstSource.getKind() == Diagnostic.Kind.ERROR) {
+               firstCompileErr = "First listed error is found in " + file + ", line "
+                     + firstSource.getLineNumber();
+            }
+            else {
+               isNonErrMessage = true;
+            }
          }
          for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
             consPnl.appendText(diagnostic.getKind().toString() + ":\n");

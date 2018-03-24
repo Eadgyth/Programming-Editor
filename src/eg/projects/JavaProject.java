@@ -5,8 +5,6 @@ import java.io.IOException;
 
 import java.awt.EventQueue;
 
-import javax.swing.SwingWorker;
-
 //--Eadgyth--//
 import eg.console.*;
 import eg.javatools.*;
@@ -45,6 +43,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
             .addSourceDirInput()
             .addExecDirInput()
             .addCmdArgsInput()
+            .addCompileOptionInput("Xlint compiler option")
             .addExtensionsInput("Extensions of included non-Java files")
             .addBuildNameInput("jar file")
             .buildWindow();
@@ -62,27 +61,42 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       EventQueue.invokeLater(() -> {
          if (proc.isProcessEnded()) {
             comp.compile(getProjectPath(), getExecutableDirName(),
-                  getSourceDirName(), nonJavaExt);
+                  getSourceDirName(), nonJavaExt, getCompileOption());
 
             consPnl.setCaretUneditable(0);
+            //
+            // Set up dialog depending on results
             if (!co.isConsoleOpen()) {
+               boolean needConfirm = false;
+               StringBuilder msg = new StringBuilder();
                if (!comp.isCompiled()) {
-                  StringBuilder msg = new StringBuilder("Compilation failed..\n");
-                  msg.append(comp.getFirstCompileErr()).append(".");
-                  if (comp.getCopyErr().length() > 0) {
-                     msg.append("\n\nNote: ").append(comp.getCopyErr()).append(".");
-                  }
-                  msg.append("\n\nOpen the console window to view messages?\n");
+                  msg.append("Compilation failed.\n");
+                  msg.append(comp.getFirstCompileErr()).append(".\n");
+                  needConfirm = true;
+               }
+               else {
+                  msg.append("Compilation successful.\n");
+               }
+               if (comp.isNonErrMessage()) {
+                  msg.append("Warning: One or more compiler messages are present.\n");
+                  needConfirm = true;
+               }
+               if (comp.getCopyFilesErr().length() > 0) {
+                  msg.append("Note: ")
+                        .append(comp.getCopyFilesErr()).append(".\n");
+               }
+               if (comp.getOptionErr().length() > 0) {
+                  msg.append("Note: ")
+                        .append(comp.getOptionErr()).append(".\n");
+               }
+               if (needConfirm) {
+                  msg.append("\nOpen the console window to view messages?\n");
                   int res = Dialogs.warnConfirmYesNo(msg.toString());
                   if (0 == res) {
                      co.openConsole();
                   }
                }
                else {
-                  StringBuilder msg = new StringBuilder("Compilation successful.\n");
-                  if (comp.getCopyErr().length() > 0) {
-                     msg.append("\nNote: ").append(comp.getCopyErr()).append(".");
-                  }
                   Dialogs.infoMessage(msg.toString(), null);
                }
             }
@@ -224,7 +238,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                wrongExtMessage(s);
                ok = false;
                break;
-            }               
+            }
          }
       }
       isNonJavaExtTested = ok;
@@ -239,7 +253,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
             // title
             "Extensions of included non-Java files");
    }
-   
+
    private void nonJavaFilesNotSupportedMessage() {
       Dialogs.errorMessage(
          "Including non-java files is supported only if the project"
@@ -247,5 +261,5 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          //
          // title
          "Including non-java files not supported");
-      }
+   }
 }

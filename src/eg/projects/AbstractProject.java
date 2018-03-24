@@ -14,11 +14,6 @@ import eg.utils.Dialogs;
  * This class works in combination with an object of
  * {@link SettingsWindow} where values required for a configuration
  * are entered.
- * <p>
- * Parameters that describe the configuration of a project are
- * stored in the "prefs.properties" file in the program folder
- * and optionally in an "eadproject.properies" file that is
- * stored in the root folder of a project.
  */
 public abstract class AbstractProject implements Configurable {
    
@@ -48,6 +43,7 @@ public abstract class AbstractProject implements Configurable {
    private String sourceDirName = "";
    private String startOptions = "";
    private String args = "";
+   private String compileOption = "";
    private String extensions = "";
    private String buildName = "";
    //
@@ -225,6 +221,15 @@ public abstract class AbstractProject implements Configurable {
    protected String getCmdArgs() {
       return args;
    }
+   
+   /**
+    * Returns the compile option
+    *
+    * @return  the option. The empty string if no option is given 
+    */
+   protected String getCompileOption() {
+      return compileOption;
+   }
 
    /**
     * Returns the array that contains file extensions which may be used
@@ -325,6 +330,7 @@ public abstract class AbstractProject implements Configurable {
       execDirName = sw.execDirNameInput();
       startOptions = sw.cmdOptionsInput();
       args = sw.cmdArgsInput();
+      compileOption = sw.compileOptionInput();
       extensions = sw.extensionsInput();
       buildName = sw.buildNameInput();
    }
@@ -461,7 +467,7 @@ public abstract class AbstractProject implements Configurable {
          }
       }
       else {
-         if (projectRoot.length() == 0 || (!projectRoot.equals(rootToTest))) {
+         if (projectRoot.length() == 0 || !projectRoot.equals(rootToTest)) {
             projectRoot = rootToTest;
          }
       }

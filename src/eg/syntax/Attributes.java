@@ -8,10 +8,9 @@ import java.awt.Color;
 /**
  * Defines static attribute sets each with the attributes foreground color and
  * weight (plain or bold)
- * 
- */ 
+ */
 public class Attributes {
-   
+
    public final static SimpleAttributeSet RED_PLAIN    = new SimpleAttributeSet();
    public final static SimpleAttributeSet RED_BOLD     = new SimpleAttributeSet();
    public final static SimpleAttributeSet BLUE_PLAIN   = new SimpleAttributeSet();
@@ -27,11 +26,11 @@ public class Attributes {
    private final static Color GRAY   = new Color(30, 30, 30);
    private final static Color ORANGE = new Color(240, 140, 0);
    private final static Color PURPLE = new Color(150, 0, 255);
-   
+
    static {
       StyleConstants.setForeground(RED_PLAIN, RED);
       StyleConstants.setBold(RED_PLAIN, false);
-      
+
       StyleConstants.setForeground(RED_BOLD, RED);
       StyleConstants.setBold(RED_BOLD, true);
 
@@ -49,7 +48,7 @@ public class Attributes {
 
       StyleConstants.setForeground(ORANGE_PLAIN, ORANGE);
       StyleConstants.setBold(ORANGE_PLAIN, false);
-      
+
       StyleConstants.setForeground(PURPLE_PLAIN, PURPLE);
       StyleConstants.setBold(PURPLE_PLAIN, false);
    }
