@@ -34,20 +34,18 @@ public class ProcessStarter {
    private final ConsolePanel consPnl;
    /*
     * Accociates working directories with commands entered in the dialog */
-   private final HashMap<String, String> cmdMap = new HashMap<>();
-   
+   private final HashMap<String, String> cmdMap = new HashMap<>();   
    private String workingDir = System.getProperty("user.home");
    private String workingDirName = new File(workingDir).getName();
    private String previousCmd = "";
-   private int caretPos = 0;
    /*
-    * The text set in the console after a process is started */
+    * The text set in the console by a process' output; initially the
+    * displayed start command*/
    private String consoleText = "";
-   /*
-    * Indicates if a process was forcibly quit, if so -1 */
-   private int apparentExitVal = 0;
+   private boolean isAborted = false;
    private boolean isActive = false;
    private Process process;
+   private PrintWriter out;
    private Runnable kill;
 
    /**
@@ -87,14 +85,13 @@ public class ProcessStarter {
     * by spaces
     */
    public void startProcess(String cmd) {
-      apparentExitVal = 0;
+      isAborted = false;
       if (!isProcessEnded()) {
          return;
       }
       List<String> cmdList = Arrays.asList(cmd.split(" "));
       consoleText = "<<Run: " + cmd + ">>\n";
       consPnl.setText(consoleText);
-      caretPos = consoleText.length();
       setConsoleActive(true);
       consPnl.focus();
       EventQueue.invokeLater(() -> {
@@ -103,16 +100,14 @@ public class ProcessStarter {
                   = new ProcessBuilder(cmdList).redirectErrorStream(true);
             pb.directory(new File(workingDir));
             process = pb.start();
-            PrintWriter out = new PrintWriter(process.getOutputStream());
-            new CaptureInput(out).execute();
+            out = new PrintWriter(process.getOutputStream());
+            new CaptureInput().execute();
             sendOutput(out);
             correctCaret();
          }
          catch(IOException e) {
             setConsoleActive(false);
-            consPnl.appendText(
-                  "<<Error: cannot find " + cmd
-                  + " in the directory " + workingDir + ">>\n");
+            consPnl.appendText(cmdNotFoundMsg(cmd));
          }
       });
    }
@@ -125,9 +120,7 @@ public class ProcessStarter {
    public boolean isProcessEnded() {
       boolean isEnded = process == null;
       if (!isEnded) {
-         Dialogs.warnMessage(
-               "A currently running process must be quit"
-               + " before a new process can be started.");
+         Dialogs.warnMessage(PROCESS_RUNNING_MSG);
       }
       return isEnded;
    }
@@ -135,51 +128,9 @@ public class ProcessStarter {
    //
    //--private--/
    //
-   
-   private void sendOutput(PrintWriter out) {
-      KeyListener keyListener = new KeyAdapter() {
-
-         @Override
-         public void keyPressed(KeyEvent e) {
-            int key = e.getKeyCode();
-            if (key == KeyEvent.VK_ENTER) {
-               String output = consPnl.getText().substring(caretPos);
-               out.println(output);
-               out.flush();
-            }
-         }
-
-         @Override
-         public void keyReleased(KeyEvent e) {
-            if (consPnl.getText().length() < caretPos) {
-               consPnl.setText(consoleText);
-            }
-         }
-      };
-      consPnl.addKeyListen(keyListener);
-   }
-
-   private void correctCaret() {
-      CaretListener caretListener = (CaretEvent e) -> {
-         if (!isActive) {
-             return;
-         }
-         if (e.getDot() < caretPos) {
-            EventQueue.invokeLater(() -> {
-               consPnl.setCaret(consPnl.getText().length());
-            });
-         }
-      };
-      consPnl.addCaretListener(caretListener);
-   }
 
    private void startNewCmd() {
-      String cmd = Dialogs.textFieldInput(
-            "Enter a system command which is executed in the current"
-            + " working directory (" + workingDirName + ")",
-            "Run",
-            previousCmd);
-
+      String cmd = Dialogs.textFieldInput(enterCmdMsg(), "Run", previousCmd);
       if (cmd != null) {
          previousCmd = cmd;
          cmdMap.put(workingDir, cmd);
@@ -196,17 +147,92 @@ public class ProcessStarter {
    private void startPreviousCmd() {
       startProcess(previousCmd);
    }
-
+   
    private void endProcess() {
       if (process != null) {
          kill = () -> {
              process.destroy();
-             apparentExitVal = -1;
+             isAborted = true;
          };
          new Thread(kill).start();
       }
    }
 
+   private class CaptureInput extends SwingWorker<Void, String> {
+      InputStream is = process.getInputStream();
+      InputStreamReader isr = new InputStreamReader(is);
+      BufferedReader reader = new BufferedReader(isr);
+
+      @Override
+      protected Void doInBackground() throws Exception {
+         try {
+            int cInt;
+            char c;
+            while ((cInt = reader.read()) != -1) {
+                c = (char) cInt;
+                consPnl.appendText(String.valueOf(c));
+                consoleText = consPnl.getText();
+                consPnl.setCaret(consoleText.length());
+            }
+            int exitVal = process.waitFor();
+            setEndingMsg(exitVal);
+         }
+         catch (IOException | InterruptedException e) {
+            FileUtils.logStack(e);
+         }
+         finally {
+            consPnl.setCaret(consPnl.getText().length());
+            process = null;
+            setConsoleActive(false);
+            try {
+               reader.close();
+               out.close();
+            }
+            catch (IOException e) {
+               FileUtils.logStack(e);
+            }
+         }
+         return null;
+      }
+   }
+   
+   private void sendOutput(PrintWriter out) {
+      KeyListener keyListener = new KeyAdapter() {
+
+         @Override
+         public void keyPressed(KeyEvent e) {
+            int key = e.getKeyCode();
+            if (key == KeyEvent.VK_ENTER) {
+               String output = consPnl.getText().substring(consoleText.length());
+               out.println(output);
+               out.flush();
+            }
+         }
+
+         @Override
+         public void keyReleased(KeyEvent e) {
+            if (consPnl.getText().length() < consoleText.length()) {
+               consPnl.setText(consoleText);
+            }
+         }
+      };
+      consPnl.addKeyListen(keyListener);
+   }
+
+   private void correctCaret() {
+      CaretListener caretListener = (CaretEvent e) -> {
+         if (!isActive) {
+             return;
+         }
+         if (e.getMark() < consoleText.length()) {
+            EventQueue.invokeLater(() -> {
+               consPnl.setCaret(consPnl.getText().length());
+            });
+         }
+      };
+      consPnl.addCaretListener(caretListener);
+   }
+   
    private void setConsoleActive(boolean isActive) {
       if (!isActive) {
          if (previousCmd.length() > 0) {
@@ -219,63 +245,40 @@ public class ProcessStarter {
       consPnl.setActive(isActive);
       this.isActive = isActive;
    }
-
-   private class CaptureInput extends SwingWorker<Void, String> {
-      PrintWriter out; // to close after process ended
-      InputStream is = process.getInputStream();
-      InputStreamReader isr = new InputStreamReader(is);
-      BufferedReader reader = new BufferedReader(isr);
-
-      private CaptureInput(PrintWriter out) {
-         this.out = out;
+   
+   private void setEndingMsg(int exitVal) {
+      if (exitVal == 0) {
+         consPnl.appendText( "\n<<Process ended normally (exit value = "
+               + exitVal + ")>>\n");
       }
-
-      @Override
-      protected Void doInBackground() throws Exception {
-         try {
-            int cInt;
-            char c;
-            while ((cInt = reader.read()) != -1) {
-                c = (char) cInt;
-                consPnl.appendText(String.valueOf(c));
-                consoleText = consPnl.getText();
-                caretPos = consoleText.length();
-                consPnl.setCaret(caretPos);
-            }
-            int exitVal = process.waitFor();
-            if (exitVal == 0) {
-               consPnl.appendText(
-                     "\n<<Process ended normally (exit value = "
-                     + exitVal + ")>>\n");
-            }
-            else {
-               if (apparentExitVal == -1) {
-                  consPnl.appendText(
-                        "\n<<Process aborted>>\n");
-               }
-               else {
-                  consPnl.appendText(
-                        "\n<<Process ended with error (exit value = "
-                        + exitVal + ")>>\n");
-               }
-            }
+      else {
+         if (isAborted) {
+            consPnl.appendText("\n<<Process aborted (exit value = "
+                  + exitVal + ")>>\n");
          }
-         catch (IOException | InterruptedException e) {
-            FileUtils.logStack(e);
+         else {
+            consPnl.appendText("\n<<Process ended with error (exit value = "
+                  + exitVal + ")>>\n");
          }
-         finally {
-            consPnl.setCaret(consPnl.getText().length());
-            process = null;
-            setConsoleActive(false);
-            out.close();
-            try {
-               reader.close();
-            }
-            catch (IOException e) {
-               FileUtils.logStack(e);
-            }
-         }
-         return null;
       }
+   }
+   
+   //
+   // Strings for messages
+   
+   private final static String PROCESS_RUNNING_MSG
+         = "A currently running process must be quit before"
+         + " a new process can be started.";
+   
+   private String cmdNotFoundMsg(String cmd) {
+      return
+         "<<Error: cannot find " + cmd + " in the directory "
+         + workingDir + ">>\n";
+   }
+   
+   private String enterCmdMsg() {
+      return
+         "Enter a system command which is executed in the current"
+          + " working directory (" + workingDirName + ")";
    }
 }
