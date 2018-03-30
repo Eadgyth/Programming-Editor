@@ -50,55 +50,49 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    }
 
    /**
-    * Compiles java files and shows output in the console panel
+    * Compiles java files
     */
    @Override
    public void compile() {
-      if (!isNonJavaExtCorrect()) {
+      if (!isNonJavaExtCorrect() || !proc.isProcessEnded()) {
          return;
       }
       consPnl.setText("<<Compile " + getProjectName() + ">>\n");
       EventQueue.invokeLater(() -> {
-         if (proc.isProcessEnded()) {
-            comp.compile(getProjectPath(), getExecutableDirName(),
-                  getSourceDirName(), nonJavaExt, getCompileOption());
+         comp.compile(getProjectPath(), getExecutableDirName(),
+               getSourceDirName(), nonJavaExt, getCompileOption());
 
-            consPnl.setCaretUneditable(0);
-            //
-            // Set up dialog depending on results
-            if (!co.isConsoleOpen()) {
-               boolean needConfirm = false;
-               StringBuilder msg = new StringBuilder();
-               if (!comp.isCompiled()) {
-                  msg.append("Compilation failed.\n");
-                  msg.append(comp.getFirstCompileErr()).append(".\n");
-                  needConfirm = true;
+         consPnl.setCaretUneditable(0);
+         if (!co.isConsoleOpen()) {
+            boolean needConfirm = false;
+            StringBuilder msg = new StringBuilder();
+            if (!comp.isCompiled()) {
+               msg.append("Compilation failed.\n");
+               msg.append(comp.getFirstCompileErr()).append(".\n");
+               needConfirm = true;
+            }
+            else {
+               msg.append("Compilation successful.\n");
+            }
+            if (comp.isNonErrMessage()) {
+               msg.append("Warning: One or more compiler messages are present.\n");
+               needConfirm = true;
+            }
+            if (comp.getCopyFilesErr().length() > 0) {
+               msg.append("Note: ").append(comp.getCopyFilesErr()).append(".\n");
+            }
+            if (comp.getOptionErr().length() > 0) {
+               msg.append("Note: ").append(comp.getOptionErr()).append(".\n");
+            }
+            if (needConfirm) {
+               msg.append("\nOpen the console window to view messages?\n");
+               int res = Dialogs.warnConfirmYesNo(msg.toString());
+               if (0 == res) {
+                  co.openConsole();
                }
-               else {
-                  msg.append("Compilation successful.\n");
-               }
-               if (comp.isNonErrMessage()) {
-                  msg.append("Warning: One or more compiler messages are present.\n");
-                  needConfirm = true;
-               }
-               if (comp.getCopyFilesErr().length() > 0) {
-                  msg.append("Note: ")
-                        .append(comp.getCopyFilesErr()).append(".\n");
-               }
-               if (comp.getOptionErr().length() > 0) {
-                  msg.append("Note: ")
-                        .append(comp.getOptionErr()).append(".\n");
-               }
-               if (needConfirm) {
-                  msg.append("\nOpen the console window to view messages?\n");
-                  int res = Dialogs.warnConfirmYesNo(msg.toString());
-                  if (0 == res) {
-                     co.openConsole();
-                  }
-               }
-               else {
-                  Dialogs.infoMessage(msg.toString(), null);
-               }
+            }
+            else {
+               Dialogs.infoMessage(msg.toString(), null);
             }
          }
       });
@@ -132,38 +126,29 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          if (jarName.length() == 0) {
             jarName = getMainFileName();
          }
-         boolean existed = jarFileExists(jarName);
          try {
-            jar.createJar(getProjectPath(), jarName, qualifiedMain,
+            boolean created = jar.createJar(getProjectPath(), jarName, qualifiedMain,
                   getExecutableDirName(), getSourceDirName(), nonJavaExt);
 
-            if (!existed) {
-               boolean exists = false;
-               while (!exists) {
-                  try {
-                     Thread.sleep(200);
-                  }
-                  catch (InterruptedException e) {
-                     FileUtils.logStack(e);
-                  }
-                  exists = jarFileExists(jarName);
-               }
-            }
-            if (co.isConsoleOpen()) {
-               consPnl.appendText("<<Saved jar file named " + jarName + ">>");
+            StringBuilder msg = new StringBuilder();
+            if (created) {
+               msg.append("Saved jar file named ").append(jarName).append(".");
                if (jar.getIncudedFilesErr().length() > 0) {
-                  consPnl.appendText("\n<<Note: " + jar.getIncudedFilesErr() + ">>");
+                  msg.append("\nNote: ").append(jar.getIncudedFilesErr());
+               }
+               if (!co.isConsoleOpen()) {
+                  Dialogs.infoMessage(msg.toString(), null);
                }
             }
             else {
-               StringBuilder msg = new StringBuilder("Saved jar file named " + jarName);
-               if (jar.getIncudedFilesErr().length() > 0) {
-                  msg.append("\n\nNote: ").append(jar.getIncudedFilesErr()).append(".");
+               msg.append("An error occured while trying to create a jar file.");
+               if (!co.isConsoleOpen()) {
+                  Dialogs.errorMessage(msg.toString(), null);
                }
-               Dialogs.infoMessage(msg.toString(), null);
             }
+            consPnl.appendText("<<" + msg.toString() + ">>");
          }
-         catch (IOException e) {
+         catch (IOException | InterruptedException e) {
             FileUtils.logStack(e);
          }
       });
@@ -177,7 +162,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private void setQualifiedMain() {
@@ -214,13 +199,6 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       return exists;
    }
 
-   private boolean jarFileExists(String jarName) {
-      String f = getProjectPath() + "/" + getExecutableDirName() + "/"
-            + jarName + ".jar";
-
-      return new File(f).exists();
-   }
-
    private boolean isNonJavaExtCorrect() {
       if (isNonJavaExtTested) {
          return true;
@@ -247,11 +225,11 @@ public final class JavaProject extends AbstractProject implements ProjectActions
 
    private void wrongExtMessage(String ext) {
       Dialogs.errorMessage(
-            "\"" + ext + "\" cannot be used.\n"
-            + "An extension must begin with a period.",
-            //
-            // title
-            "Extensions of included non-Java files");
+         "\"" + ext + "\" cannot be used.\n"
+         + "An extension must begin with a period.",
+         //
+         // title
+         "Extensions of included non-Java files");
    }
 
    private void nonJavaFilesNotSupportedMessage() {
@@ -260,6 +238,6 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          + " contains separate directories for source files and for class files.",
          //
          // title
-         "Including non-java files not supported");
+         "Included non-Java files");
    }
 }

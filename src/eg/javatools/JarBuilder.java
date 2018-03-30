@@ -53,12 +53,16 @@ public class JarBuilder {
     * files. Can be the empty string but cannot be not null
     * @param nonClassExt  the array of extensions of files that are included
     * in the jar file in addition to class files. May be null
+    * @return  the booelan that is true if the process that creates the jar
+    * terminates normally
     * @throws IOException  if the process that creates a jar cannot receive
     * any input
+    * @throws InterruptedException  if the thread on which the process runs
+    * is interrupted
     */
-   public void createJar(String root, String jarName, String qualifiedMain,
+   public boolean createJar(String root, String jarName, String qualifiedMain,
          String execDir, String sourceDir, String[] nonClassExt)
-         throws IOException {
+         throws IOException, InterruptedException {
 
       List<String> cmd = jarCmd(root, jarName, qualifiedMain, execDir, sourceDir,
             nonClassExt);
@@ -67,6 +71,12 @@ public class JarBuilder {
       pb.directory(new File(root + "/" + execDir));
       pb.redirectErrorStream(true);
       Process p = pb.start();
+      if (0 == p.waitFor()) {
+         return true;
+      }
+      else {
+         return false;
+      }
    }
 
    //
@@ -91,12 +101,17 @@ public class JarBuilder {
       });
       includedFilesErr = "";
       if (nonClassExt != null) {
+         if (sourceDir.length() == 0 || execDir.length() == 0) {
+            throw new IllegalArgumentException(
+                  "A sources and a classes directory must be"
+                  + " defined for copying non-java files");
+         }
          for (String ext : nonClassExt) {
             List<File> toInclude = fFind.filteredFiles(searchRoot, ext, sourceDir);
             if (toInclude.isEmpty()) {
                includedFilesErr =
                      "Files with extension \"" + ext + "\" for inclusion"
-                     + " in the jar were not found";
+                     + " in the jar were not found.";
             }
             else {
                List<File> relativeInclFilePaths
@@ -104,11 +119,6 @@ public class JarBuilder {
 
                for (File f : relativeInclFilePaths) {
                   String path = f.getPath();
-                  if (execDir.length() == 0
-                        && path.endsWith("eadproject.properties")) {
-
-                     continue;
-                  }
                   cmd.add(f.toString());
                }
             }
