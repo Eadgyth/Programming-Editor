@@ -20,12 +20,13 @@ public class Attributes {
    public final static SimpleAttributeSet ORANGE_PLAIN = new SimpleAttributeSet();
    public final static SimpleAttributeSet PURPLE_PLAIN = new SimpleAttributeSet();
 
+   public final static Color GREEN  = new Color(80, 190, 80);
+   
    private final static Color BLUE   = new Color(20, 30, 255);
    private final static Color RED    = new Color(250, 0, 50);
-   private final static Color GREEN  = new Color(80, 190, 80);
    private final static Color GRAY   = new Color(30, 30, 30);
    private final static Color ORANGE = new Color(240, 140, 0);
-   private final static Color PURPLE = new Color(150, 0, 255);
+   private final static Color PURPLE = new Color(150, 0, 230);
 
    static {
       StyleConstants.setForeground(RED_PLAIN, RED);

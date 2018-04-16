@@ -15,8 +15,12 @@ public class PerlHighlighter implements Highlighter {
       ' ', '\\', '(', ')', ';', '='
    };
    
-   private final static char[] END_OF_QW = {
-      ')'
+   private final static char[] OPEN_DEL = {
+      '(', '{', '<', '/'
+   };
+   
+   private final static char[] CLOSE_DEL = {
+      ')', '}', '>', '/'
    };
    
    final static String[] KEYWORDS = {
@@ -35,7 +39,7 @@ public class PerlHighlighter implements Highlighter {
       "while"   
    };
    
-   final static String[] STRING_OP = {
+   private final static String[] STRING_OP = {
       " and ",
       " cmp ",
       " eq ",
@@ -45,16 +49,73 @@ public class PerlHighlighter implements Highlighter {
       " or ",
       " xor "
    };
+   private final static int DEF_OPT = 0;
+   private final static int LINE_CMNT_OPT = 1;
    
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
       searcher.setCharAttrBlack();
+      searcher.setOption(DEF_OPT);
       searcher.signedVariables(START_OF_VAR, END_OF_VAR, Attributes.PURPLE_PLAIN);
       searcher.keywords(KEYWORDS, true, Attributes.RED_BOLD);
       searcher.keywords(STRING_OP, false, Attributes.RED_BOLD);
       searcher.braces();
-      searcher.quotedText();
-      searcher.unHighlight("qw(", END_OF_QW);
-      searcher.lineComments(LINE_CMNT, START_OF_VAR);
+      searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);
+      searcher.setOption(LINE_CMNT_OPT);
+      searcher.lineComments(LINE_CMNT);
+   }
+
+   @Override
+   public boolean isEnabled(String text, int pos, int option) {
+      boolean ok = true;
+      if (option == DEF_OPT) {
+         ok = isNotQwFunction(text, pos);
+      }
+      else if (option == LINE_CMNT_OPT) {
+         ok = isNotQwFunction(text, pos) && isLineCmnt(text, pos);
+      }
+      return ok;
+   }
+   
+   private boolean isNotQwFunction(String text, int pos) {
+      boolean ok = true;
+      int qwPos = SyntaxUtils.lastBlockStart(text, pos, "qw", ";");
+      if (qwPos != -1) {
+         int bracketStart
+               = SyntaxUtils.nextNonSpace(text, qwPos + "qw".length());
+
+         int ithDel = -1;
+         if (SyntaxUtils.isWordStart(text, qwPos, null)
+               && bracketStart >= qwPos + "qw".length()) {
+
+            if (bracketStart < text.length()) {
+               for (ithDel = 0; ithDel < OPEN_DEL.length; ithDel++) { 
+                  if (OPEN_DEL[ithDel] == text.charAt(bracketStart)) {
+                     break;
+                  }
+               }
+            }
+            if (ithDel != -1 && ithDel != OPEN_DEL.length) {  
+               char[] close = { CLOSE_DEL[ithDel] };
+               int length = SyntaxUtils.wordLength(text, bracketStart, close);
+               ok = pos <= qwPos || pos > bracketStart + length;
+            }
+         }
+      }
+      return ok;
+   }
+   
+   private boolean isLineCmnt(String text, int pos) {
+      boolean ok = true;
+      if (pos > 0) {
+         char c = text.charAt(pos - 1);
+         for (char non : START_OF_VAR) {
+            ok = c != non;
+            if (!ok) {
+               break;
+            }
+         }
+      }
+      return ok;
    }
 }

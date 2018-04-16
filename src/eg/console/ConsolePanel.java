@@ -34,7 +34,6 @@ public class ConsolePanel {
    private final JButton   setCmdBt   = new JButton("Cmd...");
    private final JButton   runBt      = new JButton(IconFiles.RUN_CMD_ICON);
    private final JButton   stopBt     = new JButton(IconFiles.STOP_PROCESS_ICON);
-   private final JButton   clearBt    = new JButton(IconFiles.CLEAR_ICON);
    private final JButton   closeBt    = new JButton(IconFiles.CLOSE_ICON);
    private final JScrollPane scroll   = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -53,7 +52,6 @@ public class ConsolePanel {
       consolePnl.add(scroll, BorderLayout.CENTER);
       runBt.setEnabled(false);
       stopBt.setEnabled(false);
-      clearBt.addActionListener(e -> area.setText(""));
    }
 
    /**
@@ -132,7 +130,6 @@ public class ConsolePanel {
    public void setActive(boolean isActive) {
       area.setEditable(isActive);
       area.setFocusable(isActive);
-      clearBt.setEnabled(!isActive);
       stopBt.setEnabled(isActive);
    }
 
@@ -165,8 +162,7 @@ public class ConsolePanel {
    }
    
    /**
-    * Adds an action listener to the button designated to closing
-    * this console panel
+    * Sets the listener for actions to close this console panel
     *
     * @param al  the {@code ActionListener}
     */
@@ -174,14 +170,29 @@ public class ConsolePanel {
       closeBt.addActionListener(al);
    }
 
+   /**
+    * Sets the listener for actions to set a command
+    *
+    * @param al  the {@code ActionListener}
+    */
    public void setCmdAct(ActionListener al) {
       setCmdBt.addActionListener(al);
    }
 
+   /**
+    * Sets the listener for actions to run a command
+    *
+    * @param al  the {@code ActionListener}
+    */
    public void setRunAct(ActionListener al) {
       runBt.addActionListener(al);
    }
 
+   /**
+    * Sets the listener for actions to stop a process
+    *
+    * @param al  the {@code ActionListener}
+    */
    public void setStopAct(ActionListener al) {
       stopBt.addActionListener(al);
    }
@@ -192,13 +203,12 @@ public class ConsolePanel {
 
    private JToolBar createToolbar() {
       JButton[] bts = new JButton[] {
-         setCmdBt, runBt, stopBt, clearBt, closeBt
+         setCmdBt, runBt, stopBt, closeBt
       };
       String[] tooltips = new String[] {
          "Run a new system command",
          "Run a previous system command",
          "Quit current process",
-         "Clear the console",
          "Close the console"
       };
       return UIComponents.lastBtRightToolbar(bts, tooltips);

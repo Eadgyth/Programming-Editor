@@ -32,12 +32,12 @@ public class EditMenu {
    private final JMenuItem selectAllItm     = new JMenuItem("Select all");
    private final JMenuItem[] editToolsItm   = new JMenuItem[EditTools.values().length];
    private final JMenuItem indentItm        = new JMenuItem(
-                                            "Increase indentation by the set indent length",
+                                            "Increase indentation by one indent length",
                                             IconFiles.INDENT_ICON);
    private final JMenuItem outdentItm       = new JMenuItem(
-                                            "Reduce indentation by the set indent length",
+                                            "Reduce indentation by one indent length",
                                             IconFiles.OUTDENT_ICON);
-   private final JMenuItem changeIndentItm = new JMenuItem("Change indentation length");
+   private final JMenuItem changeIndentItm = new JMenuItem("Set indent length");
    private final JMenuItem clearSpacesItm  = new JMenuItem("Clear trailing spaces");
    private final JMenu     languageMenu    = new JMenu("Language");
    private final JCheckBoxMenuItem[] selectLangChBxItm

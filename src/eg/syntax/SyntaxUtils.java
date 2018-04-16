@@ -24,16 +24,14 @@ public class SyntaxUtils {
    /**
     * Returns the boolean that indicates if the portion of text starting
     * at the specified position and spanning the specified length is a
-    * word. A word is defined such that it does not adjoin to a letter
-    * or a digit at the start and/or the end.
+    * word. A word is initially defined such that it does not adjoin to
+    * a letter or a digit at the start and/or the end.
     *
     * @param text  the text
     * @param pos  the position
     * @param length  the length
-    * @param nonWordStart  the array of characters that do not precede,
-    * a word, in addition to letters and digits. Can be null
-    * Can be null
-    * a word. Can be null
+    * @param nonWordStart  the array of characters that do not precede
+    * a word in addition to letters and digits. Can be null
     * @return  the boolean value
     */
    public static boolean isWord(String text, int pos, int length,
@@ -45,14 +43,13 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the boolean that indeicates if the specified position
-    * is a word start
+    * Returns the boolean that indicates if the specified position is
+    * a word start
     *
     * @param text  the text
     * @param pos  the position
-    * @param nonWordStart  the array of characters that do not precede
-    * a word,
-    * in addition to letters and digits. Can be null
+    * @param nonWordStart  the array of characters that must not precede
+    * a word, in addition to letters and digits. Can be null
     * @return  the boolean value
     * @see #isWord(String, int, int, char[])
     */
@@ -65,7 +62,6 @@ public class SyntaxUtils {
             for (int i = 0; i < nonWordStart.length; i++) {
                if (c == nonWordStart[i]) {
                   isWord = false;
-                  break;
                }
             }
          }
@@ -75,7 +71,7 @@ public class SyntaxUtils {
 
    /**
     * Returns the boolean that indicates if the character that follows
-    * the specified position is word end
+    * the specified position is a word end
     *
     * @param text  the text
     * @param pos  the position
@@ -99,6 +95,7 @@ public class SyntaxUtils {
     * @param text  the text
     * @param pos   the position
     * @param endChars  the array of characters that mark the end of a word
+    * in addition to a white space
     * @return  the length of the word
     */
    public static int wordLength(String text, int pos, char[] endChars) {
@@ -106,18 +103,9 @@ public class SyntaxUtils {
       int i;
       for (i = pos + 1; i < text.length() && !found; i++) {
          for (int j = 0; j < endChars.length; j++) {
-            if (i == pos + 1) {
-               if (text.charAt(i) == ' ') {
-                  found = true;
-                  break;
-               }
-            }
-            else {
-               if (text.charAt(i) == endChars[j]) {
-                  found = true;
-                  i--;
-                  break;
-               }
+            if (text.charAt(i) == endChars[j]) {
+               found = true;
+               i--;
             }
          }
       }
@@ -187,37 +175,16 @@ public class SyntaxUtils {
       }
       return nextEnd;
    }
-   
-   /**
-    * Returns the boolean that is true if an opening brace but not a
-    * closing brace is found ahead of the specified position in the
-    * case that the specified <code>openingBrace</code> is true or
-    * rather if a closing brace or no brace is found in the case that
-    * <code>openingBrace</code> is false
-    *
-    * @param text  the text
-    * @param pos  the position
-    * @param openingBrace  the boolean that indicates if the last
-    * brace must (true) or must not (false) be an opening brace
-    * @return  the boolean value
-    */ 
-   public static boolean testLastBrace(String text, int pos, boolean openingBrace) {
-      int lastBlockStart
-            = SyntaxUtils.lastBlockStart(text, pos, "{", "}");
-        
-      return (openingBrace && lastBlockStart != -1)
-            || (!openingBrace && lastBlockStart == -1);
-   }
 
    /**
-    * Returns if the section starting at the specified position and
-    * spanning the specified length is bordered by double quotes
+    * Returns the boolean that is true if the section starting at the
+    * specified position and spanning the specified length is bordered
+    * by double quotes
     *
     * @param text  the text
     * @param pos  the position
     * @param length  the length
-    * @return  if the section of text starting at <code>pos</code>
-    * and spanning <code>length</code> is bordered by double quotes
+    * @return  the boolean value
     */
    public static boolean isBorderedByQuotes(String text, int pos, int length) {
       boolean isInQuotes = false;
@@ -225,15 +192,15 @@ public class SyntaxUtils {
       int endPos = pos + length;
       if (pos > 0 & text.length() > endPos) {
          isInQuotes = (text.charAt(startPos) == DOUBLE_QUOTE
-               || text.charAt(startPos) == SINGLE_QUOTE)
+                  || text.charAt(startPos) == SINGLE_QUOTE)
                && (text.charAt(endPos) == DOUBLE_QUOTE
-               || text.charAt(endPos) == SINGLE_QUOTE);
+                  || text.charAt(endPos) == SINGLE_QUOTE);
       }
       return isInQuotes;
    }
 
    /**
-    * Returns the boolean that indicated if the specified position is found
+    * Returns the boolean that is true if the specified position is found
     * inside a section of text in quotes
     *
     * @param text  the text
@@ -270,22 +237,35 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the next position, relative to the specified position, of the
-    * specified string <code>toSearch</code> that is not preceded with a
-    * backslash
+    * Returns the next position of the specified <code>toSearch</code>
+    * that is not preceded with a backslash
     *
     * @param text  the text
-    * @param toSearch  the string to search
-    * @param pos  the position
-    * @return  the position of the next non-escaped string
+    * @param toSearch  the char that is searched
+    * @param pos  the position where the search starts
+    * @return  the position
     */
-   public static int nextNotEscaped(String text, char toSearch, int pos) {
+   public static int nextNonEscaped(String text, char toSearch, int pos) {
       int index = text.indexOf(toSearch, pos);
       while (SyntaxUtils.isEscaped(text, index)) {
          index = text.indexOf(toSearch, index + 1);
       }
       return index;
    }
+   
+   public static int nextNonSpace(String text, int pos) {
+      if (pos == text.length()) {
+         return pos;
+      }
+      int i;
+      for (i = pos; i < text.length(); i++) {
+         if (text.charAt(i) != ' ') {
+            break;
+         }
+      }
+      return i;
+   }
+      
 
    //
    //--private--/

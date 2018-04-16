@@ -68,11 +68,18 @@ public class HTMLHighlighter implements Highlighter {
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
       if (!searcher.isInBlockCmnt(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
+         searcher.setHtmlSection();
          searcher.setCharAttrBlack();
-         searcher.htmlTags(TAGS, ATTRIBUTES);
-         searcher.embeddedInHtml("<script", "</script>", js);
-         searcher.embeddedInHtml("<style>", "</style>", css);
+         searcher.htmlElements(TAGS, ATTRIBUTES);         
+         searcher.embeddedHtmlSection("<script", "</script>", js);
+         searcher.embeddedHtmlSection("<style>", "</style>", css);
       }
       searcher.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
+   }
+   
+   @Override
+   public boolean isEnabled(String text, int pos, int option) {
+      return -1 != SyntaxUtils.lastBlockStart(text, pos, "<", ">")
+            && -1 == SyntaxUtils.lastBlockStart(text, pos, "</", ">");
    }
 }

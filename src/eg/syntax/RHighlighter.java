@@ -1,5 +1,8 @@
 package eg.syntax;
 
+/**
+ * Syntax highlighting for R
+ */
 public class RHighlighter implements Highlighter {
    
    private final static String LINE_CMNT = "#";
@@ -7,7 +10,7 @@ public class RHighlighter implements Highlighter {
    final static String[] KEYWORDS = {
       "break",
       "else",
-      "FALSE","for", "function",
+      "FALSE", "for", "function",
       "if", "in", "inf",
       "NA", "NA_integer", "NA_real", "Na_complex", "NaN", "Na_character",
       "next", "NULL",
@@ -22,7 +25,12 @@ public class RHighlighter implements Highlighter {
       searcher.keywords(KEYWORDS, true, Attributes.RED_PLAIN);
       searcher.braces();
       searcher.brackets();
-      searcher.quotedText();
-      searcher.lineComments(LINE_CMNT, null);
+      searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);
+      searcher.lineComments(LINE_CMNT);
+   }
+   
+   @Override
+   public boolean isEnabled(String text, int pos, int option) {
+      return true;
    }
 }

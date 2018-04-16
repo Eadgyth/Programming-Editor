@@ -116,7 +116,7 @@ public class TypingEdit {
                break;
          }
          syntax.setHighlighter(hl);
-         syntax.highlight(text, text, 0, 0);
+         syntax.highlightMultiline(text, text, 0);
          isCodeEditing = true;
       }
    }
@@ -180,7 +180,7 @@ public class TypingEdit {
       isCodeEditing = false;
       textDoc.insert(pos, toInsert);
       if (isCodeEditingHelper) {
-         highlightInsert();
+         highlightInsertion();
          isCodeEditing = true;
       }
    }
@@ -200,7 +200,7 @@ public class TypingEdit {
       }
       textDoc.insert(pos, toInsert);
       if (isCodeEditingHelper) {
-         highlightInsert();
+         highlightInsertion();
          isCodeEditing = true;
       }
    }
@@ -259,7 +259,7 @@ public class TypingEdit {
       outputUndoableState();
       if (isCodeEditing) {
          if (isInsert) {
-            syntax.highlight(text, text, 0, 0);
+            syntax.highlightMultiline(text, text, 0);
             //highlightInsert();
          }
          else {
@@ -276,18 +276,12 @@ public class TypingEdit {
    }
    
    private void highlightLine() {
-      int lineStart = LinesFinder.lastNewline(text, chgPos);
-      int lineEnd = LinesFinder.nextNewline(text, chgPos);
-      String toColor = LinesFinder.line(text, lineStart, lineEnd);
-      EventQueue.invokeLater(() ->
-         syntax.highlight(text, toColor, chgPos, lineStart + 1));
+      syntax.highlightLine(text, chgPos);
    }
    
-   private void highlightInsert() {
+   private void highlightInsertion() {
       if (change.length() > 0) {
-         String lines = LinesFinder.allLinesAtPos(text, change, chgPos);
-         int linesStart = LinesFinder.lastNewline(text, chgPos) + 1;
-         syntax.highlight(text, lines, chgPos, linesStart);
+         syntax.highlightMultiline(text, change, chgPos);
       }
    }
    

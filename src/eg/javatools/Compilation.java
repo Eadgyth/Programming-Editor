@@ -87,8 +87,7 @@ public class Compilation {
     * Returns the error message that indicates that an error occured
     * during copying non-java files
     *
-    * @return  the message or the empty empty string of there is no
-    * error
+    * @return  the message or the empty empty string of there is no error
     */
    public String getCopyFilesErr() {
       return copyFilesErr;
@@ -98,8 +97,7 @@ public class Compilation {
     * Returns the error message that indicates that the input for
     * the Xlint compiler option is invalid
     *
-    * @return  the message or the empty string of there is no
-    * error
+    * @return  the message or the empty string of there is no error
     */
    public String getOptionErr() {
       return optionErr;
@@ -109,14 +107,15 @@ public class Compilation {
     * Invokes the javac compiler
     *
     * @param root  the root directory of the project
-    * @param execDir  the name of the destination directory for the compiled
-    * class files/packages
-    * @param sourceDir  the name of the directory that contains java files
-    * or packages
-    * @param nonJavaExt  the array of extensions of files that are copied to
-    * the compilation. Requires that both a sources and a classes directory
-    * is present. May be null.
-    * @param xlintOption  the Xlint compiler option. Other options are ignored.
+    * @param execDir  the name of the destination directory for the
+    * compiled class files/packages
+    * @param sourceDir  the name of the directory that contains java
+    * files or packages
+    * @param nonJavaExt  the array of extensions of files that are
+    * copied to the compilation. Requires that both a sources and a
+    * classes directory is present. May be null.
+    * @param xlintOption  the Xlint compiler option. Other options are
+    * ignored.
     */
    public void compile(String root, String execDir, String sourceDir,
          String[] nonJavaExt, String xlintOption) {
@@ -274,6 +273,8 @@ public class Compilation {
       }
       consPnl.appendText("\n");
       if (diagnostics.getDiagnostics().size() > 0) {
+         //
+         // Message for dialog
          Diagnostic<?> firstSource = diagnostics.getDiagnostics().get(0);
          if (firstSource != null) {
             String file = new File(firstSource.getSource().toString()).getName();

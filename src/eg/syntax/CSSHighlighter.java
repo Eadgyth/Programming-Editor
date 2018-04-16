@@ -32,7 +32,7 @@ public class CSSHighlighter implements Highlighter {
       "z-index"
    };
    //
-   // Property appandages
+   // Property extensions
    private final static String[] BACKGROUND_PROPS = {
       "-attachment", "-clip", "-color",
       "-image", "-origin", "-position",
@@ -50,7 +50,7 @@ public class CSSHighlighter implements Highlighter {
       "-top-right-radius", "-top-style", "-top-width",
       "-width"
    };
-   private final static String[] TOP_LEFT_RIGHT_BOTTOM_OPT = {
+   private final static String[] TOP_LEFT_RIGHT_BOTTOM = {
       "-bottom", "-left", "-right", "-top"
    };
    private final static String[] FONT_PROPS = {
@@ -60,11 +60,11 @@ public class CSSHighlighter implements Highlighter {
    private final static String[] LIST_PROPS = {
       "-style", "-style-image", "-style-position", "-style-type"
    };  
-   private final static String[] MARGIN_PROPS = TOP_LEFT_RIGHT_BOTTOM_OPT;
+   private final static String[] MARGIN_PROPS = TOP_LEFT_RIGHT_BOTTOM;
    private final static String[] OUTLINE_PROPS = {
       "-color", "-style", "-width"
    };
-   private final static String[] PADDING_PROPS = TOP_LEFT_RIGHT_BOTTOM_OPT;
+   private final static String[] PADDING_PROPS = TOP_LEFT_RIGHT_BOTTOM;
    private final static String[] TRANSITION_PROPS = {
       "-delay", "-duration", "-property", "-timing-function"
    };
@@ -73,6 +73,9 @@ public class CSSHighlighter implements Highlighter {
    private final static char[] CLASS_START = {'.', '#'};
    private final static char[] CLASS_END = {' ', '{'};
    private final static char[] NON_PROP_START = {'-', '.'};
+   private final static int IGNORE_OPT = 0;
+   private final static int OPEN_BRACE_AHEAD = 1;
+   private final static int NO_OPEN_BRACE_AHEAD = 2;
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
@@ -80,40 +83,56 @@ public class CSSHighlighter implements Highlighter {
             SyntaxUtils.BLOCK_CMNT_END)) {
 
          searcher.setCharAttrBlack();
-         searcher.keywords(HTMLHighlighter.TAGS, CLASS_START, false,
+         searcher.setOption(NO_OPEN_BRACE_AHEAD);
+         searcher.keywords(HTMLHighlighter.TAGS, CLASS_START,
                Attributes.BLUE_PLAIN);
                
-         searcher.signedVariables(CLASS_START, CLASS_END, false,
+         searcher.signedVariables(CLASS_START, CLASS_END,
                Attributes.BLUE_PLAIN);
-         
-         searcher.extensibleKeyword("background", BACKGROUND_PROPS,
-               NON_PROP_START, true, Attributes.RED_PLAIN);
-               
-         searcher.extensibleKeyword("border", BORDER_PROPS, NON_PROP_START, true,
+
+         searcher.setOption(OPEN_BRACE_AHEAD);
+         searcher.extensibleKeyword("background", BACKGROUND_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("font", FONT_PROPS, NON_PROP_START, true,
+         searcher.extensibleKeyword("border", BORDER_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("list", LIST_PROPS, NON_PROP_START, true,
+         searcher.extensibleKeyword("font", FONT_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("margin", MARGIN_PROPS, NON_PROP_START, true,
+         searcher.extensibleKeyword("list", LIST_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("outline", OUTLINE_PROPS, NON_PROP_START, true,
+         searcher.extensibleKeyword("margin", MARGIN_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("padding", PADDING_PROPS, NON_PROP_START, true,
+         searcher.extensibleKeyword("outline", OUTLINE_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("transition", TRANSITION_PROPS,
-               NON_PROP_START, true, Attributes.RED_PLAIN);
+         searcher.extensibleKeyword("padding", PADDING_PROPS, NON_PROP_START,
+               Attributes.RED_PLAIN);
+               
+         searcher.extensibleKeyword("transition", TRANSITION_PROPS, NON_PROP_START,
+               Attributes.RED_PLAIN);
                   
-         searcher.keywords(PROPS, NON_PROP_START, true, Attributes.RED_PLAIN);
+         searcher.keywords(PROPS, NON_PROP_START, Attributes.RED_PLAIN);
+         
+         searcher.setOption(IGNORE_OPT);
          searcher.braces();
       }
       searcher.blockComments(SyntaxUtils.BLOCK_CMNT_START,
             SyntaxUtils.BLOCK_CMNT_END);
+   }
+   
+   @Override
+   public boolean isEnabled(String text, int pos, int option) {
+      if (option == IGNORE_OPT) {
+         return true;
+      }    
+      int lastOpenBrace
+            = SyntaxUtils.lastBlockStart(text, pos, "{", "}");
+
+      return (option == OPEN_BRACE_AHEAD && lastOpenBrace != -1)
+            || (option == NO_OPEN_BRACE_AHEAD && lastOpenBrace == -1);
    }
 }

@@ -117,7 +117,9 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void build() {
-      if (!mainClassFileExists() || !isNonJavaExtCorrect()) {
+      if (!mainClassFileExists() || !isNonJavaExtCorrect()
+            || !proc.isProcessEnded()) {
+
          return;
       }
       consPnl.setText("");

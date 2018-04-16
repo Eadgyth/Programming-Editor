@@ -302,7 +302,7 @@ public final class EditableDocument {
     * @param pos  the position where the section starts
     * @param length  the length of the section
     * @param useHighlighting  if syntax highlighting of the line that
-    * contains the position is done. Is effectless if this language
+    * contains the position should be done. Is effectless if this language
     * is not a coding language
     */
    public void remove(int pos, int length, boolean useHighlighting) {
@@ -389,7 +389,7 @@ public final class EditableDocument {
          case "java":
            lang = Languages.JAVA;
            break;
-         case "html": case "htm": case "xml": // no project associated with xml
+         case "html": case "htm": case "xml": // no xml-highlighter
             lang = Languages.HTML;
             break;
          case "js":

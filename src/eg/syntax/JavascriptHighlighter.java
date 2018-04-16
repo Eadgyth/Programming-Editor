@@ -21,7 +21,8 @@ public class JavascriptHighlighter implements Highlighter {
       "return",
       "short", "static", "super", "switch", "synchronized",
       "this", "throw", "throws", "transient", "true", "try", "typeof",
-      "var", "void", "volatile", "while", "with"
+      "var", "void", "volatile",
+      "while", "with"
    };
 
    @Override
@@ -31,9 +32,14 @@ public class JavascriptHighlighter implements Highlighter {
          searcher.keywords(JS_KEYWORDS, true, Attributes.RED_PLAIN);
          searcher.brackets();
          searcher.braces();
-         searcher.quotedText();
-         searcher.lineComments(SyntaxUtils.LINE_CMNT, null);
+         searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);
+         searcher.lineComments(SyntaxUtils.LINE_CMNT);
       }
       searcher.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
+   }
+   
+   @Override
+   public boolean isEnabled(String text, int pos, int option) {
+      return true;
    }
 }

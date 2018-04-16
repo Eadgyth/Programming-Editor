@@ -186,7 +186,7 @@ public abstract class AbstractProject implements Configurable {
    /**
     * Returns the namespace of the main file. This is a relative
     * directory or directory path based at the sources directory or,
-    * if a sources directory is not given, at the  project's root
+    * if a sources directory is not given, at the project's root
     * directory.
     *
     * @return  the namespace. The empty string if no namespace is given
