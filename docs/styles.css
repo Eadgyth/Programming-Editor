@@ -18,18 +18,14 @@ p {
 h1, h2, h3, h4 {
    margin-left: 20px;
 }
-a {
-   font-size: 0.95em;
-}
 nav.leftPanel {
    float: left;
    max-width: 300px;
    margin: 0;
    padding: 1em;
 }
-nav ul a {
+a {
    text-decoration: none;
-   font-size: 90%;
 }
 ol li {
    font-size: 0.95em;
@@ -42,7 +38,7 @@ ul:not(.summaries) li {
    margin-right: 50px;
 }
 hr {
-   height: 10px;
+   height: 6px;
    color:#55bfec;
    background-color:#55bfec;
    border: none;
@@ -55,4 +51,13 @@ article.right {
 }
 article ul li {
    margin-top: 0.5em;
+}
+table {
+   font-size: 0.90em;
+   margin-left: 30px;
+   border-collapse: collapse;
+}
+td, th {
+   border: 2px solid #55bfec;
+   padding: 5px;
 }
