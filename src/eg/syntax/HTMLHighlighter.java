@@ -72,7 +72,7 @@ public class HTMLHighlighter implements Highlighter {
          searcher.setCharAttrBlack();
          searcher.htmlElements(TAGS, ATTRIBUTES);         
          searcher.embeddedHtmlSection("<script", "</script>", js);
-         searcher.embeddedHtmlSection("<style>", "</style>", css);
+         searcher.embeddedHtmlSection("<style", "</style>", css);
       }
       searcher.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
    }

@@ -44,19 +44,6 @@ public class TextDocument {
    }
    
    /**
-    * Returns the booelan that indicates if the foreground color at
-    * the specified position equals the specified color
-    *
-    * @param pos  the position
-    * @param col  the color
-    * @return  the boolean value; true if equal
-    */
-   public boolean equalsColorAt(int pos, Color col) {
-      return col.equals(StyleConstants.getForeground(
-            doc.getCharacterElement(pos).getAttributes()));
-   }
-   
-   /**
     * Gets the text area that displays the document
     *
     * @return  the text area

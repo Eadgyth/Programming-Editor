@@ -93,36 +93,34 @@ public class SyntaxHighlighter {
       private int option = 0;
 
       /**
-       * Sets the section of text to highlight html elements
+       * Sets the section of text for highlighting html elements
        */
       public void setHtmlSection() {
-         if (isTypeMode) {
-            if (isHighlightBlockCmnt
-               && !isInBlock("<script>", "</script>", chgPos)) {
-
-               int start = SyntaxUtils.lastBlockStart(text, chgPos, "<", ">");
+         if (isTypeMode && isHighlightBlockCmnt) {
+            String innerScn;
+            int start = SyntaxUtils.lastBlockStart(text, chgPos, "<", ">");
+            if (start == -1) {
+               start = text.lastIndexOf(">", chgPos) + 1;
                if (start == -1) {
-                  start = text.lastIndexOf(">", chgPos) + 1;
-                  if (start == -1) {
-                     start = 0;
-                  }
+                  start = 0;
                }
-               int origEnd = scnPos + section.length();
-               int end = SyntaxUtils.nextBlockEnd(text, origEnd, "<", ">");
-               if (end == -1) {
-                  end = text.indexOf("<", origEnd);
-                  if (end == -1) {
-                     end = text.length();
-                  }
-               }
-               scnPos = start;
-               section = text.substring(start, end);
             }
+            int origEnd = scnPos + section.length();
+            int end = SyntaxUtils.nextBlockEnd(text, origEnd, "<", ">");
+            if (end == -1) {
+               end = text.indexOf("<", origEnd);
+               if (end == -1) {
+                  end = text.length();
+               }
+            }
+            innerScn = text.substring(start, end);
+            //System.out.println("html section\n" + innerScn);
+            setTextParams(text, innerScn, chgPos, start);
          }
       }
 
       /**
-       * Sets the default section of text that is to be highlighted to
+       * Sets the section of text that is to be highlighted to
        * black and plain
        */
       public void setCharAttrBlack() {
@@ -511,8 +509,9 @@ public class SyntaxHighlighter {
                      innerEnd = end;
                      String innerScn = null;
                      int scnStart = innerStart + 1;
-                     if (isTypeMode && isHighlightBlockCmnt) {
-                        if (chgPos > start) {
+
+                     if (isTypeMode) {
+                        if (chgPos > start && chgPos < end) {
                            if (chgPos > innerStart
                                  && chgPos < end + endTag.length() - 1) {
 
@@ -530,12 +529,12 @@ public class SyntaxHighlighter {
                            }
                         }
                      }
-                     else if (!isTypeMode || !isHighlightBlockCmnt) {
+                     if (!isTypeMode || !isHighlightBlockCmnt) {
                         innerScn = text.substring(scnStart, end);
                      }
                      if (innerScn != null) {
-                        section = innerScn;
-                        scnPos = scnStart;
+                        //System.out.println("inner section\n" + innerScn);
+                        setTextParams(text, innerScn, chgPos, scnStart);
                         hl.highlight(this);
                         length = innerScn.length();
                      }
@@ -631,9 +630,7 @@ public class SyntaxHighlighter {
                               blockCmntStart, blockCmntEnd);
                   }
                   else {
-                     if (textDoc.equalsColorAt(start, Attributes.GREEN)) {
-                        removedBlockCmntEnd(start, blockCmntStart);
-                     }
+                     removedBlockCmntEnd(start, blockCmntStart);
                   }
                }
                start += length + 1;
@@ -650,14 +647,16 @@ public class SyntaxHighlighter {
          int nextEnd = SyntaxUtils.nextBlockEnd(text, endPos, blockCmntStart,
                blockCmntEnd);
 
-         if (innerEnd > 0 && nextEnd > innerEnd) {
-             nextEnd = -1;
-         }
-         if (nextEnd != -1 && textDoc.equalsColorAt(nextEnd, Attributes.GREEN)) {
-            String toUncomment = text.substring(endPos,
-                  nextEnd + blockCmntEnd.length());
+         if (nextEnd != -1) {
+            if (innerEnd > 0 && nextEnd > innerEnd) {
+                nextEnd = -1;
+            }
+            if (nextEnd != -1) {
+               String toUncomment = text.substring(endPos,
+                     nextEnd + blockCmntEnd.length());
 
-            uncommentBlock(toUncomment, endPos);
+               uncommentBlock(toUncomment, endPos);
+            }
          }
       }
 
@@ -691,6 +690,7 @@ public class SyntaxHighlighter {
 
       private void uncommentBlock(String scn, int pos) {
          if (isTypeMode) {
+            //System.out.println("uncomment\n" + scn);
             isHighlightBlockCmnt = false;
             setTextParams(text, scn, pos, pos);
             hl.highlight(this);

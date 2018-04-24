@@ -12,6 +12,7 @@ import java.io.IOException;
 import eg.Languages;
 import eg.Constants;
 import eg.utils.FileUtils;
+import eg.utils.Dialogs;
 import eg.ui.EditArea;
 
 /**
@@ -162,9 +163,12 @@ public final class EditableDocument {
       if (docFile == null) {
          throw new IllegalStateException("No file has been assigned");
       }
-      type.resetInChangeState();
-      savedContent = type.getText();
-      return writeToFile(docFile);
+      boolean isWritten = writeToFile(docFile);
+      if (isWritten) {
+         savedContent = type.getText();
+         type.resetInChangeState();
+      }
+      return isWritten;
    }
 
    /**
@@ -363,15 +367,26 @@ public final class EditableDocument {
    }
 
    private boolean writeToFile(File f) {
-      String[] lines = type.getText().split("\n");
-      try (FileWriter writer = new FileWriter(f)) {
+      boolean isWritable;     
+      File sameName = new File(f.toString());
+      isWritable = f.renameTo(sameName);
+      String[] lines = type.getText().split("\n");  
+      try (FileWriter writer = new FileWriter(f)) {     
          for (String s : lines) {
             writer.write(s + Constants.LINE_SEP);
          }
          return true;
       }
-      catch(IOException e) {
-         FileUtils.logStack(e);
+      catch (IOException e) {
+         if (!isWritable) {
+            Dialogs.errorMessage(
+                  f.getName() + " cannot be saved."
+                  + " It may be used by another process.",
+                  null);
+         }
+         else {
+            FileUtils.logStack(e);
+         }
       }
       return false;
    }
@@ -389,7 +404,7 @@ public final class EditableDocument {
          case "java":
            lang = Languages.JAVA;
            break;
-         case "html": case "htm": case "xml": // no xml-highlighter
+         case "html": case "htm":
             lang = Languages.HTML;
             break;
          case "js":

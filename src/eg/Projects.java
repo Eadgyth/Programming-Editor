@@ -51,7 +51,7 @@ public class Projects {
    public void setDocumentAt(int i) {
       iDoc = i;
       ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), false);
-      mw.enableOpenProjSettingActions(inList != null);
+      mw.enableOpenProjSetWinActions(inList != null);
       if (inList != null) {
          mw.enableChangeProject(inList != current);
          if (!current.isInProject(edtDoc[iDoc].dir())) {
@@ -177,7 +177,7 @@ public class Projects {
 
    /**
     * Updates the file tree if the selected <code>EditableDocument</code>
-    * belongs to currently active project
+    * belongs to the currently active project
     */
    public void updateFileTree() {
       if (current != null && current.isInProject(edtDoc[iDoc].dir())) {
@@ -336,7 +336,7 @@ public class Projects {
       mw.fileTree().setDeletableDirName(toUpdate.getExecutableDirName());
       mw.fileTree().setProjectTree(toUpdate.getProjectPath());
       mw.enableChangeProject(false);
-      mw.enableOpenProjSettingActions(true);
+      mw.enableOpenProjSetWinActions(true);
    }
 
    private void enableActions() {

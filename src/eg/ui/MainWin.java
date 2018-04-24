@@ -260,12 +260,12 @@ public class MainWin {
    }
    
    /**
-    * Sets the boolean that specifies if actions to change project are
-    * enabled (true) or disabled
+    * Sets the boolean that specifies if actions to open a project's
+    * settings window are enabled (true) or disabled
     *
     * @param b  the boolean value
     */
-   public void enableOpenProjSettingActions(boolean b) {
+   public void enableOpenProjSetWinActions(boolean b) {
       menuBar.projectMenu().enableOpenSetWinItm(b);
    }
 
@@ -501,7 +501,7 @@ public class MainWin {
             editTools.add((AddableEditTool) Class.forName("eg.edittools."
                   + EditTools.values()[i].className()).newInstance());
 
-            setEditToolsActions(editTools().get(i), i);
+            setEditToolsActions(editTools.get(i), i);
          }
       }
       catch (ClassNotFoundException | InstantiationException
