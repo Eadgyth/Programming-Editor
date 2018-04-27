@@ -68,13 +68,17 @@ public class HTMLHighlighter implements Highlighter {
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
       if (!searcher.isInBlockCmnt(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
-         searcher.setHtmlSection();
-         searcher.setCharAttrBlack();
+         searcher.modifySectionForHtml();
+         searcher.setSectionBlack();
          searcher.htmlElements(TAGS, ATTRIBUTES);         
-         searcher.embeddedHtmlSection("<script", "</script>", js);
-         searcher.embeddedHtmlSection("<style", "</style>", css);
       }
-      searcher.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
+      if (!searcher.isInBlock("<script", "</script>")
+            && !searcher.isInBlock("<style", "</style>")) {
+
+         searcher.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
+      }
+      searcher.embeddedHtmlSection("<script", "</script>", js);      
+      searcher.embeddedHtmlSection("<style", "</style>", css);
    }
    
    @Override

@@ -4,7 +4,7 @@ package eg.syntax;
  * Syntax highlighting for Javascript
  */
 public class JavascriptHighlighter implements Highlighter {
-   
+
    // incomplete
    private final static String[] JS_KEYWORDS = {
       "abstract",
@@ -27,17 +27,20 @@ public class JavascriptHighlighter implements Highlighter {
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
-      if (!searcher.isInBlockCmnt(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END)) {
-         searcher.setCharAttrBlack();
+      if (!searcher.isInBlockCmnt(SyntaxUtils.BLOCK_CMNT_START,
+            SyntaxUtils.BLOCK_CMNT_END)) {
+
+         searcher.setSectionBlack();
          searcher.keywords(JS_KEYWORDS, true, Attributes.RED_PLAIN);
          searcher.brackets();
          searcher.braces();
          searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);
          searcher.lineComments(SyntaxUtils.LINE_CMNT);
       }
-      searcher.blockComments(SyntaxUtils.BLOCK_CMNT_START, SyntaxUtils.BLOCK_CMNT_END);
+      searcher.blockComments(SyntaxUtils.BLOCK_CMNT_START,
+            SyntaxUtils.BLOCK_CMNT_END);
    }
-   
+
    @Override
    public boolean isEnabled(String text, int pos, int option) {
       return true;

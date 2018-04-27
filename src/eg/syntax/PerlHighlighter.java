@@ -54,7 +54,7 @@ public class PerlHighlighter implements Highlighter {
    
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
-      searcher.setCharAttrBlack();
+      searcher.setSectionBlack();
       searcher.setOption(DEF_OPT);
       searcher.signedVariables(START_OF_VAR, END_OF_VAR, Attributes.PURPLE_PLAIN);
       searcher.keywords(KEYWORDS, true, Attributes.RED_BOLD);

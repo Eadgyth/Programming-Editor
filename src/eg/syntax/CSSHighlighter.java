@@ -82,7 +82,7 @@ public class CSSHighlighter implements Highlighter {
       if (!searcher.isInBlockCmnt(SyntaxUtils.BLOCK_CMNT_START,
             SyntaxUtils.BLOCK_CMNT_END)) {
 
-         searcher.setCharAttrBlack();
+         searcher.setSectionBlack();
          searcher.setOption(NO_OPEN_BRACE_AHEAD);
          searcher.keywords(HTMLHighlighter.TAGS, CLASS_START,
                Attributes.BLUE_PLAIN);

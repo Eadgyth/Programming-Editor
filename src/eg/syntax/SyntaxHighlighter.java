@@ -93,51 +93,25 @@ public class SyntaxHighlighter {
       private int option = 0;
 
       /**
-       * Sets the section of text for highlighting html elements
-       */
-      public void setHtmlSection() {
-         if (isTypeMode && isHighlightBlockCmnt) {
-            String innerScn;
-            int start = SyntaxUtils.lastBlockStart(text, chgPos, "<", ">");
-            if (start == -1) {
-               start = text.lastIndexOf(">", chgPos) + 1;
-               if (start == -1) {
-                  start = 0;
-               }
-            }
-            int origEnd = scnPos + section.length();
-            int end = SyntaxUtils.nextBlockEnd(text, origEnd, "<", ">");
-            if (end == -1) {
-               end = text.indexOf("<", origEnd);
-               if (end == -1) {
-                  end = text.length();
-               }
-            }
-            innerScn = text.substring(start, end);
-            //System.out.println("html section\n" + innerScn);
-            setTextParams(text, innerScn, chgPos, start);
-         }
-      }
-
-      /**
        * Sets the section of text that is to be highlighted to
-       * black and plain
+       * black and plain. This method must be called before calling
+       * search methods
        */
-      public void setCharAttrBlack() {
+      public void setSectionBlack() {
          textDoc.setCharAttrBlack(scnPos, section.length());
       }
 
       /**
        * Sets the option for testing if highlighting a found text element is
        * enabled.
-       * <p>
        * The value is passed to {@link Highlighter#isEnabled(String,int,int)}
        * which is called by all search methods when a text element ist found
        * except {@link #blockComments(String,String)},
        * {@link #htmlElements(String[],String[])} and
-       * {@link #embeddedHtmlSection(String,String)}
+       * {@link #embeddedHtmlSection(String,String)}. To change the option
+       * this method is called before a search method
        *
-       * @param option  the option
+       * @param option  a freely chosen integer. Default is 0
        */
       public void setOption(int option) {
          this.option = option;
@@ -259,7 +233,25 @@ public class SyntaxHighlighter {
        * comment
        */
       public void lineComments(String lineCmntStart) {
-         lineCommentsImpl(lineCmntStart);
+         int start = 0;
+         while (start != -1) {
+            int length = 0;
+            start = section.indexOf(lineCmntStart, start);
+            if (start != -1) {
+               int absStart = start + scnPos;
+               if (!isPositionInQuotes(start) && isEnabled(absStart)) {
+                  int lineEnd = section.indexOf("\n", start + 1);
+                  if (lineEnd != -1) {
+                     length = lineEnd - start;
+                  }
+                  else {
+                     length = section.length() - start;
+                  }
+                  textDoc.setCharAttr(absStart, length, Attributes.GREEN_PLAIN);
+               }
+               start += length + 1;
+            }
+         }
       }
 
       /**
@@ -269,12 +261,75 @@ public class SyntaxHighlighter {
        * @param blockCmntEnd  the string that marks the end of a comment
        */
       public void blockComments(String blockCmntStart, String blockCmntEnd) {
-         blockCommentsImpl(blockCmntStart, blockCmntEnd);
+         if (!isHighlightBlockCmnt) {
+            return;
+         }
+         removedBlockCmntStart(scnPos, blockCmntStart, blockCmntEnd);
+         int start = innerStart;
+         while (start != -1) {
+            start = text.indexOf(blockCmntStart, start);
+            int length = 0;
+            if (innerEnd > 0 && start >= innerEnd - blockCmntStart.length()) {
+               start = -1;
+            }
+            if (start != -1) {
+               if (!SyntaxUtils.isBorderedByQuotes(text, start,
+                    blockCmntStart.length())) {
+
+                  int end = SyntaxUtils.nextBlockEnd(text, start + 1,
+                        blockCmntStart, blockCmntEnd);
+
+                  if (innerEnd > 0 && end >= innerEnd - blockCmntEnd.length()) {
+                     end = -1;
+                  }
+                  if (end != -1) {
+                     length = end - start + blockCmntEnd.length();
+                     textDoc.setCharAttr(start, length, Attributes.GREEN_PLAIN);
+                     removedBlockCmntStart(end + blockCmntEnd.length(),
+                              blockCmntStart, blockCmntEnd);
+                  }
+                  else {
+                     removedBlockCmntEnd(start, blockCmntStart);
+                  }
+               }
+               start += length + 1;
+            }
+         }
+      }
+      
+      /**
+       * Sets the section of text for highlighting html elements
+       */
+       public void modifySectionForHtml() {
+         if (isTypeMode) {
+            if (!isHighlightBlockCmnt) {
+               return;
+            }
+            String innerScn;
+            int start = SyntaxUtils.lastBlockStart(text, chgPos, "<", ">");
+            if (start == -1) {
+               start = text.lastIndexOf(">", chgPos) + 1;
+               if (start == -1) {
+                  start = 0;
+               }
+            }
+            int origEnd = scnPos + section.length();
+            int end = SyntaxUtils.nextBlockEnd(text, origEnd, "<", ">");
+            if (end == -1) {
+               end = text.indexOf("<", origEnd);
+               if (end == -1) {
+                  end = text.length();
+               }
+            }
+            innerScn = text.substring(start, end);
+            setTextParams(text, innerScn, chgPos, start);
+         }
       }
 
        /**
        * Highlights html tags with attributes. Tags are shown in blue
-       * and bold, attributes in red and attribute values in purple
+       * and bold, attributes in red and attribute values, if quoted, in
+       * purple
        *
        * @param tags  the array of html tags
        * @param attributes  the array of html attributes
@@ -286,7 +341,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Highlights sections in a html documents with a temporary
+       * Highlights sections in a html document with a temporary
        * <code>Highlighter</code> for CSS or Javascript.
        *
        * @param startTag  the start tag
@@ -296,10 +351,10 @@ public class SyntaxHighlighter {
       public void embeddedHtmlSection(String startTag, String endTag,
             Highlighter hlSection) {
 
-         Highlighter hlTemp = hl;
+         Highlighter hlCurr = hl;
          hl = hlSection;
          embeddedHtmlSection(startTag, endTag);
-         hl = hlTemp;
+         hl = hlCurr;
       }
 
       /**
@@ -319,6 +374,20 @@ public class SyntaxHighlighter {
          else {
             return isInBlock(blockCmntStart, blockCmntEnd, chgPos);
          }
+      }
+      
+       /**
+       * Returns the boolean that, if true, indicates that the position
+       * where a change happened is found inside a block of text
+       *
+       * @param blockStart  the string that marks the start of a block
+       * @param blockEnd  the string that marks the end of a block
+       * @return  the boolean value
+       */
+      public boolean isInBlock(String blockStart, String blockEnd) {
+         int lastStart = SyntaxUtils.lastBlockStart(text, chgPos, blockStart, blockEnd);
+         int nextEnd = SyntaxUtils.nextBlockEnd(text, chgPos, blockStart, blockEnd);
+         return lastStart != -1 & nextEnd != -1;
       }
 
       //
@@ -502,38 +571,33 @@ public class SyntaxHighlighter {
                       startTag, endTag);
 
                if (end != -1) {
-                  innerStart = SyntaxUtils.nextBlockEnd(text,
-                        start + 1, "<", ">");
-
+                  innerStart = SyntaxUtils.nextBlockEnd(text, start + 1, "<", ">");
                   if (innerStart != -1) {
                      innerEnd = end;
                      String innerScn = null;
                      int scnStart = innerStart + 1;
-
                      if (isTypeMode) {
-                        if (chgPos > start && chgPos < end) {
-                           if (chgPos > innerStart
-                                 && chgPos < end + endTag.length() - 1) {
-
-                              if (innerStart > scnPos) {
-                                 innerScn = text.substring(scnStart,
-                                       scnPos + section.length());
-                              }
-                              else {
-                                 innerScn = section;
-                                 scnStart = scnPos;
-                              }
+                        if (chgPos > innerStart && chgPos < end) {
+                           if (innerStart > scnPos) {
+                              innerScn = text.substring(scnStart,
+                                    scnPos + section.length());
                            }
                            else {
+                              innerScn = section;
+                              scnStart = scnPos;
+                           }
+                           if (end < scnStart + section.length()) {
                               innerScn = text.substring(scnStart, end);
                            }
+                        }     
+                        else {
+                           innerScn = text.substring(scnStart, end);
                         }
                      }
-                     if (!isTypeMode || !isHighlightBlockCmnt) {
+                     if (!isTypeMode) {
                         innerScn = text.substring(scnStart, end);
                      }
                      if (innerScn != null) {
-                        //System.out.println("inner section\n" + innerScn);
                         setTextParams(text, innerScn, chgPos, scnStart);
                         hl.highlight(this);
                         length = innerScn.length();
@@ -578,68 +642,8 @@ public class SyntaxHighlighter {
          }
       }
 
-      private void lineCommentsImpl(String lineCmntStart) {
-         int start = 0;
-         while (start != -1) {
-            int length = 0;
-            start = section.indexOf(lineCmntStart, start);
-            if (start != -1) {
-               int absStart = start + scnPos;
-               if (!isPositionInQuotes(start) && isEnabled(absStart)) {
-                  int lineEnd = section.indexOf("\n", start + 1);
-                  if (lineEnd != -1) {
-                     length = lineEnd - start;
-                  }
-                  else {
-                     length = section.length() - start;
-                  }
-                  textDoc.setCharAttr(absStart, length, Attributes.GREEN_PLAIN);
-               }
-               start += length + 1;
-            }
-         }
-      }
-
-      private void blockCommentsImpl(String blockCmntStart, String blockCmntEnd) {
-         if (!isHighlightBlockCmnt) {
-            return;
-         }
-         int start = innerStart;
-         int end;
-         removedBlockCmntStart(start, start, blockCmntStart, blockCmntEnd);
-         while (start != -1) {
-            start = text.indexOf(blockCmntStart, start);
-            int length = 0;
-            if (innerEnd > 0 && start >= innerEnd - blockCmntStart.length()) {
-               start = -1;
-            }
-            if (start != -1) {
-               if (!SyntaxUtils.isBorderedByQuotes(text, start,
-                    blockCmntStart.length())) {
-
-                  end = SyntaxUtils.nextBlockEnd(text, start + 1,
-                        blockCmntStart, blockCmntEnd);
-
-                  if (innerEnd > 0 && end >= innerEnd - blockCmntEnd.length()) {
-                     end = -1;
-                  }
-                  if (end != -1) {
-                     length = end - start + blockCmntEnd.length();
-                     textDoc.setCharAttr(start, length, Attributes.GREEN_PLAIN);
-                     removedBlockCmntStart(end + blockCmntEnd.length(), start,
-                              blockCmntStart, blockCmntEnd);
-                  }
-                  else {
-                     removedBlockCmntEnd(start, blockCmntStart);
-                  }
-               }
-               start += length + 1;
-            }
-         }
-      }
-
-      private void removedBlockCmntStart(int endPos, int lastStart,
-            String blockCmntStart, String blockCmntEnd) {
+      private void removedBlockCmntStart(int endPos, String blockCmntStart,
+            String blockCmntEnd) {
 
          if (!isTypeMode) {
             return;
@@ -647,16 +651,14 @@ public class SyntaxHighlighter {
          int nextEnd = SyntaxUtils.nextBlockEnd(text, endPos, blockCmntStart,
                blockCmntEnd);
 
+         if (innerEnd > 0 && nextEnd > innerEnd) {
+             nextEnd = -1;
+         }
          if (nextEnd != -1) {
-            if (innerEnd > 0 && nextEnd > innerEnd) {
-                nextEnd = -1;
-            }
-            if (nextEnd != -1) {
-               String toUncomment = text.substring(endPos,
-                     nextEnd + blockCmntEnd.length());
+            String toUncomment = text.substring(endPos,
+                  nextEnd + blockCmntEnd.length());
 
-               uncommentBlock(toUncomment, endPos);
-            }
+            uncommentBlock(toUncomment, endPos);
          }
       }
 
@@ -682,20 +684,18 @@ public class SyntaxHighlighter {
                toUncomment = text.substring(startPos, innerEnd);
             }
             else {
-               toUncomment = text.substring(startPos);
+               int currLineEnd = LinesFinder.nextNewline(text, chgPos);
+               toUncomment = text.substring(startPos, currLineEnd);
             }
          }
          uncommentBlock(toUncomment, startPos);
       }
 
       private void uncommentBlock(String scn, int pos) {
-         if (isTypeMode) {
-            //System.out.println("uncomment\n" + scn);
-            isHighlightBlockCmnt = false;
-            setTextParams(text, scn, pos, pos);
-            hl.highlight(this);
-            isHighlightBlockCmnt = true;
-         }
+         isHighlightBlockCmnt = false;
+         setTextParams(text, scn, pos, pos);
+         hl.highlight(this);
+         isHighlightBlockCmnt = true;
       }
 
       private boolean isEnabled(int pos) {
