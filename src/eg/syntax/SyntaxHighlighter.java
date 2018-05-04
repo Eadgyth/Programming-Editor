@@ -16,6 +16,7 @@ import eg.document.TextDocument;
  */
 public class SyntaxHighlighter {
 
+   private final TextDocument textDoc;
    private final SyntaxSearcher searcher;
    private Highlighter hl;
 
@@ -23,7 +24,8 @@ public class SyntaxHighlighter {
     * @param textDoc  the reference to {@link TextDocument}
     */
    public SyntaxHighlighter(TextDocument textDoc) {
-      searcher = new SyntaxSearcher(textDoc);
+      this.textDoc = textDoc;
+      searcher = new SyntaxSearcher();
    }
 
    /**
@@ -82,8 +84,6 @@ public class SyntaxHighlighter {
     */
    public class SyntaxSearcher {
 
-      private final TextDocument textDoc;
-
       private String text = "";
       private String section = "";
       private int chgPos;
@@ -124,7 +124,7 @@ public class SyntaxHighlighter {
        * Highlights keywords
        *
        * @param keys  the array of keywords
-       * @param reqWord  the boolean that, if true, indicates that keywords
+       * @param reqWord  the boolean that, if true, specifies that keywords
        * must be whole words
        * @param set  the <code>SimpleAttributeSet</code> set on the
        * keywords
@@ -156,20 +156,20 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Highlights an extensible keyword
+       * Highlights extensible keywords
        *
-       * @param keyBase  the base keyword
-       * @param keyExtensions  the array of strings that may extend the keyword
+       * @param base  the base keyword
+       * @param extensions  the array of strings that may extend the base
        * @param nonWordStart  the array of characters that the keyword
        * must not be preceded with, in addition to digits and letters. Can
        * be null
        * @param set  the <code>SimpleAttributeSet</code> set on the
        * keywords
        */
-      public void extensibleKeyword(String keyBase, String[] keyExtensions,
+      public void  extensibleKeywords(String base, String[] extensions,
             char[] nonWordStart, SimpleAttributeSet set) {
 
-         key(keyBase, keyExtensions, nonWordStart, set);
+         extensibleKey(base, extensions, nonWordStart, set);
       }
 
       /**
@@ -179,14 +179,16 @@ public class SyntaxHighlighter {
        *
        * @param startChars  the array start characters
        * @param endChars  the array of end characters
+       * @param isWordStart  the boolean that, if true, specifies that
+       * the variables must not adjoin to a letter a digit at the start
        * @param set  the <code>SimpleAttributeSet</code> set on
        * the variables
        */
       public void signedVariables(char[] startChars, char[] endChars,
-             SimpleAttributeSet set) {
+             boolean isWordStart, SimpleAttributeSet set) {
 
          for (char c : startChars) {
-            signedVariable(c, endChars, set);
+            signedVariable(c, endChars, isWordStart, set);
          }
       }
 
@@ -301,7 +303,8 @@ public class SyntaxHighlighter {
       }
       
       /**
-       * Sets the section of text for highlighting html elements
+       * Sets the section of text for highlighting html elements. Method is
+       * called before {@link #setSectionBlack}
        */
       public void setHtmlSection() {
          if (isTypeMode && isHighlightBlockCmnt) {
@@ -351,7 +354,7 @@ public class SyntaxHighlighter {
 
       /**
        * Highlights sections in a html document with a temporary
-       * <code>Highlighter</code> for CSS or Javascript.
+       * <code>Highlighter</code> (for CSS or Javascript).
        *
        * @param startTag  the start tag
        * @param endTag  the end tag
@@ -425,23 +428,22 @@ public class SyntaxHighlighter {
          }
       }
 
-      private void key(String keyBase, String[] keyExtensions, char[] nonWordStart,
-            SimpleAttributeSet set) {
+      private void extensibleKey(String base, String[] extensions,
+            char[] nonWordStart, SimpleAttributeSet set) {
 
          int start = 0;
          while (start != -1) {
-            start = section.indexOf(keyBase, start);
-            int length = keyBase.length();
+            start = section.indexOf(base, start);
+            int length = base.length();
             if (start != -1) {
                int absStart = start + scnPos;
-               boolean ok = SyntaxUtils.isWord(section, start, keyBase.length(),
-                     nonWordStart)
+               int endPos = start + base.length();
+               boolean ok = SyntaxUtils.isWord(section, start, base.length(),
+                        nonWordStart)
                      && isEnabled(absStart);
 
                if (ok) {
-                  length += keyExtensionLength(keyExtensions,
-                        start + keyBase.length(), set);
-
+                  length += extensionLength(extensions, endPos);
                   textDoc.setCharAttr(absStart, length, set);
                }
                start += length;
@@ -449,24 +451,23 @@ public class SyntaxHighlighter {
          }
       }
 
-      private int keyExtensionLength(String[] keyExtensions, int extStart,
-            SimpleAttributeSet set) {
-
+      private int extensionLength(String[] extensions, int extStart) {
          int length = 0;
-         for (String s : keyExtensions) {
-            boolean found = SyntaxUtils.isWordEnd(section, extStart + s.length())
-                  && extStart == section.indexOf(s, extStart);
+         for (String s : extensions) {
+            boolean found = extStart == section.indexOf(s, extStart)
+                  && SyntaxUtils.isWordEnd(section, extStart + s.length());
 
             if (found) {
-               length = s.length();
-               break;
+               if (s.length() > length) {
+                  length = s.length();
+               }               
             }
          }
          return length;
       }
 
       private void signedVariable(char sign, char[] endChars,
-             SimpleAttributeSet set) {
+             boolean isWordStart, SimpleAttributeSet set) {
 
          int start = 0;
          while (start != -1) {
@@ -474,9 +475,11 @@ public class SyntaxHighlighter {
             int length;
             if (start != -1) {
                int absStart = start + scnPos;
-               if (SyntaxUtils.isWordStart(section, start, null)
-                     && isEnabled(absStart)) {
+               boolean ok = (!isWordStart
+                     || SyntaxUtils.isWordStart(section, start, null))
+                     && isEnabled(absStart);
 
+               if (ok) {
                   length = SyntaxUtils.wordLength(section, start, endChars);
                   textDoc.setCharAttr(absStart, length, set);
                   start += length;
@@ -531,23 +534,19 @@ public class SyntaxHighlighter {
          while (start != -1) {
             start = section.indexOf(keyword, start);
             if (start != -1) {
-               int absStart = start + scnPos;
-               int lastTagStart
-                     = SyntaxUtils.lastBlockStart(text, absStart, "<", ">");
-               int lastTagEndStart = text.lastIndexOf("</", absStart);
-               int endPos = start + keyword.length();
                char before = section.charAt(start - 1);
+               int endPos = start + keyword.length();
                char after = '\0';
                if (endPos < section.length()) {
                   after = section.charAt(endPos);
                }
-               boolean ok = lastTagStart != -1 && lastTagStart > lastTagEndStart
-                     && (' ' == before || '"' == before || '\'' == before
+               boolean ok = (' ' == before || '"' == before || '\'' == before
                         || '\n' == before)
                      && ('\0' == after || ' ' == after || '=' == after
                         || '>' == after || '\n' == after);
 
                if (ok) {
+                  int absStart = start + scnPos;
                   textDoc.setCharAttr(absStart, keyword.length(),
                         Attributes.RED_PLAIN);
                }
@@ -569,11 +568,10 @@ public class SyntaxHighlighter {
                   innerStart = SyntaxUtils.nextBlockEnd(text, start + 1, "<", ">");
                   if (innerStart != -1) {
                      innerEnd = end;
-                     setTextParams(text, text.substring(innerStart, end), chgPos,
-                           innerStart);
-
+                     String innerScn = text.substring(innerStart, end);
+                     setTextParams(text, innerScn, chgPos, innerStart);
                      hl.highlight(this);
-                     length = section.length();
+                     length = innerScn.length();
                   }
                }
                start += length + 1;
@@ -628,9 +626,8 @@ public class SyntaxHighlighter {
          }
          if (nextEnd != -1) {
             int lineStart = LinesFinder.lastNewline(text, endPos);
-            String toUncomment = text.substring(lineStart,
-                  nextEnd + blockCmntEnd.length());
-
+            int end = nextEnd + blockCmntEnd.length();
+            String toUncomment = text.substring(lineStart, end);
             uncommentBlock(toUncomment, lineStart);
          }
       }
@@ -696,9 +693,7 @@ public class SyntaxHighlighter {
                || SyntaxUtils.isInQuotes(line, relStart, SyntaxUtils.SINGLE_QUOTE);
       }
 
-      private void setTextParams(String text, String section, int chgPos,
-            int scnPos) {
-
+      private void setTextParams(String text, String section, int chgPos, int scnPos) {
          this.text = text;
          this.section = section;
          this.chgPos = chgPos;
@@ -707,8 +702,6 @@ public class SyntaxHighlighter {
          isMultiline = LinesFinder.isMultiline(section);
       }
 
-      private SyntaxSearcher(TextDocument textDoc) {
-         this.textDoc = textDoc;
-      }
+      private SyntaxSearcher() {}
    }
 }

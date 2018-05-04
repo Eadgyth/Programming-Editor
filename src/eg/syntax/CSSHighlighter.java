@@ -71,7 +71,7 @@ public class CSSHighlighter implements Highlighter {
    //
    // General
    private final static char[] CLASS_START = {'.', '#'};
-   private final static char[] CLASS_END = {' ', '{'};
+   private final static char[] CLASS_END = {' ', '{', ')'};
    private final static char[] NON_PROP_START = {'-', '.'};
    private final static int IGNORE_OPT = 0;
    private final static int OPEN_BRACE_AHEAD = 1;
@@ -88,31 +88,31 @@ public class CSSHighlighter implements Highlighter {
                Attributes.BLUE_PLAIN);
                
          searcher.signedVariables(CLASS_START, CLASS_END,
-               Attributes.BLUE_PLAIN);
+               false, Attributes.BLUE_PLAIN);
 
          searcher.setOption(OPEN_BRACE_AHEAD);
-         searcher.extensibleKeyword("background", BACKGROUND_PROPS, NON_PROP_START,
+         searcher.extensibleKeywords("background", BACKGROUND_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("border", BORDER_PROPS, NON_PROP_START,
+         searcher.extensibleKeywords("border", BORDER_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("font", FONT_PROPS, NON_PROP_START,
+         searcher.extensibleKeywords("font", FONT_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("list", LIST_PROPS, NON_PROP_START,
+         searcher.extensibleKeywords("list", LIST_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("margin", MARGIN_PROPS, NON_PROP_START,
+         searcher.extensibleKeywords("margin", MARGIN_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("outline", OUTLINE_PROPS, NON_PROP_START,
+         searcher.extensibleKeywords("outline", OUTLINE_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("padding", PADDING_PROPS, NON_PROP_START,
+         searcher.extensibleKeywords("padding", PADDING_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("transition", TRANSITION_PROPS, NON_PROP_START,
+         searcher.extensibleKeywords("transition", TRANSITION_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                   
          searcher.keywords(PROPS, NON_PROP_START, Attributes.RED_PLAIN);
