@@ -72,8 +72,8 @@ public class HTMLHighlighter implements Highlighter {
          searcher.setSectionBlack();
          searcher.htmlElements(TAGS, ATTRIBUTES);   
       }
-      searcher.embeddedHtmlSection("<script", "</script>", js);      
-      searcher.embeddedHtmlSection("<style", "</style>", css);
+      searcher.embeddedHtmlSections("<script", "</script>", js);      
+      searcher.embeddedHtmlSections("<style", "</style>", css);
       searcher.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
    }
    

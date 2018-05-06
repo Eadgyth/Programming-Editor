@@ -39,10 +39,8 @@ public final class EditArea {
    private final JPanel editAreaPnl = new JPanel(new BorderLayout());
    private final JTextPane textArea = new JTextPane();
    private final JTextPane lineNrArea = new JTextPane();
-
    private final JPanel disabledWordwrapPnl = new JPanel(new BorderLayout());
    private final JPanel enabledWordwrapPnl = new JPanel();
-
    private final JScrollPane wordwrapScoll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -83,7 +81,6 @@ public final class EditArea {
       else {
          disableWordwrap(isLineNumbers);
       }
-
       textArea.addFocusListener(new FocusAdapter() {
 
          @Override

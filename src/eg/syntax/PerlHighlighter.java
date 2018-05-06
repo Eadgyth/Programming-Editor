@@ -58,8 +58,8 @@ public class PerlHighlighter implements Highlighter {
       searcher.setOption(DEF_OPT);
       searcher.signedVariables(START_OF_VAR, END_OF_VAR, true,
             Attributes.PURPLE_PLAIN);
-      searcher.keywords(KEYWORDS, true, Attributes.RED_BOLD);
-      searcher.keywords(STRING_OP, false, Attributes.RED_BOLD);
+      searcher.keywords(KEYWORDS, true, null, Attributes.RED_BOLD);
+      searcher.keywords(STRING_OP, false, null, Attributes.RED_BOLD);
       searcher.braces();
       searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);
       searcher.setOption(LINE_CMNT_OPT);

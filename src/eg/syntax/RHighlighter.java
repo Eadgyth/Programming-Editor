@@ -22,7 +22,7 @@ public class RHighlighter implements Highlighter {
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
       searcher.setSectionBlack();
-      searcher.keywords(KEYWORDS, true, Attributes.RED_PLAIN);
+      searcher.keywords(KEYWORDS, true, null, Attributes.RED_PLAIN);
       searcher.braces();
       searcher.brackets();
       searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);

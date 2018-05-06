@@ -31,7 +31,7 @@ public class JavascriptHighlighter implements Highlighter {
             SyntaxUtils.BLOCK_CMNT_END)) {
 
          searcher.setSectionBlack();
-         searcher.keywords(JS_KEYWORDS, true, Attributes.RED_PLAIN);
+         searcher.keywords(JS_KEYWORDS, true, null, Attributes.RED_PLAIN);
          searcher.brackets();
          searcher.braces();
          searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);

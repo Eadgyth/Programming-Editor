@@ -35,8 +35,8 @@ public class JavaHighlighter implements Highlighter {
             SyntaxUtils.BLOCK_CMNT_END)) {
 
          searcher.setSectionBlack();
-         searcher.keywords(JAVA_ANNOTATIONS, false, Attributes.BLUE_PLAIN);
-         searcher.keywords(JAVA_KEYWORDS, true, Attributes.RED_PLAIN);
+         searcher.keywords(JAVA_ANNOTATIONS, true, null, Attributes.BLUE_PLAIN);
+         searcher.keywords(JAVA_KEYWORDS, true, null, Attributes.RED_PLAIN);
          searcher.brackets();
          searcher.braces();
          searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);

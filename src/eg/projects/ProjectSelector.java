@@ -30,10 +30,11 @@ public class ProjectSelector {
    }
 
    /**
-    * Returns a <code>ProjectActions</code> selected based on the project type
-    * defined in <code>ProjectTypes</code>
+    * Returns a <code>ProjectActions</code> selected based on a project type
+    * in <code>ProjectTypes</code>
     *
-    * @param projType  the project type which is a valaue in {@link ProjectTypes}
+    * @param projType  the project type which has a valaue in
+    * {@link ProjectTypes}
     * @return  a new {@link ProjectActions}
     */
    public ProjectActions createProject(ProjectTypes projType) {
