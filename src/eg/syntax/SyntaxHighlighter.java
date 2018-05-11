@@ -108,11 +108,12 @@ public class SyntaxHighlighter {
        * Sets the option for testing if highlighting a found text element is
        * enabled.
        * The value is passed to {@link Highlighter#isEnabled(String,int,int)}
-       * which is called by all search methods when a text element is found
-       * except {@link #blockComments(String,String)},
-       * {@link #htmlElements(String[],String[])} and
-       * {@link #embeddedHtmlSections(String,String)}. To set an option
-       * this method must be called before a search method
+       * which is called by the search methods when a text element is found.
+       * It is not called by {@link #blockComments(String,String)} and
+       * {@link #embeddedHtmlSections(String,String)} and is called by
+       * {@link #htmlElements(String[],String[])} only when an attribute
+       * keyword is found. To change the option this method must be called
+       * before a search method
        *
        * @param option  a freely chosen integer. Default is 0
        */
@@ -121,7 +122,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Highlights keywords
+       * Searches keywords
        *
        * @param keys  the array of keywords
        * @param reqWord  the boolean that, if true, specifies that keywords
@@ -141,7 +142,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Highlights an extensible keyword
+       * Searches an extensible keyword
        *
        * @param base  the base keyword
        * @param extensions  the array of strings that may extend the base
@@ -175,7 +176,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Highlights variables that start with one of the characters in
+       * Searches variables that start with one of the characters in
        * <code>startChars</code> and end with one of the characters in
        * <code>endChars</code>
        *
@@ -195,7 +196,8 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Highlights braces in gray and bold
+       * Searches opening and closing braces. Highlighting is in gray
+       * and bold
        */
       public void braces() {
          key("{", false, null, Attributes.GRAY_BOLD);
@@ -203,7 +205,8 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Highlights brackets in blue and bold
+       * Searches opening and closing braces. Highlighting is in in blue
+       * and bold
        */
       public void brackets() {
          key("(", false, null, Attributes.BLUE_BOLD);
@@ -211,8 +214,8 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Highlights text quoted with single or double quotation marks
-       * in orange in which quoted text does not span line breaks
+       * Searches text quoted with single and double quotation marks in which
+       * quoted text does not span line breaks
        *
        * @param set  the <code>SimpleAttributeSet</code> set on
        * the variables
@@ -234,7 +237,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Highlights line comments in green
+       * Searches line comments. Highlighting is in green
        *
        * @param lineCmntStart  the string that marks the start of a line
        * comment
@@ -262,7 +265,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Highlights block comments in green
+       * Searches block comments. Highlighting is in green
        *
        * @param blockCmntStart  the string that marks the start of a comment
        * @param blockCmntEnd  the string that marks the end of a comment
@@ -305,10 +308,11 @@ public class SyntaxHighlighter {
       }
       
       /**
-       * Sets the section of text for highlighting html elements. Method is
-       * called before {@link #setSectionBlack}
+       * Sets the section of html text that is to be highlighted to
+       * black and plain. This method must be called before calling
+       * {@link #htmlElements(String[],String[])}
        */
-      public void setHtmlSection() {
+      public void setHtmlSectionBlack() {
          if (isTypeMode && isHighlightBlockCmnt) {
             if (isInBlock(">", "<", chgPos)) {
                return;
@@ -324,26 +328,23 @@ public class SyntaxHighlighter {
             int end;
             int origEnd = scnPos + section.length();
             if (!isInBlock(">", "<", origEnd)) {
-               end = SyntaxUtils.nextBlockEnd(text, origEnd, "<", ">");
-               if (end == -1) {
-                  end = text.indexOf("<", origEnd);
-                  if (end == -1) {
-                     end = text.length();
-                  }
-               }
+               end = htmlElEnd(origEnd);
             }
             else {
                end = origEnd;
             }
+            //
+            // do not call setTextParams() because isMultiline must remain
+            // false when no multiline text was inserted by copying
             section = text.substring(start, end);
             scnPos = start;
          }
+         setSectionBlack();
       }
 
       /**
-       * Highlights html tags with attributes. Tags are shown in blue
-       * and bold, attributes in red and attribute values, if quoted, in
-       * purple
+       * Searches html elements and attributes. Tags are shown in blue and bold,
+       * attributes in red and attribute values, if quoted, in purple
        *
        * @param tags  the array of html tags
        * @param attributes  the array of html attributes
@@ -355,12 +356,12 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Highlights sections in a html document with a temporary
-       * <code>Highlighter</code> (for CSS or Javascript).
+       * Searches sections in an html document where syntax is highlighted
+       * with a temporary <code>Highlighter</code> (for CSS or Javascript).
        *
        * @param startTag  the start tag
        * @param endTag  the end tag
-       * @param hlSection  the {@link Highlighter} for embedded sections
+       * @param hlSection  the {@link Highlighter}
        */
       public void embeddedHtmlSections(String startTag, String endTag,
             Highlighter hlSection) {
@@ -414,21 +415,6 @@ public class SyntaxHighlighter {
          }
       }
 
-      private int extensionLength(String[] extensions, int extStart) {
-         int length = 0;
-         for (String s : extensions) {
-            boolean found = extStart == section.indexOf(s, extStart)
-                  && SyntaxUtils.isWordEnd(section, extStart + s.length());
-
-            if (found) {
-               if (s.length() > length) {
-                  length = s.length();
-               }               
-            }
-         }
-         return length;
-      }
-
       private void signedVariable(char sign, char[] endChars,
              boolean isWordStart, SimpleAttributeSet set) {
 
@@ -453,27 +439,47 @@ public class SyntaxHighlighter {
             }
          }
       }
+      
+      private int extensionLength(String[] extensions, int extStart) {
+         int length = 0;
+         for (String s : extensions) {
+            boolean found = extStart == section.indexOf(s, extStart)
+                  && SyntaxUtils.isWordEnd(section, extStart + s.length());
 
-      private void htmlElement(String tag, String[] attributes) {
+            if (found) {
+               if (s.length() > length) {
+                  length = s.length();
+               }               
+            }
+         }
+         return length;
+      }
+
+     private void htmlElement(String tag, String[] attributes) {
          int start = 0;
          while (start != -1) {
             start = section.toLowerCase().indexOf(tag, start);
             if (start != -1) {
-               int absStart = start + scnPos;
                boolean isStartTag = start > 0 && '<' == section.charAt(start - 1);
                int endPos = start + tag.length();
                if (isStartTag) {
+                  String htmlEl = section;
+                  int elStart = scnPos;
+                  if (!isTypeMode) {
+                     htmlEl = text.substring(start, htmlElEnd(start));
+                     elStart = start;
+                  }
                   boolean applyAttributes = section.length() > endPos
                         && (' ' == section.charAt(endPos)
                         || '\n' == section.charAt(endPos));
 
-                  if (applyAttributes) {
+                  if (applyAttributes) {                     
                      for (String s : attributes) {
-                         htmlAttribute(s);
+                         htmlAttribute(s, htmlEl, elStart);
                      }
-                     quoted(section, scnPos, SyntaxUtils.DOUBLE_QUOTE,
+                     quoted(htmlEl, elStart, SyntaxUtils.DOUBLE_QUOTE,
                            Attributes.PURPLE_PLAIN);
-                     quoted(section, scnPos, SyntaxUtils.SINGLE_QUOTE,
+                     quoted(htmlEl, elStart, SyntaxUtils.SINGLE_QUOTE,
                            Attributes.PURPLE_PLAIN);
                   }
                }
@@ -485,32 +491,44 @@ public class SyntaxHighlighter {
                      && SyntaxUtils.isWordEnd(section, endPos);
 
                if (ok) {
-                  textDoc.setCharAttr(absStart, tag.length(), Attributes.BLUE_BOLD);
+                  textDoc.setCharAttr(start + scnPos, tag.length(),
+                        Attributes.BLUE_BOLD);
                }
                start += tag.length();
             }
          }
       }
+      
+      private int htmlElEnd(int pos) {
+         int end = SyntaxUtils.nextBlockEnd(text, pos, "<", ">");
+         if (end == -1) {
+            end = text.indexOf("<", pos);
+            if (end == -1) {
+               end = text.length();
+            }
+         }
+         return end;
+      }
 
-      private void htmlAttribute(String keyword) {
+      private void htmlAttribute(String keyword, String htmlEl, int elStart) {
          int start = 0;
          while (start != -1) {
-            start = section.indexOf(keyword, start);
+            start = htmlEl.indexOf(keyword, start);
             if (start != -1) {
-               char before = section.charAt(start - 1);
+               char before = htmlEl.charAt(start - 1);
                int endPos = start + keyword.length();
                char after = '\0';
-               if (endPos < section.length()) {
-                  after = section.charAt(endPos);
+               if (endPos < htmlEl.length()) {
+                  after = htmlEl.charAt(endPos);
                }
-               boolean ok = isEnabled(start + scnPos)
+               boolean ok = isEnabled(start + elStart)
                      && (' ' == before || '"' == before || '\'' == before
                         || '\n' == before)
                      && ('\0' == after || ' ' == after || '=' == after
                         || '>' == after || '\n' == after);
 
                if (ok) {
-                  int absStart = start + scnPos;
+                  int absStart = start + elStart;
                   textDoc.setCharAttr(absStart, keyword.length(),
                         Attributes.RED_PLAIN);
                }
@@ -545,7 +563,7 @@ public class SyntaxHighlighter {
          innerEnd = 0;
       }
 
-      private void quoted(String scn, int lineStart, char quoteMark,
+      private void quoted(String scn, int scnStart, char quoteMark,
             SimpleAttributeSet set) {
 
          final boolean isSingleQuote = quoteMark == SyntaxUtils.SINGLE_QUOTE;
@@ -553,7 +571,7 @@ public class SyntaxHighlighter {
          int end = 0;
          while (start != -1 && end != -1) {
             start = SyntaxUtils.nextNonEscaped(scn, quoteMark, start);
-            int absStart = start + lineStart;
+            int absStart = start + scnStart;
             if (start != -1) {
                int length = 0;
                boolean ok = (!isSingleQuote || !SyntaxUtils.isInQuotes(
@@ -563,8 +581,8 @@ public class SyntaxHighlighter {
                end = SyntaxUtils.nextNonEscaped(scn, quoteMark, start + 1);
                if (end != -1) {
                   ok = (!isSingleQuote || !SyntaxUtils.isInQuotes(
-                        section, end, SyntaxUtils.DOUBLE_QUOTE))
-                        && isEnabled(absStart);
+                        scn, end, SyntaxUtils.DOUBLE_QUOTE))
+                        && isEnabled(end + scnStart);
 
                   if (ok) {
                      length = end - start + 1;

@@ -87,8 +87,8 @@ public class CSSHighlighter implements Highlighter {
          searcher.keywords(HTMLHighlighter.TAGS, true, CLASS_START,
                Attributes.BLUE_PLAIN);
                
-         searcher.signedVariables(CLASS_START, CLASS_END,
-               false, Attributes.BLUE_PLAIN);
+         searcher.signedVariables(CLASS_START, CLASS_END, false,
+               Attributes.BLUE_PLAIN);
 
          searcher.setOption(OPEN_BRACE_AHEAD);
          searcher.extensibleKeyword("background", BACKGROUND_PROPS, NON_PROP_START,
