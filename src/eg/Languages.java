@@ -7,7 +7,7 @@ public enum Languages {
 
    NORMAL_TEXT("Normal text"),
    CSS("CSS"),
-   HTML("Html"),
+   HTML("HTML"),
    JAVA("Java"),
    JAVASCRIPT("Javascript"),
    PERL("Perl"),
