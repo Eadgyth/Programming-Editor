@@ -62,7 +62,6 @@ public class SyntaxHighlighter {
 
    /**
     * Highlights text elements after a text change that may be multiline
-    * has been made
     *
     * @param text  the entire text in the document
     * @param change  the change to the text. The full lines that contain
@@ -78,8 +77,9 @@ public class SyntaxHighlighter {
    }
 
    /**
-    * The search of text elements and the setting of character attributes in
-    * <code>TextDocument</code>.<br>
+    * The search and highlighting of text elements in the text contained in
+    * <code>TextDocument</code>. Found text elements are highlighted by
+    * setting character attributes.<br>
     * Class is created in the enclosing class and has no public constructor.
     */
    public class SyntaxSearcher {
@@ -107,10 +107,10 @@ public class SyntaxHighlighter {
       /**
        * Sets the option for testing if highlighting a found text element is
        * enabled.
-       * The value is passed to {@link Highlighter#isEnabled(String,int,int)}
+       * This value is passed to {@link Highlighter#isEnabled(String,int,int)}
        * which is called by the search methods when a text element is found.
-       * It is not called by {@link #blockComments(String,String)} and
-       * {@link #embeddedHtmlSections(String,String)} and is called by
+       * It is not called by {@link #blockComments(String,String)},
+       * {@link #embeddedHtmlSections(String,String)} and by
        * {@link #htmlElements(String[],String[])} only when an attribute
        * keyword is found. To change the option this method must be called
        * before a search method
@@ -122,16 +122,14 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches keywords
+       * Searches and highlights keywords
        *
        * @param keys  the array of keywords
-       * @param reqWord  the boolean that, if true, specifies that keywords
-       * must be whole words
+       * @param reqWord  specifies, if true, that keywords must be whole words
        * @param nonWordStart  the array of characters that the keyword
        * must not be preceded with, in addition to digits and letters. Can
        * be null and is ignored if reqWord is false
-       * @param set  the <code>SimpleAttributeSet</code> set on the
-       * keywords
+       * @param set  the <code>SimpleAttributeSet</code> set on the keywords
        */
       public void keywords(String[] keys, boolean reqWord, char[] nonWordStart,
             SimpleAttributeSet set) {
@@ -142,7 +140,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches an extensible keyword
+       * Searches and highlight an extensible keyword
        *
        * @param base  the base keyword
        * @param extensions  the array of strings that may extend the base
@@ -176,14 +174,14 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches variables that start with one of the characters in
-       * <code>startChars</code> and end with one of the characters in
-       * <code>endChars</code>
+       * Searches and highlights variables that start with one of the
+       * characters in <code>startChars</code> and end with one of the
+       * characters in <code>endChars</code>
        *
        * @param startChars  the array start characters
        * @param endChars  the array of end characters
-       * @param isWordStart  the boolean that, if true, specifies that
-       * the variables must not adjoin to a letter a digit at the start
+       * @param isWordStart  specifies, if true, that the variables must
+       * not adjoin to a letter a digit at the start
        * @param set  the <code>SimpleAttributeSet</code> set on
        * the variables
        */
@@ -196,8 +194,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches opening and closing braces. Highlighting is in gray
-       * and bold
+       * Searches and highlightsin gray and bold opening and closing braces
        */
       public void braces() {
          key("{", false, null, Attributes.GRAY_BOLD);
@@ -205,8 +202,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches opening and closing braces. Highlighting is in in blue
-       * and bold
+       * Searches and highlights in blue and bold opening and closing bracket
        */
       public void brackets() {
          key("(", false, null, Attributes.BLUE_BOLD);
@@ -214,11 +210,10 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches text quoted with single and double quotation marks in which
-       * quoted text does not span line breaks
+       * Searches and highlights text quoted with single and double quotation
+       * marks in which quoted text does not span line breaks
        *
-       * @param set  the <code>SimpleAttributeSet</code> set on
-       * the variables
+       * @param set  the <code>SimpleAttributeSet</code> set on quoted text
        */
       public void quotedTextInLines(SimpleAttributeSet set) {
          if (isMultiline) {
@@ -237,7 +232,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches line comments. Highlighting is in green
+       * Searches and highlights in green line comments.
        *
        * @param lineCmntStart  the string that marks the start of a line
        * comment
@@ -463,17 +458,17 @@ public class SyntaxHighlighter {
                boolean isStartTag = start > 0 && '<' == section.charAt(start - 1);
                int endPos = start + tag.length();
                if (isStartTag) {
-                  String htmlEl = section;
-                  int elStart = scnPos;
-                  if (!isTypeMode) {
-                     htmlEl = text.substring(start, htmlElEnd(start));
-                     elStart = start;
-                  }
                   boolean applyAttributes = section.length() > endPos
                         && (' ' == section.charAt(endPos)
                         || '\n' == section.charAt(endPos));
 
-                  if (applyAttributes) {                     
+                  if (applyAttributes) {
+                     String htmlEl = section;
+                     int elStart = scnPos;
+                     if (!isTypeMode) {
+                        htmlEl = text.substring(start, htmlElEnd(start));
+                        elStart = start;
+                     }               
                      for (String s : attributes) {
                          htmlAttribute(s, htmlEl, elStart);
                      }
@@ -515,7 +510,10 @@ public class SyntaxHighlighter {
          while (start != -1) {
             start = htmlEl.indexOf(keyword, start);
             if (start != -1) {
-               char before = htmlEl.charAt(start - 1);
+               char before = '\0';
+               if (start > 0) {
+                  before = htmlEl.charAt(start - 1);
+               }
                int endPos = start + keyword.length();
                char after = '\0';
                if (endPos < htmlEl.length()) {
