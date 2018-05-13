@@ -260,7 +260,7 @@ public class TypingEdit {
       if (isCodeEditing) {
          if (isInsert) {
             syntax.highlightMultiline(text, text, 0);
-            //highlightInsert();
+            //highlightInsert(); // doe not work after replace all
          }
          else {
             highlightLine();

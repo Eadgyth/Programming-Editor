@@ -145,11 +145,15 @@ public class TextSearch {
             doc.replace(ind - sumDiff, searchTerm.length(), replacement);
             sumDiff += diff;
             textArea.setCaretPosition(ind - sumDiff + diff + replacement.length());
-            ind += replacement.length();
+            if (replacement.length() == 0) {
+               ind++;
+            }
+            else {
+               ind += replacement.length();
+            }
          }
       }
-      doc.enableMerging(false);
-      
+      doc.enableMerging(false);      
       if (count > 0) {
          Dialogs.infoMessage("\"" + searchTerm + "\" was replaced "
                + count + " times.", null);
