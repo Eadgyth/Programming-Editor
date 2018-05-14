@@ -463,12 +463,8 @@ public class SyntaxHighlighter {
                         || '\n' == section.charAt(endPos));
 
                   if (applyAttributes) {
-                     String htmlEl = section;
-                     int elStart = scnPos;
-                     if (!isTypeMode) {
-                        htmlEl = text.substring(start, htmlElEnd(start));
-                        elStart = start;
-                     }               
+                     int elStart = start + scnPos;
+                     String htmlEl = text.substring(elStart, htmlElEnd(elStart));        
                      for (String s : attributes) {
                          htmlAttribute(s, htmlEl, elStart);
                      }
@@ -606,6 +602,9 @@ public class SyntaxHighlighter {
          }
          if (nextEnd != -1) {
             int lineStart = LinesFinder.lastNewline(text, endPos);
+            if (lineStart == -1) { // have to look where else this is an issue
+               lineStart = 0;
+            }
             int end = nextEnd + blockCmntEnd.length();
             String toUncomment = text.substring(lineStart, end);
             uncommentBlock(toUncomment, lineStart);
