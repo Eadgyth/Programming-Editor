@@ -27,18 +27,18 @@ public class JavascriptHighlighter implements Highlighter {
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
-      if (!searcher.isInBlockCmnt(SyntaxUtils.BLOCK_CMNT_START,
-            SyntaxUtils.BLOCK_CMNT_END)) {
+      if (!searcher.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
+            SyntaxConstants.STAR_SLASH)) {
 
          searcher.setSectionBlack();
          searcher.keywords(JS_KEYWORDS, true, null, Attributes.RED_PLAIN);
          searcher.brackets();
          searcher.braces();
          searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);
-         searcher.lineComments(SyntaxUtils.LINE_CMNT);
+         searcher.lineComments(SyntaxConstants.DOUBLE_SLASH);
       }
-      searcher.blockComments(SyntaxUtils.BLOCK_CMNT_START,
-            SyntaxUtils.BLOCK_CMNT_END);
+      searcher.blockComments(SyntaxConstants.SLASH_STAR,
+            SyntaxConstants.STAR_SLASH);
    }
 
    @Override

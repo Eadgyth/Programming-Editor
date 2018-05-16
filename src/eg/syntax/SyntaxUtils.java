@@ -6,22 +6,6 @@ package eg.syntax;
 public class SyntaxUtils {
 
    /**
-    * The single quote mark */
-   public final static char SINGLE_QUOTE = '\'';
-   /**
-    * The double quote mark */
-   public  final static char DOUBLE_QUOTE = '"';
-   /**
-    * The "slash-star" block comment start */
-   public final static String BLOCK_CMNT_START = "/*";
-   /**
-    * The "star-slash" block comment end */
-   public final static String BLOCK_CMNT_END = "*/";
-   /**
-    * The "slash-slash" line comment start */
-   public final static String LINE_CMNT = "//";
-
-   /**
     * Returns the boolean that indicates if the portion of text starting
     * at the specified position and spanning the specified length is a
     * word. A word is initially defined such that it does not adjoin to
@@ -179,7 +163,7 @@ public class SyntaxUtils {
    /**
     * Returns the boolean that is true if the section starting at the
     * specified position and spanning the specified length is bordered
-    * by double quotes
+    * by double or single quotes
     *
     * @param text  the text
     * @param pos  the position
@@ -191,10 +175,10 @@ public class SyntaxUtils {
       int startPos = pos - 1;
       int endPos = pos + length;
       if (pos > 0 & text.length() > endPos) {
-         isInQuotes = (text.charAt(startPos) == DOUBLE_QUOTE
-                  || text.charAt(startPos) == SINGLE_QUOTE)
-               && (text.charAt(endPos) == DOUBLE_QUOTE
-                  || text.charAt(endPos) == SINGLE_QUOTE);
+         isInQuotes = (text.charAt(startPos) == SyntaxConstants.DOUBLE_QUOTE
+               && text.charAt(endPos) == SyntaxConstants.DOUBLE_QUOTE)
+               || (text.charAt(startPos) == SyntaxConstants.SINGLE_QUOTE
+               && text.charAt(endPos) == SyntaxConstants.SINGLE_QUOTE);
       }
       return isInQuotes;
    }
@@ -253,6 +237,15 @@ public class SyntaxUtils {
       return index;
    }
    
+   /**
+    * Returns the next position, relative to the specified position,
+    * that is a space character
+    *
+    * @param text  the text
+    * @param pos  the position
+    * @return the position of the next space; the specified position
+    * itself if it is the text length
+    */
    public static int nextNonSpace(String text, int pos) {
       if (pos == text.length()) {
          return pos;

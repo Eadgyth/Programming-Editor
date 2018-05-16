@@ -274,9 +274,12 @@ public class TypingEdit {
       lineNrDoc.updateLineNumber(text);
       outputInChangeState();
    }
-   
+
    private void highlightLine() {
       syntax.highlightLine(text, chgPos);
+      if (change.equals("\n")) {
+         syntax.highlightLine(text, chgPos + 1);
+      }
    }
    
    private void highlightInsertion() {

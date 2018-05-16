@@ -4,8 +4,6 @@ package eg.syntax;
  * Syntax highlighting for Perl
  */
 public class PerlHighlighter implements Highlighter {
-   
-   private final static String LINE_CMNT = "#";
 
    private final static char[] START_OF_VAR = {
       '$', '@', '%'
@@ -63,7 +61,7 @@ public class PerlHighlighter implements Highlighter {
       searcher.braces();
       searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);
       searcher.setOption(LINE_CMNT_OPT);
-      searcher.lineComments(LINE_CMNT);
+      searcher.lineComments(SyntaxConstants.HASH);
    }
 
    @Override

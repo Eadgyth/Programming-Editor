@@ -60,9 +60,6 @@ public class LinesFinder {
             sb.append("\n");
          }
          int endPos = pos + section.length();
-         if (section.endsWith("\n")) {
-            endPos -= 1;
-         } 
          sectionArr[sectionArr.length - 1]
                 = LinesFinder.lineAtPos(text, endPos);
          sb.append(sectionArr[sectionArr.length - 1]);

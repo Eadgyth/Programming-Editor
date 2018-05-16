@@ -79,8 +79,8 @@ public class CSSHighlighter implements Highlighter {
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
-      if (!searcher.isInBlockCmnt(SyntaxUtils.BLOCK_CMNT_START,
-            SyntaxUtils.BLOCK_CMNT_END)) {
+      if (!searcher.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
+            SyntaxConstants.STAR_SLASH)) {
 
          searcher.setSectionBlack();
          searcher.setOption(NO_OPEN_BRACE_AHEAD);
@@ -120,8 +120,8 @@ public class CSSHighlighter implements Highlighter {
          searcher.setOption(IGNORE_OPT);
          searcher.braces();
       }
-      searcher.blockComments(SyntaxUtils.BLOCK_CMNT_START,
-            SyntaxUtils.BLOCK_CMNT_END);
+      searcher.blockComments(SyntaxConstants.SLASH_STAR,
+            SyntaxConstants.STAR_SLASH);
    }
    
    @Override

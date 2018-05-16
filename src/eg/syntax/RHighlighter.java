@@ -5,8 +5,6 @@ package eg.syntax;
  */
 public class RHighlighter implements Highlighter {
    
-   private final static String LINE_CMNT = "#";
-   
    final static String[] KEYWORDS = {
       "break",
       "else",
@@ -26,7 +24,7 @@ public class RHighlighter implements Highlighter {
       searcher.braces();
       searcher.brackets();
       searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);
-      searcher.lineComments(LINE_CMNT);
+      searcher.lineComments(SyntaxConstants.HASH);
    }
    
    @Override
