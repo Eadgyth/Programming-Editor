@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
    <title>Eadgyth help</title>
+   <meta name="description" content="Coding projects, console and file explorer"/>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
    <link rel="stylesheet" type="text/css" href="../styles.css">
 </head>
 <body>
@@ -12,12 +13,12 @@
          <h4>Eadgyth Programming-Editor</h4>
          <h1>Help</h1>
       </header>
-      <h2>Content</h2>
-      <nav>
-         <ul class="summaries">
+      <nav class="left">
+         <h2>Content</h2>
+         <ul>
          <li><a href="#Requirements">Requirements</a><br></li>
          <li><a href="#Projects">Working with projects</a>
-            <ul class="summaries">
+            <ul>
             <li><a href="#ProjectCategories">Project categories</a>
             <li><a href="#Config">Assign files as project</a>
             <li><a href="#ChangeProjects">Changing between projects</a></li>
@@ -28,9 +29,8 @@
          <li><a href="#Explorer">Using the project explorer</a></li>
          </ul>
       </nav>
-      <br>
-      <hr>
-
+      
+      <article class="right">
       <!--Requirements-->
       <h2 id="Requirements">Requirements</h2>
       <p>See also
@@ -39,18 +39,17 @@
          </a>
       </p>
       <p>For a programming project the computer is set up in the same way as if any text
-         editor is used for coding and the tested program would be run from a command
-         prompt. This may also mean to set environment variables. Presently, programming
-         projects can be defined for Java, R and Perl.
+         editor like Notepad is used for coding and the tested program would be run from
+         a command prompt. This also means to set environment variables. Presently,
+         programming projects can be defined for Java, R and Perl.
       </p>
-      <p>To compile Java files by simply clicking the 'compile' button or selecting the
-         corresponding option in the menu (as opposed to using the command prompt of the
-         OS or the option to start system commands in the program) it must be made sure
-         that the program is run using the Java Runtime environment (JRE) contained in
-         the Java Development Kit (JDK).
+      <p>To compile Java files by simply clicking the 'compile' button or by selecting
+         the corresponding option in the menu (as opposed to using the command prompt of
+         the OS or the option to start system commands in the program) it must be made
+         sure that the program is run using the Java Runtime environment (JRE) contained
+         in the Java Development Kit (JDK), at least on Windows. This is because the
+         program uses the java compiler contained in the JDK (in the tools package).
       </p>
-      <br>
-      <p><a href="#top">Back to top</a></p>
       <hr>
 
       <!--Project-->
@@ -68,7 +67,7 @@
          <tr>
             <th>Category</th>
             <th>Supported actions</th>
-         <tr>
+         </tr>
          <tr>
             <td>Generic</td>
             <td>Only run self-chosen system commands (see: <a href="#Console">Using
@@ -226,19 +225,16 @@
 
       <!--Console-->
       <h2 id="Console">Using the console</h2>
-      <p>The console area shall show messages after compilation of a project and the output of a
-         program that is tested.</p>
+      <p>The console area shall show messages after compiling a project (applies to Java) and the
+         output of a program that is tested.</p>
       <p>In addition, self-chosen system commands entered in a dialog can be run in the current
-         working directory (the project's root directory).</p>
+         working directory (a project's root directory).</p>
       <p>A run process can be forcibly quit by clicking the 'stop' symbol.</p>
       <p>The console does not emulate the terminal of the operating system! However, it is possible
          (or rather not prohibited) to run the system's terminal in the console by running the
          command that starts the terminal (e.g., cmd.exe in Windows). It is important to note that
          a tested program thereupon started from this terminal CANNOT be forcibly quit by clicking
          the 'stop' symbol.</p>
-      <p>Hint: using the command to start "THE" terminal window (in Windows this would be cmd.exe
-         /c start) presets the working directory for the terminal to the project's root directory.</p>
-
       <h4>To run a system command...</h4>
       <ol>
       <li>Open the console panel in the menu 'View' > 'Console'.
@@ -249,6 +245,14 @@
       <li>To run a previous command press the '>' button; to change a command open the command
           dialog again by clicking 'Cmd...'.
       </li>
+      </ol>
+      <h4>Hints</h4>
+      <ol>
+      <li>Using the command to start "THE" terminal window (in Windows this would be cmd.exe
+         /c start) presets the working directory for the terminal to the project's root
+         directory.</li>
+      <li>The option to enter commands may be used to run batch files saved in the working
+         directory (in Windows the command would be cmd.exe /c aBatchFile.bat).</li>
       </ol>
       <br>
       <p><a href="#top">Back to top</a></p>
@@ -288,6 +292,7 @@
       <br>
       <p><a href="#top">Back to top</a></p>
       <br>
+      </article>
       <footer>
         <p>
         Contact: <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a><br>
@@ -295,5 +300,5 @@
         </p>
       </footer>
    </div>
-</body>
+   </body>
 </html>
