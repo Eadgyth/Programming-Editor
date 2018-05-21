@@ -1,3 +1,10 @@
+GOAL<br>
+Eadgyth Programming-Editor is a simple text editor that can be used to assign files in a
+directory as a coding project (or a generic project where system commands may be run). Many
+projects can be set up during runtime. Pre-defined actions, like running code for testing,
+are provided for Java (so far worked out most), Perl, R and HTML. It is also built-in to
+compile Java code organized in packages and bundle Java class files in an executable jar.
+
 REQUIREMENTS FOR TESTING<br>
 An executable jar archive of the progam is found in the folder "JarAndPreferences".
 <p>
@@ -6,6 +13,10 @@ with regard to the graphical interface (at least under Windows).
 <p>
 For compiling Java code by the compile option in the program it must be made sure that the
 program is run using the JRE contained in the JDK.
+<p>
+DOCUMENTATION<br>
+A list of the features of the program, screenshowts, a help site and code documentation can be
+found under <a href="https://eadgyth.github.io/Programming-Editor/">Help and documentation</a>.
 <p>
 LIMITATIONS<br>
 Among the countless limitations at the present stage some need mention:
@@ -20,7 +31,7 @@ Among the countless limitations at the present stage some need mention:
 <li>The printing to a printer is rudimentary and is rather the blueprint for a printing function.
     The font size relative to the page size is not controlled.</li>
 <li>The program is so far tested on Windows by the author (me). I would appriciate feedback from
-    somebody who may have tried it on other platforms.</li>
+    somebody who may have tried it on other platforms (m.bussiek@web.de).</li>
 </ul>
 <p>
 IDEAS FOR FURTHER DEVELOPEMENT<br>
@@ -38,7 +49,3 @@ The program uses icons from
 <a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.
 <p>
 LICENSE: MIT, see LICENSE<br>
-<p>
-FEATURES<br>
-A list of the features of the program and code documentation can be found under
-<a href="https://eadgyth.github.io/Programming-Editor/">Help and documentation</a>.
