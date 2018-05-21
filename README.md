@@ -15,8 +15,8 @@ For compiling Java code by the compile option in the program it must be made sur
 program is run using the JRE contained in the JDK.
 <p>
 DOCUMENTATION<br>
-A list of the features of the program, screenshowts, a help site and code documentation can be
-found under <a href="https://eadgyth.github.io/Programming-Editor/">Help and documentation</a>.
+A list of the features of the program, screenshots, a help site and code documentation can be
+found under <a href="https://eadgyth.github.io/Programming-Editor/">Eadgyth Programming-Editor</a>.
 <p>
 LIMITATIONS<br>
 Among the countless limitations at the present stage some need mention:
