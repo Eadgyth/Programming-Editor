@@ -1,7 +1,7 @@
 <h2>Documentation</h2>
 <ul>
-<li><a href="help/help.html">Help to use Eadgyth Programming-Editor</a></li>
-<li><a href="javadoc/index.html">Overview of the code (javadoc)</a></li>
+<li><a href="docs/help/help.html">Help to use Eadgyth Programming-Editor</a></li>
+<li><a href="docs/javadoc/index.html">Overview of the code (javadoc)</a></li>
 </ul>
 <br>
 <h2>Features</h2>
