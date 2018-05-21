@@ -57,3 +57,12 @@
   <li>A file explorer that shows the files of the project that is set active.
       It offers to open files, delete files and to create directories</i>
 </ul>
+<br>
+The first screenshot shows a model Java project that is run in the program. The lower
+screenshot shows the simple editor view.
+<p>
+<img src="docs/images/Windows10SystemLAF.png" width="600"/>
+<img src="docs/images/SimpleEditorView.png" width="400"/>
+<br>
+<p>
+
