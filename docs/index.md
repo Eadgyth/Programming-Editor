@@ -65,6 +65,6 @@
 <br>
 <h2>Screenshots</h2>
 A demo Java project run in the program<br>
-<img src="docs/images/Windows10SystemLAF.png" width="600"/><br>
+<img src="images/Windows10SystemLAF.png" width="600"/><br>
 Simple editor view<br>
-<img src="docs/images/SimpleEditorView.png" width="400"/>
+<img src="images/SimpleEditorView.png" width="400"/>
