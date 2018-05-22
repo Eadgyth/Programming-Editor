@@ -1,11 +1,11 @@
 GOAL<br>
 Eadgyth Programming-Editor is a simple text editor in which files in a directory can be
-quite easily assigned as a programming project. A number of projects can be set up during
-runtime and switched between. Pre-defined actions, like running code for testing, are built
-in for the project categories Java (so far worked out most), Perl, R and HTML. It is also
-built-in to compile Java code organized in packages and bundle Java class files in an
+quite easily assigned as a programming or coding project. A number of projects can be defined
+during runtime and switched between. Pre-defined actions, like running code for testing,
+are built in for the project categories Java (so far worked out most), Perl, R and HTML. It is
+also built-in to compile Java code organized in packages and bundle Java class files in an
 executable jar. A generic project that does not depend on any specific file type may be as
-well defined to run system commands.
+well defined to run system commands, for example to run batch files in the project directory.
 <p>
 DOCUMENTATION<br>
 A list of the features of the program, screenshots, a help site and code documentation can be
