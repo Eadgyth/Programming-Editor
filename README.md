@@ -1,7 +1,8 @@
 This is a simple text editor, written in Java, with features that can help in smaller coding
 projects, maybe for learning and home requirements. Project categories in the present version
 are Java (so far worked out most), Perl, R and HTML. However, the code is made to implement
-other project categories.<br>
+other project categories.
+<p>
 Files in a directory can be quite easily assigned as a project for creating and testing source
 code. A number of projects can be defined during runtime and switched between. Pre-defined actions,
 like running a project for testing, are built in and are defined based on the project category.
