@@ -54,9 +54,8 @@
 </ul>
 <h4>Other</h4>
 <ul>
-  <li>A file explorer that shows the files of the project that is set active.
-      It offers to open files, delete files and to create directories</i>
-</ul>
+<li>A file explorer that shows the files of the project that is set active.
+   It offers to open files, delete files and to create directories</i>
 </ul>
 <h4>Screenshots</h4>
 <p>A demo Java project run in the program</p>
