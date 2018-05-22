@@ -58,9 +58,9 @@
    It offers to open files, delete files and to create directories</i>
 </ul>
 <br>
-<h2>Features</h2>
-<p>A demo Java project run in the program</p>
-<img src="docs/images/Windows10SystemLAF.png" width="600"/>
-<p>Simple editor view</p>
+<h2>Screenshots</h2>
+A demo Java project run in the program<br>
+<img src="docs/images/Windows10SystemLAF.png" width="600"/><br>
+Simple editor view<br>
 <img src="docs/images/SimpleEditorView.png" width="400"/>
 
