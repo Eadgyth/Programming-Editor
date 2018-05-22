@@ -1,10 +1,16 @@
 GOAL<br>
-Eadgyth Programming-Editor is a simple text editor that can be used to assign files in a
-directory as a coding project (or a generic project where system commands may be run). Many
-projects can be set up during runtime. Pre-defined actions, like running code for testing,
-are provided for Java (so far worked out most), Perl, R and HTML. It is also built-in to
-compile Java code organized in packages and bundle Java class files in an executable jar.
-
+Eadgyth Programming-Editor is a simple text editor in which files in a directory can be
+quite easily assigned as a programming project. A number of projects can be set up during
+runtime and switched between. Pre-defined actions, like running code for testing, are built
+in for the project categories Java (so far worked out most), Perl, R and HTML. It is also
+built-in to compile Java code organized in packages and bundle Java class files in an
+executable jar. A generic project that does not depend on any specific file type may be as
+well defined to run system commands.
+<p>
+DOCUMENTATION<br>
+A list of the features of the program, screenshots, a help site and code documentation can be
+found under <a href="https://eadgyth.github.io/Programming-Editor/">Eadgyth Programming-Editor</a>.
+<p>
 REQUIREMENTS FOR TESTING<br>
 An executable jar archive of the progam is found in the folder "JarAndPreferences".
 <p>
@@ -13,10 +19,6 @@ with regard to the graphical interface (at least under Windows).
 <p>
 For compiling Java code by the compile option in the program it must be made sure that the
 program is run using the JRE contained in the JDK.
-<p>
-DOCUMENTATION<br>
-A list of the features of the program, screenshots, a help site and code documentation can be
-found under <a href="https://eadgyth.github.io/Programming-Editor/">Eadgyth Programming-Editor</a>.
 <p>
 LIMITATIONS<br>
 Among the countless limitations at the present stage some need mention:
