@@ -1,24 +1,25 @@
-GOAL<br>
-Eadgyth Programming-Editor is a simple text editor in which files in a directory can be
-quite easily assigned as a programming or coding project. A number of projects can be defined
-during runtime and switched between. Pre-defined actions, like running code for testing,
-are built in for the project categories Java (so far worked out most), Perl, R and HTML. It is
-also built-in to compile Java code organized in packages and bundle Java class files in an
-executable jar. A generic project that does not depend on any specific file type may be as
-well defined to run system commands, for example to run batch files in the project directory.
+This is a simple text editor, written in java, with features that can help in smaller coding
+projects for learning and home requirements. Project categories are Java (so far worked out
+most), Perl, R and HTML. Files in a directory can be quite
+easily assigned as a project for testing source code. A number of projects can be defined
+during runtime and switched between. Pre-defined actions, like running a project for testing,
+are built in and are defined based on the project category. A generic project that does not
+depend on any specific file type may be as well defined to run system commands, for example to
+run batch files in a project directory.
 <p>
 DOCUMENTATION<br>
 A list of the features of the program, screenshots, a help site and code documentation can be
 found under <a href="https://eadgyth.github.io/Programming-Editor/">Eadgyth Programming-Editor</a>.
 <p>
 REQUIREMENTS FOR TESTING<br>
-An executable jar archive of the progam is found in the folder "JarAndPreferences".
+An executable jar of the progam is found in the folder "JarAndPreferences". The jar should be kept
+in the same directory as the Preferences file.
 <p>
 Running (and compiling) the program requires Java 8. Running it using Java 9 causes some problems
 with regard to the graphical interface (at least under Windows).
 <p>
-For compiling Java code by the compile option in the program it must be made sure that the
-program is run using the JRE contained in the JDK.
+If the program shall be used for compiling Java code by the built-in compile option it must be made 
+that the program is run using the JRE contained in the JDK.
 <p>
 LIMITATIONS<br>
 Among the countless limitations at the present stage some need mention:
