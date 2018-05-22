@@ -57,6 +57,7 @@
 <li>A file explorer that shows the files of the project that is set active.
    It offers to open files, delete files and to create directories</i>
 </ul>
+<br>
 <h4>Screenshots</h4>
 <p>A demo Java project run in the program</p>
 <img src="docs/images/Windows10SystemLAF.png" width="600"/>
