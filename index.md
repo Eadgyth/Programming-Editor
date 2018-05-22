@@ -34,12 +34,16 @@
        projects.</li>
    <li>Retrieval of already defined projects after newly starting the program.</li>
    </ul>
-<li>Pre-defined actions in a project by simply using menu selections or buttons.</li>
+<li>Pre-defined actions in a project by simply using menu selections or buttons
+    depending on the project category.</li>
    <ul>
    <li>Compiling/testing Java code and bundling a Java program in an executable
-       jar file. Non-Java files may be included in a compilation and in a jar file.</li>
-   <li>Testing a Perl script.</li>
-   <li>Testing an R script.</li>
+       jar file. Non-Java files may be included in a compilation and in a jar.
+       Define command-line arguments to run the tested java program and Xlint-options
+       to select compiler warnings to be shown.</li>
+   <li>Testing a Perl script. Define command-line arguments to run the script</li>
+   <li>Testing an R script. Define command-line arguments and command option to run
+       the script</li>
    <li>Viewing Html code in the default web browser.</li>
    </ul>
 <li>A basic console to view the output and error messages after compiling a Java
@@ -55,7 +59,7 @@
 <h4>Other</h4>
 <ul>
 <li>A file explorer that shows the files of the project that is set active.
-   It offers to open files, delete files and to create directories</i>
+   It offers to open files, delete files and to create directories</li>
 </ul>
 <br>
 <h2>Screenshots</h2>
