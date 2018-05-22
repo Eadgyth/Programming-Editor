@@ -1,7 +1,7 @@
 This is a simple text editor, written in Java, with features that can help in smaller coding
 projects, maybe for learning and home requirements. Project categories in the present version
-are Java (so far worked out most), Perl, R and HTML. The code is made to implement other project
-categories.<br>
+are Java (so far worked out most), Perl, R and HTML. However, the code is made to implement
+other project categories.<br>
 Files in a directory can be quite easily assigned as a project for creating and testing source
 code. A number of projects can be defined during runtime and switched between. Pre-defined actions,
 like running a project for testing, are built in and are defined based on the project category.
@@ -40,9 +40,9 @@ Among the countless limitations at the present stage some need mention:
 <p>
 IDEAS FOR FURTHER DEVELOPEMENT<br>
 <ul>
-<li>To implement other project categories. In principle this does not have to be a programming
-    project. A type of project is defined by the interface 'ProjectActions' in the 'projects'
-    package.</li>
+<li>To implement other project categories. In principle, this is not limited to programming
+    and coding projects. A type of project is defined by the interface 'ProjectActions' in the
+    'projects' package where the 'run' function could be anything.</li>
 <li>To develop "Edit Tools" that can do specialized work with text files. An edit tool implements
     'AddableEditTool' in the 'edittools' package. It's graphical view can be included in the main 
     window and it has access to the file in the selected tab (the interface replaces the plugin
