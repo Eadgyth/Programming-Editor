@@ -5,7 +5,7 @@ other project categories.
 <p>
 Files in a directory can be quite easily assigned as a project for creating and testing source
 code. A number of projects can be defined during runtime and switched between. Pre-defined actions,
-lie running a project for testing are built in. Also, a generic project that does not depend on
+like running a project for testing are built in. Also, a generic project that does not depend on
 any specific file type may be set to run system commands, for example to execute batch files in
 a project directory.
 <p>
