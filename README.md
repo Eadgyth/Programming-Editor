@@ -1,12 +1,13 @@
 This is a simple text editor, written in Java, with features that can help in smaller coding
-projects, maybe for learning and home requirements. Project categories in the present version
+projects, maybe for own use or learning purposes. Project categories in the present version
 are Java (so far worked out most), Perl, R and HTML. However, the code is made to implement
-other project categories.<br>
+other project categories.
+<p>
 Files in a directory can be quite easily assigned as a project for creating and testing source
 code. A number of projects can be defined during runtime and switched between. Pre-defined actions,
-like running a project for testing, are built in and are defined based on the project category.
-Also, a generic project that does not depend on any specific file type may be set to run system
-commands, for example to execute batch files in a project directory.
+like running a project for testing are built in. Also, a generic project that does not depend on
+any specific file type may be set to run system commands, for example to execute batch files in
+a project directory.
 <p>
 DOCUMENTATION<br>
 A list of the features of the program, screenshots, a help site and code documentation can be
@@ -14,7 +15,7 @@ found under <a href="https://eadgyth.github.io/Programming-Editor/">Eadgyth Prog
 <p>
 REQUIREMENTS FOR TESTING<br>
 An executable jar of the progam is found in the folder "JarAndPreferences". The jar should be kept
-in the same directory as the Preferences file.
+in the same directory as the prefs.properties file.
 <p>
 Running (and compiling) the program requires Java 8. Running it using Java 9 causes some problems
 with regard to the graphical interface (at least under Windows).
