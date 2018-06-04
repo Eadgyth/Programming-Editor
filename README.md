@@ -1,27 +1,21 @@
-This is a simple text editor, written in Java, with features that can help in smaller coding
-projects, maybe for own use or learning purposes. Project categories in the present version
-are Java (so far worked out most), Perl, R and HTML. However, the code is made to implement
-other project categories.
-<p>
-Files in a directory can be quite easily assigned as a project for creating and testing source
-code. A number of projects can be defined during runtime and switched between. Pre-defined actions,
-like running a project for testing are built in. Also, a generic project that does not depend on
-any specific file type may be set to run system commands, for example to execute batch files in
-a project directory.
+This is a simple text editor, written in Java, that can help in smaller coding projects, maybe
+for own use or learning purposes. Project categories in the present version are Java (so far
+worked out most), Perl, R and HTML. However, the code is made to implement other project
+categories.
 <p>
 DOCUMENTATION<br>
-A list of the features of the program, screenshots, a help site and code documentation can be
-found under <a href="https://eadgyth.github.io/Programming-Editor/">Eadgyth Programming-Editor</a>.
+A list of the features, screenshots, a help site and code documentation can be found under
+<a href="https://eadgyth.github.io/Programming-Editor/">Eadgyth Programming-Editor</a>.
 <p>
 REQUIREMENTS FOR TESTING<br>
-An executable jar of the progam is found in the folder "JarAndPreferences". The jar should be kept
+An executable jar of the program is found in the folder "JarAndPreferences". The jar should be kept
 in the same directory as the prefs.properties file.
 <p>
-Running (and compiling) the program requires Java 8. Running it using Java 9 causes some problems
-with regard to the graphical interface (at least under Windows).
+Running (and compiling) the program requires Java 8. Running it using Java 9 (or 10) causes some
+problems with regard to the graphical interface (at least under Windows 10 with a high dpi).
 <p>
 If the program shall be used for compiling Java code by the built-in compile option it must be made 
-that the program is run using the JRE contained in the JDK.
+that the program is run using the JRE contained in the JDK (and not the public JRE).
 <p>
 LIMITATIONS<br>
 Among the countless limitations at the present stage some need mention:
