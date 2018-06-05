@@ -5,12 +5,12 @@ other project categories.
 <p>
 DOCUMENTATION<br>
 A list of the features, screenshots, a help site and code documentation can be found under
-<a href="https://eadgyth.github.io/Programming-Editor/">Eadgyth Programming-Editor</a>.
+<a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <p>
 REQUIREMENTS FOR TESTING<br>
 An executable jar of the program is found in the folder "JarAndPreferences". The jar should be kept
 in the same directory as the prefs.properties file. "JarAndPreferences" can be also downloaded
-<a href="https://github.com/Eadgyth/Programming-Editor/releases">here</a>
+<a href="https://github.com/Eadgyth/Programming-Editor/releases">here</a>.
 <p>
 Running (and compiling) the program requires Java 8. Running it using Java 9 (or 10) causes some
 problems with regard to the graphical interface (at least under Windows).
