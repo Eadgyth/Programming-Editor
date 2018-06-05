@@ -1,4 +1,4 @@
-This is a simple text editor, written in Java, that can be useful in smaller coding projects, maybe
+This is a simple text editor, written in Java, that can be useful for smaller coding projects, maybe
 to develop applications for own use or for learning purposes. Project categories in the present
 version are Java (so far worked out most), Perl, R and HTML. However, the code is made to implement
 other project categories.
@@ -9,10 +9,11 @@ A list of the features, screenshots, a help site and code documentation can be f
 <p>
 REQUIREMENTS FOR TESTING<br>
 An executable jar of the program is found in the folder "JarAndPreferences". The jar should be kept
-in the same directory as the prefs.properties file.
+in the same directory as the prefs.properties file. "JarAndPreferences" can be also downloaded
+<a href="https://github.com/Eadgyth/Programming-Editor/releases">here</a>
 <p>
 Running (and compiling) the program requires Java 8. Running it using Java 9 (or 10) causes some
-problems with regard to the graphical interface (at least under Windows 10 with a high dpi).
+problems with regard to the graphical interface (at least under Windows).
 <p>
 If the program shall be used for compiling Java code by the built-in compile option it must be made 
 that the program is run using the JRE contained in the JDK (and not the public JRE).
