@@ -11,7 +11,9 @@ public class ScreenParams {
    
    public final static boolean IS_WINDOWS
          = System.getProperty("os.name").toLowerCase().contains("win");
-   private final static boolean IS_JAVA_9 = System.getProperty("java.version").startsWith("9");  
+   private final static String version = System.getProperty("java.version");
+   private final static boolean IS_JAVA_9_OR_10 = version.startsWith("9")
+         || version.startsWith("10"); 
    private final static int SCREEN_RES
          = Toolkit.getDefaultToolkit().getScreenResolution();
    private final static double SCREEN_RES_RATIO = SCREEN_RES / 72.0;
@@ -46,7 +48,7 @@ public class ScreenParams {
     * @return  the rounded rescaled size
     */
    public static int scaledSize(double size) {
-      if (IS_JAVA_9) {
+      if (IS_JAVA_9_OR_10) {
          if (IS_WINDOWS) {
             return (int) (Math.round(size * 96/72));
          }

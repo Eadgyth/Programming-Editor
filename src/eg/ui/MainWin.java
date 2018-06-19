@@ -67,6 +67,8 @@ public class MainWin {
    private final ToolPanel toolPnl = new ToolPanel();
    private final List<AddableEditTool> editTools = new ArrayList<>();
    private final Preferences prefs = Preferences.readProgramPrefs();
+   
+   private final ProjectControlsUpdate projControlsUpdate;
 
    private JSplitPane splitHorAll;
    private JSplitPane splitHor;
@@ -79,6 +81,7 @@ public class MainWin {
       initFrame();
       setViewActions();
       initShowTabbar();
+      projControlsUpdate = pcu;
    }
 
    /**
@@ -125,12 +128,21 @@ public class MainWin {
     }
     
    /**
-    * Gets this <code>ConsoleOpenable</code>
+    * Gets a new <code>ConsoleOpenable</code>
     *
     * @return  this {@link ConsoleOpenable}
     */
    public ConsoleOpenable consoleOpener() {
-      return consoleOpener;
+      return menuBar.viewMenu().consoleOpener();
+   }
+   
+   /**
+    * Gets this <code>ProjectControlsUpdate</code>
+    *
+    * @return  this {@link ProjectControlsUpdate}
+    */
+   public ProjectControlsUpdate projControlsUpdate() {
+      return projControlsUpdate;
    }
 
    /**
@@ -170,15 +182,6 @@ public class MainWin {
     */
    public void displayLCursorPosition(int lineNr, int colNr) {
       cursorPosLb.setText("Line " + lineNr + "  Col " + colNr);
-   }
-
-   /**
-    * Sets the specified label for the menu item for building actions
-    *
-    * @param label  the label
-    */
-   public void setBuildLabel(String label) {
-      menuBar.projectMenu().setBuildLabel(label);
    }
 
    /**
@@ -267,23 +270,6 @@ public class MainWin {
     */
    public void enableOpenProjSetWinActions(boolean b) {
       menuBar.projectMenu().enableOpenSetWinItm(b);
-   }
-
-   /**
-    * Sets the booleans that specify if actions to compile, run and
-    * build a project are enabled or disabled
-    *
-    * @param isCompile  the boolean value for compile actions
-    * @param isRun  the boolean value for run actions
-    * @param isBuild  the boolean value for build actions
-    */
-   public void enableSrcCodeActions(boolean isCompile, boolean isRun,
-         boolean isBuild) {
-
-      menuBar.projectMenu().enableSrcCodeActionItms(isCompile, isRun,
-            isBuild);
-
-      toolbar.enableSrcCodeActionBts(isCompile, isRun);
    }
 
    /**
@@ -415,10 +401,6 @@ public class MainWin {
       fileTree.setCloseAct(e -> vm.doUnselectFileViewAct());
       console.setCloseAct(e -> vm.doConsoleItmAct(false));
    }
-   
-   private void winListener(WindowListener wl) {
-      frame.addWindowListener(wl);
-   }
 
    private void showConsole(boolean b) {
       if (b) {
@@ -525,16 +507,23 @@ public class MainWin {
          i);
    }
    
-   private final ConsoleOpenable consoleOpener = new ConsoleOpenable() {
-
-      @Override
-      public boolean isConsoleOpen() {
-         return menuBar.viewMenu().isConsoleItmSelected();
-      }
+   private void winListener(WindowListener wl) {
+      frame.addWindowListener(wl);
+   }
    
+   private final ProjectControlsUpdate pcu = new ProjectControlsUpdate() {
+      
       @Override
-      public void openConsole() {
-         menuBar.viewMenu().doConsoleItmAct(true);
+      public void enableProjectActions(boolean isCompile, boolean isRun,
+            boolean isBuild) {
+
+         menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun, isBuild);
+         toolbar.enableProjectActionsBts(isCompile, isRun);
+      }
+         
+      @Override
+      public void setBuildLabel(String label) {
+         menuBar.projectMenu().setBuildLabel(label);
       }
    };
 

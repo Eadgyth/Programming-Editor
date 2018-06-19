@@ -62,7 +62,7 @@ public class TypingEdit {
     * @param esr  an {@link EditingStateReadable}
     */
    public void setEditingStateReadable(EditingStateReadable esr) {
-       if (this.esr != null) {
+      if (this.esr != null) {
          throw new IllegalStateException(
                "An EditingStateReadable is already set");
       }
@@ -86,7 +86,8 @@ public class TypingEdit {
    /**
     * Sets the editing mode that depends on the specified language
     *
-    * @param lang  a language in {@link Languages}
+    * @param lang  the language which is a constant in
+    * {@link Languages}
     */
    public void setEditingMode(Languages lang) {
       if (lang == Languages.NORMAL_TEXT) {
@@ -94,27 +95,7 @@ public class TypingEdit {
          isCodeEditing = false;
       }
       else {
-         Highlighter hl = null;
-         switch(lang) {
-            case JAVA:
-               hl = new JavaHighlighter();
-               break;
-            case HTML:
-               hl = new HTMLHighlighter();
-               break;
-            case JAVASCRIPT:
-               hl = new JavascriptHighlighter();
-               break;
-            case CSS:
-               hl = new CSSHighlighter();
-               break;
-            case PERL:
-               hl = new PerlHighlighter();
-               break;
-            case R:
-               hl = new RHighlighter();
-               break;
-         }
+         Highlighter hl = HighlighterSelector.createHighlighter(lang);
          syntax.setHighlighter(hl);
          syntax.highlightMultiline(text, text, 0);
          isCodeEditing = true;
@@ -122,7 +103,7 @@ public class TypingEdit {
    }
    
    /**
-    * Gets the text in the document which is updated in the insert- and
+    * Gets the text in the document which is updated in the insert and
     * remove methods of this <code>DocumentListener</code>
     *
     * @return  the text
@@ -159,10 +140,10 @@ public class TypingEdit {
    }
    
    /**
-    * Sets the boolean that disables or re-enables adding breakpoints 
+    * Sets the boolean that disables or re-enables adding breakpoints
+    * that define undoable units
     *
     * @param b  the boolean value. True to disable, false to re-enable
-    * @see UndoEdit
     * @see UndoEdit #disableBreakpointAdding(boolean)
     */
    public void disableBreakpointAdding(boolean b) {
@@ -170,7 +151,8 @@ public class TypingEdit {
    }
    
    /**
-    * Inserts the specified string at the specified position
+    * Inserts the specified string at the specified position and, if
+    * the text is source code, highlight the insertion
     *
     * @param pos  the position
     * @param toInsert  the string
@@ -186,7 +168,8 @@ public class TypingEdit {
    }
    
    /**
-    * Replaces a section of the document with the specified string
+    * Replaces a section of the document with the specified string and, if
+    * the text is source code, highlight the insertion
     *
     * @param pos  the position where the section to be replaced starts
     * @param length  the length of the section
@@ -211,7 +194,7 @@ public class TypingEdit {
     * @param pos  the position where the section starts
     * @param length  the length of the section
     * @param useHighlighting  if syntax highlighting of the line that
-    * includes the position is done
+    * contains the position is done
     */
    public void remove(int pos, int length, boolean useHighlighting) {
       boolean isCodeEditingHelper = isCodeEditing;

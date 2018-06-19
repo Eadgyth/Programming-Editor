@@ -24,11 +24,11 @@ import java.util.List;
  * <p>
  * When a new edit is added also a breakpoint is added if...
  * <ul>
- * <li> The content of the previous edit is just newline character.
+ * <li> The content of the previous edit is just a newline character.
  * <li> The type of the new edit differs from the type of the
  *      previous edit. However, no breakpoint is added if an insertion
  *      follows a removal that was not triggerd by pressing the delete
- *      or backspace keys.
+ *      or backspace keys (a replace action is assumed).
  * <li> The content is longer than one character.
  * <li> A mark was set by {@link #markBreakpoint()}.
  * </ul>

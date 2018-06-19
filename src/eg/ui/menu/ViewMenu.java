@@ -7,6 +7,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 
+//--Eadgyth../
+import eg.ui.ConsoleOpenable;
+
 /**
  * The menu for view actions.
  * <p>Created in {@link MenuBar}
@@ -23,9 +26,12 @@ public class ViewMenu {
          = new JCheckBoxMenuItem("Files in tabs");
    private final JMenuItem openSettingsItm
          = new JMenuItem("Preferences");
+         
+   private final ConsoleOpenable consoleOpener;
 
    public ViewMenu() {
       assembleMenu();
+      consoleOpener = co;
    }
 
    /**
@@ -35,6 +41,15 @@ public class ViewMenu {
     */
    public JMenu getMenu() {
       return menu;
+   }
+   
+   /**
+    * Gets a new <code>ConsoleOpenable</code>
+    *
+    * @return  a new {@link ConsoleOpenable}
+    */
+   public ConsoleOpenable consoleOpener() {
+      return consoleOpener;
    }
 
    /**
@@ -112,7 +127,7 @@ public class ViewMenu {
     *
     * @param b  the boolean value. True to show, false to hide the panel
     */
-   public void doConsoleItmAct(boolean b) {
+  public void doConsoleItmAct(boolean b) {
       if (b != consoleItm.isSelected()) {
          consoleItm.doClick();
       }
@@ -151,6 +166,19 @@ public class ViewMenu {
    //
    //--private--/
    //
+   
+   private final ConsoleOpenable co = new ConsoleOpenable() {
+
+      @Override
+      public boolean isConsoleOpen() {
+         return isConsoleItmSelected();
+      }
+   
+      @Override
+      public void openConsole() {
+         doConsoleItmAct(true);
+      }
+   };
 
    private void assembleMenu() {
       menu.add(consoleItm);

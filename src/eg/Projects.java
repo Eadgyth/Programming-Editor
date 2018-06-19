@@ -11,6 +11,7 @@ import eg.ui.MainWin;
 import eg.projects.ProjectActions;
 import eg.projects.ProjectSelector;
 import eg.projects.ProjectTypes;
+import eg.projects.ProjectTypeChange;
 import eg.document.EditableDocument;
 import eg.utils.Dialogs;
 
@@ -22,9 +23,10 @@ import eg.utils.Dialogs;
 public class Projects {
 
    private final MainWin mw;
-   private final ProjectSelector selector;
+   private final ProjectSelector projSelect;
    private final ProcessStarter proc;
    private final EditableDocument[] edtDoc;
+   private final ProjectTypeChange projTypeChg;
    private final List<ProjectActions> projList = new ArrayList<>();
 
    private ProjectActions current;
@@ -38,8 +40,9 @@ public class Projects {
    public Projects(MainWin mw, EditableDocument[] edtDoc) {
       this.mw = mw;
       this.edtDoc = edtDoc;
+      projTypeChg = new ProjectTypeChange(mw.projControlsUpdate());
       proc = new ProcessStarter(mw.console());
-      selector = new ProjectSelector(mw.consoleOpener(), proc, mw.console());
+      projSelect = new ProjectSelector(mw.consoleOpener(), proc, mw.console());
    }
 
    /**
@@ -51,14 +54,15 @@ public class Projects {
    public void setDocumentAt(int i) {
       iDoc = i;
       ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), false);
-      mw.enableOpenProjSetWinActions(inList != null);
-      if (inList != null) {
+      boolean isListed = inList != null;
+      mw.enableOpenProjSetWinActions(isListed);
+      if (isListed) {
          mw.enableChangeProject(inList != current);
          if (!current.isInProject(edtDoc[iDoc].dir())) {
-            mw.enableSrcCodeActions(false, false, false);
+            projTypeChg.disableProjectActions();
          }
          else {
-            enableActions();
+            projTypeChg.enableProjectActions(current.getProjectType());
          }
       }
    }
@@ -66,8 +70,7 @@ public class Projects {
    /**
     * Assigns a new project
     *
-    * @param projType  the project type which has a valaue in
-    * {@link ProjectTypes}
+    * @param projType  the project type which has a valaue in {@link ProjectTypes}
     */
    public void assignProject(ProjectTypes projType) {
       ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), false);
@@ -95,7 +98,7 @@ public class Projects {
                            edtDoc[iDoc].filename(),
                            inList.getProjectName(),
                            inList.getProjectType().display()),
-                     null);
+                           null);
             }
          }
          else {
@@ -121,7 +124,7 @@ public class Projects {
          ProjectActions projToFind = null;
          boolean isFound = false;
          for (ProjectTypes t : ProjectTypes.values()) {
-            projToFind = selector.createProject(t);
+            projToFind = projSelect.createProject(t);
             isFound = projToFind.retrieveProject(dir);
             if (isFound) {
                break;
@@ -136,7 +139,7 @@ public class Projects {
                current = projFin;
                current.setConfiguringAction(e -> configureProject(current));
                projList.add(current);
-               updateProjectSetting(current);
+               updateProjectSetting();
             }
             else {
                if (selectFromList(dir, true) == null) {
@@ -199,8 +202,7 @@ public class Projects {
          }
          else {
             Dialogs.errorMessage(
-                  fileNotFoundMessage(edtDoc[iDoc].filename()),
-                  "Missing files");
+                  fileNotFoundMessage(edtDoc[iDoc].filename()), "Missing files");
          }
       }
       finally {
@@ -245,7 +247,7 @@ public class Projects {
    /**
     * Runs the currently active project
     */
-   public void runProj() {
+   public void runProject() {
       if (current.usesProjectFile()) {
          current.runProject();
       }
@@ -277,7 +279,7 @@ public class Projects {
          Dialogs.infoMessage(NO_FILE_IN_TAB_MESSAGE, null);
          return;
       }
-      ProjectActions toAssign = selector.createProject(projType);
+      ProjectActions toAssign = projSelect.createProject(projType);
       if (toAssign != null) {
          ProjectActions projFin = toAssign;
          projFin.makeSettingsWindowVisible();
@@ -292,8 +294,8 @@ public class Projects {
       if (res == 0) {
          current = toChangeTo;
          current.storeConfiguration();
-         updateProjectSetting(current);
-         mw.enableChangeProject(false);
+         updateProjectSetting();
+         //mw.enableChangeProject(false);
          return true;
       }
       else {
@@ -321,51 +323,22 @@ public class Projects {
          current = toConfig;
          current.storeConfiguration();
          projList.add(current);
-         updateProjectSetting(current);
+         updateProjectSetting();
          updateFileTree();
       }
    }
 
-   private void updateProjectSetting(ProjectActions toUpdate) {
-      proc.setWorkingDir(toUpdate.getProjectPath());
-      enableActions();
-      setBuildLabel();
-      mw.displayProjectName(toUpdate.getProjectName(),
-            toUpdate.getProjectType().display());
+   private void updateProjectSetting() {
+      proc.setWorkingDir(current.getProjectPath());
+      projTypeChg.enableProjectActions(current.getProjectType());
+      projTypeChg.setBuildLabel(current.getProjectType());
+      mw.displayProjectName(current.getProjectName(),
+            current.getProjectType().display());
 
-      mw.fileTree().setDeletableDirName(toUpdate.getExecutableDirName());
-      mw.fileTree().setProjectTree(toUpdate.getProjectPath());
+      mw.fileTree().setDeletableDirName(current.getExecutableDirName());
+      mw.fileTree().setProjectTree(current.getProjectPath());
       mw.enableChangeProject(false);
       mw.enableOpenProjSetWinActions(true);
-   }
-
-   private void enableActions() {
-      switch (current.getProjectType()) {
-         case GENERIC:
-            mw.enableSrcCodeActions(false, false, false);
-            break;
-         case JAVA:
-            mw.enableSrcCodeActions(true, true, true);
-            break;
-         case HTML:
-            mw.enableSrcCodeActions(false, true, false);
-            break;
-         case PERL:
-            mw.enableSrcCodeActions(false, true, false);
-            break;
-         case R:
-            mw.enableSrcCodeActions(false, true, false);
-      }
-   }
-
-   private void setBuildLabel() {
-      switch (current.getProjectType()) {
-         case JAVA:
-            mw.setBuildLabel("Create jar");
-            break;
-         default:
-            mw.setBuildLabel("Build");
-      }
    }
 
    //

@@ -320,8 +320,8 @@ public class SettingsWindow {
    private JPanel compileAndBuildPnl() {
       JPanel pnl = new JPanel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
-      // compile options
       //
+      // compile options
       if (compileOptionLb != null) {
          JLabel compOptLb = new JLabel(compileOptionLb + ":");
          pnl.add(holdLbAndTf(compOptLb, compileOptionTf));

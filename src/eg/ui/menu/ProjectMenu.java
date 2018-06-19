@@ -62,7 +62,7 @@ public class ProjectMenu {
       }
       openSetWinItm.addActionListener(e -> p.openSettingsWindow());
       changeProjItm.addActionListener(e -> p.changeProject());
-      runItm.addActionListener(e -> p.runProj());
+      runItm.addActionListener(e -> p.runProject());
       buildItm.addActionListener(e -> p.buildProj());
       SaveCompileItm.addActionListener(e -> p.saveAndCompile());
       SaveAllCompileItm.addActionListener(e -> p.saveAllAndCompile());
@@ -96,7 +96,7 @@ public class ProjectMenu {
     * @param isRun  the boolean value for run actions
     * @param isBuild  the boolean value for build actions
     */
-   public void enableSrcCodeActionItms(boolean isCompile, boolean isRun,
+   public void enableProjectActionsItms(boolean isCompile, boolean isRun,
          boolean isBuild) {
 
       SaveCompileItm.setEnabled(isCompile);
@@ -144,7 +144,7 @@ public class ProjectMenu {
       menu.setMnemonic(KeyEvent.VK_P);
       openSetWinItm.setEnabled(false);
       changeProjItm.setEnabled(false);
-      enableSrcCodeActionItms(false, false, false);
+      enableProjectActionsItms(false, false, false);
    }
 
    private void shortCuts() {

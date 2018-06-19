@@ -4,7 +4,8 @@ import eg.console.*;
 import eg.ui.ConsoleOpenable;
 
 /**
- * The selection and creation of an object of type {@code ProjectActions}
+ * The selection and creation of a project of type <code>ProjectActions</code>
+ * based on the project type
  */
 public class ProjectSelector {
 
@@ -13,13 +14,10 @@ public class ProjectSelector {
    private final ConsolePanel console;
 
    /**
-    * Sets the references which (or part of which) may be used by
-    * a selected <code>ProjectActions</code>
-    *
-    * @param co  the {@link ConsoleOpenable}
-    * @param proc  the {@link ProcessStarter}
-    * @param console  the {@link ConsolePanel} that is also shared
-    * by <code>ProcessStarter</code>
+    * @param co  the {@link ConsoleOpenable} of {@link eg.ui.MainWin}
+    * @param proc  the reference to {@link ProcessStarter}
+    * @param console  the {@link ConsolePanel} that is also shared by
+    * <code>ProcessStarter</code>
     */
    public ProjectSelector(ConsoleOpenable co, ProcessStarter proc,
          ConsolePanel console) {
@@ -30,11 +28,11 @@ public class ProjectSelector {
    }
 
    /**
-    * Returns a <code>ProjectActions</code> selected based on a project type
-    * in <code>ProjectTypes</code>
+    * Returns a new <code>ProjectActions</code>.<br>
+    * Also creates the settings window by calling {@link Configurable#buildSettingsWindow()}
+    * of the new <code>ProjectActions</code>
     *
-    * @param projType  the project type which has a valaue in
-    * {@link ProjectTypes}
+    * @param projType  the project type which has a valaue in {@link ProjectTypes}
     * @return  a new {@link ProjectActions}
     */
    public ProjectActions createProject(ProjectTypes projType) {

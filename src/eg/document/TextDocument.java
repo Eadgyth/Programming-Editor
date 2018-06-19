@@ -34,7 +34,7 @@ public class TextDocument {
    
    /**
     * @param textArea  the <code>JTextPane</code> that displays the
-    * document
+    * text that is edited
     */
    public TextDocument(JTextPane textArea) {
       this.textArea = textArea;

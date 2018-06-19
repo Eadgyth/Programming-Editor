@@ -61,7 +61,7 @@ public class Toolbar {
     */
    public void setProjectActions(Projects p) {
       changeProjBt.addActionListener(e -> p.changeProject());
-      runBt.addActionListener(e -> p.runProj());
+      runBt.addActionListener(e -> p.runProject());
       compileBt.addActionListener(e -> p.saveAllAndCompile());
    }
 
@@ -87,7 +87,7 @@ public class Toolbar {
     * @param isCompile  the boolean value for compile actions
     * @param isRun  the boolean value for run actions
     */
-   public void enableSrcCodeActionBts(boolean isCompile, boolean isRun) {
+   public void enableProjectActionsBts(boolean isCompile, boolean isRun) {
       compileBt.setEnabled(isCompile);
       runBt.setEnabled(isRun);
    }
@@ -143,7 +143,7 @@ public class Toolbar {
       toolbar.setOpaque(false);
       toolbar.setBorder(null);
       toolbar.setFloatable(false);
-      enableSrcCodeActionBts(false, false);
+      enableProjectActionsBts(false, false);
       changeProjBt.setEnabled(false);
       JButton[] bts = new JButton[] {
          openBt, saveBt,

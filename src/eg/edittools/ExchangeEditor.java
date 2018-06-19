@@ -201,7 +201,7 @@ public class ExchangeEditor implements AddableEditTool {
       setKeyBinding(cutBt, KeyStroke.getKeyStroke(
             KeyEvent.VK_X, ActionEvent.CTRL_MASK), "X_pressed");
 
-      copyBt.setAction(new FunctionalAction(null, IconFiles.COPY_ICON,
+      copyBt.setAction(new FunctionalAction("", IconFiles.COPY_ICON,
             e -> edit.setClipboard()));
       setKeyBinding(copyBt, KeyStroke.getKeyStroke(
             KeyEvent.VK_C, ActionEvent.CTRL_MASK), "C_pressed");

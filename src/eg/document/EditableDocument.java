@@ -10,6 +10,7 @@ import java.io.IOException;
 
 //--Eadgyth--//
 import eg.Languages;
+import eg.LanguageSelector;
 import eg.Constants;
 import eg.utils.FileUtils;
 import eg.utils.Dialogs;
@@ -47,7 +48,8 @@ public final class EditableDocument {
       displayFileContentImpl(f);
       setFileParams(f);
       savedContent = type.getText();
-      setLanguageBySuffix();
+      lang = LanguageSelector.selectLanguage(filename);
+      type.setEditingMode(lang);
    }
 
    /**
@@ -180,7 +182,8 @@ public final class EditableDocument {
     */
    public boolean setFile(File f) {
       setFileParams(f);
-      setLanguageBySuffix();
+      lang = LanguageSelector.selectLanguage(filename);
+      type.setEditingMode(lang);
       type.resetInChangeState();
       savedContent = type.getText();
       return writeToFile(f);
@@ -207,8 +210,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Returns if the current text equals the text at the last
-    * saving point
+    * Returns if the current text equals the text at the last saving point
     *
     * @return  if the current text is saved
     */
@@ -253,7 +255,8 @@ public final class EditableDocument {
    }
 
    /**
-    * Changes the language if no file has been assigned
+    * Changes the language if no file has been assigned or throws an
+    * exception otherwise
     *
     * @param lang  the language which is a constant in {@link eg.Languages}
     */
@@ -396,32 +399,5 @@ public final class EditableDocument {
       filename = f.getName();
       filepath = f.toString();
       dir = f.getParent();
-   }
-
-   private void setLanguageBySuffix() {
-      String ext = FileUtils.fileExtension(filename);
-      switch (ext) {
-         case "java":
-           lang = Languages.JAVA;
-           break;
-         case "html": case "htm":
-            lang = Languages.HTML;
-            break;
-         case "js":
-            lang = Languages.JAVASCRIPT;
-            break;
-         case "css":
-            lang = Languages.CSS;
-            break;
-         case "pl": case "pm":
-            lang = Languages.PERL;
-            break;
-         case "R":
-            lang = Languages.R;
-            break;
-         default:
-            lang = Languages.NORMAL_TEXT;
-      }
-      type.setEditingMode(lang);
    }
 }

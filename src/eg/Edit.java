@@ -17,7 +17,7 @@ import eg.utils.*;
 import eg.document.EditableDocument;
 
 /**
- * The editing of the document in the selected tab
+ * The editing actions invoked by menu selections or toolbar buttons
  */
 public class Edit {
 

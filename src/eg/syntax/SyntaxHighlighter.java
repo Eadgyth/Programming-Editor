@@ -49,8 +49,8 @@ public class SyntaxHighlighter {
     */
    public void highlightLine(String text, int chgPos) {
       int lineStart = LinesFinder.lastNewline(text, chgPos);
-      int lineEnd = LinesFinder.nextNewline(text, chgPos);              
-      String line = LinesFinder.line(text, lineStart, lineEnd);         
+      int lineEnd = LinesFinder.nextNewline(text, chgPos);
+      String line = LinesFinder.line(text, lineStart, lineEnd);
       EventQueue.invokeLater(() -> {
          searcher.setTextParams(text, line, chgPos, lineStart + 1);
          hl.highlight(searcher);
@@ -297,7 +297,7 @@ public class SyntaxHighlighter {
             }
          }
       }
-      
+
       /**
        * Sets the section of html text that is to be highlighted to black
        * and plain. This method modifies the section that is normally
@@ -318,9 +318,6 @@ public class SyntaxHighlighter {
                int end;
                int origEnd = scnPos + section.length();
                if (!isInBlock(">", "<", origEnd)) {
-                  //
-                  // this may comprise several html elements if the text change
-                  // was multiline              
                   end = htmlSectionEnd(origEnd);
                }
                else {
@@ -367,7 +364,6 @@ public class SyntaxHighlighter {
        * Returns the boolean that, if true, indicates that the position
        * where a change happened is found inside a block comment. Returns
        * false regardless of the position if the text change was multiline
-       * is multiline
        *
        * @param blockCmntStart  the string that marks the start of a comment
        * @param blockCmntEnd  the string that marks the end of a comment
@@ -430,7 +426,7 @@ public class SyntaxHighlighter {
             }
          }
       }
-      
+
       private int extensionLength(String[] extensions, int extStart) {
          int length = 0;
          for (String s : extensions) {
@@ -440,7 +436,7 @@ public class SyntaxHighlighter {
             if (found) {
                if (s.length() > length) {
                   length = s.length();
-               }               
+               }
             }
          }
          return length;
@@ -485,7 +481,7 @@ public class SyntaxHighlighter {
             }
          }
       }
-      
+
       private int htmlSectionEnd(int pos) {
          int end = SyntaxUtils.nextBlockEnd(text, pos, "<", ">");
          if (end == -1) {
@@ -542,7 +538,7 @@ public class SyntaxHighlighter {
                      innerEnd = end;
                      String innerScn = text.substring(innerStart, end);
                      setTextParams(text, innerScn, chgPos, innerStart);
-                     hl.highlight(this); 
+                     hl.highlight(this);
                      length = innerScn.length();
                   }
                }
@@ -570,9 +566,9 @@ public class SyntaxHighlighter {
 
                end = SyntaxUtils.nextNonEscaped(scn, quoteMark, start + 1);
                if (end != -1) {
-                  ok = (!isSingleQuote || !SyntaxUtils.isInQuotes(
+                  ok = ok && ((!isSingleQuote || !SyntaxUtils.isInQuotes(
                         scn, end, SyntaxConstants.DOUBLE_QUOTE))
-                        && isEnabled(end + scnStart);
+                        && isEnabled(end + scnStart));
 
                   if (ok) {
                      length = end - start + 1;

@@ -65,8 +65,8 @@ public final class ExtTabbedPane extends JTabbedPane {
     * Adds a new tab.
     *
     * <p> It is required that the specified <code>closeBt</code> has got an
-    * <code>ActionListener</code> added. This listener must first call this
-    * method {@link #iTabMouseOver()}.
+    * <code>ActionListener</code> added. This listener must first call
+    * {@link #iTabMouseOver()}.
     *
     * @param title  the title for the tab
     * @param c  the component to be displayed when the tab is selected
