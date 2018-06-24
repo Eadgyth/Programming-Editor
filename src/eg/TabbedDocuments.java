@@ -96,9 +96,8 @@ public class TabbedDocuments implements Observer {
     * <code>FileTree</code>
     */
    @Override
-   public void update(Observable o, Object arg) {
-      File f = new File(arg.toString());
-      open(f);
+   public void update(Observable obs, Object o) {
+      open((File) o);
    }
 
    /**

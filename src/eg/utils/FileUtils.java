@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //--Eadgyth--/
 import eg.Constants;
 
@@ -44,6 +47,28 @@ public class FileUtils {
    }
    
    /**
+    * Returns an array in which the files in the specified
+    * <code>toSort</code> are sorted by folders an files
+    *
+    * @param toSort  the array of files to be sorted
+    * @return  the array of sorted files
+    */
+   public static File[] sortedFiles(File[] toSort) {
+      List<File> all = new ArrayList<>();
+      List<File> files = new ArrayList<>();
+      for (File f : toSort) {
+           if (f.isDirectory()) {
+               all.add(f);
+           } else {
+               files.add(f);
+           }
+       }
+      all.addAll(files);
+      File[] sortedList = all.toArray(new File[toSort.length]);
+      return sortedList;
+   }
+   
+   /**
     * Deletes a folder and its content
     *
     * @param dir  the directory to be deleted
@@ -51,7 +76,7 @@ public class FileUtils {
     */
    public static boolean deleteFolder(File dir) {
       boolean ret = true;
-      if (dir.isDirectory()){
+      if (dir.isDirectory()) {
          for (File f : dir.listFiles()) {
             ret = ret && FileUtils.deleteFolder(f);
          }

@@ -8,6 +8,7 @@ import java.awt.EventQueue;
 //--Eadgyth--/
 import eg.console.*;
 import eg.ui.MainWin;
+import eg.ui.filetree.FileTree;
 import eg.projects.ProjectActions;
 import eg.projects.ProjectSelector;
 import eg.projects.ProjectTypes;
@@ -108,7 +109,7 @@ public class Projects {
          }
       }
    }
-   
+
    /**
     * Tries to retrieve a project whose configuration is saved in an
     * 'eadproject' file in the project folder or, if such file is not
@@ -335,8 +336,8 @@ public class Projects {
       mw.displayProjectName(current.getProjectName(),
             current.getProjectType().display());
 
-      mw.fileTree().setDeletableDirName(current.getExecutableDirName());
       mw.fileTree().setProjectTree(current.getProjectPath());
+      mw.fileTree().setDeletableDir(current.getExecutableDirName());
       mw.enableChangeProject(false);
       mw.enableOpenProjSetWinActions(true);
    }

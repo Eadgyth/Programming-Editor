@@ -8,7 +8,9 @@ import javax.swing.JMenuItem;
 
 /**
  * A popup menu with menu items for actions that can be selected
- * after a file node or a folder node was right clicked
+ * after a file node or a folder node was right clicked.<br>
+ *
+ * Created in {@link FileTree}
  */
 public class PopupMenu {
 
@@ -20,6 +22,7 @@ public class PopupMenu {
    public final static int FOLDER_OPT = 1;
 
    private final JPopupMenu popMenu = new JPopupMenu();
+   private final JMenuItem openItm = new JMenuItem("Open");
    private final JMenuItem deleteItm = new JMenuItem("Delete");
    private final JMenuItem newFolderItm = new JMenuItem("Create new folder");
 
@@ -29,6 +32,7 @@ public class PopupMenu {
     */
    public PopupMenu(int option) {
       if (option == FILE_OPT) {
+         popMenu.add(openItm);
          popMenu.add(deleteItm);
       }
       else {
@@ -39,7 +43,7 @@ public class PopupMenu {
 
    /**
     * Sets the boolean that specifies if the item for deleting
-    * actions is enabled or disabled
+    * actions is enabled (true) or disabled
     *
     * @param b  the boolean value
     */
@@ -62,6 +66,15 @@ public class PopupMenu {
     */
    public void showMenu(Component c, int x, int y) {
       popMenu.show(c, x, y);
+   }
+   
+   /**
+    * Sets the listener for actions to open a file
+    *
+    * @param al  the <code>ActionListener</code>
+    */
+   void setOpenAction(ActionListener al) {
+      openItm.addActionListener(al);
    }
 
    /**

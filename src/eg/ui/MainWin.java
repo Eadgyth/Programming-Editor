@@ -35,6 +35,7 @@ import eg.edittools.*;
 import eg.ui.menu.MenuBar;
 import eg.ui.menu.FormatMenu;
 import eg.ui.menu.ViewMenu;
+import eg.ui.filetree.TreePanel;
 import eg.ui.filetree.FileTree;
 import eg.ui.tabpane.ExtTabbedPane;
 import eg.console.ConsolePanel;
@@ -62,7 +63,8 @@ public class MainWin {
    private final MenuBar menuBar = new MenuBar();
    private final Toolbar toolbar = new Toolbar();
    private final ExtTabbedPane tabPane = UIComponents.scolledUnfocusableTabPane();
-   private final FileTree fileTree = new FileTree();
+   private final TreePanel treePnl = new TreePanel();
+   private final FileTree fileTree;
    private final ConsolePanel console = new ConsolePanel();
    private final ToolPanel toolPnl = new ToolPanel();
    private final List<AddableEditTool> editTools = new ArrayList<>();
@@ -77,6 +79,7 @@ public class MainWin {
    private int dividerLocHor = 0;
 
    public MainWin() {
+      fileTree = new FileTree(treePnl);
       createAddableEditTools();
       initFrame();
       setViewActions();
@@ -110,7 +113,7 @@ public class MainWin {
     }
 
    /**
-    * Gets this <code>FileTree</code>
+    * Gets this <code>TreePanel</code>
     *
     * @return  this {@link FileTree}
     */
@@ -398,7 +401,7 @@ public class MainWin {
       vm.setConsoleItmAction(e -> showConsole(vm.isConsoleItmSelected()));
       vm.setFileViewItmAction(e -> showFileView(vm.isFileViewItmSelected()));
       vm.setTabItmAction(e -> showTabbar(vm.isTabItmSelected()));
-      fileTree.setCloseAct(e -> vm.doUnselectFileViewAct());
+      treePnl.setCloseAct(e -> vm.doUnselectFileViewAct());
       console.setCloseAct(e -> vm.doConsoleItmAct(false));
    }
 
@@ -421,7 +424,7 @@ public class MainWin {
    private void showFileView(boolean b) {
       if (b) {
          splitHorAll.setDividerSize(6);
-         splitHorAll.setLeftComponent(fileTree.fileTreePnl());
+         splitHorAll.setLeftComponent(treePnl.treePanel());
          if (dividerLocHor == 0) {
             dividerLocHor = (int)(frame.getWidth() * 0.22);
          }
