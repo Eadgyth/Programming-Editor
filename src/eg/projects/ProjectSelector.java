@@ -4,7 +4,7 @@ import eg.console.*;
 import eg.ui.ConsoleOpenable;
 
 /**
- * The selection and creation of a project of type <code>ProjectActions</code>
+ * The selection and creation of a <code>ProjectActions</code>
  * based on the project type
  */
 public class ProjectSelector {
