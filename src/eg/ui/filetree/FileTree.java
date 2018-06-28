@@ -9,7 +9,6 @@ import javax.swing.JTree;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -30,8 +29,6 @@ import eg.utils.FileUtils;
  */
 public class FileTree extends Observable {
 
-   private final static String F_SEP = File.separator;
-
    private final TreePanel treePnl;
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
    private final PopupMenu popupDir  = new PopupMenu(PopupMenu.FOLDER_OPT);
@@ -43,8 +40,9 @@ public class FileTree extends Observable {
    private String projRoot = "";
    private String currentRoot = "";
    private String deletableDir = null;
-   private List<TreePath> expanded = null;
+   private List<TreePath> expandedNodes = null;
    private File selectedFile = null;
+   private DefaultMutableTreeNode selectedNode = null;
 
    /**
     * @param treePanel  the reference to {@link TreePanel}
@@ -83,7 +81,7 @@ public class FileTree extends Observable {
          deletableDir = null;
       }      
       else {
-         deletableDir = projRoot + F_SEP + deletableDirName;
+         deletableDir = projRoot + File.separator + deletableDirName;
       }     
    }
 
@@ -91,9 +89,9 @@ public class FileTree extends Observable {
     * Updates the tree at the currently shown root.
     */
    public void updateTree() {
-      getExpandedNodes();
+      setExpandedNodeList();
       setNewTree(currentRoot);
-      setExpanded();
+      expand();
    }
 
    //
@@ -118,13 +116,9 @@ public class FileTree extends Observable {
    }
 
    private void getFiles(DefaultMutableTreeNode node, File f) {
-      if (f.isFile()) {
-         DefaultMutableTreeNode child = new DefaultMutableTreeNode(f);
-         node.add(child);
-      }
-      else {
-         DefaultMutableTreeNode child = new DefaultMutableTreeNode(f);
-         node.add(child);
+      DefaultMutableTreeNode child = new DefaultMutableTreeNode(f);
+      node.add(child);
+      if (f.isDirectory()) {
          File fList[] = f.listFiles();
          if (fList != null) {
             File fListSort[] = FileUtils.sortedFiles(fList);
@@ -171,8 +165,9 @@ public class FileTree extends Observable {
    }
 
    private void deleteFile() {
-      DefaultMutableTreeNode selectedNode = getSelectedNode();
-      int res = Dialogs.warnConfirmYesNo(deleteMessage(selectedFile));
+      int res = Dialogs.warnConfirmYesNo(
+            selectedFile.getName() + " will be permanently deleted!\nContinue?");
+            
       if (res == JOptionPane.YES_OPTION) {
          boolean success;
          if (selectedFile.isFile()) {
@@ -191,12 +186,7 @@ public class FileTree extends Observable {
       }
    }
 
-   private String deleteMessage(File f) {
-      return f.getName() + " will be permanently deleted!\nContinue?";
-   }
-
    private void newFolder() {
-      DefaultMutableTreeNode parent = getSelectedNode();
       String newFolder = Dialogs.textFieldInput(
             "Enter a name for the new folder", "New folder", "");
 
@@ -205,7 +195,7 @@ public class FileTree extends Observable {
          boolean succes = newDir.mkdirs();
          if (succes) {
             model.insertNodeInto(new DefaultMutableTreeNode(newDir),
-                  parent, parent.getChildCount());
+                  selectedNode, selectedNode.getChildCount());
          }
          else {
             Dialogs.errorMessage("Creating " + newDir.getName() + " failed", null);
@@ -213,11 +203,12 @@ public class FileTree extends Observable {
       }
    }
 
-   private void setSelectedFile() {
-      DefaultMutableTreeNode node = getSelectedNode();
+   private void setSelection() {
+      selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+      System.out.println(selectedNode == null);
       Object nodeInfo = null;
-      if (node != null) {
-         nodeInfo = node.getUserObject();
+      if (selectedNode != null) {
+         nodeInfo = selectedNode.getUserObject();
          selectedFile = (File) nodeInfo;
       }
       else {
@@ -225,21 +216,17 @@ public class FileTree extends Observable {
       }
    }
 
-   private DefaultMutableTreeNode getSelectedNode() {
-      return (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-   }
-
-   private void getExpandedNodes() {
-      expanded = new ArrayList<>();
+   private void setExpandedNodeList() {
+      expandedNodes = new ArrayList<>();
       for (int i = 0; i < tree.getRowCount(); i++) {
          if (tree.isExpanded(i)) {
-            expanded.add(tree.getPathForRow(i));
+            expandedNodes.add(tree.getPathForRow(i));
          }
       }
    }
 
-   private void setExpanded() {
-      expanded.forEach((treePath) -> {
+   private void expand() {
+      expandedNodes.forEach((treePath) -> {
          for (int i = 0; i < tree.getRowCount(); i++) {
             if (treePath.toString().equals(tree.getPathForRow(i).toString())) {
                tree.expandRow(i);
@@ -264,17 +251,15 @@ public class FileTree extends Observable {
          int row = tree.getRowForLocation(e.getX(), e.getY());
          if (SwingUtilities.isRightMouseButton(e)) {
             tree.setSelectionRow(row);
-            if (!tree.isSelectionEmpty()) {
-               setSelectedFile();
-               showMenu(e.getComponent(), e.getX(), e.getY());
-            }
+            setSelection();
+            showMenu(e.getComponent(), e.getX(), e.getY());
          }
          else if (SwingUtilities.isLeftMouseButton(e)) {
             if (row == -1) {
                tree.clearSelection();
             }
             if (e.getClickCount() == 2) {
-               setSelectedFile();
+               setSelection();
                if (selectedFile != null) {
                   if (selectedFile.isFile()) {
                      openFile();
