@@ -68,8 +68,7 @@ public class MainWin {
    private final ConsolePanel console = new ConsolePanel();
    private final ToolPanel toolPnl = new ToolPanel();
    private final List<AddableEditTool> editTools = new ArrayList<>();
-   private final Preferences prefs = Preferences.readProgramPrefs();
-   
+   private final Preferences prefs = Preferences.readProgramPrefs();   
    private final ProjectControlsUpdate projControlsUpdate;
 
    private JSplitPane splitHorAll;
@@ -85,6 +84,8 @@ public class MainWin {
       setViewActions();
       initShowTabbar();
       projControlsUpdate = pcu;
+      dividerLocHor =  (int)(frame.getWidth() * 0.2);
+      dividerLocVert = (int)(frame.getHeight() * 0.6);
    }
 
    /**
@@ -409,9 +410,6 @@ public class MainWin {
       if (b) {
          splitVert.setDividerSize(6);
          splitVert.setBottomComponent(console.consolePnl());
-         if (dividerLocVert == 0) {
-            dividerLocVert = (int)(frame.getHeight() * 0.65);
-         }
          splitVert.setDividerLocation(dividerLocVert);
       }
       else {
@@ -424,10 +422,7 @@ public class MainWin {
    private void showFileView(boolean b) {
       if (b) {
          splitHorAll.setDividerSize(6);
-         splitHorAll.setLeftComponent(treePnl.treePanel());
-         if (dividerLocHor == 0) {
-            dividerLocHor = (int)(frame.getWidth() * 0.22);
-         }
+         splitHorAll.setLeftComponent(treePnl.treePanel());      
          splitHorAll.setDividerLocation(dividerLocHor);
       }
       else {
