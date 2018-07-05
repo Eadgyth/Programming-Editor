@@ -50,6 +50,7 @@ public class FileTree extends Observable {
    public FileTree(TreePanel treePanel) {
       treePnl = treePanel;
       setActions();
+      
    }
 
    /**
@@ -71,7 +72,7 @@ public class FileTree extends Observable {
     * although it is not empty.
     *
     * @param deletableDirName  the name of the directory that is deletable.
-    * Null or the empty string to not set a detetable directory
+    * Null or the empty string to not set a deletable directory
     */
    public void setDeletableDir(String deletableDirName) {
       if (projRoot.length() == 0) {
@@ -104,25 +105,28 @@ public class FileTree extends Observable {
       }
       currentRoot = path;
       treePnl.enableFolderUpAct(!path.equals(projRoot));
-      root = new DefaultMutableTreeNode("root", true);
+      File rootFile = new File(path);
+      root = new DefaultMutableTreeNode(rootFile);
       model = new DefaultTreeModel(root);
-      getFiles(root, new File(path));
+      getFiles(root, rootFile);
       if (tree == null) {
-         tree = new JTree();
+         tree = new JTree(model);
          tree.addMouseListener(mouseListener);
          treePnl.setTree(tree);
       }
-      tree.setModel(model);
+      else {
+         tree.setModel(model);
+      }
    }
 
    private void getFiles(DefaultMutableTreeNode node, File f) {
-      DefaultMutableTreeNode child = new DefaultMutableTreeNode(f);
-      node.add(child);
-      if (f.isDirectory()) {
-         File fList[] = f.listFiles();
-         if (fList != null) {
-            File fListSort[] = FileUtils.sortedFiles(fList);
-            for (File fs : fListSort) {
+      File fList[] = f.listFiles();
+      if (fList != null) {
+         File fListSorted[] = FileUtils.sortedFiles(fList);
+         for (File fs : fListSorted) {
+            DefaultMutableTreeNode child = new DefaultMutableTreeNode(fs);
+            node.add(child);
+            if (fs.isDirectory()) {
                getFiles(child, fs);
             }
          }
@@ -135,8 +139,8 @@ public class FileTree extends Observable {
    }
 
    private void folderUp() {
-      String parent = new File(currentRoot).getParent();
       if (!projRoot.equals(currentRoot)) {
+         String parent = new File(currentRoot).getParent();
          setNewTree(parent);
          tree.expandRow(0);
       }
@@ -177,7 +181,13 @@ public class FileTree extends Observable {
             success = FileUtils.deleteFolder(selectedFile);
          }
          if (success) {
-            model.removeNodeFromParent(selectedNode);
+            System.out.println(tree.getModel().getRoot());
+            if (selectedNode == tree.getModel().getRoot()) {
+               folderUp();
+            }
+            else {
+               model.removeNodeFromParent(selectedNode);
+            }
          }
          else {
             Dialogs.errorMessage("Deleting " + selectedFile.getName()
@@ -205,7 +215,6 @@ public class FileTree extends Observable {
 
    private void setSelection() {
       selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-      System.out.println(selectedNode == null);
       Object nodeInfo = null;
       if (selectedNode != null) {
          nodeInfo = selectedNode.getUserObject();
