@@ -65,7 +65,7 @@ public class TreePanel {
     */
    public void setTree(JTree tree) {
       holdTreePnl.add(tree);
-      tree.setRootVisible(false);
+      tree.setRootVisible(true);
       tree.setFont(Constants.VERDANA_PLAIN_8);
       tree.setBorder(new LineBorder(Color.WHITE, 5));
       tree.setCellRenderer(new TreeRenderer());
