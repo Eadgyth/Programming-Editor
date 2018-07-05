@@ -56,12 +56,11 @@ public class TabbedDocuments implements Observer {
       tabPane = mw.tabPane();
       edit = new Edit();
       mw.setEditTextActions(edit);
-      proj = new Projects(mw, edtDoc);
+      proj = new Projects(mw, edtDoc, prefs.getProperty("projectRoot"));
       mw.setProjectActions(proj);
       format.setEditAreaArr(editArea);
       setLanguage();
-      String recentDir = prefs.getProperty("recentPath");
-      fc = new FileChooser(recentDir);
+      fc = new FileChooser(prefs.getProperty("recentPath"));
       tabPane.addChangeListener((ChangeEvent ce) -> {
          JTabbedPane sourceTb = (JTabbedPane) ce.getSource();
          iTab = sourceTb.getSelectedIndex();

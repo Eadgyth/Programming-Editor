@@ -152,6 +152,16 @@ public class ViewMenu {
    public void selectTabsItm(boolean b) {
       tabItm.setSelected(b);
    }
+   
+   /**
+    * Sets the selection state, indicated by the boolean value, of the
+    * item to show or hide the file tree
+    *
+    * @param b  the boolean value
+    */
+   public void selectFileViewItm(boolean b) {
+      fileViewItm.setSelected(b);
+   }
 
    /**
     * Sets the boolean that specifies if actions to show or hide the

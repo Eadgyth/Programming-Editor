@@ -37,13 +37,19 @@ public class Projects {
    /**
     * @param mw  the reference to {@link MainWin}
     * @param edtDoc  the array of {@link EditableDocument}
+    * @param lastProject  the recent project directory that is shown in the
+    * file tree (the project is only set active when a file is opened though).
+    * Null or the empty string to not show a directory
     */
-   public Projects(MainWin mw, EditableDocument[] edtDoc) {
+   public Projects(MainWin mw, EditableDocument[] edtDoc, String lastProject) {
       this.mw = mw;
       this.edtDoc = edtDoc;
       projTypeChg = new ProjectTypeChange(mw.projControlsUpdate());
       proc = new ProcessStarter(mw.console());
       projSelect = new ProjectSelector(mw.consoleOpener(), proc, mw.console());
+      if (lastProject != null && lastProject.length() > 0) {
+         mw.fileTree().setProjectTree(lastProject);
+      }
    }
 
    /**
@@ -54,9 +60,11 @@ public class Projects {
     */
    public void setDocumentAt(int i) {
       iDoc = i;
+      if (!edtDoc[iDoc].hasFile()) {
+         return;
+      }
       ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), false);
       boolean isListed = inList != null;
-      mw.enableOpenProjSetWinActions(isListed);
       if (isListed) {
          mw.enableChangeProject(inList != current);
          if (!current.isInProject(edtDoc[iDoc].dir())) {
@@ -157,16 +165,18 @@ public class Projects {
     * Opens the window of the <code>SettingsWindow</code> object that belongs
     * to a project.
     * <p>
-    * Depending on the currently set <code>EditableDocument</code> the
+    * Depending on the currently selected <code>EditableDocument</code> the
     * window belongs to the currently active project or to one of this
     * listed projects.
     */
    public void openSettingsWindow() {
+      boolean open = true;
       ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), false);
       if (inList != null) {
-         if (inList == current || changeProject(inList)) {
-            current.makeSettingsWindowVisible();
-         }
+         open = inList == current || changeProject(inList);
+      }
+      if (open) {
+         current.makeSettingsWindowVisible();
       }
    }
 
@@ -296,7 +306,6 @@ public class Projects {
          current = toChangeTo;
          current.storeConfiguration();
          updateProjectSetting();
-         //mw.enableChangeProject(false);
          return true;
       }
       else {
@@ -310,6 +319,7 @@ public class Projects {
       for (ProjectActions p : projList) {
          if (p.isInProject(dir) && (!excludeCurrent || p != current)) {
             inList = p;
+            break;
          }
       }
       return inList;
@@ -325,7 +335,6 @@ public class Projects {
          current.storeConfiguration();
          projList.add(current);
          updateProjectSetting();
-         updateFileTree();
       }
    }
 

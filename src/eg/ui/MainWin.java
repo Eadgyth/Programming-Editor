@@ -68,24 +68,25 @@ public class MainWin {
    private final ConsolePanel console = new ConsolePanel();
    private final ToolPanel toolPnl = new ToolPanel();
    private final List<AddableEditTool> editTools = new ArrayList<>();
-   private final Preferences prefs = Preferences.readProgramPrefs();   
+   private final Preferences prefs = Preferences.readProgramPrefs();
    private final ProjectControlsUpdate projControlsUpdate;
 
    private JSplitPane splitHorAll;
    private JSplitPane splitHor;
    private JSplitPane splitVert;
-   private int dividerLocVert = 0;
-   private int dividerLocHor = 0;
+   private int dividerLocVert;
+   private int dividerLocHor;
 
    public MainWin() {
       fileTree = new FileTree(treePnl);
       createAddableEditTools();
       initFrame();
       setViewActions();
-      initShowTabbar();
-      projControlsUpdate = pcu;
       dividerLocHor =  (int)(frame.getWidth() * 0.2);
       dividerLocVert = (int)(frame.getHeight() * 0.6);
+      initShowTabbar();
+      initShowFileView();
+      projControlsUpdate = pcu;
    }
 
    /**
@@ -130,7 +131,7 @@ public class MainWin {
     public List<AddableEditTool> editTools() {
        return editTools;
     }
-    
+
    /**
     * Gets a new <code>ConsoleOpenable</code>
     *
@@ -139,7 +140,7 @@ public class MainWin {
    public ConsoleOpenable consoleOpener() {
       return menuBar.viewMenu().consoleOpener();
    }
-   
+
    /**
     * Gets this <code>ProjectControlsUpdate</code>
     *
@@ -222,7 +223,7 @@ public class MainWin {
       toolbar.enableUndoRedoBts(isUndo, isRedo);
       menuBar.editMenu().enableUndoRedoItms(isUndo, isRedo);
    }
-   
+
    /**
     * Sets the boolean that specifies if save actions are enabled (true)
     * or disabled
@@ -265,7 +266,7 @@ public class MainWin {
       menuBar.projectMenu().enableChangeProjItm(b);
       toolbar.enableChangeProjBt(b);
    }
-   
+
    /**
     * Sets the boolean that specifies if actions to open a project's
     * settings window are enabled (true) or disabled
@@ -337,7 +338,7 @@ public class MainWin {
       menuBar.editMenu().setChangeLanguageActions(td);
       toolbar.setFileActions(td);
       fileTree.addObserver(td);
-      
+
       winListener(new WindowAdapter() {
 
          @Override
@@ -422,7 +423,7 @@ public class MainWin {
    private void showFileView(boolean b) {
       if (b) {
          splitHorAll.setDividerSize(6);
-         splitHorAll.setLeftComponent(treePnl.treePanel());      
+         splitHorAll.setLeftComponent(treePnl.treePanel());
          splitHorAll.setDividerLocation(dividerLocHor);
       }
       else {
@@ -435,18 +436,16 @@ public class MainWin {
    private void showToolPnl(boolean b) {
       if (b) {
          splitHor.setDividerSize(6);
-         splitHor.setRightComponent(toolPnl.toolPanel()); 
+         splitHor.setRightComponent(toolPnl.toolPanel());
       }
       else {
          splitHor.setDividerSize(0);
          splitHor.setRightComponent(null);
       }
    }
-   
+
    private void showTabbar(boolean show) {
       tabPane.showTabbar(show);
-      String state = show ? "show" : "hide";
-      prefs.storePrefs("showTabs", state);
    }
 
    private void setWordwrapInStatusBar(boolean isWordwrap) {
@@ -459,20 +458,21 @@ public class MainWin {
          wordwrapLb.setText("");
       }
    }
-   
-   private void exit(TabbedDocuments td) {
-      editTools.forEach((t) -> {
-         t.end();
-      });
-      if (td.isAllClosed()) {
-         System.exit(0);
-      }
-   }
 
    private void initShowTabbar() {
       boolean show = "show".equals(prefs.getProperty("showTabs"));
-      tabPane.showTabbar(show);
+      if (show) {
+         tabPane.showTabbar(show);
+      }
       menuBar.viewMenu().selectTabsItm(show);
+   }
+   
+   private void initShowFileView() {
+      boolean show = "show".equals(prefs.getProperty("fileView"));
+      if (show) {
+         showFileView(show);
+      }
+      menuBar.viewMenu().selectFileViewItm(show);
    }
 
    private void createAddableEditTools() {
@@ -504,13 +504,13 @@ public class MainWin {
          },
          i);
    }
-   
+
    private void winListener(WindowListener wl) {
       frame.addWindowListener(wl);
    }
-   
+
    private final ProjectControlsUpdate pcu = new ProjectControlsUpdate() {
-      
+
       @Override
       public void enableProjectActions(boolean isCompile, boolean isRun,
             boolean isBuild) {
@@ -518,12 +518,26 @@ public class MainWin {
          menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun, isBuild);
          toolbar.enableProjectActionsBts(isCompile, isRun);
       }
-         
+
       @Override
       public void setBuildLabel(String label) {
          menuBar.projectMenu().setBuildLabel(label);
       }
    };
+   
+   private void exit(TabbedDocuments td) {
+      editTools.forEach((t) -> {
+         t.end();
+      });
+      ViewMenu vm = menuBar.viewMenu();
+      String state = vm.isTabItmSelected() ? "show" : "hide";
+      prefs.storePrefs("showTabs", state);
+      state = vm.isFileViewItmSelected() ? "show" : "hide";
+      prefs.storePrefs("fileView", state);
+      if (td.isAllClosed()) {
+         System.exit(0);
+      }
+   }
 
    private void initFrame() {
       initSplitPane();
