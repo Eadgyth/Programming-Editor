@@ -21,8 +21,8 @@ public class LanguageSelector {
       Languages lang;
       switch (ext) {
          case "java":
-           lang = Languages.JAVA;
-           break;
+            lang = Languages.JAVA;
+            break;
          case "html": case "htm":
             lang = Languages.HTML;
             break;

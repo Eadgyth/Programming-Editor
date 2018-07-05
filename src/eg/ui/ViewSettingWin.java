@@ -74,7 +74,7 @@ public class ViewSettingWin {
    }
 
    /**
-    * Returns the boolean value that indicates if the checkbox for
+    * Returns the boolean that indicates if the checkbox for
     * showing the toolbar is ticked
     *
     * @return  the boolean value
@@ -84,7 +84,7 @@ public class ViewSettingWin {
    }
    
    /**
-    * Returns the boolean value that indicates if the checkbox for
+    * Returns the boolean that indicates if the checkbox for
     * showing line numbers is ticked
     *
     * @return the boolean value
@@ -94,7 +94,7 @@ public class ViewSettingWin {
    }
    
    /**
-    * Returns the boolean value that indicates if the checkbox for
+    * Returns the boolean that indicates if the checkbox for
     * showing the statusbar is ticked
     *
     * @return the boolean value
