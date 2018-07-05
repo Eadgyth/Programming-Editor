@@ -34,6 +34,7 @@ public class Preferences {
       "language",
       "wordWrap",
       "showTabs",
+      "fileView",
       "iconSize",
       "projectRoot",
       "mainProjectFile",
