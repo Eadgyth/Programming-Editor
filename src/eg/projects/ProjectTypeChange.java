@@ -18,7 +18,6 @@ public class ProjectTypeChange {
    
    /**
     * Enables/disables menu items and buttons for project actions.<br>
-    * Calls {@link ProjectControlsUpdate#enableProjectActions(boolean,boolean,boolean)}
     *
     * @param projType  the project type which has a valaue in {@link ProjectTypes}
     */
@@ -43,7 +42,6 @@ public class ProjectTypeChange {
    
    /**
     * Disables menu items and buttons for project actions.<br>
-    * Calls {@link ProjectControlsUpdate#enableProjectActions(boolean,boolean,boolean)}
     */
    public void disableProjectActions() {
       update.enableProjectActions(false, false, false);
@@ -51,12 +49,10 @@ public class ProjectTypeChange {
 
    /**
     * Sets the label for the menu item for building actions.<br>
-    * Calls {@link ProjectControlsUpdate#setBuildLabel(String)}.
     *
     * @param projType  the project type which has a valaue in {@link ProjectTypes}
     */ 
    public void setBuildLabel(ProjectTypes projType) {
-
       switch (projType) {
          case JAVA:
             update.setBuildLabel("Create jar");

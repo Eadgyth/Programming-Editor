@@ -16,7 +16,7 @@ import eg.utils.Dialogs;
  * are entered.
  */
 public abstract class AbstractProject implements Configurable {
-   
+
    /**
     * The object of <code>InputOptionsBuilder</code> which a project
     * uses to build the content of this <code>SettingsWindow</code>
@@ -24,8 +24,8 @@ public abstract class AbstractProject implements Configurable {
     * @see SettingsWindow.InputOptionsBuilder
     */
    protected final SettingsWindow.InputOptionsBuilder inputOptions;
-   
-   private final static String F_SEP = File.separator;      
+
+   private final static String F_SEP = File.separator;
    private final static Preferences PREFS = Preferences.readProgramPrefs();
    private final static Preferences EAD_PROJ = Preferences.prefs();
    private final SettingsWindow sw;
@@ -111,7 +111,7 @@ public abstract class AbstractProject implements Configurable {
       }
       return success;
    }
-   
+
    @Override
    public final ProjectTypes getProjectType() {
       return projType;
@@ -158,14 +158,14 @@ public abstract class AbstractProject implements Configurable {
     */
    protected AbstractProject(ProjectTypes projType, boolean useProjectFile,
          String sourceExtension) {
-            
+
       this.projType = projType;
-      this.sourceExtension = sourceExtension;
+      this.sourceExtension = "." + sourceExtension;
       this.useProjectFile = useProjectFile;
       sw = new SettingsWindow();
       inputOptions = sw.getInputOptionsBuilder();
    }
-   
+
    /**
     * Sets command parameters that are necessary for actions defined in
     * <code>ProjectActions</code>
@@ -205,6 +205,16 @@ public abstract class AbstractProject implements Configurable {
    }
    
    /**
+    * Returns the extension of source files (or of the main
+    * file if extensions differ) with the beginning period
+    *
+    * @return  the extension. Null if no source extension is given
+    */
+   protected String getSourceExtension() {
+      return sourceExtension;
+   }
+
+   /**
     * Returns command options
     *
     * @return  the options. The empty string if no options are given
@@ -221,11 +231,11 @@ public abstract class AbstractProject implements Configurable {
    protected String getCmdArgs() {
       return args;
    }
-   
+
    /**
     * Returns the compile option
     *
-    * @return  the option. The empty string if no option is given 
+    * @return  the option. The empty string if no option is given
     */
    protected String getCompileOption() {
       return compileOption;
@@ -304,7 +314,7 @@ public abstract class AbstractProject implements Configurable {
          if (sourceDirName.length() > 0) {
             sourceRoot = sourceRoot + "/" + sourceDirName;
          }
-         findNamespace(sourceRoot, mainFileName + "." + sourceExtension);
+         findNamespace(sourceRoot, mainFileName + sourceExtension);
          if (namespace.length() > 0) {
             if (namespace.length() > sourceRoot.length()) {
                namespace = namespace.substring(sourceRoot.length() + 1);
@@ -434,7 +444,7 @@ public abstract class AbstractProject implements Configurable {
          sb.append(namespace).append("/");
       }
       if (mainFileName.length() > 0) {
-         sb.append(mainFileName).append(".").append(sourceExtension);
+         sb.append(mainFileName).append(sourceExtension);
       }
       return sb.toString();
    }
@@ -508,8 +518,8 @@ public abstract class AbstractProject implements Configurable {
          EAD_PROJ.storeEadproject("projectType", projType.toString(), projectRoot);
          if (isPathname) {
             EAD_PROJ.storeEadproject("mainProjectFile", namespace + F_SEP
-                  + mainFileName,
-                  projectRoot);
+                  + mainFileName, projectRoot);
+
             EAD_PROJ.storeEadproject("namespace", "", projectRoot);
          }
          else {
@@ -538,7 +548,7 @@ public abstract class AbstractProject implements Configurable {
          }
       }
    }
-   
+
    //
    //--Strings for messages
    //
@@ -555,18 +565,18 @@ public abstract class AbstractProject implements Configurable {
          + " the root directory of the project."
          + "</html>";
    }
-   
+
    private final static String DELETE_EAD_PROJ_OPT
          =  "<html>"
          + "Saving the project settings in the project folder is"
          + " no more selected.<br>"
          + " Remove the \"eadproject\" file?"
          + "</html>";
-   
+
    private final static String INPUT_ERROR_PROJ_ROOT
          =  "The entry for the project root cannot be matched with an"
          + " existing file.";
-        
+
    private final static String INPUT_ERROR_GENERAL
          =  "The entries cannot be matched with an existing file.";
 }

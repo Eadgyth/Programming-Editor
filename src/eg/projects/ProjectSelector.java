@@ -28,9 +28,7 @@ public class ProjectSelector {
    }
 
    /**
-    * Returns a new <code>ProjectActions</code>.<br>
-    * Also creates the settings window by calling {@link Configurable#buildSettingsWindow()}
-    * of the new <code>ProjectActions</code>
+    * Returns a new <code>ProjectActions</code>
     *
     * @param projType  the project type which has a valaue in {@link ProjectTypes}
     * @return  a new {@link ProjectActions}
@@ -53,9 +51,6 @@ public class ProjectSelector {
          case GENERIC:
             newProj = new GenericProject();
             break;
-      }
-      if (newProj != null) {
-         newProj.buildSettingsWindow();
       }
       return newProj;
    }

@@ -63,7 +63,7 @@ public class EditMenu {
     *
     * @param edit  the reference to {@link Edit}
     */
-   public void setEditTextActions(Edit edit) {
+   public void setEditActions(Edit edit) {
       undoItm.addActionListener(e -> edit.undo());
       redoItm.addActionListener(e -> edit.redo());
       cutItm.addActionListener(e -> edit.cut());

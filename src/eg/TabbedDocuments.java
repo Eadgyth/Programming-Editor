@@ -52,15 +52,15 @@ public class TabbedDocuments implements Observer {
     */
    public TabbedDocuments(EditAreaFormat format, MainWin mw) {
       this.format = format;
+      format.setEditAreaArr(editArea);
       this.mw = mw;
-      tabPane = mw.tabPane();
       edit = new Edit();
-      mw.setEditTextActions(edit);
+      mw.setEditActions(edit);
       proj = new Projects(mw, edtDoc, prefs.getProperty("projectRoot"));
       mw.setProjectActions(proj);
-      format.setEditAreaArr(editArea);
       setLanguage();
       fc = new FileChooser(prefs.getProperty("recentPath"));
+      tabPane = mw.tabPane();
       tabPane.addChangeListener((ChangeEvent ce) -> {
          JTabbedPane sourceTb = (JTabbedPane) ce.getSource();
          iTab = sourceTb.getSelectedIndex();
@@ -93,6 +93,8 @@ public class TabbedDocuments implements Observer {
    /**
     * Opens a tab with a file that is double clicked in
     * <code>FileTree</code>
+    * @param obs  the Observable
+    * @param o  the object that has changed in obs
     */
    @Override
    public void update(Observable obs, Object o) {

@@ -34,7 +34,8 @@ public class ProcessStarter {
    private final ConsolePanel consPnl;
    /*
     * Accociates working directories with commands entered in the dialog */
-   private final HashMap<String, String> cmdMap = new HashMap<>();   
+   private final HashMap<String, String> cmdMap = new HashMap<>();
+
    private String workingDir = System.getProperty("user.home");
    private String workingDirName = new File(workingDir).getName();
    private String previousCmd = "";
@@ -75,7 +76,7 @@ public class ProcessStarter {
       else {
          previousCmd = "";
          consPnl.enableRunBt(false);
-      }     
+      }
    }
 
    /**
@@ -140,14 +141,14 @@ public class ProcessStarter {
          }
          else {
             consPnl.enableRunBt(previousCmd.length() > 0);
-         }       
+         }
       }
    }
 
    private void startPreviousCmd() {
       startProcess(previousCmd);
    }
-   
+
    private void endProcess() {
       if (process != null) {
          kill = () -> {
@@ -195,7 +196,7 @@ public class ProcessStarter {
          return null;
       }
    }
-   
+
    private void sendOutput(PrintWriter out) {
       KeyListener keyListener = new KeyAdapter() {
 
@@ -232,7 +233,7 @@ public class ProcessStarter {
       };
       consPnl.addCaretListener(caretListener);
    }
-   
+
    private void setConsoleActive(boolean isActive) {
       if (!isActive) {
          if (previousCmd.length() > 0) {
@@ -245,7 +246,7 @@ public class ProcessStarter {
       consPnl.setActive(isActive);
       this.isActive = isActive;
    }
-   
+
    private void setEndingMsg(int exitVal) {
       if (exitVal == 0) {
          consPnl.appendText( "\n<<Process ended normally (exit value = "
@@ -262,20 +263,20 @@ public class ProcessStarter {
          }
       }
    }
-   
+
    //
    // Strings for messages
-   
+
    private final static String PROCESS_RUNNING_MSG
          = "A currently running process must be quit before"
          + " a new process can be started.";
-   
+
    private String cmdNotFoundMsg(String cmd) {
       return
          "<<Error: cannot find " + cmd + " in the directory "
          + workingDir + ">>\n";
    }
-   
+
    private String enterCmdMsg() {
       return
          "Enter a system command which is executed in the current"

@@ -1,7 +1,9 @@
 package eg.projects;
 
 /**
- * The interface that defines actions in a project
+ * The interface that defines actions in a project.
+ * <br>
+ * These methods are called by {@link eg.Projects}.
  */
 public interface ProjectActions extends Configurable {
    

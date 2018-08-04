@@ -252,6 +252,125 @@ public class SettingsWindow {
    public void setSaveEadprojectSelected(boolean isSelected) {
       saveConfig.setSelected(isSelected);
    }
+   
+    /**
+    * The building of the content of <code>SettingsWindow</code> with
+    * selectable input options.
+    * <p>
+    * Is created in {@link SettingsWindow}
+    */
+   public static class InputOptionsBuilder {
+
+      private final SettingsWindow sw;
+
+      private InputOptionsBuilder(SettingsWindow sw) {
+         this.sw = sw;
+      }
+
+      /**
+       * Adds the option to enter a name for the main project file and
+       * sets the label for the corresponding text field
+       *
+       * @param fileLabel  the label which the term "(without extension)" is
+       * added to
+       * @return  this
+       */
+      public InputOptionsBuilder addFileInput(String fileLabel) {
+         sw.fileLabel = fileLabel + " (without extension)";
+         return this;
+      }
+
+      /**
+       * Adds the option to enter a name of a directory where source
+       * files are stored
+       *
+       * @return  this
+       */
+      public InputOptionsBuilder addSourceDirInput() {
+         sw.useSrcDir = true;
+         return  this;
+      }
+
+      /**
+       * Adds the option to enter a name of a directory where executable
+       * files are stored
+       *
+       * @return  this
+       */
+      public InputOptionsBuilder addExecDirInput() {
+         sw.useExecDir = true;
+         return this;
+      }
+
+      /**
+       * Adds the option to enter command options
+       *
+       * @return  this
+       */
+      public InputOptionsBuilder addCmdOptionsInput() {
+         sw.useCmdOptions = true;
+         return this;
+      }
+
+      /**
+       * Adds the option to enter command arguments
+       *
+       * @return  this
+       */
+      public InputOptionsBuilder addCmdArgsInput() {
+         sw.useCmdArgs = true;
+         return this;
+      }
+
+
+      /**
+       * Adds the option to enter a compile option and sets the label
+       * for the corresponding text field
+       *
+       * @param label  the label
+       * @return  this
+       */
+      public InputOptionsBuilder addCompileOptionInput(String label) {
+         sw.compileOptionLb = label;
+         return this;
+      }
+
+      /**
+       * Adds the option to enter extensions of files that may be used
+       * for a file search and sets the label for the corresponding text
+       * field
+       *
+       * @param label  the label
+       * @return  this
+       */
+       public InputOptionsBuilder addExtensionsInput(String label) {
+          sw.extensionsLabel = label;
+          return this;
+       }
+
+      /**
+       * Adds the option to enter a build name and sets the label for the
+       * corresponding text field
+       *
+       * @param  label  the label that specifies the kind of build
+       * @return  this
+       */
+      public InputOptionsBuilder addBuildNameInput(String label) {
+         sw.buildNameLabel = label;
+         return this;
+      }
+
+      /**
+       * Builds the window content of <code>SettingsWindow</code>.
+       * <p>
+       * If none of the methods to add input options has been invoked
+       * the window shows only the field to enter the name of a root
+       * directory of a project.
+       */
+      public void buildWindow() {
+         sw.buildWindow();
+      }
+   }
 
    //
    //--private--/
@@ -260,7 +379,7 @@ public class SettingsWindow {
    private void buildWindow() {
       if (frame.getContentPane().getComponentCount() > 0) {
          throw new IllegalStateException(
-               "The settings window has been initialized already");
+               "The window has been initialized already");
       }
       initWindow();
    }
@@ -410,124 +529,5 @@ public class SettingsWindow {
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
       frame.getContentPane().add(combinedPnl());
       frame.pack();
-   }
-
-   /**
-    * The building of the content of <code>SettingsWindow</code> with
-    * selectable input options.
-    * <p>
-    * Is created in {@link SettingsWindow}
-    */
-   public static class InputOptionsBuilder {
-
-      private final SettingsWindow sw;
-
-      private InputOptionsBuilder(SettingsWindow sw) {
-         this.sw = sw;
-      }
-
-      /**
-       * Adds the option to enter a name for the main project file and
-       * sets the label for the corresponding text field
-       *
-       * @param fileLabel  the label which the term "(without extension)" is
-       * added to
-       * @return  this
-       */
-      public InputOptionsBuilder addFileInput(String fileLabel) {
-         sw.fileLabel = fileLabel + " (without extension)";
-         return this;
-      }
-
-      /**
-       * Adds the option to enter a name of a directory where source
-       * files are stored
-       *
-       * @return  this
-       */
-      public InputOptionsBuilder addSourceDirInput() {
-         sw.useSrcDir = true;
-         return  this;
-      }
-
-      /**
-       * Adds the option to enter a name of a directory where executable
-       * files are stored
-       *
-       * @return  this
-       */
-      public InputOptionsBuilder addExecDirInput() {
-         sw.useExecDir = true;
-         return this;
-      }
-
-      /**
-       * Adds the option to enter command options
-       *
-       * @return  this
-       */
-      public InputOptionsBuilder addCmdOptionsInput() {
-         sw.useCmdOptions = true;
-         return this;
-      }
-
-      /**
-       * Adds the option to enter command arguments
-       *
-       * @return  this
-       */
-      public InputOptionsBuilder addCmdArgsInput() {
-         sw.useCmdArgs = true;
-         return this;
-      }
-
-
-      /**
-       * Adds the option to enter a compile option and sets the label
-       * for the corresponding text field
-       *
-       * @param label  the label
-       * @return  this
-       */
-      public InputOptionsBuilder addCompileOptionInput(String label) {
-         sw.compileOptionLb = label;
-         return this;
-      }
-
-      /**
-       * Adds the option to enter extensions of files that may be used
-       * for a file search and sets the label for the corresponding text
-       * field
-       *
-       * @param label  the label
-       * @return  this
-       */
-       public InputOptionsBuilder addExtensionsInput(String label) {
-          sw.extensionsLabel = label;
-          return this;
-       }
-
-      /**
-       * Adds the option to enter a build name and sets the label for the
-       * corresponding text field.
-       *
-       * @param  label  the label that specifies the kind of build
-       * @return  this
-       */
-      public InputOptionsBuilder addBuildNameInput(String label) {
-         sw.buildNameLabel = label;
-         return this;
-      }
-
-      /**
-       * Builds the window content of <code>SettingsWindow</code>.
-       * <p>
-       * If none of the methods to add input options has been invoked
-       * the window shows only the field to enter the name of a root
-       * directory of a project.
-       */
-      public void buildWindow() {
-         sw.buildWindow();
-      }
    }
 }

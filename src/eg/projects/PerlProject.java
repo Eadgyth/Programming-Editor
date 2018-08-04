@@ -40,7 +40,7 @@ public final class PerlProject extends AbstractProject implements ProjectActions
    
    @Override
    protected void setCommandParameters() {
-      String main = getMainFileName() + ".pl";
+      String main = getMainFileName() + getSourceExtension();
       if (getCmdArgs().length() > 0) {
          main += " " + getCmdArgs();
       }

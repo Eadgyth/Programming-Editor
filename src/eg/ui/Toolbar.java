@@ -70,7 +70,7 @@ public class Toolbar {
     *
     * @param edit  the reference to {@link Edit}
     */
-   public void setEditTextActions(Edit edit) {
+   public void setEditActions(Edit edit) {
       undoBt.addActionListener(e -> edit.undo());
       redoBt.addActionListener(e -> edit.redo());
       cutBt.addActionListener(e -> edit.cut());

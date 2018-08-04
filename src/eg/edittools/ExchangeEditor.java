@@ -21,7 +21,6 @@ import javax.swing.JComponent;
 import eg.Constants;
 import eg.Languages;
 import eg.Edit;
-import eg.Preferences;
 import eg.FunctionalAction;
 import eg.ui.EditArea;
 import eg.ui.IconFiles;
@@ -48,7 +47,6 @@ public class ExchangeEditor implements AddableEditTool {
    private final JButton outdentBt  = new JButton();
    private final JButton clearBt    = new JButton(IconFiles.CLEAR_ICON);
 
-   private final Preferences prefs = Preferences.readProgramPrefs();
    private final JPanel editAreaPnl;
    private final TextExchange exch;
    private final Edit edit = new Edit();
@@ -57,7 +55,6 @@ public class ExchangeEditor implements AddableEditTool {
       EditArea ea = new EditArea(false, false, "Consolas", 8);
       editAreaPnl = ea.editAreaPnl();
       EditableDocument ed = new EditableDocument(ea, Languages.NORMAL_TEXT);
-      ed.setIndentUnit(prefs.getProperty("indentUnit"));
       ed.setEditingStateReadable(editReadable);
       exch = new TextExchange(ed);
       edit.setDocument(ed);
@@ -223,11 +220,7 @@ public class ExchangeEditor implements AddableEditTool {
 
       clearBt.addActionListener(e -> exch.clear());
       
-      EventQueue.invokeLater(() -> {
-         String recentDir = prefs.getProperty("recentPath");
-         exch.setFileChooser(new eg.FileChooser(recentDir));
-         loadBt.addActionListener(e -> exch.loadFile());
-      });
+      loadBt.addActionListener(e -> exch.loadFile());
    }
 
    private void setKeyBinding(JButton bt, KeyStroke ks, String key) {

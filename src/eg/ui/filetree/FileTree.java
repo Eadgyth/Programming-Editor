@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.JTree;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -17,7 +18,6 @@ import java.io.File;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Enumeration;
 import java.util.Observable;
 
 //--Eadgyth--/
@@ -49,8 +49,7 @@ public class FileTree extends Observable {
     */
    public FileTree(TreePanel treePanel) {
       treePnl = treePanel;
-      setActions();
-      
+      setActions();   
    }
 
    /**
@@ -78,7 +77,7 @@ public class FileTree extends Observable {
       if (projRoot.length() == 0) {
          throw new IllegalStateException("No project root has been set");
       }
-      if (deletableDirName.length() == 0 || deletableDirName == null) {
+      if (deletableDirName == null || deletableDirName.length() == 0) {
          deletableDir = null;
       }      
       else {
@@ -215,9 +214,8 @@ public class FileTree extends Observable {
 
    private void setSelection() {
       selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-      Object nodeInfo = null;
       if (selectedNode != null) {
-         nodeInfo = selectedNode.getUserObject();
+         Object nodeInfo = selectedNode.getUserObject();
          selectedFile = (File) nodeInfo;
       }
       else {

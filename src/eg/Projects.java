@@ -8,7 +8,6 @@ import java.awt.EventQueue;
 //--Eadgyth--/
 import eg.console.*;
 import eg.ui.MainWin;
-import eg.ui.filetree.FileTree;
 import eg.projects.ProjectActions;
 import eg.projects.ProjectSelector;
 import eg.projects.ProjectTypes;
@@ -32,13 +31,13 @@ public class Projects {
 
    private ProjectActions current;
    private int iDoc;
-   private boolean isReplaceProj = false;
+   private boolean isReplace = false;
 
    /**
     * @param mw  the reference to {@link MainWin}
     * @param edtDoc  the array of {@link EditableDocument}
     * @param lastProject  the recent project directory that is shown in the
-    * file tree (the project is only set active when a file is opened though).
+    * file view (the project is only set active after a file is opened).
     * Null or the empty string to not show a directory
     */
    public Projects(MainWin mw, EditableDocument[] edtDoc, String lastProject) {
@@ -87,33 +86,8 @@ public class Projects {
          assignProjectImpl(projType);
       }
       else {
-         if (inList == current) {
-            isReplaceProj = projType != inList.getProjectType();
-            if (isReplaceProj) {
-               int res = Dialogs.warnConfirmYesNo(
-                     replaceProjectMessage(
-                           edtDoc[iDoc].filename(),
-                           inList.getProjectName(),
-                           inList.getProjectType().display(),
-                           projType.display()));
-
-               if (0 == res) {
-                  assignProjectImpl(projType);
-               }
-            }
-            else {
-               Dialogs.infoMessage(
-                     projectAssignedMessage(
-                           edtDoc[iDoc].filename(),
-                           inList.getProjectName(),
-                           inList.getProjectType().display()),
-                           null);
-            }
-         }
-         else {
-            if (changeProject(inList)) {
-               assignProject(projType);
-            }
+         if (inList == current || changeProject(inList)) {
+            replaceCurrent(projType, inList);
          }
       }
    }
@@ -136,11 +110,9 @@ public class Projects {
             projToFind = projSelect.createProject(t);
             isFound = projToFind.retrieveProject(dir);
             if (isFound) {
+               projToFind.buildSettingsWindow();
                break;
             }
-            else {
-              projToFind = null;
-           }
          }
          if (isFound) {
             ProjectActions projFin = projToFind;
@@ -151,7 +123,8 @@ public class Projects {
                updateProjectSetting();
             }
             else {
-               if (selectFromList(dir, true) == null) {
+               ProjectActions fromList = selectFromList(dir, true);
+               if (fromList == null) {
                   projFin.setConfiguringAction(e -> configureProject(projFin));
                   projList.add(projFin);
                   changeProject(projFin);
@@ -162,12 +135,9 @@ public class Projects {
    }
 
    /**
-    * Opens the window of the <code>SettingsWindow</code> object that belongs
-    * to a project.
-    * <p>
-    * Depending on the currently selected <code>EditableDocument</code> the
-    * window belongs to the currently active project or to one of this
-    * listed projects.
+    * Opens the window of the <code>SettingsWindow</code> object that
+    * belongs to a project depending on the currently selected
+    * <code>EditableDocument</code>
     */
    public void openSettingsWindow() {
       boolean open = true;
@@ -212,8 +182,7 @@ public class Projects {
             updateFileTree();
          }
          else {
-            Dialogs.errorMessage(
-                  fileNotFoundMessage(edtDoc[iDoc].filename()), "Missing files");
+            fileNotFoundMsg(edtDoc[iDoc].filename());
          }
       }
       finally {
@@ -235,8 +204,7 @@ public class Projects {
                 if (d.docFile().exists()) {
                     d.saveFile();
                 } else {
-                    missingFiles.append("\n");
-                    missingFiles.append(d.filename());
+                    missingFiles.append("\n").append(d.filename());
                 }
             }
          }
@@ -245,9 +213,7 @@ public class Projects {
             updateFileTree();
          }
          else {
-            Dialogs.errorMessage(
-                  filesNotFoundMessage(missingFiles.toString()),
-                  "Missing files");
+            filesNotFoundMsg(missingFiles.toString());
          }
       }
       finally {
@@ -287,21 +253,20 @@ public class Projects {
 
    private void assignProjectImpl(ProjectTypes projType) {
       if (!edtDoc[iDoc].hasFile()) {
-         Dialogs.infoMessage(NO_FILE_IN_TAB_MESSAGE, null);
+         Dialogs.infoMessage(NO_FILE_MSG, null);
          return;
       }
       ProjectActions toAssign = projSelect.createProject(projType);
       if (toAssign != null) {
          ProjectActions projFin = toAssign;
+         projFin.buildSettingsWindow();
          projFin.makeSettingsWindowVisible();
          projFin.setConfiguringAction(e -> configureProject(projFin));
       }
    }
 
    private boolean changeProject(ProjectActions toChangeTo) {
-      int res = Dialogs.confirmYesNo(
-            switchProjectMessage(toChangeTo.getProjectName()));
-
+      int res = switchProjectRes(toChangeTo.getProjectName());
       if (res == 0) {
          current = toChangeTo;
          current.storeConfiguration();
@@ -311,6 +276,27 @@ public class Projects {
       else {
          mw.enableChangeProject(true);
          return false;
+      }
+   }
+   
+   private void replaceCurrent(ProjectTypes projType, ProjectActions newProj) {
+      if (projType != newProj.getProjectType()) {
+         int res = replaceProjectRes(
+               edtDoc[iDoc].filename(),
+               newProj.getProjectName(),
+               newProj.getProjectType().display(),
+               projType.display());
+
+         isReplace = 0 == res;
+         if (isReplace) {
+            assignProjectImpl(projType);
+         }
+      }
+      else {
+         projectAssignedMsg(
+               edtDoc[iDoc].filename(),
+               newProj.getProjectName(),
+               newProj.getProjectType().display());
       }
    }
 
@@ -327,9 +313,9 @@ public class Projects {
 
    private void configureProject(ProjectActions toConfig) {
       if (toConfig.configureProject(edtDoc[iDoc].dir())) {
-         if (isReplaceProj) {
+         if (isReplace) {
             projList.remove(current);
-            isReplaceProj = false;
+            isReplace = false;
          }
          current = toConfig;
          current.storeConfiguration();
@@ -351,40 +337,44 @@ public class Projects {
       mw.enableOpenProjSetWinActions(true);
    }
 
-   //
-   //--Strings for messages
-   //
-
-   private final String NO_FILE_IN_TAB_MESSAGE
-         = "To assign a project open or save a new file that is part"
-         + " of the project.\n"
-         + "If files are viewed in tabs the file also must be selected.";
-
-   private String replaceProjectMessage(String filename, String projName,
+   private int replaceProjectRes(String filename, String projName,
          String previousProjDispl, String newProjDispl) {
-
-      return  filename + " belongs to the " + previousProjDispl + " project \""
+            
+      return Dialogs.warnConfirmYesNo(
+            filename + " belongs to the " + previousProjDispl + " project \""
             + projName +"\".\n"
             + "Remove " + projName + " and assign a new project"
-            + " of the category \"" + newProjDispl + "\"?";
+            + " of the category \"" + newProjDispl + "\"?");
    }
 
-   private String projectAssignedMessage(String filename, String projName,
+   private void projectAssignedMsg(String filename, String projName,
          String currProjDispl) {
 
-      return edtDoc[iDoc].filename() + " already belongs to the project "
-           + projName + " in the category \"" + currProjDispl + "\".";
+      Dialogs.infoMessage(
+            edtDoc[iDoc].filename() + " already belongs to the project "
+            + projName + " in the category \"" + currProjDispl + "\".",
+            null);
+   }
+   
+   private int switchProjectRes(String projName) {
+      return Dialogs.confirmYesNo("Switch to project " + projName + "?");
    }
 
-   private String fileNotFoundMessage(String filename) {
-      return filename + ":\nThe file could not be found anymore";
+   private void fileNotFoundMsg(String filename) {
+       Dialogs.errorMessage(
+              filename + ":\nThe file could not be found anymore",
+              "Missing files");
    }
 
-   private String filesNotFoundMessage(String filenames) {
-      return "The following files could not be found anymore:" + filenames;
+   private void filesNotFoundMsg(String filenames) {
+      Dialogs.errorMessage(
+              "The following files could not be found anymore:\n"
+              + filenames,
+              "Missing files");
    }
-
-   private String switchProjectMessage(String projName) {
-      return  "Switch to project " + projName + "?";
-   }
+   
+   private final String NO_FILE_MSG
+         = "To assign a project open a file or save a new file that is part"
+         + " of the project.\n"
+         + "If files are viewed in tabs this file also must be selected.";
 }

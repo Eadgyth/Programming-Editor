@@ -36,16 +36,19 @@ public class ToolPanel {
     * @param c  the <code>Component</code>
     */
    public void addComponent(Component c) {
+      if (c == null) {
+         throw new IllegalArgumentException("The parameter c is null");
+      }
       BorderLayout layout = (BorderLayout) pnl.getLayout();
       Component cCenter = layout.getLayoutComponent(BorderLayout.CENTER);
-      if (cCenter != null) {
+      if (cCenter != null && cCenter != c) {
          pnl.remove(cCenter);
       }
-      if (c != null) {
+      if (cCenter != c) {
          pnl.add(c, BorderLayout.CENTER);
+         pnl.revalidate();
+         pnl.repaint();
       }
-      pnl.revalidate();
-      pnl.repaint();
    }
 }
    

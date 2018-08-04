@@ -74,8 +74,8 @@ public class MainWin {
    private JSplitPane splitHorAll;
    private JSplitPane splitHor;
    private JSplitPane splitVert;
-   private int dividerLocVert;
    private int dividerLocHor;
+   private int dividerLocVert = 0;
 
    public MainWin() {
       fileTree = new FileTree(treePnl);
@@ -83,7 +83,6 @@ public class MainWin {
       initFrame();
       setViewActions();
       dividerLocHor =  (int)(frame.getWidth() * 0.2);
-      dividerLocVert = (int)(frame.getHeight() * 0.6);
       initShowTabbar();
       initShowFileView();
       projControlsUpdate = pcu;
@@ -353,9 +352,9 @@ public class MainWin {
     *
     * @param edit  the reference to {@link Edit}
     */
-   public void setEditTextActions(Edit edit) {
-      toolbar.setEditTextActions(edit);
-      menuBar.editMenu().setEditTextActions(edit);
+   public void setEditActions(Edit edit) {
+      toolbar.setEditActions(edit);
+      menuBar.editMenu().setEditActions(edit);
    }
 
    /**
@@ -402,7 +401,7 @@ public class MainWin {
       ViewMenu vm = menuBar.viewMenu();
       vm.setConsoleItmAction(e -> showConsole(vm.isConsoleItmSelected()));
       vm.setFileViewItmAction(e -> showFileView(vm.isFileViewItmSelected()));
-      vm.setTabItmAction(e -> showTabbar(vm.isTabItmSelected()));
+      vm.setTabItmAction(e -> tabPane.showTabbar(vm.isTabItmSelected()));
       treePnl.setCloseAct(e -> vm.doUnselectFileViewAct());
       console.setCloseAct(e -> vm.doConsoleItmAct(false));
    }
@@ -411,6 +410,9 @@ public class MainWin {
       if (b) {
          splitVert.setDividerSize(6);
          splitVert.setBottomComponent(console.consolePnl());
+         if (dividerLocVert == 0) {
+            dividerLocVert = (int)(frame.getHeight() * 0.6);
+         }
          splitVert.setDividerLocation(dividerLocVert);
       }
       else {
@@ -444,10 +446,6 @@ public class MainWin {
       }
    }
 
-   private void showTabbar(boolean show) {
-      tabPane.showTabbar(show);
-   }
-
    private void setWordwrapInStatusBar(boolean isWordwrap) {
       if (isWordwrap) {
          cursorPosLb.setForeground(Constants.GRAY);
@@ -461,9 +459,7 @@ public class MainWin {
 
    private void initShowTabbar() {
       boolean show = "show".equals(prefs.getProperty("showTabs"));
-      if (show) {
-         tabPane.showTabbar(show);
-      }
+      tabPane.showTabbar(show);
       menuBar.viewMenu().selectTabsItm(show);
    }
    
