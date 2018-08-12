@@ -1,7 +1,7 @@
-This is a simple text editor, written in Java, that can be useful for smaller coding projects, maybe
-to develop applications for own use or for learning purposes. Project categories in the present
-version are Java (so far worked out most), Perl, R and HTML. However, the code is made to implement
-other project categories.
+This is a simple text editor, written in Java, which can be used for coding projects.
+It is intended for smaller coding projects, maybe to develop applications for own use or for
+learning purposes. Project categories in the present version are Java (so far worked out most),
+Perl, R and HTML. The code is made such that it is possible to implement other project categories.
 <p>
 DOCUMENTATION<br>
 A list of the features, screenshots, a help site and code documentation can be found under
