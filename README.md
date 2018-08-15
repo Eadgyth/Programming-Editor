@@ -1,7 +1,9 @@
-This is a simple text editor, written in Java, which can be used for coding projects.
-It is intended for smaller coding projects, maybe to develop applications for own use or for
+This is a simple text editor, written in Java, which can be used for writing and testing source
+code. It is intended for smaller coding projects, maybe to develop applications for own use or for
 learning purposes. Project categories in the present version are Java (so far worked out most),
-Perl, R and HTML. The code is made such that it is possible to implement other project categories.
+Perl, R and HTML. The code of this program is made such that it is possible to implement other
+project categories. A goal is to be able to easily assign files as a project and also to define
+several projects in paralles which can be switched between.
 <p>
 DOCUMENTATION<br>
 A list of the features, screenshots, a help site and code documentation can be found under
