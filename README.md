@@ -17,8 +17,8 @@ in the same directory as the prefs.properties file. "JarAndPreferences" can be a
 Running (and compiling) the program requires Java 8. Running it using Java 9 (or 10) causes some
 problems with regard to the graphical interface (at least under Windows).
 <p>
-If the program shall be used for compiling Java code by the built-in compile option it must be made 
-that the program is run using the JRE contained in the JDK (and not the public JRE).
+If the program shall be used for compiling Java code by the built-in compile option it must be
+made sure that the program is run using the JRE contained in the JDK (and not the public JRE).
 <p>
 LIMITATIONS<br>
 Among the countless limitations at the present stage some need mention:
