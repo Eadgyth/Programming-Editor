@@ -40,11 +40,10 @@ IDEAS FOR FURTHER DEVELOPEMENT<br>
 <ul>
 <li>To implement other project categories. In principle, this is not limited to programming
     and coding projects. A type of project is defined by the interface 'ProjectActions' in the
-    'projects' package where the 'run' function could be anything.</li>
+    'projects' package.</li>
 <li>To develop "Edit Tools" that can do specialized work with text files. An edit tool implements
     'AddableEditTool' in the 'edittools' package. It's graphical view can be included in the main 
-    window and it has access to the file in the selected tab (the interface replaces the plugin
-    interface in previous commits).</li>
+    window and it has access to the file in the selected tab.</li>
 </ul>
 <p>
 ACKLOWLEDGEMENT<br>
