@@ -1,22 +1,25 @@
-This is a simple text editor, written in Java, that can be useful for smaller coding projects, maybe
-to develop applications for own use or for learning purposes. Project categories in the present
-version are Java (so far worked out most), Perl, R and HTML. However, the code is made to implement
-other project categories.
+This is a simple text editor, written in Java, which can also be used for writing and testing
+source code. It is intended for smaller coding projects, maybe to develop applications for own
+use or for learning purposes. Project categories in the present version are Java (so far worked
+out most), Perl, R and HTML. The code of this program is made such that it is possible to
+implement other project categories. A goal is that it should be easy to assign files as a coding
+project and that several projects, which can be switched between, can be defined in parallel.
 <p>
 DOCUMENTATION<br>
 A list of the features, screenshots, a help site and code documentation can be found under
 <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <p>
 REQUIREMENTS FOR TESTING<br>
-An executable jar of the program is found in the folder "JarAndPreferences". The jar should be kept
-in the same directory as the prefs.properties file. "JarAndPreferences" can be also downloaded
+An executable jar of the program as well as a properties file is found in the folder
+"JarAndPreferences". The jar should be kept in the same directory as the properties file.
+"JarAndPreferences" can also be downloaded
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">here</a>.
 <p>
 Running (and compiling) the program requires Java 8. Running it using Java 9 (or 10) causes some
 problems with regard to the graphical interface (at least under Windows).
 <p>
-If the program shall be used for compiling Java code by the built-in compile option it must be made 
-that the program is run using the JRE contained in the JDK (and not the public JRE).
+If the program shall be used for compiling Java code by the built-in compile option it must be
+made sure that the program is run using the JRE contained in the JDK (and not the public JRE).
 <p>
 LIMITATIONS<br>
 Among the countless limitations at the present stage some need mention:
@@ -38,11 +41,10 @@ IDEAS FOR FURTHER DEVELOPEMENT<br>
 <ul>
 <li>To implement other project categories. In principle, this is not limited to programming
     and coding projects. A type of project is defined by the interface 'ProjectActions' in the
-    'projects' package where the 'run' function could be anything.</li>
+    'projects' package.</li>
 <li>To develop "Edit Tools" that can do specialized work with text files. An edit tool implements
     'AddableEditTool' in the 'edittools' package. It's graphical view can be included in the main 
-    window and it has access to the file in the selected tab (the interface replaces the plugin
-    interface in previous commits).</li>
+    window and it has access to the file in the selected tab.</li>
 </ul>
 <p>
 ACKLOWLEDGEMENT<br>
