@@ -36,11 +36,11 @@ public class FileChooser {
       int res = chOpen.showOpenDialog(frame);
       if (res == JFileChooser.APPROVE_OPTION) {
          f = chOpen.getSelectedFile();
-         chOpen.setCurrentDirectory(f.getParentFile());  
+         chOpen.setCurrentDirectory(f.getParentFile());
       }
       return f;
    }
-   
+
    /**
     * Opens the chooser for saving a file and returns a File object
     *
@@ -48,21 +48,21 @@ public class FileChooser {
     * field to specify a file. Can be Null or the empty string
     * @return  a File object. Null if cancel was clicked or the
     * chooser window was closed
-    */  
+    */
    public File fileToSave(String presetFile) {
       File f = null;
       if (presetFile != null && presetFile.length() > 0) {
          File toSet = new File(presetFile);
          chSave.setSelectedFile(toSet);
       }
-      int res = chSave.showSaveDialog(frame);  
+      int res = chSave.showSaveDialog(frame);
       if (res == JFileChooser.APPROVE_OPTION) {
          f = chSave.getSelectedFile();
          chSave.setCurrentDirectory(f.getParentFile());
       }
       return f;
    }
-   
+
    //
    //--private--/
    //
@@ -72,20 +72,21 @@ public class FileChooser {
       chOpen.setDialogTitle("Open");
       chOpen.setAcceptAllFileFilterUsed(true);
       chOpen.setApproveButtonText("Open");
-      chOpen.setFileSelectionMode(JFileChooser.FILES_ONLY); 
+      chOpen.setFileSelectionMode(JFileChooser.FILES_ONLY);
       setIcons(chOpen);
    }
-   
+
    private void initChooserSave(String startingDir) {
       chSave = new JFileChooser(startingDir);
       chSave.setAcceptAllFileFilterUsed(true);
       chSave.setDialogTitle("Save file as...");
       setIcons(chSave);
    }
-   
+
    private void setIcons(JFileChooser ch) {
       if ("Metal".equals(UIManager.getLookAndFeel().getName())) {
          ch.setFileView(new FileView() {
+
             @Override
             public Icon getIcon(File f) {
                return FileSystemView.getFileSystemView().getSystemIcon(f);

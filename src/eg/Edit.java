@@ -221,7 +221,6 @@ public class Edit {
       try {
          if (transf != null
                && transf.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-
             inClipboard = (String) transf.getTransferData(DataFlavor.stringFlavor);
          }
       }

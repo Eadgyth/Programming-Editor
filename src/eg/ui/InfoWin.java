@@ -12,7 +12,6 @@ import java.awt.Color;
 //--Eadgyth--/
 import eg.Constants;
 
-
 /**
  * A frame that shows info about Eadgyth
  */
@@ -20,9 +19,9 @@ public class InfoWin {
 
    private final static String INFO
          = "<html>"
-         + "Version 1.0.0<br>"
+         + "Version 1.0.3<br>"
          + "Malte Bussiek<br>"
-         + "https://eadgyth.github.io/Programming-Editor/"
+         + "https://eadgyth.github.io/Programming-Editor"
          + "</html>";
 
    private final JFrame frame  = new JFrame();

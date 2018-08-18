@@ -58,7 +58,8 @@ public class ViewSetter {
       index = viewSetWin.selectedIconSize();
       if (index != selectedIconSizeInd) {
          selectedIconSizeInd = index;
-         prefs.storePrefs("iconSize", ViewSettingWin.ICON_SIZES[selectedIconSizeInd]);
+         prefs.storePrefs("iconSize",
+               ViewSettingWin.ICON_SIZES[selectedIconSizeInd]);
       }
       index = viewSetWin.selectedLaf();
       if (index != selectedLafInd) {

@@ -243,7 +243,7 @@ public class TypingEdit {
       if (isCodeEditing) {
          if (isInsert) {
             syntax.highlightMultiline(text, text, 0);
-            //highlightInsert(); // doe not work after replace all
+            //highlightInsert(); // does not work after replace all
          }
          else {
             highlightLine();

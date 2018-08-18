@@ -82,7 +82,7 @@ public class MainWin {
       createAddableEditTools();
       initFrame();
       setViewActions();
-      dividerLocHor =  (int)(frame.getWidth() * 0.2);
+      dividerLocHor =  (int)(frame.getWidth() * 0.25);
       initShowTabbar();
       initShowFileView();
       projControlsUpdate = pcu;
@@ -338,7 +338,7 @@ public class MainWin {
       toolbar.setFileActions(td);
       fileTree.addObserver(td);
 
-      winListener(new WindowAdapter() {
+      frame.addWindowListener(new WindowAdapter() {
 
          @Override
          public void windowClosing(WindowEvent we) {
@@ -494,15 +494,11 @@ public class MainWin {
 
       tool.addClosingAction(closeBt);
       menuBar.editMenu().setEditToolsActions(
-         e -> {
-            toolPnl.addComponent(tool.toolComponent());
-            showToolPnl(true);
-         },
-         i);
-   }
-
-   private void winListener(WindowListener wl) {
-      frame.addWindowListener(wl);
+            e -> {
+               toolPnl.addComponent(tool.toolComponent());
+               showToolPnl(true);
+            },
+            i);
    }
 
    private final ProjectControlsUpdate pcu = new ProjectControlsUpdate() {

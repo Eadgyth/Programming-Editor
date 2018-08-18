@@ -2,6 +2,7 @@ package eg.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
@@ -39,6 +40,7 @@ public class ToolPanel {
       if (c == null) {
          throw new IllegalArgumentException("The parameter c is null");
       }
+      c.setPreferredSize(new Dimension(c.getWidth(), 0));
       BorderLayout layout = (BorderLayout) pnl.getLayout();
       Component cCenter = layout.getLayoutComponent(BorderLayout.CENTER);
       if (cCenter != null && cCenter != c) {

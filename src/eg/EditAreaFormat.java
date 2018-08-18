@@ -103,7 +103,7 @@ public class EditAreaFormat {
    }
    
    //
-   //--private--//
+   //--private--/
    //
    
    private void setFont() {
@@ -121,6 +121,9 @@ public class EditAreaFormat {
    
    private void initFont() {
       font = prefs.getProperty("font");
+      if (font.length() == 0) {
+         font = "Consolas";
+      }
       try {
          fontSize = Integer.parseInt(prefs.getProperty("fontSize"));
       }

@@ -23,7 +23,8 @@ import eg.utils.FileUtils;
  */
 public class TextExchange {
 
-   private final static File BACK_UP = new File(System.getProperty("user.dir")
+   private final static File BACK_UP
+         = new File(System.getProperty("user.dir")
          + "/exchangeContent.txt");
 
    private final EditableDocument exchangeDoc;
