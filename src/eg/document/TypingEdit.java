@@ -177,7 +177,7 @@ public class TypingEdit {
     */
    public void replace(int pos, int length, String toInsert) {
       boolean isCodeEditingHelper = isCodeEditing;
-      isCodeEditing = false;
+      isCodeEditing = false;  
       if (length != 0) {
          textDoc.remove(pos, length);
       }

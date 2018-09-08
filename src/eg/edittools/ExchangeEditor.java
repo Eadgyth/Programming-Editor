@@ -3,73 +3,92 @@ package eg.edittools;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.EventQueue;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JComboBox;
+import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JToolBar;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.JComponent;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+
+import javax.swing.border.EmptyBorder;
 
 //--Eadgyth--/
 import eg.Constants;
 import eg.Languages;
 import eg.Edit;
+import eg.Formatter;
 import eg.FunctionalAction;
+import eg.Prefs;
 import eg.ui.EditArea;
-import eg.ui.IconFiles;
+import eg.ui.menu.FormatMenu;
 import eg.document.EditableDocument;
 import eg.document.EditingStateReadable;
-import eg.utils.UIComponents;
 
 /**
- * The <code>AddableEditTool</code> for the editing and viewing of text
- * in a separate text area
+ * An editor to edit and view text in a separate text area
  */
 public class ExchangeEditor implements AddableEditTool {
 
-   private final JPanel exchPnl     = new JPanel(new BorderLayout());
-   private final JButton loadBt     = new JButton("Load file...");
-   private final JButton copyFromBt = new JButton("Copy from ");
-   private final JButton copyToBt   = new JButton("Copy to");
-   private final JButton undoBt     = new JButton();
-   private final JButton redoBt     = new JButton();
-   private final JButton cutBt      = new JButton();
-   private final JButton copyBt     = new JButton();
-   private final JButton pasteBt    = new JButton();
-   private final JButton indentBt   = new JButton();
-   private final JButton outdentBt  = new JButton();
-   private final JButton clearBt    = new JButton(IconFiles.CLEAR_ICON);
+   private final JPanel content = new JPanel(new BorderLayout());
 
-   private final JPanel editAreaPnl;
+   private final JMenuItem loadItm      = new JMenuItem("Load file content...");
+   private final JMenuItem copyFromItm  = new JMenuItem();
+   private final JMenuItem copyToItm    = new JMenuItem();
+   private final JMenuItem languageItm  = new JMenuItem();
+   private final JMenuItem indentLenItm = new JMenuItem("Indent length");
+   private final JMenuItem undoItm      = new JMenuItem();
+   private final JMenuItem redoItm      = new JMenuItem();
+   private final JMenuItem cutItm       = new JMenuItem();
+   private final JMenuItem copyItm      = new JMenuItem();
+   private final JMenuItem pasteItm     = new JMenuItem();
+   private final JMenuItem indentItm    = new JMenuItem();
+   private final JMenuItem outdentItm   = new JMenuItem();
+   private final JMenuItem clearItm     = new JMenuItem("Clear");
+   private final FormatMenu formatMenu  = new FormatMenu();
+
+   private final Formatter format = new Formatter(1, "Exchg");
+   private final Prefs prefs = new Prefs();
+   private final JPanel editorPnl;
    private final TextExchange exch;
    private final Edit edit = new Edit();
 
+   private JMenuBar bar;
+
    public ExchangeEditor() {
-      EditArea ea = new EditArea(false, false, "Consolas", 8);
-      editAreaPnl = ea.editAreaPnl();
+      EditArea ea = format.editArea();
+      editorPnl = ea.content();
+      formatMenu.selectWordWrapItm(ea.isWordwrap());
       EditableDocument ed = new EditableDocument(ea, Languages.NORMAL_TEXT);
       ed.setEditingStateReadable(editReadable);
-      exch = new TextExchange(ed);
+      String indentUnit = prefs.getProperty("IndentUnit");
+      ed.setIndentUnit(indentUnit);
+      String recentDir = prefs.getProperty("RecentPath");
+      exch = new TextExchange(ed, recentDir);
       edit.setDocument(ed);
-      initExchangePnl();
+      initContentPnl();
    }
 
    @Override
-   public void addClosingAction(JButton closeBt) {
-       exchPnl.add(closingToolbar(closeBt), BorderLayout.NORTH);
+   public void addClosingAction(JButton closeItm) {
+      bar.add(Box.createGlue());
+      bar.add(closeItm);
+      closeItm.setContentAreaFilled(false);
+      closeItm.setBorder(new EmptyBorder(5, 7, 5, 7));
+      closeItm.setToolTipText("Close the exchange editor");
+      closeItm.setFocusable(false);
    }
 
    @Override
-   public Component toolComponent() {
+   public Component toolContent() {
       exch.setBackupText();
-      return exchPnl;
+      return content;
    }
 
    @Override
@@ -79,10 +98,12 @@ public class ExchangeEditor implements AddableEditTool {
 
    /**
     * Saves the content in the exchange editor to the file
-    * 'exchangeContent.txt' in the program folder
+    * 'exchangeContent.txt' in the program folder and stores
+    * formatting preferences
     */
    @Override
    public void end() {
+      format.setProperties();
       exch.save();
    }
 
@@ -90,143 +111,135 @@ public class ExchangeEditor implements AddableEditTool {
    //--private--/
    //
 
-   private void initExchangePnl() {
-      setBtnActions();
+   private void initContentPnl() {
       enableUndoRedo(false, false);
       enableCutCopy(false);
-      editAreaPnl.setBorder(Constants.MATTE_TOP_BOTTOM);
-      exchPnl.add(editAreaPnl, BorderLayout.CENTER);
-      JPanel pnl = new JPanel(new BorderLayout());
-      pnl.add(editToolbar(), BorderLayout.CENTER);
-      pnl.add(controlsPnl(), BorderLayout.SOUTH);
-      exchPnl.add(pnl, BorderLayout.SOUTH);
+      editorPnl.setBorder(Constants.MATTE_TOP_GREY);
+      initMenuBar();
+      content.add(bar, BorderLayout.NORTH);
+      content.add(editorPnl, BorderLayout.CENTER);
+      content.setMinimumSize(new Dimension(
+            eg.utils.ScreenParams.scaledSize(150), 0));
+            
+      setActions();
    }
 
-   private JToolBar closingToolbar(JButton closeBt) {
-      JButton[] bts = new JButton[] {
-         closeBt
-      };
-      String[] toolTips = new String[] {
-         "Close the exchange editor"
-      };
-      JToolBar tb = UIComponents.lastBtRightToolbar(bts, toolTips);
-      Dimension dim = new Dimension(0, Constants.BAR_HEIGHT);
-      tb.setPreferredSize(dim);
-      return tb;
-   }
-   
-   private JToolBar editToolbar() {
-      JButton[] bts = new JButton[] {
-         undoBt, redoBt, cutBt, copyBt, pasteBt,
-         indentBt, outdentBt, clearBt
-      };
-      String[] toolTips = new String[] {
-         "Undo (Ctrl+Z)", "Redo (Ctrl+Y)",
-         "Cut selection (Ctrl+X)",
-         "Copy (Ctrl+C)", "Paste (Ctrl+P)",
-         "Increase indentation(Ctrl+M)", "Reduce indentation (Ctrl+L)",
-         "Clear the text area",
-      };
-      JToolBar tb = UIComponents.toolbar(bts, toolTips);
-      return tb;
-   }       
-
-   private JPanel controlsPnl() {
-      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 1, 1));
-      pnl.add(setTextToolbar());
-      pnl.add(setLangBox());
-      return pnl;
-   }
-   
-   private JToolBar setTextToolbar() {
-      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-      JButton[] bts = new JButton[] {
-         loadBt, copyFromBt, copyToBt
-      };
-      String[] toolTips = new String[] {
-         "Load file content",
-         "Copy text from the document in main editor",
-         "Copy text to the document in main editor",
-      };
-      JToolBar tb = UIComponents.toolbar(bts, toolTips);
-      return tb;
+   private void initMenuBar() {
+      bar = new JMenuBar();
+      bar.setOpaque(false);
+      bar.setBorder(null);
+      bar.setPreferredSize(new Dimension(0, Constants.BAR_HEIGHT));
+      bar.add(textMenu());
+      bar.add(adoptMenu());
+      bar.add(editMenu());
+      bar.add(formatMenu.getMenu());
    }
 
-   private JPanel setLangBox() {
-      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-      String[] opt = new String[Languages.values().length];
-      for (int i = 0; i < opt.length; i++) {
-         opt[i] = Languages.values()[i].display();
-      }
-      JComboBox<String> cb = new JComboBox<>(opt);
-      cb.addItemListener(ie -> {
-         if (ie.getStateChange() == ItemEvent.SELECTED) {
-            exch.changeCodeEditing(Languages.values()[cb.getSelectedIndex()]);
-         }
-      });
-      cb.setFocusable(false);
-      pnl.add(cb);
-      return pnl;
+   private JMenu textMenu() {
+      JMenu menu  = new JMenu("Text");
+      menu.add(loadItm);
+      menu.add(copyFromItm);
+      menu.add(copyToItm);
+      return menu;
    }
-   
+
+   private JMenu adoptMenu() {
+      JMenu menu  = new JMenu("Adopt");
+      menu.add(languageItm);
+      menu.add(indentLenItm);
+      return menu;
+   }
+
+   private JMenu editMenu() {
+      JMenu menu  = new JMenu("Edit");
+      menu.add(undoItm);
+      menu.add(redoItm);
+      menu.add(cutItm);
+      menu.add(copyItm);
+      menu.add(pasteItm);
+      menu.add(indentItm);
+      menu.add(outdentItm);
+      menu.add(clearItm);
+      return menu;
+   }
+
    private void enableUndoRedo(boolean isUndo, boolean isRedo) {
-      undoBt.setEnabled(isUndo);
-      redoBt.setEnabled(isRedo);
+      undoItm.setEnabled(isUndo);
+      redoItm.setEnabled(isRedo);
    }
 
    private void enableCutCopy(boolean b) {
-      cutBt.setEnabled(b);
-      copyBt.setEnabled(b);
+      cutItm.setEnabled(b);
+      copyItm.setEnabled(b);
    }
 
-   private void setBtnActions() {
-      copyFromBt.addActionListener(e -> exch.copyTextFromSource());
-      copyToBt.addActionListener(e -> exch.copyTextToSource());
+   private void setActions() {
+      loadItm.addActionListener(e -> exch.loadFile());
 
-      undoBt.setAction(new FunctionalAction("", IconFiles.UNDO_ICON,
+      copyFromItm.setAction(new FunctionalAction("Copy selection from main editor",
+           null, e -> exch.copyTextFromSource()));
+      setKeyBinding(copyFromItm, KeyStroke.getKeyStroke(
+            KeyEvent.VK_F, ActionEvent.CTRL_MASK), "F_pressed");
+
+      copyToItm.setAction(new FunctionalAction("Copy selection to main editor",
+           null, e -> exch.copyTextToSource()));
+      setKeyBinding(copyToItm, KeyStroke.getKeyStroke(
+            KeyEvent.VK_T, ActionEvent.CTRL_MASK), "T_pressed");
+
+      languageItm.setAction(new FunctionalAction("Language", null,
+            e -> exch.adoptLanguage()));
+      setKeyBinding(languageItm, KeyStroke.getKeyStroke(
+            KeyEvent.VK_G, ActionEvent.CTRL_MASK), "G_pressed");
+            
+      indentLenItm.addActionListener(e -> exch.adoptIndentUnit());
+
+      undoItm.setAction(new FunctionalAction("Undo", null,
             e -> edit.undo()));
-      setKeyBinding(undoBt, KeyStroke.getKeyStroke(
+      setKeyBinding(undoItm, KeyStroke.getKeyStroke(
             KeyEvent.VK_Z, ActionEvent.CTRL_MASK), "Z_pressed");
 
-      redoBt.setAction(new FunctionalAction("", IconFiles.REDO_ICON,
+      redoItm.setAction(new FunctionalAction("Redo", null,
             e -> edit.redo()));
-      setKeyBinding(redoBt, KeyStroke.getKeyStroke(
+      setKeyBinding(redoItm, KeyStroke.getKeyStroke(
             KeyEvent.VK_Y, ActionEvent.CTRL_MASK), "Y_pressed");
 
-      cutBt.setAction(new FunctionalAction("", IconFiles.CUT_ICON,
+      cutItm.setAction(new FunctionalAction("Cut", null,
             e -> edit.cut()));
-      setKeyBinding(cutBt, KeyStroke.getKeyStroke(
+      setKeyBinding(cutItm, KeyStroke.getKeyStroke(
             KeyEvent.VK_X, ActionEvent.CTRL_MASK), "X_pressed");
 
-      copyBt.setAction(new FunctionalAction("", IconFiles.COPY_ICON,
-            e -> edit.setClipboard()));
-      setKeyBinding(copyBt, KeyStroke.getKeyStroke(
+      copyItm.setAction(new FunctionalAction("Copy", null,
+             e -> edit.setClipboard()));
+      setKeyBinding(copyItm, KeyStroke.getKeyStroke(
             KeyEvent.VK_C, ActionEvent.CTRL_MASK), "C_pressed");
 
-      pasteBt.setAction(new FunctionalAction(null, IconFiles.PASTE_ICON,
+      pasteItm.setAction(new FunctionalAction("Paste", null,
             e -> edit.pasteText()));
-      setKeyBinding(pasteBt, KeyStroke.getKeyStroke(
+      setKeyBinding(pasteItm, KeyStroke.getKeyStroke(
             KeyEvent.VK_V, ActionEvent.CTRL_MASK), "V_pressed");
 
-      indentBt.setAction(new FunctionalAction(null, IconFiles.INDENT_ICON,
+      indentItm.setAction(new FunctionalAction("Increase indentation", null,
             e -> edit.indent()));
-      setKeyBinding(indentBt, KeyStroke.getKeyStroke(
+      setKeyBinding(indentItm, KeyStroke.getKeyStroke(
             KeyEvent.VK_M, ActionEvent.CTRL_MASK), "M_pressed");
 
-      outdentBt.setAction(new FunctionalAction(null, IconFiles.OUTDENT_ICON,
+      outdentItm.setAction(new FunctionalAction("Reduce indentation", null,
             e -> edit.outdent()));
-      setKeyBinding(outdentBt, KeyStroke.getKeyStroke(
+      setKeyBinding(outdentItm, KeyStroke.getKeyStroke(
             KeyEvent.VK_L, ActionEvent.CTRL_MASK), "L_pressed");
 
-      clearBt.addActionListener(e -> exch.clear());
-      
-      loadBt.addActionListener(e -> exch.loadFile());
+      clearItm.addActionListener(e -> exch.clear());
+
+      formatMenu.setFontAction(e -> format.openSetFontDialog());
+      formatMenu.setChangeWordWrapAct(
+            e -> format.enableWordWrap(formatMenu.isWordWrapItmSelected()));
    }
 
-   private void setKeyBinding(JButton bt, KeyStroke ks, String key) {
+   private void setKeyBinding(JMenuItem itm, KeyStroke ks, String key) {
+      itm.getAction().putValue(Action.ACCELERATOR_KEY, ks);
       int isInput = JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
-      exchPnl.getInputMap(isInput).put(ks, key);
-      exchPnl.getActionMap().put(key, bt.getAction());
+      content.getInputMap(isInput).put(ks, key);
+      content.getActionMap().put(key, itm.getAction());
    }
 
    private final EditingStateReadable editReadable = new EditingStateReadable() {

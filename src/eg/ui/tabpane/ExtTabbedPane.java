@@ -43,8 +43,7 @@ public final class ExtTabbedPane extends JTabbedPane {
    }
 
    /**
-    * Sets the specified boolean that indicates if the tabbar is shown
-    * or hidden
+    * Sets the boolean that specifies if the tabbar is shown or hidden
     *
     * @param b  the boolean value, true to show the tabbar
     * @throws IllegalStateException  if <code>b</code> is false while more
@@ -63,10 +62,11 @@ public final class ExtTabbedPane extends JTabbedPane {
 
    /**
     * Adds a new tab.
-    *
-    * <p> It is required that the specified <code>closeBt</code> has got an
-    * <code>ActionListener</code> added. This listener must first call
-    * {@link #iTabMouseOver()}.
+    * <p>
+    * It is required that the specified <code>closeBt</code> has got an
+    * <code>ActionListener</code> added. {@link #iTabMouseOver()} would
+    * be called by the listener to determine the index of a tab that
+    * is to be closed but that is not selected.
     *
     * @param title  the title for the tab
     * @param c  the component to be displayed when the tab is selected

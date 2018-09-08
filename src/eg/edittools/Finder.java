@@ -53,7 +53,7 @@ public class Finder implements AddableEditTool {
    }
 
    @Override
-   public Component toolComponent() {
+   public Component toolContent() {
       return finderPnl;
    }
 

@@ -8,47 +8,51 @@ import java.awt.Toolkit;
  * resolution
  */
 public class ScreenParams {
-   
-   public final static boolean IS_WINDOWS
+
+   private final static boolean IS_WINDOWS
          = System.getProperty("os.name").toLowerCase().contains("win");
-   private final static String version = System.getProperty("java.version");
-   private final static boolean IS_JAVA_9_OR_10 = version.startsWith("9")
-         || version.startsWith("10"); 
+   private final static String VERSION = System.getProperty("java.version");
+   private final static boolean IS_JAVA_9_OR_HIGHER = !VERSION.startsWith("1.8");
    private final static int SCREEN_RES
          = Toolkit.getDefaultToolkit().getScreenResolution();
    private final static double SCREEN_RES_RATIO = SCREEN_RES / 72.0;
-   
+
   /**
    * The screen size */
    public final static Dimension SCREEN_SIZE
         = Toolkit.getDefaultToolkit().getScreenSize();
-   
+
    /**
-    * Returns the Dimension with the specified width and height scaled
-    * to the ratio between screen resolution and graphic resolution
+    * Returns a new <code>Dimension</code> that is scaled to the
+    * screen resolution ratio
+    * @see #scaledSize(double)
     *
     * @param width  the width in pt
     * @param height  the height in pt
-    * @return   a new scaled Dimension
+    * @return   the Dimension
     */
    public static Dimension scaledDimension(int width, int height) {
       width = scaledSize(width);
       height = scaledSize(height);
       return new Dimension(width, height);
    }
-  
+
    /**
-    * Returns an integer that is the rounded product of the specified size and
-    * the resolution ratio.<br>
-    * This ratio is the screen resolution divided by the resolution assumed by Java's
-    * Graphics2D (72 dpi). However, when the program is run using Java 9 the resolution
-    * ratio is constantly 96/72 when the operating system is Windows and 1 otherwise.
+    * Returns an integer that is the rounded product of the specified
+    * size and the resolution ratio.<br>
+    * This ratio is the screen resolution divided by the graphics
+    * resolution assumed by Java (72 dpi).<br>
+    * If the program is run using Java 9 or higher under Windows the
+    * resolution ratio is constantly 96/72. If the program is run using
+    * Java 9 or higher on another operation system <code>size</code> is
+    * returned unchanged
     *
     * @param size  the size
     * @return  the rounded rescaled size
     */
    public static int scaledSize(double size) {
-      if (IS_JAVA_9_OR_10) {
+      //System.out.println(VERSION); 
+      if (IS_JAVA_9_OR_HIGHER) {
          if (IS_WINDOWS) {
             return (int) (Math.round(size * 96/72));
          }

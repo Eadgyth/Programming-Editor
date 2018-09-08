@@ -21,11 +21,10 @@ import static java.nio.file.StandardCopyOption.*;
 //--Eadgyth--/
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
-import eg.console.ConsolePanel;
+import eg.console.Console;
 
 /**
- * Compiles java files in a given working directory using the
- * JavaCompiler API.
+ * The compilation of java files using the Java Compiler API
  */
 public class Compilation {
 
@@ -34,7 +33,7 @@ public class Compilation {
 
    private final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
    private final FilesFinder fFind = new FilesFinder();
-   private final ConsolePanel consPnl;
+   private final Console cons;
    
    private boolean success = false;
    private String firstCompileErr = "";
@@ -43,34 +42,29 @@ public class Compilation {
    private String optionErr = "";
 
    /**
-    * @param consPnl  the reference to {@link ConsolePanel} in whose
-    * text area messages are displayed
+    * @param console  the reference to {@link Console}
     */
-   public Compilation(ConsolePanel consPnl) {
-      this.consPnl = consPnl;
+   public Compilation(Console console) {
+      cons = console;
    }
 
    /**
-    * Returns the boolean that indicates if java files could be
-    * compiled successfully
+    * Returns the boolean that indicates if java files were compiled
+    * successfully
     *
-    * @return  the boolean value which true in the case of success
+    * @return  the boolean value which is true in the case of success
     */
    public boolean isCompiled() {
       return success;
    }
 
    /**
-    * Gets a shortened error message which indicates the source file
-    * and the line number in the first listed compilation
-    * error.<br>
-    * The entire list of messages, error or other kind, is printed to
-    * this <code>ConsolePanel</code>.
+    * Returns the shortened error message which indicates the source
+    * file and the line number in the first listed compilation error
     *
-    * @return  the message or the empty empty string if there is no
-    * error
+    * @return  the message or the empty empty string if there is none
     */
-   public String getFirstCompileErr() {
+   public String firstCompileErr() {
       return firstCompileErr;
    }
 
@@ -87,9 +81,9 @@ public class Compilation {
     * Returns the error message that indicates that an error occured
     * during copying non-java files
     *
-    * @return  the message or the empty empty string of there is no error
+    * @return  the message or the empty empty string of there is none
     */
-   public String getCopyFilesErr() {
+   public String copyFilesErr() {
       return copyFilesErr;
    }
    
@@ -97,32 +91,33 @@ public class Compilation {
     * Returns the error message that indicates that the input for
     * the Xlint compiler option is invalid
     *
-    * @return  the message or the empty string of there is no error
+    * @return  the message or the empty string of there is none
     */
-   public String getOptionErr() {
+   public String optionErr() {
       return optionErr;
    }
 
    /**
     * Invokes the javac compiler
     *
-    * @param root  the root directory of the project
+    * @param root  the root directory of the java project
     * @param execDir  the name of the destination directory for the
-    * compiled class files/packages
-    * @param sourceDir  the name of the directory that contains java
-    * files or packages
-    * @param nonJavaExt  the array of extensions of files that are
-    * copied to the compilation. Requires that both a sources and a
-    * classes directory is present. May be null.
-    * @param xlintOption  the Xlint compiler option. Other options are
-    * ignored.
+    * compiled class files/packages. Can be the empty string if nonJavaExt
+    * is null.
+    * @param sourceDir  the name of the directory that contains java files/
+    * packages. Can be the empty string if nonJavaExt is null.
+    * @param nonJavaExt  the array of extensions of files that are copied
+    * to the compilation. Requires that both a sources and a classes
+    * directory is present. May be null.
+    * @param xlintOption  the Xlint compiler option. Other compiler options
+    * are ignored.
     */
    public void compile(String root, String execDir, String sourceDir,
          String[] nonJavaExt, String xlintOption) {
 
       if (compiler == null) {
          Dialogs.errorMessage(
-               "The programm may not be run using the JRE in a JDK.", null);
+               "The compiler was not found.", null);
 
          return;
       }
@@ -145,8 +140,8 @@ public class Compilation {
       //
       // compile
       try {
-         CompilationTask task = compiler.getTask(null, fileManager, diagnostics, compileOptions,
-               null, units);
+         CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
+               compileOptions, null, units);
 
          success = task.call();
          if (nonJavaExt != null) {
@@ -156,7 +151,7 @@ public class Compilation {
       }
       catch (IllegalArgumentException | IllegalStateException e) {
           firstCompileErr = e.getMessage();
-          consPnl.appendText(firstCompileErr + "\n");
+          cons.print(firstCompileErr + "\n");
       }
       finally {
          try {
@@ -220,7 +215,7 @@ public class Compilation {
             optionErr = "\"" + xlintOption + "\" cannot be used as"
                      + " Xlint compiler option and was ignored";
 
-            consPnl.appendText("<<" + optionErr + ">>\n");
+            cons.print("<<" + optionErr + ">>\n");
          }
       }
       return Arrays.asList(opt);
@@ -242,7 +237,7 @@ public class Compilation {
                   = "Files with extension \"" + ext
                   + "\" for copying to the compilation were not found.";
 
-            consPnl.appendText("<<" + copyFilesErr + ">>\n");
+            cons.print("<<" + copyFilesErr + ">>\n");
          }
          else {
             try {
@@ -269,12 +264,10 @@ public class Compilation {
 
    private void printDiagnostics(DiagnosticCollector<JavaFileObject> diagnostics) {
       if (success) {
-         consPnl.appendText("<<Compilation successful>>\n");
+         cons.print("<<Compilation successful>>\n");
       }
-      consPnl.appendText("\n");
+      cons.print("\n");
       if (diagnostics.getDiagnostics().size() > 0) {
-         //
-         // Message for dialog
          Diagnostic<?> firstSource = diagnostics.getDiagnostics().get(0);
          if (firstSource != null) {
             String file = new File(firstSource.getSource().toString()).getName();
@@ -288,15 +281,15 @@ public class Compilation {
             }
          }
          for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
-            consPnl.appendText(diagnostic.getKind().toString() + ":\n");
-            consPnl.appendText(diagnostic.getCode() + ": ");
-            consPnl.appendText(diagnostic.getMessage( null ) + "\n");
-            consPnl.appendText("at line: " + diagnostic.getLineNumber() + "\n");
-            consPnl.appendText("at column: " + diagnostic.getColumnNumber() + "\n");
+            cons.print(diagnostic.getKind().toString() + ":\n");
+            cons.print(diagnostic.getCode() + ": ");
+            cons.print(diagnostic.getMessage( null ) + "\n");
+            cons.print("at line: " + diagnostic.getLineNumber() + "\n");
+            cons.print("at column: " + diagnostic.getColumnNumber() + "\n");
             if (diagnostic.getSource() != null) {
-               consPnl.appendText(diagnostic.getSource().toString() + "\n");
+               cons.print(diagnostic.getSource().toString() + "\n");
             }
-            consPnl.appendText(DIVIDING_LINE + "\n");
+            cons.print(DIVIDING_LINE + "\n");
          }
       }
    }

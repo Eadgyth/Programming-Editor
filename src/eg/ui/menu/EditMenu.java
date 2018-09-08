@@ -13,7 +13,6 @@ import javax.swing.KeyStroke;
 import eg.Edit;
 import eg.TabbedDocuments;
 import eg.Languages;
-import eg.Preferences;
 import eg.ui.IconFiles;
 import eg.edittools.EditTools;
 
@@ -31,12 +30,10 @@ public class EditMenu {
    private final JMenuItem pasteItm         = new JMenuItem("Paste", IconFiles.PASTE_ICON);
    private final JMenuItem selectAllItm     = new JMenuItem("Select all");
    private final JMenuItem[] editToolsItm   = new JMenuItem[EditTools.values().length];
-   private final JMenuItem indentItm        = new JMenuItem(
-                                            "Increase indentation by one indent length",
-                                            IconFiles.INDENT_ICON);
-   private final JMenuItem outdentItm       = new JMenuItem(
-                                            "Reduce indentation by one indent length",
-                                            IconFiles.OUTDENT_ICON);
+   private final JMenuItem indentItm        = new JMenuItem("Increase indentation",
+                                                            IconFiles.INDENT_ICON);
+   private final JMenuItem outdentItm       = new JMenuItem("Reduce indentation",
+                                                            IconFiles.OUTDENT_ICON);
    private final JMenuItem changeIndentItm = new JMenuItem("Set indent length");
    private final JMenuItem clearSpacesItm  = new JMenuItem("Clear trailing spaces");
    private final JMenu     languageMenu    = new JMenu("Language");
@@ -122,13 +119,13 @@ public class EditMenu {
    }
 
    /**
-    * Selects and disables the item for the specified language and enables
-    * the items for the other languages if the specified <code>enable</code>
-    * is true
+    * Selects and disables the item for the specified language and
+    * enables the items for the other languages if the specified
+    * <code>enable</code> is true
     *
     * @param lang  the language that has one of the constant values in
     * {@link Languages}
-    * @param enable  true to enable the non-selected items
+    * @param enable  true to enable non-selected items
     */
    public void selectLanguageItm(Languages lang, boolean enable) {
       for (int i = 0; i < selectLangChBxItm.length; i++) {

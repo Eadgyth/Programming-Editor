@@ -11,18 +11,17 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 
-import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.Dimension;
 
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 //--Eadgyth--//
 import eg.ui.IconFiles;
 import eg.Constants;
 import eg.utils.ScreenParams;
-import eg.utils.UIComponents;
 
 /**
  * The window that shows input options for the configuration of a project
@@ -35,7 +34,8 @@ public class SettingsWindow {
    private final JFrame frame = new JFrame("Project settings");
 
    private final JTextField projDirTf       = new JTextField();
-   private final JTextField fileTf          = new JTextField();
+   
+   private final JTextField fileTf                = new JTextField();
    private final JTextField sourcesDirTf    = new JTextField();
    private final JTextField execDirTf       = new JTextField();
    private final JTextField cmdArgsTf       = new JTextField();
@@ -56,6 +56,11 @@ public class SettingsWindow {
    private String extensionsLabel = null;
    private String buildNameLabel = null;
 
+   /**
+    * Gets a new <code>InputOptionsBuilder</code>
+    *
+    * @return  a new {@link SettingsWindow.InputOptionsBuilder}
+    */
    public InputOptionsBuilder getInputOptionsBuilder() {
       SettingsWindow.InputOptionsBuilder optBuilder
             = new SettingsWindow.InputOptionsBuilder(this);
@@ -64,12 +69,30 @@ public class SettingsWindow {
    }
 
    /**
-    * Adds an <code>ActionListener</code> to this ok button
+    * Sets the listener to this ok button
     *
-    * @param al  the <code>ActionListener</code>;
+    * @param al  the <code>ActionListener</code>
     */
    public void okAct(ActionListener al) {
       okBt.addActionListener(al);
+   }
+   
+   /**
+    * Sets the listener to this cancel button
+    *
+    * @param al  the <code>ActionListener</code>
+    */
+   public void setCancelAct(ActionListener al) {
+      cancelBt.addActionListener(al);
+   }
+   
+   /**
+    * Sets the listener for the close button of this frame
+    *
+    * @param wa  the <code>WindowAdapter</code>
+    */
+   public void setDefaultCloseAct(WindowAdapter wa) {
+      frame.addWindowListener(wa);
    }
 
    /**
@@ -79,7 +102,9 @@ public class SettingsWindow {
     * frame visible, false to make it invisible
     */
    public void setVisible(boolean b) {
-      projDirTf.requestFocusInWindow();
+      if (b) {
+         projDirTf.requestFocusInWindow();
+      }
       frame.setVisible(b);
    }
 
@@ -234,22 +259,22 @@ public class SettingsWindow {
 
    /**
     * Returns if the option to save project parameters to an
-    * "eadproject" file is selected in the correponding checkbox
+    * "ProjConfig" file is selected in the correponding checkbox
     *
     * @return  the boolean value that is true if selected
     */
-   public boolean isSaveToEadproject() {
+   public boolean isSaveToProjConfig() {
       return saveConfig.isSelected();
    }
 
    /**
     * Sets the boolean that specifies if the checkbox for selecting
-    * if project parameters are saved in an "eadproject" file is
+    * if project parameters are saved in an "ProjConfig" file is
     * set selected
     *
     * @param isSelected  the boolean value. True to select
     */
-   public void setSaveEadprojectSelected(boolean isSelected) {
+   public void setSaveProjConfigSelected(boolean isSelected) {
       saveConfig.setSelected(isSelected);
    }
    
@@ -389,7 +414,7 @@ public class SettingsWindow {
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
       //
       // project dir
-      JLabel projDirLb = new JLabel("Name of project root:");
+      JLabel projDirLb = new JLabel("Name of project directory:");
       pnl.add(holdLbAndTf(projDirLb, projDirTf));
       //
       // project file option
@@ -467,9 +492,6 @@ public class SettingsWindow {
       pnl.add(okBt);
       pnl.add(cancelBt);
       frame.getRootPane().setDefaultButton(okBt);
-      cancelBt.addActionListener(e -> {
-         frame.setVisible(false);
-      });
       return pnl;
    }
 
@@ -514,7 +536,7 @@ public class SettingsWindow {
          pnl.add(structurePnl());
       }
       pnl.add(checkBxPnl(saveConfig,
-            "Save \"eadproject\" file in the project folder"));
+            "Save ProjConfig file in the project"));
       pnl.add(Box.createRigidArea(DIM_SPACER));
       pnl.add(buttonsPanel());
       return pnl;

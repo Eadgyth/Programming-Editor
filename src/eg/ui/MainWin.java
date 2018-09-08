@@ -7,7 +7,6 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -27,8 +26,8 @@ import eg.Constants;
 import eg.TabbedDocuments;
 import eg.Projects;
 import eg.Edit;
-import eg.EditAreaFormat;
-import eg.Preferences;
+import eg.Formatter;
+import eg.Prefs;
 import eg.Languages;
 import eg.FunctionalAction;
 import eg.edittools.*;
@@ -38,7 +37,6 @@ import eg.ui.menu.ViewMenu;
 import eg.ui.filetree.TreePanel;
 import eg.ui.filetree.FileTree;
 import eg.ui.tabpane.ExtTabbedPane;
-import eg.console.ConsolePanel;
 import eg.utils.UIComponents;
 import eg.utils.ScreenParams;
 import eg.utils.FileUtils;
@@ -65,10 +63,10 @@ public class MainWin {
    private final ExtTabbedPane tabPane = UIComponents.scolledUnfocusableTabPane();
    private final TreePanel treePnl = new TreePanel();
    private final FileTree fileTree;
-   private final ConsolePanel console = new ConsolePanel();
-   private final ToolPanel toolPnl = new ToolPanel();
+   private final ConsolePanel consPnl = new ConsolePanel();
+   private final EditToolPanel edToolPnl = new EditToolPanel();
    private final List<AddableEditTool> editTools = new ArrayList<>();
-   private final Preferences prefs = Preferences.readProgramPrefs();
+   private final Prefs prefs = new Prefs();
    private final ProjectControlsUpdate projControlsUpdate;
 
    private JSplitPane splitHorAll;
@@ -109,12 +107,12 @@ public class MainWin {
     *
     * @return  this {@link ConsolePanel}
     */
-    public ConsolePanel console() {
-       return console;
+    public ConsolePanel consolePnl() {
+       return consPnl;
     }
 
    /**
-    * Gets this <code>TreePanel</code>
+    * Gets this <code>FileTree</code>
     *
     * @return  this {@link FileTree}
     */
@@ -184,7 +182,7 @@ public class MainWin {
     * @param lineNr  the line number
     * @param colNr  the column number
     */
-   public void displayLCursorPosition(int lineNr, int colNr) {
+   public void displayCursorPosition(int lineNr, int colNr) {
       cursorPosLb.setText("Line " + lineNr + "  Col " + colNr);
    }
 
@@ -201,7 +199,7 @@ public class MainWin {
 
    /**
     * Selects the menu item for the specified language and displays
-    * the file type in the status bar
+    * the language in the status bar
     *
     * @param lang  the language
     * @param b  if the non-selected items are set enabled
@@ -365,22 +363,22 @@ public class MainWin {
     */
    public void setViewSettingWinAction(ViewSettingWin viewSetWin) {
       menuBar.viewMenu().openSettingWinItmAction(e ->
-            viewSetWin.makeVisible(true));
+            viewSetWin.setVisible(true));
    }
 
    /**
     * Sets listeners for format actions
     *
-    * @param format  the reference to {@link EditAreaFormat}
+    * @param format  the reference to {@link Formatter}
     */
-   public void setFormatActions(EditAreaFormat format) {
+   public void setFormatActions(Formatter format) {
       FormatMenu fm =  menuBar.formatMenu();
-      fm.setChangeWordWrapAct((ActionEvent e) -> {
+      fm.setChangeWordWrapAct(e -> {
          boolean isWordwrap = fm.isWordWrapItmSelected();
-         format.changeWordWrap(isWordwrap);
+         format.enableWordWrap(isWordwrap);
          setWordwrapInStatusBar(isWordwrap);
       });
-      fm.setFontAction(e -> format.makeFontSettingWinVisible());
+      fm.setFontAction(e -> format.openSetFontDialog());
    }
 
    /**
@@ -403,13 +401,13 @@ public class MainWin {
       vm.setFileViewItmAction(e -> showFileView(vm.isFileViewItmSelected()));
       vm.setTabItmAction(e -> tabPane.showTabbar(vm.isTabItmSelected()));
       treePnl.setCloseAct(e -> vm.doUnselectFileViewAct());
-      console.setCloseAct(e -> vm.doConsoleItmAct(false));
+      consPnl.setCloseAct(e -> vm.doConsoleItmAct(false));
    }
 
    private void showConsole(boolean b) {
       if (b) {
          splitVert.setDividerSize(6);
-         splitVert.setBottomComponent(console.consolePnl());
+         splitVert.setBottomComponent(consPnl.content());
          if (dividerLocVert == 0) {
             dividerLocVert = (int)(frame.getHeight() * 0.6);
          }
@@ -425,7 +423,7 @@ public class MainWin {
    private void showFileView(boolean b) {
       if (b) {
          splitHorAll.setDividerSize(6);
-         splitHorAll.setLeftComponent(treePnl.treePanel());
+         splitHorAll.setLeftComponent(treePnl.content());
          splitHorAll.setDividerLocation(dividerLocHor);
       }
       else {
@@ -435,10 +433,10 @@ public class MainWin {
       }
    }
 
-   private void showToolPnl(boolean b) {
+   private void showEditToolPnl(boolean b) {
       if (b) {
          splitHor.setDividerSize(6);
-         splitHor.setRightComponent(toolPnl.toolPanel());
+         splitHor.setRightComponent(edToolPnl.panel());
       }
       else {
          splitHor.setDividerSize(0);
@@ -458,13 +456,13 @@ public class MainWin {
    }
 
    private void initShowTabbar() {
-      boolean show = "show".equals(prefs.getProperty("showTabs"));
+      boolean show = "show".equals(prefs.getProperty("Tabbar"));
       tabPane.showTabbar(show);
       menuBar.viewMenu().selectTabsItm(show);
    }
    
    private void initShowFileView() {
-      boolean show = "show".equals(prefs.getProperty("fileView"));
+      boolean show = "show".equals(prefs.getProperty("FileView"));
       if (show) {
          showFileView(show);
       }
@@ -490,13 +488,13 @@ public class MainWin {
    private void setEditToolsActions(AddableEditTool tool, int i) {
       JButton closeBt = new JButton();
       closeBt.setAction(new FunctionalAction("", IconFiles.CLOSE_ICON,
-            e -> showToolPnl(false)));
+            e -> showEditToolPnl(false)));
 
       tool.addClosingAction(closeBt);
       menuBar.editMenu().setEditToolsActions(
             e -> {
-               toolPnl.addComponent(tool.toolComponent());
-               showToolPnl(true);
+               edToolPnl.addComponent(tool.toolContent());
+               showEditToolPnl(true);
             },
             i);
    }
@@ -523,10 +521,11 @@ public class MainWin {
       });
       ViewMenu vm = menuBar.viewMenu();
       String state = vm.isTabItmSelected() ? "show" : "hide";
-      prefs.storePrefs("showTabs", state);
+      prefs.setProperty("Tabbar", state);
       state = vm.isFileViewItmSelected() ? "show" : "hide";
-      prefs.storePrefs("fileView", state);
+      prefs.setProperty("FileView", state);
       if (td.isAllClosed()) {
+         prefs.store();
          System.exit(0);
       }
    }

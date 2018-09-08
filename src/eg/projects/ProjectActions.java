@@ -1,9 +1,8 @@
 package eg.projects;
 
 /**
- * The interface that defines actions in a project.
- * <br>
- * These methods are called by {@link eg.Projects}.
+ * The interface that defines the actions to compile, run and
+ * build a project.
  */
 public interface ProjectActions extends Configurable {
    
@@ -16,7 +15,7 @@ public interface ProjectActions extends Configurable {
    };
    
    /**
-    * Runs a project
+    * Runs the project using a defined main file
     */
    public default void runProject() {
       throw new UnsupportedOperationException(
@@ -24,7 +23,7 @@ public interface ProjectActions extends Configurable {
    };
    
    /**
-    * Runs a project using the specified file
+    * Runs the project using the specified file
     *
     * @param  filepath  the full filepath
     */
@@ -34,8 +33,7 @@ public interface ProjectActions extends Configurable {
    };
    
    /**
-    * Creates a build of a project, where it is not specified what
-    * 'build' is
+    * Creates a build of the project
     */
    public default void build() {
       throw new UnsupportedOperationException(

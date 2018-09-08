@@ -17,7 +17,7 @@ import eg.utils.*;
 import eg.document.EditableDocument;
 
 /**
- * The editing actions invoked by menu selections or toolbar buttons
+ * The editing actions invoked by menu selections and toolbar buttons
  */
 public class Edit {
 
@@ -27,16 +27,24 @@ public class Edit {
    private static final String[] SPACE_NUMBER
          = { "0", "1", "2", "3", "4", "5", "6" };
 
-   private final Preferences prefs = Preferences.prefs();
-
    private EditableDocument edtDoc;
    private JTextPane textArea;
    private String indentUnit;
    private int indentLength;
+   private String changedIndentUnit;
+   
+   public Edit(){}
 
    /**
-    * Sets the <code>EditableDocument</code> that is edited and its
-    * current indentation unit
+    * @param initialIndentUnit  the indent undit that may change by
+    * setting a new value in the 'Set indent unit' dialog.
+    */
+   public Edit(String initialIndentUnit) {
+      changedIndentUnit = initialIndentUnit;
+   }
+
+   /**
+    * Sets the <code>EditableDocument</code> that is edited
     *
     * @param edtDoc  the {@link EditableDocument}
     */
@@ -105,14 +113,15 @@ public class Edit {
    }
 
    /**
-    * Sets a new indentation length
+    * Sets a new indent length
     */
    public void setNewIndentUnit() {
       String selectedNumber = Dialogs.comboBoxOpt(
             "Select the number of spaces:",
-            "Indentation length",
+            "Indent length",
             SPACE_NUMBER,
-            String.valueOf(indentLength), false);
+            String.valueOf(indentLength),
+            false);
 
       if (selectedNumber != null) {
          indentLength = Integer.parseInt(selectedNumber);
@@ -121,12 +130,22 @@ public class Edit {
             indentUnit += " ";
          }
          edtDoc.setIndentUnit(indentUnit);
-         prefs.storePrefs("indentUnit", indentUnit);
+         changedIndentUnit = indentUnit;
       }
    }
 
    /**
-    * Increases the indentation by one indentation unit
+    * Gets the indent unit currently set in the "Set indent unit"
+    * dialog
+    *
+    * @return  the indent unit
+    */
+   public String changedIndentUnit() {
+      return changedIndentUnit;
+   }
+
+   /**
+    * Increases the indentation by one indent unit
     */
    public void indent()  {
       String sel = textArea.getSelectedText();
@@ -148,7 +167,7 @@ public class Edit {
    }
 
    /**
-    * Reduces the indentation by one indentation unit
+    * Reduces the indentation by one indent unit
     */
    public void outdent() {
       String sel = textArea.getSelectedText();
@@ -212,7 +231,7 @@ public class Edit {
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private String getClipboard() {
@@ -251,7 +270,8 @@ public class Edit {
          }
       }
       if (!isConsistent) {
-         Dialogs.warnMessage("The selected text is not consistently"
+         Dialogs.warnMessage(
+               "The selected text is not consistently"
                + " indented by at least one indentation length");
       }
       return isConsistent;

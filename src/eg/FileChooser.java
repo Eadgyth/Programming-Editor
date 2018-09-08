@@ -19,8 +19,10 @@ public class FileChooser {
    private final JFrame frame = new JFrame();
    private JFileChooser chOpen = null;
    private JFileChooser chSave = null;
+   private File currentDir;
 
    public FileChooser(String startingDir) {
+      currentDir = new File(startingDir);
       initChooserOpen(startingDir);
       initChooserSave(startingDir);
    }
@@ -36,7 +38,8 @@ public class FileChooser {
       int res = chOpen.showOpenDialog(frame);
       if (res == JFileChooser.APPROVE_OPTION) {
          f = chOpen.getSelectedFile();
-         chOpen.setCurrentDirectory(f.getParentFile());
+         currentDir = f.getParentFile();
+         chSave.setCurrentDirectory(currentDir);
       }
       return f;
    }
@@ -58,9 +61,14 @@ public class FileChooser {
       int res = chSave.showSaveDialog(frame);
       if (res == JFileChooser.APPROVE_OPTION) {
          f = chSave.getSelectedFile();
-         chSave.setCurrentDirectory(f.getParentFile());
+         currentDir = f.getParentFile();
+         chSave.setCurrentDirectory(currentDir);
       }
       return f;
+   }
+   
+   public String currentDir() {
+      return currentDir.toString();
    }
 
    //

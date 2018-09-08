@@ -10,29 +10,28 @@ import javax.swing.JPanel;
 import eg.Constants;
 
 /**
- * Defines a panel to which a variable <code>Component</code> can
+ * Defines the panel to which a variable <code>Component</code> can
  * be added
  */
-public class ToolPanel {
+public class EditToolPanel {
    
    private final JPanel pnl = new JPanel(new BorderLayout());
    
-   public ToolPanel() {
+   public EditToolPanel() {
       pnl.setBorder(Constants.GRAY_BORDER);
    }
    
    /**
-    * Gets this tool panel
+    * Gets this <code>JPanel</code> which a Component can be added to
     *
-    * @return  the <code>JPanel</code>
+    * @return  the JPanel
     */
-   public JPanel toolPanel() {
+   public JPanel panel() {
       return pnl;
    }
    
    /**
-    * Adds a component to this tool panel. A previously added
-    * component is removed
+    * Adds a component. A previously added component is removed
     *
     * @param c  the <code>Component</code>
     */

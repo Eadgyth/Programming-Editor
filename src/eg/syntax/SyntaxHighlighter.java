@@ -101,12 +101,12 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Sets the option for testing if highlighting a found text element is
-       * enabled.
-       * This value is passed to {@link Highlighter#isEnabled(String,int,int)}
+       * Sets the option that specifies which additional conditions for
+       * highlighting a found text element are used by a <code>Highlighter</code>.
+       * The value is passed to {@link Highlighter#isEnabled(String,int,int)}
        * which is called by the search methods when a text element is found.
-       * It is not called by {@link #blockComments(String,String)},
-       * {@link #embeddedHtmlSections(String,String)} and by
+       * It is not called by {@link #blockComments(String,String)} and
+       * {@link #embeddedHtmlSections(String,String)}. It is called by
        * {@link #htmlElements(String[],String[])} only when an attribute
        * keyword is found. To change the option this method must be called
        * before a search method
@@ -136,10 +136,11 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights an extensible keyword
+       * Searches and highlights a keyword that may be extended by one of
+       * the strings stored in an array
        *
        * @param base  the base keyword
-       * @param extensions  the array of strings that may extend the base
+       * @param extensions  the array of strings that may extend the base keyword
        * @param nonWordStart  the array of characters that the keyword
        * must not be preceded with, in addition to digits and letters. Can
        * be null

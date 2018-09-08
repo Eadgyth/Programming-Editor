@@ -7,9 +7,6 @@ import java.util.List;
 import java.io.File;
 import java.io.FilenameFilter;
 
-//--Eadgyth--//
-import eg.utils.Dialogs;
-
 /**
  * The list of files in a directory and its sub-directories with a given
  * file extension

@@ -4,6 +4,8 @@ import java.awt.FlowLayout;
 import java.awt.GraphicsEnvironment;
 
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
@@ -18,7 +20,7 @@ import javax.swing.JButton;
 import eg.Constants;
 
 /**
- * A dialog for setting the font and font size
+ * The dialog for setting the font and font size
  */
 public class FontSettingWin {
 
@@ -30,28 +32,42 @@ public class FontSettingWin {
    private final JComboBox<String> selectFont;
    private final JComboBox<String> selectSize;
    private final JButton okBt = new JButton("OK");
+   private final JButton cancelBt = new JButton("Cancel");
    private final String[] fonts;
+
+   private String font;
+   private int size;
 
    /**
     * @param  font  the font name that is initially set selected
     * @param  size  the font size that is initiallay set selected
     */
    public FontSettingWin(String font, int size) {
+      this.font = font;
+      this.size = size;
       fonts = GraphicsEnvironment.getLocalGraphicsEnvironment()
             .getAvailableFontFamilyNames();
-            
+
       selectFont = new JComboBox<>(fonts);
       selectSize = new JComboBox<>(FONT_SIZES);
       initFrame(font, size);
+      cancelBt.addActionListener(e -> undoSettings());
+      frame.addWindowListener(new WindowAdapter() {
+
+         @Override
+         public void windowClosing(WindowEvent we) {
+            undoSettings();
+         }
+      });
    }
 
    /**
-    * Sets the boolean that specified if this frame is made visible
-    * or invisible
+    * Sets this frame visible or invisible
     *
-    * @param b  the boolean value
+    * @param b  the boolean value that is true to set visible, false
+    * set invisible
     */
-   public void makeVisible(boolean b) {
+   public void setVisible(boolean b) {
       frame.setVisible(b);
    }
 
@@ -65,31 +81,38 @@ public class FontSettingWin {
    }
 
    /**
-    * Returns the font selection in the corresponding combobox
+    * Returns the font selection
     *
-    * @return the selected font
+    * @return  the font
     */
-   public String fontComboBxRes() {
-      String font = fonts[selectFont.getSelectedIndex()];
+   public String font() {
+      font = fonts[selectFont.getSelectedIndex()];
       return font;
    }
 
    /**
-    * Returns the font size selection in the corresponding combobox
+    * Returns the font size selection
     *
-    * @return the selected font
+    * @return  the font size
     */
-   public int sizeComboBxRes() {
-      String size = FONT_SIZES[selectSize.getSelectedIndex()];
-      return Integer.parseInt(size);
+   public int size() {
+      String sizeStr = FONT_SIZES[selectSize.getSelectedIndex()];
+      size = Integer.parseInt(sizeStr);
+      return size;
    }
 
    //
    //--private--/
    //
+   
+   private void undoSettings() {
+      selectFont.setSelectedItem(font);
+      selectSize.setSelectedItem(String.valueOf(size));
+      setVisible(false);
+   }
 
    private void initFrame(String font, int size) {
-      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
       frame.setResizable(false);
       frame.setLocation(550, 100);
       frame.setContentPane(combinedPnl(font, size));
@@ -111,6 +134,7 @@ public class FontSettingWin {
       combined.add(twoComboBx);
       combined.add(buttonPnl());
       combined.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
       return combined;
    }
 
@@ -129,17 +153,18 @@ public class FontSettingWin {
       comboBox.setFont(Constants.VERDANA_PLAIN_8);
       JLabel titleLb = new JLabel(title);
       titleLb.setFont(Constants.SANSSERIF_BOLD_9);
-      JPanel comboBoxPnl = new JPanel();
-      comboBoxPnl.setLayout(new BoxLayout(comboBoxPnl, BoxLayout.LINE_AXIS));
-      comboBoxPnl.add(titleLb);
-      comboBoxPnl.add(comboBox);
-      return comboBoxPnl;
+      JPanel pnl = new JPanel();
+      pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
+      pnl.add(titleLb);
+      pnl.add(comboBox);
+      return pnl;
    }
 
     private JPanel buttonPnl() {
-      JPanel buttonsPanel = new JPanel(new FlowLayout());
-      buttonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-      buttonsPanel.add(okBt);
-      return buttonsPanel;
+      JPanel pnl = new JPanel(new FlowLayout());
+      pnl.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+      pnl.add(okBt);
+      pnl.add(cancelBt);
+      return pnl;
    }
 }

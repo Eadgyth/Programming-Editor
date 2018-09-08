@@ -36,34 +36,35 @@ public class Projects {
    /**
     * @param mw  the reference to {@link MainWin}
     * @param edtDoc  the array of {@link EditableDocument}
-    * @param lastProject  the recent project directory that is shown in the
-    * file view (the project is only set active after a file is opened).
-    * Null or the empty string to not show a directory
+    * @param dir  the directory that is initially shown in the
+    * file view contained in MainWin. Null or the empty string to not
+    * show a directory
     */
-   public Projects(MainWin mw, EditableDocument[] edtDoc, String lastProject) {
+   public Projects(MainWin mw, EditableDocument[] edtDoc, String dir) {
       this.mw = mw;
       this.edtDoc = edtDoc;
       projTypeChg = new ProjectTypeChange(mw.projControlsUpdate());
-      proc = new ProcessStarter(mw.console());
-      projSelect = new ProjectSelector(mw.consoleOpener(), proc, mw.console());
-      if (lastProject != null && lastProject.length() > 0) {
-         mw.fileTree().setProjectTree(lastProject);
+      Console cons = new Console(mw.consolePnl());
+      proc = cons.getProcessStarter();
+      projSelect = new ProjectSelector(mw.consoleOpener(), cons);
+      if (dir != null && dir.length() > 0) {
+         mw.fileTree().setProjectTree(dir);
       }
    }
 
    /**
-    * Selects an element from this array of <code>EditableDocument</code> by
-    * the specified index
+    * Selects an element in this array of <code>EditableDocument</code>
     *
     * @param i  the index
     */
-   public void setDocumentAt(int i) {
+   public void setDocumentIndex(int i) {
       iDoc = i;
       if (!edtDoc[iDoc].hasFile()) {
          return;
       }
       ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), false);
       boolean isListed = inList != null;
+      mw.enableOpenProjSetWinActions(isListed);
       if (isListed) {
          mw.enableChangeProject(inList != current);
          if (!current.isInProject(edtDoc[iDoc].dir())) {
@@ -93,9 +94,9 @@ public class Projects {
    }
 
    /**
-    * Tries to retrieve a project whose configuration is saved in an
-    * 'eadproject' file in the project folder or, if such file is not
-    * existent, in the program's prefs file.
+    * Retrieves a project from a configuration that was saved in a
+    * ProjConfig or the Prefs file
+    *
     * @see eg.projects.AbstractProject#retrieveProject(String)
     */
    public void retrieveProject() {
@@ -136,8 +137,9 @@ public class Projects {
 
    /**
     * Opens the window of the <code>SettingsWindow</code> object that
-    * belongs to a project depending on the currently selected
-    * <code>EditableDocument</code>
+    * belongs to the active project. If the currently selected
+    * <code>EditableDocument</code> belongs to another project
+    * the window of the project is opened after asking to change project.
     */
    public void openSettingsWindow() {
       boolean open = true;
@@ -275,6 +277,7 @@ public class Projects {
       }
       else {
          mw.enableChangeProject(true);
+         projTypeChg.disableProjectActions();
          return false;
       }
    }
@@ -321,6 +324,7 @@ public class Projects {
          current.storeConfiguration();
          projList.add(current);
          updateProjectSetting();
+         updateFileTree();
       }
    }
 
@@ -341,18 +345,30 @@ public class Projects {
          String previousProjDispl, String newProjDispl) {
             
       return Dialogs.warnConfirmYesNo(
-            filename + " belongs to the " + previousProjDispl + " project \""
-            + projName +"\".\n"
-            + "Remove " + projName + " and assign a new project"
-            + " of the category \"" + newProjDispl + "\"?");
+            filename
+            + " belongs to the "
+            + previousProjDispl
+            + " project \""
+            + projName
+            + "\".\n"
+            + "Remove "
+            + projName
+            + " and assign a new project"
+            + " of the category \""
+            + newProjDispl
+            + "\"?");
    }
 
    private void projectAssignedMsg(String filename, String projName,
          String currProjDispl) {
 
       Dialogs.infoMessage(
-            edtDoc[iDoc].filename() + " already belongs to the project "
-            + projName + " in the category \"" + currProjDispl + "\".",
+            edtDoc[iDoc].filename()
+            + " already belongs to the project "
+            + projName
+            + " in the category \""
+            + currProjDispl
+            + "\".",
             null);
    }
    
@@ -362,7 +378,8 @@ public class Projects {
 
    private void fileNotFoundMsg(String filename) {
        Dialogs.errorMessage(
-              filename + ":\nThe file could not be found anymore",
+              filename
+              + ":\nThe file could not be found anymore",
               "Missing files");
    }
 

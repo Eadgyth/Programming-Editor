@@ -28,38 +28,40 @@ import eg.ui.tabpane.ExtTabbedPane;
  */
 public class TabbedDocuments implements Observer {
 
-   private final EditableDocument[] edtDoc = new EditableDocument[15];
-   private final EditArea[] editArea = new EditArea[15];
-   private final Preferences prefs = Preferences.readProgramPrefs();
+   private final EditableDocument[] edtDoc;
+   private final Prefs prefs = new Prefs();
    private final FileChooser fc;
    private final MainWin mw;
    private final ExtTabbedPane tabPane;
-   private final EditAreaFormat format;
+   private final Formatter format;
    private final Edit edit;
    private final Projects proj;
+
+   private EditArea[] editArea = null;
 
    /*
     * The index of the selected tab */
    private int iTab = -1;
    /*
     * The language that is initially read from prefs and that may be
-    * changed by selection in the Edit>Language menu */
+    * changed in the Edit>Language menu */
    private Languages lang;
 
    /**
-    * @param format  the reference to {@link EditAreaFormat}
     * @param mw  the reference to {@link MainWin}
+    * @param format  the reference to {@link Formatter}
     */
-   public TabbedDocuments(EditAreaFormat format, MainWin mw) {
-      this.format = format;
-      format.setEditAreaArr(editArea);
+   public TabbedDocuments(MainWin mw, Formatter format) {
       this.mw = mw;
-      edit = new Edit();
+      this.format = format;
+      editArea = format.editAreaArray();
+      edtDoc = new EditableDocument[editArea.length];
+      edit = new Edit(prefs.getProperty("IndentUnit"));
       mw.setEditActions(edit);
-      proj = new Projects(mw, edtDoc, prefs.getProperty("projectRoot"));
+      proj = new Projects(mw, edtDoc, prefs.getProperty("ProjectRoot"));
       mw.setProjectActions(proj);
       setLanguage();
-      fc = new FileChooser(prefs.getProperty("recentPath"));
+      fc = new FileChooser(prefs.getProperty("RecentPath"));
       tabPane = mw.tabPane();
       tabPane.addChangeListener((ChangeEvent ce) -> {
          JTabbedPane sourceTb = (JTabbedPane) ce.getSource();
@@ -172,13 +174,12 @@ public class TabbedDocuments implements Observer {
       boolean isSave = f != null;
       if (isSave && f.exists()) {
          isSave = 0 == replaceFileOption(f);
-      }     
+      }
       isSave = isSave && edtDoc[iTab].setFile(f);
       if (isSave && update) {
          changedFileUpdate(true);
          tabPane.setTitle(iTab, edtDoc[iTab].filename());
-         prefs.storePrefs("recentPath", edtDoc[iTab].dir());
-      }   
+      }
       return isSave;
    }
 
@@ -191,7 +192,7 @@ public class TabbedDocuments implements Observer {
       boolean isSave = f != null;
       if (isSave && f.exists()) {
          isSave = 0 == replaceFileOption(f);
-      }     
+      }
       if (isSave) {
          edtDoc[iTab].saveCopy(f);
       }
@@ -224,16 +225,18 @@ public class TabbedDocuments implements Observer {
    }
 
    /**
-    * Tries to close all tabs
+    * Closes all tabs if files of the documents in all tabs have been
+    * saved. Creates a new blank tab if the specified boolean
+    * <code>createBlankTab</code> is true and all tabs could be closed.
     *
-    * @param createBlankDoc  the boolean that is true to create a new blank
-    * document if the last tab was closed
+    * @param createBlankDoc  the boolean value, true to create a new
+    * blank tab
     */
    public void closeAll(boolean createBlankDoc) {
       int count = unsavedTab();
       if (count == nTabs()) {
          int i = count - 1;
-         while (i > -1) {     
+         while (i > -1) {
             tabPane.removeTabAt(i);
             edtDoc[i] = null;
             editArea[i] = null;
@@ -257,9 +260,10 @@ public class TabbedDocuments implements Observer {
          }
       }
    }
-   
+
    /**
-    * Tries to close all tabs
+    * Closes all tabs. Calls {@link #closeAll(boolean)} without creating a
+    * new blank tab.
     *
     * @return  the boolean value that, if true, indicates that all tabs
     * were closed
@@ -268,7 +272,10 @@ public class TabbedDocuments implements Observer {
       closeAll(false);
       boolean isClosed = iTab == -1;
       if (isClosed) {
-         prefs.storePrefs("language", lang.toString());
+         format.setProperties();
+         prefs.setProperty("IndentUnit", edit.changedIndentUnit());
+         prefs.setProperty("Language", lang.toString());
+         prefs.setProperty("RecentPath", fc.currentDir());
       }
       return isClosed;
    }
@@ -298,7 +305,7 @@ public class TabbedDocuments implements Observer {
          createDocument(f);
       }
    }
-   
+
    private boolean isTabOpenable() {
       boolean isOpenable = iTab == -1 || tabPane.isShowTabbar();
       if (!isOpenable) {
@@ -307,37 +314,35 @@ public class TabbedDocuments implements Observer {
       }
       return isOpenable;
    }
-   
+
    private void createDocument() {
       int n = nTabs();
-      editArea[n] = format.createEditArea();
+      format.createEditAreaAt(n);
       edtDoc[n] = new EditableDocument(editArea[n], lang);
       setupDocument(n);
-      addNewTab("unnamed", editArea[n].editAreaPnl());
+      addNewTab("unnamed", editArea[n].content());
    }
 
    private void createDocument(File f) {
       try {
          mw.setBusyCursor();
          int n = nTabs();
-         editArea[n] = format.createEditArea();
+         format.createEditAreaAt(n);
          edtDoc[n] = new EditableDocument(editArea[n], f);
          setupDocument(n);
-         addNewTab(edtDoc[n].filename(), editArea[n].editAreaPnl());
+         addNewTab(edtDoc[n].filename(), editArea[n].content());
          changedFileUpdate(false);
-         prefs.storePrefs("recentPath", edtDoc[n].dir());
       }
       finally {
          mw.setDefaultCursor();
-      } 
+      }
    }
-   
+
    private void setupDocument(int index) {
-      prefs.readPrefs();
-      edtDoc[index].setIndentUnit(prefs.getProperty("indentUnit"));
+      edtDoc[index].setIndentUnit(edit.changedIndentUnit());
       edtDoc[index].setEditingStateReadable(editReadable);
    }
-   
+
    private void addNewTab(String filename, JPanel pnl) {
       JButton closeBt = new JButton(eg.ui.IconFiles.CLOSE_ICON);
       tabPane.addTab(filename, pnl, closeBt);
@@ -346,7 +351,7 @@ public class TabbedDocuments implements Observer {
          close(true);
       });
    }
-   
+
    private void removeTab() {
       int count = iTab;
       tabPane.removeTabAt(iTab);
@@ -354,7 +359,7 @@ public class TabbedDocuments implements Observer {
          edtDoc[i] = edtDoc[i + 1];
          editArea[i] = editArea[i + 1];
       }
-      int n = nTabs();    
+      int n = nTabs();
       edtDoc[n] = null;
       editArea[n] = null;
       if (n > 0) {
@@ -362,12 +367,12 @@ public class TabbedDocuments implements Observer {
          changedTabUpdate();
       }
    }
-   
+
    private void changedTabUpdate() {
-      format.setEditAreaAt(iTab);
+      format.setIndex(iTab);
       mw.setWordWrapSelected(editArea[iTab].isWordwrap());
       edit.setDocument(edtDoc[iTab]);
-      proj.setDocumentAt(iTab);
+      proj.setDocumentIndex(iTab);
       mw.editTools().forEach((t) -> {
          t.setEditableDocument(edtDoc[iTab]);
       });
@@ -376,9 +381,9 @@ public class TabbedDocuments implements Observer {
       mw.setLanguageSelected(edtDoc[iTab].language(), !edtDoc[iTab].hasFile());
       edtDoc[iTab].setFocused();
    }
-   
+
    private void changedFileUpdate(boolean updateFiletree) {
-      proj.setDocumentAt(iTab);
+      proj.setDocumentIndex(iTab);
       proj.retrieveProject();
       mw.setLanguageSelected(edtDoc[iTab].language(), false);
       mw.displayFrameTitle(edtDoc[iTab].filepath());
@@ -386,7 +391,7 @@ public class TabbedDocuments implements Observer {
          proj.updateFileTree();
       }
    }
-   
+
    private boolean isFileOpen(File f) {
       boolean isFileOpen = false;
       for (int i = 0; i < nTabs(); i++) {
@@ -398,7 +403,7 @@ public class TabbedDocuments implements Observer {
       }
       return isFileOpen;
    }
-   
+
    private boolean isMaxTabNumber() {
       boolean isMax = nTabs() == edtDoc.length;
       if (isMax) {
@@ -406,7 +411,7 @@ public class TabbedDocuments implements Observer {
       }
       return isMax;
    }
-   
+
    private int unsavedTab() {
       int i;
       for (i = 0; i < nTabs(); i++) {
@@ -425,7 +430,7 @@ public class TabbedDocuments implements Observer {
       return Dialogs.confirmYesNoCancel
             ("Save changes in " + filename + " ?");
    }
-   
+
    private int replaceFileOption(File f) {
       return Dialogs.warnConfirmYesNo(
              f.getName() + " already exists.\nReplace file?");
@@ -434,37 +439,37 @@ public class TabbedDocuments implements Observer {
    private int nTabs() {
       return tabPane.getTabCount();
    }
-   
+
    private void setLanguage() {
       try {
-         lang = Languages.valueOf(prefs.getProperty("language"));
+         lang = Languages.valueOf(prefs.getProperty("Language"));
       }
       catch (IllegalArgumentException e) {
          lang = Languages.NORMAL_TEXT;
       }
       mw.setLanguageSelected(lang, false);
    }
-   
+
    private final EditingStateReadable editReadable = new EditingStateReadable() {
 
       @Override
       public void setInChangeState(boolean isChange) {
          mw.enableSave(isChange);
       }
-      
+
       @Override
       public void setUndoableState(boolean canUndo, boolean canRedo) {
          mw.enableUndoRedo(canUndo, canRedo);
       }
-      
+
       @Override
       public void setSelectionState(boolean isSelection) {
          mw.enableCutCopy(isSelection);
       }
-      
+
       @Override
       public void setCursorPosition(int line, int col) {
-         mw.displayLCursorPosition(line, col);
+         mw.displayCursorPosition(line, col);
       }
    };
 }

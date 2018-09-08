@@ -1,8 +1,6 @@
 package eg.projects;
 
-import java.io.File;
 import java.io.IOException;
-
 import java.awt.EventQueue;
 
 //--Eadgyth--//
@@ -19,7 +17,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
 
    private final ConsoleOpenable co;
    private final ProcessStarter proc;
-   private final ConsolePanel consPnl;
+   private final Console cons;
    private final Compilation comp;
    private final JarBuilder jar;
 
@@ -28,13 +26,13 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    private String[] nonJavaExt = null;
    private boolean isNonJavaExtTested = true;
 
-   JavaProject(ConsoleOpenable co, ProcessStarter proc, ConsolePanel consPnl) {
+   JavaProject(ConsoleOpenable co, Console cons) {
       super(ProjectTypes.JAVA, true, "java");
       this.co = co;
-      this.proc = proc;
-      this.consPnl = consPnl;
-      comp = new Compilation(consPnl);
-      jar = new JarBuilder(consPnl);
+      this.cons = cons;
+      proc = cons.getProcessStarter();
+      comp = new Compilation(cons);
+      jar = new JarBuilder();
    }
 
    @Override
@@ -55,21 +53,21 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void compile() {
-      if (!isNonJavaExtCorrect() || !proc.isProcessEnded()) {
+      if (!isNonJavaExtCorrect() || !cons.canPrint()) {
          return;
       }
-      consPnl.setText("<<Compile " + getProjectName() + ">>\n");
+      cons.clearAndPrint("<<Compile " + getProjectName() + ">>\n");
       EventQueue.invokeLater(() -> {
          comp.compile(getProjectPath(), getExecutableDirName(),
                getSourceDirName(), nonJavaExt, getCompileOption());
 
-         consPnl.setCaretUneditable(0);
+         cons.toTop();
          if (!co.isConsoleOpen()) {
             boolean needConfirm = false;
             StringBuilder msg = new StringBuilder();
             if (!comp.isCompiled()) {
                msg.append("Compilation failed.\n");
-               msg.append(comp.getFirstCompileErr()).append(".\n");
+               msg.append(comp.firstCompileErr()).append(".\n");
                needConfirm = true;
             }
             else {
@@ -79,11 +77,11 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                msg.append("Warning: One or more compiler messages are present.\n");
                needConfirm = true;
             }
-            if (comp.getCopyFilesErr().length() > 0) {
-               msg.append("Note: ").append(comp.getCopyFilesErr()).append(".\n");
+            if (comp.copyFilesErr().length() > 0) {
+               msg.append("Note: ").append(comp.copyFilesErr()).append(".\n");
             }
-            if (comp.getOptionErr().length() > 0) {
-               msg.append("Note: ").append(comp.getOptionErr()).append(".\n");
+            if (comp.optionErr().length() > 0) {
+               msg.append("Note: ").append(comp.optionErr()).append(".\n");
             }
             if (needConfirm) {
                msg.append("\nOpen the console window to view messages?\n");
@@ -114,16 +112,16 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    }
 
    /**
-    * Creates a jar file
+    * Creates an executable jar file
     */
    @Override
    public void build() {
       if (!mainClassFileExists() || !isNonJavaExtCorrect()
-            || !proc.isProcessEnded()) {
+            || !cons.canPrint()) {
 
          return;
       }
-      consPnl.setText("");
+      cons.clear();
       EventQueue.invokeLater(() -> {
          String jarName = getBuildName();
          if (jarName.length() == 0) {
@@ -144,12 +142,13 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                }
             }
             else {
-               msg.append("An error occured while trying to create a jar file.");
+               msg.append("An error occured while trying to create the jar file ");
+               msg.append(jarName).append(".");
                if (!co.isConsoleOpen()) {
                   Dialogs.errorMessage(msg.toString(), null);
                }
             }
-            consPnl.appendText("<<" + msg.toString() + ">>");
+            cons.print("<<" + msg.toString() + ">>");
          }
          catch (IOException | InterruptedException e) {
             FileUtils.logStack(e);

@@ -13,24 +13,24 @@ import java.awt.Color;
 import eg.Constants;
 
 /**
- * A frame that shows info about Eadgyth
+ * The window that shows info about Eadgyth
  */
 public class InfoWin {
 
    private final static String INFO
          = "<html>"
-         + "Version 1.0.3<br>"
+         + "Version 1.0.4<br>"
          + "Malte Bussiek<br>"
          + "https://eadgyth.github.io/Programming-Editor"
          + "</html>";
 
-   private final JFrame frame  = new JFrame();
-   private final JPanel okButton = new JPanel(new FlowLayout());
-   private final JPanel text     = new JPanel(new GridLayout(2, 1));
-   private final JPanel combine  = new JPanel(new BorderLayout());
-   private final JButton okBt = new JButton("OK");
-   private final JLabel titleLb  = new JLabel("Eadgyth Programming-Editor");
-   private final JLabel infoLb   = new JLabel(INFO);
+   private final JFrame  frame    = new JFrame();
+   private final JPanel  okButton = new JPanel(new FlowLayout());
+   private final JPanel  text     = new JPanel(new GridLayout(2, 1));
+   private final JPanel  combine  = new JPanel(new BorderLayout());
+   private final JButton okBt     = new JButton("OK");
+   private final JLabel  titleLb  = new JLabel("Eadgyth Programming-Editor");
+   private final JLabel  infoLb   = new JLabel(INFO);
 
    public InfoWin() {  
       titleLb.setFont(Constants.SANSSERIF_BOLD_11);

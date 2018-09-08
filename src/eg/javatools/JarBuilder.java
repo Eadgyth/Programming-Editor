@@ -7,33 +7,22 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 
-//--Eadgyth--//
-import eg.console.ConsolePanel;
-
 /**
  * The creation of an executable jar file.
  * <p>
  * The jar file is saved in the directory that is specified as executables
- * directory or in the root directory of a project.
+ * directory or, if this is not specified, in the root directory of a project.
  */
 public class JarBuilder {
 
    private final static String F_SEP = File.separator;
    private final FilesFinder fFind = new FilesFinder();
-   private final ConsolePanel consPnl;
    
    private String includedFilesErr = "";
-
-   /**
-    * @param consPnl  the reference to {@link ConsolePanel}
-    */
-   public JarBuilder(ConsolePanel consPnl) {
-      this.consPnl = consPnl;
-   }
    
    /**
     * Returns the error message that indicates that non-Java files
-    * for inclusion are not found
+    * for inclusion in the jar are not found
     *
     * @return  the message or the empty empty string
     */
@@ -48,13 +37,13 @@ public class JarBuilder {
     * @param jarName  the name for the jar file
     * @param qualifiedMain  the fully qualified name of the main class
     * @param execDir  the name of the directory that contains class files.
-    * Can be the empty string but cannot be null
+    * Can be the empty string if nonClassExt is null.
     * @param sourceDir  the name of the directory that contains source
-    * files. Can be the empty string but cannot be not null
-    * @param nonClassExt  the array of extensions of files that are included
-    * in the jar file in addition to class files. May be null
-    * @return  the booelan that is true if the process that creates the jar
-    * terminates normally
+    * files. Can be the empty string if nonClassExt is null.
+    * @param nonClassExt  the array of extensions of files that are
+    * included in the jar file in addition to class files. May be null
+    * @return  the booelan that is true if the process that creates the
+    * jar terminates normally
     * @throws IOException  if the process that creates a jar cannot receive
     * any input
     * @throws InterruptedException  if the thread on which the process runs

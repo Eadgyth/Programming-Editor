@@ -22,29 +22,31 @@ public class Eadgyth {
 
    public static void main(String[] arg) {
       Locale.setDefault(Locale.US);
-      uiManagerSettings();
-      setLaf();
+      uiManagerSettings();   
+      Prefs prefs = new Prefs();
+      prefs.load();
+      String laf = prefs.getProperty("LaF");
+      setLaf(laf);
 
-      MainWin         mw         = new MainWin();
-      ViewSettingWin  viewSetWin = new ViewSettingWin();
-      ViewSetter      viewSet    = new ViewSetter(viewSetWin, mw);
-      EditAreaFormat  format     = new EditAreaFormat(viewSetWin);
-      TabbedDocuments tabDocs    = new TabbedDocuments(format, mw);
+      MainWin mw = new MainWin();
+      ViewSettingWin viewSetWin = new ViewSettingWin();
+      Formatter format = new Formatter(15, "");
+      ViewSetter viewSet = new ViewSetter(mw, viewSetWin, format);
+      TabbedDocuments tabDocs = new TabbedDocuments(mw, format);
 
       mw.setFileActions(tabDocs);
       mw.setViewSettingWinAction(viewSetWin);
       mw.setFormatActions(format);
       viewSetWin.setOkAct(e -> {
-         viewSet.applySetWinOk();
-         format.applySetWinOk();
-         viewSetWin.makeVisible(false);
-      });      
+         viewSet.applySettings();
+         viewSetWin.setVisible(false);
+      });
       EventQueue.invokeLater(() -> {
          mw.makeVisible();
          tabDocs.createBlankDocument();
       });
    }
-   
+
    private static void uiManagerSettings() {
       UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
       UIManager.put("Menu.font", Constants.SANSSERIF_PLAIN_9);
@@ -54,9 +56,7 @@ public class Eadgyth {
       UIManager.put("Tree.rowHeight", eg.utils.ScreenParams.scaledSize(14));
    }
 
-   private static void setLaf() {
-      Preferences prefs = Preferences.readProgramPrefs();
-      String laf = prefs.getProperty("LaF");
+   private static void setLaf(String laf) {
       if (laf.length() > 0 && laf.equals("System")) {
          try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

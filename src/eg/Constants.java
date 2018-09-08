@@ -13,7 +13,7 @@ import eg.utils.ScreenParams;
 
 /**
  * Holds different static values. Sizes are scaled to the screen resolution
- * as defined in <code>ScreenParams</code>
+ * as defined in <code>ScreenParams</code>.
  * @see ScreenParams
  */
 public class Constants {
@@ -41,7 +41,7 @@ public class Constants {
 
    /**
     * The line border with dark gray color */
-   public final static Border GRAY_BORDER = new LineBorder(GRAY, 1);
+   public final static Border GRAY_BORDER = new LineBorder(Constants.GRAY, 1);
 
    /**
     * The empty border with thickness of 5 pt */
@@ -55,6 +55,11 @@ public class Constants {
     * The <code>MatteBorder</code> with inset of 1 pt in light gray at the top */
    public final static Border MATTE_TOP = new MatteBorder(1, 0, 0, 0,
          Constants.LIGHT_GRAY);
+         
+   /**
+    * The <code>MatteBorder</code> with inset of 1 pt in gray at the top */
+   public final static Border MATTE_TOP_GREY = new MatteBorder(1, 0, 0, 0,
+         Constants.GRAY);
          
    /**
     * The <code>MatteBorder</code> with inset of 1 pt in light gray at the top

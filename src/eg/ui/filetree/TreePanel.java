@@ -28,13 +28,14 @@ import eg.ui.IconFiles;
 import eg.utils.UIComponents;
 
 /**
- * Defines the panel to which the file tree is added
+ * Defines the panel which contains another JPanel which a JTree for
+ * a file system can be added to and a toolbar.
  */
 public class TreePanel {
 
-   private final JPanel treePnl      = new JPanel(new BorderLayout());
-   private final JPanel holdTreePnl  = new JPanel(new BorderLayout());
-   private final JScrollPane scroll  = new JScrollPane(
+   private final JPanel content         = new JPanel(new BorderLayout());
+   private final JPanel holdTreePnl = new JPanel(new BorderLayout());
+   private final JScrollPane scroll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -49,15 +50,14 @@ public class TreePanel {
    }
 
    /**
-    * Returns this panel that holds the tree and the toolbar
+    * Gets this JPanel which holds the tree and the toolbar
     *
-    * @return  the <code>JPanel</code> that holds the file tree and the
-    * the toolbar
+    * @return  the JPanel
     */
-   public JPanel treePanel() {
-      return treePnl;
+   public JPanel content() {
+      return content;
    }
-   
+
    /**
     * Adds the specified <code>JTree</code>
     *
@@ -81,7 +81,7 @@ public class TreePanel {
    public void setFolderUpAction(ActionListener al) {
       upBt.addActionListener(al);
    }
-   
+
    /**
     * Sets the listener for actions to renew the tree
     *
@@ -118,9 +118,9 @@ public class TreePanel {
       scroll.setBorder(Constants.MATTE_TOP);
       scroll.setViewportView(holdTreePnl);
       scroll.getVerticalScrollBar().setUnitIncrement(10);
-      treePnl.add(toolbar(), BorderLayout.NORTH);
-      treePnl.add(scroll, BorderLayout.CENTER);
-      treePnl.setBorder(Constants.GRAY_BORDER);
+      content.add(toolbar(), BorderLayout.NORTH);
+      content.add(scroll, BorderLayout.CENTER);
+      content.setBorder(Constants.GRAY_BORDER);
       renewBt.setEnabled(false);
       enableFolderUpAct(false);
    }
@@ -136,7 +136,7 @@ public class TreePanel {
       };
       return UIComponents.lastBtRightToolbar(bts, tooltips);
    }
-   
+
    private class TreeRenderer extends DefaultTreeCellRenderer {
 
       private final FileSystemView fsv = FileSystemView.getFileSystemView();

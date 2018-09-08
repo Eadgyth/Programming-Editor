@@ -200,11 +200,7 @@ public class UndoEdit {
     */
    public void disableBreakpointAdding(boolean b) {
       if (b) {
-         int iLastBreak = breakpoints.size() - 1;
-         if (iLastBreak == -1 || iEd != breakPt(iLastBreak)) {
-            breakpoints.add(iEd);
-            iBr = breakpoints.size() - 1;
-         }
+         addBreakpoint(iEd);
       }
       else {
          markBreakpoint();
@@ -217,12 +213,15 @@ public class UndoEdit {
    //
 
    private void addBreakpoint() {
-      if (isMerge) {
-         return;
+      if (!isMerge) {
+         addBreakpoint(iEd - 1);
       }
+   }
+   
+   private void addBreakpoint(int index) {
       int iLastBreak = breakpoints.size() - 1;
-      if (iLastBreak == -1 || iEd - 1 != breakPt(iLastBreak)) {
-         breakpoints.add(iEd - 1);
+      if (iLastBreak == -1 || index != breakPt(iLastBreak)) {
+         breakpoints.add(index);
          iBr = breakpoints.size() - 1;
       }
    }

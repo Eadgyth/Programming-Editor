@@ -25,7 +25,7 @@ public class ViewMenu {
    private final JCheckBoxMenuItem tabItm
          = new JCheckBoxMenuItem("Files in tabs");
    private final JMenuItem openSettingsItm
-         = new JMenuItem("Preferences");
+         = new JMenuItem("Other...");
          
    private final ConsoleOpenable consoleOpener;
 

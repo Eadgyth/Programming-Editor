@@ -1,8 +1,7 @@
 package eg.ui;
 
 /**
- * Updates of menu items and buttons for project actions depending
- * on the project type
+ * Interface to udate menu items and buttons for project actions
  */
 public interface ProjectControlsUpdate {
    

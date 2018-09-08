@@ -1,4 +1,4 @@
-package eg.console;
+package eg.ui;
 
 import java.awt.Color;
 import java.awt.BorderLayout;
@@ -16,28 +16,32 @@ import javax.swing.event.CaretListener;
 
 //--Eadgyth--//
 import eg.Constants;
-import eg.ui.IconFiles;
 import eg.utils.UIComponents;
 
 /**
- * The console panel with a text area to write to and to read from and a toolbar.
- * Initially, the text area is not editable.
+ * Defines the panel which contains a text area for messages and for
+ * reading in text and also a toolbar.
+ * <p>
+ * Initially, the text area is not editable and not focusable and also
+ * buttons in the toolbar are disabled.
  */
 public class ConsolePanel {
 
    private final Color areaFontColor = new Color(60, 60, 60);
 
-   private final JPanel    consolePnl = new JPanel(new BorderLayout());
-   private final JTextArea area       = new JTextArea();
+   private final JPanel    content  = new JPanel(new BorderLayout());
+   private final JTextArea area     = new JTextArea();
    private final JToolBar  toolbar;
 
-   private final JButton   setCmdBt   = new JButton("Cmd...");
-   private final JButton   runBt      = new JButton(IconFiles.RUN_CMD_ICON);
-   private final JButton   stopBt     = new JButton(IconFiles.STOP_PROCESS_ICON);
-   private final JButton   closeBt    = new JButton(IconFiles.CLOSE_ICON);
-   private final JScrollPane scroll   = new JScrollPane(
+   private final JButton   setCmdBt = new JButton("Cmd...");
+   private final JButton   runBt    = new JButton(IconFiles.RUN_CMD_ICON);
+   private final JButton   stopBt   = new JButton(IconFiles.STOP_PROCESS_ICON);
+   private final JButton   closeBt  = new JButton(IconFiles.CLOSE_ICON);
+   private final JScrollPane scroll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+         
+   private boolean isActive = false;
 
    public ConsolePanel() {
       scroll.setViewportView(area);
@@ -46,20 +50,51 @@ public class ConsolePanel {
       area.setFont(Constants.SANSSERIF_PLAIN_8);
       area.setForeground(areaFontColor);
       area.setEditable(false);
+      area.setFocusable(false);
       toolbar = createToolbar();
-      consolePnl.setBorder(Constants.GRAY_BORDER);
-      consolePnl.add(toolbar, BorderLayout.NORTH);
-      consolePnl.add(scroll, BorderLayout.CENTER);
+      content.setBorder(Constants.GRAY_BORDER);
+      content.add(toolbar, BorderLayout.NORTH);
+      content.add(scroll, BorderLayout.CENTER);
+      setCmdBt.setEnabled(false);
       runBt.setEnabled(false);
       stopBt.setEnabled(false);
    }
 
    /**
-    * @return  this JPanel that includes the scrolled text area
-    * and the toolbar
+    * Gets this JPanel which contains the scrolled text area and
+    * the toolbar
+    *
+    * @return  the JPanel
     */
-   public JPanel consolePnl() {
-      return consolePnl;
+   public JPanel content() {
+      return content;
+   }
+   
+   /**
+    * Sets the boolean that specifies the active (true) or inactive
+    * (false) state. This text area is editable and focusable and
+    * also this stop button is enabled in the active state.
+    *
+    * @param isActive  the boolean value
+    */
+   public void setActive(boolean isActive) {
+      area.setEditable(isActive);
+      area.setFocusable(isActive);
+      stopBt.setEnabled(isActive);
+      this.isActive = isActive;
+   }
+   
+   /**
+    * Returns the boolean that indicates if the active state is set.
+    * <p>
+    * The active state should indicate that this text area is used by
+    * a started process.
+    *
+    * @see #setActive(boolean)
+    * @return  the boolean value, true if the active state is set
+    */
+   public boolean isActive() {
+      return isActive;
    }
 
    /**
@@ -68,19 +103,20 @@ public class ConsolePanel {
     * @param pos  the position
     */
    public void setCaret(int pos) {
-      if (!area.isEditable()) {
-         throw new IllegalStateException("The text area is set uneditable");
+      if (!isActive) {
+         throw new IllegalStateException(
+               "The caret cannot be set. The text area is set uneditable");
       }
       area.setCaretPosition(pos);
    }
 
    /**
     * Sets the cursor position in this text area although it is
-    * currently uneditable
+    * currently uneditable (inactive state)
     *
     * @param pos  the position
     */
-   public void setCaretUneditable(int pos) {
+   public void setCaretWhenUneditable(int pos) {
       area.setEditable(true);
       area.setCaretPosition(pos);
       area.setEditable(false);
@@ -117,20 +153,11 @@ public class ConsolePanel {
     * Asks this text area to gain focus
     */
    public void focus() {
+      if (!isActive) {
+         throw new IllegalStateException(
+               "Cannot gain focust. The text area is set uneditable");
+      }
       area.requestFocusInWindow();
-   }
-
-   /**
-    * Sets the active state in which this text area is editable,
-    * the stop button is enabled and the clear button disabled
-    *
-    * @param isActive  true for the active, false for the inactive
-    * state
-    */
-   public void setActive(boolean isActive) {
-      area.setEditable(isActive);
-      area.setFocusable(isActive);
-      stopBt.setEnabled(isActive);
    }
 
    /**
@@ -142,13 +169,20 @@ public class ConsolePanel {
    public void enableRunBt(boolean b) {
       runBt.setEnabled(b);
    }
+   
+   /**
+    * Enables actions to set a start command
+    */
+   public void enableSetCmdBt() {
+      setCmdBt.setEnabled(true);
+   }
 
    /**
     * Adds a <code>KeyListener</code> to this text area
     *
     * @param keyListener  the <code>KeyListener</code>
     */
-   public void addKeyListen(KeyListener keyListener) {
+   public void addKeyListener(KeyListener keyListener) {
       area.addKeyListener(keyListener);
    }
 
@@ -206,9 +240,9 @@ public class ConsolePanel {
          setCmdBt, runBt, stopBt, closeBt
       };
       String[] tooltips = new String[] {
-         "Run a new system command",
+         "Enter and run a system command",
          "Run a previous system command",
-         "Quit current process",
+         "Quit the current process",
          "Close the console"
       };
       return UIComponents.lastBtRightToolbar(bts, tooltips);

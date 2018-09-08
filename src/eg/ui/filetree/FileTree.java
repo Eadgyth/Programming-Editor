@@ -68,7 +68,8 @@ public class FileTree extends Observable {
    
    /**
     * Sets the directory that may be deleted (by using this popup menu)
-    * although it is not empty.
+    * although it is not empty. Usually, non-empty folders are protected
+    * against deletion.
     *
     * @param deletableDirName  the name of the directory that is deletable.
     * Null or the empty string to not set a deletable directory

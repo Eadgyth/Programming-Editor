@@ -1,18 +1,12 @@
 package eg.edittools;
 
 import java.io.File;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 
 
 //--Eadgyth--/
 import eg.FileChooser;
-import eg.Languages;
-import eg.Preferences;
 import eg.document.EditableDocument;
 import eg.utils.Dialogs;
-import eg.utils.FileUtils;
 
 /**
  * The exchange of text between an <code>EditableDocument</code> set in
@@ -28,20 +22,19 @@ public class TextExchange {
          + "/exchangeContent.txt");
 
    private final EditableDocument exchangeDoc;
-   private final Preferences prefs = Preferences.readProgramPrefs();
+   private final FileChooser fc;
    
-   private FileChooser fc;
    private EditableDocument sourceDoc;
    private boolean isBackupSet = false;
 
    /**
     * @param exchangeDoc  the <code>EditableDocument</code> that
     * represents the exchange document
+    * @param recentDir  the directory where a file was opened or saved the
+    * last time
     */
-   public TextExchange(EditableDocument exchangeDoc) {
+   public TextExchange(EditableDocument exchangeDoc, String recentDir) {
       this.exchangeDoc = exchangeDoc;
-      exchangeDoc.setIndentUnit(prefs.getProperty("indentUnit"));
-      String recentDir = prefs.getProperty("recentPath");
       fc = new eg.FileChooser(recentDir);
    }
    
@@ -51,7 +44,7 @@ public class TextExchange {
     */
    public void setBackupText() {
       if (!isBackupSet && BACK_UP.exists()) {
-         exchangeDoc.displayFileContent(BACK_UP);
+         loadFileContent(BACK_UP);
          isBackupSet = true;
       }
    }
@@ -108,11 +101,12 @@ public class TextExchange {
       }
       if (!f.exists()) {
          Dialogs.warnMessage(f.getName() + " was not found.");
+         return;
       }
       int res = 0;
       if (exchangeDoc.docLength() > 0) {
          res = Dialogs.confirmYesNo(
-               "The current text will be replaced.\n"
+               "The current text content will be replaced.\n"
                + " Continue?");
       }
       if (res == 0) {
@@ -122,12 +116,18 @@ public class TextExchange {
    }
 
    /**
-    * Changes the code editing mode
-    *
-    * @param lang  the language which is a constant in {@link Languages}
+    * Sets in this exchange document the language of the source document
     */
-   public void changeCodeEditing(Languages lang) {
-      exchangeDoc.changeLanguage(lang);
+   public void adoptLanguage() {
+      exchangeDoc.changeLanguage(sourceDoc.language());
+   }
+   
+   /**
+    * Sets in this exchange document the indent unit of the source
+    * document
+    */
+   public void adoptIndentUnit() {
+      exchangeDoc.setIndentUnit(sourceDoc.currIndentUnit());
    }
 
    /**
@@ -139,18 +139,11 @@ public class TextExchange {
 
    /**
     * Saves the content in the exchange document to the file
-    * 'exchangeContent.txt' in the program's directory if it is
-    * confirmed to do so
+    * 'exchangeContent.txt' in the program folder
     */
    public void save() {
       if (!isBackupSet) {
          return;
-      }
-      if (exchangeDoc.docLength() > 0) {
-         int res = Dialogs.confirmYesNo("Keep content in exchange editor?");
-         if (0 != res) {
-            clear();
-         }
       }
       exchangeDoc.saveCopy(BACK_UP);
    }
@@ -170,25 +163,7 @@ public class TextExchange {
    
    private void loadFileContent(File f) {
       exchangeDoc.enableMerging(true);
-      try (BufferedReader br = new BufferedReader(new FileReader(f))) {
-         String line = br.readLine();
-         String nextLine = br.readLine();
-         while (null != line) {
-            if (null == nextLine) {
-               exchangeDoc.insert(exchangeDoc.docLength(), line);
-            }
-            else {
-               exchangeDoc.insert(exchangeDoc.docLength(), line + "\n");
-            }
-            line = nextLine;
-            nextLine = br.readLine();
-         }
-      }
-      catch (IOException e) {
-         FileUtils.logStack(e);
-      }
-      finally {
-         exchangeDoc.enableMerging(false);
-      }
+      exchangeDoc.displayFileContent(f);
+      exchangeDoc.enableMerging(false);
    }
 }

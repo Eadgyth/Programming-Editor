@@ -1,70 +1,124 @@
 package eg;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 //--Eadgyth--//
 import eg.ui.MainWin;
 import eg.ui.ViewSettingWin;
 
 /**
- * The view settings in the main window that are set in
- * <code>ViewSettingWin</code> except for showing/hiding line numbers
+ * The view settings in the main window.
  */
 public class ViewSetter {
 
    private final MainWin mw;
-   private final ViewSettingWin viewSetWin;
-   private final Preferences prefs = Preferences.prefs();
+   private final ViewSettingWin vsw;
+   private final Formatter f;
+   private final Prefs prefs = new Prefs();
 
+   private boolean isShowLineNumbers;
    private boolean isShowToolbar;
    private boolean isShowStatusbar;
-   private int selectedIconSizeInd;
-   private int selectedLafInd;
+   private int iconSizeIndex;
+   private int lafIndex;
 
    /**
-    * @param viewSetWin  the reference to <code>ViewSettingWin</code>
     * @param mw  the reference to <code>MainWin</code>
+    * @param vsw  the reference to <code>ViewSettingWin</code>
+    * @param f  the reference to {@link Formatter}
     */
-   public ViewSetter(ViewSettingWin viewSetWin, MainWin mw) {
-      this.viewSetWin = viewSetWin;
+   public ViewSetter(MainWin mw, ViewSettingWin vsw, Formatter f) {
       this.mw = mw;
-      isShowStatusbar = viewSetWin.isShowStatusbar();
-      mw.showStatusbar(isShowStatusbar);
-      isShowToolbar = viewSetWin.isShowToolbar();
-      mw.showToolbar(isShowToolbar);
-      selectedIconSizeInd = viewSetWin.selectedIconSize();
-      selectedLafInd = viewSetWin.selectedLaf();
+      this.vsw = vsw;
+      this.f = f;
+      initSettings();
+      vsw.setCancelAct(e -> undoSettings());   
+      vsw.setDefaultCloseAction(DefaultClosing);
    }
 
    /**
-    * Applies the selections made in {@link ViewSettingWin}
+    * Applies the selections made in {@link ViewSettingWin} and sets the
+    * corresponding properties in <code>Prefs</code>
     */
-   public void applySetWinOk() {
+   public void applySettings() {
       boolean show;
-      int index;
       String state;
-      show = viewSetWin.isShowToolbar();
+      int index;
+      show = vsw.isShowLineNumbers();
+      if (show != isShowLineNumbers) {
+         f.showLineNumbers(show);
+         isShowLineNumbers = show;
+         state = show ? "show" : "hide";
+         prefs.setProperty("LineNumbers", state);
+      }    
+      show = vsw.isShowToolbar();
       if (show != isShowToolbar) {
          mw.showToolbar(show);
          isShowToolbar = show; 
          state = isShowToolbar ? "show" : "hide";
-         prefs.storePrefs("toolbar", state);
+         prefs.setProperty("Toolbar", state);
       }
-      show = viewSetWin.isShowStatusbar();
+      show = vsw.isShowStatusbar();
       if (show != isShowStatusbar) {
          mw.showStatusbar(show);
          isShowStatusbar = show;
          state = isShowStatusbar ? "show" : "hide";
-         prefs.storePrefs("statusbar", state);
+         prefs.setProperty("Statusbar", state);
       }
-      index = viewSetWin.selectedIconSize();
-      if (index != selectedIconSizeInd) {
-         selectedIconSizeInd = index;
-         prefs.storePrefs("iconSize",
-               ViewSettingWin.ICON_SIZES[selectedIconSizeInd]);
+      index = vsw.iconSizeIndex();
+      if (index != iconSizeIndex) {
+         iconSizeIndex = index;
+         prefs.setProperty("IconSize",
+               ViewSettingWin.ICON_SIZES[iconSizeIndex]);
       }
-      index = viewSetWin.selectedLaf();
-      if (index != selectedLafInd) {
-         selectedLafInd = index;
-         prefs.storePrefs("LaF", ViewSettingWin.LAF_OPT[selectedLafInd]);
+      index = vsw.lafIndex();
+      if (index != lafIndex) {
+         lafIndex = index;
+         prefs.setProperty("LaF", ViewSettingWin.LAF_OPT[lafIndex]);
       }
    }
+   
+   private void initSettings() {
+      isShowLineNumbers = "show".equals(prefs.getProperty("LineNumbers"));
+      vsw.setShowLineNumbers(isShowLineNumbers);
+      f.showLineNumbers(isShowLineNumbers);
+      
+      isShowToolbar =  "show".equals(prefs.getProperty("Toolbar"));
+      vsw.setShowToolbar(isShowToolbar);
+      mw.showToolbar(isShowToolbar);
+      
+      isShowStatusbar =  "show".equals(prefs.getProperty("Statusbar"));
+      vsw.setShowStatusbar(isShowStatusbar);
+      mw.showStatusbar(isShowStatusbar);
+      
+      vsw.setIconSize(prefs.getProperty("IconSize"));
+      iconSizeIndex = vsw.iconSizeIndex();
+      
+      String laf = prefs.getProperty("LaF");
+      if (laf.length() > 0) {
+         vsw.setLaf(laf);
+      }
+      else {
+         vsw.setLaf(ViewSettingWin.LAF_OPT[1]);
+      }      
+      lafIndex = vsw.lafIndex();
+   }
+   
+   private void undoSettings() {
+      vsw.setShowLineNumbers(isShowLineNumbers);
+      vsw.setShowToolbar(isShowToolbar);
+      vsw.setShowStatusbar(isShowStatusbar);
+      vsw.setIconSize(iconSizeIndex);
+      vsw.setLaf(lafIndex);
+      vsw.setVisible(false);
+   }      
+   
+   private final WindowAdapter DefaultClosing = new WindowAdapter() {
+
+      @Override
+      public void windowClosing(WindowEvent we) {
+         undoSettings();
+      }
+   };
 }

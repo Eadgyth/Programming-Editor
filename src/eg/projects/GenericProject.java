@@ -1,13 +1,4 @@
 package eg.projects;
-
-import java.io.File;
-import java.io.IOException;
-
-//--Eadgyth--//
-import eg.console.*;
-import eg.utils.FileUtils;
-import eg.ui.ConsoleOpenable;
-
 /**
  * Defines a project that simply has a project root
  */

@@ -23,41 +23,47 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 
 //--Eadgyth--/
+import eg.ui.ConsolePanel;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 
 /**
- * The starting of a external processes
+ * The starting of external system processes.
+ * <p>
+ * A process is run by either calling the method {@link #startProcess(String)}
+ * or by a command that is entered in a Dialog. Starting a process requires
+ * to set a working directory.
+ * <p>
+ * Created by {@link Console}
  */
 public class ProcessStarter {
 
    private final ConsolePanel consPnl;
    /*
-    * Accociates working directories with commands entered in the dialog */
+    * Associates working directories with commands entered in the dialog */
    private final HashMap<String, String> cmdMap = new HashMap<>();
 
-   private String workingDir = System.getProperty("user.home");
-   private String workingDirName = new File(workingDir).getName();
-   private String previousCmd = "";
-   /*
-    * The text set in the console by a process' output; initially the
-    * displayed start command*/
+   private String workingDir;
+   private File fWorkingDir;
+   private String workingDirName;
+   private String previousCmd;
    private String consoleText = "";
    private boolean isAborted = false;
-   private boolean isActive = false;
    private Process process;
    private PrintWriter out;
    private Runnable kill;
 
    /**
-    * @param consPnl  the reference to {@link ConsolePanel}
+    * @param consPnl  the reference to {@link ConsolePanel} contained in
+    * {@link eg.ui.MainWin}
     */
    public ProcessStarter(ConsolePanel consPnl) {
       this.consPnl = consPnl;
-      cmdMap.put(workingDir, previousCmd);
       consPnl.setCmdAct(e -> startNewCmd());
       consPnl.setRunAct(e -> startPreviousCmd());
       consPnl.setStopAct(e -> endProcess());
+      consPnl.addKeyListener(output);
+      consPnl.addCaretListener(caretCorrection);
    }
 
    /**
@@ -67,27 +73,29 @@ public class ProcessStarter {
     */
    public void setWorkingDir(String workingDir) {
       this.workingDir = workingDir;
-      File f = new File(workingDir);
-      this.workingDirName = f.getName();
+      fWorkingDir = new File(workingDir);
+      workingDirName = fWorkingDir.getName();
+      consPnl.enableSetCmdBt();
       if (cmdMap.containsKey(workingDir)) {
          previousCmd = cmdMap.get(workingDir);
-         consPnl.enableRunBt(previousCmd.length() > 0);
       }
       else {
          previousCmd = "";
-         consPnl.enableRunBt(false);
       }
+      consPnl.enableRunBt(previousCmd.length() > 0);
    }
 
    /**
-    * Starts a process in this working directory
+    * Starts a system process in this working directory. A warning dialog
+    * is shown if it is tried to start a process while a previous process
+    * is not yet termineated.
     *
-    * @param cmd  the start command in which the arguments are separated
-    * by spaces
+    * @param cmd  the start command in which arguments are separated by
+    * spaces
     */
    public void startProcess(String cmd) {
       isAborted = false;
-      if (!isProcessEnded()) {
+      if (!canStart()) {
          return;
       }
       List<String> cmdList = Arrays.asList(cmd.split(" "));
@@ -99,12 +107,11 @@ public class ProcessStarter {
          try {
             ProcessBuilder pb
                   = new ProcessBuilder(cmdList).redirectErrorStream(true);
-            pb.directory(new File(workingDir));
+
+            pb.directory(fWorkingDir);
             process = pb.start();
             out = new PrintWriter(process.getOutputStream());
             new CaptureInput().execute();
-            sendOutput(out);
-            correctCaret();
          }
          catch(IOException e) {
             setConsoleActive(false);
@@ -112,23 +119,19 @@ public class ProcessStarter {
          }
       });
    }
-
-   /**
-    * Returns if no process is currently running
-    *
-    * @return  true if no process is running, false otherwise
-    */
-   public boolean isProcessEnded() {
-      boolean isEnded = process == null;
-      if (!isEnded) {
-         Dialogs.warnMessage(PROCESS_RUNNING_MSG);
-      }
-      return isEnded;
-   }
-
+   
    //
    //--private--/
    //
+
+   private boolean canStart() {
+      boolean b = process == null || !process.isAlive();
+      if (!b) {
+         Dialogs.warnMessage(
+               "A currently running process must be terminated first.");
+      }
+      return b;
+   }
 
    private void startNewCmd() {
       String cmd = Dialogs.textFieldInput(enterCmdMsg(), "Run", previousCmd);
@@ -150,7 +153,7 @@ public class ProcessStarter {
    }
 
    private void endProcess() {
-      if (process != null) {
+      if (process != null && process.isAlive()) {
          kill = () -> {
              process.destroy();
              isAborted = true;
@@ -165,15 +168,15 @@ public class ProcessStarter {
       BufferedReader reader = new BufferedReader(isr);
 
       @Override
-      protected Void doInBackground() throws Exception {
+      protected Void doInBackground() {
          try {
             int cInt;
             char c;
             while ((cInt = reader.read()) != -1) {
-                c = (char) cInt;
-                consPnl.appendText(String.valueOf(c));
-                consoleText = consPnl.getText();
-                consPnl.setCaret(consoleText.length());
+               c = (char) cInt;
+               consPnl.appendText(String.valueOf(c));
+               consoleText = consPnl.getText();
+               consPnl.setCaret(consoleText.length());
             }
             int exitVal = process.waitFor();
             setEndingMsg(exitVal);
@@ -183,8 +186,7 @@ public class ProcessStarter {
          }
          finally {
             consPnl.setCaret(consPnl.getText().length());
-            process = null;
-            setConsoleActive(false);
+            setConsoleActive(process.isAlive());
             try {
                reader.close();
                out.close();
@@ -197,42 +199,42 @@ public class ProcessStarter {
       }
    }
 
-   private void sendOutput(PrintWriter out) {
-      KeyListener keyListener = new KeyAdapter() {
+   private final KeyListener output = new KeyAdapter() {
 
-         @Override
-         public void keyPressed(KeyEvent e) {
-            int key = e.getKeyCode();
-            if (key == KeyEvent.VK_ENTER) {
-               String output = consPnl.getText().substring(consoleText.length());
-               out.println(output);
-               out.flush();
-            }
+      @Override
+      public void keyPressed(KeyEvent e) {
+         int key = e.getKeyCode();
+         if (key == KeyEvent.VK_ENTER) {
+            String output = consPnl.getText().substring(consoleText.length());
+            out.println(output);
+            out.flush();
          }
+      }
 
-         @Override
-         public void keyReleased(KeyEvent e) {
-            if (consPnl.getText().length() < consoleText.length()) {
-               consPnl.setText(consoleText);
-            }
+      @Override
+      public void keyReleased(KeyEvent e) {
+         if (consPnl.getText().length() < consoleText.length()) {
+            consPnl.setText(consoleText);
          }
-      };
-      consPnl.addKeyListen(keyListener);
-   }
+      }
+   };
 
-   private void correctCaret() {
-      CaretListener caretListener = (CaretEvent e) -> {
-         if (!isActive) {
-             return;
+   private final CaretListener caretCorrection = new CaretListener() {
+
+      @Override
+      public void caretUpdate(CaretEvent e) {
+         if (!consPnl.isActive()) {
+            return;
          }
-         if (e.getMark() < consoleText.length()) {
+         if (e.getDot() < consoleText.length()
+               || e.getMark() < consoleText.length()) {
+
             EventQueue.invokeLater(() -> {
                consPnl.setCaret(consPnl.getText().length());
             });
          }
-      };
-      consPnl.addCaretListener(caretListener);
-   }
+      }
+   };
 
    private void setConsoleActive(boolean isActive) {
       if (!isActive) {
@@ -244,7 +246,6 @@ public class ProcessStarter {
          consPnl.enableRunBt(!isActive);
       }
       consPnl.setActive(isActive);
-      this.isActive = isActive;
    }
 
    private void setEndingMsg(int exitVal) {
@@ -263,13 +264,6 @@ public class ProcessStarter {
          }
       }
    }
-
-   //
-   // Strings for messages
-
-   private final static String PROCESS_RUNNING_MSG
-         = "A currently running process must be quit before"
-         + " a new process can be started.";
 
    private String cmdNotFoundMsg(String cmd) {
       return

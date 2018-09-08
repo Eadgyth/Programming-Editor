@@ -3,9 +3,11 @@ package eg.projects;
 import java.io.File;
 
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 //--Eadgyth--//
-import eg.Preferences;
+import eg.Prefs;
 import eg.utils.Dialogs;
 
 /**
@@ -26,13 +28,15 @@ public abstract class AbstractProject implements Configurable {
    protected final SettingsWindow.InputOptionsBuilder inputOptions;
 
    private final static String F_SEP = File.separator;
-   private final static Preferences PREFS = Preferences.readProgramPrefs();
-   private final static Preferences EAD_PROJ = Preferences.prefs();
+   private final Prefs prefs = new Prefs();
    private final SettingsWindow sw;
    private final ProjectTypes projType;
    private final String sourceExtension;
    private final boolean useProjectFile;
-
+   //
+   // The Prefs object that stores and reads from a ProjConfig file
+   // in a project's root directory
+   private Prefs conf;
    //
    // Variables available to a project and partly to a class that
    // creates a project
@@ -84,25 +88,24 @@ public abstract class AbstractProject implements Configurable {
    /**
     * {@inheritDoc}.
     * <p>
-    * First it is tried to find an "eadproject" file in <code>dir</code>
+    * First it is tried to find a "ProjConfig" file in <code>dir</code>
     * or further upward the directory path and, if this is not found,
     * it is tested if <code>dir</code> is contained in the recent project
-    * saved in the "prefs" file in the program folder.
+    * saved in the "Prefs" file in the program folder.
     */
    @Override
    public final boolean retrieveProject(String dir) {
-      String root = findRootByFile(dir, Preferences.EAD_PROJ_FILE);
+      String root = findRootByFile(dir, Prefs.PROJ_CONFIG_FILE);
       if (root.length() > 0) {
-         sw.setSaveEadprojectSelected(true);
-         EAD_PROJ.readEadproject(root);
-         configByPropertiesFile(root, EAD_PROJ);
+         sw.setSaveProjConfigSelected(true);
+         conf = new Prefs(root);
+         configByPropertiesFile(root, conf);
       }
       else {
-         sw.setSaveEadprojectSelected(false);
-         PREFS.readPrefs();
-         root = PREFS.getProperty("projectRoot");
+         sw.setSaveProjConfigSelected(false);
+         root = prefs.getProperty("ProjectRoot");
          if (isInProject(dir, root)) {
-             configByPropertiesFile(root, PREFS);
+             configByPropertiesFile(root, prefs);
          }
       }
       boolean success = projectRoot.length() > 0;
@@ -138,6 +141,13 @@ public abstract class AbstractProject implements Configurable {
       return f.getName();
    }
 
+   /**
+    * {@inheritDoc}.
+    * <p>
+    * The directory does not have to exist, even if its name is
+    * specified in this {@link SettingsWindow}, for a successful
+    * project configuration.
+    */
    @Override
    public final String getExecutableDirName() {
       return execDirName;
@@ -164,6 +174,8 @@ public abstract class AbstractProject implements Configurable {
       this.useProjectFile = useProjectFile;
       sw = new SettingsWindow();
       inputOptions = sw.getInputOptionsBuilder();
+      sw.setCancelAct(e -> undoSettings());
+      sw.setDefaultCloseAct(DefaultClosing);
    }
 
    /**
@@ -180,6 +192,9 @@ public abstract class AbstractProject implements Configurable {
     * @return  the name
     */
    protected String getMainFileName() {
+      if (!useProjectFile) {
+         throw new IllegalStateException("A main file is not used");
+      }
       return mainFileName;
    }
 
@@ -203,7 +218,7 @@ public abstract class AbstractProject implements Configurable {
    protected String getSourceDirName() {
       return sourceDirName;
    }
-   
+
    /**
     * Returns the extension of source files (or of the main
     * file if extensions differ) with the beginning period
@@ -270,8 +285,8 @@ public abstract class AbstractProject implements Configurable {
     * in the executables directory if it is specified or in the project
     * root directory
     *
-    * @param ext  the extension of executable file (with starting period)
-    * @return  the boolean value that is true if exists
+    * @param ext  the extension of the executable file (with starting period)
+    * @return  the boolean value that is true if the file exists
     */
    protected boolean mainExecFileExists(String ext) {
       StringBuilder sb = new StringBuilder(projectRoot + "/");
@@ -305,10 +320,24 @@ public abstract class AbstractProject implements Configurable {
       return "";
    }
 
+   private String findRootByFile(String dir, String file) {
+      File root = new File(dir);
+      String relToRoot = F_SEP + file;
+      String existingPath;
+      while (root != null) {
+         existingPath = root.getPath() + relToRoot;
+         if (new File(existingPath).exists()) {
+            return root.getPath();
+         }
+         root = root.getParentFile();
+      }
+      return "";
+   }
+
    private void configureByTextFieldsInput(String root) {
       namespace = "";
       isNameConflict = false;
-      getTextFieldsInput();
+      getTextFieldsInput(); // assigns value to isPathname
       if (!isPathname) {
          String sourceRoot = root;
          if (sourceDirName.length() > 0) {
@@ -343,7 +372,7 @@ public abstract class AbstractProject implements Configurable {
       compileOption = sw.compileOptionInput();
       extensions = sw.extensionsInput();
       buildName = sw.buildNameInput();
-   }
+   }      
 
    private void findNamespace(String sourceRoot, String name) {
       File f = new File(sourceRoot);
@@ -367,29 +396,38 @@ public abstract class AbstractProject implements Configurable {
          }
       }
    }
-
-   private void configByPropertiesFile(String root, Preferences prefs) {
-      String projTypeToTest = prefs.getProperty("projectType");
-      if (!projTypeToTest.equals(projType.toString())) {
-         return;
-      }
-      String mainFileInput = prefs.getProperty("mainProjectFile");
-      splitMainFileInput(mainFileInput);
+   
+   private void setTextFieldsDisplay() {
+      sw.displayProjDirName(getProjectName());
       if (isPathname) {
          sw.displayFile(namespace + F_SEP + mainFileName);
       }
       else {
          sw.displayFile(mainFileName);
-         namespace = prefs.getProperty("namespace");
       }
-      sourceDirName = prefs.getProperty("sourceDir");
       sw.displaySourcesDir(sourceDirName);
-      execDirName = prefs.getProperty("execDir");
       sw.displayExecDir(execDirName);
-      extensions = prefs.getProperty("includedFiles");
       sw.displayExtensions(extensions);
-      buildName = prefs.getProperty("buildName");
       sw.displayBuildName(buildName);
+   }      
+      
+   private void configByPropertiesFile(String root, Prefs pr) {
+      String projTypeToTest = pr.getProperty("ProjectType");
+      if (!projTypeToTest.equals(projType.toString())) {
+         return;
+      }
+      String mainFileInput = pr.getProperty("MainProjectFile");
+      splitMainFileInput(mainFileInput);
+      if (isPathname) {
+         sw.displayFile(namespace + F_SEP + mainFileName);
+      }
+      else {
+         namespace = pr.getProperty("Namespace");
+      }
+      sourceDirName = pr.getProperty("SourceDir");
+      execDirName = pr.getProperty("ExecDir");
+      extensions = pr.getProperty("IncludedFiles");
+      buildName = pr.getProperty("BuildName");
 
       File fToTest = new File(root + F_SEP + pathRelToRoot());
       if (fToTest.exists()) {
@@ -398,9 +436,9 @@ public abstract class AbstractProject implements Configurable {
 
          if (ok) {
             projectRoot = root;
-            sw.displayProjDirName(getProjectName());
-            if (prefs == EAD_PROJ) {
-               storeInPrefs();
+            setTextFieldsDisplay();
+            if (pr == conf) {
+               store(prefs);
             }
          }
       }
@@ -419,20 +457,6 @@ public abstract class AbstractProject implements Configurable {
       else {
          mainFileName = mainFileInput;
       }
-   }
-
-   private String findRootByFile(String dir, String file) {
-      File root = new File(dir);
-      String relToRoot = F_SEP + file;
-      String existingPath;
-      while (root != null) {
-         existingPath = root.getPath() + relToRoot;
-         if (new File(existingPath).exists()) {
-            return root.getPath();
-         }
-         root = root.getParentFile();
-      }
-      return "";
    }
 
    private String pathRelToRoot() {
@@ -488,66 +512,67 @@ public abstract class AbstractProject implements Configurable {
       if (projectRoot.length() == 0) {
          throw new IllegalStateException("The project is not configured");
       }
-      storeInPrefs();
-      storeInEadprojectFile();
+      store(prefs);
+      if (sw.isSaveToProjConfig()) {
+         if (conf == null) {
+            conf = new Prefs(projectRoot);
+         }
+         store(conf);
+      }
+      else {
+         deleteProjConfigFile();
+      }
    }
 
-   private void storeInPrefs() {
-      PREFS.storePrefs("projectRoot", projectRoot);
-      PREFS.storePrefs("sourceDir", sourceDirName);
-      PREFS.storePrefs("execDir", execDirName);
-      PREFS.storePrefs("includedFiles", extensions);
-      PREFS.storePrefs("buildName", buildName);
-      PREFS.storePrefs("projectType", projType.toString());
+   private void store(Prefs pr) {
+      if (pr == prefs) {
+         pr.setProperty("ProjectRoot", projectRoot);
+      }
+      pr.setProperty("SourceDir", sourceDirName);
+      pr.setProperty("ExecDir", execDirName);
+      pr.setProperty("IncludedFiles", extensions);
+      pr.setProperty("BuildName", buildName);
+      pr.setProperty("ProjectType", projType.toString());
       if (isPathname) {
-         PREFS.storePrefs("mainProjectFile", namespace + F_SEP + mainFileName);
-         PREFS.storePrefs("namespace", "");
+         pr.setProperty("MainProjectFile", namespace + F_SEP + mainFileName);
+         pr.setProperty("Namespace", "");
       }
       else {
-         PREFS.storePrefs("mainProjectFile", mainFileName);
-         PREFS.storePrefs("namespace", namespace);
+         pr.setProperty("MainProjectFile", mainFileName);
+         pr.setProperty("Namespace", namespace);
       }
+      pr.store();
    }
 
-   private void storeInEadprojectFile() {
-      if (sw.isSaveToEadproject()) {
-         EAD_PROJ.storeEadproject("sourceDir", sourceDirName, projectRoot);
-         EAD_PROJ.storeEadproject("execDir", execDirName, projectRoot);
-         EAD_PROJ.storeEadproject("includedFiles", extensions, projectRoot);
-         EAD_PROJ.storeEadproject("buildName", buildName, projectRoot);
-         EAD_PROJ.storeEadproject("projectType", projType.toString(), projectRoot);
-         if (isPathname) {
-            EAD_PROJ.storeEadproject("mainProjectFile", namespace + F_SEP
-                  + mainFileName, projectRoot);
-
-            EAD_PROJ.storeEadproject("namespace", "", projectRoot);
-         }
-         else {
-            EAD_PROJ.storeEadproject("mainProjectFile", mainFileName, projectRoot);
-            EAD_PROJ.storeEadproject("namespace", namespace, projectRoot);
-         }
-      }
-      else {
-         deleteEadprojectFile();
-      }
-   }
-
-   private void deleteEadprojectFile() {
-      File configFile = new File(projectRoot + "/" + Preferences.EAD_PROJ_FILE);
+   private void deleteProjConfigFile() {
+      File configFile = new File(projectRoot + "/" + Prefs.PROJ_CONFIG_FILE);
       if (configFile.exists()) {
-         int res = Dialogs.warnConfirmYesNo(DELETE_EAD_PROJ_OPT);
+         int res = Dialogs.warnConfirmYesNo(DELETE_CONF_OPT);
          if (res == 0) {
             boolean success = configFile.delete();
             if (!success) {
-               Dialogs.warnMessage("Deleting the \"eadproject\" file failed");
+               Dialogs.warnMessage("Deleting the ProgConfig file failed");
             }
          }
          else {
-            sw.setSaveEadprojectSelected(true);
-            storeInEadprojectFile();
+            sw.setSaveProjConfigSelected(true);
+            store(conf);
          }
       }
    }
+   
+   private void undoSettings() {
+      setTextFieldsDisplay();
+      sw.setVisible(false);
+   }
+   
+   private final WindowAdapter DefaultClosing = new WindowAdapter() {
+
+      @Override
+      public void windowClosing(WindowEvent we) {
+         undoSettings();
+      }
+   };
 
    //
    //--Strings for messages
@@ -566,11 +591,11 @@ public abstract class AbstractProject implements Configurable {
          + "</html>";
    }
 
-   private final static String DELETE_EAD_PROJ_OPT
+   private final static String DELETE_CONF_OPT
          =  "<html>"
          + "Saving the project settings in the project folder is"
          + " no more selected.<br>"
-         + " Remove the \"eadproject\" file?"
+         + " Remove the \"ProjConfig\" file?"
          + "</html>";
 
    private final static String INPUT_ERROR_PROJ_ROOT

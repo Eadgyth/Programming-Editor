@@ -39,7 +39,6 @@ public class Toolbar {
    }
 
    public JPanel toolbar() {
-      //return toolbar;
       return pnl;
    }
 
@@ -82,7 +81,7 @@ public class Toolbar {
 
    /**
     * Sets the booleans that specify if the buttons for actions to
-    * compile and run a project are enabled or disabled
+    * compile and run a project are enabled (true) or disabled (false)
     *
     * @param isCompile  the boolean value for compile actions
     * @param isRun  the boolean value for run actions
@@ -94,7 +93,7 @@ public class Toolbar {
 
    /**
     * Sets the boolean that specifies if the button for actions to
-    * change project is enabled or disabled
+    * change project is enabled (true) or disabled (false)
     *
     * @param b  the boolean value
     */
@@ -104,7 +103,7 @@ public class Toolbar {
 
    /**
     * Sets the boolean that specifies if the buttons for cutting and
-    * copying actions are enabled or disabled
+    * copying actions are enabled (true) or disabled (false)
     *
     * @param b  the boolean value
     */
@@ -115,7 +114,7 @@ public class Toolbar {
    
    /**
     * Sets the boolean that specifies if the button for saving actions
-    * is enabled or disabled
+    * is enabled (true) or disabled (false)
     *
     * @param b  the boolean value
     */
@@ -125,7 +124,7 @@ public class Toolbar {
 
    /**
     * Sets the booleans that specify if the buttons for undoing and
-    * redoing actions are enabled or disabled
+    * redoing actions are enabled (true) or disabled (false)
     *
     * @param isUndo  the boolean value for undoing actions
     * @param isRedo  the boolean value for redoing actions

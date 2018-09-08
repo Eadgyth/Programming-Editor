@@ -3,9 +3,9 @@ package eg.ui;
 import javax.swing.ImageIcon;
 
 //--Eadgyth--//
-import eg.Preferences;
+import eg.Prefs;
 
-/*
+/**
  * Static <code>ImageIcons</code>
  */
 public class IconFiles {
@@ -16,9 +16,8 @@ public class IconFiles {
    private final static String EAD_DIR;
    
    static {
-      Preferences prefs = Preferences.readProgramPrefs();
-      prefs.readPrefs();
-      if ("22 x 22".equals(prefs.getProperty("iconSize"))) {
+      Prefs prefs = new Prefs();
+      if ("Large".equals(prefs.getProperty("IconSize"))) {
          TANGO_DIR = ICONS_DIR + "Tango/large/";
          EAD_DIR = ICONS_DIR + "EadIcons/large/";
       }

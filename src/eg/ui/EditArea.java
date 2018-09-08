@@ -27,16 +27,17 @@ import eg.utils.FileUtils;
 import eg.utils.ScreenParams;
 
 /**
- * The editor view which defines a JPanel that contains the text area for
- * editing text and the area that displays line numbers.
- * The usual shortcuts for cut, copy, paste and select all are disabled 
+ * Defines the panel that contains the text area for editing text and the
+ * area that displays line numbers.
+ * <p>
+ * The usual shortcuts for cut, copy, paste and select text are disabled 
  */
 public final class EditArea {
 
    private final static LineBorder WHITE_BORDER
          = new LineBorder(Color.WHITE, 5);
 
-   private final JPanel editAreaPnl = new JPanel(new BorderLayout());
+   private final JPanel content = new JPanel(new BorderLayout());
    private final JTextPane textArea = new JTextPane();
    private final JTextPane lineNrArea = new JTextPane();
    private final JPanel disabledWordwrapPnl = new JPanel(new BorderLayout());
@@ -58,9 +59,10 @@ public final class EditArea {
    private int scrollPos;
 
    /**
-    * @param isWordwrap  true to enable, false to disable wordwrap.
-    * @param isLineNumbers  true to show, false to hide line numbers.
-    * This is effectless if isWordwrap is true.
+    * @param isWordwrap  the boolean that is true to enable, false to
+    * disable wordwrap
+    * @param isLineNumbers  the boolean that is true to show, false to
+    * hide line numbers. This is effectless if isWordwrap is true.
     * @param font  the name of the initial font
     * @param fontSize  the size of the initial font
     */
@@ -91,13 +93,13 @@ public final class EditArea {
    }
 
    /**
-    * Gets this <code>JPanel</code> which contains the area for editing
-    * text and the area that shows line numbers
+    * Gets this JPanel which contains the text area for editing
+    * text and the text area that shows line numbers
     *
-    * @return  this edit area panel
+    * @return  the JPanel
     */
-   public JPanel editAreaPnl() {
-      return editAreaPnl;
+   public JPanel content() {
+      return content;
    }
 
    /**
@@ -127,9 +129,33 @@ public final class EditArea {
    public LineNrWidthAdaptable lineNrWidth() {
       return (i, j) -> adaptLineNrWidth(i, j);
    }
+   
+   /**
+    * Enables wordwrap. Invoking this method also hides the area that
+    * displays line numbers
+    */
+   public void enableWordwrap() {
+      enableWordwrapImpl();
+   }
+   
+   /**
+    * Disables wordwrap and makes the area that displays line numbers
+    * visible if the specified boolean <code>lineNumbers</code> is true
+    *
+    * @param lineNumbers  the boolean value
+    */
+   public void disableWordwrap(boolean lineNumbers) {
+      if (lineNumbers) {
+         showLineNumbersImpl();
+      }
+      else {
+         hideLineNumbersImpl();
+      }
+   }
 
    /**
-    * Returns if wordwrap is enabled
+    * Returns the boolane that true if wordwrap is enabled, false
+    * otherwise
     *
     * @return  the boolean value
     */
@@ -141,7 +167,7 @@ public final class EditArea {
     * Shows or hides the area that displays line numbers, depending on
     * the specified boolean value
     *
-    * @param b  the boolean valie. True to show
+    * @param b  the boolean value; true to show line numnbers
     * @throws IllegalStateException  if wordwrap is currently enabled
     */
    public void showLineNumbers(boolean b) {
@@ -158,31 +184,7 @@ public final class EditArea {
    }
 
    /**
-    * Enables wordwrap. Invoking this method also hides the area that
-    * displays line numbers
-    */
-   public void enableWordwrap() {
-      enableWordwrapImpl();
-   }
-
-   /**
-    * Disables wordwrap and makes the area that displays line numbers
-    * visible if the specified boolean is true
-    *
-    * @param isLineNumbers  the boolean value
-    */
-   public void disableWordwrap(boolean isLineNumbers) {
-      if (isLineNumbers) {
-         showLineNumbersImpl();
-      }
-      else {
-         hideLineNumbersImpl();
-      }
-   }
-
-   /**
-    * Sets the font in this area for editing text and this area that displays
-    * line numbers
+    * Sets the font
     *
     * @param font  the name of the font
     * @param fontSize  the font size
@@ -214,8 +216,8 @@ public final class EditArea {
       removeCenterComponent();
       disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
       linkedLineNrScroll.setViewportView(disabledWordwrapPnl);
-      editAreaPnl.add(lineNrScroll, BorderLayout.WEST);
-      editAreaPnl.add(linkedLineNrScroll, BorderLayout.CENTER);
+      content.add(lineNrScroll, BorderLayout.WEST);
+      content.add(linkedLineNrScroll, BorderLayout.CENTER);
       setScrollPos(linkedLineNrScroll);
       textArea.requestFocusInWindow();
       revalidate();
@@ -223,11 +225,11 @@ public final class EditArea {
    }
 
    private void hideLineNumbersImpl() {
-      editAreaPnl.remove(lineNrScroll);
+      content.remove(lineNrScroll);
       removeCenterComponent();
       disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
       noWordwrapScroll.setViewportView(disabledWordwrapPnl);
-      editAreaPnl.add(noWordwrapScroll, BorderLayout.CENTER);
+      content.add(noWordwrapScroll, BorderLayout.CENTER);
       setScrollPos(noWordwrapScroll);
       textArea.requestFocusInWindow();
       revalidate();
@@ -235,10 +237,10 @@ public final class EditArea {
    }
 
    private void enableWordwrapImpl() {
-      editAreaPnl.remove(lineNrScroll);
+      content.remove(lineNrScroll);
       removeCenterComponent();
       wordwrapScoll.setViewportView(textArea);
-      editAreaPnl.add(wordwrapScoll, BorderLayout.CENTER);
+      content.add(wordwrapScoll, BorderLayout.CENTER);
       setScrollPos(wordwrapScoll);
       textArea.requestFocusInWindow();
       revalidate();
@@ -252,16 +254,16 @@ public final class EditArea {
    }
 
    private void revalidate() {
-      editAreaPnl.revalidate();
-      editAreaPnl.repaint();
+      content.revalidate();
+      content.repaint();
    }
 
    private void removeCenterComponent() {
-      BorderLayout layout = (BorderLayout) editAreaPnl.getLayout();
+      BorderLayout layout = (BorderLayout) content.getLayout();
       JScrollPane c = (JScrollPane) layout.getLayoutComponent(BorderLayout.CENTER);
       if (c != null) {
          scrollPos = c.getVerticalScrollBar().getValue();
-         editAreaPnl.remove(c);
+         content.remove(c);
       }
    }
 
@@ -271,7 +273,7 @@ public final class EditArea {
    }
 
    private void initEditAreaPnl() {
-      editAreaPnl.setBorder(Constants.GRAY_BORDER);
+      content.setBorder(Constants.GRAY_BORDER);
    }
 
    private void initTextArea() {

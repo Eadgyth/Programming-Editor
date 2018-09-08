@@ -10,20 +10,14 @@ import eg.ui.ConsoleOpenable;
 public class ProjectSelector {
 
    private final ConsoleOpenable co;
-   private final ProcessStarter proc;
-   private final ConsolePanel console;
+   private final Console console;
 
    /**
     * @param co  the {@link ConsoleOpenable} of {@link eg.ui.MainWin}
-    * @param proc  the reference to {@link ProcessStarter}
-    * @param console  the {@link ConsolePanel} that is also shared by
-    * <code>ProcessStarter</code>
+    * @param console  the reference to {@link Console}.
     */
-   public ProjectSelector(ConsoleOpenable co, ProcessStarter proc,
-         ConsolePanel console) {
-
+   public ProjectSelector(ConsoleOpenable co, Console console) {
       this.co = co;
-      this.proc = proc;
       this.console = console;
    }
 
@@ -37,16 +31,16 @@ public class ProjectSelector {
       ProjectActions newProj = null;
       switch (projType) {
          case JAVA:
-            newProj = new JavaProject(co, proc, console);
+            newProj = new JavaProject(co, console);
             break;
          case HTML:
             newProj = new HtmlProject();
             break;
          case PERL:
-            newProj = new PerlProject(co, proc);
+            newProj = new PerlProject(co, console.getProcessStarter());
             break;
          case R:
-            newProj = new RProject(co, proc);
+            newProj = new RProject(co, console.getProcessStarter());
             break;
          case GENERIC:
             newProj = new GenericProject();

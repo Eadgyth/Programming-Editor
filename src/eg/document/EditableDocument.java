@@ -45,11 +45,12 @@ public final class EditableDocument {
     */
    public EditableDocument(EditArea editArea, File f) {
       this(editArea);
+      type.enableDocUpdate(false);
       displayFileContentImpl(f);
+      type.enableDocUpdate(true);
       setFileParams(f);
       savedContent = type.getText();
-      lang = LanguageSelector.selectLanguage(filename);
-      type.setEditingMode(lang);
+      setEditingMode(f);
    }
 
    /**
@@ -182,16 +183,15 @@ public final class EditableDocument {
     */
    public boolean setFile(File f) {
       setFileParams(f);
-      lang = LanguageSelector.selectLanguage(filename);
-      type.setEditingMode(lang);
+      setEditingMode(f);
       type.resetInChangeState();
       savedContent = type.getText();
       return writeToFile(f);
    }
    
    /**
-    * Diplays the content of the specified file.
-    * The file is not set and the text insertion is not undoable
+    * Diplays the content of the specified file but does not set
+    * the file and also does not set the language.
     *
     * @param f  the file
     */
@@ -344,9 +344,8 @@ public final class EditableDocument {
 
       type = new TypingEdit(textDoc, lineNrDoc);
    }
-
-   private void displayFileContentImpl(File f) {
-      type.enableDocUpdate(false);
+   
+   public void displayFileContentImpl(File f) {
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
          String line = br.readLine();
          String nextLine = br.readLine();
@@ -363,9 +362,6 @@ public final class EditableDocument {
       }
       catch (IOException e) {
          FileUtils.logStack(e);
-      }
-      finally {
-         type.enableDocUpdate(true);
       }
    }
 
@@ -393,6 +389,11 @@ public final class EditableDocument {
       }
       return false;
    }
+   
+   private void setEditingMode(File f) {
+      lang = LanguageSelector.selectLanguage(f.getName());
+      type.setEditingMode(lang);
+   }      
 
    private void setFileParams(File f) {
       docFile = f;

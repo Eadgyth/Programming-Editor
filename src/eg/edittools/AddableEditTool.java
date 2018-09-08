@@ -8,9 +8,9 @@ import javax.swing.JButton;
 import eg.document.EditableDocument;
 
 /**
- * The interface that defines an "edit tool" whose graphical component can be
- * added to the <code>ToolPanel</code> in the main window
- * @see eg.ui.ToolPanel
+ * The interface that defines an "edit tool" whose graphical component can
+ * be added to the <code>EditToolPanel</code> in the main window
+ * @see eg.ui.EditToolPanel
  */
 public interface AddableEditTool {
    
@@ -25,17 +25,16 @@ public interface AddableEditTool {
    public void addClosingAction(JButton closeBt);
 
    /**
-    * Gets the <code>Component</code> that represents the graphical view of
-    * the tool. Called when the <code>AddableEditTool</code> is selected
-    * in the "Edit" menu
+    * Gets the <code>Component</code> that represents the graphical view
+    * of the tool
     *
     * @return  the <code>Component</code>
     */
-   public Component toolComponent();
+   public Component toolContent();
    
    /**
-    * Sets the <code>EditableDocument</code> that is currently viewed in the
-    * editor
+    * Sets the <code>EditableDocument</code> that is currently viewed in
+    * the editor
     *
     * @param edtDoc  the {@link EditableDocument}
     */
