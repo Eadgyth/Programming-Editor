@@ -59,20 +59,24 @@ public class Projects {
     */
    public void setDocumentIndex(int i) {
       iDoc = i;
-      if (!edtDoc[iDoc].hasFile()) {
-         return;
+      ProjectActions inList = null;
+      boolean isProject = false;
+      if (edtDoc[iDoc].hasFile()) {
+         inList = selectFromList(edtDoc[iDoc].dir(), false);
+         isProject = inList != null;
       }
-      ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), false);
-      boolean isListed = inList != null;
-      mw.enableOpenProjSetWinActions(isListed);
-      if (isListed) {
-         mw.enableChangeProject(inList != current);
+      mw.enableOpenProjSetWinActions(isProject);
+      mw.enableChangeProject(isProject && inList != current);
+      if (isProject) {
          if (!current.isInProject(edtDoc[iDoc].dir())) {
             projTypeChg.disableProjectActions();
          }
          else {
             projTypeChg.enableProjectActions(current.getProjectType());
          }
+      }
+      else {
+         projTypeChg.disableProjectActions();
       }
    }
 
