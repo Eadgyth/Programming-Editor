@@ -12,7 +12,8 @@ import eg.ui.ConsoleOpenable;
 
 /**
  * The menu for view actions.
- * <p>Created in {@link MenuBar}
+ * <p>
+ * Created in {@link MenuBar}
  */
 public class ViewMenu {
 

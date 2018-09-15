@@ -139,6 +139,16 @@ public class ConsolePanel {
    public void appendText(String text) {
       area.append(text);
    }
+   
+   /**
+    * Adds the specified text after it is formatted such that it is
+    * bordered by double angle brackets and a the line separator is added.
+    *
+    * @param text  the text
+    */
+   public void appendTextFormatted(String text) {
+      area.append("<<" + text + ">>\n");
+   }
 
    /**
     * Gets the text in this text area

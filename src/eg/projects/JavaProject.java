@@ -32,7 +32,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       this.cons = cons;
       proc = cons.getProcessStarter();
       comp = new Compilation(cons);
-      jar = new JarBuilder();
+      jar = new JarBuilder(cons);
    }
 
    @Override
@@ -56,7 +56,8 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       if (!isNonJavaExtCorrect() || !cons.canPrint()) {
          return;
       }
-      cons.clearAndPrint("<<Compile " + getProjectName() + ">>\n");
+      cons.clear();
+      cons.printStatus("Compile " + getProjectName());
       EventQueue.invokeLater(() -> {
          comp.compile(getProjectPath(), getExecutableDirName(),
                getSourceDirName(), nonJavaExt, getCompileOption());
@@ -78,10 +79,10 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                needConfirm = true;
             }
             if (comp.copyFilesErr().length() > 0) {
-               msg.append("Note: ").append(comp.copyFilesErr()).append(".\n");
+               msg.append("Warning: ").append(comp.copyFilesErr()).append(".\n");
             }
             if (comp.optionErr().length() > 0) {
-               msg.append("Note: ").append(comp.optionErr()).append(".\n");
+               msg.append("Warning: ").append(comp.optionErr()).append(".\n");
             }
             if (needConfirm) {
                msg.append("\nOpen the console window to view messages?\n");
@@ -102,7 +103,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void runProject() {
-      if (!mainClassFileExists()) {
+      if (!existsMainClassFile()) {
          return;
       }
       if (!co.isConsoleOpen()) {
@@ -116,7 +117,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void build() {
-      if (!mainClassFileExists() || !isNonJavaExtCorrect()
+      if (!existsMainClassFile() || !isNonJavaExtCorrect()
             || !cons.canPrint()) {
 
          return;
@@ -128,27 +129,30 @@ public final class JavaProject extends AbstractProject implements ProjectActions
             jarName = getMainFileName();
          }
          try {
-            boolean created = jar.createJar(getProjectPath(), jarName, qualifiedMain,
-                  getExecutableDirName(), getSourceDirName(), nonJavaExt);
+            boolean created = jar.createJar(getProjectPath(), jarName,
+                  qualifiedMain, getExecutableDirName(), getSourceDirName(),
+                  nonJavaExt);
 
-            StringBuilder msg = new StringBuilder();
-            if (created) {
-               msg.append("Saved jar file named ").append(jarName).append(".");
-               if (jar.getIncudedFilesErr().length() > 0) {
-                  msg.append("\nNote: ").append(jar.getIncudedFilesErr());
+            if (!co.isConsoleOpen()) {            
+               if (created) {
+                  boolean isWarning = false;
+                  StringBuilder msg = new StringBuilder();
+                  if (jar.incudedFilesErr().length() > 0) {
+                     msg.append(jar.incudedFilesErr()).append(".\n");
+                     isWarning = true;
+                  }
+                  msg.append(jar.successMessage()).append(".");
+                  if (isWarning) {
+                     Dialogs.warnMessage(msg.toString());
+                  }
+                  else {
+                     Dialogs.infoMessage(msg.toString(), null);
+                  }
                }
-               if (!co.isConsoleOpen()) {
-                  Dialogs.infoMessage(msg.toString(), null);
+               else {
+                  Dialogs.errorMessage(jar.errorMessage() + ".", null);
                }
             }
-            else {
-               msg.append("An error occured while trying to create the jar file ");
-               msg.append(jarName).append(".");
-               if (!co.isConsoleOpen()) {
-                  Dialogs.errorMessage(msg.toString(), null);
-               }
-            }
-            cons.print("<<" + msg.toString() + ">>");
          }
          catch (IOException | InterruptedException e) {
             FileUtils.logStack(e);
@@ -193,8 +197,8 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       isNonJavaExtTested = nonJavaExt == null;
    }
 
-   private boolean mainClassFileExists() {
-      boolean exists = mainExecFileExists(".class");
+   private boolean existsMainClassFile() {
+      boolean exists = existsMainExecFile(".class");
       if (!exists) {
          Dialogs.warnMessage("A compiled main class file could not be found.");
       }

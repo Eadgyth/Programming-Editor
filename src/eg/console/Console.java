@@ -61,25 +61,10 @@ public class Console {
                "Cannot set Text. The console is used by a process");
       }
       consPnl.setText("");
-   }      
-   
-   /**
-    * Clears the console and prints the specified text
-    *
-    * @param text  the text
-    * @throws  IllegalStateException if the console is currently used
-    * by a process run in this {@link ProcessStarter}
-    */
-   public void clearAndPrint(String text) {
-      if (consPnl.isActive()) {
-         throw new IllegalStateException(
-               "Cannot set Text. The console is used by a process");
-      }
-      consPnl.setText(text);
    }
    
    /**
-    * Prints the specified text
+    * Prints the specified text without adding a line separator
     *
     * @param text  the text
     * @throws  IllegalStateException if the console is currently used
@@ -91,6 +76,23 @@ public class Console {
                "Cannot append Text. The console is used by a process");
       }
       consPnl.appendText(text);
+   }
+   
+   /**
+    * Prints a message which will be formatted such that it is bordered
+    * by double angle brackets and a the line separator is added. This
+    * output is intended for hardcoded status messages.
+    *
+    * @param text  the message
+    * @throws  IllegalStateException if the console is currently used
+    * by a process run in this {@link ProcessStarter}
+    */
+   public void printStatus(String text) {
+      if (consPnl.isActive()) {
+         throw new IllegalStateException(
+               "Cannot append Text. The console is used by a process");
+      }
+      consPnl.appendTextFormatted(text);
    }
    
    /**

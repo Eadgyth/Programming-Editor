@@ -73,9 +73,14 @@ public class CSSHighlighter implements Highlighter {
    private final static char[] CLASS_START = {'.', '#'};
    private final static char[] CLASS_END = {' ', '{', ')'};
    private final static char[] NON_PROP_START = {'-', '.'};
-   private final static int IGNORE_OPT = 0;
-   private final static int OPEN_BRACE_AHEAD = 1;
-   private final static int NO_OPEN_BRACE_AHEAD = 2;
+   private final static int IGNORE_COND = 0;
+   private final static int OPEN_BRACE_AHEAD_COND = 1;
+   private final static int NO_OPEN_BRACE_AHEAD_COND = 2;
+   
+   @Override
+   public boolean allowBlkCmntMarksQuoted() {
+      return true;
+   }
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
@@ -83,14 +88,14 @@ public class CSSHighlighter implements Highlighter {
             SyntaxConstants.STAR_SLASH)) {
 
          searcher.setSectionBlack();
-         searcher.setOption(NO_OPEN_BRACE_AHEAD);
+         searcher.setCondition(NO_OPEN_BRACE_AHEAD_COND);
          searcher.keywords(HTMLHighlighter.TAGS, true, CLASS_START,
                Attributes.BLUE_PLAIN);
                
          searcher.signedVariables(CLASS_START, CLASS_END, false,
                Attributes.BLUE_PLAIN);
 
-         searcher.setOption(OPEN_BRACE_AHEAD);
+         searcher.setCondition(OPEN_BRACE_AHEAD_COND);
          searcher.extensibleKeyword("background", BACKGROUND_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
@@ -117,7 +122,7 @@ public class CSSHighlighter implements Highlighter {
                   
          searcher.keywords(PROPS, true, NON_PROP_START, Attributes.RED_PLAIN);
          
-         searcher.setOption(IGNORE_OPT);
+         searcher.setCondition(IGNORE_COND);
          searcher.braces();
       }
       searcher.blockComments(SyntaxConstants.SLASH_STAR,
@@ -125,14 +130,14 @@ public class CSSHighlighter implements Highlighter {
    }
    
    @Override
-   public boolean isEnabled(String text, int pos, int option) {
-      if (option == IGNORE_OPT) {
+   public boolean isEnabled(String text, int pos, int condition) {
+      if (condition == IGNORE_COND) {
          return true;
       }    
       int lastOpenBrace
-            = SyntaxUtils.lastBlockStart(text, pos, "{", "}");
+            = SyntaxUtils.lastBlockStart(text, pos, "{", "}", false);
 
-      return (option == OPEN_BRACE_AHEAD && lastOpenBrace != -1)
-            || (option == NO_OPEN_BRACE_AHEAD && lastOpenBrace == -1);
+      return (condition == OPEN_BRACE_AHEAD_COND && lastOpenBrace != -1)
+            || (condition == NO_OPEN_BRACE_AHEAD_COND && lastOpenBrace == -1);
    }
 }

@@ -47,8 +47,9 @@ public class FileUtils {
    }
    
    /**
-    * Returns an array in which the files in the specified
-    * <code>toSort</code> are sorted by folders an files
+    * Returns an array in which the files in the specified array
+    * of files <code>toSort</code> are sorted such that directories
+    * are listed first and files after it
     *
     * @param toSort  the array of files to be sorted
     * @return  the array of sorted files
@@ -72,7 +73,7 @@ public class FileUtils {
     * Deletes a folder and its content
     *
     * @param dir  the directory to be deleted
-    * @return  true if the directory has been deleted
+    * @return  the boolean value that is true if dir has been deleted
     */
    public static boolean deleteFolder(File dir) {
       boolean ret = true;
@@ -85,10 +86,10 @@ public class FileUtils {
    }
    
    /**
-    * If the specified directory is empty
+    * Returns if the specified directory is empty
     *
     * @param dir  the directory
-    * @return  if dir is empty
+    * @return  the boolean value that is true if dir is empty
     */
    public static boolean isFolderEmpty(File dir) {
       File[] content = dir.listFiles();
@@ -96,10 +97,10 @@ public class FileUtils {
    }
    
    /**
-    * Appends to the file 'log.txt' the message and stack trace of an exception
-    * <p>The file is saved in the program's directory.
+    * Appends to the file 'log.txt' in the program folder the message
+    * and stack trace of an exception
     *
-    * @param e  the <code>Exception</code>
+    * @param e  the Exception
     */
    public static void logStack(Exception e) {
       File f = new File("log.txt");

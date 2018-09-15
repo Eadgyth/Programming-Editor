@@ -143,10 +143,9 @@ public final class EditableDocument {
    }
 
    /**
-    * Gets this file if a file is set or throws an exception
+    * Gets this file if a file is set or throws an exception otherwise
     *
     * @return  the file
-    * @throws  IllegalStateException  if no file is set
     */
    public File docFile() {
       if (docFile == null) {
@@ -159,8 +158,8 @@ public final class EditableDocument {
     * Saves the current text content to this file or throws an
     * exception if no file is set
     *
-    * @return  if the content was saved
-    * @throws  IllegalStateException  if no file is set
+    * @return  the boolen value that is true if the text content was
+    * saved to this file
     */
    public boolean saveFile() {
       if (docFile == null) {
@@ -179,7 +178,8 @@ public final class EditableDocument {
     * to the file. A previously set file is replaced.
     *
     * @param f  the file
-    * @return  if the content was saved to the file
+    * @return  the boolen value that is true if the text content was
+    * saved to the file
     */
    public boolean setFile(File f) {
       setFileParams(f);
@@ -204,15 +204,18 @@ public final class EditableDocument {
     * not set the file
     *
     * @param f  the file
+    * @return  the boolen value that is true if the text content was
+    * saved to the file
     */
-   public void saveCopy(File f) {
-      writeToFile(f);
+   public boolean saveCopy(File f) {
+      return writeToFile(f);
    }
 
    /**
-    * Returns if the current text equals the text at the last saving point
+    * Returns that boolean that is true if the current text equals the
+    * text at the last saving point
     *
-    * @return  if the current text is saved
+    * @return  the boolean value
     */
    public boolean isSaved() {
       return type.getText().equals(savedContent);
@@ -270,13 +273,11 @@ public final class EditableDocument {
    }
 
    /**
-    * Enables merging then following text changes to a single undoable
-    * unit such that the default division of changes into undoable
-    * units is ignored.
+    * Sets the boolean that is true to mark the beginning of a merged
+    * undoable unit. False ends merging.
+    * Calls {@link TypingEdit#disableBreakpointAdding(boolean)}
     *
-    * @param b  the boolean value. True to enable, false to re-disable
-    * merging
-    * @see TypingEdit #disableBreakpointAdding(boolean)
+    * @param b  the boolean value
     */
    public void enableMerging(boolean b) {
       type.disableBreakpointAdding(b);

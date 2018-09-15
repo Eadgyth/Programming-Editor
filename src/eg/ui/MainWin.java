@@ -62,7 +62,6 @@ public class MainWin {
    private final Toolbar toolbar = new Toolbar();
    private final ExtTabbedPane tabPane = UIComponents.scolledUnfocusableTabPane();
    private final TreePanel treePnl = new TreePanel();
-   private final FileTree fileTree;
    private final ConsolePanel consPnl = new ConsolePanel();
    private final EditToolPanel edToolPnl = new EditToolPanel();
    private final List<AddableEditTool> editTools = new ArrayList<>();
@@ -76,7 +75,6 @@ public class MainWin {
    private int dividerLocVert = 0;
 
    public MainWin() {
-      fileTree = new FileTree(treePnl);
       createAddableEditTools();
       initFrame();
       setViewActions();
@@ -110,14 +108,14 @@ public class MainWin {
     public ConsolePanel consolePnl() {
        return consPnl;
     }
-
+    
    /**
-    * Gets this <code>FileTree</code>
+    * Gets this <code>TreePanel</code>
     *
-    * @return  this {@link FileTree}
+    * @return  this {@link TreePanel}
     */
-    public FileTree fileTree() {
-       return fileTree;
+    public TreePanel treePanel() {
+       return treePnl;
     }
 
     /**
@@ -334,8 +332,6 @@ public class MainWin {
       menuBar.fileMenu().setExitActions(e -> exit(td));
       menuBar.editMenu().setChangeLanguageActions(td);
       toolbar.setFileActions(td);
-      fileTree.addObserver(td);
-
       frame.addWindowListener(new WindowAdapter() {
 
          @Override
@@ -524,7 +520,7 @@ public class MainWin {
       prefs.setProperty("Tabbar", state);
       state = vm.isFileViewItmSelected() ? "show" : "hide";
       prefs.setProperty("FileView", state);
-      if (td.isAllClosed()) {
+      if (td.closeAll()) {
          prefs.store();
          System.exit(0);
       }

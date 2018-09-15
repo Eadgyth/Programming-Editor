@@ -212,8 +212,11 @@ public class Compilation {
          }
          else {
             opt = new String[] {"-d", targetDir};
-            optionErr = "\"" + xlintOption + "\" cannot be used as"
-                     + " Xlint compiler option and was ignored";
+            optionErr =
+                  "\""
+                  + xlintOption
+                  + "\" cannot be used as"
+                  + " Xlint compiler option and was ignored";
 
             cons.print("<<" + optionErr + ">>\n");
          }
@@ -234,10 +237,11 @@ public class Compilation {
          List<File> toCopy = fFind.filteredFiles(searchRoot, ext, execDir);
          if (toCopy.isEmpty()) {
             copyFilesErr
-                  = "Files with extension \"" + ext
-                  + "\" for copying to the compilation were not found.";
+                  = "Files with extension \""
+                  + ext
+                  + "\" for copying to the compilation were not found";
 
-            cons.print("<<" + copyFilesErr + ">>\n");
+            cons.printStatus(copyFilesErr);
          }
          else {
             try {
@@ -264,16 +268,18 @@ public class Compilation {
 
    private void printDiagnostics(DiagnosticCollector<JavaFileObject> diagnostics) {
       if (success) {
-         cons.print("<<Compilation successful>>\n");
+         cons.printStatus("Compilation successful");
       }
-      cons.print("\n");
       if (diagnostics.getDiagnostics().size() > 0) {
          Diagnostic<?> firstSource = diagnostics.getDiagnostics().get(0);
          if (firstSource != null) {
             String file = new File(firstSource.getSource().toString()).getName();
             file = file.substring(0, file.length() - 1);
             if (firstSource.getKind() == Diagnostic.Kind.ERROR) {
-               firstCompileErr = "First listed error is found in " + file + ", line "
+               firstCompileErr =
+                     "First listed error is found in "
+                     + file
+                     + ", line "
                      + firstSource.getLineNumber();
             }
             else {

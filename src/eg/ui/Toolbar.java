@@ -49,7 +49,7 @@ public class Toolbar {
     */
    public void setFileActions(TabbedDocuments td) {
       openBt.addActionListener(e -> td.openFileByChooser());
-      saveBt.addActionListener(e -> td.save(true));
+      saveBt.addActionListener(e -> td.save());
    }
 
    /**

@@ -25,27 +25,18 @@ public class TextExchange {
    private final FileChooser fc;
    
    private EditableDocument sourceDoc;
-   private boolean isBackupSet = false;
 
    /**
     * @param exchangeDoc  the <code>EditableDocument</code> that
     * represents the exchange document
-    * @param recentDir  the directory where a file was opened or saved the
-    * last time
+    * @param recentDir  the directory where a file was opened or saved
+    * the last time
     */
    public TextExchange(EditableDocument exchangeDoc, String recentDir) {
       this.exchangeDoc = exchangeDoc;
       fc = new eg.FileChooser(recentDir);
-   }
-   
-   /**
-    * Sets in the exchange document the content in the back-up file
-    * "exchangeContent.txt". This is only done one time.
-    */
-   public void setBackupText() {
-      if (!isBackupSet && BACK_UP.exists()) {
+      if (BACK_UP.exists()) {
          loadFileContent(BACK_UP);
-         isBackupSet = true;
       }
    }
 
@@ -142,9 +133,6 @@ public class TextExchange {
     * 'exchangeContent.txt' in the program folder
     */
    public void save() {
-      if (!isBackupSet) {
-         return;
-      }
       exchangeDoc.saveCopy(BACK_UP);
    }
    

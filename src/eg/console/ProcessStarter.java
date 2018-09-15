@@ -99,8 +99,9 @@ public class ProcessStarter {
          return;
       }
       List<String> cmdList = Arrays.asList(cmd.split(" "));
-      consoleText = "<<Run: " + cmd + ">>\n";
-      consPnl.setText(consoleText);
+      consoleText = "Run: " + cmd;
+      consPnl.setText("");
+      consPnl.appendTextFormatted(consoleText);
       setConsoleActive(true);
       consPnl.focus();
       EventQueue.invokeLater(() -> {
@@ -115,7 +116,7 @@ public class ProcessStarter {
          }
          catch(IOException e) {
             setConsoleActive(false);
-            consPnl.appendText(cmdNotFoundMsg(cmd));
+            consPnl.appendTextFormatted(cmdNotFoundMsg(cmd));
          }
       });
    }
@@ -250,25 +251,32 @@ public class ProcessStarter {
 
    private void setEndingMsg(int exitVal) {
       if (exitVal == 0) {
-         consPnl.appendText( "\n<<Process ended normally (exit value = "
-               + exitVal + ")>>\n");
+         consPnl.appendTextFormatted(
+               "Process ended normally (exit value = "
+               + exitVal
+               + ")");
       }
       else {
          if (isAborted) {
-            consPnl.appendText("\n<<Process aborted (exit value = "
-                  + exitVal + ")>>\n");
+            consPnl.appendTextFormatted(
+                  "Process aborted (exit value = "
+                  + exitVal
+                  + ")");
          }
          else {
-            consPnl.appendText("\n<<Process ended with error (exit value = "
-                  + exitVal + ")>>\n");
+            consPnl.appendTextFormatted(
+                  "Process ended with error (exit value = "
+                  + exitVal
+                  + ")");
          }
       }
    }
 
    private String cmdNotFoundMsg(String cmd) {
       return
-         "<<Error: cannot find " + cmd + " in the directory "
-         + workingDir + ">>\n";
+         "Error: cannot find "
+         + cmd + " in the directory "
+         + workingDir;
    }
 
    private String enterCmdMsg() {

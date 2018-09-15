@@ -16,6 +16,11 @@ public class RHighlighter implements Highlighter {
       "TRUE",
       "while"
    };
+   
+   @Override
+   public boolean allowBlkCmntMarksQuoted() {
+      return true;
+   }
       
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
@@ -23,12 +28,12 @@ public class RHighlighter implements Highlighter {
       searcher.keywords(KEYWORDS, true, null, Attributes.RED_PLAIN);
       searcher.braces();
       searcher.brackets();
-      searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);
+      searcher.quotedLinewise(Attributes.ORANGE_PLAIN);
       searcher.lineComments(SyntaxConstants.HASH);
    }
    
    @Override
-   public boolean isEnabled(String text, int pos, int option) {
+   public boolean isEnabled(String text, int pos, int condition) {
       return true;
    }
 }

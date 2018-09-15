@@ -8,15 +8,14 @@ import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 
 /**
- * The menu for formatting actions.
- * <p>Created in {@link MenuBar}
+ * The menu for formatting actions
  */
 public class FormatMenu {
 
-   private final JMenu     menu     = new JMenu("Format");
-   private final JMenuItem fontItm  = new JMenuItem("Font ...");
+   private final JMenu     menu    = new JMenu("Format");
+   private final JMenuItem fontItm = new JMenuItem("Font ...");
    private final JCheckBoxMenuItem wordWrapItm
-                                    = new JCheckBoxMenuItem("Wordwrap");
+                                   = new JCheckBoxMenuItem("Wordwrap");
 
    public FormatMenu() {
       assembleMenu();

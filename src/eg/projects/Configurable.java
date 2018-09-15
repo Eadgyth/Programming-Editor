@@ -5,21 +5,21 @@ import java.awt.event.ActionListener;
 /**
  * The interface that defines the configuration of a project.
  * <p>
- * The implementing class works in combination with an object that defines a
- * a window where settings for a project are entered.
+ * The implementing class works in combination with class that defines a
+ * a window where the settings for a project are entered.
  */
 public interface Configurable {
 
    /**
-    * Builds the settings window depending on the input required for a
-    * project
+    * Builds the settings window depending on the input options
+    * required in a project
     */
    public void buildSettingsWindow();
 
    /**
-    * Makes this settings window visible
+    * Opens the settings window
     */
-   public void makeSettingsWindowVisible();
+   public void openSettingsWindow();
 
    /**
     * Sets the <code>ActionListener</code> that is called when
@@ -30,22 +30,21 @@ public interface Configurable {
    public void setConfiguringAction(ActionListener al);
 
    /**
-    * Configures a project based on the entries in this settings window
-    * and the specified directory
+    * Tries to configure a project based on entries in the settings
+    * window
     *
     * @param dir  the directory that may be or be contained in the
-    * presumed root directory of the project
+    * project root directory named in the settings window
     * @return  the boolean value that is true if the project could be
     * configured
     */
    public boolean configureProject(String dir);
 
    /**
-    * Retrieves a project stored in a preferences file based on the
-    * specified directory
+    * Tries to retrieve a project stored in a preferences file
     *
     * @param dir  the directory that may be or be contained in the
-    * presumed root directory of the project
+    * project root directory stored in a preferences file
     * @return  the boolean value that is true if a saved project could
     * be retrieved
     */
@@ -54,14 +53,15 @@ public interface Configurable {
    /**
     * Returns the type of project
     *
-    * @return  the type of project which is a constant in {@link ProjectTypes}
+    * @return  the type of project which is a constant in
+    * {@link ProjectTypes}
     */
    public ProjectTypes getProjectType();
 
    /**
     * Returns if the project uses a main file
     *
-    * @return  the boolean value. True if a main file is used.
+    * @return  the boolean value that is true if a main file is used
     */
    public boolean usesProjectFile();
 
@@ -70,19 +70,19 @@ public interface Configurable {
     *
     * @param dir  the directory
     * @return  the boolean value that is true if the directory is or is
-    * contained in the project's root directory
+    * contained in the project root directory
     */
    public boolean isInProject(String dir);
 
    /**
-    * Returns the path of the project's root directory
+    * Returns the path of the project root directory
     *
     * @return  the directory
     */
    public String getProjectPath();
 
    /**
-    * Returns the name of the project's root directory
+    * Returns the name of the project root directory
     *
     * @return  the name
     */
@@ -92,12 +92,12 @@ public interface Configurable {
     * Returns the name of the directory where executable files
     * are saved
     *
-    * @return  the name
+    * @return  the name, the empty string if no such directory is given
     */
    public String getExecutableDirName();
 
    /**
-    * Stores the configuration in a properties file
+    * Stores the configuration in a preferences file
     */
    public void storeConfiguration();
 }

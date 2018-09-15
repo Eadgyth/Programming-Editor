@@ -28,6 +28,11 @@ public class JavaHighlighter implements Highlighter {
       "@Override", "@Deprecated", "@SuppressWarnings", "@SafeVarargs",
       "@FunctionalInterface"
    };
+   
+   @Override
+   public boolean allowBlkCmntMarksQuoted() {
+      return false;
+   }
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
@@ -39,7 +44,7 @@ public class JavaHighlighter implements Highlighter {
          searcher.keywords(JAVA_KEYWORDS, true, null, Attributes.RED_PLAIN);
          searcher.brackets();
          searcher.braces();
-         searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);
+         searcher.quotedLinewise(Attributes.ORANGE_PLAIN);
          searcher.lineComments(SyntaxConstants.DOUBLE_SLASH);
      }
      searcher.blockComments(SyntaxConstants.SLASH_STAR,
@@ -47,7 +52,7 @@ public class JavaHighlighter implements Highlighter {
    }
    
    @Override
-   public boolean isEnabled(String text, int pos, int option) {
+   public boolean isEnabled(String text, int pos, int condition) {
       return true;
    }
 }

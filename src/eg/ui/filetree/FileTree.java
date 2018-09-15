@@ -1,7 +1,6 @@
 package eg.ui.filetree;
 
 import java.awt.Component;
-
 import java.awt.event.MouseListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -18,20 +17,21 @@ import java.io.File;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 //--Eadgyth--/
+import eg.FileOpenable;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 
 /**
  * The display of a project's file system in a <code>JTree</code>.
  */
-public class FileTree extends Observable {
+public class FileTree {
 
    private final TreePanel treePnl;
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
    private final PopupMenu popupDir  = new PopupMenu(PopupMenu.FOLDER_OPT);
+   private final FileOpenable openable;
 
    private JTree tree = null;
    private DefaultTreeModel model;
@@ -46,9 +46,11 @@ public class FileTree extends Observable {
 
    /**
     * @param treePanel  the reference to {@link TreePanel}
+    * @param o  the reference to {@link FileOpenable}
     */
-   public FileTree(TreePanel treePanel) {
+   public FileTree(TreePanel treePanel, FileOpenable o) {
       treePnl = treePanel;
+      openable = o;
       setActions();   
    }
 
@@ -67,12 +69,13 @@ public class FileTree extends Observable {
    }
    
    /**
-    * Sets the directory that may be deleted (by using this popup menu)
-    * although it is not empty. Usually, non-empty folders are protected
-    * against deletion.
+    * Sets the directory that may be deleted (by using this popup
+    * menu) although it is not empty. Usually, non-empty folders
+    * are protected against deletion.
     *
-    * @param deletableDirName  the name of the directory that is deletable.
-    * Null or the empty string to not set a deletable directory
+    * @param deletableDirName  the name of the directory that is
+    * deletable. Null or the empty string to not set a deletable
+    * directory
     */
    public void setDeletableDir(String deletableDirName) {
       if (projRoot.length() == 0) {
@@ -87,7 +90,7 @@ public class FileTree extends Observable {
    }
 
    /**
-    * Updates the tree at the currently shown root.
+    * Updates the tree at the currently shown root
     */
    public void updateTree() {
       setExpandedNodeList();
@@ -164,8 +167,7 @@ public class FileTree extends Observable {
    }
    
    private void openFile() {
-      setChanged();
-      notifyObservers(selectedFile);
+      openable.openFile(selectedFile);
    }
 
    private void deleteFile() {
@@ -181,7 +183,6 @@ public class FileTree extends Observable {
             success = FileUtils.deleteFolder(selectedFile);
          }
          if (success) {
-            System.out.println(tree.getModel().getRoot());
             if (selectedNode == tree.getModel().getRoot()) {
                folderUp();
             }

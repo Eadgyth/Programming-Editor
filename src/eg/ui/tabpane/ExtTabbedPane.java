@@ -17,9 +17,9 @@ import javax.swing.border.EmptyBorder;
 import eg.Constants;
 
 /**
- * A JTabbedPane with a close button in the tabs, the possibility
- * to show and hide the tab bar and a somewhat changed tab appearance.
- * The tab placement is restricted to be at the top.
+ * The <code>JTabbedPane</code> for the editor.
+ * <p>
+ * Uses {@link ExtTabbedPaneUI} for the tabbar appearance
  */
 public final class ExtTabbedPane extends JTabbedPane {
 
@@ -32,9 +32,8 @@ public final class ExtTabbedPane extends JTabbedPane {
    private boolean isShowTabbar;
 
    /**
-    * Creates an <code>ExtTabbedPane</code> using the parameterless constructor
-    * of the superclass (tab placement at the top) and sets this
-    * {@link ExtTabbedPaneUI}
+    * Creates an <code>ExtTabbedPane</code> using the parameterless
+    * constructor of the superclass (tab placement at the top)
     */
    public ExtTabbedPane() {
       tui.setHeight(Constants.BAR_HEIGHT);
@@ -64,9 +63,9 @@ public final class ExtTabbedPane extends JTabbedPane {
     * Adds a new tab.
     * <p>
     * It is required that the specified <code>closeBt</code> has got an
-    * <code>ActionListener</code> added. {@link #iTabMouseOver()} would
+    * <code>ActionListener</code> added. {@link #iTabMouseOver()} must be
     * be called by the listener to determine the index of a tab that
-    * is to be closed but that is not selected.
+    * is to be closed but that may not be selected.
     *
     * @param title  the title for the tab
     * @param c  the component to be displayed when the tab is selected

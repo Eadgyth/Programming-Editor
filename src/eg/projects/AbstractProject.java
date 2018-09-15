@@ -11,11 +11,7 @@ import eg.Prefs;
 import eg.utils.Dialogs;
 
 /**
- * The configuration of a project.
- * <p>
- * This class works in combination with an object of
- * {@link SettingsWindow} where values required for a configuration
- * are entered.
+ * The configuration of a project
  */
 public abstract class AbstractProject implements Configurable {
 
@@ -27,12 +23,18 @@ public abstract class AbstractProject implements Configurable {
     */
    protected final SettingsWindow.InputOptionsBuilder inputOptions;
 
-   private final static String F_SEP = File.separator;
+   /**
+    * The system's file separator
+    */
+   protected final static String F_SEP = File.separator;
+   
    private final Prefs prefs = new Prefs();
+   //
+   // Set in constructor
    private final SettingsWindow sw;
    private final ProjectTypes projType;
    private final String sourceExtension;
-   private final boolean useProjectFile;
+   private final boolean useMainFile;
    //
    // The Prefs object that stores and reads from a ProjConfig file
    // in a project's root directory
@@ -52,7 +54,6 @@ public abstract class AbstractProject implements Configurable {
    private String buildName = "";
    //
    // Variables to control the configuration
-   private String rootToTest = "";
    private boolean isPathname = false;
    private boolean isNameConflict = false;
 
@@ -62,22 +63,23 @@ public abstract class AbstractProject implements Configurable {
    }
 
    @Override
-   public final void makeSettingsWindowVisible() {
+   public final void openSettingsWindow() {
       sw.setVisible(true);
    }
 
    @Override
    public final boolean configureProject(String dir) {
+      String rootToTest = "";
       String root = findRoot(dir);
       if (root.length() > 0) {
-         if (useProjectFile) {
-            configureByTextFieldsInput(root);
+         if (useMainFile) {
+            rootToTest = testedRoot(root);
          }
          else {
             rootToTest = root;
          }
       }
-      boolean success = isConfigSuccessful();
+      boolean success = isConfigSuccessful(rootToTest);
       if (success) {
          setCommandParameters();
          sw.setVisible(false);
@@ -96,19 +98,19 @@ public abstract class AbstractProject implements Configurable {
    @Override
    public final boolean retrieveProject(String dir) {
       String root = findRootByFile(dir, Prefs.PROJ_CONFIG_FILE);
+      boolean success = false;
       if (root.length() > 0) {
          sw.setSaveProjConfigSelected(true);
          conf = new Prefs(root);
-         configByPropertiesFile(root, conf);
+         success = configByPrefs(root, conf);
       }
       else {
          sw.setSaveProjConfigSelected(false);
          root = prefs.getProperty("ProjectRoot");
          if (isInProject(dir, root)) {
-             configByPropertiesFile(root, prefs);
+             success = configByPrefs(root, prefs);
          }
       }
-      boolean success = projectRoot.length() > 0;
       if (success) {
          setCommandParameters();
       }
@@ -122,7 +124,7 @@ public abstract class AbstractProject implements Configurable {
 
    @Override
    public final boolean usesProjectFile() {
-      return useProjectFile;
+      return useMainFile;
    }
 
    @Override
@@ -161,17 +163,18 @@ public abstract class AbstractProject implements Configurable {
    /**
     * @param projType  the project type which has a valaue in
     * {@link ProjectTypes}
-    * @param useProjectFile  the boolean value that is true to indicate that
-    * the project uses a main project file
-    * @param sourceExtension  the extension of source files (or of the main
-    * file if extensions differ). Null if no main project file is used
+    * @param useMainFile  the boolean value that is true to indicate
+    * that the project uses a main project file
+    * @param sourceExtension  the extension of source files (or of the
+    * main file if extensions differ). Null if no main project file is
+    * used
     */
-   protected AbstractProject(ProjectTypes projType, boolean useProjectFile,
+   protected AbstractProject(ProjectTypes projType, boolean useMainFile,
          String sourceExtension) {
 
       this.projType = projType;
       this.sourceExtension = "." + sourceExtension;
-      this.useProjectFile = useProjectFile;
+      this.useMainFile = useMainFile;
       sw = new SettingsWindow();
       inputOptions = sw.getInputOptionsBuilder();
       sw.setCancelAct(e -> undoSettings());
@@ -192,7 +195,7 @@ public abstract class AbstractProject implements Configurable {
     * @return  the name
     */
    protected String getMainFileName() {
-      if (!useProjectFile) {
+      if (!useMainFile) {
          throw new IllegalStateException("A main file is not used");
       }
       return mainFileName;
@@ -288,7 +291,7 @@ public abstract class AbstractProject implements Configurable {
     * @param ext  the extension of the executable file (with starting period)
     * @return  the boolean value that is true if the file exists
     */
-   protected boolean mainExecFileExists(String ext) {
+   protected boolean existsMainExecFile(String ext) {
       StringBuilder sb = new StringBuilder(projectRoot + "/");
       if (execDirName.length() > 0) {
          sb.append(execDirName).append("/");
@@ -306,10 +309,9 @@ public abstract class AbstractProject implements Configurable {
    //
 
    private String findRoot(String dir) {
-      rootToTest = "";
+      String rootInput = sw.projDirNameInput();
       File root = new File(dir);
       String existingName;
-      String rootInput = sw.projDirNameInput();
       while (root != null) {
          existingName = root.getName();
          if (rootInput.equals(existingName) && root.exists()) {
@@ -320,6 +322,71 @@ public abstract class AbstractProject implements Configurable {
       return "";
    }
 
+   private String testedRoot(String root) {
+      String toTest = "";
+      namespace = "";
+      isNameConflict = false;
+      getTextFieldsInput(); // assigns value to isPathname
+      if (!isPathname) {
+         String sourceRoot = root;
+         if (sourceDirName.length() > 0) {
+            sourceRoot = sourceRoot + "/" + sourceDirName;
+         }
+         setNamespace(sourceRoot, mainFileName + sourceExtension);
+         if (namespace.length() > 0) {
+            if (namespace.length() > sourceRoot.length()) {
+               namespace = namespace.substring(sourceRoot.length() + 1);
+            }
+            else {
+               namespace = ""; // no subdir in source root
+            }
+            toTest = root;
+         }
+      }
+      else {
+         File fToTest = new File(root + "/" + pathRelToRoot());
+         if (fToTest.exists()) {
+            toTest = root;
+         }
+      }
+      return toTest;
+   }
+
+   private void getTextFieldsInput() {
+      String mainFileInput = sw.fileNameInput();
+      splitMainFileInput(mainFileInput);
+      sourceDirName = sw.sourcesDirNameInput();
+      execDirName = sw.execDirNameInput();
+      startOptions = sw.cmdOptionsInput();
+      args = sw.cmdArgsInput();
+      compileOption = sw.compileOptionInput();
+      extensions = sw.extensionsInput();
+      buildName = sw.buildNameInput();
+   }
+
+   private void setNamespace(String sourceRoot, String name) {
+      File f = new File(sourceRoot);
+      File[] list = f.listFiles();
+      if (list != null) {
+         for (File fInList : list) {
+            if (fInList.isFile()) {
+               if (fInList.getName().equals(name)) {
+                  if (namespace.length() > 0) {
+                     namespace = "";
+                     isNameConflict = true;
+                  }
+                  else {
+                     namespace = fInList.getParent();
+                  }
+               }
+            }
+            else {
+               setNamespace(fInList.getPath(), name);
+            }
+         }
+      }
+   }
+   
    private String findRootByFile(String dir, String file) {
       File root = new File(dir);
       String relToRoot = F_SEP + file;
@@ -334,87 +401,10 @@ public abstract class AbstractProject implements Configurable {
       return "";
    }
 
-   private void configureByTextFieldsInput(String root) {
-      namespace = "";
-      isNameConflict = false;
-      getTextFieldsInput(); // assigns value to isPathname
-      if (!isPathname) {
-         String sourceRoot = root;
-         if (sourceDirName.length() > 0) {
-            sourceRoot = sourceRoot + "/" + sourceDirName;
-         }
-         findNamespace(sourceRoot, mainFileName + sourceExtension);
-         if (namespace.length() > 0) {
-            if (namespace.length() > sourceRoot.length()) {
-               namespace = namespace.substring(sourceRoot.length() + 1);
-            }
-            else {
-               namespace = ""; // no subdir in source root
-            }
-            rootToTest = root;
-         }
-      }
-      else {
-         File fToTest = new File(root + "/" + pathRelToRoot());
-         if (fToTest.exists()) {
-            rootToTest = root;
-         }
-      }
-   }
-
-   private void getTextFieldsInput() {
-      String mainFileInput = sw.fileNameInput();
-      splitMainFileInput(mainFileInput);
-      sourceDirName = sw.sourcesDirNameInput();
-      execDirName = sw.execDirNameInput();
-      startOptions = sw.cmdOptionsInput();
-      args = sw.cmdArgsInput();
-      compileOption = sw.compileOptionInput();
-      extensions = sw.extensionsInput();
-      buildName = sw.buildNameInput();
-   }      
-
-   private void findNamespace(String sourceRoot, String name) {
-      File f = new File(sourceRoot);
-      File[] list = f.listFiles();
-      if (list != null) {
-         for (File fInList : list) {
-           if (fInList.isFile()) {
-               if (fInList.getName().equals(name)) {
-                  if (namespace.length() > 0) {
-                     namespace = "";
-                     isNameConflict = true;
-                  }
-                  else {
-                     namespace = fInList.getParent();
-                  }
-               }
-            }
-            else {
-               findNamespace(fInList.getPath(), name);
-            }
-         }
-      }
-   }
-   
-   private void setTextFieldsDisplay() {
-      sw.displayProjDirName(getProjectName());
-      if (isPathname) {
-         sw.displayFile(namespace + F_SEP + mainFileName);
-      }
-      else {
-         sw.displayFile(mainFileName);
-      }
-      sw.displaySourcesDir(sourceDirName);
-      sw.displayExecDir(execDirName);
-      sw.displayExtensions(extensions);
-      sw.displayBuildName(buildName);
-   }      
-      
-   private void configByPropertiesFile(String root, Prefs pr) {
+   private boolean configByPrefs(String root, Prefs pr) {
       String projTypeToTest = pr.getProperty("ProjectType");
       if (!projTypeToTest.equals(projType.toString())) {
-         return;
+         return false;
       }
       String mainFileInput = pr.getProperty("MainProjectFile");
       splitMainFileInput(mainFileInput);
@@ -429,12 +419,13 @@ public abstract class AbstractProject implements Configurable {
       extensions = pr.getProperty("IncludedFiles");
       buildName = pr.getProperty("BuildName");
 
+      boolean success = false;
       File fToTest = new File(root + F_SEP + pathRelToRoot());
       if (fToTest.exists()) {
-         boolean ok = (useProjectFile && fToTest.isFile())
-               || (!useProjectFile && fToTest.isDirectory());
+         success = (useMainFile && fToTest.isFile())
+               || (!useMainFile && fToTest.isDirectory());
 
-         if (ok) {
+         if (success) {
             projectRoot = root;
             setTextFieldsDisplay();
             if (pr == conf) {
@@ -442,6 +433,7 @@ public abstract class AbstractProject implements Configurable {
             }
          }
       }
+      return success;
    }
 
    private void splitMainFileInput(String mainFileInput) {
@@ -485,14 +477,28 @@ public abstract class AbstractProject implements Configurable {
       return false;
    }
 
-   private boolean isConfigSuccessful() {
+   private void setTextFieldsDisplay() {
+      sw.displayProjDirName(getProjectName());
+      if (isPathname) {
+         sw.displayFile(namespace + F_SEP + mainFileName);
+      }
+      else {
+         sw.displayFile(mainFileName);
+      }
+      sw.displaySourcesDir(sourceDirName);
+      sw.displayExecDir(execDirName);
+      sw.displayExtensions(extensions);
+      sw.displayBuildName(buildName);
+   }
+
+   private boolean isConfigSuccessful(String rootToTest) {
       boolean success = rootToTest.length() > 0;
       if (!success) {
          if (isNameConflict) {
             Dialogs.warnMessageOnTop(nameConflictMessage());
          }
          else {
-            if (useProjectFile) {
+            if (useMainFile) {
                Dialogs.warnMessageOnTop(INPUT_ERROR_GENERAL);
             }
             else {
@@ -560,12 +566,12 @@ public abstract class AbstractProject implements Configurable {
          }
       }
    }
-   
+
    private void undoSettings() {
       setTextFieldsDisplay();
       sw.setVisible(false);
    }
-   
+
    private final WindowAdapter DefaultClosing = new WindowAdapter() {
 
       @Override
@@ -600,7 +606,7 @@ public abstract class AbstractProject implements Configurable {
 
    private final static String INPUT_ERROR_PROJ_ROOT
          =  "The entry for the project root cannot be matched with an"
-         + " existing file.";
+         + " existing directoy.";
 
    private final static String INPUT_ERROR_GENERAL
          =  "The entries cannot be matched with an existing file.";

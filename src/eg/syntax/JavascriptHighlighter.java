@@ -24,6 +24,11 @@ public class JavascriptHighlighter implements Highlighter {
       "var", "void", "volatile",
       "while", "with"
    };
+   
+   @Override
+   public boolean allowBlkCmntMarksQuoted() {
+      return false;
+   }
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
@@ -34,7 +39,7 @@ public class JavascriptHighlighter implements Highlighter {
          searcher.keywords(JS_KEYWORDS, true, null, Attributes.RED_PLAIN);
          searcher.brackets();
          searcher.braces();
-         searcher.quotedTextInLines(Attributes.ORANGE_PLAIN);
+         searcher.quotedLinewise(Attributes.ORANGE_PLAIN);
          searcher.lineComments(SyntaxConstants.DOUBLE_SLASH);
       }
       searcher.blockComments(SyntaxConstants.SLASH_STAR,

@@ -1,8 +1,5 @@
 package eg;
 
-import java.util.Observer;
-import java.util.Observable;
-
 import javax.swing.JTabbedPane;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
@@ -12,7 +9,7 @@ import javax.swing.event.ChangeEvent;
 
 import java.io.File;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.utils.Dialogs;
 
 import eg.document.EditableDocument;
@@ -20,13 +17,14 @@ import eg.document.EditingStateReadable;
 import eg.ui.MainWin;
 import eg.ui.EditArea;
 import eg.ui.tabpane.ExtTabbedPane;
+import eg.ui.filetree.FileTree;
 
 /**
  * The documents in the tabs.
  * <p>
  * Documents are represented by objects of {@link EditableDocument}
  */
-public class TabbedDocuments implements Observer {
+public class TabbedDocuments {
 
    private final EditableDocument[] edtDoc;
    private final Prefs prefs = new Prefs();
@@ -56,12 +54,21 @@ public class TabbedDocuments implements Observer {
       this.format = format;
       editArea = format.editAreaArray();
       edtDoc = new EditableDocument[editArea.length];
-      edit = new Edit(prefs.getProperty("IndentUnit"));
-      mw.setEditActions(edit);
-      proj = new Projects(mw, edtDoc, prefs.getProperty("ProjectRoot"));
-      mw.setProjectActions(proj);
+      
       setLanguage();
-      fc = new FileChooser(prefs.getProperty("RecentPath"));
+      
+      String indentUnit = prefs.getProperty("IndentUnit");      
+      edit = new Edit(indentUnit);
+      mw.setEditActions(edit);
+      
+      String projectRoot = prefs.getProperty("ProjectRoot");
+      FileTree ft = new FileTree(mw.treePanel(), Openable);
+      proj = new Projects(mw, ft, projectRoot, edtDoc);
+      mw.setProjectActions(proj);
+
+      String recentPath = prefs.getProperty("RecentPath");
+      fc = new FileChooser(recentPath);
+      
       tabPane = mw.tabPane();
       tabPane.addChangeListener((ChangeEvent ce) -> {
          JTabbedPane sourceTb = (JTabbedPane) ce.getSource();
@@ -73,7 +80,8 @@ public class TabbedDocuments implements Observer {
    }
 
    /**
-    * Changes the language in the currently viewed document
+    * Changes this language and sets the new language in the currently
+    * viewed document
     *
     * @param lang  a language in {@link Languages}
     */
@@ -93,17 +101,6 @@ public class TabbedDocuments implements Observer {
    }
 
    /**
-    * Opens a tab with a file that is double clicked in
-    * <code>FileTree</code>
-    * @param obs  the Observable
-    * @param o  the object that has changed in obs
-    */
-   @Override
-   public void update(Observable obs, Object o) {
-      open((File) o);
-   }
-
-   /**
     * Opens a tab with a file selected in the file chooser
     */
    public void openFileByChooser() {
@@ -118,29 +115,24 @@ public class TabbedDocuments implements Observer {
          open(f);
       }
    }
-
+   
    /**
-    * Saves the text content in the selected document.
-    * <p>
-    * {@link #saveAs(boolean)} is called if the selected tab is
-    * unnamed or if the content was read in from a file that no
-    * longer exists on the hard drive.
-    *
-    * @param update  true to update the main window and this
-    * {@link Projects} in case a new file is saved
-    * @return  if the text content was saved
+    * Saves the text content in the selected document to its file.
     */
-   public boolean save(boolean update) {
-      if (!edtDoc[iTab].hasFile() || !edtDoc[iTab].docFile().exists()) {
-         return saveAs(update);
-      }
-      else {
-         return edtDoc[iTab].saveFile();
-      }
+   public void save() {
+      save(true);
+   }
+   
+   /**
+    * Saves the text content in the selected tab as a new file
+    */
+   public void saveAs() {
+      saveAs(true);
    }
 
    /**
-    * Saves the text content in all open documents
+    * Saves the text content in all open documents in which a file is
+    * open
     */
    public void saveAll() {
       StringBuilder sb = new StringBuilder();
@@ -156,65 +148,50 @@ public class TabbedDocuments implements Observer {
          }
       }
       if (sb.length() > 0) {
-         sb.insert(0, "These files could not be found:\n");
+         sb.insert(0, "These files could not be found anymore:\n");
          Dialogs.warnMessage(sb.toString());
       }
-   }
-
-   /**
-    * Saves the text content in the selected document as a new file
-    * that is specified in the file chooser
-    *
-    * @param update  true to update the main window and this
-    * {@link Projects} because of the chnaged file
-    * @return  if the text content was saved
-    */
-   public boolean saveAs(boolean update) {
-      File f = fc.fileToSave(edtDoc[iTab].filepath());
-      boolean isSave = f != null;
-      if (isSave && f.exists()) {
-         isSave = 0 == replaceFileOption(f);
-      }
-      isSave = isSave && edtDoc[iTab].setFile(f);
-      if (isSave && update) {
-         changedFileUpdate(true);
-         tabPane.setTitle(iTab, edtDoc[iTab].filename());
-      }
-      return isSave;
-   }
+   }  
 
    /**
     * Saves a copy of the content in the selected document to the file
-    * that is specified in the file chooser
+    * that is specified in the file chooser but does not set the file
+    * in the document
+    *
+    * @return  the boolen value that is true if the text content was
+    * saved to the file
     */
-   public void saveCopy() {
+   public boolean saveCopy() {
       File f = fc.fileToSave(edtDoc[iTab].filepath());
-      boolean isSave = f != null;
-      if (isSave && f.exists()) {
-         isSave = 0 == replaceFileOption(f);
+      boolean isSaved = f != null;
+      if (isSaved && f.exists()) {
+         isSaved = 0 == replaceFileOption(f);
       }
-      if (isSave) {
-         edtDoc[iTab].saveCopy(f);
+      isSaved = isSaved && edtDoc[iTab].saveCopy(f);
+      if (isSaved) {
+         proj.updateFileTree(f.toString());
       }
+      return isSaved;
    }
 
    /**
-    * Tries to close the currently viewed tab
+    * Closes the tab that is selected or whose close button is clicked
     *
     * @param createBlankDoc  the boolean that is true to create a new
     * blank document in the case that the tab to be closed is the only
     * open tab.
     */
    public void close(boolean createBlankDoc) {
-      boolean removable = edtDoc[iTab].isSaved();
-      if (!removable) {
-         int res = saveOrCloseOption(iTab);
-         if (JOptionPane.YES_OPTION == res) {
-            removable = save(false);
+      boolean removable;
+      boolean exists = !edtDoc[iTab].hasFile() || edtDoc[iTab].docFile().exists();
+      if (exists) {
+         removable = edtDoc[iTab].isSaved();
+         if (!removable) {
+            removable = removeUnsavedFile(iTab);
          }
-         else {
-            removable = JOptionPane.NO_OPTION == res;
-         }
+      }
+      else {
+         removable = removeMissingFile(iTab);
       }
       if (removable) {
          removeTab();
@@ -229,13 +206,14 @@ public class TabbedDocuments implements Observer {
     * saved. Creates a new blank tab if the specified boolean
     * <code>createBlankTab</code> is true and all tabs could be closed.
     *
-    * @param createBlankDoc  the boolean value, true to create a new
-    * blank tab
+    * @param createBlankDoc  the boolean value
     */
    public void closeAll(boolean createBlankDoc) {
-      int count = unsavedTab();
-      if (count == nTabs()) {
-         int i = count - 1;
+      int iMissing = missingFile();
+      int iUnsaved = unsavedFile();
+      boolean removable = iUnsaved == nTabs() && iMissing == nTabs();
+      if (removable) {
+         int i = nTabs() - 1;
          while (i > -1) {
             tabPane.removeTabAt(i);
             edtDoc[i] = null;
@@ -247,14 +225,17 @@ public class TabbedDocuments implements Observer {
          }
       }
       else {
-         tabPane.setSelectedIndex(count);
-         int res = saveOrCloseOption(count);
-         if (JOptionPane.YES_OPTION == res) {
-            if (save(false)) {
-               closeAll(createBlankDoc);
+         if (iMissing != nTabs()) {
+            tabPane.setSelectedIndex(iMissing);
+            removable = removeMissingFile(iMissing);
+         }
+         else {
+            if (iUnsaved != nTabs()) {
+               tabPane.setSelectedIndex(iUnsaved);
+               removable = removeUnsavedFile(iUnsaved);
             }
          }
-         else if (JOptionPane.NO_OPTION == res) {
+         if (removable) {
             removeTab();
             closeAll(createBlankDoc);
          }
@@ -268,7 +249,7 @@ public class TabbedDocuments implements Observer {
     * @return  the boolean value that, if true, indicates that all tabs
     * were closed
     */
-   public boolean isAllClosed() {
+   public boolean closeAll() {
       closeAll(false);
       boolean isClosed = iTab == -1;
       if (isClosed) {
@@ -331,7 +312,8 @@ public class TabbedDocuments implements Observer {
          edtDoc[n] = new EditableDocument(editArea[n], f);
          setupDocument(n);
          addNewTab(edtDoc[n].filename(), editArea[n].content());
-         changedFileUpdate(false);
+         changedFileUpdate();
+         proj.retrieveProject();
       }
       finally {
          mw.setDefaultCursor();
@@ -351,6 +333,33 @@ public class TabbedDocuments implements Observer {
          close(true);
       });
    }
+   
+   private boolean save(boolean update) {
+      if (!edtDoc[iTab].hasFile() || !edtDoc[iTab].docFile().exists()) {
+         return saveAs(update);
+      }
+      else {
+         return edtDoc[iTab].saveFile();
+      }
+   }
+   
+   private boolean saveAs(boolean update) {
+      File f = fc.fileToSave(edtDoc[iTab].filepath());
+      boolean isSaved = f != null;
+      if (isSaved && f.exists()) {
+         isSaved = 0 == replaceFileOption(f);
+      }
+      isSaved = isSaved && edtDoc[iTab].setFile(f);
+      if (isSaved) {
+         if (update) {
+            changedFileUpdate();
+            tabPane.setTitle(iTab, edtDoc[iTab].filename());
+            proj.retrieveProject();
+         }
+         proj.updateFileTree(f.toString());
+      }
+      return isSaved;
+   }
 
    private void removeTab() {
       int count = iTab;
@@ -369,27 +378,22 @@ public class TabbedDocuments implements Observer {
    }
 
    private void changedTabUpdate() {
+      edtDoc[iTab].setFocused();
       format.setIndex(iTab);
-      mw.setWordWrapSelected(editArea[iTab].isWordwrap());
+      proj.setIndex(iTab);
       edit.setDocument(edtDoc[iTab]);
-      proj.setDocumentIndex(iTab);
+      mw.setWordWrapSelected(editArea[iTab].isWordwrap());
       mw.editTools().forEach((t) -> {
          t.setEditableDocument(edtDoc[iTab]);
       });
       mw.displayFrameTitle(edtDoc[iTab].filepath());
       mw.enableShowTabbar(nTabs() == 1);
       mw.setLanguageSelected(edtDoc[iTab].language(), !edtDoc[iTab].hasFile());
-      edtDoc[iTab].setFocused();
    }
 
-   private void changedFileUpdate(boolean updateFiletree) {
-      proj.setDocumentIndex(iTab);
-      proj.retrieveProject();
+   private void changedFileUpdate() {
       mw.setLanguageSelected(edtDoc[iTab].language(), false);
       mw.displayFrameTitle(edtDoc[iTab].filepath());
-      if (updateFiletree) {
-         proj.updateFileTree();
-      }
    }
 
    private boolean isFileOpen(File f) {
@@ -412,7 +416,7 @@ public class TabbedDocuments implements Observer {
       return isMax;
    }
 
-   private int unsavedTab() {
+   private int unsavedFile() {
       int i;
       for (i = 0; i < nTabs(); i++) {
          if (!edtDoc[i].isSaved()) {
@@ -421,15 +425,51 @@ public class TabbedDocuments implements Observer {
       }
       return i;
    }
-
-   private int saveOrCloseOption(int i) {
+   
+   private int missingFile() {
+      int i;
+      for (i = 0; i < nTabs(); i++) {
+         if (edtDoc[i].hasFile() && !edtDoc[i].docFile().exists()) {
+            break;
+         }
+      }
+      return i;
+   }
+   
+   private boolean removeUnsavedFile(int i) {
       String filename = edtDoc[i].filename();
       if (filename.length() == 0) {
          filename = "unnamed";
       }
-      return Dialogs.confirmYesNoCancel
-            ("Save changes in " + filename + " ?");
+      int res = Dialogs.confirmYesNoCancel(
+            "Save changes in " + filename + " ?");
+            
+      boolean removable;
+      if (JOptionPane.YES_OPTION == res) {
+         removable = save(false);
+      }
+      else {
+         removable = JOptionPane.NO_OPTION == res;
+      }
+      return removable;
    }
+   
+   private boolean removeMissingFile(int i) {
+      String filename = edtDoc[i].filename();
+      int res = Dialogs.confirmYesNoCancel(
+            filename
+            + " could not be found anymore."
+            + " Save as new file?");
+      
+      boolean removable = false;
+      if (JOptionPane.YES_OPTION == res) {
+         removable = saveCopy();       
+      }
+      else if (JOptionPane.NO_OPTION == res) {
+         removable = true;
+      }
+      return removable;
+   }       
 
    private int replaceFileOption(File f) {
       return Dialogs.warnConfirmYesNo(
@@ -449,6 +489,18 @@ public class TabbedDocuments implements Observer {
       }
       mw.setLanguageSelected(lang, false);
    }
+   
+   private final FileOpenable Openable = new FileOpenable() {
+      
+      @Override
+      public void openFile(File f) {
+         if (f == null || (!f.exists() || f.isDirectory())) {
+            throw new IllegalArgumentException(
+                  "The file is null or does not exits");
+         }
+         open(f);
+      }
+   };
 
    private final EditingStateReadable editReadable = new EditingStateReadable() {
 

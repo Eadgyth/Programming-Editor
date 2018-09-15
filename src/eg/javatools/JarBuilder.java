@@ -7,27 +7,55 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 
+//--Eadgyth--/
+import eg.console.Console;
+
 /**
- * The creation of an executable jar file.
- * <p>
- * The jar file is saved in the directory that is specified as executables
- * directory or, if this is not specified, in the root directory of a project.
+ * The creation of an executable jar file
  */
 public class JarBuilder {
 
    private final static String F_SEP = File.separator;
    private final FilesFinder fFind = new FilesFinder();
-   
+   private final Console cons;
+
+   private String successMsg = "";
    private String includedFilesErr = "";
-   
+   private String errorMsg = "";
+
+   /**
+    * @param cons  the reference to {@link Console}
+    */
+   public JarBuilder(Console cons) {
+      this.cons = cons;
+   }
+
+   /**
+    * Returns the message created if the jar was created
+    *
+    * @return  the message or the empty empty string if there is none
+    */
+    public String successMessage() {
+       return successMsg;
+    }
+
    /**
     * Returns the error message that indicates that non-Java files
     * for inclusion in the jar are not found
     *
-    * @return  the message or the empty empty string
+    * @return  the message or the empty empty string if there is none
     */
-   public String getIncudedFilesErr() {
+   public String incudedFilesErr() {
       return includedFilesErr;
+   }
+
+   /**
+    * Returns the error message that indicates that an error occured
+    *
+    * @return  the message or the empty empty string if there is none
+    */
+   public String errorMessage() {
+      return errorMsg;
    }
 
    /**
@@ -53,6 +81,9 @@ public class JarBuilder {
          String execDir, String sourceDir, String[] nonClassExt)
          throws IOException, InterruptedException {
 
+      includedFilesErr = "";
+      successMsg = "";
+      errorMsg = "";
       List<String> cmd = jarCmd(root, jarName, qualifiedMain, execDir, sourceDir,
             nonClassExt);
 
@@ -61,9 +92,22 @@ public class JarBuilder {
       pb.redirectErrorStream(true);
       Process p = pb.start();
       if (0 == p.waitFor()) {
+         StringBuilder msg = new StringBuilder();
+         String loc = new File(root).getName();
+         if (execDir.length() > 0) {
+            loc += F_SEP + execDir;
+         }
+         msg.append("Saved jar file named ")
+               .append(jarName)
+               .append(" in ").append(loc);
+
+         successMsg = msg.toString();
+         cons.printStatus(successMsg);
          return true;
       }
       else {
+         errorMsg = "An error occured while creating the jar file";
+         cons.printStatus(errorMsg);
          return false;
       }
    }
@@ -88,7 +132,6 @@ public class JarBuilder {
       relativeClassFilePaths.forEach((i) -> {
           cmd.add(i.toString());
       });
-      includedFilesErr = "";
       if (nonClassExt != null) {
          if (sourceDir.length() == 0 || execDir.length() == 0) {
             throw new IllegalArgumentException(
@@ -98,9 +141,14 @@ public class JarBuilder {
          for (String ext : nonClassExt) {
             List<File> toInclude = fFind.filteredFiles(searchRoot, ext, sourceDir);
             if (toInclude.isEmpty()) {
-               includedFilesErr =
-                     "Files with extension \"" + ext + "\" for inclusion"
-                     + " in the jar were not found.";
+               StringBuilder msg = new StringBuilder();
+               msg.append("Warning: ")
+                     .append("Files with extension \"")
+                     .append(ext)
+                     .append("\" for inclusion in the jar were not found");
+
+               includedFilesErr = msg.toString();
+               cons.printStatus(includedFilesErr);
             }
             else {
                List<File> relativeInclFilePaths

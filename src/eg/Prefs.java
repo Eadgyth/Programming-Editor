@@ -58,7 +58,7 @@ public class Prefs {
 
    /**
     * Sets a new value for the property that corresponds to the
-    * specified key.
+    * the specified key.
     *
     * @param key  the property key
     * @param value  the new value
@@ -68,7 +68,8 @@ public class Prefs {
    }
 
    /**
-    * Returns the value of the property that corresponds to specified key
+    * Returns the value of the property that corresponds to the specified
+    * key
     *
     * @param key  the property key
     * @return  the value or the empty string if the property coud not be

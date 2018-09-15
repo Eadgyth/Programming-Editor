@@ -10,8 +10,7 @@ import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 /**
- * Implements a modified appearance of the JTabbedPane and the option to hide
- * the tab bar.
+ * A modified appearance for the <code>JTabbedPane</code>.
  * <p>The background of a selected tab is white; other tabs are in 'normal'
  * gray.<br>
  * The tab height can be defined in {@link #setHeight(int)} and the selected

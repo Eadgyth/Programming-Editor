@@ -58,9 +58,9 @@ public class FileMenu {
       openItm.addActionListener(e -> td.openFileByChooser());
       closeItm.addActionListener(e -> td.close(true));
       closeAllItm.addActionListener(e -> td.closeAll(true));
-      saveItm.addActionListener(e -> td.save(true));     
+      saveItm.addActionListener(e -> td.save());     
       saveAllItm.addActionListener(e -> td.saveAll());
-      saveAsItm.addActionListener(e -> td.saveAs(true));
+      saveAsItm.addActionListener(e -> td.saveAs());
       saveCopyItm.addActionListener(e -> td.saveCopy());
       printItm.addActionListener(e -> td.print());
    }

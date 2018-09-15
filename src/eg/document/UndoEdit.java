@@ -22,13 +22,13 @@ import java.util.List;
  * The starting point of an action is always the edit were undoing or
  * redoing has stopped before.
  * <p>
- * When a new edit is added also a breakpoint is added if...
+ * When a new edit is added also a breakpoint is added if
  * <ul>
  * <li> The content of the previous edit is just a newline character.
  * <li> The type of the new edit differs from the type of the
  *      previous edit. However, no breakpoint is added if an insertion
  *      follows a removal that was not triggerd by pressing the delete
- *      or backspace keys (a replace action is assumed).
+ *      or backspace keys, since then a replace action is assumed.
  * <li> The content is longer than one character.
  * <li> A mark was set by {@link #markBreakpoint()}.
  * </ul>
@@ -45,10 +45,10 @@ public class UndoEdit {
 
    private final TextDocument textDoc;
 
-   private final List<String> edits = new ArrayList<>(500);
-   private final List<Integer> positions = new ArrayList<>(500);
-   private final List<Boolean> eventTypes = new ArrayList<>(500);
-   private final List<Integer> breakpoints = new ArrayList<>(100);
+   private final List<String> edits = new ArrayList<>(1000);
+   private final List<Integer> positions = new ArrayList<>(1000);
+   private final List<Boolean> types = new ArrayList<>(1000);
+   private final List<Integer> breakpoints = new ArrayList<>(500);
 
    private int iEd = -1;
    private int iBr = -1;
@@ -76,7 +76,7 @@ public class UndoEdit {
       trim();
       edits.add(change);
       positions.add(pos);
-      eventTypes.add(isInsert);
+      types.add(isInsert);
       iEd = edits.size() - 1;
       if (isMark) {
          addBreakpoint();
@@ -183,7 +183,8 @@ public class UndoEdit {
    }
 
    /**
-    * Marks that a breakpoint will be added as soon as another edit is added
+    * Marks that a breakpoint will be added as soon as another edit is
+    * added
     */
    public void markBreakpoint() {
       if (edits.size() > 0) {
@@ -233,7 +234,7 @@ public class UndoEdit {
       for (int i = edits.size() - 1; i > iEd; i--) {
          edits.remove(i);
          positions.remove(i);
-         eventTypes.remove(i);
+         types.remove(i);
          int iLastBreak = breakpoints.size() - 1;
          if (iLastBreak > -1 && i == breakPt(iLastBreak)) {
             breakpoints.remove(iLastBreak);
@@ -250,7 +251,7 @@ public class UndoEdit {
    }
 
    private boolean isInsert(int i) {
-      return eventTypes.get(i);
+      return types.get(i);
    }
 
    private int breakPt(int i) {

@@ -104,23 +104,27 @@ public class SyntaxUtils {
     * @param pos  the position
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
+    * @param allowInQuotes  the boolean value that specifies if blockStart
+    * and blockEnd may be surrounded by quotation marks
     * @return  the position of the last block start. -1 if a block end
     * is closer than a block start or if no block start is found
     */
    public static int lastBlockStart(String text, int pos, String blockStart,
-         String blockEnd) {
+         String blockEnd, boolean allowInQuotes) {
 
       int lastStart = text.lastIndexOf(blockStart, pos);
       int lastEnd = text.lastIndexOf(blockEnd, pos - 1);
-      while (lastStart != -1 && isBorderedByQuotes(text, lastStart,
-            blockStart.length())) {
-
-         lastStart = text.lastIndexOf(blockStart, lastStart - 1);
-      }
-      while (lastEnd != -1 && isBorderedByQuotes(text, lastEnd,
-            blockEnd.length())) {
-
-         lastEnd = text.lastIndexOf(blockEnd, lastEnd - 1);
+      if (!allowInQuotes) {
+         while (lastStart != -1 && isBorderedByQuotes(text, lastStart,
+               blockStart.length())) {
+   
+            lastStart = text.lastIndexOf(blockStart, lastStart - 1);
+         }
+         while (lastEnd != -1 && isBorderedByQuotes(text, lastEnd,
+               blockEnd.length())) {
+   
+            lastEnd = text.lastIndexOf(blockEnd, lastEnd - 1);
+         }
       }
       if (lastStart < lastEnd) {
          lastStart = -1;
@@ -136,23 +140,27 @@ public class SyntaxUtils {
     * @param pos  the position in the text
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
+    * @param allowInQuotes  the boolean value that specifies if blockStart
+    * and blockEnd may be surrounded by quotation marks
     * @return  the position of the next block end. -1 if a block
     * start is closer than a block end or if no block end is found
     */
    public static int nextBlockEnd(String text, int pos, String blockStart,
-         String blockEnd) {
+         String blockEnd, boolean allowInQuotes) {
 
       int nextEnd = text.indexOf(blockEnd, pos);
       int nextStart = text.indexOf(blockStart, pos);
-      while (nextEnd != -1 && isBorderedByQuotes(text, nextEnd,
-            blockEnd.length())) {
-
-         nextEnd = text.indexOf(blockEnd, nextEnd + 1);
-      }
-      while (nextStart != -1 && isBorderedByQuotes(text, nextStart,
-            blockStart.length())) {
-
-         nextStart = text.indexOf(blockStart, nextStart + 1);
+      if (!allowInQuotes) {
+         while (nextEnd != -1 && isBorderedByQuotes(text, nextEnd,
+               blockEnd.length())) {
+   
+            nextEnd = text.indexOf(blockEnd, nextEnd + 1);
+         }
+         while (nextStart != -1 && isBorderedByQuotes(text, nextStart,
+               blockStart.length())) {
+   
+            nextStart = text.indexOf(blockStart, nextStart + 1);
+         }
       }
       if (nextEnd > nextStart & nextStart != -1) {
          nextEnd = -1;

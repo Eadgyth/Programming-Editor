@@ -76,18 +76,17 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    @Override
-   public void addClosingAction(JButton closeItm) {
+   public void addClosingAction(JButton closeBt) {
       bar.add(Box.createGlue());
-      bar.add(closeItm);
-      closeItm.setContentAreaFilled(false);
-      closeItm.setBorder(new EmptyBorder(5, 7, 5, 7));
-      closeItm.setToolTipText("Close the exchange editor");
-      closeItm.setFocusable(false);
+      bar.add(closeBt);
+      closeBt.setContentAreaFilled(false);
+      closeBt.setBorder(new EmptyBorder(5, 7, 5, 7));
+      closeBt.setToolTipText("Close the exchange editor");
+      closeBt.setFocusable(false);
    }
 
    @Override
    public Component toolContent() {
-      exch.setBackupText();
       return content;
    }
 
