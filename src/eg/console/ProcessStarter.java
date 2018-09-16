@@ -101,7 +101,7 @@ public class ProcessStarter {
       List<String> cmdList = Arrays.asList(cmd.split(" "));
       consoleText = "Run: " + cmd;
       consPnl.setText("");
-      consPnl.appendTextFormatted(consoleText);
+      consPnl.appendTextBr(consoleText);
       setConsoleActive(true);
       consPnl.focus();
       EventQueue.invokeLater(() -> {
@@ -116,7 +116,7 @@ public class ProcessStarter {
          }
          catch(IOException e) {
             setConsoleActive(false);
-            consPnl.appendTextFormatted(cmdNotFoundMsg(cmd));
+            consPnl.appendTextBr(cmdNotFoundMsg(cmd));
          }
       });
    }
@@ -251,20 +251,23 @@ public class ProcessStarter {
 
    private void setEndingMsg(int exitVal) {
       if (exitVal == 0) {
-         consPnl.appendTextFormatted(
+         consPnl.appendText("\n");
+         consPnl.appendTextBr(
                "Process ended normally (exit value = "
                + exitVal
                + ")");
       }
       else {
          if (isAborted) {
-            consPnl.appendTextFormatted(
+            consPnl.appendText("\n");
+            consPnl.appendTextBr(
                   "Process aborted (exit value = "
                   + exitVal
                   + ")");
          }
          else {
-            consPnl.appendTextFormatted(
+            consPnl.appendText("\n");
+            consPnl.appendTextBr(
                   "Process ended with error (exit value = "
                   + exitVal
                   + ")");

@@ -150,8 +150,8 @@ public class Compilation {
          printDiagnostics(diagnostics);
       }
       catch (IllegalArgumentException | IllegalStateException e) {
-          firstCompileErr = e.getMessage();
-          cons.print(firstCompileErr + "\n");
+         cons.printBr("Error: " + e.getMessage());
+         FileUtils.logStack(e);
       }
       finally {
          try {
@@ -213,12 +213,12 @@ public class Compilation {
          else {
             opt = new String[] {"-d", targetDir};
             optionErr =
-                  "\""
+                  "Note: \""
                   + xlintOption
                   + "\" cannot be used as"
                   + " Xlint compiler option and was ignored";
 
-            cons.print("<<" + optionErr + ">>\n");
+            cons.printBr(optionErr);
          }
       }
       return Arrays.asList(opt);
@@ -237,11 +237,12 @@ public class Compilation {
          List<File> toCopy = fFind.filteredFiles(searchRoot, ext, execDir);
          if (toCopy.isEmpty()) {
             copyFilesErr
-                  = "Files with extension \""
+                  = "Note: "
+                  +" Files with extension \""
                   + ext
                   + "\" for copying to the compilation were not found";
 
-            cons.printStatus(copyFilesErr);
+            cons.printBr(copyFilesErr);
          }
          else {
             try {
@@ -268,7 +269,7 @@ public class Compilation {
 
    private void printDiagnostics(DiagnosticCollector<JavaFileObject> diagnostics) {
       if (success) {
-         cons.printStatus("Compilation successful");
+         cons.printBr("Compilation successful");
       }
       if (diagnostics.getDiagnostics().size() > 0) {
          Diagnostic<?> firstSource = diagnostics.getDiagnostics().get(0);

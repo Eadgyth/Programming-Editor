@@ -53,11 +53,15 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void compile() {
-      if (!isNonJavaExtCorrect() || !cons.canPrint()) {
+      /*if (!cons.canPrint()) {
+         return;
+      }*/
+      if (!isNonJavaExtCorrect()) {
+         cons.clear();
          return;
       }
       cons.clear();
-      cons.printStatus("Compile " + getProjectName());
+      cons.printBr("Compile " + getProjectName());
       EventQueue.invokeLater(() -> {
          comp.compile(getProjectPath(), getExecutableDirName(),
                getSourceDirName(), nonJavaExt, getCompileOption());
@@ -79,10 +83,10 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                needConfirm = true;
             }
             if (comp.copyFilesErr().length() > 0) {
-               msg.append("Warning: ").append(comp.copyFilesErr()).append(".\n");
+               msg.append(comp.copyFilesErr()).append(".\n");
             }
             if (comp.optionErr().length() > 0) {
-               msg.append("Warning: ").append(comp.optionErr()).append(".\n");
+               msg.append(comp.optionErr()).append(".\n");
             }
             if (needConfirm) {
                msg.append("\nOpen the console window to view messages?\n");
@@ -117,9 +121,11 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void build() {
-      if (!existsMainClassFile() || !isNonJavaExtCorrect()
-            || !cons.canPrint()) {
-
+      if (!cons.canPrint()) {
+         return;
+      }
+      if (!existsMainClassFile() || !isNonJavaExtCorrect()) {
+         cons.clear();
          return;
       }
       cons.clear();
@@ -135,19 +141,12 @@ public final class JavaProject extends AbstractProject implements ProjectActions
 
             if (!co.isConsoleOpen()) {            
                if (created) {
-                  boolean isWarning = false;
                   StringBuilder msg = new StringBuilder();
+                  msg.append(jar.successMessage()).append(".\n");
                   if (jar.incudedFilesErr().length() > 0) {
-                     msg.append(jar.incudedFilesErr()).append(".\n");
-                     isWarning = true;
+                     msg.append(jar.incudedFilesErr()).append(".");
                   }
-                  msg.append(jar.successMessage()).append(".");
-                  if (isWarning) {
-                     Dialogs.warnMessage(msg.toString());
-                  }
-                  else {
-                     Dialogs.infoMessage(msg.toString(), null);
-                  }
+                  Dialogs.infoMessage(msg.toString(), null);
                }
                else {
                   Dialogs.errorMessage(jar.errorMessage() + ".", null);

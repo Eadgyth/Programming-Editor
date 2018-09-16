@@ -71,11 +71,13 @@ public class ConsolePanel {
    }
    
    /**
-    * Sets the boolean that specifies the active (true) or inactive
-    * (false) state. This text area is editable and focusable and
-    * also this stop button is enabled in the active state.
+    * Sets the boolean that specifies if the console is in the
+    * active or inactive state. This text area is editable and
+    * focusable and also this stop button is enabled in the active
+    * state.
     *
-    * @param isActive  the boolean value
+    * @param isActive  the boolean value; true for active, false
+    * for inactive
     */
    public void setActive(boolean isActive) {
       area.setEditable(isActive);
@@ -142,11 +144,12 @@ public class ConsolePanel {
    
    /**
     * Adds the specified text after it is formatted such that it is
-    * bordered by double angle brackets and a the line separator is added.
+    * bordered by double angle brackets and a the line separator is
+    * appended.
     *
     * @param text  the text
     */
-   public void appendTextFormatted(String text) {
+   public void appendTextBr(String text) {
       area.append("<<" + text + ">>\n");
    }
 

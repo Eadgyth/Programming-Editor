@@ -102,12 +102,12 @@ public class JarBuilder {
                .append(" in ").append(loc);
 
          successMsg = msg.toString();
-         cons.printStatus(successMsg);
+         cons.printBr(successMsg);
          return true;
       }
       else {
          errorMsg = "An error occured while creating the jar file";
-         cons.printStatus(errorMsg);
+         cons.printBr(errorMsg);
          return false;
       }
    }
@@ -142,13 +142,13 @@ public class JarBuilder {
             List<File> toInclude = fFind.filteredFiles(searchRoot, ext, sourceDir);
             if (toInclude.isEmpty()) {
                StringBuilder msg = new StringBuilder();
-               msg.append("Warning: ")
+               msg.append("Note: ")
                      .append("Files with extension \"")
                      .append(ext)
                      .append("\" for inclusion in the jar were not found");
 
                includedFilesErr = msg.toString();
-               cons.printStatus(includedFilesErr);
+               cons.printBr(includedFilesErr);
             }
             else {
                List<File> relativeInclFilePaths
