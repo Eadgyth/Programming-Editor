@@ -284,11 +284,10 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns if the main executable file exists. The file is searched
-    * in the executables directory if it is specified or in the project
-    * root directory
+    * Returns if the main executable file exists
     *
-    * @param ext  the extension of the executable file (with starting period)
+    * @param ext  the extension of the executable file (with starting
+    * period)
     * @return  the boolean value that is true if the file exists
     */
    protected boolean existsMainExecFile(String ext) {

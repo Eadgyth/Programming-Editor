@@ -53,9 +53,9 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void compile() {
-      /*if (!cons.canPrint()) {
+      if (!cons.canPrint()) {
          return;
-      }*/
+      }
       if (!isNonJavaExtCorrect()) {
          cons.clear();
          return;
