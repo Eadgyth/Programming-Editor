@@ -150,7 +150,7 @@ public class Projects {
 
    /**
     * Updates the file tree if <code>file</code> is contained
-    * in the directory of the current project
+    * in the directory of the currently shown file tree
     *
     * @param file  the file
     */

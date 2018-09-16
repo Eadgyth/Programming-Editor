@@ -6,9 +6,6 @@ import eg.ui.FontSettingWin;
 /**
  * The formatting of <code>EditArea</code> objects. The properties
  * 'Wordwrap', 'Font' and 'FontSize' are initially read from {@link Prefs}.
- * Setting the boolean that specifies if line numbers are shown is
- * required in this class too because showing line numbers depends on
- * whether wordwrap is disabled.
  * @see EditArea
  */
 public class Formatter {
@@ -29,8 +26,8 @@ public class Formatter {
 
    /**
     * Creates a <code>Formatter</code> for a given number of
-    * <code>EditArea</code> objects that need to be formatted. Only
-    * if <code>number</code> is equal to 1 a formatted EditArea is
+    * <code>EditArea</code> objects that are formatted. Only if
+    * <code>number</code> is equal to 1 a formatted EditArea is
     * created and is accessed through {@link #editArea()}. If
     * <code>number</code> is minimum 2 an initially empty array is
     * created.

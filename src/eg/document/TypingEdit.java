@@ -112,8 +112,7 @@ public class TypingEdit {
    }
 
    /**
-    * Resets this flag that indicates that text is being changed and
-    * calls {@link EditingStateReadable#setInChangeState(boolean)}
+    * Resets the state in which text is being changed
     */
    public void resetInChangeState() {
       isInChange = false;
