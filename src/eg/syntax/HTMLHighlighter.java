@@ -65,13 +65,16 @@ public class HTMLHighlighter implements Highlighter {
    private final JavascriptHighlighter js = new JavascriptHighlighter();
    private final CSSHighlighter css = new CSSHighlighter();
    
+   private SyntaxHighlighter.SyntaxSearcher searcher;
+   
    @Override
-   public boolean allowBlkCmntMarksQuoted() {
-      return true;
+   public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
+      this.searcher = searcher;
+      searcher.blkCmntMarksQuoted(true);
    }
 
    @Override
-   public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
+   public void highlight() {
       if (!searcher.isInBlockCmnt(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
          searcher.setHtmlSectionBlack();
          searcher.htmlElements(TAGS, ATTRIBUTES);

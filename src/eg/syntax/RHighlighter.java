@@ -17,13 +17,15 @@ public class RHighlighter implements Highlighter {
       "while"
    };
    
+   private SyntaxHighlighter.SyntaxSearcher searcher;
+   
    @Override
-   public boolean allowBlkCmntMarksQuoted() {
-      return true;
+   public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
+      this.searcher = searcher;
    }
       
    @Override
-   public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
+   public void highlight() {
       searcher.setSectionBlack();
       searcher.keywords(KEYWORDS, true, null, Attributes.RED_PLAIN);
       searcher.braces();

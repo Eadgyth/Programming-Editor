@@ -25,13 +25,16 @@ public class JavascriptHighlighter implements Highlighter {
       "while", "with"
    };
    
+   private SyntaxHighlighter.SyntaxSearcher searcher;
+   
    @Override
-   public boolean allowBlkCmntMarksQuoted() {
-      return false;
+   public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
+      this.searcher = searcher;
+      searcher.blkCmntMarksQuoted(false);
    }
 
    @Override
-   public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
+   public void highlight() {
       if (!searcher.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
             SyntaxConstants.STAR_SLASH)) {
 

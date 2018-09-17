@@ -36,7 +36,7 @@ public class SyntaxHighlighter {
       if (hl == null) {
          throw new IllegalArgumentException("The Highlighter reference is null");
       }
-      searcher.setAllowQuoted(hl.allowBlkCmntMarksQuoted());
+      hl.setSyntaxSearcher(searcher);
       this.hl = hl;
    }
 
@@ -47,7 +47,7 @@ public class SyntaxHighlighter {
     */
    public void highlightAllText(String text) {
       searcher.setTextParams(text, text, 0, 0);
-      hl.highlight(searcher);
+      hl.highlight();
    }
 
    /**
@@ -61,7 +61,7 @@ public class SyntaxHighlighter {
       int lineEnd = LinesFinder.nextNewline(text, chgPos);
       String line = LinesFinder.line(text, lineStart, lineEnd);
       searcher.setTextParams(text, line, chgPos, lineStart + 1);
-      hl.highlight(searcher);
+      hl.highlight();
    }
 
    /**
@@ -77,7 +77,7 @@ public class SyntaxHighlighter {
       String lines = LinesFinder.allLinesAtPos(text, change, chgPos);
       int linesStart = LinesFinder.lastNewline(text, chgPos) + 1;
       searcher.setTextParams(text, lines, chgPos, linesStart);
-      hl.highlight(searcher);
+      hl.highlight();
    }
 
    /**
@@ -102,7 +102,7 @@ public class SyntaxHighlighter {
       /**
        * Sets the section of text that is to be highlighted to
        * black and plain. This method must be called before calling
-       * search methods
+       * search methods.
        */
       public void setSectionBlack() {
          textDoc.setCharAttrBlack(scnPos, section.length());
@@ -112,7 +112,7 @@ public class SyntaxHighlighter {
        * Sets the section of html text that is to be highlighted to black
        * and plain. This method must be called before calling
        * {@link #htmlElements(String[],String[])} instead of
-       * {@link #setSectionBlack}
+       * {@link #setSectionBlack}.
        */
       public void setHtmlSectionBlack() {
          if (isTypeMode && isHighlightBlockCmnt) {
@@ -297,6 +297,16 @@ public class SyntaxHighlighter {
             }
          }
       }
+      
+      /**
+       * Sets the boolean that, if true, specified that block commment
+       * marks may be surrounded by quotation marks
+       *
+       * @param allow  the boolean value; true to allow
+       */
+      public void blkCmntMarksQuoted(boolean allow) {
+         allowQuoted = allow;
+      }
 
       /**
        * Searches and highlights block comments in green
@@ -310,7 +320,7 @@ public class SyntaxHighlighter {
          if (!isHighlightBlockCmnt) {
             return;
          }
-         removedBlockCmntStart(chgPos, blockCmntStart, blockCmntEnd);
+         removedBlockCmntStart(innerStart, blockCmntStart, blockCmntEnd);
          int start = innerStart;
          while (start != -1) {
             start = text.indexOf(blockCmntStart, start);
@@ -370,10 +380,10 @@ public class SyntaxHighlighter {
 
          Highlighter hlCurr = hl;
          hl = hlSection;
-         allowQuoted = hl.allowBlkCmntMarksQuoted();
+         setHighlighter(hl);
          embeddedHtmlSections(startTag, endTag);
          hl = hlCurr;
-         allowQuoted = hl.allowBlkCmntMarksQuoted();
+         setHighlighter(hl);
       }
 
       /**
@@ -555,7 +565,7 @@ public class SyntaxHighlighter {
                      innerEnd = end;
                      String innerScn = text.substring(innerStart, end);
                      setTextParams(text, innerScn, chgPos, innerStart);
-                     hl.highlight(this);
+                     hl.highlight();
                      length = innerScn.length();
                   }
                }
@@ -605,14 +615,20 @@ public class SyntaxHighlighter {
          }
          int nextEnd = SyntaxUtils.nextBlockEnd(text, endPos, blockCmntStart,
                blockCmntEnd, allowQuoted);
+               
+         int lastStart = SyntaxUtils.lastBlockStart(text, endPos, blockCmntStart,
+               blockCmntEnd, allowQuoted);
 
          if (innerEnd > 0 && nextEnd > innerEnd) {
              nextEnd = -1;
          }
          if (nextEnd != -1) {
-            int lineStart = LinesFinder.lastNewline(text, endPos);
-            if (lineStart == -1) {
-               lineStart = 0;
+            int lineStart;
+            if (lastStart == -1) {
+               lineStart = endPos;
+            }
+            else {
+               lineStart = LinesFinder.lastNewline(text, nextEnd);
             }
             int end = nextEnd + blockCmntEnd.length();
             String toUncomment = text.substring(lineStart, end);
@@ -652,7 +668,7 @@ public class SyntaxHighlighter {
       private void uncommentBlock(String scn, int pos) {
          isHighlightBlockCmnt = false;
          setTextParams(text, scn, pos, pos);
-         hl.highlight(this);
+         hl.highlight();
          isHighlightBlockCmnt = true;
       }
 
@@ -684,10 +700,6 @@ public class SyntaxHighlighter {
          }
          return SyntaxUtils.isInQuotes(line, relStart, SyntaxConstants.DOUBLE_QUOTE)
             || SyntaxUtils.isInQuotes(line, relStart, SyntaxConstants.SINGLE_QUOTE);
-      }
-      
-      private void setAllowQuoted(boolean allowQuoted) {
-         this.allowQuoted = allowQuoted;
       }
 
       private void setTextParams(String text, String section, int chgPos, int scnPos) {

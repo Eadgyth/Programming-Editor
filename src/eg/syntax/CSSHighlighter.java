@@ -77,13 +77,16 @@ public class CSSHighlighter implements Highlighter {
    private final static int OPEN_BRACE_AHEAD_COND = 1;
    private final static int NO_OPEN_BRACE_AHEAD_COND = 2;
    
+   private SyntaxHighlighter.SyntaxSearcher searcher;
+   
    @Override
-   public boolean allowBlkCmntMarksQuoted() {
-      return true;
+   public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
+      this.searcher = searcher;
+      searcher.blkCmntMarksQuoted(false);
    }
 
    @Override
-   public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
+   public void highlight() {
       if (!searcher.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
             SyntaxConstants.STAR_SLASH)) {
 

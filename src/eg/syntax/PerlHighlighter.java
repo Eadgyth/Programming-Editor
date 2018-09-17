@@ -13,12 +13,12 @@ public class PerlHighlighter implements Highlighter {
       ' ', '\\', '(', ')', ';', '='
    };
 
-   private final static char[] OPEN_DEL = {
-      '(', '{', '<', '/'
+   private final static char[] OPEN_QW_DEL = {
+      '(', '{', '<', '/', '\'', '!', '@'
    };
 
-   private final static char[] CLOSE_DEL = {
-      ')', '}', '>', '/'
+   private final static char[] CLOSE_QW_DEL = {
+      ')', '}', '>', '/', '\'', '!', '@'
    };
 
    final static String[] KEYWORDS = {
@@ -50,13 +50,15 @@ public class PerlHighlighter implements Highlighter {
    private final static int DEF_COND = 0;
    private final static int LINE_CMNT_COND = 1;
 
+   private SyntaxHighlighter.SyntaxSearcher searcher;
+   
    @Override
-   public boolean allowBlkCmntMarksQuoted() {
-      return true;
+   public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
+      this.searcher = searcher;
    }
 
    @Override
-   public void highlight(SyntaxHighlighter.SyntaxSearcher searcher) {
+   public void highlight() {
       searcher.setSectionBlack();
       searcher.setCondition(DEF_COND);
       searcher.signedVariables(START_OF_VAR, END_OF_VAR, true,
@@ -86,26 +88,24 @@ public class PerlHighlighter implements Highlighter {
       boolean ok = true;
       int qwPos = SyntaxUtils.lastBlockStart(text, pos, "qw", ";", true);
       if (qwPos != -1) {
-         int bracketStart
-               = SyntaxUtils.nextNonSpace(text, qwPos + "qw".length());
-
+         int delStart = SyntaxUtils.nextNonSpace(text, qwPos + 2);
          int ithDel = -1;
-         if (SyntaxUtils.isWordStart(text, qwPos, null)
-               && bracketStart >= qwPos + "qw".length()) {
-
-            if (bracketStart < text.length()) {
-               for (ithDel = 0; ithDel < OPEN_DEL.length; ithDel++) {
-                  if (OPEN_DEL[ithDel] == text.charAt(bracketStart)) {
+         if (SyntaxUtils.isWordStart(text, qwPos, null)) {
+            if (delStart < text.length()) {
+               for (ithDel = 0; ithDel < OPEN_QW_DEL.length; ithDel++) {
+                  if (OPEN_QW_DEL[ithDel] == text.charAt(delStart)) {
                      break;
                   }
                }
             }
-            if (ithDel != -1 && ithDel != OPEN_DEL.length) {
-               char[] close = { CLOSE_DEL[ithDel] };
-               int length = SyntaxUtils.wordLength(text, bracketStart, close);
-               ok = pos <= qwPos || pos > bracketStart + length;
+            if (ithDel != -1 && ithDel != OPEN_QW_DEL.length) {
+               char[] close = {
+                  CLOSE_QW_DEL[ithDel]
+               };
+               int length = SyntaxUtils.wordLength(text, delStart, close);
+               ok = pos <= qwPos || pos > delStart + length;
             }
-         }
+         } 
       }
       return ok;
    }
