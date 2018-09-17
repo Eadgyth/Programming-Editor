@@ -103,7 +103,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    }
 
    /**
-    * Runs the project and shows output in the console panel
+    * Runs the project
     */
    @Override
    public void runProject() {

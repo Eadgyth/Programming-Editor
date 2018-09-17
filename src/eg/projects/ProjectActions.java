@@ -15,7 +15,7 @@ public interface ProjectActions extends Configurable {
    };
    
    /**
-    * Runs the project using a defined main file
+    * Runs the project
     */
    public default void runProject() {
       throw new UnsupportedOperationException(
