@@ -276,7 +276,9 @@ public class TabbedDocuments {
       if (isFileOpen(f) || isMaxTabNumber()) {
          return;
       }
-      boolean isBlankFirstTab = nTabs() == 1 && !edtDoc[0].hasFile()
+      boolean isBlankFirstTab
+            = nTabs() == 1
+            && !edtDoc[0].hasFile()
             && edtDoc[0].docLength() == 0;
 
       if (isBlankFirstTab) {
@@ -496,7 +498,7 @@ public class TabbedDocuments {
       public void openFile(File f) {
          if (f == null || (!f.exists() || f.isDirectory())) {
             throw new IllegalArgumentException(
-                  "The file is null or does not exits");
+                  "The file f cannot be opened");
          }
          open(f);
       }
