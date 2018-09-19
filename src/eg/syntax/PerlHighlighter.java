@@ -88,9 +88,9 @@ public class PerlHighlighter implements Highlighter {
       boolean ok = true;
       int qwPos = SyntaxUtils.lastBlockStart(text, pos, "qw", ";", true);
       if (qwPos != -1) {
-         int delStart = SyntaxUtils.nextNonSpace(text, qwPos + 2);
-         int ithDel = -1;
          if (SyntaxUtils.isWordStart(text, qwPos, null)) {
+            int delStart = SyntaxUtils.nextNonSpace(text, qwPos + 2);
+            int ithDel = -1;
             if (delStart < text.length()) {
                for (ithDel = 0; ithDel < OPEN_QW_DEL.length; ithDel++) {
                   if (OPEN_QW_DEL[ithDel] == text.charAt(delStart)) {

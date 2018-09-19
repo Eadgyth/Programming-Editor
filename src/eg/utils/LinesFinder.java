@@ -9,8 +9,7 @@ public class LinesFinder {
    
    /**
     * Returns the content of the line that contains the specified
-    * position. The content starts at the position that follows
-    * the last newline
+    * position
     *
     * @param text  the text
     * @param pos  the pos
@@ -18,62 +17,52 @@ public class LinesFinder {
     */
    public static String lineAtPos(String text, int pos) {
       int lastNewline = LinesFinder.lastNewline(text, pos);
-      int nextNewline = LinesFinder.nextNewline(text, pos);
-      return line(text, lastNewline, nextNewline);
+      return line(text, lastNewline);
    }
    
    /**
-    * Returns the content of the line between the specified line start
-    * and line end positions. The line starts at the position that 
-    * follows the last newline.
+    * Returns the content of the line that follows <code>lastNewline</code>
     *
     * @param text  the text
-    * @param lineStart  the start position
-    * @param lineEnd  the end position
+    * @param lastNewline  the position of the last newline
     * @return  the line
+    * @see #lastNewline
     */
-   public static String line(String text, int lineStart, int lineEnd) {
+   public static String line(String text, int lastNewline) {
       if (text.length() == 0) {
          return text;
       }
       else {
-         return text.substring(lineStart + 1, lineEnd);
+         int start = lastNewline + 1;
+         int lineEnd = LinesFinder.nextNewline(text, start);
+         return text.substring(start, lineEnd);
       }
    }
-   
+
    /**
-    * Returns the full lines of text that contain the specified section
+    * Returns the possibly multiline content that follows
+    * <code>lastNewline</code>
     *
     * @param  text  the text
-    * @param section  the section
-    * @param pos  the position where <code>section</code> starts
-    * @return  the full lines of text
+    * @param lastNewline  the position of the last newline
+    * @param length  the length of the section that is contained in
+    * the line or lines
+    * @return  the line or lines
+    * @see #lastNewline
     */
-   public static String allLinesAtPos(String text, String section, int pos) {
-      StringBuilder sb = new StringBuilder();
-      sb.append(LinesFinder.lineAtPos(text, pos));
-      if (LinesFinder.isMultiline(section)) {
-         sb.append("\n");        
-         String[] sectionArr = section.split("\n");
-         for (int i = 1; i < sectionArr.length - 1; i++) {
-            sb.append(sectionArr[i]);
-            sb.append("\n");
-         }
-         int endPos = pos + section.length();
-         sectionArr[sectionArr.length - 1]
-                = LinesFinder.lineAtPos(text, endPos);
-         sb.append(sectionArr[sectionArr.length - 1]);
-      }
-      return sb.toString();
+   public static String lines(String text, int lastNewline, int length) {
+      int linesEnd = LinesFinder.nextNewline(text, lastNewline + length);
+      return text.substring(lastNewline + 1, linesEnd);
    }
+      
    
    /**
     * Returns the position of the last newline before the specified
-    * position
+    * position even if a newline is found at the position
     *
     * @param text  the text
     * @param pos  the position
-    * @return  the last newline position. -1 if the line is the first line
+    * @return  the last newline position, -1 if the line is the first line
     */
    public static int lastNewline(String text, int pos) {
       int i = text.lastIndexOf(NEW_LINE, pos);
@@ -148,7 +137,7 @@ public class LinesFinder {
     * contains at least one newline character
     *
     * @param text  the text
-    * @return  the boolean value
+    * @return  the boolean value; true if multiline
     */
    public static boolean isMultiline(String text) {
       return text.length() > 1 && text.indexOf(NEW_LINE) > -1;

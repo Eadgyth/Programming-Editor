@@ -76,7 +76,8 @@ public class HTMLHighlighter implements Highlighter {
    @Override
    public void highlight() {
       if (!searcher.isInBlockCmnt(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
-         searcher.setHtmlSectionBlack();
+         searcher.setHtmlSection();
+         searcher.setSectionBlack();
          searcher.htmlElements(TAGS, ATTRIBUTES);
          searcher.embeddedHtmlSections("<script", "</script>", js);      
          searcher.embeddedHtmlSections("<style", "</style>", css);   
