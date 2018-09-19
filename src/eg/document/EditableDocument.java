@@ -101,7 +101,7 @@ public final class EditableDocument {
     *
     * @return  the text area
     */
-    public JTextPane docTextArea() {
+    public JTextPane textArea() {
        return textDoc.textArea();
     }
 
@@ -340,6 +340,7 @@ public final class EditableDocument {
 
    private EditableDocument(EditArea editArea) {
       textDoc = new TextDocument(editArea.textArea());
+      
       LineNumberDocument lineNrDoc = new LineNumberDocument(editArea.lineNrArea(),
             editArea.lineNrWidth());
 

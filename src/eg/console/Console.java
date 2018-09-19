@@ -6,8 +6,6 @@ import eg.utils.Dialogs;
 /**
  * The console for showing messages and for running system processes.
  * System commands are run by this {@link ProcessStarter}.
- * <p>
- * Created by {@link eg.Projects}
  */
 public class Console {
    
@@ -15,8 +13,7 @@ public class Console {
    private final ProcessStarter proc;
    
    /**
-    * @param consPnl  the refence to {@link ConsolePanel} contained in
-    * {@link eg.ui.MainWin}
+    * @param consPnl  the reference to {@link ConsolePanel}
     */
    public Console(ConsolePanel consPnl) {
       this.consPnl = consPnl;

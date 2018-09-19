@@ -56,7 +56,7 @@ public class TextExchange {
     * replaces any selected text
     */
    public void copyTextFromSource() {
-      String text = sourceDoc.docTextArea().getSelectedText();
+      String text = sourceDoc.textArea().getSelectedText();
       if (text == null) {
          String filename = sourceDoc.filename();
          if (filename.length() == 0) {
@@ -74,7 +74,7 @@ public class TextExchange {
     * replaces any selected text
     */
    public void copyTextToSource() {
-      String text = exchangeDoc.docTextArea().getSelectedText();
+      String text = exchangeDoc.textArea().getSelectedText();
       if (text == null) {
          Dialogs.warnMessage("No text is selected in the exchange editor");
          return;
@@ -141,10 +141,10 @@ public class TextExchange {
    //
    
    private void copy(EditableDocument destination, String text) {
-      destination.docTextArea().requestFocusInWindow();
-      String toReplace = destination.docTextArea().getSelectedText();
-      int pos = destination.docTextArea().getSelectionStart();
-      int end = destination.docTextArea().getSelectionEnd();
+      destination.textArea().requestFocusInWindow();
+      String toReplace = destination.textArea().getSelectedText();
+      int pos = destination.textArea().getSelectionStart();
+      int end = destination.textArea().getSelectionEnd();
       int length = end - pos;
       destination.replace(pos, length, text);
    }

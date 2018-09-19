@@ -28,7 +28,7 @@ public class TextSearch {
     */
    public void setDocument(EditableDocument doc) {
       this.doc = doc;
-      this.textArea = doc.docTextArea();
+      this.textArea = doc.textArea();
    }
    
    /**

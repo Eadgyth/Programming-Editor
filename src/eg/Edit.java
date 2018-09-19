@@ -50,7 +50,7 @@ public class Edit {
     */
    public void setDocument(EditableDocument edtDoc) {
       this.edtDoc  = edtDoc;
-      this.textArea = edtDoc.docTextArea();
+      this.textArea = edtDoc.textArea();
       indentUnit = edtDoc.currIndentUnit();
       indentLength = indentUnit.length();
    }
