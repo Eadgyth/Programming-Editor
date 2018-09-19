@@ -202,11 +202,10 @@ public class TabbedDocuments {
    }
 
    /**
-    * Closes all tabs if files of the documents in all tabs have been
-    * saved. Creates a new blank tab if the specified boolean
-    * <code>createBlankTab</code> is true and all tabs could be closed.
+    * Closes all documents and may ask to save unsaved files.
     *
-    * @param createBlankDoc  the boolean value
+    * @param createBlankDoc  the boolean value that, if true, specifies
+    * that a new blank document is created after closing
     */
    public void closeAll(boolean createBlankDoc) {
       int iMissing = missingFile();
@@ -243,13 +242,12 @@ public class TabbedDocuments {
    }
 
    /**
-    * Closes all tabs. Calls {@link #closeAll(boolean)} without creating a
-    * new blank tab.
+    * Closes all documents and may ask to save unsaved files.
     *
     * @return  the boolean value that, if true, indicates that all tabs
     * were closed
     */
-   public boolean closeAll() {
+   public boolean closeForExit() {
       closeAll(false);
       boolean isClosed = iTab == -1;
       if (isClosed) {

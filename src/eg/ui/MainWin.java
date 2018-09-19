@@ -520,7 +520,7 @@ public class MainWin {
       prefs.setProperty("Tabbar", state);
       state = vm.isFileViewItmSelected() ? "show" : "hide";
       prefs.setProperty("FileView", state);
-      if (td.closeAll()) {
+      if (td.closeForExit()) {
          prefs.store();
          System.exit(0);
       }

@@ -96,7 +96,7 @@ public class TypingEdit {
       else {
          Highlighter hl = HighlighterSelector.createHighlighter(lang);
          syntax.setHighlighter(hl);
-         syntax.highlightAllText(text);
+         syntax.highlightAll(text);
          isCodeEditing = true;
       }
    }
@@ -244,7 +244,7 @@ public class TypingEdit {
       outputUndoableState();
       if (isCodeEditing) {
          if (isInsert) {          
-            syntax.highlightAllText(text);
+            syntax.highlightAll(text);
          }
          else {
             highlightLine();
@@ -352,12 +352,12 @@ public class TypingEdit {
          updateText();
          change = text.substring(chgPos, chgPos + de.getLength());
          if (isAddToUndo) {
+            undo.addEdit(change, chgPos, isInsert);
+            outputUndoableState();
             if (isCodeEditing) {
                EventQueue.invokeLater(() -> highlightLine());
                EventQueue.invokeLater(() -> autoInd.adjustIndent(text, chgPos));
             }
-            undo.addEdit(change, chgPos, isInsert);
-            outputUndoableState();
          }
       }
 
