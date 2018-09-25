@@ -56,6 +56,7 @@ public abstract class AbstractProject implements Configurable {
    // Variables to control the configuration
    private boolean isPathname = false;
    private boolean isNameConflict = false;
+   private boolean showNameConflictMsg = true;
 
    @Override
    public final void setConfiguringAction(ActionListener al) {
@@ -114,6 +115,7 @@ public abstract class AbstractProject implements Configurable {
       }
       if (success) {
          setCommandParameters();
+         showNameConflictMsg = false;
       }
       return success;
    }
@@ -215,7 +217,7 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns the extension of source files (or of the main
+    * Returns the extension of source files (or of the main project
     * file if extensions differ) with the beginning period
     *
     * @return  the extension. Null if no source extension is given
@@ -329,7 +331,7 @@ public abstract class AbstractProject implements Configurable {
                namespace = namespace.substring(sourceRoot.length() + 1);
             }
             else {
-               namespace = ""; // no subdir in source root
+               namespace = ""; // no subdir in source root or project root
             }
             toTest = root;
          }
@@ -362,7 +364,7 @@ public abstract class AbstractProject implements Configurable {
          for (File fInList : list) {
             if (fInList.isFile()) {
                if (fInList.getName().equals(name)) {
-                  if (namespace.length() > 0) {
+                  if (namespace.length() > 0 && showNameConflictMsg) {
                      namespace = "";
                      isNameConflict = true;
                   }
@@ -487,6 +489,7 @@ public abstract class AbstractProject implements Configurable {
       if (!success) {
          if (isNameConflict) {
             Dialogs.warnMessageOnTop(nameConflictMessage());
+            showNameConflictMsg = false;
          }
          else {
             if (useMainFile) {
@@ -578,21 +581,21 @@ public abstract class AbstractProject implements Configurable {
    private String nameConflictMessage() {
       return
          "<html>"
-         + "The filename \"" + mainFileName + "\" seems to exist more"
-         + " than once in the project.<br>"
-         + "<br>"
-         + "If this name should be maintained its pathname relative"
-         + " to the source root must be specified.<br>"
+         + mainFileName 
+         + getSourceExtension() 
+         + " seems to exist more than once in the project."
+         + "<br><br>"
+         + "If this name should be used it may be necessary to specify"
+         + " its pathname relative to the source root.<br>"
          + "The source root is the sources directory if available or"
-         + " the root directory of the project."
+         + " the project directory."
          + "</html>";
    }
 
    private final static String DELETE_CONF_OPT
          =  "<html>"
-         + "Saving the project settings in the project folder is"
-         + " no more selected.<br>"
-         + " Remove the \"ProjConfig\" file?"
+         + "Saving the \'ProjConfig\' file is no more selected.<br>"
+         + "Remove the file?"
          + "</html>";
 
    private final static String INPUT_ERROR_PROJ_ROOT
