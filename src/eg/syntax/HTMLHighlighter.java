@@ -86,9 +86,7 @@ public class HTMLHighlighter implements Highlighter {
    }
    
    @Override
-   public boolean isEnabled(String text, int pos, int condition) {
+   public boolean isValid(String text, int pos, int condition) {
       return true;
-     /* return -1 != SyntaxUtils.lastBlockStart(text, pos, "<", ">")
-            && -1 == SyntaxUtils.lastBlockStart(text, pos, "</", ">");*/
    }
 }

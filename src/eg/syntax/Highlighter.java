@@ -19,16 +19,13 @@ public interface Highlighter {
    public void highlight();
    
    /**
-    * Returns if highlighting the text element at the specified position
-    * is enabled. An implementation may define conditions that add to
-    * the conditions in the search methods in
-    * {@link SyntaxHighlighter.SyntaxSearcher}
+    * Returns if a found text element is valid
     *
     * @param text  the entire text
     * @param pos  the position where a text element is found
     * @param condition  a switch for conditions which an implementation
     * may ignore
-    * @return  the boolean value; true if enabled
+    * @return  the boolean value; true if valid
     */
-    public boolean isEnabled(String text, int pos, int condition);
+    public boolean isValid(String text, int pos, int condition);
 }

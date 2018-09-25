@@ -133,7 +133,7 @@ public class CSSHighlighter implements Highlighter {
    }
    
    @Override
-   public boolean isEnabled(String text, int pos, int condition) {
+   public boolean isValid(String text, int pos, int condition) {
       if (condition == IGNORE_COND) {
          return true;
       }    

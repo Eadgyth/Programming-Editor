@@ -10,7 +10,7 @@ public class SyntaxConstants {
    public final static char SINGLE_QUOTE = '\'';
    /**
     * The double quote character */
-   public  final static char DOUBLE_QUOTE = '"';
+   public  final static char DOUBLE_QUOTE = '\"';
    /**
     * The slash-star string for block comment start */
    public final static String SLASH_STAR = "/*";

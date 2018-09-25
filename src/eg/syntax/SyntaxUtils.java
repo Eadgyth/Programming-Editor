@@ -1,5 +1,7 @@
 package eg.syntax;
 
+//import eg.utils.LinesFinder;
+
 /**
  * Static variables and methods to search for text elements
  */
@@ -97,11 +99,10 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the position of the last block start before the specified
-    * position
+    * Returns the position of the last block start
     *
     * @param text  the text
-    * @param pos  the position
+    * @param pos  the position where the search starts
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
     * @param allowInQuotes  the boolean value that specifies if blockStart
@@ -133,11 +134,10 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the position of the next block end relative to the
-    * specified position
+    * Returns the position of the next block end
     *
     * @param text  the text
-    * @param pos  the position in the text
+    * @param pos  the position where the search starts
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
     * @param allowInQuotes  the boolean value that specifies if blockStart
@@ -167,7 +167,7 @@ public class SyntaxUtils {
       }
       return nextEnd;
    }
-
+   
    /**
     * Returns the boolean that is true if the section starting at the
     * specified position and spanning the specified length is bordered
@@ -189,6 +189,70 @@ public class SyntaxUtils {
                && text.charAt(endPos) == SyntaxConstants.SINGLE_QUOTE);
       }
       return isInQuotes;
+   }
+   
+   /**
+    * Returns the position of the next <code>toSearch</code> that is not
+    * in quotes
+    *
+    * @param text  the text
+    * @param toSearch  the string that is searched
+    * @param pos  the position where the search starts
+    * @return  the position of toSearch, -1 if not found
+    */
+   public static int nextUnquoted(String text, String toSearch, int pos) {
+      int index = text.indexOf(toSearch, pos);
+      while (index != -1
+            && (isInQuotes(text, index, SyntaxConstants.DOUBLE_QUOTE)
+            || isInQuotes(text, index, SyntaxConstants.SINGLE_QUOTE))) {
+               
+         index = text.indexOf(toSearch, index + 1);
+      }
+      return index;
+   }
+   
+   /**
+    * Returns the position of the first quote mark (single or
+    * double) in the text before <code>pos</code>
+    *
+    * @param text  the text
+    * @param pos  the position before which a quote mark is searched
+    * @return  the position of the quote mark; -1 if no quote mark
+    * is found before pos
+    */
+   public static int firstQuoteMark(String text, int pos) {
+      int index = -1;
+      int d = text.indexOf("\"", 0);
+      int s = text.indexOf("\'", 0);
+      if (d != -1 && d < pos && d < s) {
+         index = d;
+      }
+      else if (s != -1 && s < pos && s < d) {
+         index = s;
+      }
+      return index;
+   }
+   
+   /**
+    * Returns the position of the last quote mark (single or
+    * double) behind <code>pos</code>
+    *
+    * @param text  the text
+    * @param pos  the position behind which a quote mark is searched
+    * @return  the position; -1 if no quote mark is found behind
+    * pos
+    */
+   public static int lastQuoteMark(String text, int pos) {
+      int index = -1;
+      int d = text.lastIndexOf("\"", text.length());
+      int s = text.lastIndexOf("\'", text.length());
+      if (d != -1 && d > pos && d > s) {
+         index = d;
+      }
+      if (s != -1 && s > pos && s > d) {
+         index = s;
+      }
+      return index;
    }
 
    /**
@@ -227,6 +291,24 @@ public class SyntaxUtils {
          return false;
       }
    }
+   
+   /**
+    * Returns the last position of the specified <code>toSearch</code>
+    * that is not preceded with a backslash that is itself is not
+    * preceded with a backslash.
+    *
+    * @param text  the text
+    * @param toSearch  the char that is searched
+    * @param pos  the position where the search starts
+    * @return  the position
+    */
+   public static int lastNonEscaped(String text, char toSearch, int pos) {
+      int index = text.lastIndexOf(toSearch, pos);
+      while (SyntaxUtils.isEscaped(text, index)) {
+         index = text.lastIndexOf(toSearch, index - 1);
+      }
+      return index;
+   }
 
    /**
     * Returns the next position of the specified <code>toSearch</code>
@@ -246,13 +328,12 @@ public class SyntaxUtils {
    }
    
    /**
-    * Returns the next position, relative to the specified position,
-    * that is a space character
+    * Returns the next position that is a space character
     *
     * @param text  the text
-    * @param pos  the position
-    * @return the position of the next space; the specified position
-    * itself if it is the text length
+    * @param pos  the position where the search starts
+    * @return  the position of the next space or the specifies pos
+    * if it is the text length
     */
    public static int nextNonSpace(String text, int pos) {
       if (pos == text.length()) {
@@ -266,7 +347,6 @@ public class SyntaxUtils {
       }
       return i;
    }
-      
 
    //
    //--private--/

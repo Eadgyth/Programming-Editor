@@ -7,7 +7,7 @@ import eg.utils.LinesFinder;
 import eg.document.TextDocument;
 
 /**
- * The highlighting of text elements in the text contained in
+ * The syntax highlighting in the text contained in
  * <code>TextDocument</code>.<br>
  * Class requires a {@link Highlighter} which calls (selected) methods
  * in this {@link SyntaxHighlighter.SyntaxSearcher}.
@@ -94,26 +94,10 @@ public class SyntaxHighlighter {
       private boolean allowQuoted = false;
       private int innerStart = 0;
       private int innerEnd = 0;
-
+      
       /**
-       * Sets the default section of text that is to be highlighted to
-       * black and plain. This method must be called before calling
-       * search methods.
-       */
-      public void setSectionBlack() {
-         textDoc.setCharAttrBlack(scnPos, section.length());
-      }
-
-      /**
-       * Sets the switch for conditions for highlighting that maybe
-       * used in addition to the conditions specified in the search methods.
-       * <p>
-       * Search methods call {@link Highlighter#isEnabled(String,int,int)}
-       * when a text element is found, except for
-       * {@link #blockComments(String,String)} and methods related to HTML.
-       * <p>
-       * <code>condition</code> must be set (and maybe reset) before
-       * calling a search method.
+       * Sets the condition for testing if a found text element is
+       * valid. The condition is passed to {@link Highlighter#isValid}.
        *
        * @param condition  a freely chosen integer. Default is 0
        */
@@ -122,8 +106,91 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights keywords
+       * Sets the section that ranges from the end of the default section
+       * to the next unquoted semicolon. The search for the semicolon
+       * continues so long as {@link Highlighter#isValid} returns false.
        *
+       * @param isQuoteMarks  specifies, if true, that the section is
+       * extended to the region that contains quote marks around the
+       * section
+       */
+      public void setSemicolonSeparatedSection(boolean isQuoteMarks) {
+         if (isTypeMode && isHighlightBlockCmnt) {
+            int searchStart = scnPos;
+            int searchEnd = scnPos + section.length();
+            int semicolon = SyntaxUtils.nextUnquoted(text, ";", searchEnd);
+            while (semicolon != -1 && !isValid(semicolon)) {
+               semicolon = SyntaxUtils.nextUnquoted(text, ";", semicolon + 1);
+            }
+            if (semicolon != -1) {
+               searchEnd = semicolon;
+            }
+            else {
+               searchEnd = text.length();
+            }       
+            if (isQuoteMarks) {
+               int firstQuoteMark = SyntaxUtils.firstQuoteMark(text, scnPos);
+               if (firstQuoteMark != -1) {
+                  searchStart = LinesFinder.lastNewline(text, firstQuoteMark) + 1;
+               }
+               if (searchEnd < text.length()) {         
+                  int lastQuoteMark = SyntaxUtils.lastQuoteMark(text, scnPos); 
+                  if (lastQuoteMark != 1) {
+                     searchEnd = lastQuoteMark;
+                  }
+               }
+            }
+            int end = LinesFinder.nextNewline(text, searchEnd);
+            scnPos = searchStart;
+            if (end != -1) {
+               section = text.substring(scnPos, end);
+            }
+            else {
+               section = text.substring(scnPos);
+            }
+         }
+      }
+
+      /**
+       * Sets the section that corresponsds to html elements at the position
+       * where a change happened
+       */
+      public void setHtmlSection() {
+         if (isTypeMode && isHighlightBlockCmnt) {
+            int start = SyntaxUtils.lastBlockStart(text, chgPos, "<", ">", true);
+            if (start == -1) {
+               start = text.lastIndexOf(">", chgPos) + 1;
+               if (start == -1) {
+                  start = 0;
+               }
+            }
+            int end;
+            if (isMultiline) {
+               end = htmlSectionEnd(scnPos + section.length());
+            }
+            else {
+               end = htmlSectionEnd(chgPos + 1);
+            }
+            scnPos = start;
+            section = text.substring(start, end);
+         }
+      }
+      
+      /**
+       * (Re-)sets the section that is to be highlighted to black and
+       * plain.<br>
+       * The section is by default the line where a text change happened
+       * or a multiline section consisting of full lines in the case a
+       * multiline insertion was made.
+       */
+      public void setSectionBlack() {
+         textDoc.setCharAttrBlack(scnPos, section.length());
+      }
+
+      /**
+       * Searches and highlights keywords. Requires that
+       * {@link Highlighter#isValid} returns true.
+       * 
        * @param keys  the array of keywords
        * @param reqWord  specifies, if true, that keywords must be whole
        * words
@@ -141,8 +208,9 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights a keyword <code>base</code> which may be
-       * extended by one of the keywords in <code>extensions</code>
+       * Searches and highlights the keyword <code>base</code> which may
+       * be extended by one of the keywords in <code>extensions</code>.
+       * Requires that {@link Highlighter#isValid} returns true.
        *
        * @param base  the base keyword
        * @param extensions  the array of strings that may extend the base
@@ -163,7 +231,7 @@ public class SyntaxHighlighter {
                int endPos = start + base.length();
                boolean ok = SyntaxUtils.isWord(section, start, base.length(),
                         nonWordStart)
-                     && isEnabled(absStart);
+                     && isValid(absStart);
 
                if (ok) {
                   length += extensionLength(extensions, endPos);
@@ -177,7 +245,8 @@ public class SyntaxHighlighter {
       /**
        * Searches and highlights variables that start with one of the
        * characters in <code>startChars</code> and end with one of the
-       * characters in <code>endChars</code>
+       * characters in <code>endChars</code>. Requires that
+       * {@link Highlighter#isValid} returns true.
        *
        * @param startChars  the array start characters
        * @param endChars  the array of end characters
@@ -194,8 +263,8 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights opening and closing braces
-       * in gray and bold
+       * Searches and highlights opening and closing braces in gray and
+       * bold. Requires that {@link Highlighter#isValid} returns true.
        */
       public void braces() {
          key("{", false, null, Attributes.GRAY_BOLD);
@@ -203,8 +272,8 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights opening and closing brckets
-       * in blue and bold
+       * Searches and highlights opening and closing brackets in blue and
+       * bold. Requires that {@link Highlighter#isValid} returns true.
        */
       public void brackets() {
          key("(", false, null, Attributes.BLUE_BOLD);
@@ -213,7 +282,20 @@ public class SyntaxHighlighter {
 
       /**
        * Searches and highlights text quoted with single or double
-       * quotation marks in which quoted text does not span line breaks
+       * quotation marks in the entire text. Requires that
+       * {@link Highlighter#isValid} returns true.
+       *
+       * @param set  the SimpleAttributeSet set on quoted text
+       */
+      public void quoted(SimpleAttributeSet set) {
+         quoted(section, scnPos, SyntaxConstants.DOUBLE_QUOTE, set);
+         quoted(section, scnPos, SyntaxConstants.SINGLE_QUOTE, set);
+      }
+
+      /**
+       * Searches and highlights text quoted with single or double
+       * quotation marks in which quoted text does not span line breaks.
+       * Requires that {@link Highlighter#isValid} returns true.
        *
        * @param set  the SimpleAttributeSet set on quoted text
        */
@@ -234,7 +316,8 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights line comments in green.
+       * Searches and highlights line comments in green. Requires that
+       * {@link Highlighter#isValid} returns true.
        *
        * @param lineCmntStart  the string that marks the start of a line
        * comment
@@ -246,7 +329,7 @@ public class SyntaxHighlighter {
             start = section.indexOf(lineCmntStart, start);
             if (start != -1) {
                int absStart = start + scnPos;
-               if (!isPositionInQuotes(start) && isEnabled(absStart)) {
+               if (!isPositionInQuotes(start) && isValid(absStart)) {
                   int lineEnd = section.indexOf("\n", start);
                   if (lineEnd != -1) {
                      length = lineEnd - start;
@@ -260,10 +343,10 @@ public class SyntaxHighlighter {
             }
          }
       }
-      
+
       /**
-       * Sets the boolean that, if true, specified that block commment
-       * marks may be surrounded by quotation marks
+       * Sets the boolean that specifies that block commment marks may
+       * be surrounded by quotation marks
        *
        * @param allow  the boolean value; true to allow
        */
@@ -314,31 +397,6 @@ public class SyntaxHighlighter {
             }
          }
       }
-      
-      /**
-       * Sets the section of html text that is to be highlighted. This
-       * modifies the default section.
-       */
-      public void setHtmlSection() {
-         if (isTypeMode && isHighlightBlockCmnt) {
-            int start = SyntaxUtils.lastBlockStart(text, chgPos, "<", ">", true);
-            if (start == -1) {
-               start = text.lastIndexOf(">", chgPos) + 1;
-               if (start == -1) {
-                  start = 0;
-               }
-            }
-            int end; 
-            if (isMultiline) {
-               end = htmlSectionEnd(scnPos + section.length());
-            }
-            else {
-               end = htmlSectionEnd(chgPos + 1);
-            }
-            scnPos = start;
-            section = text.substring(start, end);
-         }
-      }
 
       /**
        * Searches and highlights html elements. Tag names are shown in
@@ -355,8 +413,9 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches sections in an html document where syntax is highlighted
-       * with a temporary <code>Highlighter</code> (for CSS or Javascript)
+       * Searches sections in an html document where text elements are
+       * highlighted with a temporary <code>Highlighter</code> (for CSS
+       * or Javascript)
        *
        * @param startTag  the start tag
        * @param endTag  the end tag
@@ -406,7 +465,7 @@ public class SyntaxHighlighter {
                int absStart = start + scnPos;
                boolean ok = (!reqWord || SyntaxUtils.isWord(section, start,
                      key.length(), nonWordStart))
-                     && isEnabled(absStart);
+                     && isValid(absStart);
 
                if (ok) {
                   textDoc.setCharAttr(absStart, key.length(), set);
@@ -427,7 +486,7 @@ public class SyntaxHighlighter {
                int absStart = start + scnPos;
                boolean ok = (!isWordStart
                         || SyntaxUtils.isWordStart(section, start, null))
-                     && isEnabled(absStart);
+                     && isValid(absStart);
 
                if (ok) {
                   length = SyntaxUtils.wordLength(section, start, endChars);
@@ -522,7 +581,7 @@ public class SyntaxHighlighter {
                   after = htmlEl.charAt(endPos);
                }
                int absStart = start + elStart;
-               boolean ok = isEnabled(absStart)
+               boolean ok = isValid(absStart)
                      && (' ' == before || '"' == before || '\'' == before
                         || '\n' == before)
                      && ('\0' == after || ' ' == after || '=' == after
@@ -574,17 +633,17 @@ public class SyntaxHighlighter {
             int absStart = start + scnStart;
             if (start != -1) {
                int length = 0;
-               boolean ok 
+               boolean ok
                      = (!isSingleQuote
                         || !SyntaxUtils.isInQuotes(
                            scn, start, SyntaxConstants.DOUBLE_QUOTE))
-                     && isEnabled(absStart);
+                     && isValid(absStart);
 
                end = SyntaxUtils.nextNonEscaped(scn, quoteMark, start + 1);
                if (end != -1) {
                   ok = ok && ((!isSingleQuote || !SyntaxUtils.isInQuotes(
                            scn, end, SyntaxConstants.DOUBLE_QUOTE))
-                        && isEnabled(end + scnStart));
+                        && isValid(end + scnStart));
 
                   if (ok) {
                      length = end - start + 1;
@@ -604,7 +663,7 @@ public class SyntaxHighlighter {
          }
          int nextEnd = SyntaxUtils.nextBlockEnd(text, endPos, blockCmntStart,
                blockCmntEnd, allowQuoted);
-               
+
          int lastStart = SyntaxUtils.lastBlockStart(text, endPos, blockCmntStart,
                blockCmntEnd, allowQuoted);
 
@@ -661,8 +720,8 @@ public class SyntaxHighlighter {
          isHighlightBlockCmnt = true;
       }
 
-      private boolean isEnabled(int pos) {
-         return hl.isEnabled(text, pos, condition);
+      private boolean isValid(int pos) {
+         return hl.isValid(text, pos, condition);
       }
 
       private boolean isInBlock(String blockStart, String blockEnd, int pos) {

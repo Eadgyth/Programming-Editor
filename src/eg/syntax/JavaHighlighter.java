@@ -55,7 +55,7 @@ public class JavaHighlighter implements Highlighter {
    }
    
    @Override
-   public boolean isEnabled(String text, int pos, int condition) {
+   public boolean isValid(String text, int pos, int condition) {
       return true;
    }
 }

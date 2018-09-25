@@ -50,7 +50,7 @@ public class JavascriptHighlighter implements Highlighter {
    }
 
    @Override
-   public boolean isEnabled(String text, int pos, int option) {
+   public boolean isValid(String text, int pos, int option) {
       return true;
    }
 }

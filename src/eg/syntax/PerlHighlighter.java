@@ -47,7 +47,7 @@ public class PerlHighlighter implements Highlighter {
       " or ",
       " xor "
    };
-   private final static int DEF_COND = 0;
+   private final static int QW_COND = 0;
    private final static int LINE_CMNT_COND = 1;
 
    private SyntaxHighlighter.SyntaxSearcher searcher;
@@ -59,23 +59,24 @@ public class PerlHighlighter implements Highlighter {
 
    @Override
    public void highlight() {
+      searcher.setCondition(QW_COND);
+      searcher.setSemicolonSeparatedSection(true);
       searcher.setSectionBlack();
-      searcher.setCondition(DEF_COND);
       searcher.signedVariables(START_OF_VAR, END_OF_VAR, true,
             Attributes.PURPLE_PLAIN);
 
       searcher.keywords(KEYWORDS, true, null, Attributes.RED_BOLD);
       searcher.keywords(STRING_OP, false, null, Attributes.RED_BOLD);
       searcher.braces();
-      searcher.quotedLinewise(Attributes.ORANGE_PLAIN);
+      searcher.quoted(Attributes.ORANGE_PLAIN);
       searcher.setCondition(LINE_CMNT_COND);
       searcher.lineComments(SyntaxConstants.HASH);
    }
 
    @Override
-   public boolean isEnabled(String text, int pos, int condition) {
+   public boolean isValid(String text, int pos, int condition) {
       boolean ok = true;
-      if (condition == DEF_COND) {
+      if (condition == QW_COND) {
          ok = isNotQwFunction(text, pos);
       }
       else if (condition == LINE_CMNT_COND) {
@@ -86,7 +87,7 @@ public class PerlHighlighter implements Highlighter {
 
    private boolean isNotQwFunction(String text, int pos) {
       boolean ok = true;
-      int qwPos = SyntaxUtils.lastBlockStart(text, pos, "qw", ";", true);
+      int qwPos = text.lastIndexOf("qw", pos);
       if (qwPos != -1) {
          if (SyntaxUtils.isWordStart(text, qwPos, null)) {
             int delStart = SyntaxUtils.nextNonSpace(text, qwPos + 2);
