@@ -1,6 +1,6 @@
 package eg.projects;
 /**
- * Defines a project that simply has a project root
+ * Defines a project that is only defined by its directory
  */
 public final class GenericProject extends AbstractProject implements ProjectActions {
 

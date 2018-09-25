@@ -5,8 +5,8 @@ import java.awt.event.ActionListener;
 /**
  * The interface that defines the configuration of a project.
  * <p>
- * The implementing class works in combination with class that defines a
- * a window where the settings for a project are entered.
+ * The configuration depends on a class that defines a window
+ * where the settings for a project are entered.
  */
 public interface Configurable {
 
@@ -23,7 +23,9 @@ public interface Configurable {
 
    /**
     * Sets the <code>ActionListener</code> that is called when
-    * the entries in the settings window are applied
+    * the entries in the settings window are confirmed.
+    * The listener calls {@link #configureProject} and assigns
+    * the project if the configuration is successful
     *
     * @param al  <code>the ActionListener</code>
     */
@@ -34,17 +36,17 @@ public interface Configurable {
     * window
     *
     * @param dir  the directory that may be or be contained in the
-    * project root directory named in the settings window
-    * @return  the boolean value that is true if the project could be
-    * configured
+    * project directory named in the settings window
+    * @return  the boolean value that, if true, indicates a successful
+    * configuration
     */
    public boolean configureProject(String dir);
 
    /**
     * Tries to retrieve a project stored in a preferences file
     *
-    * @param dir  the directory that may be or be contained in the
-    * project root directory stored in a preferences file
+    * @param dir  the directory that may be or be contained in a stored
+    * project
     * @return  the boolean value that is true if a saved project could
     * be retrieved
     */
@@ -59,7 +61,8 @@ public interface Configurable {
    public ProjectTypes getProjectType();
 
    /**
-    * Returns if the project uses a main file
+    * Returns if the project uses a main file that is executed when
+    * the project is run
     *
     * @return  the boolean value that is true if a main file is used
     */
@@ -89,8 +92,9 @@ public interface Configurable {
    public String getProjectName();
 
    /**
-    * Returns the name of the directory where executable files
-    * are saved
+    * Returns the name of the directory where executable files are
+    * saved. This directory, if given, is deletable in the project
+    * explorer.
     *
     * @return  the name, the empty string if no such directory is given
     */

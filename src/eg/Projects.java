@@ -162,9 +162,8 @@ public class Projects {
 
    /**
     * Opens the window of the <code>SettingsWindow</code> object
-    * that belongs to the active project or to on that is changed
-    * to. Which settings window is shown depeds on the selected
-    * <code>EditableDocument</code>.
+    * that belongs to the active project or to one that is changed
+    * to
     */
    public void openSettingsWindow() {
       boolean open = true;

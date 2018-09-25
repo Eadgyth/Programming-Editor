@@ -34,7 +34,7 @@ public class Compilation {
    private final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
    private final FilesFinder fFind = new FilesFinder();
    private final Console cons;
-   
+
    private boolean success = false;
    private String firstCompileErr = "";
    private boolean isNonErrMessage = false;
@@ -86,7 +86,7 @@ public class Compilation {
    public String copyFilesErr() {
       return copyFilesErr;
    }
-   
+
    /**
     * Returns the error message that indicates that the input for
     * the Xlint compiler option is invalid
@@ -130,11 +130,11 @@ public class Compilation {
       // Java files
       List<File> classes = fFind.filteredFiles(root + "/" + sourceDir,
             ".java", execDir);
-      File[] fileArr = classes.toArray(new File[classes.size()]);      
+      File[] fileArr = classes.toArray(new File[classes.size()]);
       Iterable<? extends JavaFileObject>units
-            = fileManager.getJavaFileObjects(fileArr);      
+            = fileManager.getJavaFileObjects(fileArr);
       //
-      // Compiler options   
+      // Compiler options
       String targetDir = createTargetDir(root, execDir);
       Iterable<String> compileOptions = options(targetDir, xlintOption);
       //
@@ -165,7 +165,7 @@ public class Compilation {
    //
    //--private--/
    //
-   
+
    private void reset() {
       success = false;
       firstCompileErr = "";
@@ -198,6 +198,7 @@ public class Compilation {
          for (String s : test) {
             ok = s.startsWith("-Xlint")
                   && -1 < compiler.isSupportedOption(s);
+
             if (!ok) {
                break;
             }

@@ -45,8 +45,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
             .addExtensionsInput("Extensions of included non-Java files")
             .addBuildNameInput("jar file")
             .buildWindow();
-   }
-      
+   }      
 
    /**
     * Compiles java files

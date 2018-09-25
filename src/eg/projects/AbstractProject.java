@@ -90,10 +90,11 @@ public abstract class AbstractProject implements Configurable {
    /**
     * {@inheritDoc}.
     * <p>
-    * First it is tried to find a "ProjConfig" file in <code>dir</code>
-    * or further upward the directory path and, if this is not found,
-    * it is tested if <code>dir</code> is contained in the recent project
-    * saved in the "Prefs" file in the program folder.
+    * It is tried to find a "ProjConfig" file in <code>dir</code> or
+    * further upward the directory path. The project is the directory
+    * where the file is found. If it is not found, it is tested if
+    * <code>dir</code> is contained in the recent project saved in the
+    * "Prefs" file in the program folder.
     */
    @Override
    public final boolean retrieveProject(String dir) {
@@ -143,13 +144,6 @@ public abstract class AbstractProject implements Configurable {
       return f.getName();
    }
 
-   /**
-    * {@inheritDoc}.
-    * <p>
-    * The directory does not have to exist, even if its name is
-    * specified in this {@link SettingsWindow}, for a successful
-    * project configuration.
-    */
    @Override
    public final String getExecutableDirName() {
       return execDirName;
@@ -164,7 +158,8 @@ public abstract class AbstractProject implements Configurable {
     * @param projType  the project type which has a valaue in
     * {@link ProjectTypes}
     * @param useMainFile  the boolean value that is true to indicate
-    * that the project uses a main project file
+    * that the project uses a main file which is expected to represent
+    * the entry point to run or test the project
     * @param sourceExtension  the extension of source files (or of the
     * main file if extensions differ). Null if no main project file is
     * used
@@ -182,10 +177,7 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Sets command parameters that are necessary for actions defined in
-    * <code>ProjectActions</code>
-    *
-    * @see ProjectActions
+    * Sets command parameters
     */
    protected abstract void setCommandParameters();
 
