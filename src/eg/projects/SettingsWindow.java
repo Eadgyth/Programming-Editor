@@ -535,7 +535,7 @@ public class SettingsWindow {
          pnl.add(structurePnl());
       }
       pnl.add(checkBxPnl(saveConfig,
-            "Save ProjConfig file in the project"));
+            "Save \'ProjConfig\' file in the project"));
       pnl.add(Box.createRigidArea(DIM_SPACER));
       pnl.add(buttonsPanel());
       return pnl;
