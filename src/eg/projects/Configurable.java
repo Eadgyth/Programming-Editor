@@ -25,14 +25,14 @@ public interface Configurable {
     * Sets the <code>ActionListener</code> that is called when
     * the entries in the settings window are confirmed.
     * The listener calls {@link #configureProject} and assigns
-    * the project if the configuration is successful
+    * or updates the project if the configuration is successful
     *
     * @param al  <code>the ActionListener</code>
     */
    public void setConfiguringAction(ActionListener al);
 
    /**
-    * Tries to configure a project based on entries in the settings
+    * Tries to configure a project based on the entries in the settings
     * window
     *
     * @param dir  the directory that may be or be contained in the
