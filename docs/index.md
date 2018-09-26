@@ -15,23 +15,21 @@
 <li>A basic find/replace function.</li>
 <li>Clearing end-of-line (trailing) white spaces.</li>
 <li>An "exchange editor" pane to edit text in a separate view and to facilitate
-    the exchange of text within a file or between files</li>
-<li>A basic syntax highlighting for Java, Perl, R, HTML, Javascript and CSS
-    (not quite perfect, especially not for HTML).</li>
+    the exchange of text within a file or between files.</li>
+<li>A basic syntax highlighting (for Java, Perl, R, HTML, XML, CSS, Javascript).</li>
 <li>A basic auto-indentation.</li>
 <li>Block-wise increase or decrease of the indentation.</li>
 </ul>
 <br>
 <h4>Testing source code</h4>
 <ul>
-<li>A simple and flexible assignment of files as project.</li>
+<li>A simple assignment of files as project.</li>
    <ul>
    <li>A project may be simply the location of (source) files.</li>
-   <li>The program also works with a given directory structure of a project.
+   <li>The program works with a given directory structure of a project.
        This may include folders for source files or for executable files.
        Also packages and sub-packages are taken into account in a Java project.</li>
-   <li>A number of projects can be assigned and one can easily switch between
-       projects.</li>
+   <li>A number of projects can be assigned which can be switch between.</li>
    <li>Retrieval of already defined projects after newly starting the program.</li>
    </ul>
 <li>Pre-defined actions in a project by simply using menu selections or buttons
