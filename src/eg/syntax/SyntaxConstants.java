@@ -23,4 +23,13 @@ public class SyntaxConstants {
    /**
     * The hash sign as String for line comment start */
    public final static String HASH = "#";
+   /**
+    * The HTML block comment start */
+   public final static String HTML_BLOCK_CMNT_START = "<!--";
+   /**
+    * The HTML block comment end */
+   public final static String HTML_BLOCK_CMNT_END = "-->";
+   /**
+    * The array of characters that end an XML tag */
+   public final static char[] XML_TAG_END_CHARS = {' ', '\n', '=', '>', '<', '/'};
 }

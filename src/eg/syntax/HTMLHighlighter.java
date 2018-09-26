@@ -64,9 +64,9 @@ public class HTMLHighlighter implements Highlighter {
 
    private final JavascriptHighlighter js = new JavascriptHighlighter();
    private final CSSHighlighter css = new CSSHighlighter();
-   
+
    private SyntaxHighlighter.SyntaxSearcher searcher;
-   
+
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
       this.searcher = searcher;
@@ -75,16 +75,19 @@ public class HTMLHighlighter implements Highlighter {
 
    @Override
    public void highlight() {
-      if (!searcher.isInBlockCmnt(BLOCK_CMNT_START, BLOCK_CMNT_END)) {
+      if (!searcher.isInBlockCmnt(SyntaxConstants.HTML_BLOCK_CMNT_START,
+            SyntaxConstants.HTML_BLOCK_CMNT_END)) {
+
          searcher.setHtmlSection();
          searcher.setSectionBlack();
          searcher.htmlElements(TAGS, ATTRIBUTES);
-         searcher.embeddedHtmlSections("<script", "</script>", js);      
-         searcher.embeddedHtmlSections("<style", "</style>", css);   
+         searcher.embeddedHtmlSections("<script", "</script>", js);
+         searcher.embeddedHtmlSections("<style", "</style>", css);
       }
-      searcher.blockComments(BLOCK_CMNT_START, BLOCK_CMNT_END);
+      searcher.blockComments(SyntaxConstants.HTML_BLOCK_CMNT_START,
+            SyntaxConstants.HTML_BLOCK_CMNT_END);
    }
-   
+
    @Override
    public boolean isValid(String text, int pos, int condition) {
       return true;

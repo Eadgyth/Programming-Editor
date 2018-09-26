@@ -11,7 +11,8 @@ public enum Languages {
    JAVA("Java"),
    JAVASCRIPT("Javascript"),
    PERL("Perl"),
-   R("R");
+   R("R"),
+   XML("XML");
    
    private final String display;
    

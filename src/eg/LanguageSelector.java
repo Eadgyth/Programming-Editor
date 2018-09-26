@@ -38,6 +38,9 @@ public class LanguageSelector {
          case "R":
             lang = Languages.R;
             break;
+         case "xml":
+            lang = Languages.XML;
+            break;
          default:
             lang = Languages.NORMAL_TEXT;
       }

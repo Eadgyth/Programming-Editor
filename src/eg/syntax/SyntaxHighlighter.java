@@ -94,7 +94,7 @@ public class SyntaxHighlighter {
       private boolean allowQuoted = false;
       private int innerStart = 0;
       private int innerEnd = 0;
-      
+
       /**
        * Sets the condition for testing if a found text element is
        * valid. The condition is passed to {@link Highlighter#isValid}.
@@ -127,14 +127,14 @@ public class SyntaxHighlighter {
             }
             else {
                searchEnd = text.length();
-            }       
+            }
             if (isQuoteMarks) {
                int firstQuoteMark = SyntaxUtils.firstQuoteMark(text, scnPos);
                if (firstQuoteMark != -1) {
                   searchStart = LinesFinder.lastNewline(text, firstQuoteMark) + 1;
                }
-               if (searchEnd < text.length()) {         
-                  int lastQuoteMark = SyntaxUtils.lastQuoteMark(text, scnPos); 
+               if (searchEnd < text.length()) {
+                  int lastQuoteMark = SyntaxUtils.lastQuoteMark(text, scnPos);
                   if (lastQuoteMark != 1) {
                      searchEnd = lastQuoteMark;
                   }
@@ -175,7 +175,7 @@ public class SyntaxHighlighter {
             section = text.substring(start, end);
          }
       }
-      
+
       /**
        * (Re-)sets the section that is to be highlighted to black and
        * plain.<br>
@@ -190,7 +190,7 @@ public class SyntaxHighlighter {
       /**
        * Searches and highlights keywords.<br>
        * Calls {@link Highlighter#isValid}.
-       * 
+       *
        * @param keys  the array of keywords
        * @param reqWord  specifies, if true, that keywords must be whole
        * words
@@ -415,6 +415,46 @@ public class SyntaxHighlighter {
       }
 
       /**
+       * Searches and highlights XML elements. Tags are shown in blue and
+       * bold and quoted attribute values in purple
+       */
+      public void xmlElements() {
+         int start = 0;
+         while (start != -1) {
+            start = section.indexOf('<', start);
+            int length = 0;
+            if (start != -1) {
+               int absStart = start + scnPos;
+               int searchEnd = start;
+               if (section.length() > 1 && section.charAt(start + 1) == '/') {
+                  searchEnd++;
+               }
+               length = SyntaxUtils.wordLength(section, searchEnd,
+                     SyntaxConstants.XML_TAG_END_CHARS);
+
+               int endPos = start + length;
+               boolean applyAttributes = section.length() > endPos
+                     && (' ' == section.charAt(endPos)
+                        || '\n' == section.charAt(endPos));
+
+               if (applyAttributes) {
+                  String el = text.substring(absStart,
+                        htmlSectionEnd(absStart + 1));
+
+                  quoted(el, absStart, SyntaxConstants.DOUBLE_QUOTE,
+                        Attributes.PURPLE_PLAIN);
+               }
+               int colorStart = absStart + 1;
+               if (section.length() > 1 && section.charAt(start + 1) == '/') {
+                  colorStart++;
+               }
+               textDoc.setCharAttr(colorStart, length - 1, Attributes.BLUE_BOLD);
+               start += length + 1;
+            }
+         }
+      }
+
+      /**
        * Searches sections in an html document where text elements are
        * highlighted with a temporary <code>Highlighter</code> (for CSS
        * or Javascript)
@@ -522,6 +562,7 @@ public class SyntaxHighlighter {
          while (start != -1) {
             start = section.toLowerCase().indexOf(tag, start);
             if (start != -1) {
+               int absStart = start + scnPos;
                boolean isStartTag = start > 0 && '<' == section.charAt(start - 1);
                int endPos = start + tag.length();
                if (isStartTag) {
@@ -530,14 +571,15 @@ public class SyntaxHighlighter {
                            || '\n' == section.charAt(endPos));
 
                   if (applyAttributes) {
-                     int elStart = start + scnPos;
-                     String htmlEl = text.substring(elStart, htmlSectionEnd(elStart));
+                     String el = text.substring(absStart,
+                           htmlSectionEnd(absStart));
+
                      for (String s : attributes) {
-                         htmlAttribute(s, htmlEl, elStart);
+                         htmlAttribute(s, el, absStart);
                      }
-                     quoted(htmlEl, elStart, SyntaxConstants.DOUBLE_QUOTE,
+                     quoted(el, absStart, SyntaxConstants.DOUBLE_QUOTE,
                            Attributes.PURPLE_PLAIN);
-                     quoted(htmlEl, elStart, SyntaxConstants.SINGLE_QUOTE,
+                     quoted(el, absStart, SyntaxConstants.SINGLE_QUOTE,
                            Attributes.PURPLE_PLAIN);
                   }
                }
@@ -549,7 +591,7 @@ public class SyntaxHighlighter {
                      && SyntaxUtils.isWordEnd(section, endPos);
 
                if (ok) {
-                  textDoc.setCharAttr(start + scnPos, tag.length(),
+                  textDoc.setCharAttr(absStart, tag.length(),
                         Attributes.BLUE_BOLD);
                }
                start += tag.length();

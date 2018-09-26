@@ -37,6 +37,9 @@ public class HighlighterSelector {
             case R:
                hl = new RHighlighter();
                break;
+            case XML:
+               hl = new XMLHighlighter();
+               break;
        }
        return hl;
    }
