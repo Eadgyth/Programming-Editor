@@ -27,21 +27,14 @@ public abstract class AbstractProject implements Configurable {
     * The system's file separator
     */
    protected final static String F_SEP = File.separator;
-   
+
    private final Prefs prefs = new Prefs();
+   private final SettingsWindow sw;  // Set in constructor
    //
-   // Set in constructor
-   private final SettingsWindow sw;
-   private final ProjectTypes projType;
-   private final String sourceExtension;
-   private final boolean useMainFile;
-   //
-   // The Prefs object that stores and reads from a ProjConfig file
-   // in a project's root directory
-   private Prefs conf;
-   //
-   // Variables available to a project and partly to a class that
-   // creates a project
+   // Varaiable that define the configuration
+   private final ProjectTypes projType;  // Set in constructor
+   private final String sourceExtension; // Set in constructor
+   private final boolean useMainFile;    // Set in constructor
    private String projectRoot = "";
    private String mainFileName = "";
    private String namespace = "";
@@ -55,8 +48,13 @@ public abstract class AbstractProject implements Configurable {
    //
    // Variables to control the configuration
    private boolean isPathname = false;
+   private String namespacePath = "";
    private boolean isNameConflict = false;
    private boolean showNameConflictMsg = true;
+   //
+   // The Prefs object that stores and reads from a ProjConfig file
+   // in a project directory
+   private Prefs conf;
 
    @Override
    public final void setConfiguringAction(ActionListener al) {
@@ -91,7 +89,7 @@ public abstract class AbstractProject implements Configurable {
    /**
     * {@inheritDoc}.
     * <p>
-    * It is tried to find a "ProjConfig" file in <code>dir</code> or
+    * It is tried to find a 'ProjConfig' file in <code>dir</code> or
     * further upward the directory path. The project is the directory
     * where the file is found. If it is not found, it is tested if
     * <code>dir</code> is contained in the recent project saved in the
@@ -317,7 +315,7 @@ public abstract class AbstractProject implements Configurable {
 
    private String testedRoot(String root) {
       String toTest = "";
-      namespace = "";
+      namespacePath = "";
       isNameConflict = false;
       getTextFieldsInput(); // assigns value to isPathname
       if (!isPathname) {
@@ -326,9 +324,9 @@ public abstract class AbstractProject implements Configurable {
             sourceRoot = sourceRoot + "/" + sourceDirName;
          }
          setNamespace(sourceRoot, mainFileName + sourceExtension);
-         if (namespace.length() > 0) {
-            if (namespace.length() > sourceRoot.length()) {
-               namespace = namespace.substring(sourceRoot.length() + 1);
+         if (namespacePath.length() > 0 && !isNameConflict) {
+            if (namespacePath.length() > sourceRoot.length()) {
+               namespace = namespacePath.substring(sourceRoot.length() + 1);
             }
             else {
                namespace = ""; // no subdir in source root or project root
@@ -364,12 +362,13 @@ public abstract class AbstractProject implements Configurable {
          for (File fInList : list) {
             if (fInList.isFile()) {
                if (fInList.getName().equals(name)) {
-                  if (namespace.length() > 0 && showNameConflictMsg) {
-                     namespace = "";
+                  if (!isNameConflict && namespacePath.length() > 0
+                        && showNameConflictMsg) {
+
                      isNameConflict = true;
                   }
                   else {
-                     namespace = fInList.getParent();
+                     namespacePath = fInList.getParent();
                   }
                }
             }
@@ -379,7 +378,7 @@ public abstract class AbstractProject implements Configurable {
          }
       }
    }
-   
+
    private String findRootByFile(String dir, String file) {
       File root = new File(dir);
       String relToRoot = F_SEP + file;
@@ -488,15 +487,14 @@ public abstract class AbstractProject implements Configurable {
       boolean success = rootToTest.length() > 0;
       if (!success) {
          if (isNameConflict) {
-            Dialogs.warnMessageOnTop(nameConflictMessage());
-            showNameConflictMsg = false;
+            showNameConflictMsg();
          }
          else {
             if (useMainFile) {
-               Dialogs.warnMessageOnTop(INPUT_ERROR_GENERAL);
+               Dialogs.warnMessageOnTop(GENERAL_INPUT_ERR);
             }
             else {
-               Dialogs.warnMessageOnTop(INPUT_ERROR_PROJ_ROOT);
+               showProjRootInputWarning();
             }
          }
       }
@@ -574,34 +572,36 @@ public abstract class AbstractProject implements Configurable {
       }
    };
 
-   //
-   //--Strings for messages
-   //
-
-   private String nameConflictMessage() {
-      return
+   private void showNameConflictMsg() {
+      Dialogs.warnMessageOnTop(
          "<html>"
-         + mainFileName 
-         + getSourceExtension() 
+         + mainFileName
+         + getSourceExtension()
          + " seems to exist more than once in the project."
          + "<br><br>"
          + "If this name should be used it may be necessary to specify"
          + " its pathname relative to the source root.<br>"
          + "The source root is the sources directory if available or"
          + " the project directory."
-         + "</html>";
+         + "</html>");
+         
+         showNameConflictMsg = false;
    }
 
+   private void showProjRootInputWarning() {
+      Dialogs.warnMessageOnTop(
+         "The name \'"
+         + sw.projDirNameInput()
+         + "\' for the project directory cannot be matched with an"
+         + " existing directoy.");
+   }
+
+   private final static String GENERAL_INPUT_ERR
+         = "The entries cannot be matched with an existing file.";
+
    private final static String DELETE_CONF_OPT
-         =  "<html>"
+         = "<html>"
          + "Saving the \'ProjConfig\' file is no more selected.<br>"
          + "Remove the file?"
          + "</html>";
-
-   private final static String INPUT_ERROR_PROJ_ROOT
-         =  "The entry for the project root cannot be matched with an"
-         + " existing directoy.";
-
-   private final static String INPUT_ERROR_GENERAL
-         =  "The entries cannot be matched with an existing file.";
 }

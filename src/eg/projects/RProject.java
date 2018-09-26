@@ -39,13 +39,17 @@ public final class RProject extends AbstractProject implements ProjectActions {
    @Override
    protected void setCommandParameters() {
       String main = getMainFileName() + getSourceExtension();
+      StringBuilder sb = new StringBuilder("Rscript ");
+      if (getSourceDirName().length() > 0 ) {
+         sb.append(getSourceDirName()).append("/");
+      }
+      if (getNamespace().length() > 0) {
+         sb.append(getNamespace()).append("/");
+      }
+      sb.append(getMainFileName()).append(getSourceExtension());
       if (getCmdArgs().length() > 0) {
-         main += " " + getCmdArgs();
+         sb.append(" ").append(getCmdArgs());
       }
-      startCmd = "Rscript ";
-      if (getCmdOptions().length() > 0) {
-         startCmd += getCmdOptions() + " ";
-      }
-      startCmd += main;
+      startCmd = sb.toString();
    }
 }
