@@ -107,7 +107,7 @@ public class SyntaxHighlighter {
 
       /**
        * Sets the section that ranges from the end of the default section
-       * to the next unquoted semicolon. The search for the semicolon
+       * to the next unquoted semicolon. The search for the next semicolon
        * continues so long as {@link Highlighter#isValid} returns false.
        *
        * @param isQuoteMarks  specifies, if true, that the section is
@@ -188,8 +188,8 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights keywords. Requires that
-       * {@link Highlighter#isValid} returns true.
+       * Searches and highlights keywords.<br>
+       * Calls {@link Highlighter#isValid}.
        * 
        * @param keys  the array of keywords
        * @param reqWord  specifies, if true, that keywords must be whole
@@ -210,7 +210,8 @@ public class SyntaxHighlighter {
       /**
        * Searches and highlights the keyword <code>base</code> which may
        * be extended by one of the keywords in <code>extensions</code>.
-       * Requires that {@link Highlighter#isValid} returns true.
+       * <br>
+       * Calls {@link Highlighter#isValid}.
        *
        * @param base  the base keyword
        * @param extensions  the array of strings that may extend the base
@@ -245,8 +246,8 @@ public class SyntaxHighlighter {
       /**
        * Searches and highlights variables that start with one of the
        * characters in <code>startChars</code> and end with one of the
-       * characters in <code>endChars</code>. Requires that
-       * {@link Highlighter#isValid} returns true.
+       * characters in <code>endChars</code>.<br>
+       * Calls {@link Highlighter#isValid}.
        *
        * @param startChars  the array start characters
        * @param endChars  the array of end characters
@@ -264,7 +265,7 @@ public class SyntaxHighlighter {
 
       /**
        * Searches and highlights opening and closing braces in gray and
-       * bold. Requires that {@link Highlighter#isValid} returns true.
+       * bold.<br>Calls {@link Highlighter#isValid}..
        */
       public void braces() {
          key("{", false, null, Attributes.GRAY_BOLD);
@@ -273,7 +274,7 @@ public class SyntaxHighlighter {
 
       /**
        * Searches and highlights opening and closing brackets in blue and
-       * bold. Requires that {@link Highlighter#isValid} returns true.
+       * bold.<br>Calls {@link Highlighter#isValid}.
        */
       public void brackets() {
          key("(", false, null, Attributes.BLUE_BOLD);
@@ -282,8 +283,8 @@ public class SyntaxHighlighter {
 
       /**
        * Searches and highlights text quoted with single or double
-       * quotation marks in the entire text. Requires that
-       * {@link Highlighter#isValid} returns true.
+       * quotation marks in the entire text.<br>
+       * Calls {@link Highlighter#isValid}.
        *
        * @param set  the SimpleAttributeSet set on quoted text
        */
@@ -295,7 +296,8 @@ public class SyntaxHighlighter {
       /**
        * Searches and highlights text quoted with single or double
        * quotation marks in which quoted text does not span line breaks.
-       * Requires that {@link Highlighter#isValid} returns true.
+       * <br>
+       * Calls {@link Highlighter#isValid}..
        *
        * @param set  the SimpleAttributeSet set on quoted text
        */
@@ -316,8 +318,8 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights line comments in green. Requires that
-       * {@link Highlighter#isValid} returns true.
+       * Searches and highlights line comments in green.<br>
+       * Calls {@link Highlighter#isValid}.
        *
        * @param lineCmntStart  the string that marks the start of a line
        * comment
