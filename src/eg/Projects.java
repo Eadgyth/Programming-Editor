@@ -67,6 +67,13 @@ public class Projects {
     */
    public void setIndex(int i) {
       iDoc = i;
+      updateDocument();
+   }
+   
+   /**
+    * Updates the selected document and may also update the ui
+    */
+   public void updateDocument() {
       ProjectActions inList = null;
       boolean isProject = false;
       if (edtDoc[iDoc].hasFile()) {

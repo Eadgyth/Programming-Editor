@@ -392,6 +392,7 @@ public class TabbedDocuments {
    }
 
    private void changedFileUpdate() {
+      proj.updateDocument();
       mw.setLanguageSelected(edtDoc[iTab].language(), false);
       mw.displayFrameTitle(edtDoc[iTab].filepath());
    }
