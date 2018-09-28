@@ -74,7 +74,7 @@ public class SyntaxUtils {
       }
    }
 
-    /**
+   /**
     * Returns the length of a word that starts at the specified position 
     * and ends with one of the characters in <code>endChars</code>
     *

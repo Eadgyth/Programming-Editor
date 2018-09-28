@@ -11,7 +11,7 @@ public class PerlHighlighter implements Highlighter {
 
    private final static char[] END_OF_VAR = {
       ' ', '\\', '(', ')', ';', '=', '[', ']', '{', '}', '/', '+', '-', '*',
-      '|', '&', '%', '!'
+      '|', '&', '!', '%', '.', ':'
    };
 
    private final static char[] OPEN_QW_DEL = {

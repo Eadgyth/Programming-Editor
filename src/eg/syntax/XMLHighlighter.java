@@ -18,7 +18,7 @@ public class XMLHighlighter implements Highlighter {
       if (!searcher.isInBlockCmnt(SyntaxConstants.HTML_BLOCK_CMNT_START,
             SyntaxConstants.HTML_BLOCK_CMNT_END)) {
 
-         searcher.setHtmlSection();
+         searcher.setMarkupSection();
          searcher.setSectionBlack();
          searcher.xmlElements();
       }
