@@ -48,7 +48,7 @@ public class Toolbar {
     * @param td  the reference to {@link TabbedDocuments}
     */
    public void setFileActions(TabbedDocuments td) {
-      openBt.addActionListener(e -> td.openFileByChooser());
+      openBt.addActionListener(e -> td.open());
       saveBt.addActionListener(e -> td.save());
    }
 

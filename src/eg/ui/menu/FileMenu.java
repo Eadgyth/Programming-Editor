@@ -55,7 +55,7 @@ public class FileMenu {
     */
    public void setActions(TabbedDocuments td) {
       newFileItm.addActionListener(e -> td.createBlankDocument());
-      openItm.addActionListener(e -> td.openFileByChooser());
+      openItm.addActionListener(e -> td.open());
       closeItm.addActionListener(e -> td.close(true));
       closeAllItm.addActionListener(e -> td.closeAll(true));
       saveItm.addActionListener(e -> td.save());     

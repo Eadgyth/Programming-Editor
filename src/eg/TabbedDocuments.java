@@ -36,13 +36,7 @@ public class TabbedDocuments {
    private final Projects proj;
 
    private EditArea[] editArea = null;
-
-   /*
-    * The index of the selected tab */
    private int iTab = -1;
-   /*
-    * The language that is initially read from prefs and that may be
-    * changed in the Edit>Language menu */
    private Languages lang;
 
    /**
@@ -80,8 +74,8 @@ public class TabbedDocuments {
    }
 
    /**
-    * Changes this language and sets the new language in the currently
-    * viewed document
+    * Changes this language and sets the language in the selected
+    * document
     *
     * @param lang  a language in {@link Languages}
     */
@@ -101,9 +95,10 @@ public class TabbedDocuments {
    }
 
    /**
-    * Opens a tab with a file selected in the file chooser
+    * Opens a tab with a document which a file selected in the file
+    * chooser is assigned to
     */
-   public void openFileByChooser() {
+   public void open() {
       File f = fc.fileToOpen();
       if (f == null) {
          return;
@@ -124,15 +119,15 @@ public class TabbedDocuments {
    }
    
    /**
-    * Saves the text content in the selected tab as a new file
+    * Saves the text content in the selected document as a new file
+    * that is selected in the file chooser
     */
    public void saveAs() {
       saveAs(true);
    }
 
    /**
-    * Saves the text content in all open documents in which a file is
-    * open
+    * Saves the text content in all documents that have a file
     */
    public void saveAll() {
       StringBuilder sb = new StringBuilder();
@@ -159,7 +154,7 @@ public class TabbedDocuments {
     * in the document
     *
     * @return  the boolen value that is true if the text content was
-    * saved to the file
+    * saved
     */
    public boolean saveCopy() {
       File f = fc.fileToSave(edtDoc[iTab].filepath());
@@ -175,7 +170,8 @@ public class TabbedDocuments {
    }
 
    /**
-    * Closes the tab that is selected or whose close button is clicked
+    * Closes the selected tab and may ask to save the content of the
+    * document
     *
     * @param createBlankDoc  the boolean that is true to create a new
     * blank document in the case that the tab to be closed is the only
@@ -202,10 +198,10 @@ public class TabbedDocuments {
    }
 
    /**
-    * Closes all documents and may ask to save unsaved files.
+    * Closes all tabs and may ask to save the content of the documents
     *
-    * @param createBlankDoc  the boolean value that, if true, specifies
-    * that a new blank document is created after closing
+    * @param createBlankDoc  the boolean value that is true to create
+    * a new blank document after closing
     */
    public void closeAll(boolean createBlankDoc) {
       int iMissing = missingFile();
@@ -242,7 +238,7 @@ public class TabbedDocuments {
    }
 
    /**
-    * Closes all documents and may ask to save unsaved files.
+    * Closes all tabs and may ask to save the content of the documents
     *
     * @return  the boolean value that, if true, indicates that all tabs
     * were closed
