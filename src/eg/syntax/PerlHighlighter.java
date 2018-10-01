@@ -61,7 +61,7 @@ public class PerlHighlighter implements Highlighter {
    @Override
    public void highlight() {
       searcher.setCondition(QW_COND);
-      searcher.setSemicolonSeparatedSection(true);
+      searcher.setSemicolonSection(true);
       searcher.setSectionBlack();
       searcher.signedVariables(START_OF_VAR, END_OF_VAR, true,
             Attributes.PURPLE_PLAIN);
@@ -85,6 +85,10 @@ public class PerlHighlighter implements Highlighter {
       }
       return ok;
    }
+   
+   //
+   //--private--/
+   //
 
    private boolean isNotQwFunction(String text, int pos) {
       boolean ok = true;

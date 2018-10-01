@@ -82,7 +82,6 @@ public class CSSHighlighter implements Highlighter {
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
       this.searcher = searcher;
-      searcher.blkCmntMarksQuoted(false);
    }
 
    @Override
@@ -138,7 +137,7 @@ public class CSSHighlighter implements Highlighter {
          return true;
       }    
       int lastOpenBrace
-            = SyntaxUtils.lastBlockStart(text, pos, "{", "}", false);
+            = SyntaxUtils.lastBlockStart(text, pos, "{", "}", false, false);
 
       return (condition == OPEN_BRACE_AHEAD_COND && lastOpenBrace != -1)
             || (condition == NO_OPEN_BRACE_AHEAD_COND && lastOpenBrace == -1);

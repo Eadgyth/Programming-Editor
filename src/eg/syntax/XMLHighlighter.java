@@ -10,7 +10,6 @@ public class XMLHighlighter implements Highlighter {
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
       this.searcher = searcher;
-      searcher.blkCmntMarksQuoted(true);
    }
 
    @Override

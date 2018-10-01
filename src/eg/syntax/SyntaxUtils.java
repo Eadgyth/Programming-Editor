@@ -1,6 +1,6 @@
 package eg.syntax;
 
-//import eg.utils.LinesFinder;
+import eg.utils.LinesFinder;
 
 /**
  * Static variables and methods to search for text elements
@@ -8,17 +8,16 @@ package eg.syntax;
 public class SyntaxUtils {
 
    /**
-    * Returns the boolean that indicates if the portion of text starting
-    * at the specified position and spanning the specified length is a
-    * word. A word is initially defined such that it does not adjoin to
-    * a letter or a digit at the start and/or the end.
+    * Returns if the portion of text with the specifies start position
+    * and length is a word. A word is initially defined such that it does
+    * not adjoin to a letter or a digit at the start and/or the end.
     *
     * @param text  the text
     * @param pos  the position
     * @param length  the length
-    * @param nonWordStart  the array of characters that do not precede
-    * a word in addition to letters and digits. Can be null
-    * @return  the boolean value
+    * @param nonWordStart  the array of characters that must not precede
+    * a word, in addition to letters and digits. Can be null
+    * @return  the boolean value that is true if a word is found
     */
    public static boolean isWord(String text, int pos, int length,
          char[] nonWordStart) {
@@ -29,14 +28,13 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the boolean that indicates if the specified position is
-    * a word start
+    * Returns if the specified position is a word start
     *
     * @param text  the text
     * @param pos  the position
     * @param nonWordStart  the array of characters that must not precede
     * a word, in addition to letters and digits. Can be null
-    * @return  the boolean value
+    * @return  the boolean value that is true if word start is found
     * @see #isWord(String, int, int, char[])
     */
    public static boolean isWordStart(String text, int pos, char[] nonWordStart) {
@@ -56,12 +54,12 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the boolean that indicates if the character that follows
-    * the specified position is a word end
+    * Returns if the character that follows the specified position is
+    * a word end
     *
     * @param text  the text
     * @param pos  the position
-    * @return the boolean value
+    * @return the boolean value that is true if a word end is found
     * @see #isWord(String, int, int, char[])
     */
    public static boolean isWordEnd(String text, int pos) {
@@ -76,7 +74,7 @@ public class SyntaxUtils {
 
    /**
     * Returns the length of a word that starts at the specified position 
-    * and ends with one of the characters in <code>endChars</code>
+    * and ends before one of the characters in <code>endChars</code>
     *
     * @param text  the text
     * @param pos   the position
@@ -105,32 +103,77 @@ public class SyntaxUtils {
     * @param pos  the position where the search starts
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
-    * @param allowInQuotes  the boolean value that specifies if blockStart
-    * and blockEnd may be surrounded by quotation marks
+    * @param skipQuoted  the boolean value that is true to skip quoted
+    * blockStart and blockEnd
+    * @param quotedInLine  the boolean value that is true to require
+    * that skipped quotations must be found inside a line; ignored if
+    * skipQuoted is false
     * @return  the position of the last block start. -1 if a block end
     * is closer than a block start or if no block start is found
     */
    public static int lastBlockStart(String text, int pos, String blockStart,
-         String blockEnd, boolean allowInQuotes) {
+         String blockEnd, boolean skipQuoted, boolean quotedInLine) {
 
-      int lastStart = text.lastIndexOf(blockStart, pos);
-      int lastEnd = text.lastIndexOf(blockEnd, pos - 1);
-      if (!allowInQuotes) {
-         while (lastStart != -1 && isBorderedByQuotes(text, lastStart,
-               blockStart.length())) {
-   
-            lastStart = text.lastIndexOf(blockStart, lastStart - 1);
+      int lastStart;
+      int lastEnd;
+      if (!skipQuoted) {
+         lastStart = text.lastIndexOf(blockStart, pos);
+         lastEnd = text.lastIndexOf(blockEnd, pos);
+      }
+      else {
+         if (quotedInLine) {
+            lastStart = lastUnquotedInLine(text, blockStart, pos);
+            lastEnd = lastUnquotedInLine(text, blockEnd, pos);
          }
-         while (lastEnd != -1 && isBorderedByQuotes(text, lastEnd,
-               blockEnd.length())) {
-   
-            lastEnd = text.lastIndexOf(blockEnd, lastEnd - 1);
+         else {
+            lastStart = lastUnquoted(text, blockStart, pos);
+            lastEnd = lastUnquoted(text, blockEnd, pos);
          }
       }
       if (lastStart < lastEnd) {
          lastStart = -1;
       }
       return lastStart;
+   }
+   
+    /**
+    * Returns the position of the next block start
+    *
+    * @param text  the text
+    * @param pos  the position where the search starts
+    * @param blockStart  the start of a block
+    * @param blockEnd  the end of a block
+    * @param skipQuoted  the boolean value that is true to skip quoted
+    * blockStart and blockEnd
+    * @param quotedInLine  the boolean value that is true to require
+    * that skipped quotations must be found inside a line; ignored if
+    * skipQuoted is false
+    * @return  the position of the next block start. -1 if a block end
+    * is closer than a block start or if no block start is found
+    */
+   public static int nextBlockStart(String text, int pos, String blockStart,
+         String blockEnd, boolean skipQuoted, boolean quotedInLine) {
+
+      int nextStart;
+      int nextEnd;
+      if (!skipQuoted) {
+         nextStart = text.indexOf(blockStart, pos);
+         nextEnd = text.indexOf(blockEnd, pos);
+      }
+      else {
+         if (quotedInLine) {
+            nextStart = nextUnquotedInLine(text, blockStart, pos);
+            nextEnd = nextUnquotedInLine(text, blockEnd, pos);
+         }
+         else {
+            nextStart = nextUnquoted(text, blockStart, pos);
+            nextEnd = nextUnquoted(text, blockEnd, pos);
+         }
+      }
+      if (nextStart > nextEnd & nextEnd != -1) {
+         nextStart = -1;
+      }
+      return nextStart;
    }
 
    /**
@@ -140,55 +183,37 @@ public class SyntaxUtils {
     * @param pos  the position where the search starts
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
-    * @param allowInQuotes  the boolean value that specifies if blockStart
-    * and blockEnd may be surrounded by quotation marks
+    * @param skipQuoted  the boolean value that is true to skip quoted
+    * blockStart and blockEnd
+    * @param quotedInLine  the boolean value that is true to require
+    * that skipped quotations must be found inside a line; ignored if
+    * skipQuoted is false
     * @return  the position of the next block end. -1 if a block
     * start is closer than a block end or if no block end is found
     */
    public static int nextBlockEnd(String text, int pos, String blockStart,
-         String blockEnd, boolean allowInQuotes) {
+         String blockEnd, boolean skipQuoted, boolean quotedInLine) {
 
-      int nextEnd = text.indexOf(blockEnd, pos);
-      int nextStart = text.indexOf(blockStart, pos);
-      if (!allowInQuotes) {
-         while (nextEnd != -1 && isBorderedByQuotes(text, nextEnd,
-               blockEnd.length())) {
-   
-            nextEnd = text.indexOf(blockEnd, nextEnd + 1);
+      int nextEnd;
+      int nextStart;
+      if (!skipQuoted) {
+         nextEnd = text.indexOf(blockEnd, pos);
+         nextStart = text.indexOf(blockStart, pos);
+      }
+      else {
+         if (quotedInLine) {
+            nextEnd = nextUnquotedInLine(text, blockEnd, pos);
+            nextStart = nextUnquotedInLine(text, blockStart, pos);
          }
-         while (nextStart != -1 && isBorderedByQuotes(text, nextStart,
-               blockStart.length())) {
-   
-            nextStart = text.indexOf(blockStart, nextStart + 1);
+         else {
+            nextEnd = nextUnquoted(text, blockEnd, pos);
+            nextStart = nextUnquoted(text, blockStart, pos);
          }
       }
       if (nextEnd > nextStart & nextStart != -1) {
          nextEnd = -1;
       }
       return nextEnd;
-   }
-   
-   /**
-    * Returns the boolean that is true if the section starting at the
-    * specified position and spanning the specified length is bordered
-    * by double or single quotes
-    *
-    * @param text  the text
-    * @param pos  the position
-    * @param length  the length
-    * @return  the boolean value
-    */
-   public static boolean isBorderedByQuotes(String text, int pos, int length) {
-      boolean isInQuotes = false;
-      int startPos = pos - 1;
-      int endPos = pos + length;
-      if (pos > 0 & text.length() > endPos) {
-         isInQuotes = (text.charAt(startPos) == SyntaxConstants.DOUBLE_QUOTE
-               && text.charAt(endPos) == SyntaxConstants.DOUBLE_QUOTE)
-               || (text.charAt(startPos) == SyntaxConstants.SINGLE_QUOTE
-               && text.charAt(endPos) == SyntaxConstants.SINGLE_QUOTE);
-      }
-      return isInQuotes;
    }
    
    /**
@@ -203,9 +228,26 @@ public class SyntaxUtils {
    public static int nextUnquoted(String text, String toSearch, int pos) {
       int index = text.indexOf(toSearch, pos);
       while (index != -1
-            && (isInQuotes(text, index, SyntaxConstants.DOUBLE_QUOTE)
-            || isInQuotes(text, index, SyntaxConstants.SINGLE_QUOTE))) {
+            && (isQuoted(text, index, SyntaxConstants.DOUBLE_QUOTE)
+            || isQuoted(text, index, SyntaxConstants.SINGLE_QUOTE))) {
                
+         index = text.indexOf(toSearch, index + 1);
+      }
+      return index;
+   }
+   
+   /**
+    * Returns the position of the next <code>toSearch</code> that is not
+    * quoted in which a quotation must be found inside a line
+    *
+    * @param text  the text
+    * @param toSearch  the string that is searched
+    * @param pos  the position where the search starts
+    * @return  the position of toSearch, -1 if not found
+    */
+   public static int nextUnquotedInLine(String text, String toSearch, int pos) {
+      int index = text.indexOf(toSearch, pos);
+      while (index != -1 && isQuotedInLine(text, index)) {               
          index = text.indexOf(toSearch, index + 1);
       }
       return index;
@@ -222,8 +264,8 @@ public class SyntaxUtils {
     */
    public static int firstQuoteMark(String text, int pos) {
       int index = -1;
-      int d = text.indexOf("\"", 0);
-      int s = text.indexOf("\'", 0);
+      int d = text.indexOf(SyntaxConstants.DOUBLE_QUOTE, 0);
+      int s = text.indexOf(SyntaxConstants.SINGLE_QUOTE, 0);
       if (d != -1 && d < pos && d < s) {
          index = d;
       }
@@ -244,8 +286,8 @@ public class SyntaxUtils {
     */
    public static int lastQuoteMark(String text, int pos) {
       int index = -1;
-      int d = text.lastIndexOf("\"", text.length());
-      int s = text.lastIndexOf("\'", text.length());
+      int d = text.lastIndexOf(SyntaxConstants.DOUBLE_QUOTE, text.length());
+      int s = text.lastIndexOf(SyntaxConstants.SINGLE_QUOTE, text.length());
       if (d != -1 && d > pos && d > s) {
          index = d;
       }
@@ -254,17 +296,33 @@ public class SyntaxUtils {
       }
       return index;
    }
+   
+   /**
+    * Returns if the specified position is found in a quoted section
+    * where it is required that the quotation is found inside a line
+    *
+    * @param text  the text
+    * @param pos  the position
+    * @return  the boolean value that is true if quoted
+    */
+   public static boolean isQuotedInLine(String text, int pos) {
+      String line;
+      int relStart;
+      line = LinesFinder.lineAtPos(text, pos);
+      relStart = pos - LinesFinder.lastNewline(text, pos);
+      return SyntaxUtils.isQuoted(line, relStart, SyntaxConstants.DOUBLE_QUOTE)
+         || SyntaxUtils.isQuoted(line, relStart, SyntaxConstants.SINGLE_QUOTE);
+   }
 
    /**
-    * Returns the boolean that is true if the specified position is found
-    * inside a section of text in quotes
+    * Returns if the specified position is found in a quoted section
     *
     * @param text  the text
     * @param pos  the position
     * @param quoteMark  the quoteMark
-    * @return  the boolean value
+    * @return  the boolean value that is true if quoted
     */
-   public static boolean isInQuotes(String text, int pos, char quoteMark) {
+   public static boolean isQuoted(String text, int pos, char quoteMark) {
       int count = 0;
       int i = 0;
       while (i != -1) {
@@ -300,7 +358,7 @@ public class SyntaxUtils {
     * @param text  the text
     * @param toSearch  the char that is searched
     * @param pos  the position where the search starts
-    * @return  the position
+    * @return  the position; -1 if not found
     */
    public static int lastNonEscaped(String text, char toSearch, int pos) {
       int index = text.lastIndexOf(toSearch, pos);
@@ -353,6 +411,25 @@ public class SyntaxUtils {
    //
 
    private SyntaxUtils() {}
+   
+   private static int lastUnquoted(String text, String toSearch, int pos) {
+      int index = text.lastIndexOf(toSearch, pos);
+      while (index != -1
+            && (isQuoted(text, index, SyntaxConstants.DOUBLE_QUOTE)
+            || isQuoted(text, index, SyntaxConstants.SINGLE_QUOTE))) {
+               
+         index = text.lastIndexOf(toSearch, index - 1);
+      }
+      return index;
+   }
+   
+   private static int lastUnquotedInLine(String text, String toSearch, int pos) {
+      int index = text.lastIndexOf(toSearch, pos);
+      while (index != -1 && isQuotedInLine(text, index)) {              
+         index = text.lastIndexOf(toSearch, index - 1);
+      }
+      return index;
+   }
 
    private static boolean isLetterOrDigit(char c) {
       return Character.isLetter(c) || Character.isDigit(c);

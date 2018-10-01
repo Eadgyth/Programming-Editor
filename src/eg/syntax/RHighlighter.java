@@ -26,11 +26,12 @@ public class RHighlighter implements Highlighter {
       
    @Override
    public void highlight() {
+      searcher.setEntireText();
       searcher.setSectionBlack();
       searcher.keywords(KEYWORDS, true, null, Attributes.RED_PLAIN);
       searcher.braces();
       searcher.brackets();
-      searcher.quotedLinewise(Attributes.ORANGE_PLAIN);
+      searcher.quoted(Attributes.ORANGE_PLAIN);
       searcher.lineComments(SyntaxConstants.HASH);
    }
    

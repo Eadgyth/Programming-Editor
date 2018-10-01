@@ -70,7 +70,7 @@ public class HTMLHighlighter implements Highlighter {
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
       this.searcher = searcher;
-      searcher.blkCmntMarksQuoted(true);
+      //searcher.allowQuotedBlkCmntMarks(true);
    }
 
    @Override

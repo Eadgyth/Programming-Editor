@@ -159,7 +159,7 @@ public class TypingEdit {
       isCodeEditing = false;
       textDoc.insert(pos, toInsert);
       if (isCodeEditingHelper) {
-         highlightMultiline();
+         highlightInsertion();
       }
       isCodeEditing = isCodeEditingHelper;
    }
@@ -177,12 +177,12 @@ public class TypingEdit {
       if (length != 0) {
          textDoc.remove(pos, length);
          if (isCodeEditingHelper) {
-            highlightLine();
+            highlight();
          }
       }
       textDoc.insert(pos, toInsert);
       if (isCodeEditingHelper) {
-         highlightMultiline();
+         highlightInsertion();
       }
       isCodeEditing = isCodeEditingHelper;
    }
@@ -200,7 +200,7 @@ public class TypingEdit {
       isCodeEditing = useHighlighting;
       textDoc.remove(pos, length);
       if (isCodeEditingHelper) {
-         highlightLine();
+         highlight();
       }
       isCodeEditing = isCodeEditingHelper;
    }
@@ -247,7 +247,7 @@ public class TypingEdit {
             syntax.highlightAll(text);
          }
          else {
-            highlightLine();
+            highlight();
          }
       }
       isAddToUndo = true;
@@ -259,16 +259,16 @@ public class TypingEdit {
       outputInChangeState();
    }
    
-   private void highlightLine() {
-      syntax.highlightLine(text, chgPos);
+   private void highlight() {
+      syntax.highlight(text, chgPos);
       if (isInsert && change.equals("\n")) {
-         syntax.highlightLine(text, chgPos + 1);
+         syntax.highlight(text, chgPos + 1);
       }
    }
 
-   private void highlightMultiline() {
+   private void highlightInsertion() {
       if (change.length() > 0) {
-         syntax.highlightMultiline(text, change, chgPos);
+         syntax.highlightSection(text, change, chgPos);
       }
    }
 
@@ -355,7 +355,7 @@ public class TypingEdit {
             undo.addEdit(change, chgPos, isInsert);
             outputUndoableState();
             if (isCodeEditing) {
-               EventQueue.invokeLater(() -> highlightLine());
+               EventQueue.invokeLater(() -> highlight());
                EventQueue.invokeLater(() -> autoInd.adjustIndent(text, chgPos));
             }
          }
@@ -374,7 +374,7 @@ public class TypingEdit {
             undo.addEdit(change, chgPos, isInsert);
             outputUndoableState();   
             if (isCodeEditing) {
-               EventQueue.invokeLater(() -> highlightLine());
+               EventQueue.invokeLater(() -> highlight());
             }
          }
       }
