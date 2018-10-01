@@ -6,7 +6,6 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -35,7 +34,6 @@ import eg.ui.menu.MenuBar;
 import eg.ui.menu.FormatMenu;
 import eg.ui.menu.ViewMenu;
 import eg.ui.filetree.TreePanel;
-import eg.ui.filetree.FileTree;
 import eg.ui.tabpane.ExtTabbedPane;
 import eg.utils.UIComponents;
 import eg.utils.ScreenParams;
