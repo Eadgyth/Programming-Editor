@@ -53,7 +53,7 @@ public class LinesFinder {
    public static String lines(String text, int lastNewline, int length) {
       int linesEnd = LinesFinder.nextNewline(text, lastNewline + length);
       return text.substring(lastNewline + 1, linesEnd);
-   }      
+   }
    
    /**
     * Returns the position of the last newline before the specified

@@ -32,7 +32,6 @@ public class ConsolePanel {
    private final JPanel    content  = new JPanel(new BorderLayout());
    private final JTextArea area     = new JTextArea();
    private final JToolBar  toolbar;
-
    private final JButton   setCmdBt = new JButton("Cmd...");
    private final JButton   runBt    = new JButton(IconFiles.RUN_CMD_ICON);
    private final JButton   stopBt   = new JButton(IconFiles.STOP_PROCESS_ICON);
@@ -61,8 +60,7 @@ public class ConsolePanel {
    }
 
    /**
-    * Gets this JPanel which contains the scrolled text area and
-    * the toolbar
+    * Gets this JPanel which contains the text area and the toolbar
     *
     * @return  the JPanel
     */
@@ -107,7 +105,7 @@ public class ConsolePanel {
    public void setCaret(int pos) {
       if (!isActive) {
          throw new IllegalStateException(
-               "The caret cannot be set. The text area is set uneditable");
+               "The text area is set uneditable");
       }
       area.setCaretPosition(pos);
    }
@@ -144,7 +142,7 @@ public class ConsolePanel {
    
    /**
     * Adds the specified text after it is formatted such that it is
-    * bordered by double angle brackets and a the line separator is
+    * bordered by double angle brackets and the line separator is
     * appended.
     *
     * @param text  the text
@@ -168,7 +166,7 @@ public class ConsolePanel {
    public void focus() {
       if (!isActive) {
          throw new IllegalStateException(
-               "Cannot gain focust. The text area is set uneditable");
+               "The text area is set uneditable");
       }
       area.requestFocusInWindow();
    }
