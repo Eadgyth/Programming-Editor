@@ -22,7 +22,10 @@ import eg.ui.filetree.FileTree;
 /**
  * The documents in the tabs.
  * <p>
- * Documents are represented by objects of {@link EditableDocument}
+ * Documents viewed when tabs are selected are represented by objects
+ * of {@link EditableDocument}. If the tabbar is set invisible (see
+ * {@link ExtTabbedPane}) the viewed document is regarded as (and
+ * technically is) the 'selected document'.
  */
 public class TabbedDocuments {
 
@@ -48,13 +51,13 @@ public class TabbedDocuments {
       this.format = format;
       editArea = format.editAreaArray();
       edtDoc = new EditableDocument[editArea.length];
-      
+
       setLanguage();
-      
-      String indentUnit = prefs.getProperty("IndentUnit");      
+
+      String indentUnit = prefs.getProperty("IndentUnit");
       edit = new Edit(indentUnit);
       mw.setEditActions(edit);
-      
+
       String projectRoot = prefs.getProperty("ProjectRoot");
       FileTree ft = new FileTree(mw.treePanel(), Openable);
       proj = new Projects(mw, ft, projectRoot, edtDoc);
@@ -62,7 +65,7 @@ public class TabbedDocuments {
 
       String recentPath = prefs.getProperty("RecentPath");
       fc = new FileChooser(recentPath);
-      
+
       tabPane = mw.tabPane();
       tabPane.addChangeListener((ChangeEvent ce) -> {
          JTabbedPane sourceTb = (JTabbedPane) ce.getSource();
@@ -86,7 +89,8 @@ public class TabbedDocuments {
    }
 
    /**
-    * Creates a new tab with a blank document
+    * Creates a new tab with a blank document in which this language
+    * is set
     */
    public void createBlankDocument() {
       if (isTabOpenable()) {
@@ -95,8 +99,8 @@ public class TabbedDocuments {
    }
 
    /**
-    * Opens a tab with a document which a file selected in the file
-    * chooser is assigned to
+    * Opens a tab with a document in which a file selected in the file
+    * chooser is set
     */
    public void open() {
       File f = fc.fileToOpen();
@@ -110,24 +114,27 @@ public class TabbedDocuments {
          open(f);
       }
    }
-   
+
    /**
-    * Saves the text content in the selected document to its file.
+    * Saves the text content in the selected document to its file or
+    * uses {@link #saveAs} if no file is set in the document or a set
+    * file no more exists.
     */
    public void save() {
       save(true);
    }
-   
+
    /**
     * Saves the text content in the selected document as a new file
-    * that is selected in the file chooser
+    * that is selected in the file chooser and sets the file in the
+    * document
     */
    public void saveAs() {
       saveAs(true);
    }
 
    /**
-    * Saves the text content in all documents that have a file
+    * Saves the text content in all documents that have an existing file
     */
    public void saveAll() {
       StringBuilder sb = new StringBuilder();
@@ -146,15 +153,14 @@ public class TabbedDocuments {
          sb.insert(0, "These files could not be found anymore:\n");
          Dialogs.warnMessage(sb.toString());
       }
-   }  
+   }
 
    /**
-    * Saves a copy of the content in the selected document to the file
+    * Saves a copy of the content in the selected document as new file
     * that is specified in the file chooser but does not set the file
     * in the document
     *
-    * @return  the boolen value that is true if the text content was
-    * saved
+    * @return  the boolen value that is true if the text content was saved
     */
    public boolean saveCopy() {
       File f = fc.fileToSave(edtDoc[iTab].filepath());
@@ -171,11 +177,11 @@ public class TabbedDocuments {
 
    /**
     * Closes the selected tab and may ask to save the content of the
-    * document
+    * document before closing
     *
     * @param createBlankDoc  the boolean that is true to create a new
-    * blank document in the case that the tab to be closed is the only
-    * open tab.
+    * tab with a blank document if the tab to be closed is the only open
+    * tab
     */
    public void close(boolean createBlankDoc) {
       boolean removable;
@@ -198,7 +204,8 @@ public class TabbedDocuments {
    }
 
    /**
-    * Closes all tabs and may ask to save the content of the documents
+    * Closes all tabs and may ask to save the content of documents
+    * before closing
     *
     * @param createBlankDoc  the boolean value that is true to create
     * a new blank document after closing
@@ -238,10 +245,10 @@ public class TabbedDocuments {
    }
 
    /**
-    * Closes all tabs and may ask to save the content of the documents
+    * Closes all tabs and may ask to save the content of documents
+    * before closing
     *
-    * @return  the boolean value that, if true, indicates that all tabs
-    * were closed
+    * @return  the boolean value that is true if all tabs were closed
     */
    public boolean closeForExit() {
       closeAll(false);
@@ -329,7 +336,7 @@ public class TabbedDocuments {
          close(true);
       });
    }
-   
+
    private boolean save(boolean update) {
       if (!edtDoc[iTab].hasFile() || !edtDoc[iTab].docFile().exists()) {
          return saveAs(update);
@@ -338,7 +345,7 @@ public class TabbedDocuments {
          return edtDoc[iTab].saveFile();
       }
    }
-   
+
    private boolean saveAs(boolean update) {
       File f = fc.fileToSave(edtDoc[iTab].filepath());
       boolean isSaved = f != null;
@@ -398,7 +405,10 @@ public class TabbedDocuments {
       for (int i = 0; i < nTabs(); i++) {
          if (edtDoc[i].filepath().equals(f.toString())) {
            isFileOpen = true;
-           Dialogs.infoMessage(f.getName() + " is already open.", null);
+           Dialogs.infoMessage(
+                 f.getName()
+                 + " is already open.", null);
+
            break;
          }
       }
@@ -422,7 +432,7 @@ public class TabbedDocuments {
       }
       return i;
    }
-   
+
    private int missingFile() {
       int i;
       for (i = 0; i < nTabs(); i++) {
@@ -432,15 +442,17 @@ public class TabbedDocuments {
       }
       return i;
    }
-   
+
    private boolean removeUnsavedFile(int i) {
       String filename = edtDoc[i].filename();
       if (filename.length() == 0) {
          filename = "unnamed";
       }
       int res = Dialogs.confirmYesNoCancel(
-            "Save changes in " + filename + " ?");
-            
+            "Save changes in "
+            + filename
+            + " ?");
+
       boolean removable;
       if (JOptionPane.YES_OPTION == res) {
          removable = save(false);
@@ -450,23 +462,23 @@ public class TabbedDocuments {
       }
       return removable;
    }
-   
+
    private boolean removeMissingFile(int i) {
       String filename = edtDoc[i].filename();
       int res = Dialogs.confirmYesNoCancel(
             filename
             + " could not be found anymore."
             + " Save as new file?");
-      
-      boolean removable = false;
+
+      boolean removable;
       if (JOptionPane.YES_OPTION == res) {
-         removable = saveCopy();       
+         removable = saveCopy();
       }
-      else if (JOptionPane.NO_OPTION == res) {
-         removable = true;
+      else {
+         removable = JOptionPane.NO_OPTION == res;
       }
       return removable;
-   }       
+   }
 
    private int replaceFileOption(File f) {
       return Dialogs.warnConfirmYesNo(
@@ -486,9 +498,9 @@ public class TabbedDocuments {
       }
       mw.setLanguageSelected(lang, false);
    }
-   
+
    private final FileOpenable Openable = new FileOpenable() {
-      
+
       @Override
       public void openFile(File f) {
          if (f == null || (!f.exists() || f.isDirectory())) {
