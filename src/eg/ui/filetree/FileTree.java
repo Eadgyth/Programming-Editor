@@ -171,8 +171,12 @@ public class FileTree {
    }
 
    private void deleteFile() {
+      if (!FileUtils.isWritable(selectedFile)) {
+         return;
+      }
       int res = Dialogs.warnConfirmYesNo(
-            selectedFile.getName() + " will be permanently deleted!\nContinue?");
+            selectedFile.getName()
+            + " will be permanently deleted!\nContinue?");
             
       if (res == JOptionPane.YES_OPTION) {
          boolean success;
