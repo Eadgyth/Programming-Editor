@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class UndoEdit {
 
-   private final TextDocument textDoc;
+   private final StyledText txt;
 
    private final List<String> edits = new ArrayList<>(1000);
    private final List<Integer> positions = new ArrayList<>(1000);
@@ -57,11 +57,11 @@ public class UndoEdit {
    private boolean isDeleteTyped = false;
 
    /**
-    * @param textDoc  the reference to {@link TextDocument}
+    * @param txt  the reference to {@link StyledText}
     */
-   public UndoEdit(TextDocument textDoc) {
-      this.textDoc = textDoc;
-      textDoc.textArea().addKeyListener(keyListener);
+   public UndoEdit(StyledText txt) {
+      this.txt = txt;
+      txt.textArea().addKeyListener(keyListener);
    }
 
    /**
@@ -131,11 +131,11 @@ public class UndoEdit {
       while (iEd > -1) {
          if (isInsert(iEd)) {
             nextPos = pos(iEd);
-            textDoc.remove(nextPos, edit(iEd).length());
+            txt.remove(nextPos, edit(iEd).length());
          }
          else {
             nextPos = pos(iEd) + edit(iEd).length();
-            textDoc.insert(pos(iEd), edit(iEd));
+            txt.insert(pos(iEd), edit(iEd));
          }
          iEd--;
          if (iBr > -1) {
@@ -148,7 +148,7 @@ public class UndoEdit {
       if (iEd == -1) {
          iBr--;
       }
-      textDoc.textArea().setCaretPosition(nextPos);
+      txt.textArea().setCaretPosition(nextPos);
    }
 
    /**
@@ -161,11 +161,11 @@ public class UndoEdit {
          int iNext = iEd + 1;
          if (isInsert(iNext)) {
             nextPos = pos(iNext) + edit(iNext).length();
-            textDoc.insert(pos(iNext), edit(iNext));
+            txt.insert(pos(iNext), edit(iNext));
          }
          else {
             nextPos = pos(iNext);
-            textDoc.remove(nextPos, edit(iNext).length());
+            txt.remove(nextPos, edit(iNext).length());
          }
          iEd++;
          int iBrAhead = iBr + 2;
@@ -179,7 +179,7 @@ public class UndoEdit {
       if (iEd == edits.size() - 1) {
          iBr++;
       }
-      textDoc.textArea().setCaretPosition(nextPos);
+      txt.textArea().setCaretPosition(nextPos);
    }
 
    /**

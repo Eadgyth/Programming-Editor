@@ -13,24 +13,24 @@ import eg.utils.LinesFinder;
 import eg.syntax.*;
 
 /**
- * The mediation between the editing of the document by typing in, removing,
- * pasting or replacing text and the actions that happen in response.
+ * The mediation between the editing of the document by typing in,
+ * removing, pasting or replacing text and the actions that happen
+ * in response.
  * <p>
  * Created in {@link EditableDocument}
  */
 public class TypingEdit {
 
-   private final TextDocument textDoc;
-   private final LineNumberDocument lineNrDoc;
+   private final StyledText txt;
+   private final LineNumbers lineNum;
    private final SyntaxHighlighter syntax;
-   private final AutoIndent autoInd;
+   private final Indentation indent;
    private final UndoEdit undo;
 
    private boolean isDocUpdate = true;
    private boolean isCodeEditing = false;
    private boolean isInsert;
    private int chgPos = 0;
-   private String text = "";
    private String change = "";
    private boolean isAddToUndo = true;
    private EditingStateReadable esr;
@@ -42,17 +42,17 @@ public class TypingEdit {
    private int colNr = 1;
 
    /**
-    * @param textDoc  the reference to {@link TextDocument}
-    * @param lineNrDoc  the reference to {@link LineNumberDocument}
+    * @param txt  the reference to {@link StyledText}
+    * @param lineNum  the reference to {@link LineNumbers}
     */
-   public TypingEdit(TextDocument textDoc, LineNumberDocument lineNrDoc) {
-      this.textDoc = textDoc;
-      this.lineNrDoc = lineNrDoc;
-      syntax = new SyntaxHighlighter(textDoc);
-      autoInd = new AutoIndent(textDoc);
-      undo = new UndoEdit(textDoc);
-      textDoc.addDocumentListener(docListener);
-      textDoc.textArea().addCaretListener(caretListener);
+   public TypingEdit(StyledText txt, LineNumbers lineNum) {
+      this.txt = txt;
+      this.lineNum = lineNum;
+      syntax = new SyntaxHighlighter(txt);
+      indent = new Indentation(txt);
+      undo = new UndoEdit(txt);
+      txt.addDocumentListener(docListener);
+      txt.textArea().addCaretListener(caretListener);
    }
 
    /**
@@ -78,7 +78,7 @@ public class TypingEdit {
       isDocUpdate = b;
       if (b) {
          updateText();
-         textDoc.textArea().setCaretPosition(0);
+         txt.textArea().setCaretPosition(0);
       }
    }
 
@@ -90,25 +90,15 @@ public class TypingEdit {
     */
    public void setEditingMode(Languages lang) {
       if (lang == Languages.NORMAL_TEXT) {
-         textDoc.setAllCharAttrBlack();
+         txt.resetAttributes();
          isCodeEditing = false;
       }
       else {
          Highlighter hl = HighlighterSelector.createHighlighter(lang);
          syntax.setHighlighter(hl);
-         syntax.highlightAll(text);
+         syntax.highlight();
          isCodeEditing = true;
       }
-   }
-
-   /**
-    * Gets the text in the document which is updated in the insert and
-    * remove methods of this <code>DocumentListener</code>
-    *
-    * @return  the text
-    */
-   public String getText() {
-      return text;
    }
 
    /**
@@ -125,7 +115,7 @@ public class TypingEdit {
     * @param indentUnit  the indend unit
     */
    public void setIndentUnit(String indentUnit) {
-      autoInd.setIndentUnit(indentUnit);
+      indent.setIndentUnit(indentUnit);
    }
 
    /**
@@ -134,7 +124,7 @@ public class TypingEdit {
     * @return  the indent unit
     */
    public String getIndentUnit() {
-      return autoInd.getIndentUnit();
+      return indent.getIndentUnit();
    }
 
    /**
@@ -157,7 +147,7 @@ public class TypingEdit {
    public void insert(int pos, String toInsert) {
       boolean isCodeEditingHelper = isCodeEditing;
       isCodeEditing = false;
-      textDoc.insert(pos, toInsert);
+      txt.insert(pos, toInsert);
       if (isCodeEditingHelper) {
          highlightInsertion();
       }
@@ -175,12 +165,12 @@ public class TypingEdit {
       boolean isCodeEditingHelper = isCodeEditing;
       isCodeEditing = false;  
       if (length != 0) {
-         textDoc.remove(pos, length);
+         txt.remove(pos, length);
          if (isCodeEditingHelper) {
-            highlight();
+            highlightAtPos();
          }
       }
-      textDoc.insert(pos, toInsert);
+      txt.insert(pos, toInsert);
       if (isCodeEditingHelper) {
          highlightInsertion();
       }
@@ -198,9 +188,9 @@ public class TypingEdit {
    public void remove(int pos, int length, boolean useHighlighting) {
       boolean isCodeEditingHelper = isCodeEditing;
       isCodeEditing = useHighlighting;
-      textDoc.remove(pos, length);
+      txt.remove(pos, length);
       if (isCodeEditingHelper) {
-         highlight();
+         highlightAtPos();
       }
       isCodeEditing = isCodeEditingHelper;
    }
@@ -244,31 +234,31 @@ public class TypingEdit {
       outputUndoableState();
       if (isCodeEditing) {
          if (isInsert) {          
-            syntax.highlightAll(text);
+            syntax.highlight();
          }
          else {
-            highlight();
+            highlightAtPos();
          }
       }
       isAddToUndo = true;
    }
 
    private void updateText() {
-      text = textDoc.docText();
-      lineNrDoc.updateLineNumber(text);
+      txt.updateText();
+      lineNum.updateLineNumber(txt.text());
       outputInChangeState();
    }
    
-   private void highlight() {
-      syntax.highlight(text, chgPos);
+   private void highlightAtPos() {
+      syntax.highlight(chgPos);
       if (isInsert && change.equals("\n")) {
-         syntax.highlight(text, chgPos + 1);
+         syntax.highlight(chgPos + 1);
       }
    }
 
    private void highlightInsertion() {
       if (change.length() > 0) {
-         syntax.highlightSection(text, change, chgPos);
+         syntax.highlight(change, chgPos);
       }
    }
 
@@ -313,8 +303,8 @@ public class TypingEdit {
       if (esr == null) {
          return;
       }
-      int lastNewLine = LinesFinder.lastNewline(text, caret);
-      lineNr = LinesFinder.lineNrAtPos(text, caret);
+      int lastNewLine = LinesFinder.lastNewline(txt.text(), caret);
+      lineNr = LinesFinder.lineNrAtPos(txt.text(), caret);
       if (lastNewLine == -1) {
          colNr = caret + 1;
       }
@@ -350,13 +340,13 @@ public class TypingEdit {
          isInsert = true;
          chgPos = de.getOffset();
          updateText();
-         change = text.substring(chgPos, chgPos + de.getLength());
+         change = txt.text().substring(chgPos, chgPos + de.getLength());
          if (isAddToUndo) {
             undo.addEdit(change, chgPos, isInsert);
             outputUndoableState();
             if (isCodeEditing) {
-               EventQueue.invokeLater(() -> highlight());
-               EventQueue.invokeLater(() -> autoInd.adjustIndent(text, chgPos));
+               EventQueue.invokeLater(() -> highlightAtPos());
+               EventQueue.invokeLater(() -> indent.adjustIndent(chgPos));
             }
          }
       }
@@ -368,13 +358,13 @@ public class TypingEdit {
          }
          isInsert = false;
          chgPos = de.getOffset();
-         change = text.substring(chgPos, chgPos + de.getLength());
+         change = txt.text().substring(chgPos, chgPos + de.getLength());
          updateText();
          if (isAddToUndo) {
             undo.addEdit(change, chgPos, isInsert);
             outputUndoableState();   
             if (isCodeEditing) {
-               EventQueue.invokeLater(() -> highlight());
+               EventQueue.invokeLater(() -> highlightAtPos());
             }
          }
       }

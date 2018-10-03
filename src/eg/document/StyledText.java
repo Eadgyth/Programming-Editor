@@ -15,41 +15,26 @@ import javax.swing.text.StyleConstants;
 import eg.utils.FileUtils;
 
 /**
- * The document that is displayed in the text area that is edited.
+ * The styled text that is edited.
+ * <p>
+ * The text obtained by {@link #text()} is the text that is updated by
+ * {@link #updateText()}.
  * <p>
  * Created in {@link EditableDocument}
  */
-public class TextDocument {
+public class StyledText {
    
    private final static SimpleAttributeSet SET = new SimpleAttributeSet();
    
    private final JTextPane textArea;
    private final StyledDocument doc;
    
+   private String text = "";
+   
    static {
       StyleConstants.setForeground(SET, Color.BLACK);
       StyleConstants.setBold(SET, false);
       StyleConstants.setLineSpacing(SET, 0.25f);
-   }
-   
-   /**
-    * @param textArea  the <code>JTextPane</code> that displays the
-    * text that is edited
-    */
-   public TextDocument(JTextPane textArea) {
-      this.textArea = textArea;
-      doc = textArea.getStyledDocument();
-      Element el = doc.getParagraphElement(0);
-      doc.setParagraphAttributes(0, el.getEndOffset(), SET, false);
-   }
-   
-   /**
-    * Gets the text area that displays the document
-    *
-    * @return  the text area
-    */
-   public JTextPane textArea() {
-      return textArea;
    }
    
    /**
@@ -62,57 +47,73 @@ public class TextDocument {
    }
    
    /**
-    * (Re-)sets the characters in a section of the document to black
-    * and plain
-    *
-    * @param pos  the position where the section start
-    * @param length  the length of the section
+    * @param textArea  the <code>JTextPane</code> that displays the text
     */
-   public void setCharAttrBlack(int pos, int length) {
-      setCharAttr(pos, length, SET);
-   }
-
-   /**
-    * (Re-)sets the characters in the entire document to black and plain
-    */
-   public void setAllCharAttrBlack() {
-      setCharAttr(0, doc.getLength(), SET);
+   public StyledText(JTextPane textArea) {
+      this.textArea = textArea;
+      doc = textArea.getStyledDocument();
+      Element el = doc.getParagraphElement(0);
+      doc.setParagraphAttributes(0, el.getEndOffset(), SET, false);
    }
    
    /**
-    * Sets character attributes in a section of the document
-    *
-    * @param pos  the position where the section starts
-    * @param length  the length of the section
-    * @param set  the character attributes
+    * Updates this text
     */
-   public void setCharAttr(int pos, int length, SimpleAttributeSet set) {
-      doc.setCharacterAttributes(pos, length, set, false);
-   }
-   
-   /**
-    * Gets the text in this document
-    *
-    * @return  the text
-    */
-    public String docText() {
-      String text = null;
+   public void updateText() {
       try {
          text = doc.getText(0, doc.getLength());
       }
       catch (BadLocationException e) {
          FileUtils.logStack(e);
       }
+   }
+   
+   /**
+    * Gets this text
+    *
+    * @return  the text
+    */
+   public String text() {
       return text;
    }
    
    /**
-    * Gets the length of the text of the document
-    *
-    * @return  the length
+    * Resets the character attributes in the entire text to black
+    * and plain
     */
-   public int doclength() {
-      return doc.getLength();
+   public void resetAttributes() {
+      setAttributes(0, doc.getLength(), SET);
+   }
+   
+   /**
+    * Resets the character attributes in a section of the text to
+    * black and plain
+    *
+    * @param pos  the position where the section start
+    * @param length  the length of the section
+    */
+   public void resetAttributes(int pos, int length) {
+      setAttributes(pos, length, SET);
+   }
+   
+   /**
+    * Sets character attributes in a section of the text
+    *
+    * @param pos  the position where the section starts
+    * @param length  the length of the section
+    * @param set  the character attributes
+    */
+   public void setAttributes(int pos, int length, SimpleAttributeSet set) {
+      doc.setCharacterAttributes(pos, length, set, false);
+   }
+   
+   /**
+    * Appends a string
+    *
+    * @param toAppend  the string to append
+    */
+   public void append(String toAppend) {
+      insert(doc.getLength(), toAppend);
    }
 
    /**
@@ -134,7 +135,7 @@ public class TextDocument {
     * Removes text
     *
     * @param pos  the position where the text to be removed starts
-    * @param length  the length of text to be removed
+    * @param length  the length of the text to be removed
     */
    public void remove(int pos, int length) {
       try {
@@ -143,5 +144,14 @@ public class TextDocument {
       catch (BadLocationException e) {
          FileUtils.logStack(e);
       }
+   }
+   
+   /**
+    * Gets the text area that displays the text
+    *
+    * @return  the text area
+    */
+   public JTextPane textArea() {
+      return textArea;
    }
 }

@@ -42,7 +42,7 @@ public class JavaHighlighter implements Highlighter {
      if (!searcher.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
             SyntaxConstants.STAR_SLASH)) {
 
-         searcher.setSectionBlack();
+         searcher.resetAttributes();
          searcher.keywords(JAVA_ANNOTATIONS, true, null, Attributes.BLUE_PLAIN);
          searcher.keywords(JAVA_KEYWORDS, true, null, Attributes.RED_PLAIN);
          searcher.brackets();

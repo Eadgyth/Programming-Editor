@@ -38,7 +38,7 @@ public class JavascriptHighlighter implements Highlighter {
       if (!searcher.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
             SyntaxConstants.STAR_SLASH)) {
 
-         searcher.setSectionBlack();
+         searcher.resetAttributes();
          searcher.keywords(JS_KEYWORDS, true, null, Attributes.RED_PLAIN);
          searcher.brackets();
          searcher.braces();

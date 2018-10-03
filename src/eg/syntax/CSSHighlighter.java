@@ -89,7 +89,7 @@ public class CSSHighlighter implements Highlighter {
       if (!searcher.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
             SyntaxConstants.STAR_SLASH)) {
 
-         searcher.setSectionBlack();
+         searcher.resetAttributes();
          searcher.setCondition(NO_OPEN_BRACE_AHEAD_COND);
          searcher.keywords(HTMLHighlighter.TAGS, true, CLASS_START,
                Attributes.BLUE_PLAIN);

@@ -36,8 +36,10 @@ public class SyntaxConstants {
    };
    /**
     * The characters that end an XML atrribute */
-   public final static char[] XML_ATTR_START_CHARS = {' ', '\n', '"'};
+   public final static char[] XML_ATTR_START_CHARS = {' ', '\n', '\"', '\'', '&'};
    /**
     * The characters that end an XML atrribute */
-   public final static char[] XML_ATTR_END_CHARS = {'\n', '=', '>', '<', '&', '/'};
+   public final static char[] XML_ATTR_END_CHARS = {
+      '\n', '=', '>', '<', '&', '/', '\'', '\"'
+   };
 }

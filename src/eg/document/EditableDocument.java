@@ -25,7 +25,7 @@ import eg.ui.EditArea;
 public final class EditableDocument {
 
    private final TypingEdit type;
-   private final TextDocument textDoc;
+   private final StyledText txt;
 
    private File docFile = null;
    private String filename = "";
@@ -49,7 +49,7 @@ public final class EditableDocument {
       displayFileContentImpl(f);
       type.enableDocUpdate(true);
       setFileParams(f);
-      savedContent = type.getText();
+      savedContent = txt.text();
       setEditingMode(f);
    }
 
@@ -92,23 +92,23 @@ public final class EditableDocument {
     * @see TypingEdit#readEditingState()
     */
    public void setFocused() {
-      textDoc.textArea().requestFocusInWindow();
+      txt.textArea().requestFocusInWindow();
       type.readEditingState();
    }
 
    /**
-    * Gets the text area that displays this document
+    * Gets the text area that displays the text
     *
     * @return  the text area
     */
     public JTextPane textArea() {
-       return textDoc.textArea();
+       return txt.textArea();
     }
 
    /**
     * Gets the name of this file
     *
-    * @return  the filename. The empty string  of no file has been
+    * @return  the filename; the empty string of no file is set
     * set
     */
    public String filename() {
@@ -118,7 +118,7 @@ public final class EditableDocument {
    /**
     * Gets the parent directory of this file
     *
-    * @return  the parent directory. The empty string of no file been set
+    * @return  the parent directory; the empty string of no file is set
     */
    public String dir() {
       return dir;
@@ -127,23 +127,23 @@ public final class EditableDocument {
    /**
     * Gets the filepath of this file
     *
-    * @return  the filepath. The empty string of no file has been set
+    * @return  the filepath; the empty string of no file is set
     */
    public String filepath() {
       return filepath;
    }
 
    /**
-    * Returns the boolean that, if true, indicates that a file is set
+    * Returns if a file is set
     *
-    * @return  the boolean value
+    * @return  the boolean value that is true if a file is set
     */
    public boolean hasFile() {
       return docFile != null;
    }
 
    /**
-    * Gets this file if a file is set or throws an exception otherwise
+    * Gets this file or throws an exception if no file is set
     *
     * @return  the file
     */
@@ -155,11 +155,11 @@ public final class EditableDocument {
    }
 
    /**
-    * Saves the current text content to this file or throws an
-    * exception if no file is set
+    * Saves the text content to this file or throws an exception if
+    * no file is set
     *
-    * @return  the boolen value that is true if the text content was
-    * saved to this file
+    * @return  the boolen value that is true if the text content could
+    * be saved
     */
    public boolean saveFile() {
       if (docFile == null) {
@@ -167,31 +167,31 @@ public final class EditableDocument {
       }
       boolean isWritten = writeToFile(docFile);
       if (isWritten) {
-         savedContent = type.getText();
+         savedContent = txt.text();
          type.resetInChangeState();
       }
       return isWritten;
    }
 
    /**
-    * Sets the specified file and saves the current text content
-    * to the file. A previously set file is replaced.
+    * Sets the specified file and saves the text content to the
+    * file. A previously set file is replaced.
     *
     * @param f  the file
-    * @return  the boolen value that is true if the text content was
-    * saved to the file
+    * @return  the boolen value that is true if the text content could
+    * be saved
     */
    public boolean setFile(File f) {
       setFileParams(f);
       setEditingMode(f);
       type.resetInChangeState();
-      savedContent = type.getText();
+      savedContent = txt.text();
       return writeToFile(f);
    }
    
    /**
     * Diplays the content of the specified file but does not set
-    * the file and also does not set the language.
+    * the file and also does not chnange the language.
     *
     * @param f  the file
     */
@@ -200,43 +200,44 @@ public final class EditableDocument {
    }
 
    /**
-    * Saves the current text content to the specified file but does
-    * not set the file
+    * Saves the text content to the specified file but does not set
+    * the file
     *
     * @param f  the file
-    * @return  the boolen value that is true if the text content was
-    * saved to the file
+    * @return  the boolen value that is true if the text content could
+    * be saved
     */
    public boolean saveCopy(File f) {
       return writeToFile(f);
    }
 
    /**
-    * Returns that boolean that is true if the current text equals the
-    * text at the last saving point
+    * Returns if the text content equals the text stored at the
+    * last saving point
     *
-    * @return  the boolean value
+    * @return  the boolean value that is true if the text content is
+    * saved
     */
    public boolean isSaved() {
-      return type.getText().equals(savedContent);
+      return txt.text().equals(savedContent);
    }
 
    /**
-    * Gets the text of this document
+    * Gets the document text
     *
     * @return  the text
     */
    public String docText() {
-      return type.getText();
+      return txt.text();
    }
 
    /**
-    * Gets the length of the text of this document
+    * Gets the length of the document text
     *
     * @return  the length
     */
    public int docLength() {
-      return type.getText().length();
+      return txt.text().length();
    }
 
    /**
@@ -258,8 +259,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Changes the language if no file has been assigned or throws an
-    * exception otherwise
+    * Changes the language or throws an exception if a file is set
     *
     * @param lang  the language which is a constant in {@link eg.Languages}
     */
@@ -274,7 +274,7 @@ public final class EditableDocument {
 
    /**
     * Sets the boolean that is true to mark the beginning of a merged
-    * undoable unit. False ends merging.
+    * undoable unit. False marks the end of the undoable unit.
     * Calls {@link TypingEdit#disableBreakpointAdding(boolean)}
     *
     * @param b  the boolean value
@@ -284,21 +284,21 @@ public final class EditableDocument {
    }
    
    /**
-    * Inserts the specified string at the specified position
+    * Inserts the string <code>ToInsert</code> at the specified position
     *
     * @param pos  the position
-    * @param toInsert  the String to insert
+    * @param toInsert  the string
     */
    public void insert(int pos, String toInsert) {
       type.insert(pos, toInsert);
    }
 
     /**
-    * Replaces a section of the documemnt with the specified string
+    * Replaces a section with the string <code>toInsert</code>
     *
     * @param pos  the position where the section to be replaced starts
     * @param length  the length of the section
-    * @param toInsert  the String to insert
+    * @param toInsert  the string
     */
    public void replace(int pos, int length, String toInsert) {
       type.replace(pos, length, toInsert);
@@ -309,9 +309,9 @@ public final class EditableDocument {
     *
     * @param pos  the position where the section starts
     * @param length  the length of the section
-    * @param useHighlighting  if syntax highlighting of the line that
-    * contains the position should be done. Is effectless if this language
-    * is not a coding language
+    * @param useHighlighting  the boolean value that is true to
+    * indicate that syntax highlighting is done after the removal.
+    * Effectless if this language is not a coding language
     */
    public void remove(int pos, int length, boolean useHighlighting) {
       if (lang == Languages.NORMAL_TEXT) {
@@ -339,12 +339,11 @@ public final class EditableDocument {
    //
 
    private EditableDocument(EditArea editArea) {
-      textDoc = new TextDocument(editArea.textArea());
-      
-      LineNumberDocument lineNrDoc = new LineNumberDocument(editArea.lineNrArea(),
+      txt = new StyledText(editArea.textArea());      
+      LineNumbers lineNum = new LineNumbers(editArea.lineNrArea(),
             editArea.lineNrWidth());
 
-      type = new TypingEdit(textDoc, lineNrDoc);
+      type = new TypingEdit(txt, lineNum);
    }
    
    public void displayFileContentImpl(File f) {
@@ -353,10 +352,10 @@ public final class EditableDocument {
          String nextLine = br.readLine();
          while (null != line) {
             if (null == nextLine) {
-               textDoc.insert(textDoc.doclength(), line);
+               txt.append(line);
             }
             else {
-               textDoc.insert(textDoc.doclength(), line + "\n");
+               txt.append(line + "\n");
             }
             line = nextLine;
             nextLine = br.readLine();
@@ -371,7 +370,7 @@ public final class EditableDocument {
       boolean isWritable;     
       File sameName = new File(f.toString());
       isWritable = f.renameTo(sameName);
-      String[] lines = type.getText().split("\n");  
+      String[] lines = txt.text().split("\n");  
       try (FileWriter writer = new FileWriter(f)) {     
          for (String s : lines) {
             writer.write(s + Constants.LINE_SEP);

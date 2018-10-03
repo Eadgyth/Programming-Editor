@@ -70,7 +70,6 @@ public class HTMLHighlighter implements Highlighter {
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
       this.searcher = searcher;
-      //searcher.allowQuotedBlkCmntMarks(true);
    }
 
    @Override
@@ -79,7 +78,7 @@ public class HTMLHighlighter implements Highlighter {
             SyntaxConstants.HTML_BLOCK_CMNT_END)) {
 
          searcher.setMarkupSection();
-         searcher.setSectionBlack();
+         searcher.resetAttributes();
          searcher.htmlElements(TAGS, ATTRIBUTES);
          searcher.embeddedHtmlSections("<script", "</script>", js);
          searcher.embeddedHtmlSections("<style", "</style>", css);

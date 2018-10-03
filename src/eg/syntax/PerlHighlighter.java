@@ -61,8 +61,8 @@ public class PerlHighlighter implements Highlighter {
    @Override
    public void highlight() {
       searcher.setCondition(QW_COND);
-      searcher.setSemicolonSection(true);
-      searcher.setSectionBlack();
+      searcher.setToNextSemicolonSection(true);
+      searcher.resetAttributes();
       searcher.signedVariables(START_OF_VAR, END_OF_VAR, true,
             Attributes.PURPLE_PLAIN);
 

@@ -16,11 +16,11 @@ import eg.utils.LinesFinder;
 import eg.ui.LineNrWidthAdaptable;
 
 /**
- * The document that is displayed in the text area that show line numbers.
+ * The line numbering
  * <p>
  * Created in {@link EditableDocument}
  */
-public class LineNumberDocument {
+public class LineNumbers {
 
    private final static Color GRAY = new Color(170, 170, 170);
    private final static SimpleAttributeSet SET = new SimpleAttributeSet();
@@ -42,7 +42,7 @@ public class LineNumberDocument {
     * line numbers
     * @param  lineNrWidth  the reference to {@link LineNrWidthAdaptable}
     */
-   public LineNumberDocument(JTextPane lineNrArea,
+   public LineNumbers(JTextPane lineNrArea,
          LineNrWidthAdaptable lineNrWidth) {
 
       this.doc = lineNrArea.getStyledDocument();

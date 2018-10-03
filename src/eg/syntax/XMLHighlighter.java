@@ -18,7 +18,7 @@ public class XMLHighlighter implements Highlighter {
             SyntaxConstants.HTML_BLOCK_CMNT_END)) {
 
          searcher.setMarkupSection();
-         searcher.setSectionBlack();
+         searcher.resetAttributes();
          searcher.xmlElements();
       }
       searcher.blockComments(SyntaxConstants.HTML_BLOCK_CMNT_START,
