@@ -9,7 +9,7 @@ public interface EditingStateReadable {
    /**
     * Sets the boolean that, if true, indicates that the document
     * is in change. False indicates that the "in change state" is
-    * reset which should be the case when the document's text is saved.
+    * reset which should be the case when the document text is saved.
     *
     * @param b  the boolean value
     */
@@ -32,7 +32,7 @@ public interface EditingStateReadable {
    public void setSelectionState(boolean b);
    
    /**
-    * Sets the numbers of the line and the column where the cursor is
+    * Sets the number of the line and the column where the cursor is
     * located
     *
     * @param line  the line number

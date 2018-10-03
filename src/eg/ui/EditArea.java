@@ -30,7 +30,7 @@ import eg.utils.ScreenParams;
  * Defines the panel that contains the text area for editing text and the
  * area that displays line numbers.
  * <p>
- * The usual shortcuts for cut, copy, paste and select text are disabled 
+ * The usual shortcuts for cut, copy, paste and select text are disabled
  */
 public final class EditArea {
 
@@ -129,7 +129,7 @@ public final class EditArea {
    public LineNrWidthAdaptable lineNrWidth() {
       return (i, j) -> adaptLineNrWidth(i, j);
    }
-   
+
    /**
     * Enables wordwrap. Invoking this method also hides the area that
     * displays line numbers
@@ -137,7 +137,7 @@ public final class EditArea {
    public void enableWordwrap() {
       enableWordwrapImpl();
    }
-   
+
    /**
     * Disables wordwrap and makes the area that displays line numbers
     * visible if the specified boolean <code>lineNumbers</code> is true
