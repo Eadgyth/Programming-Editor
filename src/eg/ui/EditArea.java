@@ -154,8 +154,7 @@ public final class EditArea {
    }
 
    /**
-    * Returns the boolane that true if wordwrap is enabled, false
-    * otherwise
+    * Returns the boolane that true if wordwrap is enabled
     *
     * @return  the boolean value
     */
@@ -164,16 +163,16 @@ public final class EditArea {
    }
 
    /**
-    * Shows or hides the area that displays line numbers, depending on
-    * the specified boolean value
+    * Shows or hides the area that displays line numbers
     *
-    * @param b  the boolean value; true to show line numnbers
-    * @throws IllegalStateException  if wordwrap is currently enabled
+    * @param b  the boolean value that is true to show line numnbers
+    * @throws IllegalStateException  if b is true and wordwrap is
+    * currently enabled
     */
    public void showLineNumbers(boolean b) {
       if (isWordwrap) {
-         throw new IllegalStateException("Word-wrapping is currently"
-               + " enabled. Showing or hiding line numbers is not possible.");
+         throw new IllegalStateException(
+               "Wordwrap is currently enabled");
       }
       if (b) {
          showLineNumbersImpl();
