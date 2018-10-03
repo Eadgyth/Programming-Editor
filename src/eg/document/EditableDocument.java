@@ -335,7 +335,7 @@ public final class EditableDocument {
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private EditableDocument(EditArea editArea) {
@@ -367,9 +367,10 @@ public final class EditableDocument {
    }
 
    private boolean writeToFile(File f) {
-      boolean isWritable;     
-      File sameName = new File(f.toString());
-      isWritable = f.renameTo(sameName);
+      boolean isWritable = FileUtils.isWritable(f);
+      if (!isWritable) {          
+          return false;
+      }
       String[] lines = txt.text().split("\n");  
       try (FileWriter writer = new FileWriter(f)) {     
          for (String s : lines) {
@@ -378,15 +379,7 @@ public final class EditableDocument {
          return true;
       }
       catch (IOException e) {
-         if (!isWritable) {
-            Dialogs.errorMessage(
-                  f.getName() + " cannot be saved."
-                  + " It may be used by another process.",
-                  null);
-         }
-         else {
-            FileUtils.logStack(e);
-         }
+         FileUtils.logStack(e);
       }
       return false;
    }

@@ -70,6 +70,25 @@ public class FileUtils {
    }
    
    /**
+    * Returns if a file is writable
+    *
+    * @param f  the file
+    */
+   public static boolean isWritable(File f) {
+      boolean isWritable;
+      File sameName = new File(f.toString());
+      isWritable = f.renameTo(sameName);
+      if (!isWritable) {
+         Dialogs.errorMessage(
+               f.getName()
+               + " cannot be accessed."
+               + " It may be used by another process.",
+               null);
+      }
+      return isWritable;
+   }
+   
+   /**
     * Deletes a folder and its content
     *
     * @param dir  the directory to be deleted
