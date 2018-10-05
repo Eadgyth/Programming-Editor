@@ -244,19 +244,19 @@ public class ExchangeEditor implements AddableEditTool {
    private final EditingStateReadable editReadable = new EditingStateReadable() {
 
       @Override
-      public void setInChangeState(boolean isChange) {}
+      public void updateInChangeState(boolean isChange) {}
 
       @Override
-      public void setUndoableState(boolean canUndo, boolean canRedo) {
+      public void updateUndoableState(boolean canUndo, boolean canRedo) {
          enableUndoRedo(canUndo, canRedo);
       }
 
       @Override
-      public void setSelectionState(boolean isSelection) {
+      public void updateSelectionState(boolean isSelection) {
          enableCutCopy(isSelection);
       }
 
       @Override
-      public void setCursorPosition(int line, int col) {}
+      public void updateCursorState(int line, int col) {}
    };
 }

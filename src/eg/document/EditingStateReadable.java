@@ -7,36 +7,36 @@ package eg.document;
 public interface EditingStateReadable {
 
    /**
-    * Sets the boolean that, if true, indicates that the document
+    * Updates the boolean that, if true, indicates that the document
     * is in change. False indicates that the "in change state" is
-    * reset which should be the case when the document text is saved.
+    * reupdate which should be the case when the document text is saved.
     *
     * @param b  the boolean value
     */
-   public void setInChangeState(boolean b);
+   public void updateInChangeState(boolean b);
    
    /**
-    * Sets the booleans that indicate if edits can be redone and/or
+    * Updates the booleans that indicate if edits can be redone and/or
     * undone
     *
     * @param canUndo  the boolean value for undoable edits
     * @param canRedo  the boolean value for redobale edits
     */
-   public void setUndoableState(boolean canUndo, boolean canRedo);
+   public void updateUndoableState(boolean canUndo, boolean canRedo);
    
    /**
-    * Sets the boolean that indicates if text is currenty selected
+    * Updates the boolean that indicates if text is currenty selected
     *
     * @param b  the boolean value 
     */
-   public void setSelectionState(boolean b);
+   public void updateSelectionState(boolean b);
    
    /**
-    * Sets the number of the line and the column where the cursor is
+    * Updates the number of the line and the column where the cursor is
     * located
     *
     * @param line  the line number
     * @param col  the column number
     */
-   public void setCursorPosition(int line, int col);
+   public void updateCursorState(int line, int col);
 }

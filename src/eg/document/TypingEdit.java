@@ -34,7 +34,7 @@ public class TypingEdit {
    private String change = "";
    private boolean isAddToUndo = true;
    private EditingStateReadable esr;
-   private boolean isInChange = false;
+   private boolean inChangeState = false;
    private boolean selectionState = false;
    private boolean canUndoState = false;
    private boolean canRedoState = false;
@@ -102,11 +102,12 @@ public class TypingEdit {
    }
 
    /**
-    * Resets the state in which text is being changed
+    * Resets the state which indicates that document text has been
+    * changed
     */
    public void resetInChangeState() {
-      isInChange = false;
-      esr.setInChangeState(isInChange);
+      inChangeState = false;
+      esr.updateInChangeState(inChangeState);
    }
 
    /**
@@ -129,7 +130,7 @@ public class TypingEdit {
 
    /**
     * Sets the boolean that disables/re-enables the addition of
-    * breakpoint that define unduable units.
+    * breakpoint that define undoable units.
     *
     * @param b  the boolean value; true to disable, false to re-enable
     * @see UndoEdit #disableBreakpointAdding(boolean)
@@ -201,10 +202,10 @@ public class TypingEdit {
     */
    public void readEditingState() {
       if (esr != null) {
-         esr.setInChangeState(isInChange);
-         esr.setCursorPosition(lineNr, colNr);
-         esr.setUndoableState(canUndoState, canRedoState);
-         esr.setSelectionState(selectionState);
+         esr.updateInChangeState(inChangeState);
+         esr.updateUndoableState(canUndoState, canRedoState);
+         esr.updateSelectionState(selectionState);
+         esr.updateCursorState(lineNr, colNr);
       }
    }
 
@@ -231,7 +232,7 @@ public class TypingEdit {
    //
 
    private void updateAfterUndoRedo() {
-      outputUndoableState();
+      updateUndoableState();
       if (isCodeEditing) {
          if (isInsert) {          
             syntax.highlight();
@@ -246,7 +247,7 @@ public class TypingEdit {
    private void updateText() {
       txt.updateText();
       lineNum.updateLineNumber(txt.text());
-      outputInChangeState();
+      updateInChangeState();
    }
    
    private void highlightAtPos() {
@@ -262,17 +263,17 @@ public class TypingEdit {
       }
    }
 
-   private void outputInChangeState() {
+   private void updateInChangeState() {
       if (esr == null) {
          return;
       }
-      if (!isInChange) {
-         isInChange = true;
-         esr.setInChangeState(isInChange);
+      if (!inChangeState) {
+         inChangeState = true;
+         esr.updateInChangeState(inChangeState);
       }
    }
 
-   private void outputUndoableState() {
+   private void updateUndoableState() {
       if (esr == null) {
          return;
       }
@@ -285,21 +286,21 @@ public class TypingEdit {
          canRedoState = undo.canRedo();
       }
       if (isUndoableChange || isRedoableChange) {
-         esr.setUndoableState(canUndoState, canRedoState);
+         esr.updateUndoableState(canUndoState, canRedoState);
       }
    }
 
-   private void outputSelectionState(boolean isSelection) {
+   private void updateSelectionState(boolean isSelection) {
       if (esr == null) {
          return;
       }
       if (selectionState != isSelection) {
          selectionState = isSelection;
-         esr.setSelectionState(selectionState);
+         esr.updateSelectionState(selectionState);
       }
    }
 
-   private void outputCursorPosition(int caret) {
+   private void updateCursorState(int caret) {
       if (esr == null) {
          return;
       }
@@ -311,7 +312,7 @@ public class TypingEdit {
       else {
          colNr = caret - lastNewLine;
       }
-      esr.setCursorPosition(lineNr, colNr);
+      esr.updateCursorState(lineNr, colNr);
    }
 
    private void markUndoBreakpoint(int caret) {
@@ -343,7 +344,7 @@ public class TypingEdit {
          change = txt.text().substring(chgPos, chgPos + de.getLength());
          if (isAddToUndo) {
             undo.addEdit(change, chgPos, isInsert);
-            outputUndoableState();
+            updateUndoableState();
             if (isCodeEditing) {
                EventQueue.invokeLater(() -> highlightAtPos());
                EventQueue.invokeLater(() -> indent.adjustIndent(chgPos));
@@ -362,7 +363,7 @@ public class TypingEdit {
          updateText();
          if (isAddToUndo) {
             undo.addEdit(change, chgPos, isInsert);
-            outputUndoableState();   
+            updateUndoableState();   
             if (isCodeEditing) {
                EventQueue.invokeLater(() -> highlightAtPos());
             }
@@ -374,8 +375,8 @@ public class TypingEdit {
    };
 
    private final CaretListener caretListener = (CaretEvent ce) -> {
-      outputSelectionState(ce.getDot() != ce.getMark());
-      outputCursorPosition(ce.getDot());
+      updateSelectionState(ce.getDot() != ce.getMark());
+      updateCursorState(ce.getDot());
       markUndoBreakpoint(ce.getDot());
    };
 }

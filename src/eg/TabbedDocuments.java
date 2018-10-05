@@ -325,7 +325,7 @@ public class TabbedDocuments {
 
    private void setupDocument(int index) {
       edtDoc[index].setIndentUnit(edit.changedIndentUnit());
-      edtDoc[index].setEditingStateReadable(editReadable);
+      edtDoc[index].setEditingStateReadable(editState);
    }
 
    private void addNewTab(String filename, JPanel pnl) {
@@ -511,25 +511,25 @@ public class TabbedDocuments {
       }
    };
 
-   private final EditingStateReadable editReadable = new EditingStateReadable() {
+   private final EditingStateReadable editState = new EditingStateReadable() {
 
       @Override
-      public void setInChangeState(boolean isChange) {
+      public void updateInChangeState(boolean isChange) {
          mw.enableSave(isChange);
       }
 
       @Override
-      public void setUndoableState(boolean canUndo, boolean canRedo) {
+      public void updateUndoableState(boolean canUndo, boolean canRedo) {
          mw.enableUndoRedo(canUndo, canRedo);
       }
 
       @Override
-      public void setSelectionState(boolean isSelection) {
+      public void updateSelectionState(boolean isSelection) {
          mw.enableCutCopy(isSelection);
       }
 
       @Override
-      public void setCursorPosition(int line, int col) {
+      public void updateCursorState(int line, int col) {
          mw.displayCursorPosition(line, col);
       }
    };
