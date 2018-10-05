@@ -50,11 +50,11 @@ public class SyntaxUtils {
             }
          }
       }
-      return isWord;      
+      return isWord;
    }
 
    /**
-    * Returns if the character that follows the specified position is
+    * Returns if the character at the specified position is
     * a word end
     *
     * @param text  the text
@@ -73,7 +73,7 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the length of a word that starts at the specified position 
+    * Returns the length of a word that starts at the specified position
     * and ends before one of the characters in <code>endChars</code>
     *
     * @param text  the text
@@ -135,7 +135,7 @@ public class SyntaxUtils {
       }
       return lastStart;
    }
-   
+
     /**
     * Returns the position of the next block start
     *
@@ -215,7 +215,7 @@ public class SyntaxUtils {
       }
       return nextEnd;
    }
-   
+
    /**
     * Returns the position of the next <code>toSearch</code> that is not
     * in quotes
@@ -230,12 +230,12 @@ public class SyntaxUtils {
       while (index != -1
             && (isQuoted(text, index, SyntaxConstants.DOUBLE_QUOTE)
             || isQuoted(text, index, SyntaxConstants.SINGLE_QUOTE))) {
-               
+
          index = text.indexOf(toSearch, index + 1);
       }
       return index;
    }
-   
+
    /**
     * Returns the position of the next <code>toSearch</code> that is not
     * quoted in which a quotation must be found inside a line
@@ -247,12 +247,12 @@ public class SyntaxUtils {
     */
    public static int nextUnquotedInLine(String text, String toSearch, int pos) {
       int index = text.indexOf(toSearch, pos);
-      while (index != -1 && isQuotedInLine(text, index)) {               
+      while (index != -1 && isQuotedInLine(text, index)) {
          index = text.indexOf(toSearch, index + 1);
       }
       return index;
    }
-   
+
    /**
     * Returns the position of the first quote mark (single or
     * double) in the text before <code>pos</code>
@@ -274,7 +274,7 @@ public class SyntaxUtils {
       }
       return index;
    }
-   
+
    /**
     * Returns the position of the last quote mark (single or
     * double) behind <code>pos</code>
@@ -296,7 +296,7 @@ public class SyntaxUtils {
       }
       return index;
    }
-   
+
    /**
     * Returns if the specified position is found in a quoted section
     * where it is required that the quotation is found inside a line
@@ -349,7 +349,7 @@ public class SyntaxUtils {
          return false;
       }
    }
-   
+
    /**
     * Returns the last position of the specified <code>toSearch</code>
     * that is not preceded with a backslash that is itself is not
@@ -384,7 +384,7 @@ public class SyntaxUtils {
       }
       return index;
    }
-   
+
    /**
     * Returns the next position that is a space character
     *
@@ -411,13 +411,13 @@ public class SyntaxUtils {
    //
 
    private SyntaxUtils() {}
-   
+
    private static int lastUnquoted(String text, String toSearch, int pos) {
       int index = text.lastIndexOf(toSearch, pos);
       while (index != -1
             && (isQuoted(text, index, SyntaxConstants.DOUBLE_QUOTE)
             || isQuoted(text, index, SyntaxConstants.SINGLE_QUOTE))) {
-               
+
          index = text.lastIndexOf(toSearch, index - 1);
       }
       return index;
