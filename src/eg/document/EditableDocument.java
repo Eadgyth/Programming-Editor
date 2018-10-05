@@ -367,8 +367,8 @@ public final class EditableDocument {
    }
 
    private boolean writeToFile(File f) {
-      boolean isWritable = FileUtils.isWritable(f);
-      if (!isWritable) {          
+      boolean isWriteable = FileUtils.isWriteable(f);
+      if (!isWriteable) {          
           return false;
       }
       String[] lines = txt.text().split("\n");  
