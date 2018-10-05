@@ -171,7 +171,7 @@ public class FileTree {
    }
 
    private void deleteFile() {
-      if (!FileUtils.isWritable(selectedFile)) {
+      if (!FileUtils.isWriteable(selectedFile)) {
          return;
       }
       int res = Dialogs.warnConfirmYesNo(
