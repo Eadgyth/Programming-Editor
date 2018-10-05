@@ -17,26 +17,26 @@ public class RHighlighter implements Highlighter {
       "while"
    };
    
-   private SyntaxHighlighter.SyntaxSearcher searcher;
+   private SyntaxHighlighter.SyntaxSearcher s;
    
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
-      this.searcher = searcher;
+      s = searcher;
    }
       
    @Override
    public void highlight() {
-      searcher.setEntireText();
-      searcher.resetAttributes();
-      searcher.keywords(KEYWORDS, true, null, Attributes.RED_PLAIN);
-      searcher.braces();
-      searcher.brackets();
-      searcher.quoted(Attributes.ORANGE_PLAIN);
-      searcher.lineComments(SyntaxConstants.HASH);
+      s.setEntireText();
+      s.resetAttributes();
+      s.keywords(KEYWORDS, true, null, Attributes.RED_PLAIN);
+      s.braces();
+      s.brackets();
+      s.quote();
+      s.lineComments(SyntaxConstants.HASH);
    }
    
    @Override
-   public boolean isValid(String text, int pos, int condition) {
+   public boolean isValid(String text, int pos, int length, int condition) {
       return true;
    }
 }

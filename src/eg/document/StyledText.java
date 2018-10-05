@@ -15,10 +15,7 @@ import javax.swing.text.StyleConstants;
 import eg.utils.FileUtils;
 
 /**
- * The styled text that is edited.
- * <p>
- * The text obtained by {@link #text()} is the text that is updated by
- * {@link #updateText()}.
+ * The text that is edited.
  * <p>
  * Created in {@link EditableDocument}
  */
@@ -38,22 +35,23 @@ public class StyledText {
    }
    
    /**
-    * Adds a <code>DocumentListener</code>
-    *
-    * @param dl  the <code>DocumentListener</code>
-    */
-   public void addDocumentListener(DocumentListener dl) {
-      doc.addDocumentListener(dl);
-   }
-   
-   /**
-    * @param textArea  the <code>JTextPane</code> that displays the text
+    * @param textArea  the reference to the <code>JTextPane</code> that
+    * displays the text
     */
    public StyledText(JTextPane textArea) {
       this.textArea = textArea;
       doc = textArea.getStyledDocument();
       Element el = doc.getParagraphElement(0);
       doc.setParagraphAttributes(0, el.getEndOffset(), SET, false);
+   }
+   
+   /**
+    * Adds a <code>DocumentListener</code>
+    *
+    * @param dl  the <code>DocumentListener</code>
+    */
+   public void addDocumentListener(DocumentListener dl) {
+      doc.addDocumentListener(dl);
    }
    
    /**
@@ -69,7 +67,9 @@ public class StyledText {
    }
    
    /**
-    * Gets this text
+    * Gets this text which is contained in the <code>Document</code>
+    * that is displayed in this text area. The text is alsways only
+    * the text that is updated by {@link #updateText()}.
     *
     * @return  the text
     */

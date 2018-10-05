@@ -10,8 +10,8 @@ public class PerlHighlighter implements Highlighter {
    };
 
    private final static char[] END_OF_VAR = {
-      ' ', '\\', '(', ')', ';', '[', ']', '{', '}', '.', ':', ',', '?',
-      '=', '/', '+', '-', '*', '|', '&', '!', '%', '^', '<', '>', '~'
+      ' ', '\\', '(', ')', ';', '[', ']', '{', '}', '.', ':', ',', '?', '\n',
+      '=', '/', '+', '-', '*', '|', '&', '!', '%', '^', '<', '>', '~',
    };
 
    private final static char[] OPEN_QW_DEL = {
@@ -38,50 +38,54 @@ public class PerlHighlighter implements Highlighter {
       "while"
    };
 
-   private final static String[] STRING_OP = {
-      " and ",
-      " cmp ",
-      " eq ",
-      " ge ", " gt ",
-      " le ", " lt ",
-      " ne ",
-      " or ",
-      " xor "
+   private final static String[] OP = {
+      "and",
+      "cmp",
+      "eq",
+      "ge", "gt",
+      "le", "lt",
+      "ne",
+      "or",
+      "xor"
    };
    private final static int QW_COND = 0;
-   private final static int LINE_CMNT_COND = 1;
+   private final static int OP_COND = 1;
+   private final static int LINE_CMNT_COND = 2;
 
-   private SyntaxHighlighter.SyntaxSearcher searcher;
+   private SyntaxHighlighter.SyntaxSearcher s;
    
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
-      this.searcher = searcher;
+      s = searcher;
    }
 
    @Override
    public void highlight() {
-      searcher.setCondition(QW_COND);
-      searcher.setToNextSemicolonSection(true);
-      searcher.resetAttributes();
-      searcher.signedVariables(START_OF_VAR, END_OF_VAR, true,
-            Attributes.PURPLE_PLAIN);
-
-      searcher.keywords(KEYWORDS, true, null, Attributes.RED_BOLD);
-      searcher.keywords(STRING_OP, false, null, Attributes.RED_BOLD);
-      searcher.braces();
-      searcher.quoted(Attributes.ORANGE_PLAIN);
-      searcher.setCondition(LINE_CMNT_COND);
-      searcher.lineComments(SyntaxConstants.HASH);
+      s.setCondition(QW_COND);
+      s.setStatementSection();
+      s.resetAttributes();
+      s.signedVariables(START_OF_VAR, END_OF_VAR, Attributes.PURPLE_PLAIN);
+      s.keywords(KEYWORDS, true, null, Attributes.RED_BOLD);
+      s.setCondition(OP_COND);
+      s.keywords(OP, false, null, Attributes.RED_BOLD);
+      s.setCondition(QW_COND);
+      s.braces();
+      s.quote();
+      s.setCondition(LINE_CMNT_COND);
+      s.lineComments(SyntaxConstants.HASH);
    }
 
    @Override
-   public boolean isValid(String text, int pos, int condition) {
+   public boolean isValid(String text, int pos, int length, int condition) {
       boolean ok = true;
       if (condition == QW_COND) {
          ok = isNotQwFunction(text, pos);
       }
+      else if (condition == OP_COND) {
+         ok = isOperator(text, pos, length) && isNotQwFunction(text, pos);
+      }
       else if (condition == LINE_CMNT_COND) {
-         ok = isNotQwFunction(text, pos) && isLineCmnt(text, pos);
+         ok = isLineCmnt(text, pos) && isNotQwFunction(text, pos);
       }
       return ok;
    }
@@ -125,6 +129,29 @@ public class PerlHighlighter implements Highlighter {
             if (!ok) {
                break;
             }
+         }
+      }
+      return ok;
+   }
+   
+   private boolean isOperator(String text, int pos, int length) {
+      boolean ok = true;
+      if (pos > 0) {
+         char c = text.charAt(pos - 1);
+         ok = !Character.isLetter(c);
+         if (ok) {
+            for (int i = 0; i < START_OF_VAR.length; i++) {
+               if (c == START_OF_VAR[i]) {
+                  ok = false;
+               }
+            }
+         }
+      }
+      if (ok) {
+         int end = pos + length;
+         if (text.length() > end) {
+            char c = text.charAt(end);
+            ok = !Character.isLetter(c);
          }
       }
       return ok;

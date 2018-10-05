@@ -5,28 +5,28 @@ package eg.syntax;
  */
 public class XMLHighlighter implements Highlighter {
    
-   private SyntaxHighlighter.SyntaxSearcher searcher;
+   private SyntaxHighlighter.SyntaxSearcher s;
    
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
-      this.searcher = searcher;
+      s = searcher;
    }
 
    @Override
    public void highlight() {
-      if (!searcher.isInBlockCmnt(SyntaxConstants.HTML_BLOCK_CMNT_START,
+      if (!s.isInBlockCmnt(SyntaxConstants.HTML_BLOCK_CMNT_START,
             SyntaxConstants.HTML_BLOCK_CMNT_END)) {
 
-         searcher.setMarkupSection();
-         searcher.resetAttributes();
-         searcher.xmlElements();
+         s.setMarkupSection();
+         s.resetAttributes();
+         s.markupElements(null, null);
       }
-      searcher.blockComments(SyntaxConstants.HTML_BLOCK_CMNT_START,
+      s.blockComments(SyntaxConstants.HTML_BLOCK_CMNT_START,
             SyntaxConstants.HTML_BLOCK_CMNT_END);
    }
    
    @Override
-   public boolean isValid(String text, int pos, int condition) {
+   public boolean isValid(String text, int pos, int length, int condition) {
       return true;
    }
 }

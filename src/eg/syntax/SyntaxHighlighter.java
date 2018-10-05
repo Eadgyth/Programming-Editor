@@ -7,7 +7,7 @@ import eg.utils.LinesFinder;
 import eg.document.StyledText;
 
 /**
- * The syntax highlighting in the txt.text() contained in
+ * The syntax highlighting of the text contained in
  * <code>StyledText</code>
  */
 public class SyntaxHighlighter {
@@ -47,9 +47,9 @@ public class SyntaxHighlighter {
    }
 
    /**
-    * Highlights text elements around the position where a change
-    * happened. By default the highlighted section is the line that
-    * contains <code>chgPos</code>
+    * Highlights text elements in a section around the position
+    * where a change happened. The section is initially the line
+    * that contains <code>chgPos</code>.
     *
     * @param chgPos  the position where a change happened
     */
@@ -61,9 +61,12 @@ public class SyntaxHighlighter {
    }
 
    /**
-    * Highlights text elements in a text change that may be multiline
+    * Highlights text elements in a section that may be multiline.
+    * The section initially consists of the completed lines that
+    * contain <code>change</code> and begins with the line that
+    * contains <code>chgPos</code>.
     *
-    * @param change  the change to the txt.text()
+    * @param change  the change to the text
     * @param chgPos  the position where the change starts
     */
    public void highlight(String change, int chgPos) {
@@ -75,8 +78,13 @@ public class SyntaxHighlighter {
    }
 
    /**
-    * The search and highlighting of text elements. Class is
-    * created in the enclosing class and has no public constructor.
+    * The search and highlighting of text elements.
+    * <p>
+    * The highlighting may take place in sections while text is
+    * edited. The section is initially defined as described for
+    * the <code>highlight</code> methods in the enclosing
+    * {@link SyntaxHighlighter}. Highlighting during editing text
+    * requires to once reset the attributes by {@link #resetAttributes}.
     */
    public class SyntaxSearcher {
 
@@ -92,8 +100,8 @@ public class SyntaxHighlighter {
       private int condition = 0;
 
       /**
-       * Sets the condition for testing if a found txt.text() element is
-       * valid. The condition is passed to {@link Highlighter#isValid}.
+       * Sets the condition for additionally validating a found text
+       * element. The condition is passed to {@link Highlighter#isValid}.
        *
        * @param condition  a freely chosen integer. Default is 0
        */
@@ -102,7 +110,7 @@ public class SyntaxHighlighter {
       }
 
      /**
-      * Modifies the default section to simply the entire txt.text()
+      * Sets the section that is simply the entire text
       */
       public void setEntireText() {
          scnStart = 0;
@@ -110,48 +118,43 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Modifies the default section such that it extends to the next
-       * unquoted semicolon. The search for the next semicolon also
-       * continues so long as {@link Highlighter#isValid} returns false.
-       *
-       * @param extendForQuoteMarks  the boolean value that is true to
-       * extend the section to the region that contains quote marks around
-       * the section
+       * Sets the section that takes into account semicolon separated
+       * statements which may be multiline. The section may be further
+       * exdended to the region that contains quote marks around the
+       * statement.<br>
+       * The search for the next semicolon, relative to the end of the
+       * initial section, continues so long as it is found in quotes
+       * and {@link Highlighter#isValid} returns false.
        */
-      public void setToNextSemicolonSection(boolean extendForQuoteMarks) {
+      public void setStatementSection() {
          if (isTypeMode && isHighlightBlockCmnt) {
-            int searchStart = scnStart;
-            int searchEnd = scnStart + section.length();
-            int semicolon = SyntaxUtils.nextUnquoted(txt.text(), ";", searchEnd);
-            while (semicolon != -1 && !isValid(semicolon)) {
-               semicolon = SyntaxUtils.nextUnquoted(txt.text(), ";",
-                     semicolon + 1);
+            int start = scnStart;
+            int end = start + section.length();
+            if (scnStart > 0 && txt.text().charAt(scnStart - 1) == '\n') {
+               start = LinesFinder.lastNewline(txt.text(), scnStart - 1) + 1;
             }
-            if (semicolon != -1) {
-               searchEnd = semicolon;
+            int sep = SyntaxUtils.nextUnquoted(txt.text(), ";", end);
+            while (sep != -1 && !isValid(sep, 0)) {
+               sep = SyntaxUtils.nextUnquoted(txt.text(), ";", sep + 1);
+            }
+            if (sep != -1) {
+               end = sep;
             }
             else {
-               searchEnd = txt.text().length();
+               end = txt.text().length();
             }
-            if (extendForQuoteMarks) {
-               int firstQuoteMark = SyntaxUtils.firstQuoteMark(txt.text(),
-                     scnStart);
-
-               if (firstQuoteMark != -1) {
-                  searchStart = LinesFinder.lastNewline(txt.text(),
-                        firstQuoteMark) + 1;
-               }
-               if (searchEnd < txt.text().length()) {
-                  int lastQuoteMark = SyntaxUtils.lastQuoteMark(txt.text(),
-                        searchEnd);
-
-                  if (lastQuoteMark != -1) {
-                     searchEnd = lastQuoteMark;
-                  }
+            int firstQuote = SyntaxUtils.firstQuoteMark(txt.text(), start);
+            if (firstQuote != -1) {
+               start = LinesFinder.lastNewline(txt.text(), firstQuote) + 1;
+            }
+            if (end < txt.text().length()) {
+               int lastQuote = SyntaxUtils.lastQuoteMark(txt.text(), end);
+               if (lastQuote != -1) {
+                  end = lastQuote;
                }
             }
-            int end = LinesFinder.nextNewline(txt.text(), searchEnd);
-            scnStart = searchStart;
+            end = LinesFinder.nextNewline(txt.text(), end);
+            scnStart = start;
             if (end != -1) {
                section = txt.text().substring(scnStart, end);
             }
@@ -162,8 +165,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Modifies the default section such that it corresponds to markup
-       * language elements
+       * Sets the section that takes into account markup language tags
        */
       public void setMarkupSection() {
          if (isTypeMode && isHighlightBlockCmnt) {
@@ -178,10 +180,10 @@ public class SyntaxHighlighter {
             }
             int end;
             if (isMultiline) {
-               end = htmlSectionEnd(scnStart + section.length() + 1);
+               end = markupTagEnd(scnStart + section.length() + 1);
             }
             else {
-               end = htmlSectionEnd(chgPos + 1);
+               end = markupTagEnd(chgPos + 1);
             }
             scnStart = start;
             section = txt.text().substring(start, end);
@@ -189,12 +191,12 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Resets the attributes in the section that is to be highlighted.
-       * By default the section is the line where a change happened or the
-       * lines that contain a possibly multiline insertion.
+       * Resets the attributes in the section that is to be highlighted
        */
       public void resetAttributes() {
-         txt.resetAttributes(scnStart, section.length());
+         if (isTypeMode) {
+            txt.resetAttributes(scnStart, section.length());
+         }
       }
 
       /**
@@ -204,9 +206,8 @@ public class SyntaxHighlighter {
        * @param keys  the array of keywords
        * @param reqWord  the boolean value that is true to require that
        * keywords are whole words
-       * @param nonWordStart  the array of characters that the keyword
-       * must not be preceded with. Can be null and is ignored if reqWord
-       * is false
+       * @param nonWordStart  the array of characters that must not precede
+       * the keyword. Can be null and is ignored if reqWord is false
        * @param set  the SimpleAttributeSet set on the keywords
        */
       public void keywords(String[] keys, boolean reqWord, char[] nonWordStart,
@@ -223,9 +224,9 @@ public class SyntaxHighlighter {
        * (requires that {@link Highlighter#isValid} returns true)
        *
        * @param base  the base keyword
-       * @param extensions  the array of strings that may extend base
-       * @param nonWordStart  the array of characters that the keyword
-       * must not be preceded with. Can be null
+       * @param extensions  the array of keywords that may extend base
+       * @param nonWordStart  the array of characters that must not precede
+       * the keyword. Can be null
        * @param set  the SimpleAttributeSet set on the keywords
        */
       public void extensibleKeyword(String base, String[] extensions,
@@ -240,7 +241,7 @@ public class SyntaxHighlighter {
                int endPos = start + base.length();
                boolean ok = SyntaxUtils.isWord(section, start, base.length(),
                         nonWordStart)
-                     && isValid(absStart);
+                     && isValid(absStart, base.length());
 
                if (ok) {
                   length += extensionLength(extensions, endPos);
@@ -257,15 +258,13 @@ public class SyntaxHighlighter {
        *
        * @param startChars  the array of start characters
        * @param endChars  the array of end characters
-       * @param reqWord  the boolean value that is true to require that
-       * the variables are whole words
        * @param set  the SimpleAttributeSet set on the variables
        */
       public void signedVariables(char[] startChars, char[] endChars,
-             boolean reqWord, SimpleAttributeSet set) {
+             SimpleAttributeSet set) {
 
          for (char c : startChars) {
-            signedVariable(c, endChars, reqWord, set);
+            signedVariable(c, endChars, set);
          }
       }
 
@@ -288,58 +287,56 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights quoted txt.text() in single or double
-       * quotation marks.<br>(requires that {@link Highlighter#isValid}
-       * returns true)
-       *
-       * @param set  the SimpleAttributeSet set on quoted txt.text()
+       * Searches and highlights quoted text in single or double
+       * quotation marks in orange.<br>
+       * (requires that {@link Highlighter#isValid} returns true)
        */
-      public void quoted(SimpleAttributeSet set) {
-         quoted(section, scnStart, SyntaxConstants.DOUBLE_QUOTE, set);
-         quoted(section, scnStart, SyntaxConstants.SINGLE_QUOTE, set);
+      public void quote() {
+         quote(section, scnStart, Attributes.ORANGE_PLAIN);
       }
 
       /**
-       * Searches and highlights quoted txt.text() in single or double quotation
-       * marks in which a quotation must be found inside a line.<br>
+       * Searches and highlights quoted text in single or double
+       * quotation marks in orange whereby a quotation must be found
+       * inside a line.<br>
        * (requires that {@link Highlighter#isValid} returns true)
-       *
-       * @param set  the SimpleAttributeSet set on quoted txt.text()
        */
-      public void quotedInLine(SimpleAttributeSet set) {
+      public void quoteInLine() {
          if (isMultiline) {
             String[] chunkArr = section.split("\n");
             int sum = 0;
             for (String s : chunkArr) {
-               quoted(s, scnStart + sum, SyntaxConstants.DOUBLE_QUOTE, set);
-               quoted(s, scnStart + sum, SyntaxConstants.SINGLE_QUOTE, set);
+               quote(s, scnStart + sum, Attributes.ORANGE_PLAIN);
                sum += s.length() + 1;
             }
          }
          else {
-            quoted(section, scnStart, SyntaxConstants.DOUBLE_QUOTE, set);
-            quoted(section, scnStart, SyntaxConstants.SINGLE_QUOTE, set);
+            quote(section, scnStart, Attributes.ORANGE_PLAIN);
          }
       }
 
       /**
-       * Searches and highlights html elements. Tag names are shown
+       * Searches and highlights markup elements. Tag names are shown
        * in blue and bold, attributes in red and attribute values, if
        * quoted, in purple.
        *
-       * @param tags  the array of html tag names
-       * @param attributes  the array of html attribute keywords
+       * @param tags  the array of html tag names; null for XML
+       * @param attributes  the array of html attributes; null for XML
        */
-      public void htmlElements(String[] tags,  String[] attributes) {
-         for (String s : tags) {
-            htmlElement(s, attributes);
+      public void markupElements(String[] tags,  String[] attributes) {
+         if (tags == null) {
+            xmlElements();
+         }
+         else {
+            for (String s : tags) {
+               htmlElement(s, attributes);
+            }
          }
       }
-      
+
       /**
-       * Searches sections in an html document where txt.text() elements are
-       * highlighted with a temporary <code>Highlighter</code> for CSS
-       * or Javascript
+       * Searches sections in an html document where text elements are
+       * highlighted with a temporary <code>Highlighter</code>
        *
        * @param startTag  the start tag
        * @param endTag  the end tag
@@ -351,332 +348,6 @@ public class SyntaxHighlighter {
          Highlighter hlCurr = hl;
          hl = hlSection;
          setHighlighter(hl);
-         embeddedHtmlSections(startTag, endTag);
-         hl = hlCurr;
-         setHighlighter(hl);
-      }
-
-      /**
-       * Searches and highlights XML elements. Tags are shown in
-       * blue and bold, attributes in red and attribute values, if
-       * quoted, in purple.
-       */
-      public void xmlElements() {
-         int start = 0;
-         while (start != -1) {
-            start = section.indexOf('<', start);
-            if (start != -1) {
-               int length = 0;
-               boolean isEndTag = section.length() > start + 2
-                     && section.charAt(start + 1) == '/';
-               
-               int searchStart = start;
-               if (isEndTag) {
-                  searchStart++;
-               }
-               boolean isElName = false;
-               if (section.length() > searchStart + 1) {
-                  isElName = Character.isLetter(section.charAt(searchStart + 1))
-                     || section.charAt(searchStart + 1) == '_';
-               }
-                  
-               if (isElName) {
-                  length = SyntaxUtils.wordLength(section, searchStart,
-                        SyntaxConstants.XML_TAG_END_CHARS);
-   
-                  int endPos = searchStart + length;
-                  boolean isAttr = section.length() > endPos
-                           && (' ' == section.charAt(endPos)
-                           || '\n' == section.charAt(endPos));
-   
-                  if (isAttr) {
-                     int absStart = start + scnStart;
-                     String el = txt.text().substring(absStart,
-                           htmlSectionEnd(absStart + 1));
-   
-                      for (char c : SyntaxConstants.XML_ATTR_START_CHARS) {
-                         xmlAttributes(c, SyntaxConstants.XML_ATTR_END_CHARS,
-                               el, absStart);
-                     }
-
-                     quoted(el, absStart, SyntaxConstants.SINGLE_QUOTE,
-                           Attributes.PURPLE_PLAIN);
-                     quoted(el, absStart, SyntaxConstants.DOUBLE_QUOTE,
-                           Attributes.PURPLE_PLAIN);
-                  }
-                  int colorStart = searchStart + scnStart + 1;
-                  txt.setAttributes(colorStart, length - 1, Attributes.BLUE_BOLD);
-               }
-               start += length + 1;
-            }
-         }
-      }
-
-      /**
-       * Searches and highlights line comments in green.<br>
-       * (requires that {@link Highlighter#isValid} returns true)
-       *
-       * @param lineCmntStart  the line comment start
-       */
-      public void lineComments(String lineCmntStart) {
-         int start = 0;
-         while (start != -1) {
-            int length = 0;
-            start = section.indexOf(lineCmntStart, start);
-            if (start != -1) {
-               int absStart = start + scnStart;
-               if (!SyntaxUtils.isQuotedInLine(section, start)
-                     && isValid(absStart)) {
-
-                  int lineEnd = section.indexOf("\n", start);
-                  if (lineEnd != -1) {
-                     length = lineEnd - start;
-                  }
-                  else {
-                     length = section.length() - start;
-                  }
-                  txt.setAttributes(absStart, length, Attributes.GREEN_PLAIN);
-               }
-               start += length + 1;
-            }
-         }
-      }
-
-      /**
-       * Specifies that block comment marks that are quoted are skipped
-       */
-      public void setSkipQuotedBlkCmntMarks() {
-         skipQuotedBlkCmntMarks = true;
-      }
-
-      /**
-       * Returns if the position where a change happened is found inside
-       * a block comment
-       *
-       * @param blockCmntStart  the block comment start
-       * @param blockCmntEnd  the block comment end
-       * @return  the boolean value that is true if inside a block
-       * comment; false regardless of the position if the txt.text()
-       * change is multiline
-       */
-      public boolean isInBlockCmnt(String blockCmntStart, String blockCmntEnd) {
-         if (isMultiline) {
-            return false;
-         }
-         else {
-            return isInBlock(blockCmntStart, blockCmntEnd, chgPos);
-         }
-      }
-
-      /**
-       * Searches and highlights block comments in green
-       *
-       * @param blockCmntStart  the block comment start
-       * @param blockCmntEnd  the block comment end
-       */
-      public void blockComments(String blockCmntStart, String blockCmntEnd) {
-         if (!isHighlightBlockCmnt) {
-            return;
-         }
-         removedBlockCmntStart(innerStart, blockCmntStart, blockCmntEnd);
-         int start = innerStart;
-         while (start != -1) {
-            start = txt.text().indexOf(blockCmntStart, start);
-            int length = 0;
-            if (innerEnd > 0 && start >= innerEnd - blockCmntStart.length()) {
-               start = -1;
-            }
-            if (start != -1) {
-               if (!skipQuotedBlkCmntMarks
-                     || !SyntaxUtils.isQuotedInLine(txt.text(), start)) {
-
-                  int end = SyntaxUtils.nextBlockEnd(txt.text(), start + 1,
-                        blockCmntStart, blockCmntEnd, skipQuotedBlkCmntMarks, true);
-
-                  if (innerEnd > 0 && end >= innerEnd - blockCmntEnd.length()) {
-                     end = -1;
-                  }
-                  if (end != -1) {
-                     length = end - start + blockCmntEnd.length();
-                     txt.setAttributes(start, length, Attributes.GREEN_PLAIN);
-                     removedBlockCmntStart(end + blockCmntEnd.length(),
-                           blockCmntStart, blockCmntEnd);
-                  }
-                  else {
-                     removedBlockCmntEnd(start, blockCmntStart, blockCmntEnd);
-                  }
-               }
-               start += length + 1;
-            }
-         }
-      }
-
-      //
-      //--private--/
-      //
-
-      private void key(String key, boolean reqWord, char[] nonWordStart,
-            SimpleAttributeSet set) {
-
-         int start = 0;
-         while (start != -1) {
-            start = section.indexOf(key, start);
-            if (start != -1) {
-               int absStart = start + scnStart;
-               boolean ok = (!reqWord || SyntaxUtils.isWord(section, start,
-                     key.length(), nonWordStart))
-                     && isValid(absStart);
-
-               if (ok) {
-                  txt.setAttributes(absStart, key.length(), set);
-               }
-               start += key.length();
-            }
-         }
-      }
-
-      private void signedVariable(char sign, char[] endChars,
-             boolean isWordStart, SimpleAttributeSet set) {
-
-         int start = 0;
-         while (start != -1) {
-            start = section.indexOf(sign, start);
-            if (start != -1) {
-               int absStart = start + scnStart;
-               boolean ok = (!isWordStart
-                        || SyntaxUtils.isWordStart(section, start, null))
-                     && isValid(absStart);
-
-               if (ok) {
-                  int length = SyntaxUtils.wordLength(section, start, endChars);
-                  txt.setAttributes(absStart, length, set);
-                  start += length + 1;
-               }
-               else {
-                  start++;
-               }
-            }
-         }
-      }
-
-      private int extensionLength(String[] extensions, int extStart) {
-         int length = 0;
-         for (String s : extensions) {
-            boolean found = extStart == section.indexOf(s, extStart)
-                  && SyntaxUtils.isWordEnd(section, extStart + s.length());
-
-            if (found) {
-               if (s.length() > length) {
-                  length = s.length();
-               }
-            }
-         }
-         return length;
-      }
-
-      private void htmlElement(String tag, String[] attributes) {
-         int start = 0;
-         while (start != -1) {
-            start = section.toLowerCase().indexOf(tag, start);
-            if (start != -1) {
-               int absStart = start + scnStart;
-               boolean isStartTag = start > 0 && '<' == section.charAt(start - 1);
-               int endPos = start + tag.length();
-               int length = tag.length();
-               if (isStartTag) {
-                  boolean isAttr = section.length() > endPos
-                        && (' ' == section.charAt(endPos)
-                        || '\n' == section.charAt(endPos));
-
-                  if (isAttr) {
-                     String el = txt.text().substring(absStart,
-                           htmlSectionEnd(absStart));
-                           
-                     length = el.length();
-
-                     for (String s : attributes) {
-                         htmlAttributes(s, el, absStart);
-                     }
-                     quoted(el, absStart, SyntaxConstants.DOUBLE_QUOTE,
-                           Attributes.PURPLE_PLAIN);
-                     quoted(el, absStart, SyntaxConstants.SINGLE_QUOTE,
-                           Attributes.PURPLE_PLAIN);
-                  }
-               }
-               boolean isEndTag = !isStartTag && start > 1
-                     && '/' == section.charAt(start - 1)
-                     && '<' == section.charAt(start - 2);
-
-               boolean ok = (isStartTag || isEndTag)
-                     && SyntaxUtils.isWordEnd(section, endPos);
-
-               if (ok) {
-                  txt.setAttributes(absStart, tag.length(),
-                        Attributes.BLUE_BOLD);
-               }
-               start += length;
-            }
-         }
-      }
-
-      private int htmlSectionEnd(int pos) {
-         int end = SyntaxUtils.nextBlockEnd(txt.text(), pos, "<", ">", true, false);
-         if (end == -1) {
-            end = txt.text().indexOf("<", pos);
-            if (end == -1) {
-               end = txt.text().length();
-            }
-         }
-         return end;
-      }
-
-      private void htmlAttributes(String keyword, String htmlEl, int elStart) {
-         int start = 0;
-         while (start != -1) {
-            start = htmlEl.indexOf(keyword, start);
-            if (start != -1) {
-               char before = '\0';
-               if (start > 0) {
-                  before = htmlEl.charAt(start - 1);
-               }
-               int endPos = start + keyword.length();
-               char after = '\0';
-               if (endPos < htmlEl.length()) {
-                  after = htmlEl.charAt(endPos);
-               }
-               int absStart = start + elStart;
-               boolean ok = isValid(absStart)
-                     && (' ' == before || '"' == before || '\'' == before
-                        || '\n' == before)
-                     && ('\0' == after || ' ' == after || '=' == after
-                        || '>' == after || '\n' == after);
-
-               if (ok) {
-                  txt.setAttributes(absStart, keyword.length(),
-                        Attributes.RED_PLAIN);
-               }
-               start += keyword.length();
-            }
-         }
-      }
-
-      private void xmlAttributes(char startChar, char[] endChars, String xmlEl,
-            int elStart) {
-
-         int start = 0;
-         while (start != -1) {
-            start = xmlEl.indexOf(startChar, start);
-            if (start != -1) {
-               int length;
-               int absStart = start + elStart;
-               length = SyntaxUtils.wordLength(xmlEl, start, endChars);
-               txt.setAttributes(absStart + 1, length - 1, Attributes.RED_PLAIN);
-               start += length;
-            }
-         }
-      }
-
-      private void embeddedHtmlSections(String startTag, String endTag) {
          int start = 0;
          while (start != -1) {
             start = txt.text().toLowerCase().indexOf(startTag, start);
@@ -702,9 +373,302 @@ public class SyntaxHighlighter {
          }
          innerStart = 0;
          innerEnd = 0;
+         hl = hlCurr;
+         setHighlighter(hl);
       }
 
-      private void quoted(String scn, int scnStart, char quoteMark,
+      /**
+       * Searches and highlights line comments in green.<br>
+       * (requires that {@link Highlighter#isValid} returns true)
+       *
+       * @param lineCmntStart  the line comment start
+       */
+      public void lineComments(String lineCmntStart) {
+         int start = 0;
+         while (start != -1) {
+            int length = 0;
+            start = section.indexOf(lineCmntStart, start);
+            if (start != -1) {
+               int absStart = start + scnStart;
+               if (!SyntaxUtils.isQuotedInLine(section, start)
+                     && isValid(absStart, lineCmntStart.length())) {
+
+                  int lineEnd = section.indexOf("\n", start);
+                  if (lineEnd != -1) {
+                     length = lineEnd - start;
+                  }
+                  else {
+                     length = section.length() - start;
+                  }
+                  txt.setAttributes(absStart, length, Attributes.GREEN_PLAIN);
+               }
+               start += length + 1;
+            }
+         }
+      }
+
+      /**
+       * Specifies that block comment marks that are quoted are skipped.
+       * Skipping takes place only if the quotation is found within a line.
+       */
+      public void setSkipQuotedBlkCmntMarks() {
+         skipQuotedBlkCmntMarks = true;
+      }
+
+      /**
+       * Returns if the position where a change happened is found inside
+       * a block comment
+       *
+       * @param blockCmntStart  the block comment start
+       * @param blockCmntEnd  the block comment end
+       * @return  the boolean value that is true if inside a block
+       * comment; false regardless of the position if the text change
+       * is multiline
+       */
+      public boolean isInBlockCmnt(String blockCmntStart, String blockCmntEnd) {
+         if (isMultiline) {
+            return false;
+         }
+         else {
+            return isInBlock(blockCmntStart, blockCmntEnd, chgPos);
+         }
+      }
+
+      /**
+       * Searches and highlights block comments in green
+       *
+       * @param blockCmntStart  the block comment start
+       * @param blockCmntEnd  the block comment end
+       */
+      public void blockComments(String blockCmntStart, String blockCmntEnd) {
+         if (!isHighlightBlockCmnt) {
+            return;
+         }
+         removedBlkCmntStart(innerStart, blockCmntStart, blockCmntEnd);
+         int start = innerStart;
+         while (start != -1) {
+            start = txt.text().indexOf(blockCmntStart, start);
+            int length = 0;
+            if (innerEnd > 0 && start >= innerEnd - blockCmntStart.length()) {
+               start = -1;
+            }
+            if (start != -1) {
+               if (!skipQuotedBlkCmntMarks
+                     || !SyntaxUtils.isQuotedInLine(txt.text(), start)) {
+
+                  int end = SyntaxUtils.nextBlockEnd(txt.text(), start + 1,
+                        blockCmntStart, blockCmntEnd, skipQuotedBlkCmntMarks, true);
+
+                  if (innerEnd > 0 && end >= innerEnd - blockCmntEnd.length()) {
+                     end = -1;
+                  }
+                  if (end != -1) {
+                     length = end - start + blockCmntEnd.length();
+                     txt.setAttributes(start, length, Attributes.GREEN_PLAIN);
+                     removedBlkCmntStart(end + blockCmntEnd.length(),
+                           blockCmntStart, blockCmntEnd);
+                  }
+                  else {
+                     removedBlkCmntEnd(start, blockCmntStart, blockCmntEnd);
+                  }
+               }
+               start += length + 1;
+            }
+         }
+      }
+
+      //
+      //--private--/
+      //
+
+      private void key(String key, boolean reqWord, char[] nonWordStart,
+            SimpleAttributeSet set) {
+
+         int start = 0;
+         while (start != -1) {
+            start = section.indexOf(key, start);
+            if (start != -1) {
+               int absStart = start + scnStart;
+               boolean ok = (!reqWord || SyntaxUtils.isWord(section, start,
+                     key.length(), nonWordStart))
+                     && isValid(absStart, key.length());
+
+               if (ok) {
+                  txt.setAttributes(absStart, key.length(), set);
+               }
+               start += key.length();
+            }
+         }
+      }
+
+      private void signedVariable(char sign, char[] endChars,
+            SimpleAttributeSet set) {
+
+         int start = 0;
+         while (start != -1) {
+            start = section.indexOf(sign, start);
+            if (start != -1) {
+               int absStart = start + scnStart;
+               int length = SyntaxUtils.wordLength(section, start, endChars);
+               if (isValid(absStart, length)) {
+                  txt.setAttributes(absStart, length, set);
+                  start += length + 1;
+               }
+               else {
+                  start++;
+               }
+            }
+         }
+      }
+
+      private int extensionLength(String[] extensions, int extStart) {
+         int length = 0;
+         for (String s : extensions) {
+            boolean found = extStart == section.indexOf(s, extStart)
+                  && SyntaxUtils.isWordEnd(section, extStart + s.length());
+
+            if (found) {
+               if (s.length() > length) {
+                  length = s.length();
+               }
+            }
+         }
+         return length;
+      }
+
+      private void htmlElement(String tagName, String[] attributes) {
+         String toLowerCase = section.toLowerCase();
+         int start = 0;
+         while (start != -1) {
+            start = toLowerCase.indexOf(tagName, start);
+            if (start != -1) {
+               int absStart = start + scnStart;
+               int tagEnd = start + tagName.length();
+               int length = tagName.length();
+               boolean isStartTag = start > 0
+                    && '<' == section.charAt(start - 1)
+                    && SyntaxUtils.isWordEnd(section, tagEnd);
+
+               if (isStartTag) {
+                  tagEnd = markupTagEnd(absStart);
+                  String tag = txt.text().substring(absStart, tagEnd);
+                  length = tag.length();
+                  for (String s : attributes) {
+                      htmlAttributes(s, tag, absStart);
+                  }
+                  quote(tag, absStart, Attributes.PURPLE_PLAIN);
+               }
+               boolean isEndTag = !isStartTag
+                     && start > 1
+                     && '/' == section.charAt(start - 1)
+                     && '<' == section.charAt(start - 2)
+                     && SyntaxUtils.isWordEnd(section, tagEnd);
+
+               if (isStartTag || isEndTag) {
+                  txt.setAttributes(absStart, tagName.length(), Attributes.BLUE_BOLD);
+               }
+               start += length;
+            }
+         }
+      }
+
+      private void xmlElements() {
+         int start = 0;
+         while (start != -1) {
+            start = section.indexOf('<', start);
+            if (start != -1) {
+               int length = 0;
+               boolean isEndTag = section.length() > start + 2
+                     && section.charAt(start + 1) == '/';
+
+               int searchStart = start;
+               if (isEndTag) {
+                  searchStart++;
+               }
+               boolean isTagName = false;
+               if (section.length() > searchStart + 1) {
+                  isTagName = Character.isLetter(section.charAt(searchStart + 1))
+                        || section.charAt(searchStart + 1) == '_';
+               }
+               if (isTagName) {
+                  length = SyntaxUtils.wordLength(section, searchStart,
+                        SyntaxConstants.XML_TAG_END_CHARS);
+
+                  int nameEnd = searchStart + length;
+                  if (isMarkupAttrStart(nameEnd)) {
+                     int absStart = start + scnStart;
+                     int tagEnd = markupTagEnd(absStart + 1);
+                     String tag = txt.text().substring(absStart, tagEnd);
+                     for (char c : SyntaxConstants.XML_ATTR_START_CHARS) {
+                        xmlAttributes(c, SyntaxConstants.XML_ATTR_END_CHARS,
+                              tag, absStart);
+                     }
+                     quote(tag, absStart, Attributes.PURPLE_PLAIN);
+                  }
+                  int colorStart = searchStart + scnStart + 1;
+                  txt.setAttributes(colorStart, length - 1, Attributes.BLUE_BOLD);
+               }
+               start += length + 1;
+            }
+         }
+      }
+
+      private int markupTagEnd(int pos) {
+         int end = SyntaxUtils.nextBlockEnd(txt.text(), pos, "<", ">", true, false);
+         if (end == -1) {
+            end = txt.text().indexOf("<", pos);
+            if (end == -1) {
+               end = txt.text().length();
+            }
+         }
+         return end;
+      }
+
+      private boolean isMarkupAttrStart(int pos) {
+         return section.length() > pos
+               && (' ' == section.charAt(pos)
+               || '\n' == section.charAt(pos));
+      }
+
+      private void htmlAttributes(String keyword, String tag, int tagStart) {
+         String toLowerCase = tag.toLowerCase();
+         int start = 0;
+         while (start != -1) {
+            start = toLowerCase.indexOf(keyword, start);
+            if (start != -1) {
+               boolean ok = SyntaxUtils.isWord(tag, start, keyword.length(), null);
+               if (ok) {
+                  txt.setAttributes(start + tagStart, keyword.length(),
+                        Attributes.RED_PLAIN);
+               }
+
+               start += keyword.length();
+            }
+         }
+      }
+
+      private void xmlAttributes(char startChar, char[] endChars, String xmlEl,
+            int elStart) {
+
+         int start = 0;
+         while (start != -1) {
+            start = xmlEl.indexOf(startChar, start);
+            if (start != -1) {
+               int length;
+               int absStart = start + elStart;
+               length = SyntaxUtils.wordLength(xmlEl, start, endChars);
+               txt.setAttributes(absStart + 1, length - 1, Attributes.RED_PLAIN);
+               start += length;
+            }
+         }
+      }
+
+      private void quote(String scn, int scnPos, SimpleAttributeSet set) {
+         quote(scn, scnPos, SyntaxConstants.DOUBLE_QUOTE, set);
+         quote(scn, scnPos, SyntaxConstants.SINGLE_QUOTE, set);
+      }
+
+      private void quote(String scn, int scnPos, char quoteMark,
             SimpleAttributeSet set) {
 
          final boolean isSingleQuote = quoteMark == SyntaxConstants.SINGLE_QUOTE;
@@ -712,23 +676,13 @@ public class SyntaxHighlighter {
          int end = 0;
          while (start != -1 && end != -1) {
             start = SyntaxUtils.nextNonEscaped(scn, quoteMark, start);
-            int absStart = start + scnStart;
+            int absStart = start + scnPos;
             if (start != -1) {
                int length = 0;
-               boolean ok = (!isSingleQuote
-                     || !SyntaxUtils.isQuoted(scn, start,
-                           SyntaxConstants.DOUBLE_QUOTE))
-
-                     && isValid(absStart);
-
+               boolean ok = isQuotation(isSingleQuote, scn, start, scnPos);
                end = SyntaxUtils.nextNonEscaped(scn, quoteMark, start + 1);
                if (end != -1) {
-                  ok = ok
-                        && ((!isSingleQuote || !SyntaxUtils.isQuoted(scn, end,
-                           SyntaxConstants.DOUBLE_QUOTE))
-
-                        && isValid(end + scnStart));
-
+                  ok = ok && isQuotation(isSingleQuote, scn, end, scnPos);
                   if (ok) {
                      length = end - start + 1;
                      txt.setAttributes(absStart, length, set);
@@ -739,25 +693,33 @@ public class SyntaxHighlighter {
          }
       }
 
-      private void removedBlockCmntStart(int endPos, String blockCmntStart,
+      private boolean isQuotation(boolean isSingleQuote, String scn, int pos,
+            int scnPos) {
+
+         return (!isSingleQuote
+               || !SyntaxUtils.isQuoted(scn, pos, SyntaxConstants.DOUBLE_QUOTE))
+               && isValid(pos + scnPos, 0);
+      }
+
+      private void removedBlkCmntStart(int cmntEnd, String blockCmntStart,
             String blockCmntEnd) {
 
          if (!isTypeMode) {
             return;
          }
-         int nextEnd = SyntaxUtils.nextBlockEnd(txt.text(), endPos,
+         int nextEnd = SyntaxUtils.nextBlockEnd(txt.text(), cmntEnd,
                blockCmntStart, blockCmntEnd, skipQuotedBlkCmntMarks, true);
 
          if (innerEnd > 0 && nextEnd > innerEnd) {
              nextEnd = -1;
          }
          if (nextEnd != -1) {
-            int lastStart = SyntaxUtils.lastBlockStart(txt.text(), endPos,
+            int lastStart = SyntaxUtils.lastBlockStart(txt.text(), cmntEnd,
                   blockCmntStart, blockCmntEnd, skipQuotedBlkCmntMarks, true);
 
             int lineStart;
             if (lastStart == -1) {
-               lineStart = endPos;
+               lineStart = cmntEnd;
             }
             else {
                lineStart = LinesFinder.lastNewline(txt.text(), nextEnd);
@@ -768,7 +730,7 @@ public class SyntaxHighlighter {
          }
       }
 
-      private void removedBlockCmntEnd(int startPos, String blockCmntStart,
+      private void removedBlkCmntEnd(int startPos, String blockCmntStart,
             String blockCmntEnd) {
 
          if (!isTypeMode) {
@@ -802,18 +764,21 @@ public class SyntaxHighlighter {
          isHighlightBlockCmnt = true;
       }
 
-      private boolean isValid(int pos) {
-         return hl.isValid(txt.text(), pos, condition);
-      }
-
       private boolean isInBlock(String blockStart, String blockEnd, int pos) {
          int lastStart = SyntaxUtils.lastBlockStart(txt.text(), pos, blockStart,
                blockEnd, skipQuotedBlkCmntMarks, true);
 
-         int nextEnd = SyntaxUtils.nextBlockEnd(txt.text(), pos, blockStart,
+         int nextEnd = -1;
+         if (lastStart != -1) {
+            nextEnd = SyntaxUtils.nextBlockEnd(txt.text(), pos, blockStart,
                blockEnd, skipQuotedBlkCmntMarks, true);
+         }
 
          return lastStart != -1 & nextEnd != -1;
+      }
+      
+      private boolean isValid(int pos, int length) {
+         return hl.isValid(txt.text(), pos, length, condition);
       }
 
       private void setTextParams(String section, int chgPos, int scnStart) {

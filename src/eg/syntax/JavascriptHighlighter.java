@@ -25,32 +25,32 @@ public class JavascriptHighlighter implements Highlighter {
       "while", "with"
    };
    
-   private SyntaxHighlighter.SyntaxSearcher searcher;
+   private SyntaxHighlighter.SyntaxSearcher s;
    
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
-      this.searcher = searcher;
-      searcher.setSkipQuotedBlkCmntMarks();
+      s = searcher;
+      s.setSkipQuotedBlkCmntMarks();
    }
 
    @Override
    public void highlight() {
-      if (!searcher.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
+      if (!s.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
             SyntaxConstants.STAR_SLASH)) {
 
-         searcher.resetAttributes();
-         searcher.keywords(JS_KEYWORDS, true, null, Attributes.RED_PLAIN);
-         searcher.brackets();
-         searcher.braces();
-         searcher.quotedInLine(Attributes.ORANGE_PLAIN);
-         searcher.lineComments(SyntaxConstants.DOUBLE_SLASH);
+         s.resetAttributes();
+         s.keywords(JS_KEYWORDS, true, null, Attributes.RED_PLAIN);
+         s.brackets();
+         s.braces();
+         s.quoteInLine();
+         s.lineComments(SyntaxConstants.DOUBLE_SLASH);
       }
-      searcher.blockComments(SyntaxConstants.SLASH_STAR,
+      s.blockComments(SyntaxConstants.SLASH_STAR,
             SyntaxConstants.STAR_SLASH);
    }
 
    @Override
-   public boolean isValid(String text, int pos, int option) {
+   public boolean isValid(String text, int pos, int length, int option) {
       return true;
    }
 }

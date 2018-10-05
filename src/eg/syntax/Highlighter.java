@@ -23,9 +23,10 @@ public interface Highlighter {
     *
     * @param text  the entire text
     * @param pos  the position where a text element is found
+    * @param length  the length of the text element
     * @param condition  a switch for conditions which an implementation
     * may ignore
     * @return  the boolean value that is true if valid
     */
-    public boolean isValid(String text, int pos, int condition);
+    public boolean isValid(String text, int pos, int length, int condition);
 }

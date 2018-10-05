@@ -77,62 +77,59 @@ public class CSSHighlighter implements Highlighter {
    private final static int OPEN_BRACE_AHEAD_COND = 1;
    private final static int NO_OPEN_BRACE_AHEAD_COND = 2;
    
-   private SyntaxHighlighter.SyntaxSearcher searcher;
+   private SyntaxHighlighter.SyntaxSearcher s;
    
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
-      this.searcher = searcher;
+      this.s = searcher;
    }
 
    @Override
    public void highlight() {
-      if (!searcher.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
+      if (!s.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
             SyntaxConstants.STAR_SLASH)) {
 
-         searcher.resetAttributes();
-         searcher.setCondition(NO_OPEN_BRACE_AHEAD_COND);
-         searcher.keywords(HTMLHighlighter.TAGS, true, CLASS_START,
-               Attributes.BLUE_PLAIN);
-               
-         searcher.signedVariables(CLASS_START, CLASS_END, false,
-               Attributes.BLUE_PLAIN);
+         s.resetAttributes();
 
-         searcher.setCondition(OPEN_BRACE_AHEAD_COND);
-         searcher.extensibleKeyword("background", BACKGROUND_PROPS, NON_PROP_START,
+         s.setCondition(NO_OPEN_BRACE_AHEAD_COND);
+         s.keywords(HTMLHighlighter.TAGS, true, CLASS_START, Attributes.BLUE_PLAIN);              
+         s.signedVariables(CLASS_START, CLASS_END, Attributes.BLUE_PLAIN);
+
+         s.setCondition(OPEN_BRACE_AHEAD_COND);
+         s.extensibleKeyword("background", BACKGROUND_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("border", BORDER_PROPS, NON_PROP_START,
+         s.extensibleKeyword("border", BORDER_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("font", FONT_PROPS, NON_PROP_START,
+         s.extensibleKeyword("font", FONT_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("list", LIST_PROPS, NON_PROP_START,
+         s.extensibleKeyword("list", LIST_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("margin", MARGIN_PROPS, NON_PROP_START,
+         s.extensibleKeyword("margin", MARGIN_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("outline", OUTLINE_PROPS, NON_PROP_START,
+         s.extensibleKeyword("outline", OUTLINE_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("padding", PADDING_PROPS, NON_PROP_START,
+         s.extensibleKeyword("padding", PADDING_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                
-         searcher.extensibleKeyword("transition", TRANSITION_PROPS, NON_PROP_START,
+         s.extensibleKeyword("transition", TRANSITION_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
                   
-         searcher.keywords(PROPS, true, NON_PROP_START, Attributes.RED_PLAIN);
-         
-         searcher.setCondition(IGNORE_COND);
-         searcher.braces();
+         s.keywords(PROPS, true, NON_PROP_START, Attributes.RED_PLAIN);
+       
+         s.setCondition(IGNORE_COND);
+         s.braces();
       }
-      searcher.blockComments(SyntaxConstants.SLASH_STAR,
-            SyntaxConstants.STAR_SLASH);
+      s.blockComments(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH);
    }
    
    @Override
-   public boolean isValid(String text, int pos, int condition) {
+   public boolean isValid(String text, int pos, int length, int condition) {
       if (condition == IGNORE_COND) {
          return true;
       }    

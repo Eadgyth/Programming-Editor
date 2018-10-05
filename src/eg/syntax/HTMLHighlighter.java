@@ -65,30 +65,30 @@ public class HTMLHighlighter implements Highlighter {
    private final JavascriptHighlighter js = new JavascriptHighlighter();
    private final CSSHighlighter css = new CSSHighlighter();
 
-   private SyntaxHighlighter.SyntaxSearcher searcher;
+   private SyntaxHighlighter.SyntaxSearcher s;
 
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
-      this.searcher = searcher;
+      s = searcher;
    }
 
    @Override
    public void highlight() {
-      if (!searcher.isInBlockCmnt(SyntaxConstants.HTML_BLOCK_CMNT_START,
+      if (!s.isInBlockCmnt(SyntaxConstants.HTML_BLOCK_CMNT_START,
             SyntaxConstants.HTML_BLOCK_CMNT_END)) {
 
-         searcher.setMarkupSection();
-         searcher.resetAttributes();
-         searcher.htmlElements(TAGS, ATTRIBUTES);
-         searcher.embeddedHtmlSections("<script", "</script>", js);
-         searcher.embeddedHtmlSections("<style", "</style>", css);
+         s.setMarkupSection();
+         s.resetAttributes();
+         s.markupElements(TAGS, ATTRIBUTES);
+         s.embeddedHtmlSections("<script", "</script>", js);
+         s.embeddedHtmlSections("<style", "</style>", css);
       }
-      searcher.blockComments(SyntaxConstants.HTML_BLOCK_CMNT_START,
+      s.blockComments(SyntaxConstants.HTML_BLOCK_CMNT_START,
             SyntaxConstants.HTML_BLOCK_CMNT_END);
    }
 
    @Override
-   public boolean isValid(String text, int pos, int condition) {
+   public boolean isValid(String text, int pos, int length, int condition) {
       return true;
    }
 }
