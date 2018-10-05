@@ -70,22 +70,22 @@ public class FileUtils {
    }
    
    /**
-    * Returns if a file is writable
+    * Returns if a file is writeable
     *
     * @param f  the file
+    * @return  the boolean value that is true if writeable
     */
-   public static boolean isWritable(File f) {
-      boolean isWritable;
+   public static boolean isWriteable(File f) {
       File sameName = new File(f.toString());
-      isWritable = f.renameTo(sameName);
-      if (!isWritable) {
+      boolean isWriteable = !f.exists() || f.renameTo(sameName);
+      if (!isWriteable) {
          Dialogs.errorMessage(
                f.getName()
                + " cannot be accessed."
                + " It may be used by another process.",
                null);
       }
-      return isWritable;
+      return isWriteable;
    }
    
    /**
