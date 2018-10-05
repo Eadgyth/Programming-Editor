@@ -38,13 +38,11 @@ public class LineNumbers {
    }
 
    /**
-    * @param lineNrArea  the <code>JTextPane</code> that displays the
-    * line numbers
+    * @param lineNrArea  the reference to the <code>JTextPane</code> that
+    * displays the line numbers
     * @param  lineNrWidth  the reference to {@link LineNrWidthAdaptable}
     */
-   public LineNumbers(JTextPane lineNrArea,
-         LineNrWidthAdaptable lineNrWidth) {
-
+   public LineNumbers(JTextPane lineNrArea, LineNrWidthAdaptable lineNrWidth) {
       this.doc = lineNrArea.getStyledDocument();
       this.lineNrWidth = lineNrWidth;
       Element el = doc.getParagraphElement(0);
