@@ -24,22 +24,30 @@ public class SyntaxConstants {
     * The hash sign line comment start */
    public final static String HASH = "#";
    /**
-    * The HTML block comment start */
+    * The markup block comment start */
    public final static String HTML_BLOCK_CMNT_START = "<!--";
    /**
-    * The HTML block comment end */
+    * The markup block comment end */
    public final static String HTML_BLOCK_CMNT_END = "-->";
+   /**
+    * The markup CDATA block start */
+   public final static String HTML_CDATA_BLOCK_START = "<![CDATA[";
+   /**
+    * The markup CDATA block end */
+   public final static String HTML_CDATA_BLOCK_END = "]]>";
    /**
     * The characters that end an XML tag */
    public final static char[] XML_TAG_END_CHARS = {
-      ' ', '\n', '=', '>', '<', '/', '&', '\"'
+      ' ', '\n', '>', '<', '/', '&', '\"', '%', '=', '+', ';', ','
    };
    /**
     * The characters that end an XML atrribute */
-   public final static char[] XML_ATTR_START_CHARS = {' ', '\n', '\"', '\'', '&'};
+   public final static char[] XML_ATTR_START_CHARS = {
+      ' ', '\n', '\"', '\'', '&', '=', ';', ','
+   };
    /**
     * The characters that end an XML atrribute */
    public final static char[] XML_ATTR_END_CHARS = {
-      '\n', '=', '>', '<', '&', '/', '\'', '\"'
+      '\n', '>', '<', '=', '&', '/', '\'', '\"', ';', ','
    };
 }

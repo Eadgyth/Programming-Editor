@@ -35,17 +35,17 @@ public class JavascriptHighlighter implements Highlighter {
 
    @Override
    public void highlight() {
-      if (!s.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
-            SyntaxConstants.STAR_SLASH)) {
-
+      if (!s.isInBlock(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH)) {
          s.resetAttributes();
          s.keywords(JS_KEYWORDS, true, null, Attributes.RED_PLAIN);
          s.brackets();
          s.braces();
          s.quoteInLine();
          s.lineComments(SyntaxConstants.DOUBLE_SLASH);
+         s.lineComments(SyntaxConstants.HTML_BLOCK_CMNT_START);
+         s.lineComments(SyntaxConstants.HTML_BLOCK_CMNT_END);
       }
-      s.blockComments(SyntaxConstants.SLASH_STAR,
+      s.block(SyntaxConstants.SLASH_STAR,
             SyntaxConstants.STAR_SLASH);
    }
 

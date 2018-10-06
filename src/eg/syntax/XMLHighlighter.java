@@ -14,15 +14,21 @@ public class XMLHighlighter implements Highlighter {
 
    @Override
    public void highlight() {
-      if (!s.isInBlockCmnt(SyntaxConstants.HTML_BLOCK_CMNT_START,
-            SyntaxConstants.HTML_BLOCK_CMNT_END)) {
+      if (!s.isInBlock(SyntaxConstants.HTML_BLOCK_CMNT_START,
+            SyntaxConstants.HTML_BLOCK_CMNT_END)
+            
+         && !s.isInBlock(SyntaxConstants.HTML_CDATA_BLOCK_START,
+               SyntaxConstants.HTML_CDATA_BLOCK_END)) {
 
          s.setMarkupSection();
          s.resetAttributes();
          s.markupElements(null, null);
       }
-      s.blockComments(SyntaxConstants.HTML_BLOCK_CMNT_START,
+      s.block(SyntaxConstants.HTML_BLOCK_CMNT_START,
             SyntaxConstants.HTML_BLOCK_CMNT_END);
+            
+      s.block(SyntaxConstants.HTML_CDATA_BLOCK_START,
+            SyntaxConstants.HTML_CDATA_BLOCK_END);
    }
    
    @Override

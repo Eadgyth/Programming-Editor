@@ -86,7 +86,7 @@ public class CSSHighlighter implements Highlighter {
 
    @Override
    public void highlight() {
-      if (!s.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
+      if (!s.isInBlock(SyntaxConstants.SLASH_STAR,
             SyntaxConstants.STAR_SLASH)) {
 
          s.resetAttributes();
@@ -125,7 +125,7 @@ public class CSSHighlighter implements Highlighter {
          s.setCondition(IGNORE_COND);
          s.braces();
       }
-      s.blockComments(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH);
+      s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH);
    }
    
    @Override

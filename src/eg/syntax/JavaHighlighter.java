@@ -39,9 +39,7 @@ public class JavaHighlighter implements Highlighter {
 
    @Override
    public void highlight() {
-     if (!s.isInBlockCmnt(SyntaxConstants.SLASH_STAR,
-            SyntaxConstants.STAR_SLASH)) {
-
+      if (!s.isInBlock(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH)) {
          s.resetAttributes();
          s.keywords(JAVA_ANNOTATIONS, true, null, Attributes.BLUE_PLAIN);
          s.keywords(JAVA_KEYWORDS, true, null, Attributes.RED_PLAIN);
@@ -53,8 +51,7 @@ public class JavaHighlighter implements Highlighter {
      else {
         System.out.println("hallo");
      }
-     s.blockComments(SyntaxConstants.SLASH_STAR,
-           SyntaxConstants.STAR_SLASH);
+     s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH);
    }
    
    @Override
