@@ -284,24 +284,24 @@ public final class EditableDocument {
    }
    
    /**
-    * Inserts the string <code>ToInsert</code> at the specified position
+    * Inserts the specifies string at the specified position
     *
     * @param pos  the position
-    * @param toInsert  the string
+    * @param s  the string
     */
-   public void insert(int pos, String toInsert) {
-      type.insert(pos, toInsert);
+   public void insert(int pos, String s) {
+      type.insert(pos, s);
    }
 
     /**
-    * Replaces a section with the string <code>toInsert</code>
+    * Replaces a section with the specified string
     *
     * @param pos  the position where the section to be replaced starts
     * @param length  the length of the section
-    * @param toInsert  the string
+    * @param s  the string
     */
-   public void replace(int pos, int length, String toInsert) {
-      type.replace(pos, length, toInsert);
+   public void replace(int pos, int length, String s) {
+      type.replace(pos, length, s);
    }
 
    /**
@@ -309,15 +309,15 @@ public final class EditableDocument {
     *
     * @param pos  the position where the section starts
     * @param length  the length of the section
-    * @param useHighlighting  the boolean value that is true to
-    * indicate that syntax highlighting is done after the removal.
-    * Effectless if this language is not a coding language
+    * @param highlight  the boolean value that is true to update
+    * syntax highlighting after the removal. Is ignored if this
+    * language is not a coding language
     */
-   public void remove(int pos, int length, boolean useHighlighting) {
+   public void remove(int pos, int length, boolean highlight) {
       if (lang == Languages.NORMAL_TEXT) {
-         useHighlighting = false;
+         highlight = false;
       }
-      type.remove(pos, length, useHighlighting);
+      type.remove(pos, length, highlight);
    }
 
    /**

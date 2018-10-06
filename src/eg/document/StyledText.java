@@ -110,21 +110,21 @@ public class StyledText {
    /**
     * Appends a string
     *
-    * @param toAppend  the string to append
+    * @param s  the string to append
     */
-   public void append(String toAppend) {
-      insert(doc.getLength(), toAppend);
+   public void append(String s) {
+      insert(doc.getLength(), s);
    }
 
    /**
     * Inserts a string
     *
     * @param pos  the position where the string is inserted
-    * @param toInsert  the string
+    * @param s  the string
     */
-   public void insert(int pos, String toInsert) {
+   public void insert(int pos, String s) {
       try {
-         doc.insertString(pos, toInsert, null);
+         doc.insertString(pos, s, null);
       }
       catch (BadLocationException e) {
          FileUtils.logStack(e);

@@ -143,12 +143,12 @@ public class TypingEdit {
     * Inserts the specified string at the specified position
     *
     * @param pos  the position
-    * @param toInsert  the string
+    * @param s  the string
     */
-   public void insert(int pos, String toInsert) {
+   public void insert(int pos, String s) {
       boolean isCodeEditingHelper = isCodeEditing;
       isCodeEditing = false;
-      txt.insert(pos, toInsert);
+      txt.insert(pos, s);
       if (isCodeEditingHelper) {
          highlightInsertion();
       }
@@ -160,9 +160,9 @@ public class TypingEdit {
     *
     * @param pos  the position where the section to be replaced starts
     * @param length  the length of the section
-    * @param toInsert  the String to insert
+    * @param s  the String to insert
     */
-   public void replace(int pos, int length, String toInsert) {
+   public void replace(int pos, int length, String s) {
       boolean isCodeEditingHelper = isCodeEditing;
       isCodeEditing = false;  
       if (length != 0) {
@@ -171,7 +171,7 @@ public class TypingEdit {
             highlightAtPos();
          }
       }
-      txt.insert(pos, toInsert);
+      txt.insert(pos, s);
       if (isCodeEditingHelper) {
          highlightInsertion();
       }
@@ -183,12 +183,12 @@ public class TypingEdit {
     *
     * @param pos  the position where the section starts
     * @param length  the length of the section
-    * @param useHighlighting  if syntax highlighting of the line that
-    * contains the position is done
+    * @param highlight  the boolean value that is true to update
+    * syntax highlighting after the removal
     */
-   public void remove(int pos, int length, boolean useHighlighting) {
+   public void remove(int pos, int length, boolean highlight) {
       boolean isCodeEditingHelper = isCodeEditing;
-      isCodeEditing = useHighlighting;
+      isCodeEditing = highlight;
       txt.remove(pos, length);
       if (isCodeEditingHelper) {
          highlightAtPos();

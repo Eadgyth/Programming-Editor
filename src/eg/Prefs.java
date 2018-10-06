@@ -11,7 +11,7 @@ import eg.utils.FileUtils;
 import eg.utils.Dialogs;
 
 /**
- * The reading and writing of the Prefs file in the program folder and
+ * The reading from and writing to the Prefs file in the program folder and
  * a ProjectConfig file in a project folder
  */
 public class Prefs {
@@ -41,8 +41,8 @@ public class Prefs {
    }
 
    /**
-    * Creates a <code>Prefs</code> that reads from and writes to a
-    * ProjConfig file in the specified project root directory. The
+    * Creates a <code>Prefs</code> that reads from and writes to
+    * a ProjConfig file in the specified project directory. The
     * properties are loaded if the file exists. Every new
     * <code>Prefs</code> object accesses an own set of properties.
     *
