@@ -77,8 +77,8 @@ public class HTMLHighlighter implements Highlighter {
       if (!s.isInBlock(SyntaxConstants.HTML_BLOCK_CMNT_START,
             SyntaxConstants.HTML_BLOCK_CMNT_END)
             
-         && !s.isInBlock(SyntaxConstants.HTML_CDATA_BLOCK_START,
-               SyntaxConstants.HTML_CDATA_BLOCK_END)) {
+         && !s.isInBlock(SyntaxConstants.CDATA_BLOCK_START,
+               SyntaxConstants.CDATA_BLOCK_END)) {
 
          s.setMarkupSection();
          s.resetAttributes();
@@ -87,8 +87,8 @@ public class HTMLHighlighter implements Highlighter {
       s.block(SyntaxConstants.HTML_BLOCK_CMNT_START,
             SyntaxConstants.HTML_BLOCK_CMNT_END);
                
-      s.block(SyntaxConstants.HTML_CDATA_BLOCK_START,
-            SyntaxConstants.HTML_CDATA_BLOCK_END);
+      s.block(SyntaxConstants.CDATA_BLOCK_START,
+            SyntaxConstants.CDATA_BLOCK_END);
             
       s.embeddedHtmlSections("<script", "</script>", js);
       s.embeddedHtmlSections("<style", "</style>", css);

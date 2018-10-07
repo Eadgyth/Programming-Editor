@@ -31,10 +31,10 @@ public class SyntaxConstants {
    public final static String HTML_BLOCK_CMNT_END = "-->";
    /**
     * The markup CDATA block start */
-   public final static String HTML_CDATA_BLOCK_START = "<![CDATA[";
+   public final static String CDATA_BLOCK_START = "<![CDATA[";
    /**
     * The markup CDATA block end */
-   public final static String HTML_CDATA_BLOCK_END = "]]>";
+   public final static String CDATA_BLOCK_END = "]]>";
    /**
     * The characters that end an XML tag */
    public final static char[] XML_TAG_END_CHARS = {
