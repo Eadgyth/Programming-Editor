@@ -96,7 +96,6 @@ public class SyntaxHighlighter {
       private boolean isHighlightBlockCmnt = true;
       private int innerStart = 0;
       private int innerEnd = 0;
-      private boolean isHighlightOuter = true;
       private boolean skipQuotedBlkCmntMarks = false;
       private int condition = 0;
 
@@ -247,18 +246,19 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights variables defined by start and end signs.
-       * <br>(requires that {@link Highlighter#isValid} returns true)
+       * Searches and highlights variables that one of the specified signs
+       * precede.<br>(requires that {@link Highlighter#isValid} returns
+       * true)
        *
-       * @param startChars  the array of start characters
-       * @param endChars  the array of end characters
+       * @param signs  the array of signs that precede the variable
+       * @param endMarks  the array of mrks that end th variable
        * @param set  the SimpleAttributeSet set on the variables
        */
-      public void signedVariables(char[] startChars, char[] endChars,
-             SimpleAttributeSet set) {
+      public void signedVariables(char[] signs, char[] endMarks,
+            SimpleAttributeSet set) {
 
-         for (char c : startChars) {
-            signedVariable(c, endChars, set);
+         for (char c : signs) {
+            signedVariable(c, endMarks, set);
          }
       }
 
@@ -322,8 +322,10 @@ public class SyntaxHighlighter {
             xmlElements();
          }
          else {
+            String scnLowerCase = section.toLowerCase();
+            String textLowerCase = txt.text().toLowerCase();
             for (String s : tags) {
-               htmlElement(s, attributes);
+               htmlElement(s, attributes, scnLowerCase, textLowerCase);
             }
          }
       }
@@ -501,7 +503,7 @@ public class SyntaxHighlighter {
          }
       }
 
-      private void signedVariable(char sign, char[] endChars,
+      private void signedVariable(char sign, char[] endMarks,
             SimpleAttributeSet set) {
 
          int start = 0;
@@ -509,7 +511,7 @@ public class SyntaxHighlighter {
             start = section.indexOf(sign, start);
             if (start != -1) {
                int absStart = start + scnStart;
-               int length = SyntaxUtils.wordLength(section, start, endChars);
+               int length = SyntaxUtils.wordLength(section, start, endMarks);
                if (isValid(absStart, length)) {
                   txt.setAttributes(absStart, length, set);
                   start += length + 1;
@@ -536,11 +538,12 @@ public class SyntaxHighlighter {
          return length;
       }
 
-      private void htmlElement(String tagName, String[] attributes) {
-         String toLowerCase = section.toLowerCase();
+      private void htmlElement(String tagName, String[] attributes,
+            String scnLowerCase, String textLowerCase) {
+
          int start = 0;
          while (start != -1) {
-            start = toLowerCase.indexOf(tagName, start);
+            start = scnLowerCase.indexOf(tagName, start);
             if (start != -1) {
                int absStart = start + scnStart;
                int tagEnd = start + tagName.length();
@@ -551,7 +554,7 @@ public class SyntaxHighlighter {
 
                if (isStartTag) {
                   tagEnd = markupTagEnd(absStart);
-                  String tag = txt.text().substring(absStart, tagEnd);
+                  String tag = textLowerCase.substring(absStart, tagEnd);
                   length = tag.length();
                   for (String s : attributes) {
                       htmlAttributes(s, tag, absStart);
@@ -565,7 +568,8 @@ public class SyntaxHighlighter {
                      && SyntaxUtils.isWordEnd(section, tagEnd);
 
                if (isStartTag || isEndTag) {
-                  txt.setAttributes(absStart, tagName.length(), Attributes.BLUE_BOLD);
+                  txt.setAttributes(absStart, tagName.length(),
+                        Attributes.BLUE_BOLD);
                }
                start += length;
             }
@@ -630,10 +634,9 @@ public class SyntaxHighlighter {
       }
 
       private void htmlAttributes(String keyword, String tag, int tagStart) {
-         String toLowerCase = tag.toLowerCase();
          int start = 0;
          while (start != -1) {
-            start = toLowerCase.indexOf(keyword, start);
+            start = tag.indexOf(keyword, start);
             if (start != -1) {
                boolean ok = SyntaxUtils.isWord(tag, start, keyword.length(), null);
                if (ok) {
