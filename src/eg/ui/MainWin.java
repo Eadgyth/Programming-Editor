@@ -475,7 +475,7 @@ public class MainWin {
       catch (ClassNotFoundException | InstantiationException
             | IllegalAccessException e) {
 
-         FileUtils.logStack(e);
+         FileUtils.log(e);
       }
    }
 

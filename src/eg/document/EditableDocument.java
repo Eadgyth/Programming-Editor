@@ -362,7 +362,7 @@ public final class EditableDocument {
          }
       }
       catch (IOException e) {
-         FileUtils.logStack(e);
+         FileUtils.log(e);
       }
    }
 
@@ -379,7 +379,7 @@ public final class EditableDocument {
          return true;
       }
       catch (IOException e) {
-         FileUtils.logStack(e);
+         FileUtils.log(e);
       }
       return false;
    }

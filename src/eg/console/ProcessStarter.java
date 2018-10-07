@@ -183,7 +183,7 @@ public class ProcessStarter {
             setEndingMsg(exitVal);
          }
          catch (IOException | InterruptedException e) {
-            FileUtils.logStack(e);
+            FileUtils.log(e);
          }
          finally {
             consPnl.setCaret(consPnl.getText().length());
@@ -193,7 +193,7 @@ public class ProcessStarter {
                out.close();
             }
             catch (IOException e) {
-               FileUtils.logStack(e);
+               FileUtils.log(e);
             }
          }
          return null;

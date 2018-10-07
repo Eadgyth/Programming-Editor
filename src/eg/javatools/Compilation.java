@@ -151,13 +151,13 @@ public class Compilation {
       }
       catch (IllegalArgumentException | IllegalStateException e) {
          cons.printBr("Error: " + e.getMessage());
-         FileUtils.logStack(e);
+         FileUtils.log(e);
       }
       finally {
          try {
             fileManager.close();
          } catch (IOException e) {
-            FileUtils.logStack(e);
+            FileUtils.log(e);
          }
       }
    }
@@ -262,7 +262,7 @@ public class Compilation {
                }
             }
             catch (IOException e) {
-               FileUtils.logStack(e);
+               FileUtils.log(e);
             }
          }
       }

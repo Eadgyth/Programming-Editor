@@ -80,7 +80,7 @@ public class LineNumbers {
          lineNrWidth.adaptLineNrWidth(prevLineNr, lineNr);
       }
       catch(BadLocationException e) {
-         FileUtils.logStack(e);
+         FileUtils.log(e);
       }
    }
 
@@ -94,7 +94,7 @@ public class LineNumbers {
          lineNrWidth.adaptLineNrWidth(prevLineNr, lineNr);
       }
       catch (BadLocationException e) {
-         FileUtils.logStack(e);
+         FileUtils.log(e);
       }
    }
 }

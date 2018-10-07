@@ -109,7 +109,7 @@ public class Prefs {
          prop.store(writer, null);
       }
       catch (IOException | NullPointerException | ClassCastException e){
-         FileUtils.logStack(e);
+         FileUtils.log(e);
       }
    }
 }

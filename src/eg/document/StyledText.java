@@ -62,7 +62,7 @@ public class StyledText {
          text = doc.getText(0, doc.getLength());
       }
       catch (BadLocationException e) {
-         FileUtils.logStack(e);
+         FileUtils.log(e);
       }
    }
    
@@ -127,7 +127,7 @@ public class StyledText {
          doc.insertString(pos, s, null);
       }
       catch (BadLocationException e) {
-         FileUtils.logStack(e);
+         FileUtils.log(e);
       }
    }
 
@@ -142,7 +142,7 @@ public class StyledText {
          doc.remove(pos, length);
       }
       catch (BadLocationException e) {
-         FileUtils.logStack(e);
+         FileUtils.log(e);
       }
    }
    

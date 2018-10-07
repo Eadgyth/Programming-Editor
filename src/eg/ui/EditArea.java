@@ -203,7 +203,7 @@ public final class EditArea {
          MessageFormat footerFormat = new MessageFormat("Page {0}");
          textArea.print(null, footerFormat, true, null, null, false);
       } catch (PrinterException e) {
-         FileUtils.logStack(e);
+         FileUtils.log(e);
       }
    }
 

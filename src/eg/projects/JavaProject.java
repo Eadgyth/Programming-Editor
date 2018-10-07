@@ -153,7 +153,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
             }
          }
          catch (IOException | InterruptedException e) {
-            FileUtils.logStack(e);
+            FileUtils.log(e);
          }
       });
    }

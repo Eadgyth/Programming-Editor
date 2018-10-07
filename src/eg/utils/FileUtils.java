@@ -6,6 +6,9 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
+
+import java.text.SimpleDateFormat;
 
 //--Eadgyth--/
 import eg.Constants;
@@ -116,14 +119,16 @@ public class FileUtils {
    }
    
    /**
-    * Appends to the file 'log.txt' in the program folder the message
-    * and stack trace of an exception
+    * Appends to the file 'log.txt' in the program folder the date,
+    * message and stack trace of an exception
     *
     * @param e  the Exception
     */
-   public static void logStack(Exception e) {
+   public static void log(Exception e) {
       File f = new File("log.txt");
+      String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
       try (FileWriter writer = new FileWriter(f, true)) {
+         writer.write(date + "\n");
          writer.write(e.getMessage() + Constants.LINE_SEP);
          for (StackTraceElement el : e.getStackTrace()) {
             writer.write("   " + el.toString() + Constants.LINE_SEP);

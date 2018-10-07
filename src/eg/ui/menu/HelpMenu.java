@@ -50,7 +50,7 @@ class HelpMenu {
          }
       }
       catch (IOException | URISyntaxException e) {
-         eg.utils.FileUtils.logStack(e);
+         eg.utils.FileUtils.log(e);
       }
    }
 }

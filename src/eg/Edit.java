@@ -244,7 +244,7 @@ public class Edit {
          }
       }
       catch (IOException | UnsupportedFlavorException e) {
-         FileUtils.logStack(e);
+         FileUtils.log(e);
       }
       return inClipboard;
    }

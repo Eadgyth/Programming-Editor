@@ -65,7 +65,7 @@ public class Eadgyth {
               | IllegalAccessException
               | InstantiationException
               | UnsupportedLookAndFeelException e) {
-            FileUtils.logStack(e);
+            FileUtils.log(e);
          }
       }
    }

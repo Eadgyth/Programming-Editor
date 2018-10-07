@@ -42,7 +42,7 @@ public final class HtmlProject extends AbstractProject implements ProjectActions
       catch (IOException | IllegalArgumentException
             | UnsupportedOperationException  e) {
 
-         FileUtils.logStack(e);
+         FileUtils.log(e);
       }
    }
 
