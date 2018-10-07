@@ -11,7 +11,7 @@ import java.io.File;
 
 //--Eadgyth--/
 import eg.utils.Dialogs;
-
+import eg.utils.FileUtils;
 import eg.document.EditableDocument;
 import eg.document.EditingStateReadable;
 import eg.ui.MainWin;
@@ -58,8 +58,10 @@ public class TabbedDocuments {
       edit = new Edit(indentUnit);
       mw.setEditActions(edit);
 
+      FileOpenable opener = (f) -> open(f);
+      FileTree ft = new FileTree(mw.treePanel(), opener);
+      
       String projectRoot = prefs.getProperty("ProjectRoot");
-      FileTree ft = new FileTree(mw.treePanel(), Openable);
       proj = new Projects(mw, ft, projectRoot, edtDoc);
       mw.setProjectActions(proj);
 
@@ -104,15 +106,7 @@ public class TabbedDocuments {
     */
    public void open() {
       File f = fc.fileToOpen();
-      if (f == null) {
-         return;
-      }
-      if (!f.exists()) {
-         Dialogs.warnMessage(f.getName() + " was not found.");
-      }
-      else {
-         open(f);
-      }
+      open(f);
    }
 
    /**
@@ -274,6 +268,13 @@ public class TabbedDocuments {
    //
 
    private void open(File f) {
+      if (f == null) {
+         return;
+      }
+      if (!f.exists()) {
+         Dialogs.warnMessage(f.getName() + " was not found.");
+         return;
+      }
       if (isFileOpen(f) || isMaxTabNumber()) {
          return;
       }
@@ -291,12 +292,12 @@ public class TabbedDocuments {
    }
 
    private boolean isTabOpenable() {
-      boolean isOpenable = iTab == -1 || tabPane.isShowTabbar();
-      if (!isOpenable) {
+      boolean b = iTab == -1 || tabPane.isShowTabbar();
+      if (!b) {
          close(false);
-         isOpenable = iTab == -1;
+         b = iTab == -1;
       }
-      return isOpenable;
+      return b;
    }
 
    private void createDocument() {
@@ -498,18 +499,6 @@ public class TabbedDocuments {
       }
       mw.setLanguageSelected(lang, false);
    }
-
-   private final FileOpenable Openable = new FileOpenable() {
-
-      @Override
-      public void openFile(File f) {
-         if (f == null || (!f.exists() || f.isDirectory())) {
-            throw new IllegalArgumentException(
-                  "The file f cannot be opened");
-         }
-         open(f);
-      }
-   };
 
    private final EditingStateReadable editState = new EditingStateReadable() {
 
