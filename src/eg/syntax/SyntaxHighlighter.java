@@ -250,15 +250,50 @@ public class SyntaxHighlighter {
        * precede.<br>(requires that {@link Highlighter#isValid} returns
        * true)
        *
-       * @param signs  the array of signs that precede the variable
-       * @param endMarks  the array of mrks that end th variable
+       * @param signs  the signs for the start of the variables
+       * @param endMarks  the marks for the end of the variables
+       * @param successors  the characters that disable endMarks if they
+       * directly follow a sign
        * @param set  the SimpleAttributeSet set on the variables
        */
-      public void signedVariables(char[] signs, char[] endMarks,
+      public void signedVariables(char[] signs, char[] endMarks, char[] successors,
             SimpleAttributeSet set) {
 
          for (char c : signs) {
-            signedVariable(c, endMarks, set);
+            signedVariable(c, endMarks, successors, set);
+         }
+      }
+      
+      /**
+       * Searches and highlights variables that the specified sign
+       * precedes.<br>(requires that {@link Highlighter#isValid} returns
+       * true)
+       *
+       * @param sign  the sign for the start of the variable
+       * @param endMarks  the marks for the end of the variable
+       * @param successors  the characters that disable endMarks if they
+       * directly follow the sign
+       * @param set  the SimpleAttributeSet set on the variables
+       */
+      public void signedVariable(char sign, char[] endMarks, char[] successors,
+            SimpleAttributeSet set) {
+
+         int start = 0;
+         while (start != -1) {
+            start = section.indexOf(sign, start);
+            if (start != -1) {
+               int absStart = start + scnStart;
+               int length = SyntaxUtils.sectionLength(section, start, endMarks,
+                     successors);
+
+               if (isValid(absStart, length)) {
+                  txt.setAttributes(absStart, length, set);
+                  start += length + 1;
+               }
+               else {
+                  start++;
+               }
+            }
          }
       }
 
@@ -341,9 +376,9 @@ public class SyntaxHighlighter {
       public void embeddedHtmlSections(String startTag, String endTag,
             Highlighter hlSection) {
 
+         
          Highlighter hlCurr = hl;
-         hl = hlSection;
-         setHighlighter(hl);
+         setHighlighter(hlSection);
          int start = 0;
          while (start != -1) {
             start = txt.text().toLowerCase().indexOf(startTag, start);            
@@ -375,8 +410,7 @@ public class SyntaxHighlighter {
          }
          innerStart = 0;
          innerEnd = 0;
-         hl = hlCurr;
-         setHighlighter(hl);
+         setHighlighter(hlCurr);
       }
 
       /**
@@ -503,26 +537,6 @@ public class SyntaxHighlighter {
          }
       }
 
-      private void signedVariable(char sign, char[] endMarks,
-            SimpleAttributeSet set) {
-
-         int start = 0;
-         while (start != -1) {
-            start = section.indexOf(sign, start);
-            if (start != -1) {
-               int absStart = start + scnStart;
-               int length = SyntaxUtils.wordLength(section, start, endMarks);
-               if (isValid(absStart, length)) {
-                  txt.setAttributes(absStart, length, set);
-                  start += length + 1;
-               }
-               else {
-                  start++;
-               }
-            }
-         }
-      }
-
       private int extensionLength(String[] extensions, int extStart) {
          int length = 0;
          for (String s : extensions) {
@@ -569,7 +583,7 @@ public class SyntaxHighlighter {
 
                if (isStartTag || isEndTag) {
                   txt.setAttributes(absStart, tagName.length(),
-                        Attributes.BLUE_BOLD);
+                        Attributes.BLUE_PLAIN);
                }
                start += length;
             }
@@ -588,8 +602,8 @@ public class SyntaxHighlighter {
                if (isEndTag) {
                   search++;
                }
-               int length = SyntaxUtils.wordLength(section, search,
-                        SyntaxConstants.XML_TAG_END_CHARS);
+               int length = SyntaxUtils.sectionLength(section, search,
+                        SyntaxConstants.XML_TAG_END_CHARS, null);
 
                boolean isTagName = false;
                if (section.length() > search + 1) {
@@ -609,7 +623,7 @@ public class SyntaxHighlighter {
                      quote(tag, absStart, Attributes.PURPLE_PLAIN);
                   }
                   int colorStart = search + scnStart + 1;
-                  txt.setAttributes(colorStart, length - 1, Attributes.BLUE_BOLD);
+                  txt.setAttributes(colorStart, length - 1, Attributes.BLUE_PLAIN);
                }
                start += length + 1;
             }
@@ -658,7 +672,7 @@ public class SyntaxHighlighter {
             if (start != -1) {
                int length;
                int absStart = start + elStart;
-               length = SyntaxUtils.wordLength(xmlEl, start, endChars);
+               length = SyntaxUtils.sectionLength(xmlEl, start, endChars, null);
                txt.setAttributes(absStart + 1, length - 1, Attributes.RED_PLAIN);
                start += length;
             }

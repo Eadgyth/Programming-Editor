@@ -73,27 +73,41 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the length of a word that starts at the specified position
-    * and ends before one of the characters in <code>endChars</code>
+    * Returns the length of a section that starts at the specified
+    * position and ends before one of the characters in
+    * <code>endMarks</code>
     *
     * @param text  the text
     * @param pos   the position
-    * @param endChars  the array of characters that mark the end of a word
-    * in addition to a white space
+    * @param endMarks  the characters that mark the end of the section
+    * @param successors  the characters that disable endMarks if they
+    * follow pos
     * @return  the length of the word
     */
-   public static int wordLength(String text, int pos, char[] endChars) {
+   public static int sectionLength(String text, int pos, char[] endMarks,
+         char[] successors) {
+
       boolean found = false;
-      int i;
-      for (i = pos + 1; i < text.length() && !found; i++) {
-         for (int j = 0; j < endChars.length; j++) {
-            if (text.charAt(i) == endChars[j]) {
-               found = true;
-               i--;
+      int start = pos + 1;
+      int delta = 0;
+      if (successors != null) {
+         char first = text.charAt(start);
+         for (int i = 0; i < successors.length; i++) {
+            if (first == successors[i]) {
+               delta = 1;
+               break;
             }
          }
       }
-      return i - pos;
+      int i;
+      for (i = start + delta; i < text.length() && !found; i++) {
+         for (int j = 0; j < endMarks.length; j++) {
+            if (text.charAt(i) == endMarks[j]) {
+               found = true;
+            }
+         }
+      }
+      return i - pos + delta - 1;
    }
 
    /**

@@ -12,7 +12,6 @@ import java.awt.Color;
 public class Attributes {
 
    public final static SimpleAttributeSet RED_PLAIN    = new SimpleAttributeSet();
-   public final static SimpleAttributeSet RED_BOLD     = new SimpleAttributeSet();
    public final static SimpleAttributeSet BLUE_PLAIN   = new SimpleAttributeSet();
    public final static SimpleAttributeSet BLUE_BOLD    = new SimpleAttributeSet();
    public final static SimpleAttributeSet GREEN_PLAIN  = new SimpleAttributeSet();
@@ -25,14 +24,11 @@ public class Attributes {
    private final static Color RED    = new Color(250, 0, 50);
    private final static Color GRAY   = new Color(30, 30, 30);
    private final static Color ORANGE = new Color(240, 140, 0);
-   private final static Color PURPLE = new Color(130, 0, 250);
+   private final static Color PURPLE = new Color(140, 0, 250);
 
    static {
       StyleConstants.setForeground(RED_PLAIN, RED);
       StyleConstants.setBold(RED_PLAIN, false);
-
-      StyleConstants.setForeground(RED_BOLD, RED);
-      StyleConstants.setBold(RED_BOLD, true);
 
       StyleConstants.setForeground(BLUE_PLAIN, BLUE);
       StyleConstants.setBold(BLUE_PLAIN, false);

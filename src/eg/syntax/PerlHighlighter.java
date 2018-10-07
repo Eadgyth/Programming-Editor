@@ -4,9 +4,22 @@ package eg.syntax;
  * Syntax highlighting for Perl
  */
 public class PerlHighlighter implements Highlighter {
-
+   
    private final static char[] START_OF_VAR = {
       '$', '@', '%'
+   };
+
+   private final static char[] START_OF_ARR_HASH = {
+      '@', '%'
+   };
+   
+   private final static char[] START_OF_SCALAR = {
+      '$'
+   };
+   
+   private final char[] SECOND_POS_SCALAR = {
+      '\\', '(', ')', ';', '[', ']', '}', '.', ':', ',', '?',
+      '=', '/', '+', '-', '*', '|', '&', '!', '%', '^', '<', '>', '~'
    };
 
    private final static char[] END_OF_VAR = {
@@ -64,10 +77,13 @@ public class PerlHighlighter implements Highlighter {
       s.setCondition(QW_COND);
       s.setStatementSection();
       s.resetAttributes();
-      s.signedVariables(START_OF_VAR, END_OF_VAR, Attributes.PURPLE_PLAIN);
-      s.keywords(KEYWORDS, true, null, Attributes.RED_BOLD);
+      s.signedVariables(START_OF_ARR_HASH, END_OF_VAR, null,
+            Attributes.PURPLE_PLAIN);
+      s.signedVariable('$', END_OF_VAR, SECOND_POS_SCALAR,
+            Attributes.PURPLE_PLAIN);
+      s.keywords(KEYWORDS, true, null, Attributes.RED_PLAIN);
       s.setCondition(OP_COND);
-      s.keywords(OP, false, null, Attributes.RED_BOLD);
+      s.keywords(OP, false, null, Attributes.BLUE_PLAIN);
       s.setCondition(QW_COND);
       s.braces();
       s.quote();
@@ -112,7 +128,7 @@ public class PerlHighlighter implements Highlighter {
                char[] close = {
                   CLOSE_QW_DEL[ithDel]
                };
-               int length = SyntaxUtils.wordLength(text, delStart, close);
+               int length = SyntaxUtils.sectionLength(text, delStart, null, close);
                ok = pos <= qwPos || pos > delStart + length;
             }
          } 

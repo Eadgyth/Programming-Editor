@@ -93,7 +93,7 @@ public class CSSHighlighter implements Highlighter {
 
          s.setCondition(NO_OPEN_BRACE_AHEAD_COND);
          s.keywords(HTMLHighlighter.TAGS, true, CLASS_START, Attributes.BLUE_PLAIN);              
-         s.signedVariables(CLASS_START, CLASS_END, Attributes.BLUE_PLAIN);
+         s.signedVariables(CLASS_START, CLASS_END, null, Attributes.BLUE_PLAIN);
 
          s.setCondition(OPEN_BRACE_AHEAD_COND);
          s.extensibleKeyword("background", BACKGROUND_PROPS, NON_PROP_START,
