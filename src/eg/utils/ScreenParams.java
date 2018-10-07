@@ -51,7 +51,6 @@ public class ScreenParams {
     * @return  the rounded rescaled size
     */
    public static int scaledSize(double size) {
-      //System.out.println(VERSION); 
       if (IS_JAVA_9_OR_HIGHER) {
          if (IS_WINDOWS) {
             return (int) (Math.round(size * 96/72));
