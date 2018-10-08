@@ -247,7 +247,7 @@ public class SyntaxHighlighter {
 
       /**
        * Searches and highlights variables that one of the specified signs
-       * precede.<br>(requires that {@link Highlighter#isValid} returns
+       * precedes.<br>(requires that {@link Highlighter#isValid} returns
        * true)
        *
        * @param signs  the signs for the start of the variables
@@ -633,7 +633,7 @@ public class SyntaxHighlighter {
       private int markupTagEnd(int pos) {
          int end = SyntaxUtils.nextBlockEnd(txt.text(), pos, "<", ">", false, false);
          if (end == -1) {
-            end = txt.text().indexOf("</", pos);
+            end = txt.text().indexOf("<", pos);
             if (end == -1) {
                end = txt.text().length();
             }

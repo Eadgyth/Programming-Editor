@@ -104,10 +104,11 @@ public class SyntaxUtils {
          for (int j = 0; j < endMarks.length; j++) {
             if (text.charAt(i) == endMarks[j]) {
                found = true;
+               i--;
             }
          }
       }
-      return i - pos + delta - 1;
+      return i - pos + delta;
    }
 
    /**
