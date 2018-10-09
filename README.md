@@ -11,9 +11,7 @@ A list of the features, screenshots, a help site and code documentation can be f
 <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <p>
 REQUIREMENTS FOR TESTING<br>
-Running (and compiling) the program requires Java 8. Running it using the higher Java
-versions causes some problems with regard to the graphical interface (at least under Windows
-with a high dpi screen).
+Running (and compiling) the program requires Java 8 or higher.
 <p>
 If the program shall be used for compiling Java code by the built-in compile option it must be
 made sure that the program is run using the JRE contained in the JDK (and not the public JRE).
@@ -33,8 +31,9 @@ Among the countless limitations at the present stage some need mention:
     external libraries if the built-in options for compiling and crating a jar are selected.</li>
 <li>The printing to a printer is rudimentary and is rather the blueprint for a printing function.
     The font size relative to the page size is not controlled.</li>
-<li>I tested the program on Windows. I would be grateful for any feedback, especially from
-    somebody who may have tried it on other platforms (m.bussiek@web.de).</li>
+<li>I tested the program on Windows. There are some problems with the graphical apprearance
+    when a high dpi screen is used. I would be grateful for any feedback, especially from somebody
+    who may have tried it on other platforms (m.bussiek@web.de).</li>
 </ul>
 <p>
 IDEAS FOR FURTHER DEVELOPEMENT<br>
