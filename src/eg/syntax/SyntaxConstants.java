@@ -38,16 +38,16 @@ public class SyntaxConstants {
    /**
     * The characters that end an XML tag */
    public final static char[] XML_TAG_END_CHARS = {
-      ' ', '\n', '>', '<', '/', '&', '\"', '%', '=', '+', ';', ','
+      '/', ' ', '\n', '>', '<', '&', '\"', '%', '=', '+', ';', ','
    };
    /**
     * The characters that end an XML atrribute */
    public final static char[] XML_ATTR_START_CHARS = {
-      ' ', '\n', '\"', '\'', '&', '=', ';', ','
+      ' ', '\n' , '\"', '\'', '&', '=', ';', ','
    };
    /**
     * The characters that end an XML atrribute */
    public final static char[] XML_ATTR_END_CHARS = {
-      '\n', '>', '<', '=', '&', '/', '\'', '\"', ';', ','
+      '\n', '>', '<', '=', '&', ';', ',', '/'
    };
 }

@@ -598,19 +598,21 @@ public class SyntaxHighlighter {
                boolean isEndTag = section.length() > start + 1
                      && section.charAt(start + 1) == '/';
 
-               int search = start;
+               int search = start + 1;
                if (isEndTag) {
                   search++;
                }
-               int length = SyntaxUtils.sectionLength(section, search,
-                        SyntaxConstants.XML_TAG_END_CHARS, null);
-
+               int length = 0;
+                     
                boolean isTagName = false;
-               if (section.length() > search + 1) {
-                  char test = section.charAt(search + 1);
+               if (section.length() > search) {
+                  char test = section.charAt(search);
                   isTagName = Character.isLetter(test) || test == '_';
+                  
                }
                if (isTagName) {
+                  length = SyntaxUtils.sectionLength(section, search,
+                     SyntaxConstants.XML_TAG_END_CHARS, null);
                   int nameEnd = search + length;
                   if (!isEndTag && isMarkupAttrStart(nameEnd)) {
                      int absStart = start + scnStart;
@@ -622,8 +624,8 @@ public class SyntaxHighlighter {
                      }
                      quote(tag, absStart, Attributes.PURPLE_PLAIN);
                   }
-                  int colorStart = search + scnStart + 1;
-                  txt.setAttributes(colorStart, length - 1, Attributes.BLUE_PLAIN);
+                  int colorStart = search + scnStart;
+                  txt.setAttributes(colorStart, length, Attributes.BLUE_PLAIN);
                }
                start += length + 1;
             }
