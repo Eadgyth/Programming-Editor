@@ -2,6 +2,7 @@ package eg.ui.tabpane;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
@@ -77,7 +78,9 @@ public final class ExtTabbedPane extends JTabbedPane {
       JPanel tabPnl = new JPanel(FLOW_LAYOUT_LEFT);
       tabPnl.setOpaque(false);
       JLabel titleLb = new JLabel(title);
-      titleLb.setFont(eg.Constants.VERDANA_PLAIN_8);
+      System.out.println(titleLb.getFont());
+      Font f = titleLb.getFont().deriveFont(Font.PLAIN);
+      titleLb.setFont(f);
       closeBt.setBorder(EMPTY_BORDER);
       closeBt.setContentAreaFilled(false);
       closeBt.setFocusable(false);

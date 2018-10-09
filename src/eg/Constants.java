@@ -48,6 +48,10 @@ public class Constants {
    public final static Border EMPTY_BORDER_5 = new EmptyBorder(5, 5, 5, 5);
    
    /**
+    * The empty border with thickness of 0 pt */
+   public final static Border EMPTY_BORDER_0 = new EmptyBorder(0, 0, 0, 0);
+   
+   /**
     * The empty border with thickness of 10 pt */
    public final static Border EMPTY_BORDER_10 = new EmptyBorder(10, 10, 10, 10);
 
