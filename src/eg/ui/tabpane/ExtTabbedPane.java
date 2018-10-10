@@ -78,7 +78,6 @@ public final class ExtTabbedPane extends JTabbedPane {
       JPanel tabPnl = new JPanel(FLOW_LAYOUT_LEFT);
       tabPnl.setOpaque(false);
       JLabel titleLb = new JLabel(title);
-      System.out.println(titleLb.getFont());
       Font f = titleLb.getFont().deriveFont(Font.PLAIN);
       titleLb.setFont(f);
       closeBt.setBorder(EMPTY_BORDER);

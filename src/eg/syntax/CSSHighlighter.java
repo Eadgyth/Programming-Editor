@@ -56,10 +56,10 @@ public class CSSHighlighter implements Highlighter {
    private final static String[] FONT_PROPS = {
       "-family", "-size", "-size-adjust", "-stretch", "-style",
       "-synthesis", "-variant", "-weight"
-   }; 
+   };
    private final static String[] LIST_PROPS = {
       "-style", "-style-image", "-style-position", "-style-type"
-   };  
+   };
    private final static String[] MARGIN_PROPS = TOP_LEFT_RIGHT_BOTTOM;
    private final static String[] OUTLINE_PROPS = {
       "-color", "-style", "-width"
@@ -76,9 +76,9 @@ public class CSSHighlighter implements Highlighter {
    private final static int IGNORE_COND = 0;
    private final static int OPEN_BRACE_AHEAD_COND = 1;
    private final static int NO_OPEN_BRACE_AHEAD_COND = 2;
-   
+
    private SyntaxHighlighter.SyntaxSearcher s;
-   
+
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
       this.s = searcher;
@@ -92,47 +92,49 @@ public class CSSHighlighter implements Highlighter {
          s.resetAttributes();
 
          s.setCondition(NO_OPEN_BRACE_AHEAD_COND);
-         s.keywords(HTMLHighlighter.TAGS, true, CLASS_START, Attributes.BLUE_PLAIN);              
+         s.keywords(SyntaxConstants.HTML_TAGS, true, CLASS_START,
+               Attributes.BLUE_PLAIN);
+
          s.signedVariables(CLASS_START, CLASS_END, null, Attributes.BLUE_PLAIN);
 
          s.setCondition(OPEN_BRACE_AHEAD_COND);
          s.extensibleKeyword("background", BACKGROUND_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
-               
+
          s.extensibleKeyword("border", BORDER_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
-               
+
          s.extensibleKeyword("font", FONT_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
-               
+
          s.extensibleKeyword("list", LIST_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
-               
+
          s.extensibleKeyword("margin", MARGIN_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
-               
+
          s.extensibleKeyword("outline", OUTLINE_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
-               
+
          s.extensibleKeyword("padding", PADDING_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
-               
+
          s.extensibleKeyword("transition", TRANSITION_PROPS, NON_PROP_START,
                Attributes.RED_PLAIN);
-                  
+
          s.keywords(PROPS, true, NON_PROP_START, Attributes.RED_PLAIN);
-       
+
          s.setCondition(IGNORE_COND);
          s.braces();
       }
       s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH);
    }
-   
+
    @Override
    public boolean isValid(String text, int pos, int length, int condition) {
       if (condition == IGNORE_COND) {
          return true;
-      }    
+      }
       int lastOpenBrace
             = SyntaxUtils.lastBlockStart(text, pos, "{", "}", false, false);
 

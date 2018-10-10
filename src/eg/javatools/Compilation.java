@@ -176,7 +176,7 @@ public class Compilation {
 
    private String createTargetDir(String root, String execDir) {
       String targetDir;
-      if (execDir.length() > 0) {
+      if (!execDir.isEmpty()) {
          File target = new File(root + "/" + execDir);
          target.mkdirs();
          targetDir = root + "/" + execDir;
@@ -189,7 +189,7 @@ public class Compilation {
 
    private Iterable<String> options(String targetDir, String xlintOption) {
       String[] opt;
-      if (xlintOption.length() == 0) {
+      if (xlintOption.isEmpty()) {
          opt = new String[] {"-d", targetDir};
       }
       else {
@@ -228,7 +228,7 @@ public class Compilation {
    private void copyFiles(String root, String sourceDir, String execDir,
          String[] nonJavaExt) {
 
-      if (sourceDir.length() == 0 || execDir.length() == 0) {
+      if (sourceDir.isEmpty() || execDir.isEmpty()) {
          throw new IllegalArgumentException(
                "A sources and a classes directory must be"
                + " defined for copying non-java files");

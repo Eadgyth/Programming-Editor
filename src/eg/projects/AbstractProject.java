@@ -70,7 +70,7 @@ public abstract class AbstractProject implements Configurable {
    public final boolean configureProject(String dir) {
       String rootToTest = "";
       String root = findRoot(dir);
-      if (root.length() > 0) {
+      if (!root.isEmpty()) {
          if (useMainFile) {
             rootToTest = testedRoot(root);
          }
@@ -99,7 +99,7 @@ public abstract class AbstractProject implements Configurable {
    public final boolean retrieveProject(String dir) {
       String root = findRootByFile(dir, Prefs.PROJ_CONFIG_FILE);
       boolean success = false;
-      if (root.length() > 0) {
+      if (!root.isEmpty()) {
          sw.setSaveProjConfigSelected(true);
          conf = new Prefs(root);
          success = configByPrefs(root, conf);
@@ -258,7 +258,7 @@ public abstract class AbstractProject implements Configurable {
     * @return  the array or null of no extensions are given
     */
    protected String[] getFileExtensions() {
-      if (extensions.length() == 0) {
+      if (extensions.isEmpty()) {
           return null;
        }
        else {
@@ -284,10 +284,10 @@ public abstract class AbstractProject implements Configurable {
     */
    protected boolean existsMainExecFile(String ext) {
       StringBuilder sb = new StringBuilder(projectRoot + "/");
-      if (execDirName.length() > 0) {
+      if (!execDirName.isEmpty()) {
          sb.append(execDirName).append("/");
       }
-      if (namespace.length() > 0) {
+      if (!namespace.isEmpty()) {
          sb.append(namespace).append("/");
       }
       sb.append(mainFileName).append(ext);
@@ -320,11 +320,11 @@ public abstract class AbstractProject implements Configurable {
       getTextFieldsInput(); // assigns value to isPathname
       if (!isPathname) {
          String sourceRoot = root;
-         if (sourceDirName.length() > 0) {
+         if (!sourceDirName.isEmpty()) {
             sourceRoot = sourceRoot + "/" + sourceDirName;
          }
          setNamespace(sourceRoot, mainFileName + sourceExtension);
-         if (namespacePath.length() > 0 && !isNameConflict) {
+         if (!namespacePath.isEmpty() && !isNameConflict) {
             if (namespacePath.length() > sourceRoot.length()) {
                namespace = namespacePath.substring(sourceRoot.length() + 1);
             }
@@ -445,13 +445,13 @@ public abstract class AbstractProject implements Configurable {
 
    private String pathRelToRoot() {
       StringBuilder sb = new StringBuilder();
-      if (sourceDirName.length() > 0) {
+      if (!sourceDirName.isEmpty()) {
          sb.append(sourceDirName).append("/");
       }
-      if (namespace.length() > 0) {
+      if (!namespace.isEmpty()) {
          sb.append(namespace).append("/");
       }
-      if (mainFileName.length() > 0) {
+      if (!mainFileName.isEmpty()) {
          sb.append(mainFileName).append(sourceExtension);
       }
       return sb.toString();
@@ -484,7 +484,7 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private boolean isConfigSuccessful(String rootToTest) {
-      boolean success = rootToTest.length() > 0;
+      boolean success = !rootToTest.isEmpty();
       if (!success) {
          if (isNameConflict) {
             showNameConflictMsg();
@@ -499,7 +499,7 @@ public abstract class AbstractProject implements Configurable {
          }
       }
       else {
-         if (projectRoot.length() == 0 || !projectRoot.equals(rootToTest)) {
+         if (projectRoot.isEmpty() || !projectRoot.equals(rootToTest)) {
             projectRoot = rootToTest;
          }
       }
@@ -507,7 +507,7 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private void storeConfigurationImpl() {
-      if (projectRoot.length() == 0) {
+      if (projectRoot.isEmpty()) {
          throw new IllegalStateException("The project is not configured");
       }
       store(prefs);

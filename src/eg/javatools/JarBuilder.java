@@ -122,7 +122,7 @@ public class JarBuilder {
       List<String> cmd = new ArrayList<>();
       Collections.addAll(cmd, "jar", "-cfe", jarName + ".jar", qualifiedMain);
       String searchRoot = root;
-      if (execDir.length() > 0) {
+      if (!execDir.isEmpty()) {
          searchRoot += "/" + execDir;
       }
       List<File> classes
@@ -133,7 +133,7 @@ public class JarBuilder {
           cmd.add(i.toString());
       });
       if (nonClassExt != null) {
-         if (sourceDir.length() == 0 || execDir.length() == 0) {
+         if (sourceDir.isEmpty() || execDir.isEmpty()) {
             throw new IllegalArgumentException(
                   "A sources and a classes directory must be"
                   + " defined for copying non-java files");

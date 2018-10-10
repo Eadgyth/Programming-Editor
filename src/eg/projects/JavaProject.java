@@ -81,10 +81,10 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                msg.append("Warning: One or more compiler messages are present.\n");
                needConfirm = true;
             }
-            if (comp.copyFilesErr().length() > 0) {
+            if (!comp.copyFilesErr().isEmpty()) {
                msg.append(comp.copyFilesErr()).append(".\n");
             }
-            if (comp.optionErr().length() > 0) {
+            if (!comp.optionErr().isEmpty()) {
                msg.append(comp.optionErr()).append(".\n");
             }
             if (needConfirm) {
@@ -142,7 +142,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                if (created) {
                   StringBuilder msg = new StringBuilder();
                   msg.append(jar.successMessage()).append(".\n");
-                  if (jar.incudedFilesErr().length() > 0) {
+                  if (!jar.incudedFilesErr().isEmpty()) {
                      msg.append(jar.incudedFilesErr()).append(".");
                   }
                   Dialogs.infoMessage(msg.toString(), null);
@@ -171,7 +171,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
 
    private void setQualifiedMain() {
       StringBuilder sb = new StringBuilder();
-      if (getNamespace().length() > 0) {
+      if (!getNamespace().isEmpty()) {
          sb.append(FileUtils.dottedFileSeparators(getNamespace())).append(".");
       }
       sb.append(getMainFileName());
@@ -180,11 +180,11 @@ public final class JavaProject extends AbstractProject implements ProjectActions
 
    private void setStartCommand() {
       StringBuilder sb = new StringBuilder("java ");
-      if (getExecutableDirName().length() > 0) {
+      if (!getExecutableDirName().isEmpty()) {
          sb.append("-cp ").append(getExecutableDirName()).append(" ");
       }
       sb.append(qualifiedMain);
-      if (getCmdArgs().length() > 0) {
+      if (!getCmdArgs().isEmpty()) {
          sb.append(" ").append(getCmdArgs());
       }
       startCommand = sb.toString();

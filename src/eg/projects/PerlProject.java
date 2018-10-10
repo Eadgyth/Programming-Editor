@@ -40,14 +40,14 @@ public final class PerlProject extends AbstractProject implements ProjectActions
    protected void setCommandParameters() {
       String main = getMainFileName() + getSourceExtension();
       StringBuilder sb = new StringBuilder("perl ");
-      if (getSourceDirName().length() > 0 ) {
+      if (!getSourceDirName().isEmpty()) {
          sb.append(getSourceDirName()).append("/");
       }
-      if (getNamespace().length() > 0) {
+      if (!getNamespace().isEmpty()) {
          sb.append(getNamespace()).append("/");
       }
       sb.append(getMainFileName()).append(getSourceExtension());
-      if (getCmdArgs().length() > 0) {
+      if (!getCmdArgs().isEmpty()) {
          sb.append(" ").append(getCmdArgs());
       }
       startCmd = sb.toString();
