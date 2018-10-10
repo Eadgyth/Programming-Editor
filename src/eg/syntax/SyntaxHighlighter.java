@@ -55,7 +55,7 @@ public class SyntaxHighlighter {
     */
    public void highlight(int chgPos) {
       int lineStart = LinesFinder.lastNewline(txt.text(), chgPos);
-      String line = LinesFinder.line(txt.text(), lineStart);
+      String line   = LinesFinder.line(txt.text(), lineStart);
       searcher.setTextParams(line, chgPos, lineStart + 1);
       hl.highlight();
    }
@@ -71,8 +71,8 @@ public class SyntaxHighlighter {
     */
    public void highlight(String change, int chgPos) {
       int linesStart = LinesFinder.lastNewline(txt.text(), chgPos);
-      int length = chgPos - linesStart + change.length();
-      String lines = LinesFinder.lines(txt.text(), linesStart, length);
+      int length     = chgPos - linesStart + change.length();
+      String lines   = LinesFinder.lines(txt.text(), linesStart, length);
       searcher.setTextParams(lines, chgPos, linesStart + 1);
       hl.highlight();
    }
@@ -263,7 +263,7 @@ public class SyntaxHighlighter {
             signedVariable(c, endMarks, successors, set);
          }
       }
-      
+
       /**
        * Searches and highlights variables that the specified sign
        * precedes.<br>(requires that {@link Highlighter#isValid} returns
@@ -345,22 +345,70 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights markup elements. Tag names are shown
-       * in blue and bold, attributes in red and attribute values, if
-       * quoted, in purple.
+       * Searches and highlights markup elements. Tag names are shown in
+       * blue, attributes in red and quoted attribute in purple.
        *
-       * @param tags  the array of html tag names; null for XML
-       * @param attributes  the array of html attributes; null for XML
+       * @param html  true for html, false for xml
        */
-      public void markupElements(String[] tags,  String[] attributes) {
-         if (tags == null) {
-            xmlElements();
+      public void markup(boolean html) {
+         String scn = section;
+         String t = txt.text();
+         if (html) {
+            scn = section.toLowerCase();
+            t = txt.text().toLowerCase();
          }
-         else {
-            String scnLowerCase = section.toLowerCase();
-            String textLowerCase = txt.text().toLowerCase();
-            for (String s : tags) {
-               htmlElement(s, attributes, scnLowerCase, textLowerCase);
+         int start = 0;
+         while (start != -1) {
+            start = scn.indexOf('<', start);
+            if (start != -1) {
+               int length = 0;
+               boolean isEndTag = scn.length() > start + 1
+                     && scn.charAt(start + 1) == '/';
+
+               int offset = start + 1;
+               if (isEndTag) {
+                  offset++;
+               }
+               boolean isTagName = false;
+               if (section.length() > offset) {
+                  char test = section.charAt(offset);
+                  isTagName = Character.isLetter(test);
+               }
+               if (isTagName) {
+                  int nameLength;
+                  if (html) {
+                    nameLength = SyntaxUtils.sectionLength(scn,
+                           SyntaxConstants.HTML_TAGS, offset);
+                  }
+                  else {
+                     nameLength = SyntaxUtils.sectionLength(section, offset,
+                           SyntaxConstants.RESERVED_XML_CHARS, null);
+                  }
+                  length = nameLength;
+                  int endPos = offset + length;
+                  if (SyntaxUtils.isWordEnd(scn, endPos)) {
+                     if (!isEndTag) {
+                        int absStart = start + scnStart;
+                        int tagEnd = markupTagEnd(absStart + 1);
+                        String tag = t.substring(absStart, tagEnd);
+                        if (html) {
+                           for (String s : SyntaxConstants.HTML_ATTR) {
+                               htmlAttributes(s, tag, absStart);
+                           }
+                        }
+                        else {
+                           //for (char c : SyntaxConstants.RESERVED_XML_CHARS) {
+                              xmlAttributes(tag, absStart, nameLength);
+                          // }
+                        }
+                        quote(tag, absStart, Attributes.PURPLE_PLAIN);
+                        //length = tag.length() - 1;
+                     }
+                     int colorStart = offset + scnStart;
+                     txt.setAttributes(colorStart, nameLength, Attributes.BLUE_PLAIN);
+                  }
+               }
+               start += length + 1;
             }
          }
       }
@@ -376,25 +424,25 @@ public class SyntaxHighlighter {
       public void embeddedHtmlSections(String startTag, String endTag,
             Highlighter hlSection) {
 
-         
          Highlighter hlCurr = hl;
          setHighlighter(hlSection);
+         String t = txt.text().toLowerCase();
          int start = 0;
          while (start != -1) {
-            start = txt.text().toLowerCase().indexOf(startTag, start);            
-            int length = 0;    
+            start = t.indexOf(startTag, start);
+            int length = 0;
             if (start != -1) {
                boolean isInCmnt = isInBlock(SyntaxConstants.HTML_BLOCK_CMNT_START,
                   SyntaxConstants.HTML_BLOCK_CMNT_END, start);
-                  
+
                if (!isInCmnt) {
                   int end = SyntaxUtils.nextBlockEnd(txt.text().toLowerCase(),
                         start + 1, startTag, endTag, false, false);
-   
+
                   if (end != -1) {
                      int startTagEnd = SyntaxUtils.nextBlockEnd(txt.text(),
                            start + 1, "<", ">", false, false);
-   
+
                      if (startTagEnd != -1) {
                         innerStart = startTagEnd + 1;
                         innerEnd = end;
@@ -552,86 +600,6 @@ public class SyntaxHighlighter {
          return length;
       }
 
-      private void htmlElement(String tagName, String[] attributes,
-            String scnLowerCase, String textLowerCase) {
-
-         int start = 0;
-         while (start != -1) {
-            start = scnLowerCase.indexOf(tagName, start);
-            if (start != -1) {
-               int absStart = start + scnStart;
-               int tagEnd = start + tagName.length();
-               int length = tagName.length();
-               boolean isStartTag = start > 0
-                    && '<' == section.charAt(start - 1)
-                    && SyntaxUtils.isWordEnd(section, tagEnd);
-
-               if (isStartTag) {
-                  tagEnd = markupTagEnd(absStart);
-                  String tag = textLowerCase.substring(absStart, tagEnd);
-                  length = tag.length();
-                  for (String s : attributes) {
-                      htmlAttributes(s, tag, absStart);
-                  }
-                  quote(tag, absStart, Attributes.PURPLE_PLAIN);
-               }
-               boolean isEndTag = !isStartTag
-                     && start > 1
-                     && '/' == section.charAt(start - 1)
-                     && '<' == section.charAt(start - 2)
-                     && SyntaxUtils.isWordEnd(section, tagEnd);
-
-               if (isStartTag || isEndTag) {
-                  txt.setAttributes(absStart, tagName.length(),
-                        Attributes.BLUE_PLAIN);
-               }
-               start += length;
-            }
-         }
-      }
-
-      private void xmlElements() {
-         int start = 0;
-         while (start != -1) {
-            start = section.indexOf('<', start);
-            if (start != -1) {
-               boolean isEndTag = section.length() > start + 1
-                     && section.charAt(start + 1) == '/';
-
-               int search = start + 1;
-               if (isEndTag) {
-                  search++;
-               }
-               int length = 0;
-                     
-               boolean isTagName = false;
-               if (section.length() > search) {
-                  char test = section.charAt(search);
-                  isTagName = Character.isLetter(test) || test == '_';
-                  
-               }
-               if (isTagName) {
-                  length = SyntaxUtils.sectionLength(section, search,
-                     SyntaxConstants.XML_TAG_END_CHARS, null);
-                  int nameEnd = search + length;
-                  if (!isEndTag && isMarkupAttrStart(nameEnd)) {
-                     int absStart = start + scnStart;
-                     int tagEnd = markupTagEnd(absStart + 1);
-                     String tag = txt.text().substring(absStart, tagEnd);
-                     for (char c : SyntaxConstants.XML_ATTR_START_CHARS) {
-                        xmlAttributes(c, SyntaxConstants.XML_ATTR_END_CHARS,
-                              tag, absStart);
-                     }
-                     quote(tag, absStart, Attributes.PURPLE_PLAIN);
-                  }
-                  int colorStart = search + scnStart;
-                  txt.setAttributes(colorStart, length, Attributes.BLUE_PLAIN);
-               }
-               start += length + 1;
-            }
-         }
-      }
-
       private int markupTagEnd(int pos) {
          int end = SyntaxUtils.nextBlockEnd(txt.text(), pos, "<", ">", false, false);
          if (end == -1) {
@@ -659,24 +627,30 @@ public class SyntaxHighlighter {
                   txt.setAttributes(start + tagStart, keyword.length(),
                        Attributes.RED_PLAIN);
                }
-
                start += keyword.length();
             }
          }
       }
 
-      private void xmlAttributes(char startChar, char[] endChars, String xmlEl,
-            int elStart) {
+      private void xmlAttributes(String tag, int tagStart, int pos) {
+         int offset = pos + 1;
+         int length = SyntaxUtils.sectionLength(tag, offset,
+               SyntaxConstants.XML_TAG_ENDS, null) - 1;
 
+         int colorStart = tagStart + offset + 1;
+         txt.setAttributes(colorStart, length, Attributes.RED_PLAIN);
+         for (char c : SyntaxConstants.RESERVED_XML_CHARS) {
+            reservedXMLChars(tag, c, tagStart);
+         }      
+      }
+      
+      private void reservedXMLChars(String tag, char reserved, int tagStart) {
          int start = 0;
          while (start != -1) {
-            start = xmlEl.indexOf(startChar, start);
+            start = tag.indexOf(reserved, start);
             if (start != -1) {
-               int length;
-               int absStart = start + elStart;
-               length = SyntaxUtils.sectionLength(xmlEl, start, endChars, null);
-               txt.setAttributes(absStart + 1, length - 1, Attributes.RED_PLAIN);
-               start += length;
+               txt.resetAttributes(tagStart + start, 1);
+               start++;
             }
          }
       }
@@ -776,6 +750,7 @@ public class SyntaxHighlighter {
       }
 
       private void repairCancelledBlock(String toRepair, int pos) {
+         System.out.println(toRepair);
          isHighlightBlockCmnt = false;
          setTextParams(toRepair, pos, pos);
          hl.highlight();
@@ -791,7 +766,6 @@ public class SyntaxHighlighter {
             nextEnd = SyntaxUtils.nextBlockEnd(txt.text(), pos, blockStart,
                blockEnd, skipQuotedBlkCmntMarks, true);
          }
-
          return lastStart != -1 & nextEnd != -1;
       }
 

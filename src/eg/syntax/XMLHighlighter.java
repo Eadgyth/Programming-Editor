@@ -22,7 +22,7 @@ public class XMLHighlighter implements Highlighter {
 
          s.setMarkupSection();
          s.resetAttributes();
-         s.markupElements(null, null);
+         s.markup(false);
       }
       s.block(SyntaxConstants.HTML_BLOCK_CMNT_START,
             SyntaxConstants.HTML_BLOCK_CMNT_END);

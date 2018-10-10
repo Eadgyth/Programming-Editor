@@ -110,6 +110,16 @@ public class SyntaxUtils {
       }
       return i - pos + delta;
    }
+   
+   public static int sectionLength(String text, String[] words, int pos) {
+         int l = 0;
+         for (int i = 0; i < words.length; i++) {
+            if (text.startsWith(words[i], pos) && words[i].length() > l) {
+               l = words[i].length();
+            }
+         }
+         return l;
+      }
 
    /**
     * Returns the position of the last block start
