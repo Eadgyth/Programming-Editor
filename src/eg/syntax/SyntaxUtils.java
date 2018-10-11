@@ -108,20 +108,20 @@ public class SyntaxUtils {
    }
    
    /**
-    * Returns the length of a section that corresponds to one of the
-    * words in <code>words</code> if it is contained in the text at the
-    * specified position
+    * Returns the length of a section that corresponds to the length of
+    * one of the words in <code>words</code> if it is contained in the
+    * text at the specified position
     *
     * @param text  the text
-    * @param words   the words
     * @param pos  the position
+    * @param words   the words
     * @return  the length of the section
     */
-   public static int sectionLength(String text, String[] words, int pos) {
+   public static int sectionLength(String text, int pos, String[] words) {
       int l = 0;
-      for (int i = 0; i < words.length; i++) {
-         if (text.startsWith(words[i], pos) && words[i].length() > l) {
-            l = words[i].length();
+      for (String word : words) {
+         if (text.startsWith(word, pos) && word.length() > l) {
+            l = word.length();
          }
       }
       return l;

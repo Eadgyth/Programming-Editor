@@ -265,7 +265,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights variables that the specified sign
+       * Searches and highlights a variable that the specified sign
        * precedes.<br>(requires that {@link Highlighter#isValid} returns
        * true)
        *
@@ -378,8 +378,8 @@ public class SyntaxHighlighter {
                if (isTagName) {
                   int nameLength;
                   if (html) {
-                    nameLength = SyntaxUtils.sectionLength(scn,
-                           SyntaxConstants.HTML_TAGS, offset);
+                    nameLength = SyntaxUtils.sectionLength(scn, offset,
+                           SyntaxConstants.HTML_TAGS);
                   }
                   else {
                      nameLength = SyntaxUtils.sectionLength(scn, offset,
@@ -736,7 +736,6 @@ public class SyntaxHighlighter {
       }
 
       private void repairCancelledBlock(String toRepair, int pos) {
-         System.out.println(toRepair);
          isHighlightBlockCmnt = false;
          setTextParams(toRepair, pos, pos);
          hl.highlight();
