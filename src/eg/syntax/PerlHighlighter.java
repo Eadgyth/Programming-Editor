@@ -128,7 +128,7 @@ public class PerlHighlighter implements Highlighter {
                char[] close = {
                   CLOSE_QW_DEL[ithDel]
                };
-               int length = SyntaxUtils.sectionLength(text, delStart, null, close);
+               int length = SyntaxUtils.sectionLength(text, delStart, close, null);
                ok = pos <= qwPos || pos > delStart + length;
             }
          } 

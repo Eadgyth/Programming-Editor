@@ -82,25 +82,21 @@ public class SyntaxUtils {
     * @param endMarks  the characters that mark the end of the section
     * @param successors  the characters that disable endMarks if they
     * follow pos
-    * @return  the length of the word
+    * @return  the length of the section
     */
    public static int sectionLength(String text, int pos, char[] endMarks,
          char[] successors) {
 
       boolean found = false;
       int start = pos + 1;
-      int delta = 0;
+      int offset = 0;
       if (successors != null) {
-         char first = text.charAt(start);
-         for (int i = 0; i < successors.length; i++) {
-            if (first == successors[i]) {
-               delta = 1;
-               break;
-            }
+         if (isCharEqualTo(text, successors, start)) {
+            offset = 1;
          }
       }
       int i;
-      for (i = start + delta; i < text.length() && !found; i++) {
+      for (i = start + offset; i < text.length() && !found; i++) {
          for (int j = 0; j < endMarks.length; j++) {
             if (text.charAt(i) == endMarks[j]) {
                found = true;
@@ -108,18 +104,47 @@ public class SyntaxUtils {
             }
          }
       }
-      return i - pos + delta;
+      return i - pos + offset;
    }
    
+   /**
+    * Returns the length of a section that corresponds to one of the
+    * words in <code>words</code> if it is contained in the text at the
+    * specified position
+    *
+    * @param text  the text
+    * @param words   the words
+    * @param pos  the position
+    * @return  the length of the section
+    */
    public static int sectionLength(String text, String[] words, int pos) {
-         int l = 0;
-         for (int i = 0; i < words.length; i++) {
-            if (text.startsWith(words[i], pos) && words[i].length() > l) {
-               l = words[i].length();
-            }
+      int l = 0;
+      for (int i = 0; i < words.length; i++) {
+         if (text.startsWith(words[i], pos) && words[i].length() > l) {
+            l = words[i].length();
          }
-         return l;
       }
+      return l;
+   }
+   
+   /**
+    * Returns if the character at the specified position is equal to one
+    * of the characters in <code>targets</code>
+    *
+    * @param text  the text
+    * @param targets  the target characters
+    * @param pos  the position
+    * @return  the boolean value tat is true if equal
+    */
+   public static boolean isCharEqualTo(String text, char[] targets, int pos) {
+      char c = text.charAt(pos);
+      for (int i = 0; i < targets.length; i++) {
+         if (c == targets[i]) {
+            return true;
+         }
+      }
+      return false;
+   }
 
    /**
     * Returns the position of the last block start
@@ -321,10 +346,24 @@ public class SyntaxUtils {
       }
       return index;
    }
+   
+   /**
+    * Returns if the specified position is found in a section that is
+    * quoted with single or double quote marks
+    *
+    * @param text  the text
+    * @param pos  the position
+    * @return  the boolean value that is true if quoted
+    */
+   public static boolean isQuoted(String text, int pos) {
+      return SyntaxUtils.isQuoted(text, pos, SyntaxConstants.DOUBLE_QUOTE)
+         || SyntaxUtils.isQuoted(text, pos, SyntaxConstants.SINGLE_QUOTE);
+   }
 
    /**
-    * Returns if the specified position is found in a quoted section
-    * where it is required that the quotation is found inside a line
+    * Returns if the specified position is found in a section that is
+    * quoted with single or double quote marks where it is required that
+    * the quotation is found inside a line    
     *
     * @param text  the text
     * @param pos  the position

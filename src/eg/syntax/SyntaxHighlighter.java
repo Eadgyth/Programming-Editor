@@ -372,7 +372,8 @@ public class SyntaxHighlighter {
                boolean isTagName = false;
                if (section.length() > offset) {
                   char test = section.charAt(offset);
-                  isTagName = Character.isLetter(test);
+                  isTagName = Character.isLetter(test)
+                     || (!html & test == '_');
                }
                if (isTagName) {
                   int nameLength;
@@ -397,12 +398,9 @@ public class SyntaxHighlighter {
                            }
                         }
                         else {
-                           //for (char c : SyntaxConstants.RESERVED_XML_CHARS) {
-                              xmlAttributes(tag, absStart, nameLength);
-                          // }
+                           xmlAttributes(tag, absStart, nameLength);
                         }
                         quote(tag, absStart, Attributes.PURPLE_PLAIN);
-                        //length = tag.length() - 1;
                      }
                      int colorStart = offset + scnStart;
                      txt.setAttributes(colorStart, nameLength, Attributes.BLUE_PLAIN);
@@ -611,12 +609,6 @@ public class SyntaxHighlighter {
          return end;
       }
 
-      private boolean isMarkupAttrStart(int pos) {
-         return section.length() > pos
-               && (' ' == section.charAt(pos)
-               || '\n' == section.charAt(pos));
-      }
-
       private void htmlAttributes(String keyword, String tag, int tagStart) {
          int start = 0;
          while (start != -1) {
@@ -633,26 +625,21 @@ public class SyntaxHighlighter {
       }
 
       private void xmlAttributes(String tag, int tagStart, int pos) {
-         int offset = pos + 1;
+         int offset = pos;
          int length = SyntaxUtils.sectionLength(tag, offset,
-               SyntaxConstants.XML_TAG_ENDS, null) - 1;
+               SyntaxConstants.XML_TAG_ENDS, null);
 
-         int colorStart = tagStart + offset + 1;
-         txt.setAttributes(colorStart, length, Attributes.RED_PLAIN);
-         for (char c : SyntaxConstants.RESERVED_XML_CHARS) {
-            reservedXMLChars(tag, c, tagStart);
-         }      
-      }
-      
-      private void reservedXMLChars(String tag, char reserved, int tagStart) {
-         int start = 0;
-         while (start != -1) {
-            start = tag.indexOf(reserved, start);
-            if (start != -1) {
-               txt.resetAttributes(tagStart + start, 1);
-               start++;
+         int i = offset;
+         while (i < tag.length()) {
+            if (SyntaxUtils.isQuoted(tag, i)
+                  || SyntaxUtils.isCharEqualTo(tag,
+                        SyntaxConstants.RESERVED_XML_CHARS, i)) {
             }
-         }
+            else {
+               txt.setAttributes(i + tagStart, 1, Attributes.RED_PLAIN);
+            }
+            i++;
+         }    
       }
 
       private void quote(String scn, int scnPos, SimpleAttributeSet set) {

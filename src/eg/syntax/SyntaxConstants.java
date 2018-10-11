@@ -51,10 +51,7 @@ public class SyntaxConstants {
       '<', '>'
    };
    public final static char[] RESERVED_XML_CHARS = {
-       '>', '<', '/', ' ', '\n',  '&', '\"', '\'', '%', '=', '+', ';', ','
-   };
-   public final static char[] XML_TAG_NAME_ENDS = {
-      '>', '<', '/', ' ', '\n',  '&', '\"', '\'', '%', '=', '+', ';', ','
+      '>', '<', '/', ' ', '\n',  '&', '\"', '\'', '%', '=', '+', ';', ',', '\\'
    };
 
    /**
