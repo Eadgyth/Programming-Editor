@@ -20,20 +20,20 @@ import eg.utils.FileUtils;
  * Created in {@link EditableDocument}
  */
 public class StyledText {
-   
+
    private final static SimpleAttributeSet SET = new SimpleAttributeSet();
-   
+
    private final JTextPane textArea;
    private final StyledDocument doc;
-   
+
    private String text = "";
-   
+
    static {
       StyleConstants.setForeground(SET, Color.BLACK);
       StyleConstants.setBold(SET, false);
       StyleConstants.setLineSpacing(SET, 0.25f);
    }
-   
+
    /**
     * @param textArea  the reference to the <code>JTextPane</code> that
     * displays the text
@@ -44,7 +44,7 @@ public class StyledText {
       Element el = doc.getParagraphElement(0);
       doc.setParagraphAttributes(0, el.getEndOffset(), SET, false);
    }
-   
+
    /**
     * Adds a <code>DocumentListener</code>
     *
@@ -53,7 +53,7 @@ public class StyledText {
    public void addDocumentListener(DocumentListener dl) {
       doc.addDocumentListener(dl);
    }
-   
+
    /**
     * Updates this text
     */
@@ -65,9 +65,9 @@ public class StyledText {
          FileUtils.log(e);
       }
    }
-   
+
    /**
-    * Gets this text which is contained in the <code>Document</code>
+    * Gets the text which is contained in the <code>Document</code>
     * that is displayed in this text area. The text is alsways only
     * the text that is updated by {@link #updateText()}.
     *
@@ -76,7 +76,7 @@ public class StyledText {
    public String text() {
       return text;
    }
-   
+
    /**
     * Resets the character attributes in the entire text to black
     * and plain
@@ -84,7 +84,7 @@ public class StyledText {
    public void resetAttributes() {
       setAttributes(0, doc.getLength(), SET);
    }
-   
+
    /**
     * Resets the character attributes in a section of the text to
     * black and plain
@@ -95,7 +95,7 @@ public class StyledText {
    public void resetAttributes(int pos, int length) {
       setAttributes(pos, length, SET);
    }
-   
+
    /**
     * Sets character attributes in a section of the text
     *
@@ -106,7 +106,7 @@ public class StyledText {
    public void setAttributes(int pos, int length, SimpleAttributeSet set) {
       doc.setCharacterAttributes(pos, length, set, false);
    }
-   
+
    /**
     * Appends a string
     *
@@ -145,7 +145,7 @@ public class StyledText {
          FileUtils.log(e);
       }
    }
-   
+
    /**
     * Gets the text area that displays the text
     *
