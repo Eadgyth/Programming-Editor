@@ -382,7 +382,7 @@ public class SyntaxHighlighter {
                            SyntaxConstants.HTML_TAGS, offset);
                   }
                   else {
-                     nameLength = SyntaxUtils.sectionLength(section, offset,
+                     nameLength = SyntaxUtils.sectionLength(scn, offset,
                            SyntaxConstants.RESERVED_XML_CHARS, null);
                   }
                   length = nameLength;
@@ -631,11 +631,10 @@ public class SyntaxHighlighter {
 
          int i = offset;
          while (i < tag.length()) {
-            if (SyntaxUtils.isQuoted(tag, i)
-                  || SyntaxUtils.isCharEqualTo(tag,
+            if (!SyntaxUtils.isQuoted(tag, i)
+                  && !SyntaxUtils.isCharEqualTo(tag,
                         SyntaxConstants.RESERVED_XML_CHARS, i)) {
-            }
-            else {
+            
                txt.setAttributes(i + tagStart, 1, Attributes.RED_PLAIN);
             }
             i++;
