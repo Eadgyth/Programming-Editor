@@ -26,8 +26,7 @@ public class Prefs {
 
    private final Properties projConfigProp = new Properties();
    private final Properties prop;
-
-   private String file;
+   private final String file;
 
   /**
    * Creates a <code>Prefs</code> that reads from and writes to the

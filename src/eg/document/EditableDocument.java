@@ -13,7 +13,6 @@ import eg.Languages;
 import eg.LanguageSelector;
 import eg.Constants;
 import eg.utils.FileUtils;
-import eg.utils.Dialogs;
 import eg.ui.EditArea;
 
 /**

@@ -11,7 +11,6 @@ import java.io.File;
 
 //--Eadgyth--/
 import eg.utils.Dialogs;
-import eg.utils.FileUtils;
 import eg.document.EditableDocument;
 import eg.document.EditingStateReadable;
 import eg.ui.MainWin;
