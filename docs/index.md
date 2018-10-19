@@ -44,11 +44,11 @@
 <li>A basic console to view the output and error messages after compiling a Java
     program or during testing a Java, R or Perl program. If the tested program asks
     for input this can be entered in the text area of the console (for a limitation
-    when an interactive Perl script is tested see
-    <a href="help/help.html#PerlProject">Testing a Perl script</a>.</li>
+    when an interactive Perl script is run see
+    <a href="help/help.html#PerlProject">Testing a Perl script</a>).</li>
 <li>Running self-chosen system commands in the current working directory. The output
-    of the process is shown in the console area. Such commands may be used for actions
-    that are not pre-defined in a project category. Also a generic project without
+    of the process is shown in the console. Such commands may be used for actions
+    that are not pre-defined in a project category. Also, a generic project without
     any pre-defined actions and dependency on a certain file type may be assigned to
     run system commands in the project directory.</li>
 </ul>
