@@ -11,7 +11,7 @@
     with a single document.</li>
 <li>Enabling and disabling word-wrapping (word-wrapping not in combination with
     line-numbering, however).</li>
-<li>Undo/redo including the undoing of a "replace all" action.</li>
+<li>Undo/redo.</li>
 <li>A basic find/replace function.</li>
 <li>Clearing end-of-line (trailing) white spaces.</li>
 <li>An "exchange editor" pane to edit text in a separate view and to facilitate
@@ -23,25 +23,22 @@
 <br>
 <h4>Testing source code</h4>
 <ul>
-<li>A simple assignment of files as project.</li>
+<li>An easy assignment of files as project and setting of parameters for a
+   project.</li>
    <ul>
    <li>A project may be simply the location of (source) files.</li>
-   <li>The program works with a given directory structure of a project.
-       This may include folders for source files or for executable files.
-       Also packages and sub-packages are taken into account in a Java project.</li>
+   <li>The program can work with a given directory structure of a project,
+       that is folders for source files or for executable files. Also
+       packages are taken into account in a Java project.</li>
    <li>A number of projects can be assigned which can be switch between.</li>
    <li>Retrieval of already defined projects after newly starting the program.</li>
    </ul>
-<li>Pre-defined actions in a project by simply using menu selections or buttons
-    depending on the project category.</li>
+<li>Pre-defined actions to run (or build) a project.</li>
    <ul>
-   <li>Compiling/testing Java code and bundling a Java program in an executable
-       jar file. Non-Java files may be included in a compilation and in a jar.
-       Define command-line arguments to run the tested java program and Xlint-options
-       to select compiler warnings to be shown.</li>
-   <li>Testing a Perl script. Define command-line arguments to run the script</li>
-   <li>Testing an R script. Define command-line arguments and command option to run
-       the script</li>
+   <li>Compiling/testing of Java code and bundling a Java program in an executable
+       jar file.</li>
+   <li>Testing a Perl script.</li>
+   <li>Testing an R script.</li>
    <li>Viewing Html code in the default web browser.</li>
    </ul>
 <li>A basic console to view the output and error messages after compiling a Java
