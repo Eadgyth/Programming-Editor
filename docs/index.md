@@ -50,7 +50,7 @@
     of the process is shown in the console. Such commands may be used for actions
     that are not pre-defined in a project category. Also, a generic project without
     any pre-defined actions and dependency on a certain file type may be assigned to
-    run system commands in the project directory.</li>
+    run system commands.</li>
 </ul>
 <h4>Other</h4>
 <ul>
