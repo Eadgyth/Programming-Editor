@@ -20,7 +20,6 @@
 <li>A basic auto-indentation.</li>
 <li>Block-wise increase or decrease of the indentation.</li>
 </ul>
-<br>
 <h4>Testing source code</h4>
 <ul>
 <li>An easy assignment of files as project and setting of parameters for a
