@@ -1,10 +1,10 @@
 package eg.ui.filetree;
 
-import java.awt.event.ActionListener;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.BorderLayout;
+
+import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 import javax.swing.JTree;
@@ -19,6 +19,7 @@ import javax.swing.filechooser.FileSystemView;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeSelectionModel;
 
 import java.io.File;
 
@@ -28,13 +29,13 @@ import eg.ui.IconFiles;
 import eg.utils.UIComponents;
 
 /**
- * Defines the panel which contains another JPanel which a JTree for
- * a file system can be added to and a toolbar.
+ * Defines the panel which contains a tool bar and panel for adding
+ * a JTree
  */
 public class TreePanel {
 
-   private final JPanel content         = new JPanel(new BorderLayout());
-   private final JPanel holdTreePnl = new JPanel(new BorderLayout());
+   private final JPanel content = new JPanel(new BorderLayout());
+   private final JPanel holdTree = new JPanel(new BorderLayout());
    private final JScrollPane scroll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -46,11 +47,12 @@ public class TreePanel {
    private final JButton closeBt = new JButton(IconFiles.CLOSE_ICON);
 
    public TreePanel() {
-      initTreePanel();
+      init();
    }
 
    /**
-    * Gets this JPanel which holds the tree and the toolbar
+    * Gets this JPanel which contains the toolbar and the panel for
+    * adding the tree
     *
     * @return  the JPanel
     */
@@ -64,13 +66,16 @@ public class TreePanel {
     * @param tree  the JTree
     */
    public void setTree(JTree tree) {
-      holdTreePnl.add(tree);
       tree.setRootVisible(true);
-      //tree.setFont(Constants.VERDANA_PLAIN_8);
       tree.setBorder(new LineBorder(Color.WHITE, 5));
       tree.setCellRenderer(new TreeRenderer());
       tree.setToggleClickCount(0);
+      tree.getSelectionModel().setSelectionMode(
+            TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+      tree.setFocusable(false);
       renewBt.setEnabled(true);
+      holdTree.add(tree);
    }
 
    /**
@@ -101,10 +106,9 @@ public class TreePanel {
    }
 
    /**
-    * Sets the boolean that specifies if the button for folder
-    * up actions is enabled (true) or disabled
+    * Enables or disables the button for folder up actions
     *
-    * @param b  the boolen value
+    * @param b  true to enable, false to disable
     */
    public void enableFolderUpAct(boolean b) {
       upBt.setEnabled(b);
@@ -114,9 +118,9 @@ public class TreePanel {
    //--private--/
    //
 
-   private void initTreePanel() {
+   private void init() {
       scroll.setBorder(Constants.MATTE_TOP);
-      scroll.setViewportView(holdTreePnl);
+      scroll.setViewportView(holdTree);
       scroll.getVerticalScrollBar().setUnitIncrement(10);
       content.add(toolbar(), BorderLayout.NORTH);
       content.add(scroll, BorderLayout.CENTER);
@@ -134,7 +138,7 @@ public class TreePanel {
          "Update tree",
          "Close the project explorer",
       };
-      return UIComponents.lastBtRightToolbar(bts, tooltips);
+      return UIComponents.toolBar(bts, tooltips);
    }
 
    private class TreeRenderer extends DefaultTreeCellRenderer {
