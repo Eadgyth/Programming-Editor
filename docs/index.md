@@ -33,9 +33,9 @@
    <li>A number of projects can be assigned which can be switch between.</li>
    <li>Retrieval of already defined projects after newly starting the program.</li>
    </ul>
-<li>Pre-defined actions to run (or build) a project.</li>
+<li>Pre-defined actions to run (or compile/build) a project.</li>
    <ul>
-   <li>Compiling/testing of Java code and bundling a Java program in an executable
+   <li>Compiling/testing Java code and bundling a Java program in an executable
        jar file.</li>
    <li>Testing a Perl script.</li>
    <li>Testing an R script.</li>
@@ -54,8 +54,7 @@
 </ul>
 <h4>Other</h4>
 <ul>
-<li>A file explorer that shows the files of the project that is set active.
-   It offers to open files, delete files and to create directories</li>
+<li>A file explorer for the project that is set active</li>
 </ul>
 <br>
 <h2>Screenshots</h2>
