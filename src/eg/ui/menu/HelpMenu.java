@@ -12,7 +12,6 @@ import java.net.URISyntaxException;
 
 /**
  * The menu for help actions
- * <p>Created in {@link MenuBar}
  */
 class HelpMenu {
    

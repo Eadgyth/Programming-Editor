@@ -56,9 +56,9 @@ public class TypingEdit {
    }
 
    /**
-    * Sets an <code>EditingStateReadable</code>
+    * Sets the reference to <code>EditingStateReadable</code>
     *
-    * @param esr  an {@link EditingStateReadable}
+    * @param esr  the {@link EditingStateReadable}
     */
    public void setEditingStateReadable(EditingStateReadable esr) {
       if (this.esr != null) {
@@ -69,10 +69,10 @@ public class TypingEdit {
    }
 
    /**
-    * Sets the boolean that controls if the update methods in this
-    * <code>DocumentListener</code> are enabled or disabled
+    * Enables or disables the update methods in this
+    * <code>DocumentListener</code>
     *
-    * @param b  the boolean value. True to enable, false to disable
+    * @param b  true to enable, false to disable
     */
    public void enableDocUpdate(boolean b) {
       isDocUpdate = b;
@@ -83,10 +83,9 @@ public class TypingEdit {
    }
 
    /**
-    * Sets the editing mode that depends on the specified language
+    * Sets the editing mode
     *
-    * @param lang  the language which is a constant in
-    * {@link Languages}
+    * @param lang  the language which is a constant in {@link Languages}
     */
    public void setEditingMode(Languages lang) {
       if (lang == Languages.NORMAL_TEXT) {
@@ -129,10 +128,10 @@ public class TypingEdit {
    }
 
    /**
-    * Sets the boolean that disables/re-enables the addition of
-    * breakpoint that define undoable units.
+    * Disables or re-enables the addition of breakpoint that define
+    * undoable units.
     *
-    * @param b  the boolean value; true to disable, false to re-enable
+    * @param b  true to disable, false to re-enable
     * @see UndoEdit #disableBreakpointAdding(boolean)
     */
    public void disableBreakpointAdding(boolean b) {

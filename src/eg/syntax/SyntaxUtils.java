@@ -8,16 +8,15 @@ import eg.utils.LinesFinder;
 public class SyntaxUtils {
 
    /**
-    * Returns if the portion of text with the specifies start position
-    * and length is a word. A word is initially defined such that it does
-    * not adjoin to a letter or a digit at the start and/or the end.
+    * Returns if a section of text is a word. A word is initially defined
+    * such that it does not adjoin to a letter or a digit.
     *
     * @param text  the text
-    * @param pos  the position
-    * @param length  the length
+    * @param pos  the position where the section starts
+    * @param length  the length of the section
     * @param nonWordStart  the array of characters that must not precede
     * a word, in addition to letters and digits. Can be null
-    * @return  the boolean value that is true if a word is found
+    * @return  true if a word is found
     */
    public static boolean isWord(String text, int pos, int length,
          char[] nonWordStart) {
@@ -34,8 +33,7 @@ public class SyntaxUtils {
     * @param pos  the position
     * @param nonWordStart  the array of characters that must not precede
     * a word, in addition to letters and digits. Can be null
-    * @return  the boolean value that is true if word start is found
-    * @see #isWord(String, int, int, char[])
+    * @return  true if word start is found
     */
    public static boolean isWordStart(String text, int pos, char[] nonWordStart) {
       boolean isWord = true;
@@ -54,13 +52,11 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns if the character at the specified position is
-    * a word end
+    * Returns if the specified position is a word end
     *
     * @param text  the text
     * @param pos  the position
-    * @return the boolean value that is true if a word end is found
-    * @see #isWord(String, int, int, char[])
+    * @return  true if a word end is found
     */
    public static boolean isWordEnd(String text, int pos) {
       if (text.length() > pos) {
@@ -81,7 +77,7 @@ public class SyntaxUtils {
     * @param pos   the position
     * @param endMarks  the characters that mark the end of the section
     * @param successors  the characters that disable endMarks if they
-    * follow pos
+    * directly follow pos
     * @return  the length of the section
     */
    public static int sectionLength(String text, int pos, char[] endMarks,
@@ -109,19 +105,19 @@ public class SyntaxUtils {
    
    /**
     * Returns the length of a section that corresponds to the length of
-    * one of the words in <code>words</code> if it is contained in the
-    * text at the specified position
+    * one of the strings in <code>keywords</code> if it is contained in
+    * the text at the specified position
     *
     * @param text  the text
     * @param pos  the position
-    * @param words   the words
+    * @param keywords   the keywords
     * @return  the length of the section
     */
-   public static int sectionLength(String text, int pos, String[] words) {
+   public static int sectionLength(String text, int pos, String[] keywords) {
       int l = 0;
-      for (String word : words) {
-         if (text.startsWith(word, pos) && word.length() > l) {
-            l = word.length();
+      for (String s : keywords) {
+         if (text.startsWith(s, pos) && s.length() > l) {
+            l = s.length();
          }
       }
       return l;
@@ -134,7 +130,7 @@ public class SyntaxUtils {
     * @param text  the text
     * @param targets  the target characters
     * @param pos  the position
-    * @return  the boolean value tat is true if equal
+    * @return  true if equal
     */
    public static boolean isCharEqualTo(String text, char[] targets, int pos) {
       char c = text.charAt(pos);
@@ -153,11 +149,9 @@ public class SyntaxUtils {
     * @param pos  the position where the search starts
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
-    * @param skipQuoted  the boolean value that is true to skip quoted
-    * blockStart and blockEnd
-    * @param quotedInLine  the boolean value that is true to require
-    * that skipped quotations must be found inside a line; ignored if
-    * skipQuoted is false
+    * @param skipQuoted  true to skip quoted blockStart and blockEnd
+    * @param quotedInLine  true to require that skipped quotations must
+    * be found inside a line; ignored if skipQuoted is false
     * @return  the position of the last block start. -1 if a block end
     * is closer than a block start or if no block start is found
     */
@@ -193,11 +187,9 @@ public class SyntaxUtils {
     * @param pos  the position where the search starts
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
-    * @param skipQuoted  the boolean value that is true to skip quoted
-    * blockStart and blockEnd
-    * @param quotedInLine  the boolean value that is true to require
-    * that skipped quotations must be found inside a line; ignored if
-    * skipQuoted is false
+    * @param skipQuoted  true to skip quoted blockStart and blockEnd
+    * @param quotedInLine  true to require that skipped quotations must
+    * be found inside a line; ignored if skipQuoted is false
     * @return  the position of the next block start. -1 if a block end
     * is closer than a block start or if no block start is found
     */
@@ -233,11 +225,9 @@ public class SyntaxUtils {
     * @param pos  the position where the search starts
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
-    * @param skipQuoted  the boolean value that is true to skip quoted
-    * blockStart and blockEnd
-    * @param quotedInLine  the boolean value that is true to require
-    * that skipped quotations must be found inside a line; ignored if
-    * skipQuoted is false
+    * @param skipQuoted  true to skip quoted blockStart and blockEnd
+    * @param quotedInLine  true to require that skipped quotations must
+    * be found inside a line; ignored if skipQuoted is false
     * @return  the position of the next block end. -1 if a block
     * start is closer than a block end or if no block end is found
     */
@@ -268,7 +258,7 @@ public class SyntaxUtils {
 
    /**
     * Returns the position of the next <code>toSearch</code> that is not
-    * in quotes
+    * quoted
     *
     * @param text  the text
     * @param toSearch  the string that is searched
@@ -304,8 +294,8 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the position of the first quote mark (single or
-    * double) in the text before <code>pos</code>
+    * Returns the position of the first quote mark (single or double)
+    * in the text before <code>pos</code>
     *
     * @param text  the text
     * @param pos  the position before which a quote mark is searched
@@ -326,13 +316,12 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the position of the last quote mark (single or
-    * double) behind <code>pos</code>
+    * Returns the position of the last quote mark (single or double)
+    * behind <code>pos</code>
     *
     * @param text  the text
     * @param pos  the position behind which a quote mark is searched
-    * @return  the position; -1 if no quote mark is found behind
-    * pos
+    * @return  the position; -1 if no quote mark is found behind pos
     */
    public static int lastQuoteMark(String text, int pos) {
       int index = -1;
@@ -353,7 +342,7 @@ public class SyntaxUtils {
     *
     * @param text  the text
     * @param pos  the position
-    * @return  the boolean value that is true if quoted
+    * @return  true if quoted
     */
    public static boolean isQuoted(String text, int pos) {
       return SyntaxUtils.isQuoted(text, pos, SyntaxConstants.DOUBLE_QUOTE)
@@ -367,7 +356,7 @@ public class SyntaxUtils {
     *
     * @param text  the text
     * @param pos  the position
-    * @return  the boolean value that is true if quoted
+    * @return  true if quoted
     */
    public static boolean isQuotedInLine(String text, int pos) {
       String line;
@@ -384,7 +373,7 @@ public class SyntaxUtils {
     * @param text  the text
     * @param pos  the position
     * @param quoteMark  the quoteMark
-    * @return  the boolean value that is true if quoted
+    * @return  true if quoted
     */
    public static boolean isQuoted(String text, int pos, char quoteMark) {
       int count = 0;
@@ -415,9 +404,8 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the last position of the specified <code>toSearch</code>
-    * that is not preceded with a backslash that is itself is not
-    * preceded with a backslash.
+    * Returns the last position of <code>toSearch</code> that is not
+    * preceded by a backslash that is itself not preceded by a backslash.
     *
     * @param text  the text
     * @param toSearch  the char that is searched
@@ -433,8 +421,8 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the next position of the specified <code>toSearch</code>
-    * that is not preceded with a backslash
+    * Returns the next position of <code>toSearch</code> that is not
+    * preceded by a backslash that is itself not preceded by a backslash.
     *
     * @param text  the text
     * @param toSearch  the char that is searched
@@ -450,12 +438,12 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the next position that is a space character
+    * Returns the position of the next space character
     *
     * @param text  the text
     * @param pos  the position where the search starts
-    * @return  the position of the next space or the specifies pos
-    * if it is the text length
+    * @return  the position of the next space or the text length if none
+    * is found
     */
    public static int nextNonSpace(String text, int pos) {
       if (pos == text.length()) {

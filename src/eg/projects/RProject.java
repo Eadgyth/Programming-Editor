@@ -14,7 +14,11 @@ public final class RProject extends AbstractProject implements ProjectActions {
 
    private String startCmd = "";
 
-   RProject(ConsoleOpenable co, ProcessStarter proc) {
+   /**
+    * @param co  the reference to {@link ConsoleOpenable}
+    * @param proc  the reference to {@link ProcessStarter}
+    */
+   public RProject(ConsoleOpenable co, ProcessStarter proc) {
       super(ProjectTypes.R, true, "R");
       this.co = co;
       this.proc = proc;
@@ -38,17 +42,19 @@ public final class RProject extends AbstractProject implements ProjectActions {
    
    @Override
    protected void setCommandParameters() {
-      String main = getMainFileName() + getSourceExtension();
       StringBuilder sb = new StringBuilder("Rscript ");
-      if (!getSourceDirName().isEmpty()) {
-         sb.append(getSourceDirName()).append("/");
+      if (!cmdOptions().isEmpty()) {
+         sb.append(cmdOptions()).append(" ");
       }
-      if (!getNamespace().isEmpty()) {
-         sb.append(getNamespace()).append("/");
+      if (!sourceDirName().isEmpty()) {
+         sb.append(sourceDirName()).append("/");
       }
-      sb.append(getMainFileName()).append(getSourceExtension());
-      if (getCmdArgs().length() > 0) {
-         sb.append(" ").append(getCmdArgs());
+      if (!namespace().isEmpty()) {
+         sb.append(namespace()).append("/");
+      }
+      sb.append(mainFileName()).append(sourceExtension());
+      if (!cmdArgs().isEmpty()) {
+         sb.append(" ").append(cmdArgs());
       }
       startCmd = sb.toString();
    }

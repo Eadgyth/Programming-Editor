@@ -1,27 +1,28 @@
 package eg.projects;
 
-import eg.ui.ProjectControlsUpdate;
+import eg.ui.ProjectStateUpdate;
 
 /**
- * The changes that are nessecary when a project of a given type is set active.
+ * The changes that are necessary when a project of a given type is set active+
  */
 public class ProjectTypeChange {
-   
-   private final ProjectControlsUpdate update;
-   
+
+   private final ProjectStateUpdate update;
+
    /**
-    * @param update  the reference to {@link ProjectControlsUpdate}
+    * @param update  the reference to {@link ProjectStateUpdate}
     */
-   public ProjectTypeChange(ProjectControlsUpdate update) {
+   public ProjectTypeChange(ProjectStateUpdate update) {
       this.update = update;
    }
-   
+
    /**
     * Enables/disables menu items and buttons for project actions.<br>
     *
-    * @param projType  the project type which has a valaue in {@link ProjectTypes}
+    * @param projType  the project type which has a valaue in
+    * {@link ProjectTypes}
     */
-   public void enableProjectActions(ProjectTypes projType) {                   
+   public void enableProjectActions(ProjectTypes projType) {
       switch (projType) {
          case GENERIC:
             update.enableProjectActions(false, false, false);
@@ -39,19 +40,12 @@ public class ProjectTypeChange {
             update.enableProjectActions(false, true, false);
       }
    }
-   
-   /**
-    * Disables menu items and buttons for project actions.<br>
-    */
-   public void disableProjectActions() {
-      update.enableProjectActions(false, false, false);
-   }
 
    /**
     * Sets the label for the menu item for building actions.<br>
     *
     * @param projType  the project type which has a valaue in {@link ProjectTypes}
-    */ 
+    */
    public void setBuildLabel(ProjectTypes projType) {
       switch (projType) {
          case JAVA:

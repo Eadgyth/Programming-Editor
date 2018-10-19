@@ -32,16 +32,16 @@ public abstract class AbstractProject implements Configurable {
    private final SettingsWindow sw;  // Set in constructor
    //
    // Varaiable that define the configuration
-   private final ProjectTypes projType;  // Set in constructor
+   private final ProjectTypes projType;  //
    private final String sourceExtension; // Set in constructor
-   private final boolean useMainFile;    // Set in constructor
+   private final boolean useMainFile;    //
    private String projectRoot = "";
    private String mainFileName = "";
    private String namespace = "";
    private String execDirName = "";
    private String sourceDirName = "";
-   private String startOptions = "";
-   private String args = "";
+   private String cmdOptions = "";
+   private String cmdArgs = "";
    private String compileOption = "";
    private String extensions = "";
    private String buildName = "";
@@ -67,7 +67,7 @@ public abstract class AbstractProject implements Configurable {
    }
 
    @Override
-   public final boolean configureProject(String dir) {
+   public final boolean configure(String dir) {
       String rootToTest = "";
       String root = findRoot(dir);
       if (!root.isEmpty()) {
@@ -96,7 +96,7 @@ public abstract class AbstractProject implements Configurable {
     * "Prefs" file in the program folder.
     */
    @Override
-   public final boolean retrieveProject(String dir) {
+   public final boolean retrieve(String dir) {
       String root = findRootByFile(dir, Prefs.PROJ_CONFIG_FILE);
       boolean success = false;
       if (!root.isEmpty()) {
@@ -119,7 +119,7 @@ public abstract class AbstractProject implements Configurable {
    }
 
    @Override
-   public final ProjectTypes getProjectType() {
+   public final ProjectTypes projectType() {
       return projType;
    }
 
@@ -134,18 +134,18 @@ public abstract class AbstractProject implements Configurable {
    }
 
    @Override
-   public final String getProjectPath() {
+   public final String projectPath() {
       return projectRoot;
    }
 
    @Override
-   public final String getProjectName() {
+   public final String projectName() {
       File f = new File(projectRoot);
       return f.getName();
    }
 
    @Override
-   public final String getExecutableDirName() {
+   public final String executableDirName() {
       return execDirName;
    }
 
@@ -157,12 +157,10 @@ public abstract class AbstractProject implements Configurable {
    /**
     * @param projType  the project type which has a valaue in
     * {@link ProjectTypes}
-    * @param useMainFile  the boolean value that is true to indicate
-    * that the project uses a main file which is expected to represent
-    * the entry point to run or test the project
-    * @param sourceExtension  the extension of source files (or of the
-    * main file if extensions differ). Null if no main project file is
-    * used
+    * @param useMainFile  true to indicate that the project uses a main
+    * file which is executed when the project is run
+    * @param sourceExtension  the extension without the period of
+    * source files (or of the main file if extensions differ)
     */
    protected AbstractProject(ProjectTypes projType, boolean useMainFile,
          String sourceExtension) {
@@ -186,7 +184,7 @@ public abstract class AbstractProject implements Configurable {
     *
     * @return  the name
     */
-   protected String getMainFileName() {
+   protected String mainFileName() {
       if (!useMainFile) {
          throw new IllegalStateException("A main file is not used");
       }
@@ -201,16 +199,16 @@ public abstract class AbstractProject implements Configurable {
     *
     * @return  the namespace. The empty string if no namespace is given
     */
-   protected String getNamespace() {
+   protected String namespace() {
       return namespace;
    }
 
    /**
-    * Returns the name of the directoy where source files are saved
+    * Returns the last name of the directoy where source files are saved
     *
     * @return  the name. The empty string if no source directory is given
     */
-   protected String getSourceDirName() {
+   protected String sourceDirName() {
       return sourceDirName;
    }
 
@@ -220,7 +218,7 @@ public abstract class AbstractProject implements Configurable {
     *
     * @return  the extension. Null if no source extension is given
     */
-   protected String getSourceExtension() {
+   protected String sourceExtension() {
       return sourceExtension;
    }
 
@@ -229,8 +227,8 @@ public abstract class AbstractProject implements Configurable {
     *
     * @return  the options. The empty string if no options are given
     */
-   protected String getCmdOptions() {
-      return startOptions;
+   protected String cmdOptions() {
+      return cmdOptions;
    }
 
    /**
@@ -238,8 +236,8 @@ public abstract class AbstractProject implements Configurable {
     *
     * @return  the arguments. The empty string if no arguments are given
     */
-   protected String getCmdArgs() {
-      return args;
+   protected String cmdArgs() {
+      return cmdArgs;
    }
 
    /**
@@ -247,7 +245,7 @@ public abstract class AbstractProject implements Configurable {
     *
     * @return  the option. The empty string if no option is given
     */
-   protected String getCompileOption() {
+   protected String compileOption() {
       return compileOption;
    }
 
@@ -257,7 +255,7 @@ public abstract class AbstractProject implements Configurable {
     *
     * @return  the array or null of no extensions are given
     */
-   protected String[] getFileExtensions() {
+   protected String[] fileExtensions() {
       if (extensions.isEmpty()) {
           return null;
        }
@@ -271,7 +269,7 @@ public abstract class AbstractProject implements Configurable {
     *
     * @return  the name
     */
-   protected String getBuildName() {
+   protected String buildName() {
       return buildName;
    }
 
@@ -348,8 +346,8 @@ public abstract class AbstractProject implements Configurable {
       splitMainFileInput(mainFileInput);
       sourceDirName = sw.sourcesDirNameInput();
       execDirName = sw.execDirNameInput();
-      startOptions = sw.cmdOptionsInput();
-      args = sw.cmdArgsInput();
+      cmdOptions = sw.cmdOptionsInput();
+      cmdArgs = sw.cmdArgsInput();
       compileOption = sw.compileOptionInput();
       extensions = sw.extensionsInput();
       buildName = sw.buildNameInput();
@@ -470,7 +468,7 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private void setTextFieldsDisplay() {
-      sw.displayProjDirName(getProjectName());
+      sw.displayProjDirName(projectName());
       if (isPathname) {
          sw.displayFile(namespace + F_SEP + mainFileName);
       }
@@ -576,7 +574,7 @@ public abstract class AbstractProject implements Configurable {
       Dialogs.warnMessageOnTop(
          "<html>"
          + mainFileName
-         + getSourceExtension()
+         + sourceExtension()
          + " seems to exist more than once in the project."
          + "<br><br>"
          + "If this name should be used it may be necessary to specify"

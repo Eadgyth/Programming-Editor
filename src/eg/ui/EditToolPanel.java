@@ -15,10 +15,10 @@ import eg.Constants;
  */
 public class EditToolPanel {
    
-   private final JPanel pnl = new JPanel(new BorderLayout());
+   private final JPanel content = new JPanel(new BorderLayout());
    
    public EditToolPanel() {
-      pnl.setBorder(Constants.GRAY_BORDER);
+      content.setBorder(Constants.GRAY_BORDER);
    }
    
    /**
@@ -26,8 +26,8 @@ public class EditToolPanel {
     *
     * @return  the JPanel
     */
-   public JPanel panel() {
-      return pnl;
+   public JPanel content() {
+      return content;
    }
    
    /**
@@ -40,16 +40,15 @@ public class EditToolPanel {
          throw new IllegalArgumentException("The parameter c is null");
       }
       c.setPreferredSize(new Dimension(c.getWidth(), 0));
-      BorderLayout layout = (BorderLayout) pnl.getLayout();
+      BorderLayout layout = (BorderLayout) content.getLayout();
       Component cCenter = layout.getLayoutComponent(BorderLayout.CENTER);
       if (cCenter != null && cCenter != c) {
-         pnl.remove(cCenter);
+         content.remove(cCenter);
       }
       if (cCenter != c) {
-         pnl.add(c, BorderLayout.CENTER);
-         pnl.revalidate();
-         pnl.repaint();
+         content.add(c, BorderLayout.CENTER);
+         content.revalidate();
+         content.repaint();
       }
    }
 }
-   

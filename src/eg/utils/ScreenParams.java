@@ -38,14 +38,17 @@ public class ScreenParams {
    }
 
    /**
-    * Returns an integer that is the rounded product of the specified
-    * size and the resolution ratio.<br>
-    * This ratio is the screen resolution divided by the graphics
-    * resolution assumed by Java (72 dpi).<br>
-    * If the program is run using Java 9 or higher under Windows the
-    * resolution ratio is constantly 96/72. If the program is run using
-    * Java 9 or higher on another operation system <code>size</code> is
-    * returned unchanged
+    * Returns a size that scales the specified size depending on the
+    * screen resolution, the Java version and the OS.
+    * <p>
+    * If the program is run using Java 8 the scaled size is the product
+    * of the specified size and the resolution ratio. This ratio is the
+    * screen resolution divided by the graphics resolution assumed by
+    * Java (72 dpi).
+    * <p>
+    * If the program is run using a higher Java version the specified size
+    * is returned unchanged or, if the OS is Windows, multiplied with the
+    * ratio (96/72).
     *
     * @param size  the size
     * @return  the rounded rescaled size

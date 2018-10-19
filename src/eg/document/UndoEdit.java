@@ -105,18 +105,18 @@ public class UndoEdit {
    }
 
    /**
-    * Returns if edits can be undone
+    * Returns if edits that can be undone are present
     *
-    * @return  the boolean value
+    * @return  true if edits can be undone
     */
    public boolean canUndo() {
       return iEd > -1;
    }
 
    /**
-    * Returns if edits can be redone
+    * Returns if edits that can be redone are present
     *
-    * @return  the boolean value
+    * @return  true if edits can be redone
     */
    public boolean canRedo() {
       return iEd < edits.size() - 1;
@@ -196,8 +196,7 @@ public class UndoEdit {
     * Disables or re-enables adding breakpoints. Edits added
     * after disabling until re-enabling are "framed" by breakpoints
     *
-    * @param b  the boolean value that is true to disable,
-    * false to re-enable
+    * @param b  true to disable, false to re-enable
     */
    public void disableBreakpointAdding(boolean b) {
       if (b) {

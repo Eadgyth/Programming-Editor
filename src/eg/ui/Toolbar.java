@@ -13,13 +13,12 @@ import eg.Projects;
 import eg.Edit;
 
 /**
- * The toolbar.
- * <p> Created in {@link MainWin}
+ * Defines the tool bar
  */
-public class Toolbar {
+public class ToolBar {
 
-   private final JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-   private final JToolBar toolbar = new JToolBar(JToolBar.HORIZONTAL);
+   private final JPanel content = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+   private final JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
 
    private final JButton openBt       = new JButton(IconFiles.OPEN_ICON);
    private final JButton saveBt       = new JButton(IconFiles.SAVE_ICON);
@@ -34,12 +33,17 @@ public class Toolbar {
    private final JButton compileBt    = new JButton(IconFiles.COMPILE_ICON);
    private final JButton runBt        = new JButton(IconFiles.RUN_ICON);
 
-   public Toolbar() {
-      initToolbar();
+   public ToolBar() {
+      init();
    }
 
-   public JPanel toolbar() {
-      return pnl;
+   /**
+    * Gets this <code>JPanel</code> the contains the tool bar
+    *
+    * @return  the JPanel
+    */
+   public JPanel content() {
+      return content;
    }
 
    /**
@@ -53,14 +57,13 @@ public class Toolbar {
    }
 
    /**
-    * Sets listeners for actions to change project and to run and
-    * compile a project
+    * Sets listeners for project actions
     *
     * @param p  the reference to {@link Projects}
     */
    public void setProjectActions(Projects p) {
-      changeProjBt.addActionListener(e -> p.changeProject());
-      runBt.addActionListener(e -> p.runProject());
+      changeProjBt.addActionListener(e -> p.change());
+      runBt.addActionListener(e -> p.run());
       compileBt.addActionListener(e -> p.saveAllAndCompile());
    }
 
@@ -80,11 +83,11 @@ public class Toolbar {
    }
 
    /**
-    * Sets the booleans that specify if the buttons for actions to
-    * compile and run a project are enabled (true) or disabled (false)
+    * Enables the buttons for actions to compile and run a project.
+    * The specified booleans each are true to enable, false to disable
     *
-    * @param isCompile  the boolean value for compile actions
-    * @param isRun  the boolean value for run actions
+    * @param isCompile  the boolean for compile actions
+    * @param isRun  the boolean for run actions
     */
    public void enableProjectActionsBts(boolean isCompile, boolean isRun) {
       compileBt.setEnabled(isCompile);
@@ -92,20 +95,18 @@ public class Toolbar {
    }
 
    /**
-    * Sets the boolean that specifies if the button for actions to
-    * change project is enabled (true) or disabled (false)
+    * Enables or disables the button for actions to change project
     *
-    * @param b  the boolean value
+    * @param b  true to enable, false to disable
     */
    public void enableChangeProjBt(boolean b) {
       changeProjBt.setEnabled(b);
    }
 
    /**
-    * Sets the boolean that specifies if the buttons for cutting and
-    * copying actions are enabled (true) or disabled (false)
+    * Enables or diables the buttons for cutting and copying actions.
     *
-    * @param b  the boolean value
+    * @param b  true to enable, false to disable
     */
    public void enableCutCopyBts(boolean b) {
       cutBt.setEnabled(b);
@@ -113,21 +114,20 @@ public class Toolbar {
    }
    
    /**
-    * Sets the boolean that specifies if the button for saving actions
-    * is enabled (true) or disabled (false)
+    * Enables or disables the button for saving actions
     *
-    * @param b  the boolean value
+    * @param b  true to enable, false to disable
     */
     public void enableSaveBt(boolean b) {
        saveBt.setEnabled(b);
     }
 
    /**
-    * Sets the booleans that specify if the buttons for undoing and
-    * redoing actions are enabled (true) or disabled (false)
+    * Enables or disables the buttons for und/redo actions. The
+    * specified boolean each are true to enable, false to disable
     *
-    * @param isUndo  the boolean value for undoing actions
-    * @param isRedo  the boolean value for redoing actions
+    * @param isUndo  the boolean for undo actions
+    * @param isRedo  the boolean for redo actions
     */
    public void enableUndoRedoBts(boolean isUndo, boolean isRedo) {
       undoBt.setEnabled(isUndo);
@@ -138,10 +138,10 @@ public class Toolbar {
    //--private--/
    //
 
-   private void initToolbar() {
-      toolbar.setOpaque(false);
-      toolbar.setBorder(null);
-      toolbar.setFloatable(false);
+   private void init() {
+      toolBar.setOpaque(false);
+      toolBar.setBorder(null);
+      toolBar.setFloatable(false);
       enableProjectActionsBts(false, false);
       changeProjBt.setEnabled(false);
       JButton[] bts = new JButton[] {
@@ -159,12 +159,12 @@ public class Toolbar {
          "Run project", "Change project"
       };
       for (int i = 0; i < bts.length; i++) {
-         toolbar.add(bts[i]);
+         toolBar.add(bts[i]);
          bts[i].setBorder(new EmptyBorder(10, 8, 10, 8));
          bts[i].setToolTipText(toolTips[i]);
          bts[i].setFocusable(false);
          bts[i].setFocusPainted(false);
       }
-      pnl.add(toolbar);
+      content.add(toolBar);
    }
 }

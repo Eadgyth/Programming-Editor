@@ -97,6 +97,15 @@ public class FileTree {
       setNewTree(currentRoot);
       expand();
    }
+   
+   /**
+    * Gets this currently shown root
+    *
+    * @return  the root
+    */
+   public String currentRoot() {
+      return currentRoot;
+   }
 
    //
    //--private--/
@@ -117,7 +126,7 @@ public class FileTree {
          tree.addMouseListener(mouseListener);
          treePnl.setTree(tree);
       }
-      else {
+      else {         
          tree.setModel(model);
       }
    }
@@ -195,7 +204,9 @@ public class FileTree {
             }
          }
          else {
-            Dialogs.errorMessage("Deleting " + selectedFile.getName()
+            Dialogs.errorMessage(
+                  "Deleting "
+                  + selectedFile.getName()
                   + " failed", null);
          }
       }
@@ -213,7 +224,11 @@ public class FileTree {
                   selectedNode, selectedNode.getChildCount());
          }
          else {
-            Dialogs.errorMessage("Creating " + newDir.getName() + " failed", null);
+            Dialogs.errorMessage(
+                  "Creating "
+                  + newDir.getName()
+                  + " failed",
+                  null);
          }
       }
    }

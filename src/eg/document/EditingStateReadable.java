@@ -7,27 +7,25 @@ package eg.document;
 public interface EditingStateReadable {
 
    /**
-    * Updates the boolean that, if true, indicates that the document
-    * is in change. False indicates that the "in change state" is
-    * reupdate which should be the case when the document text is saved.
+    * Updates the state in which the document is in change
     *
-    * @param b  the boolean value
+    * @param b  true if in change, false otherwise
     */
    public void updateInChangeState(boolean b);
    
    /**
-    * Updates the booleans that indicate if edits can be redone and/or
+    * Updates the state in which edits can be redone and/or
     * undone
     *
-    * @param canUndo  the boolean value for undoable edits
-    * @param canRedo  the boolean value for redobale edits
+    * @param canUndo  true if edits can be undone, false otherwise
+    * @param canRedo  true if edits can be redone, false otherwise
     */
    public void updateUndoableState(boolean canUndo, boolean canRedo);
    
    /**
-    * Updates the boolean that indicates if text is currenty selected
+    * Updates the state in which text is selected
     *
-    * @param b  the boolean value 
+    * @param b  true if text is selected, false otherwise 
     */
    public void updateSelectionState(boolean b);
    

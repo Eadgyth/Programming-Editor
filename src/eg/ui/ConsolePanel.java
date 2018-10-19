@@ -256,6 +256,6 @@ public class ConsolePanel {
          "Quit the current process",
          "Close the console"
       };
-      return UIComponents.lastBtRightToolbar(bts, tooltips);
+      return UIComponents.toolBar(bts, tooltips);
    }
 }

@@ -150,8 +150,8 @@ public class TextExchange {
    }
    
    private void loadFileContent(File f) {
-      exchangeDoc.enableMerging(true);
+      exchangeDoc.enableUndoMerging(true);
       exchangeDoc.displayFileContent(f);
-      exchangeDoc.enableMerging(false);
+      exchangeDoc.enableUndoMerging(false);
    }
 }

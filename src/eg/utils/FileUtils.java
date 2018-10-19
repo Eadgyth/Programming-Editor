@@ -51,10 +51,10 @@ public class FileUtils {
    
    /**
     * Returns an array in which the files in the specified array
-    * of files <code>toSort</code> are sorted such that directories
-    * are listed first and files after it
+    * of files are sorted such that directories are listed first
+    * and files after it
     *
-    * @param toSort  the array of files to be sorted
+    * @param toSort  the array of files
     * @return  the array of sorted files
     */
    public static File[] sortedFiles(File[] toSort) {
@@ -73,10 +73,11 @@ public class FileUtils {
    }
    
    /**
-    * Returns if a file is writeable
+    * Returns if a file is writeable and shows a message dialog
+    * if not
     *
     * @param f  the file
-    * @return  the boolean value that is true if writeable
+    * @return  true if writeable
     */
    public static boolean isWriteable(File f) {
       File sameName = new File(f.toString());
@@ -95,7 +96,7 @@ public class FileUtils {
     * Deletes a folder and its content
     *
     * @param dir  the directory to be deleted
-    * @return  the boolean value that is true if dir has been deleted
+    * @return  true if dir has been deleted
     */
    public static boolean deleteFolder(File dir) {
       boolean ret = true;
@@ -111,7 +112,7 @@ public class FileUtils {
     * Returns if the specified directory is empty
     *
     * @param dir  the directory
-    * @return  the boolean value that is true if dir is empty
+    * @return  true if dir is empty
     */
    public static boolean isFolderEmpty(File dir) {
       File[] content = dir.listFiles();

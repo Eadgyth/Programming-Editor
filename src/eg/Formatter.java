@@ -5,7 +5,8 @@ import eg.ui.FontSettingWin;
 
 /**
  * The formatting of <code>EditArea</code> objects. The properties
- * 'Wordwrap', 'Font' and 'FontSize' are initially read from {@link Prefs}.
+ * 'Wordwrap', 'Font' and 'Font size' are initially read from {@link Prefs}.
+ *
  * @see EditArea
  */
 public class Formatter {
@@ -26,15 +27,14 @@ public class Formatter {
 
    /**
     * Creates a <code>Formatter</code> for a given number of
-    * <code>EditArea</code> objects that are formatted. Only if
-    * <code>number</code> is equal to 1 a formatted EditArea is
-    * created and is accessed through {@link #editArea()}. If
-    * <code>number</code> is minimum 2 an initially empty array is
-    * created.
+    * <code>EditArea</code> objects. Only if <code>number</code> is
+    * equal to 1 a formatted EditArea is created and accessed through
+    * {@link #editArea()}. If <code>number</code> is minimum 2 an
+    * initially empty array of <code>EditArea</code> objects is created.
     *
     * @param number  the number of EditArea objects
-    * @param keyPrefix  A prefix for the keys for the format
-    * properties set in {@link Prefs}. Can be the empty string
+    * @param keyPrefix  A prefix for the keys for the format properties
+    * set in {@link Prefs}. Can be the empty string
     */
    public Formatter (int number, String keyPrefix) {           
       setPropertyKeys(keyPrefix);
@@ -48,22 +48,20 @@ public class Formatter {
    }
 
    /**
-    * Gets this formatted <code>EditArea</code> if the number of EditArea
-    * objects is equal to 1
+    * Gets this single formatted <code>EditArea</code>
     *
     * @return  this {@link EditArea}
     */
    public EditArea editArea() {
       if (editArea.length > 1) {
          throw new IllegalStateException(
-               "Formatting more than one EditArea objects is set.");
+               "Formatting more than one EditArea is specified.");
       }
       return editArea[0];
    }
 
    /**
-    * Gets this <code>EditArea</code> array if the number of EditArea
-    * objects is minumum 2
+    * Gets this <code>EditArea</code> array
     *
     * @return  this {@link EditArea} array
     */
@@ -127,7 +125,7 @@ public class Formatter {
     * The wordwrap state is changed only in the element specified in
     * {@link #setIndex(int)}
     *
-    * @param wordwrap  the boolean value; true to enable
+    * @param wordwrap  true to enable, false to disable
     */
    public void enableWordWrap(boolean wordwrap) {
       if (wordwrap) {
@@ -145,7 +143,7 @@ public class Formatter {
     * Line numbers are not shown in {@link EditArea} objects in which
     * wordwrap is enabled.
     *
-    * @param lineNumbers  the boolean value, true to show
+    * @param lineNumbers  true to show, false to hide line numbers
     */
    public void showLineNumbers(boolean lineNumbers) {
       if (isShowLineNr == lineNumbers) {

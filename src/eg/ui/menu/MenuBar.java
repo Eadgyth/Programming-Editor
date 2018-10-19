@@ -36,7 +36,7 @@ public class MenuBar {
    /**
     * Gets this file menu
     *
-    * @return  this file menu
+    * @return  this {@link FileMenu}
     */
    public FileMenu fileMenu() {
       return fileMenu;
@@ -45,7 +45,7 @@ public class MenuBar {
    /**
     * Gets this edit menu
     *
-    * @return  this edit menu
+    * @return  this {@link EditMenu}
     */
    public EditMenu editMenu() {
       return editMenu;
@@ -54,7 +54,7 @@ public class MenuBar {
    /**
     * Gets this format menu
     *
-    * @return  this format menu
+    * @return  this {@link FormatMenu}
     */
    public FormatMenu formatMenu() {
       return formatMenu;
@@ -63,7 +63,7 @@ public class MenuBar {
    /**
     * Gets this view menu
     *
-    * @return  this view menu
+    * @return  this {@link ViewMenu}
     */
    public ViewMenu viewMenu() {
       return viewMenu;
@@ -72,7 +72,7 @@ public class MenuBar {
    /**
     * Gets this project menu
     *
-    * @return  this project menu
+    * @return  this {@link ProjectMenu}
     */
    public ProjectMenu projectMenu() {
       return projectMenu;

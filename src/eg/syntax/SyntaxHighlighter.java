@@ -7,8 +7,7 @@ import eg.utils.LinesFinder;
 import eg.document.StyledText;
 
 /**
- * The syntax highlighting of the text contained in
- * <code>StyledText</code>
+ * The syntax highlighting
  */
 public class SyntaxHighlighter {
 
@@ -47,9 +46,9 @@ public class SyntaxHighlighter {
    }
 
    /**
-    * Highlights text elements in a section around the position
-    * where a change happened. The section is initially the line
-    * that contains <code>chgPos</code>.
+    * Highlights text elements in a section around the position where a
+    * a change happened. The section is initially the line that contains
+    * <code>chgPos</code>.
     *
     * @param chgPos  the position where a change happened
     */
@@ -61,10 +60,10 @@ public class SyntaxHighlighter {
    }
 
    /**
-    * Highlights text elements in a section that may be multiline.
-    * The section initially consists of the completed lines that
-    * contain <code>change</code> and begins with the line that
-    * contains <code>chgPos</code>.
+    * Highlights text elements in a section that may be multiline. The
+    * section initially consists of the completed lines that contain
+    * <code>change</code> and begins with the line that contains
+    * <code>chgPos</code>.
     *
     * @param change  the change to the text
     * @param chgPos  the position where the change starts
@@ -78,13 +77,7 @@ public class SyntaxHighlighter {
    }
 
    /**
-    * The search and highlighting of text elements.
-    * <p>
-    * The highlighting may take place in sections while text is
-    * edited. The section is initially defined as described for
-    * the <code>highlight</code> methods in the enclosing
-    * {@link SyntaxHighlighter}. Highlighting during editing text
-    * requires to once reset the attributes by {@link #resetAttributes}.
+    * The search and highlighting of text elements
     */
    public class SyntaxSearcher {
 
@@ -122,9 +115,8 @@ public class SyntaxHighlighter {
        * statements which may be multiline. The section may be further
        * exdended to the region that contains quote marks around the
        * statement.<br>
-       * The search for the next semicolon, relative to the end of the
-       * initial section, continues so long as it is found in quotes
-       * and {@link Highlighter#isValid} returns false.
+       * The search for the next semicolon continues until one is found
+       * unquoted and {@link Highlighter#isValid} returns true.
        */
       public void setStatementSection() {
          if (isTypeMode && isHighlightBlockCmnt) {
@@ -212,8 +204,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights the keyword <code>base</code> which may
-       * be extended by one of the keywords in <code>extensions</code>.<br>
+       * Searches and highlights an extensible base keyword.<br>
        * (requires that {@link Highlighter#isValid} returns true)
        *
        * @param base  the base keyword

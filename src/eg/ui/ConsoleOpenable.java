@@ -1,19 +1,20 @@
 package eg.ui;
 
 /**
- * Interface to open the console panel in <code>MainWin</code>
+ * Interface to ask if the console is visible and to open the console
+ * panel in <code>MainWin</code>
  */
 public interface ConsoleOpenable {
    
    /**
     * Returns if the console panel is open
     *
-    * @return  the boolan value, true if open
+    * @return  true if open, false otherwise
     */
    public boolean isConsoleOpen();
    
    /**
-    * Opens the console panel
+    * Opens the console
     */
    public void openConsole(); 
 }

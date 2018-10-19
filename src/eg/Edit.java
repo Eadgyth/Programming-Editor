@@ -113,18 +113,18 @@ public class Edit {
    }
 
    /**
-    * Sets a new indent length
+    * Sets the indent length
     */
-   public void setNewIndentUnit() {
-      String selectedNumber = Dialogs.comboBoxOpt(
+   public void setIndentUnit() {
+      String number = Dialogs.comboBoxOpt(
             "Select the number of spaces:",
             "Indent length",
             SPACE_NUMBER,
             String.valueOf(indentLength),
             false);
 
-      if (selectedNumber != null) {
-         indentLength = Integer.parseInt(selectedNumber);
+      if (number != null) {
+         indentLength = Integer.parseInt(number);
          indentUnit = "";
          for (int i = 0; i < indentLength; i++) {
             indentUnit += " ";
@@ -135,7 +135,7 @@ public class Edit {
    }
 
    /**
-    * Gets the indent unit currently set in the "Set indent unit"
+    * Gets the indent unit currently set in the "Set indent length"
     * dialog
     *
     * @return  the indent unit
@@ -154,7 +154,7 @@ public class Edit {
          edtDoc.insert(start, indentUnit);
       }
       else {
-         edtDoc.enableMerging(true);
+         edtDoc.enableUndoMerging(true);
          String[] selArr = sel.split("\n");
          int sum = 0;
          for (String s : selArr) {
@@ -162,7 +162,7 @@ public class Edit {
             edtDoc.insert(start + sum, indentUnit);
             sum += lineLength + 1;
          }
-         edtDoc.enableMerging(false);
+         edtDoc.enableUndoMerging(false);
       }
    }
 
@@ -200,7 +200,7 @@ public class Edit {
             }
          }
          if (selArr[0].startsWith(" ") && isIndentConsistent(selArr)) {
-            edtDoc.enableMerging(true);
+            edtDoc.enableUndoMerging(true);
             int sum = 0;
             for (String s : selArr) {
                if (s.startsWith(indentUnit)) {
@@ -210,7 +210,7 @@ public class Edit {
                   sum += s.length() + 1;
                }
             }
-            edtDoc.enableMerging(false);
+            edtDoc.enableUndoMerging(false);
          }
       }
    }

@@ -22,7 +22,7 @@ public class Eadgyth {
 
    public static void main(String[] arg) {
       Locale.setDefault(Locale.US);
-      uiManagerSettings();   
+      uiManagerSettings();
       Prefs prefs = new Prefs();
       prefs.load();
       String laf = prefs.getProperty("LaF");
@@ -51,7 +51,7 @@ public class Eadgyth {
       UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
       UIManager.put("Menu.font", Constants.SANSSERIF_PLAIN_9);
       UIManager.put("MenuItem.font", Constants.SANSSERIF_PLAIN_9);
-      UIManager.put("CheckBoxMenuItem.font", Constants.SANSSERIF_PLAIN_9); 
+      UIManager.put("CheckBoxMenuItem.font", Constants.SANSSERIF_PLAIN_9);
       UIManager.put("SplitPaneDivider.border", new EmptyBorder(0, 0, 0, 0));
       UIManager.put("Tree.rowHeight", eg.utils.ScreenParams.scaledSize(14));
    }

@@ -12,10 +12,10 @@ import javax.swing.JCheckBoxMenuItem;
  */
 public class FormatMenu {
 
-   private final JMenu     menu    = new JMenu("Format");
+   private final JMenu menu = new JMenu("Format");
    private final JMenuItem fontItm = new JMenuItem("Font ...");
    private final JCheckBoxMenuItem wordWrapItm
-                                   = new JCheckBoxMenuItem("Wordwrap");
+         = new JCheckBoxMenuItem("Wordwrap");
 
    public FormatMenu() {
       assembleMenu();
@@ -49,20 +49,19 @@ public class FormatMenu {
    }
 
    /**
-    * Returns the boolean that indicates if the item for enabling and
-    * disabling wordwrap is selected
+    * Returns if the item for setting wordwrap is selected
     *
-    * @return the boolean value
+    * @return  true if enabled, false otherwise
     */
    public boolean isWordWrapItmSelected() {
       return wordWrapItm.isSelected();
    }
 
    /**
-    * Sets the selection state of the item for enabling and disabling
+    * Sets the selection state of the item for enabling/disabling
     * wordwrap
     *
-    * @param b  the boolean that is true to select and false to unselect
+    * @param b  true to select, false to unselect
     */
    public void selectWordWrapItm(boolean b) {
       wordWrapItm.setState(b);

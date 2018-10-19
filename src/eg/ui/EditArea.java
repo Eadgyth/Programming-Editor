@@ -200,8 +200,8 @@ public final class EditArea {
     */
    public void print() {
       try {
-         MessageFormat footerFormat = new MessageFormat("Page {0}");
-         textArea.print(null, footerFormat, true, null, null, false);
+         MessageFormat footer = new MessageFormat("Page {0}");
+         textArea.print(null, footer, true, null, null, false);
       } catch (PrinterException e) {
          FileUtils.log(e);
       }
@@ -311,7 +311,7 @@ public final class EditArea {
    }
 
    private void removeShortCuts() {
-      KeyStroke ksSelAll = KeyStroke.getKeyStroke("control pressed a");
+      KeyStroke ksSelAll = KeyStroke.getKeyStroke("control pressed A");
       textArea.getInputMap().put(ksSelAll, "dummy");
       KeyStroke ksCut = KeyStroke.getKeyStroke("control pressed X");
       textArea.getInputMap().put(ksCut, "dummy");

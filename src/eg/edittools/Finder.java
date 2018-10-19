@@ -1,6 +1,5 @@
 package eg.edittools;
 
-//import java.awt.Color;
 import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -84,7 +83,7 @@ public class Finder implements AddableEditTool {
       String[] toolTips = new String[] {
          "Close Finder"
       };
-      JToolBar tb = UIComponents.lastBtRightToolbar(bts, toolTips);
+      JToolBar tb = UIComponents.toolBar(bts, toolTips);
       return tb;
    }
 

@@ -16,10 +16,7 @@ import eg.utils.FileUtils;
 import eg.ui.EditArea;
 
 /**
- * Represents the editable document.
- * <p>
- * Uses {@link TypingEdit} for actions that shall happen in response to
- * text changes.
+ * Represents the document that is edited
  */
 public final class EditableDocument {
 
@@ -68,9 +65,9 @@ public final class EditableDocument {
    }
 
    /**
-    * Sets an <code>EditingStateReadable</code>
+    * Sets the refenence to <code>EditingStateReadable</code>
     *
-    * @param esr  the reference to {@link EditingStateReadable}
+    * @param esr  the {@link EditingStateReadable}
     */
    public void setEditingStateReadable(EditingStateReadable esr) {
       type.setEditingStateReadable(esr);
@@ -108,7 +105,6 @@ public final class EditableDocument {
     * Gets the name of this file
     *
     * @return  the filename; the empty string of no file is set
-    * set
     */
    public String filename() {
       return filename;
@@ -135,7 +131,7 @@ public final class EditableDocument {
    /**
     * Returns if a file is set
     *
-    * @return  the boolean value that is true if a file is set
+    * @return  true if a file is set, false otherwise
     */
    public boolean hasFile() {
       return docFile != null;
@@ -173,12 +169,11 @@ public final class EditableDocument {
    }
 
    /**
-    * Sets the specified file and saves the text content to the
-    * file. A previously set file is replaced.
+    * Sets the specified file and saves the text content to the file.
+    * A previously set file is replaced.
     *
     * @param f  the file
-    * @return  the boolen value that is true if the text content could
-    * be saved
+    * @return  true if the text content could be saved, false otherwise
     */
    public boolean setFile(File f) {
       setFileParams(f);
@@ -187,10 +182,10 @@ public final class EditableDocument {
       savedContent = txt.text();
       return writeToFile(f);
    }
-   
+
    /**
     * Diplays the content of the specified file but does not set
-    * the file and also does not chnange the language.
+    * the file and also does not change the language.
     *
     * @param f  the file
     */
@@ -203,8 +198,7 @@ public final class EditableDocument {
     * the file
     *
     * @param f  the file
-    * @return  the boolen value that is true if the text content could
-    * be saved
+    * @return  true if the text content could be saved, false otherwise
     */
    public boolean saveCopy(File f) {
       return writeToFile(f);
@@ -214,8 +208,7 @@ public final class EditableDocument {
     * Returns if the text content equals the text stored at the
     * last saving point
     *
-    * @return  the boolean value that is true if the text content is
-    * saved
+    * @return  true if saved, false otherwise
     */
    public boolean isSaved() {
       return txt.text().equals(savedContent);
@@ -272,18 +265,17 @@ public final class EditableDocument {
    }
 
    /**
-    * Sets the boolean that is true to mark the beginning of a merged
-    * undoable unit. False marks the end of the undoable unit.
+    * Marks the beginning or the end of a merged undoable unit.
     * Calls {@link TypingEdit#disableBreakpointAdding(boolean)}
     *
-    * @param b  the boolean value
+    * @param b  true to begin meging, false to end merging
     */
-   public void enableMerging(boolean b) {
+   public void enableUndoMerging(boolean b) {
       type.disableBreakpointAdding(b);
    }
-   
+
    /**
-    * Inserts the specifies string at the specified position
+    * Inserts the specified string at the specified position
     *
     * @param pos  the position
     * @param s  the string
@@ -308,9 +300,9 @@ public final class EditableDocument {
     *
     * @param pos  the position where the section starts
     * @param length  the length of the section
-    * @param highlight  the boolean value that is true to update
-    * syntax highlighting after the removal. Is ignored if this
-    * language is not a coding language
+    * @param highlight  true to update syntax highlighting after the
+    * removal, false otherwise. Is ignored if this language is not a
+    * coding language
     */
    public void remove(int pos, int length, boolean highlight) {
       if (lang == Languages.NORMAL_TEXT) {
@@ -338,13 +330,13 @@ public final class EditableDocument {
    //
 
    private EditableDocument(EditArea editArea) {
-      txt = new StyledText(editArea.textArea());      
+      txt = new StyledText(editArea.textArea());
       LineNumbers lineNum = new LineNumbers(editArea.lineNrArea(),
             editArea.lineNrWidth());
 
       type = new TypingEdit(txt, lineNum);
    }
-   
+
    public void displayFileContentImpl(File f) {
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
          String line = br.readLine();
@@ -367,11 +359,11 @@ public final class EditableDocument {
 
    private boolean writeToFile(File f) {
       boolean isWriteable = FileUtils.isWriteable(f);
-      if (!isWriteable) {          
+      if (!isWriteable) {
           return false;
       }
-      String[] lines = txt.text().split("\n");  
-      try (FileWriter writer = new FileWriter(f)) {     
+      String[] lines = txt.text().split("\n");
+      try (FileWriter writer = new FileWriter(f)) {
          for (String s : lines) {
             writer.write(s + Constants.LINE_SEP);
          }
@@ -382,11 +374,11 @@ public final class EditableDocument {
       }
       return false;
    }
-   
+
    private void setEditingMode(File f) {
       lang = LanguageSelector.selectLanguage(f.getName());
       type.setEditingMode(lang);
-   }      
+   }
 
    private void setFileParams(File f) {
       docFile = f;

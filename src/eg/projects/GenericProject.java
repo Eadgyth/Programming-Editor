@@ -1,10 +1,10 @@
 package eg.projects;
 /**
- * Defines a project that is only defined by its directory
+ * Represents a project that is only defined by its directory
  */
 public final class GenericProject extends AbstractProject implements ProjectActions {
 
-   GenericProject() {
+   public GenericProject() {
       super(ProjectTypes.GENERIC, false, null);
    }
    

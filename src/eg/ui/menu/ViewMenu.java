@@ -7,32 +7,25 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 
-//--Eadgyth../
-import eg.ui.ConsoleOpenable;
-
 /**
- * The menu for view actions.
- * <p>
- * Created in {@link MenuBar}
+ * The menu for view actions
  */
 public class ViewMenu {
 
    private final JMenu menu = new JMenu("View");
 
-   private final JCheckBoxMenuItem consoleItm
-         = new JCheckBoxMenuItem("Console");
+   private final JCheckBoxMenuItem consoleItm = new JCheckBoxMenuItem("Console");
    private final JCheckBoxMenuItem fileViewItm
          = new JCheckBoxMenuItem("Project explorer");
+
    private final JCheckBoxMenuItem tabItm
          = new JCheckBoxMenuItem("Files in tabs");
+
    private final JMenuItem openSettingsItm
          = new JMenuItem("Other...");
-         
-   private final ConsoleOpenable consoleOpener;
 
    public ViewMenu() {
       assembleMenu();
-      consoleOpener = co;
    }
 
    /**
@@ -42,15 +35,6 @@ public class ViewMenu {
     */
    public JMenu getMenu() {
       return menu;
-   }
-   
-   /**
-    * Gets a new <code>ConsoleOpenable</code>
-    *
-    * @return  a new {@link ConsoleOpenable}
-    */
-   public ConsoleOpenable consoleOpener() {
-      return consoleOpener;
    }
 
    /**
@@ -92,41 +76,39 @@ public class ViewMenu {
    }
 
    /**
-    * Return the boolean value that indicates if the item to open or
-    * or close the console panel is selected
+    * Return if the item for actions to open or close the console is
+    * selected
     *
-    * @return  the boolean value
+    * @return  true if selected
     */
    public boolean isConsoleItmSelected() {
       return consoleItm.isSelected();
    }
 
    /**
-    * Returns the boolean that indicates if the item to open or close
-    * the file view panel is selected
+    * Returns if the item for actions to open or close the file view
+    * is selected
     *
-    * @return  the boolean value
+    * @return  true if selected
     */
    public boolean isFileViewItmSelected() {
       return fileViewItm.isSelected();
    }
 
    /**
-    * Returns the boolean value that indicates if the item to show or
-    * or hide the tab bar is selected
+    * Returns if the item for actions to to show or or hide the tabbar
+    * is selected
     *
-    * @return  the boolean value
+    * @return  true if selected
     */
    public boolean isTabItmSelected() {
       return tabItm.isSelected();
    }
 
    /**
-    * Performs the action added to the item to show or hide the console
-    * panel if the selection state of the item does not equal the
-    * specified boolean value
+    * Performs the action to show or hide the console
     *
-    * @param b  the boolean value. True to show, false to hide the panel
+    * @param b  true to show, false to hide the console
     */
   public void doConsoleItmAct(boolean b) {
       if (b != consoleItm.isSelected()) {
@@ -135,8 +117,7 @@ public class ViewMenu {
    }
 
    /**
-    * Performs the action added to the item to show or hide the file
-    * view panel if the item is currently selected
+    * Performs the action to hide the file view panel
     */
    public void doUnselectFileViewAct() {
       if (fileViewItm.isSelected()) {
@@ -145,30 +126,28 @@ public class ViewMenu {
    }
 
    /**
-    * Sets the selection state, indicated by the boolean value, of the
-    * item to show or hide the tab bar
+    * Selects or unselects the item for actions to show or hide the tabbar
     *
-    * @param b  the boolean value
+    * @param b  true to select, false to unselect
     */
    public void selectTabsItm(boolean b) {
       tabItm.setSelected(b);
    }
-   
+
    /**
-    * Sets the selection state, indicated by the boolean value, of the
-    * item to show or hide the file tree
+    * Selects or unselects the item for actions to show or hide the
+    * file tree
     *
-    * @param b  the boolean value
+    * @param b  true to select, false to unselect
     */
    public void selectFileViewItm(boolean b) {
       fileViewItm.setSelected(b);
    }
 
    /**
-    * Sets the boolean that specifies if actions to show or hide the
-    * tab bar are enabled
+    * Enables or disables the item for actions to show or hide the tabbar
     *
-    * @param b  the boolen value
+    * @param b  true to enable, false to disable
     */
    public void enableTabItm(boolean b) {
       tabItm.setEnabled(b);
@@ -177,19 +156,6 @@ public class ViewMenu {
    //
    //--private--/
    //
-   
-   private final ConsoleOpenable co = new ConsoleOpenable() {
-
-      @Override
-      public boolean isConsoleOpen() {
-         return isConsoleItmSelected();
-      }
-   
-      @Override
-      public void openConsole() {
-         doConsoleItmAct(true);
-      }
-   };
 
    private void assembleMenu() {
       menu.add(consoleItm);

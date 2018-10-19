@@ -20,32 +20,26 @@ import eg.ui.tabpane.ExtTabbedPane;
 public class UIComponents {
 
    /**
-    * Creates a <code>JToolBar</code> with the last button (intended for a
-    * close button) aligned at the right. Besides the toolar is set up as
-    * in {@link#toolbar(JButton[],String[])}
+    * Creates a <code>JToolBar</code> for dockable panels
     *
     * @param bts  the array of JButtons
     * @param tooltips  the array of tooltips
     * @return  a new <code>JToolBar</code>
     */
-   public static JToolBar lastBtRightToolbar(JButton[] bts, String[] tooltips) {     
+   public static JToolBar toolBar(JButton[] bts, String[] tooltips) {     
       JToolBar tb = new JToolBar(JToolBar.HORIZONTAL);
-      setupToolbar(tb, bts, tooltips, true);
-      return tb;
-   }
-   
-   /**
-    * Creates a <code>JToolBar</code>. The toolbar is not opaque, has
-    * no border and is not floatable. Buttons are not focusable and
-    * have an empty border.
-    *
-    * @param bts  the array of JButtons
-    * @param tooltips  the array of tooltips
-    * @return  a new <code>JToolBar</code>
-    */
-   public static JToolBar toolbar(JButton[] bts, String[] tooltips) {
-      JToolBar tb = new JToolBar(JToolBar.HORIZONTAL);
-      setupToolbar(tb, bts, tooltips, false);
+      tb.setOpaque(false);
+      tb.setBorder(null);
+      tb.setFloatable(false);
+      for (int i = 0; i < bts.length; i++) {
+         if (i == bts.length - 1) {
+            tb.add(Box.createHorizontalGlue());
+         }
+         tb.add(bts[i]);
+         bts[i].setBorder(new EmptyBorder(5, 7, 5, 7));
+         bts[i].setToolTipText(tooltips[i]);
+         bts[i].setFocusable(false);
+      }
       return tb;
    }
    
@@ -70,33 +64,10 @@ public class UIComponents {
     *
     * @return  a new {@link ExtTabbedPane}
     */
-   public static ExtTabbedPane scolledUnfocusableTabPane() {
+   public static ExtTabbedPane tabPane() {
       ExtTabbedPane tabPane = new ExtTabbedPane();
       tabPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
       tabPane.setFocusable(false);
       return tabPane;
-   }
-   
-   //
-   //--private--/
-   //
-   
-   private UIComponents() {}
-   
-   private static void setupToolbar(JToolBar tb, JButton[] bts, String[] tooltips,
-         boolean isLastButtonRight) {
-
-      tb.setOpaque(false);
-      tb.setBorder(null);
-      tb.setFloatable(false);
-      for (int i = 0; i < bts.length; i++) {
-         if (isLastButtonRight && i == bts.length - 1) {
-            tb.add(Box.createHorizontalGlue());
-         }
-         tb.add(bts[i]);
-         bts[i].setBorder(new EmptyBorder(5, 7, 5, 7));
-         bts[i].setToolTipText(tooltips[i]);
-         bts[i].setFocusable(false);
-      }
    }
 }

@@ -25,7 +25,7 @@ public class Console {
     *
     * @return  this ProcessStarter
     */
-   public ProcessStarter getProcessStarter() {
+   public ProcessStarter processStarter() {
       return proc;
    }
    

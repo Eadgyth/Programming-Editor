@@ -133,7 +133,7 @@ public class TextSearch {
          content = content.toLowerCase();
          searchTerm = searchTerm.toLowerCase();
       }
-      doc.enableMerging(true);
+      doc.enableUndoMerging(true);
       int count = 0;
       int diff = searchTerm.length() - replacement.length();
       int sumDiff = 0;
@@ -153,7 +153,7 @@ public class TextSearch {
             }
          }
       }
-      doc.enableMerging(false);      
+      doc.enableUndoMerging(false);      
       if (count > 0) {
          Dialogs.infoMessage("\"" + searchTerm + "\" was replaced "
                + count + " times.", null);

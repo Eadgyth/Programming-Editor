@@ -14,9 +14,7 @@ import eg.projects.ProjectTypes;
 import eg.ui.IconFiles;
 
 /**
- * The menu for project actions.
- * <p>
- * Created in {@link MenuBar}
+ * The menu for project actions
  */
 public class ProjectMenu {
 
@@ -61,40 +59,40 @@ public class ProjectMenu {
          itm.addActionListener(e -> assignProject(e, p));
       }
       openSetWinItm.addActionListener(e -> p.openSettingsWindow());
-      changeProjItm.addActionListener(e -> p.changeProject());
-      runItm.addActionListener(e -> p.runProject());
-      buildItm.addActionListener(e -> p.buildProj());
+      changeProjItm.addActionListener(e -> p.change());
+      runItm.addActionListener(e -> p.run());
+      buildItm.addActionListener(e -> p.build());
       SaveCompileItm.addActionListener(e -> p.saveAndCompile());
       SaveAllCompileItm.addActionListener(e -> p.saveAllAndCompile());
    }
 
    /**
-    * Sets the boolean that indicates if the item for actions to change
-    * project are enabled
+    * Enables or disables the item for actions to change project
     *
-    * @param b  the boolean value
+    * @param b  true to enable, false to disable
     */
    public void enableChangeProjItm(boolean b) {
       changeProjItm.setEnabled(b);
    }
    
    /**
-    * Sets the boolean that indicates if the item for actions to open the
-    *  project settings window are enabled
+    * Enables or disables the item for actions to open the project
+    * settings window
     *
-    * @param b  the boolean value
+    * @param b  true to enable, false to disable
     */
    public void enableOpenSetWinItm(boolean b) {
       openSetWinItm.setEnabled(b);
    }
 
    /**
-    * Sets the booleans that specify if the items for actions to
-    * compile, run and build a project are enabled or disabled
+    * Enables or disables the items for actions to compile, run and
+    * build a project. The specified booleans each are true to enable,
+    * false to disable
     *
-    * @param isCompile  the boolean value for compile actions
-    * @param isRun  the boolean value for run actions
-    * @param isBuild  the boolean value for build actions
+    * @param isCompile  the boolean for compile actions
+    * @param isRun  the boolean for run actions
+    * @param isBuild  the boolean for build actions
     */
    public void enableProjectActionsItms(boolean isCompile, boolean isRun,
          boolean isBuild) {
@@ -122,7 +120,7 @@ public class ProjectMenu {
       for (int i = 0; i < assignProjItm.length; i++) {
          if (e.getSource() == assignProjItm[i]) {
             ProjectTypes projType = ProjectTypes.values()[i];
-            p.assignProject(projType);
+            p.assign(projType);
          }
       }
    }

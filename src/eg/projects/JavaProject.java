@@ -8,7 +8,7 @@ import eg.console.*;
 import eg.javatools.*;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
-import eg.ui.ConsoleOpenable;
+import eg.ui.ConsoleOpenable;;
 
 /**
  * Represents a programming project in Java
@@ -26,11 +26,15 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    private String[] nonJavaExt = null;
    private boolean isNonJavaExtTested = true;
 
-   JavaProject(ConsoleOpenable co, Console cons) {
+   /**
+    * @param co  the reference to {@link ConsoleOpenable}
+    * @param cons  the reference to {@link Console}
+    */
+   public JavaProject(ConsoleOpenable co, Console cons) {
       super(ProjectTypes.JAVA, true, "java");
       this.co = co;
       this.cons = cons;
-      proc = cons.getProcessStarter();
+      proc = cons.processStarter();
       comp = new Compilation(cons);
       jar = new JarBuilder(cons);
    }
@@ -47,9 +51,6 @@ public final class JavaProject extends AbstractProject implements ProjectActions
             .buildWindow();
    }      
 
-   /**
-    * Compiles java files
-    */
    @Override
    public void compile() {
       if (!cons.canPrint()) {
@@ -60,10 +61,10 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          return;
       }
       cons.clear();
-      cons.printBr("Compile " + getProjectName());
+      cons.printBr("Compile " + projectName());
       EventQueue.invokeLater(() -> {
-         comp.compile(getProjectPath(), getExecutableDirName(),
-               getSourceDirName(), nonJavaExt, getCompileOption());
+         comp.compile(projectPath(), executableDirName(),
+               sourceDirName(), nonJavaExt, compileOption());
 
          cons.toTop();
          if (!co.isConsoleOpen()) {
@@ -101,9 +102,6 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       });
    }
 
-   /**
-    * Runs the project
-    */
    @Override
    public void runProject() {
       if (!existsMainClassFile()) {
@@ -129,13 +127,13 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       }
       cons.clear();
       EventQueue.invokeLater(() -> {
-         String jarName = getBuildName();
+         String jarName = buildName();
          if (jarName.length() == 0) {
-            jarName = getMainFileName();
+            jarName = mainFileName();
          }
          try {
-            boolean created = jar.createJar(getProjectPath(), jarName,
-                  qualifiedMain, getExecutableDirName(), getSourceDirName(),
+            boolean created = jar.createJar(projectPath(), jarName,
+                  qualifiedMain, executableDirName(), sourceDirName(),
                   nonJavaExt);
 
             if (!co.isConsoleOpen()) {            
@@ -171,27 +169,27 @@ public final class JavaProject extends AbstractProject implements ProjectActions
 
    private void setQualifiedMain() {
       StringBuilder sb = new StringBuilder();
-      if (!getNamespace().isEmpty()) {
-         sb.append(FileUtils.dottedFileSeparators(getNamespace())).append(".");
+      if (!namespace().isEmpty()) {
+         sb.append(FileUtils.dottedFileSeparators(namespace())).append(".");
       }
-      sb.append(getMainFileName());
+      sb.append(mainFileName());
       qualifiedMain = sb.toString();
    }
 
    private void setStartCommand() {
       StringBuilder sb = new StringBuilder("java ");
-      if (!getExecutableDirName().isEmpty()) {
-         sb.append("-cp ").append(getExecutableDirName()).append(" ");
+      if (!executableDirName().isEmpty()) {
+         sb.append("-cp ").append(executableDirName()).append(" ");
       }
       sb.append(qualifiedMain);
-      if (!getCmdArgs().isEmpty()) {
-         sb.append(" ").append(getCmdArgs());
+      if (!cmdArgs().isEmpty()) {
+         sb.append(" ").append(cmdArgs());
       }
       startCommand = sb.toString();
    }
 
    private void setNonJavaExtensions() {
-      nonJavaExt = getFileExtensions();
+      nonJavaExt = fileExtensions();
       isNonJavaExtTested = nonJavaExt == null;
    }
 
@@ -208,14 +206,12 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          return true;
       }
       boolean ok = true;
-      if (getSourceDirName().length() == 0
-            || getExecutableDirName().length() == 0) {
-
+      if (sourceDirName().length() == 0 || executableDirName().length() == 0) {
          nonJavaFilesNotSupportedMessage();
          ok = false;
       }
       else {
-         for (String s : getFileExtensions()) {
+         for (String s : fileExtensions()) {
             if (!s.startsWith(".")) {
                wrongExtMessage(s);
                ok = false;

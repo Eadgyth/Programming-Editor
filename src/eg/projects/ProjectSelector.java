@@ -13,7 +13,7 @@ public class ProjectSelector {
    private final Console console;
 
    /**
-    * @param co  the {@link ConsoleOpenable} of {@link eg.ui.MainWin}
+    * @param co  the reference to {@link ConsoleOpenable}
     * @param console  the reference to {@link Console}.
     */
    public ProjectSelector(ConsoleOpenable co, Console console) {
@@ -24,7 +24,8 @@ public class ProjectSelector {
    /**
     * Returns a new <code>ProjectActions</code>
     *
-    * @param projType  the project type which has a valaue in {@link ProjectTypes}
+    * @param projType  the project type which has a valaue in
+    * {@link ProjectTypes}
     * @return  a new {@link ProjectActions}
     */
    public ProjectActions createProject(ProjectTypes projType) {
@@ -37,10 +38,10 @@ public class ProjectSelector {
             newProj = new HtmlProject();
             break;
          case PERL:
-            newProj = new PerlProject(co, console.getProcessStarter());
+            newProj = new PerlProject(co, console.processStarter());
             break;
          case R:
-            newProj = new RProject(co, console.getProcessStarter());
+            newProj = new RProject(co, console.processStarter());
             break;
          case GENERIC:
             newProj = new GenericProject();

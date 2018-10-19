@@ -14,7 +14,11 @@ public final class PerlProject extends AbstractProject implements ProjectActions
 
    private String startCmd = "";
 
-   PerlProject(ConsoleOpenable co, ProcessStarter proc) {
+   /**
+    * @param co  the reference to {@link ConsoleOpenable}
+    * @param proc  the reference to {@link ProcessStarter}
+    */
+   public PerlProject(ConsoleOpenable co, ProcessStarter proc) {
       super(ProjectTypes.PERL, true, "pl");
       this.co = co;
       this.proc = proc;
@@ -38,17 +42,16 @@ public final class PerlProject extends AbstractProject implements ProjectActions
    
    @Override
    protected void setCommandParameters() {
-      String main = getMainFileName() + getSourceExtension();
       StringBuilder sb = new StringBuilder("perl ");
-      if (!getSourceDirName().isEmpty()) {
-         sb.append(getSourceDirName()).append("/");
+      if (!sourceDirName().isEmpty()) {
+         sb.append(sourceDirName()).append("/");
       }
-      if (!getNamespace().isEmpty()) {
-         sb.append(getNamespace()).append("/");
+      if (!namespace().isEmpty()) {
+         sb.append(namespace()).append("/");
       }
-      sb.append(getMainFileName()).append(getSourceExtension());
-      if (!getCmdArgs().isEmpty()) {
-         sb.append(" ").append(getCmdArgs());
+      sb.append(mainFileName()).append(sourceExtension());
+      if (!cmdArgs().isEmpty()) {
+         sb.append(" ").append(cmdArgs());
       }
       startCmd = sb.toString();
    }

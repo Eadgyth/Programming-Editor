@@ -59,10 +59,13 @@ public class TabbedDocuments {
 
       FileOpenable opener = (f) -> open(f);
       FileTree ft = new FileTree(mw.treePanel(), opener);
-      
-      String projectRoot = prefs.getProperty("ProjectRoot");
-      proj = new Projects(mw, ft, projectRoot, edtDoc);
+      proj = new Projects(mw, ft, edtDoc);
       mw.setProjectActions(proj);
+
+      String projectRoot = prefs.getProperty("ProjectRoot");
+      if (projectRoot != null && projectRoot.length() > 0) {
+         ft.setProjectTree(projectRoot);
+      }
 
       String recentPath = prefs.getProperty("RecentPath");
       fc = new FileChooser(recentPath);
@@ -153,7 +156,7 @@ public class TabbedDocuments {
     * that is specified in the file chooser but does not set the file
     * in the document
     *
-    * @return  the boolen value that is true if the text content was saved
+    * @return  true if the text content was saved
     */
    public boolean saveCopy() {
       File f = fc.fileToSave(edtDoc[iTab].filepath());
@@ -182,10 +185,12 @@ public class TabbedDocuments {
       if (exists) {
          removable = edtDoc[iTab].isSaved();
          if (!removable) {
+            tabPane.setSelectedIndex(iTab);
             removable = removeUnsavedFile(iTab);
          }
       }
       else {
+         tabPane.setSelectedIndex(iTab);
          removable = removeMissingFile(iTab);
       }
       if (removable) {
@@ -316,7 +321,7 @@ public class TabbedDocuments {
          setupDocument(n);
          addNewTab(edtDoc[n].filename(), editArea[n].content());
          changedFileUpdate();
-         proj.retrieveProject();
+         proj.retrieve();
       }
       finally {
          mw.setDefaultCursor();
@@ -357,7 +362,7 @@ public class TabbedDocuments {
          if (update) {
             changedFileUpdate();
             tabPane.setTitle(iTab, edtDoc[iTab].filename());
-            proj.retrieveProject();
+            proj.retrieve();
          }
          proj.updateFileTree(f.toString());
       }
@@ -383,20 +388,20 @@ public class TabbedDocuments {
    private void changedTabUpdate() {
       edtDoc[iTab].setFocused();
       format.setIndex(iTab);
-      proj.setIndex(iTab);
+      proj.setDocumentAt(iTab);
       edit.setDocument(edtDoc[iTab]);
-      mw.setWordWrapSelected(editArea[iTab].isWordwrap());
+      mw.displayWordWrapState(editArea[iTab].isWordwrap());
       mw.editTools().forEach((t) -> {
          t.setEditableDocument(edtDoc[iTab]);
       });
       mw.displayFrameTitle(edtDoc[iTab].filepath());
-      mw.enableShowTabbar(nTabs() == 1);
-      mw.setLanguageSelected(edtDoc[iTab].language(), !edtDoc[iTab].hasFile());
+      mw.enableHideTabbar(nTabs() == 1);
+      mw.displayLanguage(edtDoc[iTab].language(), !edtDoc[iTab].hasFile());
    }
 
    private void changedFileUpdate() {
-      proj.updateDocument();
-      mw.setLanguageSelected(edtDoc[iTab].language(), false);
+      proj.updateUIForDocument();
+      mw.displayLanguage(edtDoc[iTab].language(), false);
       mw.displayFrameTitle(edtDoc[iTab].filepath());
    }
 
@@ -496,7 +501,7 @@ public class TabbedDocuments {
       catch (IllegalArgumentException e) {
          lang = Languages.NORMAL_TEXT;
       }
-      mw.setLanguageSelected(lang, false);
+      //mw.displayLanguage(lang, false);
    }
 
    private final EditingStateReadable editState = new EditingStateReadable() {

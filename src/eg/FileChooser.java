@@ -11,8 +11,8 @@ import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 
 /**
- * Defines a <code>JFileChooser</code> to open and another
- * to save a file
+ * Defines two objects of <code>JFileChooser</code>, one to open and
+ * another to save files
  */
 public class FileChooser {
 
@@ -21,6 +21,9 @@ public class FileChooser {
    private JFileChooser chSave = null;
    private File currentDir;
 
+   /**
+    * @param startingDir  the initially selected directory
+    */
    public FileChooser(String startingDir) {
       currentDir = new File(startingDir);
       initChooserOpen(startingDir);
@@ -28,10 +31,10 @@ public class FileChooser {
    }
 
    /**
-    * Opens the chooser for opening a file and returns a File object
+    * Opens the chooser to open a file and returns a File object
     *
-    * @return  a File object. Null if cancel was clicked or the
-    * chooser window was closed
+    * @return  the file or null if cancel was clicked or the chooser
+    * window was closed
     */
    public File fileToOpen() {
       File f = null;
@@ -45,12 +48,12 @@ public class FileChooser {
    }
 
    /**
-    * Opens the chooser for saving a file and returns a File object
+    * Opens the chooser to save a file and returns a File object
     *
-    * @param presetFile  the filename that is shown in the text
-    * field to specify a file. Can be Null or the empty string
-    * @return  a File object. Null if cancel was clicked or the
-    * chooser window was closed
+    * @param presetFile  the filename that is shown in the text field
+    * to specify a file. Can be Null or the empty string
+    * @return  the file or null if cancel was clicked or the chooser
+    * window was closed
     */
    public File fileToSave(String presetFile) {
       File f = null;
@@ -66,7 +69,12 @@ public class FileChooser {
       }
       return f;
    }
-   
+
+   /**
+    * Returns the directory where a file was opened or saved most recently
+    *
+    * @return  the directory
+    */
    public String currentDir() {
       return currentDir.toString();
    }

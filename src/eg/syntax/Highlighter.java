@@ -8,8 +8,7 @@ public interface Highlighter {
    /**
     * Sets the reference to <code>SyntaxHighlighter.SyntaxSearcher</code>
     *
-    * @param searcher  the reference to
-    * {@link SyntaxHighlighter.SyntaxSearcher}
+    * @param searcher  the {@link SyntaxHighlighter.SyntaxSearcher}
     */
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher);
 
@@ -21,12 +20,12 @@ public interface Highlighter {
    /**
     * Returns if a found text element is valid
     *
-    * @param text  the entire text
+    * @param text  the text
     * @param pos  the position where a text element is found
     * @param length  the length of the text element
     * @param condition  a switch for conditions which an implementation
     * may ignore
-    * @return  the boolean value that is true if valid
+    * @return  true if valid
     */
     public boolean isValid(String text, int pos, int length, int condition);
 }

@@ -58,7 +58,7 @@ public class SettingsWindow {
    /**
     * Gets a new <code>InputOptionsBuilder</code>
     *
-    * @return  a new {@link SettingsWindow.InputOptionsBuilder}
+    * @return  the {@link SettingsWindow.InputOptionsBuilder}
     */
    public InputOptionsBuilder getInputOptionsBuilder() {
       SettingsWindow.InputOptionsBuilder optBuilder
@@ -86,7 +86,7 @@ public class SettingsWindow {
    }
    
    /**
-    * Sets the listener for the close button of this frame
+    * Sets the listener to close button of this window
     *
     * @param wa  the <code>WindowAdapter</code>
     */
@@ -97,8 +97,7 @@ public class SettingsWindow {
    /**
     * Makes this frame visible or invisible
     *
-    * @param b  the boolean value that is true to make the
-    * frame visible, false to make it invisible
+    * @param b  true for visible, false for invisible
     */
    public void setVisible(boolean b) {
       if (b) {
@@ -108,8 +107,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input in the text field for the name of a project
-    * file
+    * Returns the input for the name of a project file
     *
     * @return  the input
     */
@@ -118,8 +116,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input in the text field for the name of a directory for
-    * source files
+    * Returns the input for the name of a source directory
     *
     * @return  the input
     */
@@ -128,8 +125,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input in the text field for the name of a directory for
-    * executables
+    * Returns the input for the name of an executables directory
     *
     * @return  the input
     */
@@ -138,8 +134,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input in the text field for the name of a project root
-    * directory
+    * Returns the input for the name of a project root directory
     *
     * @return  the input
     */
@@ -148,7 +143,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input in the text field for command options
+    * Returns the input for command options
     *
     * @return  the input
     */
@@ -157,7 +152,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input in the text field for command arguments
+    * Returns the input for command arguments
     *
     * @return  the input
     */
@@ -166,7 +161,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input in the text field for a compile option
+    * Returns the input for a compile option
     *
     * @return  the input
     */
@@ -175,12 +170,10 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input in the text field for file extensions that may
-    * be used for a file search.
+    * Returns the input for file extensions
     * <p>
     * Extensions may be entered as comma, semicolon or space separated
-    * but the returnd string is formatted as comma separated in either
-    * case.
+    * but the returnd string is formatted as comma separated
     *
     * @return  the input
     */
@@ -189,7 +182,7 @@ public class SettingsWindow {
     }
 
    /**
-    * Returns the input in the text field for a name of a build
+    * Returns the input for a name of a build
     *
     * @return  the input
     */
@@ -198,8 +191,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Shows in the corresponding text field the name of the main project
-    * file
+    * Shows in the corresponding text field the name of the project file
     *
     * @param fileName  the name
     */
@@ -208,8 +200,8 @@ public class SettingsWindow {
    }
 
    /**
-    * Shows in the corresponding text field the name of the directory that
-    * contains source files
+    * Shows in the corresponding text field the name of the sources
+    * directory
     *
     * @param dirName  the name
     */
@@ -218,8 +210,8 @@ public class SettingsWindow {
    }
 
    /**
-    * Shows in the corresponding text field the name of the directory
-    * where executables are saved
+    * Shows in the corresponding text field the name of the executables
+    * directory
     *
     * @param in  the name
     */
@@ -228,7 +220,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Shows in the corresponding text field the name of the project's
+    * Shows in the corresponding text field the name of the project
     * root directory
     *
     * @param in  the name
@@ -239,7 +231,7 @@ public class SettingsWindow {
 
    /**
     * Shows in the corresponding text field the string that contains
-    * extensions that may be used for a file search
+    * file extensions
     *
     * @param in  the file extensions
     */
@@ -260,18 +252,17 @@ public class SettingsWindow {
     * Returns if the option to save project parameters to an
     * "ProjConfig" file is selected in the correponding checkbox
     *
-    * @return  the boolean value that is true if selected
+    * @return  true if selected
     */
    public boolean isSaveToProjConfig() {
       return saveConfig.isSelected();
    }
 
    /**
-    * Sets the boolean that specifies if the checkbox for selecting
-    * if project parameters are saved in an "ProjConfig" file is
-    * set selected
+    * Selects or unselects the checkbox for setting if project parameters
+    * are saved in an "ProjConfig" file
     *
-    * @param isSelected  the boolean value. True to select
+    * @param isSelected  true to select
     */
    public void setSaveProjConfigSelected(boolean isSelected) {
       saveConfig.setSelected(isSelected);
@@ -281,7 +272,7 @@ public class SettingsWindow {
     * The building of the content of <code>SettingsWindow</code> with
     * selectable input options.
     * <p>
-    * Is created in {@link SettingsWindow}
+    * Is created in the enclosing {@link SettingsWindow}
     */
    public static class InputOptionsBuilder {
 
@@ -292,21 +283,19 @@ public class SettingsWindow {
       }
 
       /**
-       * Adds the option to enter a name for the main project file and
-       * sets the label for the corresponding text field
+       * Adds the option to enter a name for a main project file and sets
+       * the label for the corresponding text field
        *
-       * @param fileLabel  the label which the term "(without extension)" is
-       * added to
+       * @param label  the label which " (without extension)" is added to
        * @return  this
        */
-      public InputOptionsBuilder addFileInput(String fileLabel) {
-         sw.fileLabel = fileLabel + " (without extension)";
+      public InputOptionsBuilder addFileInput(String label) {
+         sw.fileLabel = label + " (without extension)";
          return this;
       }
 
       /**
-       * Adds the option to enter a name of a directory where source
-       * files are stored
+       * Adds the option to enter a name for a sources directory
        *
        * @return  this
        */
@@ -316,8 +305,7 @@ public class SettingsWindow {
       }
 
       /**
-       * Adds the option to enter a name of a directory where executable
-       * files are stored
+       * Adds the option to enter a name of an executables directory
        *
        * @return  this
        */
@@ -348,8 +336,8 @@ public class SettingsWindow {
 
 
       /**
-       * Adds the option to enter a compile option and sets the label
-       * for the corresponding text field
+       * Adds the option to enter a compile option and sets the label for
+       * the corresponding text field
        *
        * @param label  the label
        * @return  this
@@ -360,9 +348,8 @@ public class SettingsWindow {
       }
 
       /**
-       * Adds the option to enter extensions of files that may be used
-       * for a file search and sets the label for the corresponding text
-       * field
+       * Adds the option to enter file extensions and sets the label for
+       * the corresponding text field
        *
        * @param label  the label
        * @return  this
@@ -376,7 +363,7 @@ public class SettingsWindow {
        * Adds the option to enter a build name and sets the label for the
        * corresponding text field
        *
-       * @param  label  the label that specifies the kind of build
+       * @param  label  the label
        * @return  this
        */
       public InputOptionsBuilder addBuildNameInput(String label) {

@@ -13,8 +13,7 @@ import eg.TabbedDocuments;
 import eg.ui.IconFiles;
 
 /**
- * The menu for file actions.
- * <p>Created in {@link MenuBar}
+ * The menu for file actions
  */
 public class FileMenu {
    
@@ -75,10 +74,9 @@ public class FileMenu {
    }
    
    /**
-    * Sets the boolean that specifies if the item for saving actions
-    * is enabled or disabled
+    * Enables or disables the item for saving actions
     *
-    * @param b  the boolean value
+    * @param b  true to enable, false to disable
     */
     public void enableSaveItm(boolean b) {
        saveItm.setEnabled(b);

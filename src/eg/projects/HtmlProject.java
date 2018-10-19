@@ -12,7 +12,7 @@ import eg.utils.Dialogs;
  */
 public final class HtmlProject extends AbstractProject implements ProjectActions {
 
-   HtmlProject() {
+   public HtmlProject() {
       super(ProjectTypes.HTML, false, null);
    }
 
