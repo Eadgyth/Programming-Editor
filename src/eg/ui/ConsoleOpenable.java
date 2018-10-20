@@ -2,7 +2,7 @@ package eg.ui;
 
 /**
  * Interface to ask if the console is visible and to open the console
- * panel in <code>MainWin</code>
+ * in <code>MainWin</code>
  */
 public interface ConsoleOpenable {
    
