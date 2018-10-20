@@ -34,7 +34,7 @@ public class JavaHighlighter implements Highlighter {
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
       s = searcher;
-      s.setSkipQuotedBlkCmntMarks();
+      s.setSkipQuotedBlockMarks();
    }
 
    @Override
@@ -47,9 +47,6 @@ public class JavaHighlighter implements Highlighter {
          s.braces();
          s.quoteInLine();
          s.lineComments(SyntaxConstants.DOUBLE_SLASH);
-     }
-     else {
-        System.out.println("hallo");
      }
      s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH);
    }
