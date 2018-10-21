@@ -32,7 +32,7 @@ public class SyntaxHighlighter {
       if (hl == null) {
          throw new IllegalArgumentException("The Highlighter reference is null");
       }
-      searcher.skipQuotedBlkCmntMarks = false;
+      searcher.skipQuotedBlockMarks = false;
       hl.setSyntaxSearcher(searcher);
       this.hl = hl;
    }
@@ -89,7 +89,7 @@ public class SyntaxHighlighter {
       private boolean isHighlightBlockCmnt = true;
       private int innerStart = 0;
       private int innerEnd = 0;
-      private boolean skipQuotedBlkCmntMarks = false;
+      private boolean skipQuotedBlockMarks = false;
       private int condition = 0;
 
       /**
@@ -481,11 +481,11 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Specifies that block comment marks that are quoted are skipped.
+       * Specifies that block start and end marks that are quoted are skipped.
        * Skipping takes place only if the quotation is found within a line.
        */
-      public void setSkipQuotedBlkCmntMarks() {
-         skipQuotedBlkCmntMarks = true;
+      public void setSkipQuotedBlockMarks() {
+         skipQuotedBlockMarks = true;
       }
 
       /**
@@ -526,11 +526,11 @@ public class SyntaxHighlighter {
                start = -1;
             }
             if (start != -1) {
-               if (!skipQuotedBlkCmntMarks
+               if (!skipQuotedBlockMarks
                      || !SyntaxUtils.isQuotedInLine(txt.text(), start)) {
 
                   int end = SyntaxUtils.nextBlockEnd(txt.text(), start + 1,
-                        blockStart, blockEnd, skipQuotedBlkCmntMarks, true);
+                        blockStart, blockEnd, skipQuotedBlockMarks, true);
 
                   if (innerEnd > 0 && end >= innerEnd - blockEnd.length()) {
                      end = -1;
@@ -677,14 +677,14 @@ public class SyntaxHighlighter {
             return;
          }
          int nextEnd = SyntaxUtils.nextBlockEnd(txt.text(), cmntEnd,
-               blockStart, blockEnd, skipQuotedBlkCmntMarks, true);
+               blockStart, blockEnd, skipQuotedBlockMarks, true);
 
          if (innerEnd > 0 && nextEnd > innerEnd) {
              nextEnd = -1;
          }
          if (nextEnd != -1) {
             int lastStart = SyntaxUtils.lastBlockStart(txt.text(), cmntEnd,
-                  blockStart, blockEnd, skipQuotedBlkCmntMarks, true);
+                  blockStart, blockEnd, skipQuotedBlockMarks, true);
 
             int lineStart;
             if (lastStart == -1) {
@@ -706,7 +706,7 @@ public class SyntaxHighlighter {
             return;
          }
          int nextStart = SyntaxUtils.nextBlockStart(txt.text(), startPos + 1,
-               blockStart, blockEnd, skipQuotedBlkCmntMarks, true);
+               blockStart, blockEnd, skipQuotedBlockMarks, true);
 
          if (innerEnd > 0 && nextStart > innerEnd) {
             nextStart = -1;
@@ -735,12 +735,12 @@ public class SyntaxHighlighter {
 
       private boolean isInBlock(String blockStart, String blockEnd, int pos) {
          int lastStart = SyntaxUtils.lastBlockStart(txt.text(), pos, blockStart,
-               blockEnd, skipQuotedBlkCmntMarks, true);
+               blockEnd, skipQuotedBlockMarks, true);
 
          int nextEnd = -1;
          if (lastStart != -1) {
             nextEnd = SyntaxUtils.nextBlockEnd(txt.text(), pos, blockStart,
-               blockEnd, skipQuotedBlkCmntMarks, true);
+               blockEnd, skipQuotedBlockMarks, true);
          }
          return lastStart != -1 & nextEnd != -1;
       }

@@ -30,7 +30,7 @@ public class JavascriptHighlighter implements Highlighter {
    @Override
    public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
       s = searcher;
-      s.setSkipQuotedBlkCmntMarks();
+      s.setSkipQuotedBlockMarks();
    }
 
    @Override
@@ -45,8 +45,7 @@ public class JavascriptHighlighter implements Highlighter {
          s.lineComments(SyntaxConstants.HTML_BLOCK_CMNT_START);
          s.lineComments(SyntaxConstants.HTML_BLOCK_CMNT_END);
       }
-      s.block(SyntaxConstants.SLASH_STAR,
-            SyntaxConstants.STAR_SLASH);
+      s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH);
    }
 
    @Override
