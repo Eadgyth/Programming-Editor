@@ -244,8 +244,35 @@ public class SettingsWindow {
     *
     * @param in  the name
     */
-   public void displayBuildName(String in) {
-      buildNameTf.setText(in);
+   public void displayBuildName(String s) {
+      buildNameTf.setText(s);
+   }
+   
+   /**
+    * Shows in the corresponding text field the command arguments
+    *
+    * @param in  the name
+    */
+   public void displayCmdArgs(String s) {
+      cmdArgsTf.setText(s);
+   }
+   
+   /**
+    * Shows in the corresponding text field the command options
+    *
+    * @param in  the command options
+    */
+   public void displayCmdOptions(String s) {
+      cmdOptionsTf.setText(s);
+   }
+   
+   /**
+    * Shows in the corresponding text field the compile option
+    *
+    * @param in  the compile option
+    */
+   public void displayCompileOption(String s) {
+      compileOptionTf.setText(s);
    }
 
    /**
