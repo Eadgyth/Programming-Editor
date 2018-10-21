@@ -53,7 +53,7 @@ public class Console {
     * by a process run in this {@link ProcessStarter}
     */
    public void clear() {
-      writableException();
+      ckeckWritePermission();
       consPnl.setText("");
    }
    
@@ -65,7 +65,7 @@ public class Console {
     * by a process run in this {@link ProcessStarter}
     */
    public void print(String text) {
-      writableException();
+      ckeckWritePermission();
       consPnl.appendText(text);
    }
    
@@ -79,7 +79,7 @@ public class Console {
     * by a process run in this {@link ProcessStarter}
     */
    public void printBr(String text) {
-      writableException();
+      ckeckWritePermission();
       consPnl.appendTextBr(text);
    }
    
@@ -90,13 +90,13 @@ public class Console {
     * by a process run in this {@link ProcessStarter}
     */
    public void toTop() {
-      writableException();
+      ckeckWritePermission();
       consPnl.setCaretWhenUneditable(0);
    }
    
    //--private--/
-   
-   private void writableException() {
+
+   private void ckeckWritePermission() {
       if (consPnl.isActive()) {
          throw new IllegalStateException(
                "The console is used by a process");
