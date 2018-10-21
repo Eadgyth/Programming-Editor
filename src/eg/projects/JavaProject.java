@@ -1,14 +1,16 @@
 package eg.projects;
 
+import java.io.File;
 import java.io.IOException;
+
 import java.awt.EventQueue;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.console.*;
 import eg.javatools.*;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
-import eg.ui.ConsoleOpenable;;
+import eg.ui.ConsoleOpenable;
 
 /**
  * Represents a programming project in Java
@@ -49,7 +51,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
             .addExtensionsInput("Extensions of included non-Java files")
             .addBuildNameInput("jar file")
             .buildWindow();
-   }      
+   }
 
    @Override
    public void compile() {
@@ -136,7 +138,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                   qualifiedMain, executableDirName(), sourceDirName(),
                   nonJavaExt);
 
-            if (!co.isConsoleOpen()) {            
+            if (!co.isConsoleOpen()) {
                if (created) {
                   StringBuilder msg = new StringBuilder();
                   msg.append(jar.successMessage()).append(".\n");
@@ -194,11 +196,22 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    }
 
    private boolean existsMainClassFile() {
-      boolean exists = existsMainExecFile(".class");
-      if (!exists) {
-         Dialogs.warnMessage("A compiled main class file could not be found.");
+      StringBuilder sb = new StringBuilder(projectPath() + "/");
+      if (!executableDirName().isEmpty()) {
+         sb.append(executableDirName()).append("/");
       }
-      return exists;
+      if (!namespace().isEmpty()) {
+         sb.append(namespace()).append("/");
+      }
+      sb.append(mainFileName()).append(".class");
+      File f = new File(sb.toString());
+      if (!f.exists()) {
+         Dialogs.warnMessage("A compiled main class file could not be found.");
+         return false;
+      }
+      else {
+         return true;
+      }
    }
 
    private boolean isNonJavaExtCorrect() {
