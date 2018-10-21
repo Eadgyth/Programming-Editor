@@ -15,9 +15,7 @@ import javax.swing.text.StyleConstants;
 import eg.utils.FileUtils;
 
 /**
- * The text that is edited.
- * <p>
- * Created in {@link EditableDocument}
+ * The text that is edited
  */
 public class StyledText {
 

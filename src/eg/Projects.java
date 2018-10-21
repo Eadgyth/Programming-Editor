@@ -100,7 +100,7 @@ public class Projects {
    }
 
    /**
-    * Assigns a new project and asks to replace the project if the
+    * Assigns a new project or asks to replace the project if the
     * selected <code>EditableDocument</code> already bolongs to a project
     *
     * @param projType  the project type which has a valaue in
@@ -120,7 +120,7 @@ public class Projects {
 
    /**
     * Retrieves a project from a configuration that was saved in a
-    * ProjConfig file in a project or the Prefs file in the program
+    * ProjConfig file in a project or in the Prefs file in the program
     * directory
     *
     * @see eg.projects.AbstractProject#retrieve(String)

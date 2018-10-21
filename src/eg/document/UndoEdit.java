@@ -35,7 +35,7 @@ import java.util.List;
  * <p>
  * An undoable unit may as well be formed by disabling breakpoint adding.
  * For this {@link #disableBreakpointAdding(boolean)} is invoked before
- * and after adding the edits to be inluded in the undoable unit.
+ * and after adding the edits to be included in the undoable unit.
  * <p>
  * Any undone edits are always removed when a new edit is added.
  * <p>

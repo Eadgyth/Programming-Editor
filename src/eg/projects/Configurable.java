@@ -36,7 +36,7 @@ public interface Configurable {
     *
     * @param dir  the directory that may be or be contained in the
     * project directory named in the settings window
-    * @return  true indicates a successful configuration
+    * @return  true in the case of a successful configuration
     */
    public boolean configure(String dir);
 
@@ -45,12 +45,12 @@ public interface Configurable {
     *
     * @param dir  the directory that may be or be contained in a stored
     * project
-    * @return  true indicates that a saved project could be retrieved
+    * @return  true if a stored project could be retrieved
     */
    public boolean retrieve(String dir);
 
    /**
-    * Returns the type of project
+    * Returns the type of the project
     *
     * @return  the type of project which is a constant in
     * {@link ProjectTypes}
