@@ -10,9 +10,9 @@ public enum ProjectTypes {
    JAVA("Java"),
    PERL("Perl"),
    R("R");
-   
+
    private final String display;
-   
+
    /**
     * Returns the display value associated with a project category
     *
@@ -21,7 +21,7 @@ public enum ProjectTypes {
    public String display() {
       return display;
    }
-   
+
    private ProjectTypes(String display) {
       this.display = display;
    }
