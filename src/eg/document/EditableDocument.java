@@ -102,7 +102,7 @@ public final class EditableDocument {
     }
 
    /**
-    * Gets the name of this file
+    * Gets the last name in the path of this file
     *
     * @return  the filename; the empty string of no file is set
     */
@@ -111,7 +111,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Gets the parent directory of this file
+    * Gets the path of the parent directory of this file
     *
     * @return  the parent directory; the empty string of no file is set
     */
@@ -120,9 +120,9 @@ public final class EditableDocument {
    }
 
    /**
-    * Gets the filepath of this file
+    * Gets the path of this file
     *
-    * @return  the filepath; the empty string of no file is set
+    * @return  the path; the empty string of no file is set
     */
    public String filepath() {
       return filepath;
