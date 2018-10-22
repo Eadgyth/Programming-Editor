@@ -193,56 +193,56 @@ public class SettingsWindow {
    /**
     * Shows in the corresponding text field the name of the project file
     *
-    * @param fileName  the name
+    * @param s  the name
     */
-   public void displayFile(String fileName) {
-      fileTf.setText(fileName);
+   public void displayFile(String s) {
+      fileTf.setText(s);
    }
 
    /**
     * Shows in the corresponding text field the name of the sources
     * directory
     *
-    * @param dirName  the name
+    * @param s  the name
     */
-   public void displaySourcesDir(String dirName) {
-      sourcesDirTf.setText(dirName);
+   public void displaySourcesDir(String s) {
+      sourcesDirTf.setText(s);
    }
 
    /**
     * Shows in the corresponding text field the name of the executables
     * directory
     *
-    * @param in  the name
+    * @param s  the name
     */
-   public void displayExecDir(String in) {
-      execDirTf.setText(in);
+   public void displayExecDir(String s) {
+      execDirTf.setText(s);
    }
 
    /**
     * Shows in the corresponding text field the name of the project
     * root directory
     *
-    * @param in  the name
+    * @param s  the name
     */
-   public void displayProjDirName(String in) {
-      projDirTf.setText(in);
+   public void displayProjDirName(String s) {
+      projDirTf.setText(s);
    }
 
    /**
     * Shows in the corresponding text field the string that contains
     * file extensions
     *
-    * @param in  the file extensions
+    * @param s  the file extensions
     */
-   public void displayExtensions(String in) {
-      extensionsTf.setText(in);
+   public void displayExtensions(String s) {
+      extensionsTf.setText(s);
    }
 
    /**
     * Shows in the corresponding text field the name for a build
     *
-    * @param in  the name
+    * @param s  the name
     */
    public void displayBuildName(String s) {
       buildNameTf.setText(s);
@@ -251,7 +251,7 @@ public class SettingsWindow {
    /**
     * Shows in the corresponding text field the command arguments
     *
-    * @param in  the name
+    * @param s  the name
     */
    public void displayCmdArgs(String s) {
       cmdArgsTf.setText(s);
@@ -260,7 +260,7 @@ public class SettingsWindow {
    /**
     * Shows in the corresponding text field the command options
     *
-    * @param in  the command options
+    * @param s  the command options
     */
    public void displayCmdOptions(String s) {
       cmdOptionsTf.setText(s);
@@ -269,7 +269,7 @@ public class SettingsWindow {
    /**
     * Shows in the corresponding text field the compile option
     *
-    * @param in  the compile option
+    * @param s  the compile option
     */
    public void displayCompileOption(String s) {
       compileOptionTf.setText(s);
