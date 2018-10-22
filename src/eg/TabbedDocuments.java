@@ -28,11 +28,11 @@ import eg.ui.filetree.FileTree;
  */
 public class TabbedDocuments {
 
+   private final MainWin mw;
+   private final ExtTabbedPane tabPane;
    private final EditableDocument[] edtDoc;
    private final Prefs prefs = new Prefs();
    private final FileChooser fc;
-   private final MainWin mw;
-   private final ExtTabbedPane tabPane;
    private final Formatter format;
    private final Edit edit;
    private final Projects proj;
@@ -40,6 +40,7 @@ public class TabbedDocuments {
    private EditArea[] editArea = null;
    private int iTab = -1;
    private Languages lang;
+   private boolean isEdited = false;
 
    /**
     * @param mw  the reference to {@link MainWin}
@@ -51,7 +52,7 @@ public class TabbedDocuments {
       editArea = format.editAreaArray();
       edtDoc = new EditableDocument[editArea.length];
 
-      setLanguage();
+      initLanguage();
 
       String indentUnit = prefs.getProperty("IndentUnit");
       edit = new Edit(indentUnit);
@@ -126,7 +127,7 @@ public class TabbedDocuments {
     * document
     */
    public void saveAs() {
-      saveAs(true);
+      saveNew(true);
    }
 
    /**
@@ -155,20 +156,9 @@ public class TabbedDocuments {
     * Saves a copy of the content in the selected document as new file
     * that is specified in the file chooser but does not set the file
     * in the document
-    *
-    * @return  true if the text content was saved
     */
-   public boolean saveCopy() {
-      File f = fc.fileToSave(edtDoc[iTab].filepath());
-      boolean isSaved = f != null;
-      if (isSaved && f.exists()) {
-         isSaved = 0 == replaceFileOption(f);
-      }
-      isSaved = isSaved && edtDoc[iTab].saveCopy(f);
-      if (isSaved) {
-         proj.updateFileTree(f.toString());
-      }
-      return isSaved;
+   public void saveCopy() {
+      saveNew(false);
    }
 
    /**
@@ -180,20 +170,18 @@ public class TabbedDocuments {
     * tab
     */
    public void close(boolean createBlankDoc) {
-      boolean removable;
+      boolean b;
       boolean exists = !edtDoc[iTab].hasFile() || edtDoc[iTab].docFile().exists();
       if (exists) {
-         removable = edtDoc[iTab].isSaved();
-         if (!removable) {
-            tabPane.setSelectedIndex(iTab);
-            removable = removeUnsavedFile(iTab);
+         b = edtDoc[iTab].isSaved();
+         if (!b) {
+            b = closeUnsavedFile(iTab);
          }
       }
       else {
-         tabPane.setSelectedIndex(iTab);
-         removable = removeMissingFile(iTab);
+         b = closeMissingFile(iTab);
       }
-      if (removable) {
+      if (b) {
          removeTab();
          if (nTabs() == 0 && createBlankDoc) {
             createBlankDocument();
@@ -211,8 +199,8 @@ public class TabbedDocuments {
    public void closeAll(boolean createBlankDoc) {
       int iMissing = missingFile();
       int iUnsaved = unsavedFile();
-      boolean removable = iUnsaved == nTabs() && iMissing == nTabs();
-      if (removable) {
+      boolean b = iUnsaved == nTabs() && iMissing == nTabs();
+      if (b) {
          int i = nTabs() - 1;
          while (i > -1) {
             tabPane.removeTabAt(i);
@@ -226,16 +214,14 @@ public class TabbedDocuments {
       }
       else {
          if (iMissing != nTabs()) {
-            tabPane.setSelectedIndex(iMissing);
-            removable = removeMissingFile(iMissing);
+            b = closeMissingFile(iMissing);
          }
          else {
             if (iUnsaved != nTabs()) {
-               tabPane.setSelectedIndex(iUnsaved);
-               removable = removeUnsavedFile(iUnsaved);
+               b = closeUnsavedFile(iUnsaved);
             }
          }
-         if (removable) {
+         if (b) {
             removeTab();
             closeAll(createBlankDoc);
          }
@@ -244,20 +230,20 @@ public class TabbedDocuments {
 
    /**
     * Closes all tabs and may ask to save the content of documents
-    * before closing
+    * before closing; saves properties to 'Prefs'
     *
-    * @return  the boolean value that is true if all tabs were closed
+    * @return  true if all tabs were closed, false otherwise
     */
    public boolean closeForExit() {
       closeAll(false);
-      boolean isClosed = iTab == -1;
-      if (isClosed) {
+      boolean b = iTab == -1;
+      if (b) {
          format.setProperties();
          prefs.setProperty("IndentUnit", edit.changedIndentUnit());
          prefs.setProperty("Language", lang.toString());
          prefs.setProperty("RecentPath", fc.currentDir());
       }
-      return isClosed;
+      return b;
    }
 
    /**
@@ -282,12 +268,7 @@ public class TabbedDocuments {
       if (isFileOpen(f) || isMaxTabNumber()) {
          return;
       }
-      boolean isBlankFirstTab
-            = nTabs() == 1
-            && !edtDoc[0].hasFile()
-            && edtDoc[0].docLength() == 0;
-
-      if (isBlankFirstTab) {
+      if (nTabs() == 1 && !edtDoc[iTab].hasFile() && !isEdited) {
          removeTab();
       }
       if (isTabOpenable()) {
@@ -304,12 +285,36 @@ public class TabbedDocuments {
       return b;
    }
 
+   private boolean isFileOpen(File f) {
+      boolean b = false;
+      for (int i = 0; i < nTabs(); i++) {
+         if (edtDoc[i].filepath().equals(f.toString())) {
+           b = true;
+           Dialogs.infoMessage(
+                 f.getName()
+                 + " is already open.",
+                 null);
+
+           break;
+         }
+      }
+      return b;
+   }
+
+   private boolean isMaxTabNumber() {
+      boolean b = nTabs() == edtDoc.length;
+      if (b) {
+         Dialogs.errorMessage("The maximum number of tabs is reached.", null);
+      }
+      return b;
+   }
+
    private void createDocument() {
       int n = nTabs();
       format.createEditAreaAt(n);
       edtDoc[n] = new EditableDocument(editArea[n], lang);
       setupDocument(n);
-      addNewTab("unnamed", editArea[n].content());
+      addTab("unnamed", editArea[n].content());
    }
 
    private void createDocument(File f) {
@@ -319,7 +324,7 @@ public class TabbedDocuments {
          format.createEditAreaAt(n);
          edtDoc[n] = new EditableDocument(editArea[n], f);
          setupDocument(n);
-         addNewTab(edtDoc[n].filename(), editArea[n].content());
+         addTab(edtDoc[n].filename(), editArea[n].content());
          changedFileUpdate();
          proj.retrieve();
       }
@@ -333,7 +338,7 @@ public class TabbedDocuments {
       edtDoc[index].setEditingStateReadable(editState);
    }
 
-   private void addNewTab(String filename, JPanel pnl) {
+   private void addTab(String filename, JPanel pnl) {
       JButton closeBt = new JButton(eg.ui.IconFiles.CLOSE_ICON);
       tabPane.addTab(filename, pnl, closeBt);
       closeBt.addActionListener(e -> {
@@ -342,90 +347,44 @@ public class TabbedDocuments {
       });
    }
 
-   private boolean save(boolean update) {
+   private boolean save(boolean setFile) {
       if (!edtDoc[iTab].hasFile() || !edtDoc[iTab].docFile().exists()) {
-         return saveAs(update);
+         return saveNew(setFile);
       }
       else {
          return edtDoc[iTab].saveFile();
       }
    }
 
-   private boolean saveAs(boolean update) {
+   private boolean saveNew(boolean setFile) {
       File f = fc.fileToSave(edtDoc[iTab].filepath());
-      boolean isSaved = f != null;
-      if (isSaved && f.exists()) {
-         isSaved = 0 == replaceFileOption(f);
+      if (f == null) {
+         return false;
       }
-      isSaved = isSaved && edtDoc[iTab].setFile(f);
-      if (isSaved) {
-         if (update) {
+      if (f.exists() && 0 != replaceFileOption(f)) {
+         return false;
+      }
+      boolean save = false;
+      if (setFile) {
+         save = edtDoc[iTab].setFile(f);
+         if (save) {
             changedFileUpdate();
             tabPane.setTitle(iTab, edtDoc[iTab].filename());
             proj.retrieve();
          }
+      }
+      else {
+         save = edtDoc[iTab].saveCopy(f);
+      }
+      if (save) {
          proj.updateFileTree(f.toString());
       }
-      return isSaved;
+      return save;
    }
 
-   private void removeTab() {
-      int count = iTab;
-      tabPane.removeTabAt(iTab);
-      for (int i = count; i < nTabs(); i++) {
-         edtDoc[i] = edtDoc[i + 1];
-         editArea[i] = editArea[i + 1];
-      }
-      int n = nTabs();
-      edtDoc[n] = null;
-      editArea[n] = null;
-      if (n > 0) {
-         iTab = tabPane.getSelectedIndex();
-         changedTabUpdate();
-      }
-   }
-
-   private void changedTabUpdate() {
-      edtDoc[iTab].setFocused();
-      format.setIndex(iTab);
-      proj.setDocumentAt(iTab);
-      edit.setDocument(edtDoc[iTab]);
-      mw.displayWordWrapState(editArea[iTab].isWordwrap());
-      mw.editTools().forEach((t) -> {
-         t.setEditableDocument(edtDoc[iTab]);
-      });
-      mw.displayFrameTitle(edtDoc[iTab].filepath());
-      mw.enableHideTabbar(nTabs() == 1);
-      mw.displayLanguage(edtDoc[iTab].language(), !edtDoc[iTab].hasFile());
-   }
-
-   private void changedFileUpdate() {
-      proj.updateUIForDocument();
-      mw.displayLanguage(edtDoc[iTab].language(), false);
-      mw.displayFrameTitle(edtDoc[iTab].filepath());
-   }
-
-   private boolean isFileOpen(File f) {
-      boolean isFileOpen = false;
-      for (int i = 0; i < nTabs(); i++) {
-         if (edtDoc[i].filepath().equals(f.toString())) {
-           isFileOpen = true;
-           Dialogs.infoMessage(
-                 f.getName()
-                 + " is already open.", null);
-
-           break;
-         }
-      }
-      return isFileOpen;
-   }
-
-   private boolean isMaxTabNumber() {
-      boolean isMax = nTabs() == edtDoc.length;
-      if (isMax) {
-         Dialogs.errorMessage("The maximum number of tabs is reached.", null);
-      }
-      return isMax;
+   private int replaceFileOption(File f) {
+      return Dialogs.warnConfirmYesNo(
+            f.getName() + " already exists.\nReplace file?");
    }
 
    private int unsavedFile() {
@@ -448,9 +407,10 @@ public class TabbedDocuments {
       return i;
    }
 
-   private boolean removeUnsavedFile(int i) {
+   private boolean closeUnsavedFile(int i) {
+      tabPane.setSelectedIndex(i);
       String filename = edtDoc[i].filename();
-      if (filename.length() == 0) {
+      if (filename.isEmpty()) {
          filename = "unnamed";
       }
       int res = Dialogs.confirmYesNoCancel(
@@ -458,57 +418,89 @@ public class TabbedDocuments {
             + filename
             + " ?");
 
-      boolean removable;
+      boolean b;
       if (JOptionPane.YES_OPTION == res) {
-         removable = save(false);
+         b = save(false);
       }
       else {
-         removable = JOptionPane.NO_OPTION == res;
+         b = JOptionPane.NO_OPTION == res;
       }
-      return removable;
+      return b;
    }
 
-   private boolean removeMissingFile(int i) {
+   private boolean closeMissingFile(int i) {
+      tabPane.setSelectedIndex(i);
       String filename = edtDoc[i].filename();
       int res = Dialogs.confirmYesNoCancel(
             filename
             + " could not be found anymore."
             + " Save as new file?");
 
-      boolean removable;
+      boolean b;
       if (JOptionPane.YES_OPTION == res) {
-         removable = saveCopy();
+         b = saveNew(false);
       }
       else {
-         removable = JOptionPane.NO_OPTION == res;
+         b = JOptionPane.NO_OPTION == res;
       }
-      return removable;
+      return b;
    }
 
-   private int replaceFileOption(File f) {
-      return Dialogs.warnConfirmYesNo(
-             f.getName() + " already exists.\nReplace file?");
+   private void removeTab() {
+      int count = iTab;
+      tabPane.removeTabAt(iTab);
+      for (int i = count; i < nTabs(); i++) {
+         edtDoc[i] = edtDoc[i + 1];
+         editArea[i] = editArea[i + 1];
+      }
+      int n = nTabs();
+      edtDoc[n] = null;
+      editArea[n] = null;
+      if (n > 0) {
+         iTab = tabPane.getSelectedIndex();
+         changedTabUpdate();
+      }
    }
 
    private int nTabs() {
       return tabPane.getTabCount();
    }
 
-   private void setLanguage() {
+   private void changedTabUpdate() {
+      edtDoc[iTab].setFocused();
+      format.setIndex(iTab);
+      proj.setDocumentAt(iTab);
+      edit.setDocument(edtDoc[iTab]);
+      mw.displayWordWrapState(editArea[iTab].isWordwrap());
+      mw.editTools().forEach((t) -> {
+         t.setEditableDocument(edtDoc[iTab]);
+      });
+      mw.displayFrameTitle(edtDoc[iTab].filepath());
+      mw.enableHideTabbar(nTabs() == 1);
+      mw.displayLanguage(edtDoc[iTab].language(), !edtDoc[iTab].hasFile());
+   }
+
+   private void changedFileUpdate() {
+      proj.updateUIForDocument();
+      mw.displayLanguage(edtDoc[iTab].language(), false);
+      mw.displayFrameTitle(edtDoc[iTab].filepath());
+   }
+
+   private void initLanguage() {
       try {
          lang = Languages.valueOf(prefs.getProperty("Language"));
       }
       catch (IllegalArgumentException e) {
          lang = Languages.NORMAL_TEXT;
       }
-      //mw.displayLanguage(lang, false);
    }
 
    private final EditingStateReadable editState = new EditingStateReadable() {
 
       @Override
-      public void updateInChangeState(boolean isChange) {
-         mw.enableSave(isChange);
+      public void updateInChangeState(boolean b) {
+         mw.enableSave(b);
+         isEdited = b;
       }
 
       @Override
