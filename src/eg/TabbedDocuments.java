@@ -170,9 +170,15 @@ public class TabbedDocuments {
     * tab
     */
    public void close(boolean createBlankDoc) {
+      if (createBlankDoc
+            && nTabs() == 1
+            && edtDoc[iTab].docLength() == 0
+            && !edtDoc[iTab].hasFile()) {
+
+         return;
+      }
       boolean b;
-      boolean exists = !edtDoc[iTab].hasFile() || edtDoc[iTab].docFile().exists();
-      if (exists) {
+      if (!edtDoc[iTab].hasFile() || edtDoc[iTab].docFile().exists()) {
          b = edtDoc[iTab].isSaved();
          if (!b) {
             b = closeUnsavedFile(iTab);
