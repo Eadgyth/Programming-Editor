@@ -170,11 +170,7 @@ public class TabbedDocuments {
     * tab
     */
    public void close(boolean createBlankDoc) {
-      if (createBlankDoc
-            && nTabs() == 1
-            && edtDoc[iTab].docLength() == 0
-            && !edtDoc[iTab].hasFile()) {
-
+      if (createBlankDoc && isFirstTabUnnamed() && edtDoc[iTab].docLength() == 0) {
          return;
       }
       boolean b;
@@ -274,7 +270,7 @@ public class TabbedDocuments {
       if (isFileOpen(f) || isMaxTabNumber()) {
          return;
       }
-      if (nTabs() == 1 && !edtDoc[iTab].hasFile() && !isEdited) {
+      if (isFirstTabUnnamed() && !isEdited) {
          removeTab();
       }
       if (isTabOpenable()) {
@@ -315,6 +311,10 @@ public class TabbedDocuments {
       return b;
    }
 
+   private boolean isFirstTabUnnamed() {
+      return nTabs() == 1 && !edtDoc[iTab].hasFile();
+   }
+
    private void createDocument() {
       int n = nTabs();
       format.createEditAreaAt(n);
@@ -333,10 +333,10 @@ public class TabbedDocuments {
          addTab(edtDoc[n].filename(), editArea[n].content());
          changedFileUpdate();
          proj.retrieve();
-      }
-      finally {
-         mw.setDefaultCursor();
-      }
+     }
+     finally {
+        mw.setDefaultCursor();
+     }
    }
 
    private void setupDocument(int index) {
@@ -370,22 +370,22 @@ public class TabbedDocuments {
       if (f.exists() && 0 != replaceFileOption(f)) {
          return false;
       }
-      boolean save = false;
+      boolean b;
       if (setFile) {
-         save = edtDoc[iTab].setFile(f);
-         if (save) {
+         b = edtDoc[iTab].setFile(f);
+         if (b) {
             changedFileUpdate();
             tabPane.setTitle(iTab, edtDoc[iTab].filename());
             proj.retrieve();
          }
       }
       else {
-         save = edtDoc[iTab].saveCopy(f);
+         b = edtDoc[iTab].saveCopy(f);
       }
-      if (save) {
+      if (b) {
          proj.updateFileTree(f.toString());
       }
-      return save;
+      return b;
    }
 
    private int replaceFileOption(File f) {
