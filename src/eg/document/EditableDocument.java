@@ -41,12 +41,9 @@ public final class EditableDocument {
     */
    public EditableDocument(EditArea editArea, File f) {
       this(editArea);
-      type.enableDocUpdate(false);
-      displayFileContentImpl(f);
-      type.enableDocUpdate(true);
+      displayFileContent(f);
       setFileParams(f);
       savedContent = txt.text();
-      setEditingMode(f);
    }
 
    /**
@@ -62,6 +59,21 @@ public final class EditableDocument {
       this(editArea);
       this.lang = lang;
       type.setEditingMode(lang);
+   }
+   
+   /**
+    * Creates a blank <code>EditableDocument</code>
+    * <p>
+    * A file and/or a language may be set afterwards
+    *
+    * @param editArea  a new {@link EditArea}
+    */
+   public EditableDocument(EditArea editArea) {
+      txt = new StyledText(editArea.textArea());
+      LineNumbers lineNum = new LineNumbers(editArea.lineNrArea(),
+            editArea.lineNrWidth());
+
+      type = new TypingEdit(txt, lineNum);
    }
 
    /**
@@ -185,12 +197,15 @@ public final class EditableDocument {
 
    /**
     * Diplays the content of the specified file but does not set
-    * the file and also does not change the language.
+    * the file
     *
     * @param f  the file
     */
    public void displayFileContent(File f) {
+      type.enableDocUpdate(false);
       displayFileContentImpl(f);
+      type.enableDocUpdate(true);
+      setEditingMode(f);
    }
 
    /**
@@ -238,6 +253,9 @@ public final class EditableDocument {
     * @return  this language which is a constant in {@link Languages}
     */
    public Languages language() {
+      if (lang == null) {
+         throw new IllegalStateException("A language is not set");
+      }
       return lang;
    }
 
@@ -328,14 +346,6 @@ public final class EditableDocument {
    //
    //--private--/
    //
-
-   private EditableDocument(EditArea editArea) {
-      txt = new StyledText(editArea.textArea());
-      LineNumbers lineNum = new LineNumbers(editArea.lineNrArea(),
-            editArea.lineNrWidth());
-
-      type = new TypingEdit(txt, lineNum);
-   }
 
    public void displayFileContentImpl(File f) {
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
