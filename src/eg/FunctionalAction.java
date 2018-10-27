@@ -11,9 +11,9 @@ import javax.swing.Icon;
  * the <code>ActionListener</code> specified in the constructor
  */
 public class FunctionalAction extends AbstractAction {
-      
+
    private final ActionListener al;
-   
+
    /**
     * @param name  the name for the action, null to ignore
     * @param icon  the icon for the control, null to ignore
@@ -23,9 +23,9 @@ public class FunctionalAction extends AbstractAction {
       super(name, icon);
       this.al = al;
    }
-   
+
    @Override
    public void actionPerformed(ActionEvent e) {
       al.actionPerformed(e);
    }
-} 
+}
