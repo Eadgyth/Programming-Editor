@@ -2,18 +2,17 @@ package eg.edittools;
 
 import java.io.File;
 
-
 //--Eadgyth--/
 import eg.FileChooser;
 import eg.document.EditableDocument;
 import eg.utils.Dialogs;
 
 /**
- * The exchange of text between an <code>EditableDocument</code> set in
- * the constructor and a variable <code>EditableDocument</code>.
- * The first is named 'exchange document' and the second 'source document'.
- * The source document is the document currently viewed in the main editor
- * area
+ * The exchange of text between an <code>EditableDocument</code> set
+ * in the constructor and a variable <code>EditableDocument</code>.
+ * The first is named 'exchange document' and the second 'source
+ * document'. The source document is the document currently viewed in
+ * the main editor.
  */
 public class TextExchange {
 
@@ -23,7 +22,7 @@ public class TextExchange {
 
    private final EditableDocument exchangeDoc;
    private final FileChooser fc;
-   
+
    private EditableDocument sourceDoc;
 
    /**
@@ -36,7 +35,7 @@ public class TextExchange {
       this.exchangeDoc = exchangeDoc;
       fc = new eg.FileChooser(recentDir);
       if (BACK_UP.exists()) {
-         loadFileContent(BACK_UP);
+          exchangeDoc.displayFileContent(BACK_UP);
       }
    }
 
@@ -59,7 +58,7 @@ public class TextExchange {
       String text = sourceDoc.textArea().getSelectedText();
       if (text == null) {
          String filename = sourceDoc.filename();
-         if (filename.length() == 0) {
+         if (filename.isEmpty()) {
             filename = "unnamed";
          }
          Dialogs.warnMessage("No text is selected in \"" + filename + "\"");
@@ -81,7 +80,7 @@ public class TextExchange {
       }
       copy(sourceDoc, text);
    }
-   
+
    /**
     * Loads the content of a file that is selected in the file chooser
     */
@@ -102,7 +101,7 @@ public class TextExchange {
       }
       if (res == 0) {
          clear();
-         loadFileContent(f);
+         exchangeDoc.displayFileContent(f);
       }
    }
 
@@ -112,7 +111,16 @@ public class TextExchange {
    public void adoptLanguage() {
       exchangeDoc.changeLanguage(sourceDoc.language());
    }
-   
+
+   /**
+    * Returns the language currently set in the exchange editor
+    *
+    * @return  the language as string value
+    */
+   public String language() {
+      return exchangeDoc.language().toString();
+   }
+
    /**
     * Sets in this exchange document the indent unit of the source
     * document
@@ -135,11 +143,11 @@ public class TextExchange {
    public void save() {
       exchangeDoc.saveCopy(BACK_UP);
    }
-   
+
    //
    //--private--/
    //
-   
+
    private void copy(EditableDocument destination, String text) {
       destination.textArea().requestFocusInWindow();
       String toReplace = destination.textArea().getSelectedText();
@@ -147,11 +155,5 @@ public class TextExchange {
       int end = destination.textArea().getSelectionEnd();
       int length = end - pos;
       destination.replace(pos, length, text);
-   }
-   
-   private void loadFileContent(File f) {
-      exchangeDoc.enableUndoMerging(true);
-      exchangeDoc.displayFileContent(f);
-      exchangeDoc.enableUndoMerging(false);
    }
 }

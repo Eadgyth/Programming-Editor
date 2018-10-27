@@ -36,8 +36,8 @@ import eg.document.EditingStateReadable;
  */
 public class ExchangeEditor implements AddableEditTool {
 
-   private final JPanel content = new JPanel(new BorderLayout());
-
+   private final JPanel    content      = new JPanel(new BorderLayout());
+   private final JMenuBar  menuBar      = new JMenuBar();
    private final JMenuItem loadItm      = new JMenuItem("Load file content...");
    private final JMenuItem copyFromItm  = new JMenuItem();
    private final JMenuItem copyToItm    = new JMenuItem();
@@ -59,26 +59,25 @@ public class ExchangeEditor implements AddableEditTool {
    private final TextExchange exch;
    private final Edit edit = new Edit();
 
-   private JMenuBar bar;
-
    public ExchangeEditor() {
       EditArea ea = format.editArea();
       editorPnl = ea.content();
       formatMenu.selectWordWrapItm(ea.isWordwrap());
-      EditableDocument ed = new EditableDocument(ea, Languages.NORMAL_TEXT);
-      ed.setEditingStateReadable(editReadable);
+      EditableDocument edtDoc = new EditableDocument(ea);
+      edtDoc.setEditingStateReadable(editReadable);
       String indentUnit = prefs.getProperty("IndentUnit");
-      ed.setIndentUnit(indentUnit);
+      edtDoc.setIndentUnit(indentUnit);
       String recentDir = prefs.getProperty("RecentPath");
-      exch = new TextExchange(ed, recentDir);
-      edit.setDocument(ed);
+      exch = new TextExchange(edtDoc, recentDir);
+      edtDoc.changeLanguage(initLanguage());
+      edit.setDocument(edtDoc);
       initContentPnl();
    }
 
    @Override
-   public void addClosingAction(JButton closeBt) {
-      bar.add(Box.createGlue());
-      bar.add(closeBt);
+   public void addClosingButton(JButton closeBt) {
+      menuBar.add(Box.createGlue());
+      menuBar.add(closeBt);
       closeBt.setContentAreaFilled(false);
       closeBt.setBorder(new EmptyBorder(5, 7, 5, 7));
       closeBt.setToolTipText("Close the exchange editor");
@@ -86,7 +85,22 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    @Override
-   public Component toolContent() {
+   public int width() {
+      if (content.getWidth() == 0) {
+         return eg.utils.ScreenParams.scaledSize(150);
+      }
+      else {
+         return content.getWidth();
+      }
+   }
+
+   @Override
+   public boolean resize() {
+      return true;
+   }
+
+   @Override
+   public Component content() {
       return content;
    }
 
@@ -96,13 +110,14 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    /**
-    * Saves the content in the exchange editor to the file
+    * Saves the text content in the exchange editor to the file
     * 'exchangeContent.txt' in the program folder and stores
-    * formatting preferences
+    *  preferences
     */
    @Override
    public void end() {
       format.setProperties();
+      prefs.setProperty("ExchgLanguage", exch.language());
       exch.save();
    }
 
@@ -111,27 +126,23 @@ public class ExchangeEditor implements AddableEditTool {
    //
 
    private void initContentPnl() {
-      enableUndoRedo(false, false);
-      enableCutCopy(false);
       editorPnl.setBorder(Constants.MATTE_TOP_GREY);
       initMenuBar();
-      content.add(bar, BorderLayout.NORTH);
+      content.add(menuBar, BorderLayout.NORTH);
       content.add(editorPnl, BorderLayout.CENTER);
-      content.setMinimumSize(new Dimension(
-            eg.utils.ScreenParams.scaledSize(150), 0));
-            
       setActions();
+      enableUndoRedo(false, false);
+      enableCutCopy(false);
    }
 
    private void initMenuBar() {
-      bar = new JMenuBar();
-      bar.setOpaque(false);
-      bar.setBorder(null);
-      bar.setPreferredSize(new Dimension(0, Constants.BAR_HEIGHT));
-      bar.add(textMenu());
-      bar.add(adoptMenu());
-      bar.add(editMenu());
-      bar.add(formatMenu.getMenu());
+      menuBar.setOpaque(false);
+      menuBar.setBorder(null);
+      menuBar.setPreferredSize(new Dimension(0, Constants.BAR_HEIGHT));
+      menuBar.add(textMenu());
+      menuBar.add(adoptMenu());
+      menuBar.add(editMenu());
+      menuBar.add(formatMenu.getMenu());
    }
 
    private JMenu textMenu() {
@@ -189,7 +200,7 @@ public class ExchangeEditor implements AddableEditTool {
             e -> exch.adoptLanguage()));
       setKeyBinding(languageItm, KeyStroke.getKeyStroke(
             KeyEvent.VK_G, ActionEvent.CTRL_MASK), "G_pressed");
-            
+
       indentLenItm.addActionListener(e -> exch.adoptIndentUnit());
 
       undoItm.setAction(new FunctionalAction("Undo", null,
@@ -239,6 +250,17 @@ public class ExchangeEditor implements AddableEditTool {
       int isInput = JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
       content.getInputMap(isInput).put(ks, key);
       content.getActionMap().put(key, itm.getAction());
+   }
+   
+   private Languages initLanguage() {
+      Languages lang;
+      try {
+         lang = Languages.valueOf(prefs.getProperty("ExchgLanguage"));
+      }
+      catch (IllegalArgumentException e) {
+         lang = Languages.NORMAL_TEXT;
+      }
+      return lang;
    }
 
    private final EditingStateReadable editReadable = new EditingStateReadable() {

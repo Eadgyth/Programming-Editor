@@ -32,6 +32,7 @@ import eg.ui.tabpane.ExtTabbedPane;
 import eg.utils.UIComponents;
 import eg.utils.ScreenParams;
 import eg.utils.FileUtils;
+import java.awt.event.ActionEvent;
 
 /**
  * The main window
@@ -40,8 +41,11 @@ public class MainWin {
 
    private final static Cursor BUSY_CURSOR
          = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+
    private final static Cursor DEF_CURSOR
          = Cursor.getDefaultCursor();
+
+   private final static int DIVIDER_SIZE = 6;
 
    private final JFrame frame = new JFrame();
    private final MenuBar menuBar = new MenuBar();
@@ -54,8 +58,8 @@ public class MainWin {
    private final List<AddableEditTool> editTools = new ArrayList<>();
    private final Prefs prefs = new Prefs();
 
-   private JSplitPane splitHorAll;
    private JSplitPane splitHor;
+   private JSplitPane splitHorMid;
    private JSplitPane splitVert;
    private int dividerLocHor;
    private int dividerLocVert = 0;
@@ -350,9 +354,26 @@ public class MainWin {
       consPnl.setCloseAct(e -> vm.doConsoleItmAct(false));
    }
 
+   private void setEditToolsActions(AddableEditTool tool, int i) {
+      JButton closeBt = new JButton();
+      closeBt.setAction(new FunctionalAction("", IconFiles.CLOSE_ICON,
+            e -> showEditToolPnl(false, 0)));
+
+      tool.addClosingButton(closeBt);
+      menuBar.editMenu().setEditToolsActions(e -> {
+         if (edToolPnl.addComponent(tool.content())) {
+            splitHorMid.setResizeWeight(tool.resize() ? 0 : 1);
+            showEditToolPnl(true, tool.width());
+         }
+         else {
+            showEditToolPnl(true, -1);
+         }
+      }, i);
+   }
+
    private void showConsole(boolean b) {
       if (b) {
-         splitVert.setDividerSize(6);
+         splitVert.setDividerSize(DIVIDER_SIZE);
          splitVert.setBottomComponent(consPnl.content());
          if (dividerLocVert == 0) {
             dividerLocVert = (int)(frame.getHeight() * 0.55);
@@ -368,25 +389,32 @@ public class MainWin {
 
    private void showFileView(boolean b) {
       if (b) {
-         splitHorAll.setDividerSize(6);
-         splitHorAll.setLeftComponent(treePnl.content());
-         splitHorAll.setDividerLocation(dividerLocHor);
+         splitHor.setDividerSize(DIVIDER_SIZE);
+         splitHor.setLeftComponent(treePnl.content());
+         splitHor.setDividerLocation(dividerLocHor);
       }
       else {
-         dividerLocHor = splitHorAll.getDividerLocation();
-         splitHorAll.setDividerSize(0);
-         splitHorAll.setLeftComponent(null);
+         dividerLocHor = splitHor.getDividerLocation();
+         splitHor.setDividerSize(0);
+         splitHor.setLeftComponent(null);
       }
    }
 
-   private void showEditToolPnl(boolean b) {
+   private void showEditToolPnl(boolean b, double width) {
       if (b) {
-         splitHor.setDividerSize(6);
-         splitHor.setRightComponent(edToolPnl.content());
+         splitHorMid.setRightComponent(edToolPnl.content());
+         splitHorMid.setDividerSize(DIVIDER_SIZE);
+         if (width > 0) {
+            double loc =  (1.0 - width / (double) splitHorMid.getWidth());
+            splitHorMid.setDividerLocation(loc);
+         }
+         if (width == -1) {
+            splitHorMid.setDividerLocation(splitHorMid.getDividerLocation());
+         }
       }
       else {
-         splitHor.setDividerSize(0);
-         splitHor.setRightComponent(null);
+         splitHorMid.setDividerSize(0);
+         splitHorMid.setRightComponent(null);
       }
    }
 
@@ -453,7 +481,7 @@ public class MainWin {
    private void initFrame() {
       initSplitPane();
       frame.setJMenuBar(menuBar.menuBar());
-      frame.add(splitHorAll, BorderLayout.CENTER);
+      frame.add(splitHor, BorderLayout.CENTER);
       frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
       frame.setLocation(5, 5);
@@ -462,22 +490,17 @@ public class MainWin {
    }
 
    private void initSplitPane() {
-      splitHor = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, tabPane, null);
+      splitHorMid = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, tabPane, null);
+      splitHorMid.setDividerSize(0);
+      splitHorMid.setBorder(null);
+      splitVert = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, splitHorMid, null);
+      splitVert.setDividerSize(0);
+      splitVert.setBorder(null);
+      splitHor = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, null, splitVert);
       splitHor.setDividerSize(0);
       splitHor.setBorder(null);
-      splitHor.setResizeWeight(1);
-      splitVert = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, splitHor, null);
-      splitVert.setDividerSize(0);
-      splitVert.setResizeWeight(0);
-      splitVert.setBorder(null);
-      splitHorAll = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, null,
-            splitVert);
-
-      splitHorAll.setResizeWeight(0);
-      splitHorAll.setDividerSize(0);
-      splitHorAll.setBorder(null);
    }
-   
+
    private void initShowTabbar() {
       boolean show = "show".equals(prefs.getProperty("Tabbar"));
       tabPane.showTabbar(show);
@@ -506,19 +529,5 @@ public class MainWin {
 
          FileUtils.log(e);
       }
-   }
-
-   private void setEditToolsActions(AddableEditTool tool, int i) {
-      JButton closeBt = new JButton();
-      closeBt.setAction(new FunctionalAction("", IconFiles.CLOSE_ICON,
-            e -> showEditToolPnl(false)));
-
-      tool.addClosingAction(closeBt);
-      menuBar.editMenu().setEditToolsActions(
-            e -> {
-               edToolPnl.addComponent(tool.toolContent());
-               showEditToolPnl(true);
-            },
-            i);
    }
 }
