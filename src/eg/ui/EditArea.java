@@ -45,12 +45,15 @@ public final class EditArea {
    private final JScrollPane wordwrapScoll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
    private final JScrollPane noWordwrapScroll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
    private final JScrollPane linkedLineNrScroll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
    private final JScrollPane lineNrScroll = new JScrollPane(
          JScrollPane.VERTICAL_SCROLLBAR_NEVER,
          JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -59,12 +62,11 @@ public final class EditArea {
    private int scrollPos;
 
    /**
-    * @param isWordwrap  the boolean that is true to enable, false to
-    * disable wordwrap
-    * @param isLineNumbers  the boolean that is true to show, false to
-    * hide line numbers. This is effectless if isWordwrap is true.
-    * @param font  the name of the initial font
-    * @param fontSize  the size of the initial font
+    * @param isWordwrap  true to enable, false to disable wordwrap
+    * @param isLineNumbers  true to show, false to hide line numbers.
+    * Effectless if isWordwrap is true.
+    * @param font  the font name
+    * @param fontSize  the font size
     */
    public EditArea(boolean isWordwrap, boolean isLineNumbers,
          String font, int fontSize) {
@@ -140,9 +142,9 @@ public final class EditArea {
 
    /**
     * Disables wordwrap and makes the area that displays line numbers
-    * visible if the specified boolean <code>lineNumbers</code> is true
+    * visible if <code>lineNumbers</code> is true
     *
-    * @param lineNumbers  the boolean value
+    * @param lineNumbers  true to show line numbers
     */
    public void disableWordwrap(boolean lineNumbers) {
       if (lineNumbers) {
@@ -154,25 +156,24 @@ public final class EditArea {
    }
 
    /**
-    * Returns the boolane that true if wordwrap is enabled
+    * Returns if wordwrap is enabled
     *
-    * @return  the boolean value
+    * @return  true if enabled, false otherwise
     */
    public boolean isWordwrap() {
       return isWordwrap;
    }
 
    /**
-    * Shows or hides the area that displays line numbers
+    * Shows or hides line numbers
     *
-    * @param b  the boolean value that is true to show line numnbers
+    * @param b  true to show, false to hide line numnbers
     * @throws IllegalStateException  if b is true and wordwrap is
     * currently enabled
     */
    public void showLineNumbers(boolean b) {
       if (isWordwrap) {
-         throw new IllegalStateException(
-               "Wordwrap is currently enabled");
+         throw new IllegalStateException("Wordwrap is currently enabled");
       }
       if (b) {
          showLineNumbersImpl();
@@ -185,7 +186,7 @@ public final class EditArea {
    /**
     * Sets the font
     *
-    * @param font  the name of the font
+    * @param font  the font name
     * @param fontSize  the font size
     */
    public void setFont(String font, int fontSize) {

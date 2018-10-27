@@ -69,10 +69,9 @@ public class ConsolePanel {
    }
    
    /**
-    * Sets the boolean that specifies if the console is in the
-    * active or inactive state. This text area is editable and
-    * focusable and also this stop button is enabled in the active
-    * state.
+    * Sets the boolean that specifies if the console is in the active
+    * or inactive state. This text area is editable and focusable and
+    * also this stop button is enabled in the active state.
     *
     * @param isActive  the boolean value; true for active, false
     * for inactive
@@ -104,8 +103,7 @@ public class ConsolePanel {
     */
    public void setCaret(int pos) {
       if (!isActive) {
-         throw new IllegalStateException(
-               "The text area is set uneditable");
+         throw new IllegalStateException("The text area is set uneditable");
       }
       area.setCaretPosition(pos);
    }
@@ -165,8 +163,7 @@ public class ConsolePanel {
     */
    public void focus() {
       if (!isActive) {
-         throw new IllegalStateException(
-               "The text area is set uneditable");
+         throw new IllegalStateException("The text area is set uneditable");
       }
       area.requestFocusInWindow();
    }
