@@ -39,10 +39,10 @@ import java.awt.event.ActionEvent;
  */
 public class MainWin {
 
-   private final static Cursor BUSY_CURSOR
+   public final static Cursor BUSY_CURSOR
          = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
 
-   private final static Cursor DEF_CURSOR
+   public final static Cursor DEF_CURSOR
          = Cursor.getDefaultCursor();
 
    private final static int DIVIDER_SIZE = 6;
@@ -62,6 +62,7 @@ public class MainWin {
    private JSplitPane splitHorMid;
    private JSplitPane splitVert;
    private int dividerLocHor;
+   private int dividerLocHorMid;
    private int dividerLocVert = 0;
 
    public MainWin() {
@@ -368,7 +369,7 @@ public class MainWin {
          else {
             showEditToolPnl(true, -1);
          }
-      }, i);
+       }, i);
    }
 
    private void showConsole(boolean b) {
@@ -409,10 +410,11 @@ public class MainWin {
             splitHorMid.setDividerLocation(loc);
          }
          if (width == -1) {
-            splitHorMid.setDividerLocation(splitHorMid.getDividerLocation());
+            splitHorMid.setDividerLocation(dividerLocHorMid);
          }
       }
       else {
+         dividerLocHorMid = splitHorMid.getDividerLocation();
          splitHorMid.setDividerSize(0);
          splitHorMid.setRightComponent(null);
       }
