@@ -267,7 +267,7 @@ public class TypingEdit {
          return;
       }
       if (!inChangeState) {
-         inChangeState = true;
+         inChangeState = true; //undo.canUndo();
          esr.updateInChangeState(inChangeState);
       }
    }

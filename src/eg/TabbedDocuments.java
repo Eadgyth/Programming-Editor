@@ -51,6 +51,15 @@ public class TabbedDocuments {
       this.format = format;
       editArea = format.editAreaArray();
       edtDoc = new EditableDocument[editArea.length];
+      
+      tabPane = mw.tabPane();
+      tabPane.addChangeListener((ChangeEvent ce) -> {
+         JTabbedPane sourceTb = (JTabbedPane) ce.getSource();
+         iTab = sourceTb.getSelectedIndex();
+         if (iTab > -1) {
+            changedTabUpdate();
+         }
+      });
 
       initLanguage();
 
@@ -70,15 +79,6 @@ public class TabbedDocuments {
 
       String recentPath = prefs.getProperty("RecentPath");
       fc = new FileChooser(recentPath);
-
-      tabPane = mw.tabPane();
-      tabPane.addChangeListener((ChangeEvent ce) -> {
-         JTabbedPane sourceTb = (JTabbedPane) ce.getSource();
-         iTab = sourceTb.getSelectedIndex();
-         if (iTab > -1) {
-            changedTabUpdate();
-         }
-      });
    }
 
    /**
@@ -505,13 +505,13 @@ public class TabbedDocuments {
 
       @Override
       public void updateInChangeState(boolean b) {
-         mw.enableSave(b);
-         isEdited = b;
+        mw.enableSave(b);
       }
 
       @Override
       public void updateUndoableState(boolean canUndo, boolean canRedo) {
          mw.enableUndoRedo(canUndo, canRedo);
+         isEdited = canUndo;
       }
 
       @Override
