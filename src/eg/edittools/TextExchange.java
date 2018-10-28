@@ -1,5 +1,9 @@
 package eg.edittools;
 
+import java.awt.Component;
+
+import javax.swing.RootPaneContainer;
+
 import java.io.File;
 
 //--Eadgyth--/
@@ -101,7 +105,7 @@ public class TextExchange {
       }
       if (res == 0) {
          clear();
-         exchangeDoc.displayFileContent(f);
+         loadFile(f);
       }
    }
 
@@ -147,6 +151,21 @@ public class TextExchange {
    //
    //--private--/
    //
+
+   private void loadFile(File f) {
+      Component glassPane = ((RootPaneContainer) exchangeDoc.textArea()
+            .getTopLevelAncestor()).getGlassPane();
+
+      try {
+         glassPane.setVisible(true);
+         glassPane.setCursor(eg.ui.MainWin.BUSY_CURSOR);
+         exchangeDoc.displayFileContent(f);
+      }
+      finally {
+         glassPane.setVisible(false);
+         glassPane.setCursor(eg.ui.MainWin.DEF_CURSOR);
+      }
+   }
 
    private void copy(EditableDocument destination, String text) {
       destination.textArea().requestFocusInWindow();
