@@ -2,6 +2,7 @@ package eg.ui.menu;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -19,10 +20,10 @@ import eg.ui.IconFiles;
 public class ProjectMenu {
 
    private final JMenu menu = new JMenu("Project");
-   private final JMenuItem SaveCompileItm = new JMenuItem(
+   private final JMenuItem saveCompileItm = new JMenuItem(
          "Save selected file and compile project");
 
-   private final JMenuItem SaveAllCompileItm = new JMenuItem(
+   private final JMenuItem saveAllCompileItm = new JMenuItem(
          "Save all open project files and compile project",
          IconFiles.COMPILE_ICON);
 
@@ -62,9 +63,9 @@ public class ProjectMenu {
       changeProjItm.addActionListener(e -> p.change());
       runItm.addActionListener(e -> p.run());
       buildItm.addActionListener(e -> p.build());
-      SaveCompileItm.addActionListener(e -> p.saveAndCompile());
-      SaveAllCompileItm.addActionListener(e -> p.saveAllAndCompile());
-   }
+      saveCompileItm.addActionListener(e -> p.saveAndCompile());
+      saveAllCompileItm.addActionListener(e -> p.saveAllAndCompile());
+   }     
 
    /**
     * Enables or disables the item for actions to change project
@@ -97,8 +98,8 @@ public class ProjectMenu {
    public void enableProjectActionsItms(boolean isCompile, boolean isRun,
          boolean isBuild) {
 
-      SaveCompileItm.setEnabled(isCompile);
-      SaveAllCompileItm.setEnabled(isCompile);
+      saveCompileItm.setEnabled(isCompile);
+      saveAllCompileItm.setEnabled(isCompile);
       runItm.setEnabled(isRun);
       buildItm.setEnabled(isBuild);
    }
@@ -126,8 +127,8 @@ public class ProjectMenu {
    }
 
    private void assembleMenu() {
-      menu.add(SaveCompileItm);
-      menu.add(SaveAllCompileItm);
+      menu.add(saveCompileItm);
+      menu.add(saveAllCompileItm);
       menu.add(runItm);
       menu.addSeparator();
       menu.add(buildItm);
@@ -146,7 +147,7 @@ public class ProjectMenu {
    }
 
    private void shortCuts() {
-      SaveAllCompileItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,
+      saveAllCompileItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,
             ActionEvent.CTRL_MASK));
       runItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
             ActionEvent.CTRL_MASK));

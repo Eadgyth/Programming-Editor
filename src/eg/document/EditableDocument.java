@@ -60,7 +60,7 @@ public final class EditableDocument {
       this.lang = lang;
       type.setEditingMode(lang);
    }
-   
+
    /**
     * Creates a blank <code>EditableDocument</code>
     * <p>

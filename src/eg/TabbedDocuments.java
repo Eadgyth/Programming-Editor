@@ -51,7 +51,7 @@ public class TabbedDocuments {
       this.format = format;
       editArea = format.editAreaArray();
       edtDoc = new EditableDocument[editArea.length];
-      
+
       tabPane = mw.tabPane();
       tabPane.addChangeListener((ChangeEvent ce) -> {
          JTabbedPane sourceTb = (JTabbedPane) ce.getSource();

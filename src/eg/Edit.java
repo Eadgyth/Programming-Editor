@@ -32,7 +32,7 @@ public class Edit {
    private String indentUnit;
    private int indentLength;
    private String changedIndentUnit;
-   
+
    public Edit(){}
 
    /**
