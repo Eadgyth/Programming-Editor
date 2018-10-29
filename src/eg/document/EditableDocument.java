@@ -1,5 +1,7 @@
 package eg.document;
 
+import java.awt.EventQueue;
+
 import javax.swing.JTextPane;
 
 import java.io.File;
@@ -279,7 +281,7 @@ public final class EditableDocument {
                "The language cannot be changed once a file is assigned.");
       }
       this.lang = lang;
-      type.setEditingMode(lang);
+      EventQueue.invokeLater(() -> type.setEditingMode(lang));
    }
 
    /**
