@@ -208,6 +208,7 @@ public class Projects {
       }
       else {
          try {
+            mw.setBusyCursor();
             edtDoc[iDoc].saveFile();
             current.compile();
          }
