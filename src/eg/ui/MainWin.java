@@ -4,7 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -32,7 +35,6 @@ import eg.ui.tabpane.ExtTabbedPane;
 import eg.utils.UIComponents;
 import eg.utils.ScreenParams;
 import eg.utils.FileUtils;
-import java.awt.event.ActionEvent;
 
 /**
  * The main window
@@ -48,6 +50,7 @@ public class MainWin {
    private final static int DIVIDER_SIZE = 6;
 
    private final JFrame frame = new JFrame();
+   private final Component glassPane = frame.getGlassPane();
    private final MenuBar menuBar = new MenuBar();
    private final ToolBar toolBar = new ToolBar();
    private final StatusBar statusBar = new StatusBar();
@@ -263,7 +266,6 @@ public class MainWin {
     * Sets the busy cursor
     */
    public void setBusyCursor() {
-      Component glassPane = frame.getGlassPane();
       glassPane.setVisible(true);
       glassPane.setCursor(BUSY_CURSOR);
    }
@@ -272,7 +274,6 @@ public class MainWin {
     * Sets the default cursor
     */
    public void setDefaultCursor() {
-      Component glassPane = frame.getGlassPane();
       glassPane.setVisible(false);
       glassPane.setCursor(DEF_CURSOR);
    }
@@ -302,8 +303,11 @@ public class MainWin {
     * @param edit  the reference to {@link Edit}
     */
    public void setEditActions(Edit edit) {
+      BusyActionListener clearSpaces = new BusyActionListener(
+            frame, e -> edit.clearTrailingSpaces());
+
       toolBar.setEditActions(edit);
-      menuBar.editMenu().setEditActions(edit);
+      menuBar.editMenu().setEditActions(edit, clearSpaces);
    }
 
    /**
@@ -361,15 +365,18 @@ public class MainWin {
             e -> showEditToolPnl(false, 0)));
 
       tool.addClosingButton(closeBt);
-      menuBar.editMenu().setEditToolsActions(e -> {
-         if (edToolPnl.addComponent(tool.content())) {
-            splitHorMid.setResizeWeight(tool.resize() ? 0 : 1);
-            showEditToolPnl(true, tool.width());
-         }
-         else {
-            showEditToolPnl(true, -1);
-         }
-       }, i);
+      ActionListener addEditTool = (ActionEvent e) -> {
+         EventQueue.invokeLater(() -> {
+            if (edToolPnl.addComponent(tool.content())) {
+               splitHorMid.setResizeWeight(tool.resize() ? 0 : 1);
+               showEditToolPnl(true, tool.width());
+            }
+            else {
+               showEditToolPnl(true, -1);
+            }
+         });
+      };
+      menuBar.editMenu().setEditToolsActions(addEditTool, i);
    }
 
    private void showConsole(boolean b) {
@@ -465,6 +472,26 @@ public class MainWin {
       }
    };
 
+   private class BusyActionListener implements ActionListener {
+
+      private final ActionListener al;
+
+      BusyActionListener(JFrame f, ActionListener al) {
+         this.al = al;
+      }
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         try {
+            setBusyCursor();
+            EventQueue.invokeLater(() -> al.actionPerformed(e));
+         }
+         finally {
+            EventQueue.invokeLater(() -> setDefaultCursor());
+         }
+      }
+   }
+
    private void exit(TabbedDocuments td) {
       editTools.forEach((t) -> {
          t.end();
@@ -520,7 +547,8 @@ public class MainWin {
    private void createAddableEditTools() {
       try {
          for (int i = 0; i < EditTools.values().length; i++) {
-            editTools.add((AddableEditTool) Class.forName("eg.edittools."
+            editTools.add((AddableEditTool) Class.forName(
+                  "eg.edittools."
                   + EditTools.values()[i].className()).newInstance());
 
             setEditToolsActions(editTools.get(i), i);

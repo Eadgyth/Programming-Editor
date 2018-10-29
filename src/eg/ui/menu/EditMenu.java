@@ -9,7 +9,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.KeyStroke;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.Edit;
 import eg.TabbedDocuments;
 import eg.Languages;
@@ -61,8 +61,10 @@ public class EditMenu {
     * Sets listeners for actions to edit text
     *
     * @param edit  the reference to {@link Edit}
+    * @param clearSpaces  the listener for actions to clear trailing
+    * spaces
     */
-   public void setEditActions(Edit edit) {
+   public void setEditActions(Edit edit, ActionListener clearSpaces) {
       undoItm.addActionListener(e -> edit.undo());
       redoItm.addActionListener(e -> edit.redo());
       cutItm.addActionListener(e -> edit.cut());
@@ -71,7 +73,7 @@ public class EditMenu {
       selectAllItm.addActionListener(e -> edit.selectAll());
       indentItm.addActionListener(e -> edit.indent());
       outdentItm.addActionListener(e -> edit.outdent());
-      clearSpacesItm.addActionListener(e -> edit.clearTrailingSpaces());
+      clearSpacesItm.addActionListener(clearSpaces);
       changeIndentItm.addActionListener(e -> edit.setIndentUnit());
    }
 
