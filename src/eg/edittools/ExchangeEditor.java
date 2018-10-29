@@ -62,16 +62,16 @@ public class ExchangeEditor implements AddableEditTool {
    public ExchangeEditor() {
       EditArea ea = format.editArea();
       editorPnl = ea.content();
-      formatMenu.selectWordWrapItm(ea.isWordwrap());
+      formatMenu.selectWordWrapItm(ea.isWordwrap());      
       EditableDocument edtDoc = new EditableDocument(ea);
       edtDoc.setEditingStateReadable(editReadable);
       String indentUnit = prefs.getProperty("IndentUnit");
-      edtDoc.setIndentUnit(indentUnit);
+      edtDoc.setIndentUnit(indentUnit);      
       String recentDir = prefs.getProperty("RecentPath");
-      exch = new TextExchange(edtDoc, recentDir);
-      edtDoc.changeLanguage(initLanguage());
-      edit.setDocument(edtDoc);
+      exch = new TextExchange(edtDoc, recentDir);    
+      edit.setDocument(edtDoc);    
       initContentPnl();
+      edtDoc.changeLanguage(initLanguage());
    }
 
    @Override
