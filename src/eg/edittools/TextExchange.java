@@ -1,6 +1,7 @@
 package eg.edittools;
 
 import java.awt.Component;
+import java.awt.EventQueue;
 
 import javax.swing.RootPaneContainer;
 
@@ -162,8 +163,10 @@ public class TextExchange {
          exchangeDoc.displayFileContent(f);
       }
       finally {
-         glassPane.setVisible(false);
-         glassPane.setCursor(eg.ui.MainWin.DEF_CURSOR);
+         EventQueue.invokeLater(() -> {
+            glassPane.setVisible(false);
+            glassPane.setCursor(eg.ui.MainWin.DEF_CURSOR);
+         });
       }
    }
 
