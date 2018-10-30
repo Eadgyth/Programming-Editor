@@ -12,7 +12,8 @@ public class MenuBar {
 
    private final JMenuBar menuBar = new JMenuBar();
    private final FileMenu fileMenu = new FileMenu();
-   private final EditMenu editMenu = new EditMenu();
+   private final LanguageMenu languageMenu = new LanguageMenu();
+   private final EditMenu editMenu = new EditMenu(languageMenu);
    private final FormatMenu formatMenu = new FormatMenu();
    private final ViewMenu viewMenu = new ViewMenu();
    private final ProjectMenu projectMenu = new ProjectMenu();
@@ -49,6 +50,10 @@ public class MenuBar {
     */
    public EditMenu editMenu() {
       return editMenu;
+   }
+   
+   public LanguageMenu languageMenu() {
+      return languageMenu;
    }
 
    /**
@@ -89,7 +94,7 @@ public class MenuBar {
       }
       menuBar.add(fileMenu.getMenu());
       menuBar.add(Box.createHorizontalStrut(strutSize));
-      menuBar.add(editMenu.getMenu());
+      menuBar.add(editMenu.menu());
       menuBar.add(Box.createHorizontalStrut(strutSize));
       menuBar.add(formatMenu.getMenu());
       menuBar.add(Box.createHorizontalStrut(strutSize));

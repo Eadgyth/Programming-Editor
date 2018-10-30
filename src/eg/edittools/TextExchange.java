@@ -9,6 +9,7 @@ import java.io.File;
 
 //--Eadgyth--/
 import eg.FileChooser;
+import eg.Languages;
 import eg.document.EditableDocument;
 import eg.utils.Dialogs;
 
@@ -109,21 +110,23 @@ public class TextExchange {
          loadFile(f);
       }
    }
-
+   
    /**
-    * Sets in this exchange document the language of the source document
+    * Changes the language in the exchange editor
+    *
+    * @param lang  the language to change to
     */
-   public void adoptLanguage() {
-      exchangeDoc.changeLanguage(sourceDoc.language());
+   public void changeLanguage(Languages lang) {
+      exchangeDoc.changeLanguage(lang);
    }
 
    /**
     * Returns the language currently set in the exchange editor
     *
-    * @return  the language as string value
+    * @return  the language
     */
-   public String language() {
-      return exchangeDoc.language().toString();
+   public Languages language() {
+      return exchangeDoc.language();
    }
 
    /**

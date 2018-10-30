@@ -178,14 +178,14 @@ public class MainWin {
     * other languages
     */
    public void displayLanguage(Languages lang, boolean b) {
-      menuBar.editMenu().selectLanguageItm(lang, b);
+      menuBar.languageMenu().selectLanguageItm(lang, b);
       displayLanguage(lang);
    }
 
    /**
     * Displays the language in the status bar
     *
-    * @param lang   the language which is a constant in {@link Languages}
+    * @param lang   the language
     */
    public void displayLanguage(Languages lang) {
       statusBar.displayLanguage(lang.display());
@@ -286,7 +286,8 @@ public class MainWin {
    public void setFileActions(TabbedDocuments td) {
       menuBar.fileMenu().setActions(td);
       menuBar.fileMenu().setExitActions(e -> exit(td));
-      menuBar.editMenu().setChangeLanguageActions(td);
+      menuBar.languageMenu().setChangeLanguageActions((l) -> td.changeLanguage(l));
+
       toolBar.setFileActions(td);
       frame.addWindowListener(new WindowAdapter() {
 
@@ -303,11 +304,12 @@ public class MainWin {
     * @param edit  the reference to {@link Edit}
     */
    public void setEditActions(Edit edit) {
-      BusyActionListener clearSpaces = new BusyActionListener(
+      BusyActionListener clearSpacesAct = new BusyActionListener(
             frame, e -> edit.clearTrailingSpaces());
 
       toolBar.setEditActions(edit);
-      menuBar.editMenu().setEditActions(edit, clearSpaces);
+      menuBar.editMenu().setEditActions(edit, clearSpacesAct);
+
    }
 
    /**
@@ -472,7 +474,7 @@ public class MainWin {
       }
    };
 
-   private class BusyActionListener implements ActionListener {
+   private final class BusyActionListener implements ActionListener {
 
       private final ActionListener al;
 

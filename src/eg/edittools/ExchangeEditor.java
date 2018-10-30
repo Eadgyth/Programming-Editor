@@ -28,6 +28,7 @@ import eg.FunctionalAction;
 import eg.Prefs;
 import eg.ui.EditArea;
 import eg.ui.menu.FormatMenu;
+import eg.ui.menu.LanguageMenu;
 import eg.document.EditableDocument;
 import eg.document.EditingStateReadable;
 
@@ -36,21 +37,21 @@ import eg.document.EditingStateReadable;
  */
 public class ExchangeEditor implements AddableEditTool {
 
-   private final JPanel    content      = new JPanel(new BorderLayout());
-   private final JMenuBar  menuBar      = new JMenuBar();
-   private final JMenuItem loadItm      = new JMenuItem("Load file content...");
-   private final JMenuItem copyFromItm  = new JMenuItem();
-   private final JMenuItem copyToItm    = new JMenuItem();
-   private final JMenuItem languageItm  = new JMenuItem();
+   private final JPanel content = new JPanel(new BorderLayout());
+   private final JMenuBar menuBar = new JMenuBar();
+   private final JMenuItem loadItm = new JMenuItem("Load file content...");
+   private final JMenuItem copyFromItm = new JMenuItem();
+   private final JMenuItem copyToItm = new JMenuItem();
    private final JMenuItem indentLenItm = new JMenuItem("Indent length");
-   private final JMenuItem undoItm      = new JMenuItem();
-   private final JMenuItem redoItm      = new JMenuItem();
-   private final JMenuItem cutItm       = new JMenuItem();
-   private final JMenuItem copyItm      = new JMenuItem();
-   private final JMenuItem pasteItm     = new JMenuItem();
-   private final JMenuItem indentItm    = new JMenuItem();
-   private final JMenuItem outdentItm   = new JMenuItem();
-   private final JMenuItem clearItm     = new JMenuItem("Clear");
+   private final JMenuItem undoItm = new JMenuItem();
+   private final JMenuItem redoItm = new JMenuItem();
+   private final JMenuItem cutItm = new JMenuItem();
+   private final JMenuItem copyItm = new JMenuItem();
+   private final JMenuItem pasteItm = new JMenuItem();
+   private final JMenuItem indentItm = new JMenuItem();
+   private final JMenuItem outdentItm = new JMenuItem();
+   private final JMenuItem clearItm = new JMenuItem("Clear");
+   private final LanguageMenu languageMenu = new LanguageMenu();
    private final FormatMenu formatMenu  = new FormatMenu();
 
    private final Formatter format = new Formatter(1, "Exchg");
@@ -62,16 +63,18 @@ public class ExchangeEditor implements AddableEditTool {
    public ExchangeEditor() {
       EditArea ea = format.editArea();
       editorPnl = ea.content();
-      formatMenu.selectWordWrapItm(ea.isWordwrap());      
+      formatMenu.selectWordWrapItm(ea.isWordwrap());
       EditableDocument edtDoc = new EditableDocument(ea);
       edtDoc.setEditingStateReadable(editReadable);
       String indentUnit = prefs.getProperty("IndentUnit");
-      edtDoc.setIndentUnit(indentUnit);      
+      edtDoc.setIndentUnit(indentUnit);
       String recentDir = prefs.getProperty("RecentPath");
-      exch = new TextExchange(edtDoc, recentDir);    
-      edit.setDocument(edtDoc);    
+      exch = new TextExchange(edtDoc, recentDir);
+      edit.setDocument(edtDoc);
       initContentPnl();
-      edtDoc.changeLanguage(initLanguage());
+      Languages lang = initLanguage();
+      edtDoc.changeLanguage(lang);
+      languageMenu.selectLanguageItm(lang, true);
    }
 
    @Override
@@ -117,7 +120,7 @@ public class ExchangeEditor implements AddableEditTool {
    @Override
    public void end() {
       format.setProperties();
-      prefs.setProperty("ExchgLanguage", exch.language());
+      prefs.setProperty("ExchgLanguage", exch.language().toString());
       exch.save();
    }
 
@@ -155,7 +158,6 @@ public class ExchangeEditor implements AddableEditTool {
 
    private JMenu adoptMenu() {
       JMenu menu  = new JMenu("Adopt");
-      menu.add(languageItm);
       menu.add(indentLenItm);
       return menu;
    }
@@ -170,6 +172,8 @@ public class ExchangeEditor implements AddableEditTool {
       menu.add(indentItm);
       menu.add(outdentItm);
       menu.add(clearItm);
+      menu.addSeparator();
+      menu.add(languageMenu.menu());
       return menu;
    }
 
@@ -184,7 +188,7 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    private void setActions() {
-      loadItm.addActionListener(e -> exch.loadFile());
+      loadItm.addActionListener(e -> loadFile());
 
       copyFromItm.setAction(new FunctionalAction("Copy selection from main editor",
            null, e -> exch.copyTextFromSource()));
@@ -195,11 +199,6 @@ public class ExchangeEditor implements AddableEditTool {
            null, e -> exch.copyTextToSource()));
       setKeyBinding(copyToItm, KeyStroke.getKeyStroke(
             KeyEvent.VK_T, ActionEvent.CTRL_MASK), "T_pressed");
-
-      languageItm.setAction(new FunctionalAction("Language", null,
-            e -> exch.adoptLanguage()));
-      setKeyBinding(languageItm, KeyStroke.getKeyStroke(
-            KeyEvent.VK_G, ActionEvent.CTRL_MASK), "G_pressed");
 
       indentLenItm.addActionListener(e -> exch.adoptIndentUnit());
 
@@ -239,7 +238,7 @@ public class ExchangeEditor implements AddableEditTool {
             KeyEvent.VK_L, ActionEvent.CTRL_MASK), "L_pressed");
 
       clearItm.addActionListener(e -> exch.clear());
-
+      languageMenu.setChangeLanguageActions((l) -> exch.changeLanguage(l));
       formatMenu.setFontAction(e -> format.openSetFontDialog());
       formatMenu.setChangeWordWrapAct(
             e -> format.enableWordWrap(formatMenu.isWordWrapItmSelected()));
@@ -251,7 +250,12 @@ public class ExchangeEditor implements AddableEditTool {
       content.getInputMap(isInput).put(ks, key);
       content.getActionMap().put(key, itm.getAction());
    }
-   
+
+   private void loadFile() {
+      exch.loadFile();
+      languageMenu.selectLanguageItm(exch.language(), true);
+   }
+
    private Languages initLanguage() {
       Languages lang;
       try {

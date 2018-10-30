@@ -6,13 +6,10 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.KeyStroke;
 
 //--Eadgyth--/
 import eg.Edit;
-import eg.TabbedDocuments;
-import eg.Languages;
 import eg.ui.IconFiles;
 import eg.edittools.EditTools;
 
@@ -39,12 +36,12 @@ public class EditMenu {
 
    private final JMenuItem changeIndentItm = new JMenuItem("Set indent length");
    private final JMenuItem clearSpacesItm = new JMenuItem("Clear trailing spaces");
-   private final JMenu languageMenu = new JMenu("Language");
-   private final JCheckBoxMenuItem[] selectLangChBxItm
-         = new JCheckBoxMenuItem[Languages.values().length];
 
-   public EditMenu() {
-      assembleMenu();
+   /**
+    * @param languageMenu  the reference to <code>LangageMenu</code>
+    */
+   public EditMenu(LanguageMenu languageMenu) {
+      assembleMenu(languageMenu);
       shortCuts();
    }
 
@@ -53,7 +50,7 @@ public class EditMenu {
     *
     * @return  the menu
     */
-   public JMenu getMenu() {
+   public JMenu menu() {
       return menu;
    }
 
@@ -89,18 +86,6 @@ public class EditMenu {
    }
 
    /**
-    * Sets the listeners to the elements in the array of items for
-    * actions to select the language
-    *
-    * @param td  the reference to {@link TabbedDocuments}
-    */
-   public void setChangeLanguageActions(TabbedDocuments td) {
-      for (JCheckBoxMenuItem item : selectLangChBxItm) {
-         item.addActionListener(e -> setLanguage(e, td));
-      }
-   }
-
-   /**
     * Enables or disables the items for und/redo actions. The
     * specified booleans each are true to enable, false to disable
     *
@@ -122,46 +107,11 @@ public class EditMenu {
       copyItm.setEnabled(b);
    }
 
-   /**
-    * Selects and disables the item for the specified language
-    *
-    * @param lang  the language that has one of the constant values in
-    * {@link Languages}
-    * @param b   true to enable, false to disable the items for the
-    * other languages
-    */
-   public void selectLanguageItm(Languages lang, boolean b) {
-      for (int i = 0; i < selectLangChBxItm.length; i++) {
-         if (lang == Languages.values()[i]) {
-            selectLangChBxItm[i].setEnabled(false);
-            selectLangChBxItm[i].setSelected(true);
-         }
-         else {
-            selectLangChBxItm[i].setEnabled(b);
-            selectLangChBxItm[i].setSelected(false);
-         }
-      }
-   }
-
    //
    //--private--/
    //
 
-   private void setLanguage(ActionEvent e, TabbedDocuments td) {
-      for (int i = 0; i < selectLangChBxItm.length; i++) {
-         if (e.getSource() == selectLangChBxItm[i]) {
-            Languages lang = Languages.values()[i];
-            td.changeLanguage(lang);
-            selectLangChBxItm[i].setEnabled(false);
-         }
-         else {
-            selectLangChBxItm[i].setSelected(false);
-            selectLangChBxItm[i].setEnabled(true);
-         }
-      }
-   }
-
-   private void assembleMenu() {
+   private void assembleMenu(LanguageMenu lm) {
       menu.add(undoItm);
       menu.add(redoItm);
       menu.addSeparator();
@@ -180,13 +130,7 @@ public class EditMenu {
       menu.add(changeIndentItm);
       menu.add(clearSpacesItm);
       menu.addSeparator();
-      for (int i = 0; i < selectLangChBxItm.length; i++) {
-         selectLangChBxItm[i] = new JCheckBoxMenuItem(
-               Languages.values()[i].display());
-
-         languageMenu.add(selectLangChBxItm[i]);
-      }
-      menu.add(languageMenu);
+      menu.add(lm.menu());
       menu.setMnemonic(KeyEvent.VK_E);
    }
 
