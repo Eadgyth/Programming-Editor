@@ -3,10 +3,7 @@ package eg;
 import eg.utils.FileUtils;
 
 /**
- * The selection of the language based on a filename.
- * <p>
- * This method {@link #selectLanguage(String)} has to be modified
- * if a another Language is being added in {@link Languages}
+ * The selection of the language based on the file extension
  */
 public class LanguageSelector {
    
@@ -14,7 +11,7 @@ public class LanguageSelector {
     * Returns a language based on the extension of the specified file
     *
     * @param file  the file
-    * @return  a language from {@link Languages}
+    * @return  the language
     */ 
    public static Languages selectLanguage(String file) {
       String ext = FileUtils.fileExtension(file);
