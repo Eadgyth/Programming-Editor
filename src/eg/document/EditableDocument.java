@@ -33,10 +33,8 @@ public final class EditableDocument {
    private Languages lang;
 
    /**
-    * Creates an <code>EditableDocument</code> with the specified file.
-    * <p>
-    * The file defines the language which remains unchangeable unless
-    * another file that would define another language is set.
+    * Creates an <code>EditableDocument</code> that displays the content
+    * of the specified file
     *
     * @param editArea  a new {@link EditArea}
     * @param f  the file
@@ -50,12 +48,10 @@ public final class EditableDocument {
 
    /**
     * Creates a blank <code>EditableDocument</code> with the specified
-    * language.
-    * <p>
-    * A file may be set afterwards which then may change the language.
+    * language
     *
     * @param editArea  a new {@link EditArea}
-    * @param lang  a language in {@link Languages}
+    * @param lang  the language
     */
    public EditableDocument(EditArea editArea, Languages lang) {
       this(editArea);
@@ -65,8 +61,6 @@ public final class EditableDocument {
 
    /**
     * Creates a blank <code>EditableDocument</code>
-    * <p>
-    * A file and/or a language may be set afterwards
     *
     * @param editArea  a new {@link EditArea}
     */
@@ -198,8 +192,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Diplays the content of the specified file but does not set
-    * the file
+    * Diplays the content of the specified file but does not set the file
     *
     * @param f  the file
     */
@@ -252,7 +245,7 @@ public final class EditableDocument {
    /**
     * Gets this language
     *
-    * @return  this language which is a constant in {@link Languages}
+    * @return  the language
     */
    public Languages language() {
       if (lang == null) {
@@ -273,7 +266,7 @@ public final class EditableDocument {
    /**
     * Changes the language or throws an exception if a file is set
     *
-    * @param lang  the language which is a constant in {@link eg.Languages}
+    * @param lang  the language to change to
     */
    public void changeLanguage(Languages lang) {
       if (null != docFile) {
