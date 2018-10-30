@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //--Eadgyth--/
-import eg.FileOpenable;
+import eg.FileOpener;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 
@@ -31,7 +31,7 @@ public class FileTree {
    private final TreePanel treePnl;
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
    private final PopupMenu popupDir  = new PopupMenu(PopupMenu.FOLDER_OPT);
-   private final FileOpenable openable;
+   private final FileOpener opener;
 
    private JTree tree = null;
    private DefaultTreeModel model;
@@ -46,11 +46,11 @@ public class FileTree {
 
    /**
     * @param treePanel  the reference to {@link TreePanel}
-    * @param o  the reference to {@link FileOpenable}
+    * @param o  the reference to {@link FileOpener}
     */
-   public FileTree(TreePanel treePanel, FileOpenable o) {
+   public FileTree(TreePanel treePanel, FileOpener o) {
       treePnl = treePanel;
-      openable = o;
+      opener = o;
       setActions();   
    }
 
@@ -176,7 +176,7 @@ public class FileTree {
    }
    
    private void openFile() {
-      openable.openFile(selectedFile);
+      opener.open(selectedFile);
    }
 
    private void deleteFile() {

@@ -5,13 +5,12 @@ import java.io.File;
 /**
  * The interface to open a file
  */
-public interface FileOpenable {
-   
+public interface FileOpener {
+
    /**
     * Opens a file
     *
     * @param f  the file
     */
-   public void openFile(File f);   
+   public void open(File f);
 }
-   

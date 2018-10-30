@@ -67,7 +67,7 @@ public class TabbedDocuments {
       edit = new Edit(indentUnit);
       mw.setEditActions(edit);
 
-      FileOpenable opener = (f) -> open(f);
+      FileOpener opener = (f) -> open(f);
       FileTree ft = new FileTree(mw.treePanel(), opener);
       proj = new Projects(mw, ft, edtDoc);
       mw.setProjectActions(proj);
@@ -85,7 +85,7 @@ public class TabbedDocuments {
     * Changes this language and sets the language in the selected
     * document
     *
-    * @param lang  a language in {@link Languages}
+    * @param lang  the language
     */
    public void changeLanguage(Languages lang) {
       this.lang = lang;
