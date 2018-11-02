@@ -1,6 +1,7 @@
 package eg.edittools;
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.EventQueue;
 
 import javax.swing.RootPaneContainer;
@@ -119,6 +120,18 @@ public class TextExchange {
    public void changeLanguage(Languages lang) {
       exchangeDoc.changeLanguage(lang);
    }
+   
+   /**
+    * Sets in this exchange document the language of the source
+    * document
+    *
+    * @return  the adopted language
+    */
+   public Languages adoptedLanguage() {
+      Languages lang = sourceDoc.language();
+      exchangeDoc.changeLanguage(lang);
+      return lang;
+   }
 
    /**
     * Returns the language currently set in the exchange editor
@@ -162,13 +175,13 @@ public class TextExchange {
 
       try {
          glassPane.setVisible(true);
-         glassPane.setCursor(eg.ui.MainWin.BUSY_CURSOR);
+         glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
          exchangeDoc.displayFileContent(f);
       }
       finally {
          EventQueue.invokeLater(() -> {
             glassPane.setVisible(false);
-            glassPane.setCursor(eg.ui.MainWin.DEF_CURSOR);
+            glassPane.setCursor(Cursor.getDefaultCursor());
          });
       }
    }
