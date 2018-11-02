@@ -207,16 +207,13 @@ public class Projects {
          fileNotFoundMsg(edtDoc[iDoc].filename());
       }
       else {
-         try {
-            mw.setBusyCursor();
+         BusyFunction bf = () -> {
             edtDoc[iDoc].saveFile();
             current.compile();
-         }
-         finally {
-            updateFileTree();
-            EventQueue.invokeLater(() ->  mw.setDefaultCursor());
-         }
-      }
+         };
+         mw.runBusyFunction(bf);
+         updateFileTree();
+       }
    }
 
    /**
@@ -239,14 +236,9 @@ public class Projects {
          filesNotFoundMsg(missingFiles.toString());
       }
       else {
-         try {
-            mw.setBusyCursor();
-            current.compile();
-         }
-         finally {
-            updateFileTree();
-            EventQueue.invokeLater(() -> mw.setDefaultCursor());
-         }
+         BusyFunction bf = () -> current.compile();
+         mw.runBusyFunction(bf);
+         updateFileTree();
       }
    }
 
@@ -266,14 +258,8 @@ public class Projects {
     * Creates a build of the currently active project
     */
    public void build() {
-      try {
-         mw.setBusyCursor();
-         current.build();
-      }
-      finally {
-         updateFileTree();
-         EventQueue.invokeLater(() ->  mw.setDefaultCursor());
-      }
+      BusyFunction bf = () -> current.build();
+      mw.runBusyFunction(bf);
    }
 
    //

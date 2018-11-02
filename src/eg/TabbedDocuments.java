@@ -274,7 +274,7 @@ public class TabbedDocuments {
          removeTab();
       }
       if (isTabOpenable()) {
-         createDocument(f);
+         mw.runBusyFunction(() -> createDocument(f));
       }
    }
 
@@ -324,19 +324,13 @@ public class TabbedDocuments {
    }
 
    private void createDocument(File f) {
-      try {
-         mw.setBusyCursor();
-         int n = nTabs();
-         format.createEditAreaAt(n);
-         edtDoc[n] = new EditableDocument(editArea[n], f);
-         setupDocument(n);
-         addTab(edtDoc[n].filename(), editArea[n].content());
-         changedFileUpdate();
-         proj.retrieve();
-     }
-     finally {
-        mw.setDefaultCursor();
-     }
+      int n = nTabs();
+      format.createEditAreaAt(n);
+      edtDoc[n] = new EditableDocument(editArea[n], f);
+      setupDocument(n);
+      addTab(edtDoc[n].filename(), editArea[n].content());
+      changedFileUpdate();
+      proj.retrieve();
    }
 
    private void setupDocument(int index) {
