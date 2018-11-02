@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
@@ -25,8 +26,9 @@ public class EditMenu {
    private final JMenuItem copyItm = new JMenuItem("Copy", IconFiles.COPY_ICON);
    private final JMenuItem pasteItm = new JMenuItem("Paste", IconFiles.PASTE_ICON);
    private final JMenuItem selectAllItm = new JMenuItem("Select all");
-   private final JMenuItem[] editToolsItm
-         = new JMenuItem[EditTools.values().length];
+
+   private final JCheckBoxMenuItem[] editToolsItm
+         = new JCheckBoxMenuItem[EditTools.values().length];
 
    private final JMenuItem indentItm
          = new JMenuItem("Increase indentation", IconFiles.INDENT_ICON);
@@ -81,8 +83,44 @@ public class EditMenu {
     * @param al  the <code>ActionListener</code>
     * @param i  the index of the array element
     */
-   public void setEditToolsActions(ActionListener al, int i) {
+   public void setEditToolsActionsAt(ActionListener al, int i) {
       editToolsItm[i].addActionListener(al);
+   }
+
+   /**
+    * Unselects the check box of an element in the array of items for
+    * actions to open an <code>AddableEditTool</code>
+    *
+    * @param i  the index of the array element
+    */ 
+   public void unselectEditToolItmAt(int i) {
+      editToolsItm[i].setSelected(false);
+   }
+
+   /**
+    * Unselects the check boxes of the elements in the array of items for
+    * actions to open an <code>AddableEditTool</code> except for the
+    * element at the specified index
+    *
+    * @param i  the index
+    */
+   public void unselectEditToolItmExcept(int i) {
+      for (int y = 0; y < editToolsItm.length; y++) {
+         if (y != i) {
+            editToolsItm[y].setSelected(false);
+         }
+      }
+   }
+   
+   /**
+    * Returns if the check box in an element in the array if items for
+    * actions to open an <code>AddableEditTool</code> is selected
+    *
+    * @param i  the index of the array element
+    * @return  true if selected, false otherwise
+    */
+   public boolean isEditToolItmSelected(int i) {
+      return editToolsItm[i].isSelected();
    }
 
    /**
@@ -121,7 +159,7 @@ public class EditMenu {
       menu.add(selectAllItm);
       menu.addSeparator();
       for (int i = 0; i < editToolsItm.length; i++) {
-         editToolsItm[i] = new JMenuItem(EditTools.values()[i].display());
+         editToolsItm[i] = new JCheckBoxMenuItem(EditTools.values()[i].display());
          menu.add(editToolsItm[i]);
       }
       menu.addSeparator();

@@ -11,14 +11,14 @@ import eg.Constants;
 /**
  * Defines the panel to which a variable <code>Component</code> can
  * be added. The component is added in the center of a JPanel with
- * a BorderLayout. The JPanel has a {@link Constants#GRAY_BORDER}. 
+ * a BorderLayout. The JPanel has a {@link Constants#GRAY_LINE_BORDER}.
  */
 public class EditToolPanel {
 
    private final JPanel content = new JPanel(new BorderLayout());
 
    public EditToolPanel() {
-      content.setBorder(Constants.GRAY_BORDER);
+      content.setBorder(Constants.GRAY_LINE_BORDER);
    }
 
    /**
@@ -34,26 +34,21 @@ public class EditToolPanel {
     * Adds a component. A previously added component is replaced
     *
     * @param c  the Component
-    * @return  true if the component was added, false if the same
-    * component has already been added
     */
-   public boolean addComponent(Component c) {
+   public void addComponent(Component c) {
       if (c == null) {
          throw new IllegalArgumentException("c is null");
       }
       BorderLayout layout = (BorderLayout) content.getLayout();
       Component cPrev = layout.getLayoutComponent(BorderLayout.CENTER);
-      if  (cPrev != c) {
-         if (cPrev != null) {
-            content.remove(cPrev);
-         }
-         content.add(c, BorderLayout.CENTER);
-         content.revalidate();
-         content.repaint();
-         return true;
+      if (cPrev == c) {
+         throw new IllegalArgumentException("c is already added");
       }
-      else {
-         return false;
+      if (cPrev != null) {
+         content.remove(cPrev);
       }
+      content.add(c, BorderLayout.CENTER);
+      content.revalidate();
+      content.repaint();
    }
 }
