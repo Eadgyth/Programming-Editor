@@ -24,7 +24,7 @@ public class Constants {
    // Sizes
 
    /**
-    * The height for bars (scaled) */
+    * The scaled height for bars */
    public final static int BAR_HEIGHT = scaledSize(17);
 
    //
@@ -42,8 +42,8 @@ public class Constants {
    // Borders
 
    /**
-    * The line border with dark gray color */
-   public final static Border GRAY_BORDER = new LineBorder(Constants.GRAY, 1);
+    * The line border with gray color */
+   public final static Border GRAY_LINE_BORDER = new LineBorder(Constants.GRAY, 1);
 
    /**
     * The empty border with thickness of 5 pt */
@@ -58,20 +58,16 @@ public class Constants {
    public final static Border EMPTY_BORDER_10 = new EmptyBorder(10, 10, 10, 10);
 
    /**
-    * The <code>MatteBorder</code> with inset of 1 pt in light gray at the top */
-   public final static Border MATTE_TOP = new MatteBorder(1, 0, 0, 0,
+    * The <code>MatteBorder</code> with inset of 1 pt in light gray at
+    * the top
+    */
+   public final static Border MATTE_TOP_LIGHT_GRAY = new MatteBorder(1, 0, 0, 0,
          Constants.LIGHT_GRAY);
 
    /**
     * The <code>MatteBorder</code> with inset of 1 pt in gray at the top */
    public final static Border MATTE_TOP_GREY = new MatteBorder(1, 0, 0, 0,
          Constants.GRAY);
-
-   /**
-    * The <code>MatteBorder</code> with inset of 1 pt in light gray at the top
-    * and bottom */
-   public final static Border MATTE_TOP_BOTTOM = new MatteBorder(1, 0, 1, 0,
-         Constants.LIGHT_GRAY);
 
    //
    // Fonts
