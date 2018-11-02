@@ -5,6 +5,7 @@ import java.io.File;
 /**
  * The interface to open a file
  */
+@FunctionalInterface
 public interface FileOpener {
 
    /**

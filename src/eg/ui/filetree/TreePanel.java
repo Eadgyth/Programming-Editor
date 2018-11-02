@@ -119,12 +119,12 @@ public class TreePanel {
    //
 
    private void init() {
-      scroll.setBorder(Constants.MATTE_TOP);
+      scroll.setBorder(Constants.MATTE_TOP_LIGHT_GRAY);
       scroll.setViewportView(holdTree);
       scroll.getVerticalScrollBar().setUnitIncrement(10);
       content.add(toolbar(), BorderLayout.NORTH);
       content.add(scroll, BorderLayout.CENTER);
-      content.setBorder(Constants.GRAY_BORDER);
+      content.setBorder(Constants.GRAY_LINE_BORDER);
       renewBt.setEnabled(false);
       enableFolderUpAct(false);
    }

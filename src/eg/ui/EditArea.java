@@ -273,7 +273,7 @@ public final class EditArea {
    }
 
    private void initEditAreaPnl() {
-      content.setBorder(Constants.GRAY_BORDER);
+      content.setBorder(Constants.GRAY_LINE_BORDER);
    }
 
    private void initTextArea() {

@@ -44,14 +44,14 @@ public class ConsolePanel {
 
    public ConsolePanel() {
       scroll.setViewportView(area);
-      scroll.setBorder(Constants.MATTE_TOP);
+      scroll.setBorder(Constants.MATTE_TOP_LIGHT_GRAY);
       area.setBorder(Constants.EMPTY_BORDER_5);
       area.setFont(Constants.SANSSERIF_PLAIN_8);
       area.setForeground(areaFontColor);
       area.setEditable(false);
       area.setFocusable(false);
       toolbar = createToolbar();
-      content.setBorder(Constants.GRAY_BORDER);
+      content.setBorder(Constants.GRAY_LINE_BORDER);
       content.add(toolbar, BorderLayout.NORTH);
       content.add(scroll, BorderLayout.CENTER);
       setCmdBt.setEnabled(false);
