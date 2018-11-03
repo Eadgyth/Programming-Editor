@@ -15,13 +15,12 @@ Running (and compiling) the program requires Java 8 or higher.
 <p>
 If the program shall be used for compiling Java code by the built-in compile option it must be
 made sure that the program is run using the JRE contained in the JDK (and not the public JRE).
-The author (me) has no idea if this applies to Windows 10 only, though.
 <p>
 An executable jar of the program together with a Prefs file is found in the folder
 "JarAndPreferences". The jar was created after compiling with Java JDK 8.
 <p>
 LIMITATIONS<br>
-Among the countless limitations at the present stage some need mention:
+Among the countless limitations some need mention:
 <ul>
 <li>Running an interactive program that asks for input through a command-line is not guaranteed
     to work in the console area of the program. Interactive programs in Java seem to work fine
@@ -32,7 +31,7 @@ Among the countless limitations at the present stage some need mention:
 <li>The printing to a printer is rudimentary and is rather the blueprint for a printing function.
     The font size relative to the page size is not controlled.</li>
 <li>I tested the program on Windows. There are some problems with the graphical apprearance
-    when a high dpi screen is used. I would be grateful for any feedback, especially from somebody
+    when a high dpi screen is used. I would be grateful for feedback, especially from somebody
     who may have tried it on other platforms (m.bussiek@web.de).</li>
 </ul>
 <p>
