@@ -60,8 +60,8 @@ public class EditMenu {
     * Sets listeners for actions to edit text
     *
     * @param edit  the reference to {@link Edit}
-    * @param clearSpaces  the listener for actions to clear trailing
-    * spaces
+    * @param clearSpaces  the special listener for actions to clear
+    * trailing spaces
     */
    public void setEditActions(Edit edit, ActionListener clearSpaces) {
       undoItm.addActionListener(e -> edit.undo());
@@ -113,7 +113,7 @@ public class EditMenu {
    }
    
    /**
-    * Returns if the check box in an element in the array if items for
+    * Returns if the check box in an element in the array of items for
     * actions to open an <code>AddableEditTool</code> is selected
     *
     * @param i  the index of the array element
