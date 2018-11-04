@@ -86,6 +86,7 @@ public class Projects {
       }
       update.enableOpenSettingsWin(isProject);
       update.enableChangeProject(isProject && inList != current);
+      update.enableAssignProject(edtDoc[iDoc].hasFile());
       if (isProject) {
          if (!current.isInProject(edtDoc[iDoc].dir())) {
             update.enableProjectActions(false, false, false);
@@ -267,10 +268,6 @@ public class Projects {
    //
 
    private void assignImpl(ProjectTypes projType) {
-      if (!edtDoc[iDoc].hasFile()) {
-         Dialogs.infoMessage(NO_FILE_MSG, null);
-         return;
-      }
       ProjectActions toAssign = projSelect.createProject(projType);
       if (toAssign != null) {
          ProjectActions projFin = toAssign;
@@ -361,33 +358,32 @@ public class Projects {
    }
 
    private int replaceProjectRes(String filename, String projName,
-         String previousProjDispl, String newProjDispl) {
+         String previousProj, String newProj) {
 
       return Dialogs.warnConfirmYesNo(
             filename
             + " belongs to the "
-            + previousProjDispl
-            + " project \""
+            + previousProj
+            + " project "
             + projName
-            + "\".\n"
+            + ".\n\n"
             + "Remove "
             + projName
-            + " and assign a new project"
-            + " of the category \""
-            + newProjDispl
-            + "\"?");
+            + " and assign a new project in the category \'"
+            + newProj
+            + "\'?");
    }
 
    private void projectAssignedMsg(String filename, String projName,
-         String currProjDispl) {
+         String currProj) {
 
       Dialogs.infoMessage(
             edtDoc[iDoc].filename()
             + " already belongs to the project "
             + projName
-            + " in the category \""
-            + currProjDispl
-            + "\".",
+            + " in the category \'"
+            + currProj
+            + "\'.",
             null);
    }
 
@@ -408,9 +404,4 @@ public class Projects {
               + filenames,
               "Missing files");
    }
-
-   private final String NO_FILE_MSG
-         = "To assign a project open a file or save a new file that is part"
-         + " of the project.\n"
-         + "If files are viewed in tabs this file also must be selected.";
 }
