@@ -102,6 +102,15 @@ public class ProjectMenu {
       runItm.setEnabled(isRun);
       buildItm.setEnabled(isBuild);
    }
+   
+   /**
+    * Enables or disables the sub-menu for actions to assign a project
+    *
+    * @param b  true to enable, false  to disable
+    */
+   public void enableAssignProjMenu(boolean b) {
+      assignProjMenu.setEnabled(b);
+   }
 
    /**
     * Sets the label for the item for building actions
