@@ -164,15 +164,13 @@ public class MainWin {
    }
 
    /**
-    * Displays the language in the status bar and selects the menu item
-    * for the specified language
+    * Selects the menu item for the specified language and displays the
+    * language in the status bar
     *
     * @param lang  the language
-    * @param b  true to enable, false to disable the menu items for the
-    * other languages
     */
-   public void displayLanguage(Languages lang, boolean b) {
-      menuBar.languageMenu().selectLanguageItm(lang, b);
+   public void setLanguageSelected(Languages lang) {
+      menuBar.languageMenu().selectLanguageItm(lang);
       displayLanguage(lang);
    }
 
@@ -264,8 +262,8 @@ public class MainWin {
    public void setFileActions(TabbedDocuments td) {
       menuBar.fileMenu().setActions(td);
       menuBar.fileMenu().setExitActions(e -> exit(td));
+      
       menuBar.languageMenu().setChangeLanguageActions((l) -> td.changeLanguage(l));
-
       toolBar.setFileActions(td);
       frame.addWindowListener(new WindowAdapter() {
 
@@ -440,6 +438,11 @@ public class MainWin {
 
          menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun, isBuild);
          toolBar.enableProjectActionsBts(isCompile, isRun);
+      }
+      
+      @Override
+      public void enableAssignProject(boolean b) {
+         menuBar.projectMenu().enableAssignProjMenu(b);
       }
 
       @Override

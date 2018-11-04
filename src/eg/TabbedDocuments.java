@@ -477,12 +477,12 @@ public class TabbedDocuments {
       });
       mw.displayFrameTitle(edtDoc[iTab].filepath());
       mw.enableHideTabbar(nTabs() == 1);
-      mw.displayLanguage(edtDoc[iTab].language(), !edtDoc[iTab].hasFile());
+      mw.setLanguageSelected(edtDoc[iTab].language());
    }
 
    private void changedFileUpdate() {
       proj.updateUIForDocument();
-      mw.displayLanguage(edtDoc[iTab].language(), false);
+      mw.setLanguageSelected(edtDoc[iTab].language());
       mw.displayFrameTitle(edtDoc[iTab].filepath());
    }
 

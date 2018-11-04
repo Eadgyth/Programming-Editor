@@ -47,18 +47,16 @@ public class LanguageMenu {
     * Selects and disables the item for the specified language
     *
     * @param lang  the language
-    * @param b   true to enable, false to disable the items for the
-    * other languages
     */
-   public void selectLanguageItm(Languages lang, boolean b) {
+   public void selectLanguageItm(Languages lang) {
       for (int i = 0; i < itm.length; i++) {
          if (lang == Languages.values()[i]) {
-            itm[i].setEnabled(false);
             itm[i].setSelected(true);
+            itm[i].setEnabled(false);
          }
          else {
-            itm[i].setEnabled(b);
             itm[i].setSelected(false);
+            itm[i].setEnabled(true);
          }
       }
    }

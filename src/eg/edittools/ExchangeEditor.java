@@ -76,7 +76,7 @@ public class ExchangeEditor implements AddableEditTool {
       initContentPnl();
       Languages lang = initLanguage();
       edtDoc.changeLanguage(lang);
-      languageMenu.selectLanguageItm(lang, true);
+      languageMenu.selectLanguageItm(lang);
    }
 
    @Override
@@ -264,12 +264,12 @@ public class ExchangeEditor implements AddableEditTool {
 
    private void loadFile() {
       exch.loadFile();
-      languageMenu.selectLanguageItm(exch.language(), true);
+      languageMenu.selectLanguageItm(exch.language());
    }
 
    private void adoptLanguage() {
       Languages lang = exch.adoptedLanguage();
-      languageMenu.selectLanguageItm(exch.language(), true);
+      languageMenu.selectLanguageItm(exch.language());
    }
 
    private Languages initLanguage() {
