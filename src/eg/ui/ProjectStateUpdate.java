@@ -16,6 +16,8 @@ public interface ProjectStateUpdate {
     */
    public void enableProjectActions(boolean isCompile, boolean isRun,
          boolean isBuild);
+         
+   public void enableAssignProject(boolean b);
 
   /**
     * Sets a label text in the menu item for build actions
