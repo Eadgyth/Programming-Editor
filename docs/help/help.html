@@ -93,23 +93,19 @@
       <h4 id="Config">Assign files as project</h4>
       <ol>
       <li>Open a file from or save a new file to the directory that is the presumed root
-          directory of the project. The file may also be saved in a sub-directory path
+          directory of the project. The file may also be found in a sub-directory path
           contained in that root.</li>
       <li>Open the project settings window by selecting 'Assign as project' in the
-          Project menu and choosing a project category. A file that belongs to the
-          project must be open and also must be in the selected tab if multiple files
-          are open. The input options shown in the project settings depend on the project
-          category.</li>
+          Project menu and choosing a project category. The input options shown in the
+          project settings depend on the project category.</li>
       <li>Enter the name of the presumed root directory of the project in the text field
           'Name of project root'. The name of the main source file is additionally
           required for Java, Perl and R. Also, specifying the name of a sub-directory
           where source files (or packages) are found may be required in the input field
-          'Name of sources directory' and then the main file has to exist in this
-          directory or a sub-directory of it. In a Java project, also the destination
-          directory for compiled class files can be specified in the input field 'Name of
+          'Name of sources directory'. In a Java project, also the destination directory
+          for compiled class files can be specified in the input field 'Name of
           executables directory' although this directory does not have to exist
-          initially. It is created when the project is compiled by using the pre-defined
-          compile option.</li>
+          initially.</li>
       <li>Click ok. If entries are correct the project can be viewed in the Project
           explorer which is found in the 'View' menu.</li>
       </ol>
@@ -136,7 +132,8 @@
       <li>If 'Save ProjConfig file in the project' is selected in the project settings
           the parameters for the project are stored in the project folder. This
           properties file can be deleted at any time by unselecting the option to save
-          it.<br>
+          it.
+          <br>
           A project is marked as such by the presence the ProjConfig file. This means
           that a project is loaded even if it was not active lastly or other projects
           are already active. Loading the project again takes place if a file of the
@@ -170,12 +167,11 @@
           project settings.</li>
       <li>For running the project also arguments (those that would be passed to the
           main method) may be entered in the input field 'Command arguments' which is
-          found in the in the tab 'Run' in the project settings.</li>
+          found in the tab 'Run' in the project settings.</li>
       <li>An executable java archive (jar) may be created by selecting 'Create jar' in
-          the project menu. A
-          name for the jar file can be specified in the tab 'Compilation and build' in
-          the project settings. If no name is specified the name of the main class is
-          used.</li>
+          the project menu. A name for the jar file can be specified in the tab
+          'Compilation and build' in the project settings. If no name is specified the
+          name of the main class is used.</li>
       <li>Files other than .java files and .class files can be included in compilation
           and a jar, resepctively. The extensions of included files are specified in the
           input field 'Extensions of included non-Java files' which is found in the tab
