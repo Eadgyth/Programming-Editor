@@ -249,7 +249,7 @@ public final class EditableDocument {
     */
    public Languages language() {
       if (lang == null) {
-         throw new IllegalStateException("A language is not set");
+         //throw new IllegalStateException("A language is not set");
       }
       return lang;
    }
@@ -264,15 +264,11 @@ public final class EditableDocument {
    }
 
    /**
-    * Changes the language or throws an exception if a file is set
+    * Changes the language
     *
     * @param lang  the language to change to
     */
    public void changeLanguage(Languages lang) {
-      if (null != docFile) {
-         throw new IllegalStateException(
-               "The language cannot be changed once a file is assigned.");
-      }
       this.lang = lang;
       EventQueue.invokeLater(() -> type.setEditingMode(lang));
    }
