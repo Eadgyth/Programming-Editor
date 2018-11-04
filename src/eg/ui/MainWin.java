@@ -262,7 +262,7 @@ public class MainWin {
    public void setFileActions(TabbedDocuments td) {
       menuBar.fileMenu().setActions(td);
       menuBar.fileMenu().setExitActions(e -> exit(td));
-      
+
       menuBar.languageMenu().setChangeLanguageActions((l) -> td.changeLanguage(l));
       toolBar.setFileActions(td);
       frame.addWindowListener(new WindowAdapter() {
@@ -439,15 +439,10 @@ public class MainWin {
          menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun, isBuild);
          toolBar.enableProjectActionsBts(isCompile, isRun);
       }
-      
+
       @Override
       public void enableAssignProject(boolean b) {
          menuBar.projectMenu().enableAssignProjMenu(b);
-      }
-
-      @Override
-      public void setBuildLabel(String label) {
-         menuBar.projectMenu().setBuildLabel(label);
       }
 
       @Override
@@ -459,6 +454,11 @@ public class MainWin {
       public void enableChangeProject(boolean b) {
          menuBar.projectMenu().enableChangeProjItm(b);
          toolBar.enableChangeProjBt(b);
+      }
+
+      @Override
+      public void setBuildLabel(String label) {
+         menuBar.projectMenu().setBuildLabel(label);
       }
 
       @Override

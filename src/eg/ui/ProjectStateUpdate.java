@@ -16,20 +16,18 @@ public interface ProjectStateUpdate {
     */
    public void enableProjectActions(boolean isCompile, boolean isRun,
          boolean isBuild);
-         
+
+   /**
+    * Enables or disables to assign a project
+    *
+    * @param b  true to enable, false to disable
+    */
    public void enableAssignProject(boolean b);
 
-  /**
-    * Sets a label text in the menu item for build actions
-    *
-    * @param label  the label
-    */
-   public void setBuildLabel(String label);
-   
    /**
     * Enables or disables to open the project settings
     * window
-    * 
+    *
     * @param b  true to enable, false to disable
     */
    public void enableOpenSettingsWin(boolean b);
@@ -40,6 +38,13 @@ public interface ProjectStateUpdate {
     * @param b  true to enable, false to disable
     */
    public void enableChangeProject(boolean b);
+
+   /**
+    * Sets a label text in the menu item for build actions
+    *
+    * @param label  the label
+    */
+   public void setBuildLabel(String label);
 
    /**
     * Displays the project name and type in the status bar
