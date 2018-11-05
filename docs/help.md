@@ -15,9 +15,9 @@
    Java Runtime environment (JRE) contained in the Java Development Kit (JDK).
 </p>
 
-<h4>Working with projects</h4>
+<h2>Working with projects</h2>
 
-<h2>Assign files as project</h2>
+<h4>Assign files as project</h4>
 <ol>
 <li>Open a file from or save a new file to the directory that is the presumed root
     directory of the project. The file may also be saved in a sub-directory path
@@ -42,7 +42,7 @@
 </ol>
 <br>
 
-<h2>Adding projects and changing between projects</h2>
+<h4>Adding projects and changing between projects</h4>
 <ul>
 <li>'Assign as project' in the project menu may be selected to assign an additional
     project. For this a file that is part of the new project must be currently
@@ -54,7 +54,7 @@
 </ul>
 <br>
 
-<h2>Retrieving projects</h2>
+<h4>Retrieving projects</h4>
 <ul>
 <li>The project that was active when the program was closed the last time is
     retrieved and set active when a file of the project is opened (or a new
@@ -71,7 +71,7 @@
     is already active, it is asked to change to the newly loaded project.</li>
 </ul>
 
-<h4>Testing source code</h4>
+<h2>Testing source code</h2>
 <p> A project is run for testing by selecting 'Run' in the Project menu or by
     clicking the run button in the toolbar. Commands other than the pre-defined
     commands may be entered in the console.
@@ -79,7 +79,7 @@
     tool bar of the console.
 </p>
 <br>
-<h2>Testing Java code and creating a jar file</h2>
+<h4>Testing Java code and creating a jar file</h4>
 <ol>
 <li>To run the project for testing compile the source file(s) by selecting 'Save
     all open project files and compile project' in the Project menu or by clicking
@@ -110,7 +110,7 @@
 </ol>
 <br>
 
-<h2>Testing a Perl script</h2>
+<h4>Testing a Perl script</h4>
 <ol>
 <li>Save changes to the Perl script before running it.</li>
 <li>NOTE: there is a limitation when the script asks for input through the
@@ -127,7 +127,7 @@
 </ol>
 <br>
 
-<h2>Testing an R script</h2>
+<h4>Testing an R script</h4>
 <ol>
 <li>Save changes to the R script before running it. Internally the 'Rscript'
     command is used.</li>
@@ -138,14 +138,14 @@
 </ol>
 <br>
 
-<h2>Viewing HTML code in a web browser</h2>
+<h4>Viewing HTML code in a web browser</h4>
 <ol>
 <li>Save changes to the html file. The 'run' option shows the HTML file in the
     default web browser. The HTML file to be viewed must be open and also selected
     if multiple files are open.</li>
 </ol>
 
-<h4>Using the console</h4>
+<h2>Using the console</h2>
 <p>The console shall show messages after compiling a project (applies to Java) and
    the (error) output of a program that is tested.</p>
 <p>In addition, self-chosen system commands entered in a dialog can be run in the
@@ -165,7 +165,7 @@
     console; to change a command open the command dialog again by clicking 'Cmd...'.
 </li>
 </ol>
-<h2>Hints</h2>
+<h4>Hints</h4>
 <ul>
 <li>Using the command to start "THE" terminal window (in Windows this would be
     cmd.exe /c start) presets the working directory for the terminal to the
@@ -175,7 +175,7 @@
 </li>
 </ul>
 
-<h4 id="Explorer">Using the project explorer</h4>
+<h2>Using the project explorer</h2>
 <ul>
 <li>The project explorer is opened by selecting 'Project explorer' in the View
     menu. It shows the file system of a project once one is assigned or, if given,
