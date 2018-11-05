@@ -1,3 +1,6 @@
+---
+layout: default
+---
 <h2 id="Requirements">Requirements</h2>
 <p>See also
    <a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
