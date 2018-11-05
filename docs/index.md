@@ -1,6 +1,6 @@
 <h2>Documentation</h2>
 <ul>
-<li>[a relative link] (docs/help.md)</li>
+<li><a href="help.md">Overview of the code (javadoc)</a></li>
 <li><a href="javadoc/index.html">Overview of the code (javadoc)</a></li>
 </ul>
 <br>
