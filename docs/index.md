@@ -1,6 +1,7 @@
 <h2>Documentation</h2>
 <ul>
-<li><a href="help.md">Help to use Eadgyth Programming Editor</a></li>
+<li><a href="https://github.com/Eadgyth/Programming-Editor/edit/master/docs/help.md">
+    Help to use Eadgyth Programming Editor</a></li>
 <li><a href="javadoc/index.html">Overview of the code (javadoc)</a></li>
 </ul>
 <br>
