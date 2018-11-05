@@ -1,9 +1,6 @@
----
-layout: default
----
 <h2>Documentation</h2>
 <ul>
-<li><a href="help.md">Help</li>
+<li><a href="docs/help.html">Help</li>
 <li><a href="javadoc/index.html">Overview of the code (javadoc)</a></li>
 </ul>
 <br>
