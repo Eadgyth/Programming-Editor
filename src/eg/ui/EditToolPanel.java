@@ -42,7 +42,7 @@ public class EditToolPanel {
       BorderLayout layout = (BorderLayout) content.getLayout();
       Component cPrev = layout.getLayoutComponent(BorderLayout.CENTER);
       if (cPrev == c) {
-         throw new IllegalArgumentException("c is already added");
+         return;
       }
       if (cPrev != null) {
          content.remove(cPrev);
