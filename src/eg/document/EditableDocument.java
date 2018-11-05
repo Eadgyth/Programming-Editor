@@ -249,7 +249,7 @@ public final class EditableDocument {
     */
    public Languages language() {
       if (lang == null) {
-         //throw new IllegalStateException("A language is not set");
+         throw new IllegalStateException("A language is not set");
       }
       return lang;
    }
