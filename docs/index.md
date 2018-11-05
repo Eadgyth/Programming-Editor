@@ -1,3 +1,6 @@
+---
+layout: default
+---
 <h2>Documentation</h2>
 <ul>
 <li>[help] (help.md)</li>
