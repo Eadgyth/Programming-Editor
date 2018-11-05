@@ -10,9 +10,9 @@
 <li>Working with several open files in tabs. The tabbar may be hidden to work
     with a single document.</li>
 <li>Enabling and disabling word-wrapping (word-wrapping not in combination with
-    line-numbering, however).</li>
+    showing line numbers, however).</li>
 <li>Undo/redo.</li>
-<li>A basic find/replace function.</li>
+<li>A basic find and find/replace function.</li>
 <li>Clearing end-of-line (trailing) white spaces.</li>
 <li>An "exchange editor" pane to edit text in a separate view and to facilitate
     the exchange of text within a file or between files.</li>
