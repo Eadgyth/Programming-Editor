@@ -2,7 +2,7 @@
 <ul>
 <li><a href="help/help.html">Help to use Eadgyth Progamming Editor</a></li>
 <li><a href="javadoc/index.html">Overview of the code (javadoc)</a></li>
-<li><a href="help.md">New help</a></li>
+<li><a href="https://eadgyth.github.io/Programming-Editor/help.md">New help</a></li>
 </ul>
 <br>
 <h2>Features</h2>
