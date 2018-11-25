@@ -160,7 +160,7 @@ public class ToolBar {
       };
       for (int i = 0; i < bts.length; i++) {
          toolBar.add(bts[i]);
-         bts[i].setBorder(new EmptyBorder(10, 8, 10, 8));
+         bts[i].setBorder(new EmptyBorder(8, 8, 8, 8));
          bts[i].setToolTipText(toolTips[i]);
          bts[i].setFocusable(false);
          bts[i].setFocusPainted(false);
