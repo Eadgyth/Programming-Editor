@@ -1,10 +1,12 @@
 package eg.syntax;
 
+import eg.document.Attributes;
+
 /**
  * Syntax highlighting for R
  */
 public class RHighlighter implements Highlighter {
-   
+
    final static String[] KEYWORDS = {
       "break",
       "else",
@@ -16,25 +18,18 @@ public class RHighlighter implements Highlighter {
       "TRUE",
       "while"
    };
-   
-   private SyntaxHighlighter.SyntaxSearcher s;
-   
+
    @Override
-   public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
-      s = searcher;
-   }
-      
-   @Override
-   public void highlight() {
+   public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
       s.setEntireText();
       s.resetAttributes();
-      s.keywords(KEYWORDS, true, null, Attributes.RED_PLAIN);
+      s.keywords(KEYWORDS, true, null, attr.redPlain);
       s.braces();
       s.brackets();
       s.quote();
       s.lineComments(SyntaxConstants.HASH);
    }
-   
+
    @Override
    public boolean isValid(String text, int pos, int length, int condition) {
       return true;

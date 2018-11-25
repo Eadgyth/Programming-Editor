@@ -1,12 +1,12 @@
 package eg.syntax;
 
+import eg.document.Attributes;
+
 /**
  * Syntax highlighting for CSS
  */
 public class CSSHighlighter implements Highlighter {
 
-   //
-   // Properties
    private final static String[] PROPS = {
       "all",
       "bottom", "box-shadow",
@@ -31,8 +31,6 @@ public class CSSHighlighter implements Highlighter {
       "white-space", "widows", "width", "word-spacing",
       "z-index"
    };
-   //
-   // Property extensions
    private final static String[] BACKGROUND_PROPS = {
       "-attachment", "-clip", "-color",
       "-image", "-origin", "-position",
@@ -68,8 +66,7 @@ public class CSSHighlighter implements Highlighter {
    private final static String[] TRANSITION_PROPS = {
       "-delay", "-duration", "-property", "-timing-function"
    };
-   //
-   // General
+
    private final static char[] CLASS_START = {'.', '#'};
    private final static char[] CLASS_END = {' ', '{', ')'};
    private final static char[] NON_PROP_START = {'-', '.'};
@@ -77,57 +74,50 @@ public class CSSHighlighter implements Highlighter {
    private final static int OPEN_BRACE_AHEAD_COND = 1;
    private final static int NO_OPEN_BRACE_AHEAD_COND = 2;
 
-   private SyntaxHighlighter.SyntaxSearcher s;
-
    @Override
-   public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
-      this.s = searcher;
-   }
-
-   @Override
-   public void highlight() {
+   public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
       if (!s.isInBlock(SyntaxConstants.SLASH_STAR,
-            SyntaxConstants.STAR_SLASH)) {
+            SyntaxConstants.STAR_SLASH, false)) {
 
          s.resetAttributes();
 
          s.setCondition(NO_OPEN_BRACE_AHEAD_COND);
          s.keywords(SyntaxConstants.HTML_TAGS, true, CLASS_START,
-               Attributes.BLUE_PLAIN);
+               attr.bluePlain);
 
-         s.signedVariables(CLASS_START, CLASS_END, null, Attributes.BLUE_PLAIN);
+         s.signedVariables(CLASS_START, CLASS_END, null, attr.bluePlain);
 
          s.setCondition(OPEN_BRACE_AHEAD_COND);
          s.extensibleKeyword("background", BACKGROUND_PROPS, NON_PROP_START,
-               Attributes.RED_PLAIN);
+               attr.redPlain);
 
          s.extensibleKeyword("border", BORDER_PROPS, NON_PROP_START,
-               Attributes.RED_PLAIN);
+               attr.redPlain);
 
          s.extensibleKeyword("font", FONT_PROPS, NON_PROP_START,
-               Attributes.RED_PLAIN);
+               attr.redPlain);
 
          s.extensibleKeyword("list", LIST_PROPS, NON_PROP_START,
-               Attributes.RED_PLAIN);
+               attr.redPlain);
 
          s.extensibleKeyword("margin", MARGIN_PROPS, NON_PROP_START,
-               Attributes.RED_PLAIN);
+               attr.redPlain);
 
          s.extensibleKeyword("outline", OUTLINE_PROPS, NON_PROP_START,
-               Attributes.RED_PLAIN);
+               attr.redPlain);
 
          s.extensibleKeyword("padding", PADDING_PROPS, NON_PROP_START,
-               Attributes.RED_PLAIN);
+               attr.redPlain);
 
          s.extensibleKeyword("transition", TRANSITION_PROPS, NON_PROP_START,
-               Attributes.RED_PLAIN);
+               attr.redPlain);
 
-         s.keywords(PROPS, true, NON_PROP_START, Attributes.RED_PLAIN);
+         s.keywords(PROPS, true, NON_PROP_START, attr.redPlain);
 
          s.setCondition(IGNORE_COND);
          s.braces();
       }
-      s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH);
+      s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH, false);
    }
 
    @Override

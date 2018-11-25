@@ -1,10 +1,12 @@
 package eg.syntax;
 
+import eg.document.Attributes;
+
 /**
  * Syntax highlighting for Perl
  */
 public class PerlHighlighter implements Highlighter {
-   
+
    private final static char[] START_OF_VAR = {
       '$', '@', '%'
    };
@@ -12,11 +14,11 @@ public class PerlHighlighter implements Highlighter {
    private final static char[] START_OF_ARR_HASH = {
       '@', '%'
    };
-   
+
    private final static char[] START_OF_SCALAR = {
       '$'
    };
-   
+
    private final char[] SECOND_POS_SCALAR = {
       '\\', '(', ')', ';', '[', ']', '}', '.', ':', ',', '?',
       '=', '/', '+', '-', '*', '|', '&', '!', '%', '^', '<', '>', '~'
@@ -34,57 +36,44 @@ public class PerlHighlighter implements Highlighter {
    private final static char[] CLOSE_QW_DEL = {
       ')', '}', '>', '/', '\'', '!', '@'
    };
-
-   final static String[] KEYWORDS = {
-      "cmp", "chomp", "continue", "CORE", "cos",
-      "do",
+   
+   private final static String[] SYNTAX_KEYWORDS = {
+      "and",
+      "cmp", "continue", "CORE", "do",
       "else", "elsif", "eq", "exp",
       "for", "foreach",
-      "int", "if",
-      "lock",
-      "my",
-      "no",
-      "package", "print",
-      "rand",
-      "sin", "sqrt", "sub", "substr",
-      "unless", "until",
-      "while"
-   };
-
-   private final static String[] OP = {
-      "and",
-      "cmp",
-      "eq",
       "ge", "gt",
-      "le", "lt",
-      "ne",
+      "if",
+      "le", "lock", "lt",
+      "m",
+      "ne", "no",
       "or",
-      "xor"
+      "package",
+      "q", "qq", "qr", "qw",
+      "s", "sub",
+      "tr",
+      "unless", "until",
+      "while",
+      "xor",
+      "y"
    };
+
    private final static int QW_COND = 0;
-   private final static int OP_COND = 1;
-   private final static int LINE_CMNT_COND = 2;
-
-   private SyntaxHighlighter.SyntaxSearcher s;
-   
-   @Override
-   public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
-      s = searcher;
-   }
+   private final static int LINE_CMNT_COND = 1;
 
    @Override
-   public void highlight() {
+   public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
       s.setCondition(QW_COND);
       s.setStatementSection();
       s.resetAttributes();
       s.signedVariables(START_OF_ARR_HASH, END_OF_VAR, null,
-            Attributes.PURPLE_PLAIN);
+            attr.purplePlain);
+
       s.signedVariable('$', END_OF_VAR, SECOND_POS_SCALAR,
-            Attributes.PURPLE_PLAIN);
-      s.keywords(KEYWORDS, true, null, Attributes.RED_PLAIN);
-      s.setCondition(OP_COND);
-      s.keywords(OP, false, null, Attributes.BLUE_PLAIN);
-      s.setCondition(QW_COND);
+            attr.bluePlain);
+
+      s.keywords(SYNTAX_KEYWORDS, true, START_OF_VAR, attr.redPlain);
+      s.brackets();
       s.braces();
       s.quote();
       s.setCondition(LINE_CMNT_COND);
@@ -97,15 +86,12 @@ public class PerlHighlighter implements Highlighter {
       if (condition == QW_COND) {
          ok = isNotQwFunction(text, pos);
       }
-      else if (condition == OP_COND) {
-         ok = isOperator(text, pos, length) && isNotQwFunction(text, pos);
-      }
       else if (condition == LINE_CMNT_COND) {
          ok = isLineCmnt(text, pos) && isNotQwFunction(text, pos);
       }
       return ok;
    }
-   
+
    //
    //--private--/
    //
@@ -131,7 +117,7 @@ public class PerlHighlighter implements Highlighter {
                int length = SyntaxUtils.sectionLength(text, delStart, close, null);
                ok = pos <= qwPos || pos > delStart + length;
             }
-         } 
+         }
       }
       return ok;
    }
@@ -145,29 +131,6 @@ public class PerlHighlighter implements Highlighter {
             if (!ok) {
                break;
             }
-         }
-      }
-      return ok;
-   }
-   
-   private boolean isOperator(String text, int pos, int length) {
-      boolean ok = true;
-      if (pos > 0) {
-         char c = text.charAt(pos - 1);
-         ok = !Character.isLetter(c);
-         if (ok) {
-            for (int i = 0; i < START_OF_VAR.length; i++) {
-               if (c == START_OF_VAR[i]) {
-                  ok = false;
-               }
-            }
-         }
-      }
-      if (ok) {
-         int end = pos + length;
-         if (text.length() > end) {
-            char c = text.charAt(end);
-            ok = !Character.isLetter(c);
          }
       }
       return ok;

@@ -1,5 +1,7 @@
 package eg.syntax;
 
+import eg.document.Attributes;
+
 /**
  * Syntax highlighting for Java
  */
@@ -28,29 +30,21 @@ public class JavaHighlighter implements Highlighter {
       "@Override", "@Deprecated", "@SuppressWarnings", "@SafeVarargs",
       "@FunctionalInterface"
    };
-   
-   private SyntaxHighlighter.SyntaxSearcher s;
-   
-   @Override
-   public void setSyntaxSearcher(SyntaxHighlighter.SyntaxSearcher searcher) {
-      s = searcher;
-      s.setSkipQuotedBlockMarks();
-   }
 
    @Override
-   public void highlight() {
-      if (!s.isInBlock(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH)) {
+   public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
+      if (!s.isInBlock(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH, true)) {
          s.resetAttributes();
-         s.keywords(JAVA_ANNOTATIONS, true, null, Attributes.BLUE_PLAIN);
-         s.keywords(JAVA_KEYWORDS, true, null, Attributes.RED_PLAIN);
+         s.keywords(JAVA_ANNOTATIONS, true, null, attr.bluePlain);
+         s.keywords(JAVA_KEYWORDS, true, null, attr.redPlain);
          s.brackets();
          s.braces();
          s.quoteInLine();
          s.lineComments(SyntaxConstants.DOUBLE_SLASH);
      }
-     s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH);
+     s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH, true);
    }
-   
+
    @Override
    public boolean isValid(String text, int pos, int length, int condition) {
       return true;
