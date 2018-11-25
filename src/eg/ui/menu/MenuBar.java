@@ -21,7 +21,7 @@ public class MenuBar {
 
    public MenuBar() {
       menuBar.setOpaque(false);
-      menuBar.setBorder(eg.Constants.EMPTY_BORDER_0);
+      menuBar.setBorder(null);
       assembleMenu();
    }
 
