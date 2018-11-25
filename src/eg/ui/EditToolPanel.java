@@ -5,20 +5,18 @@ import java.awt.Component;
 
 import javax.swing.JPanel;
 
-//--Eadgyth--/
-import eg.Constants;
-
 /**
  * Defines the panel to which a variable <code>Component</code> can
  * be added. The component is added in the center of a JPanel with
- * a BorderLayout. The JPanel has a {@link Constants#GRAY_LINE_BORDER}.
+ * a <code>BorderLayout</code>.
  */
 public class EditToolPanel {
 
-   private final JPanel content = new JPanel(new BorderLayout());
+   private final JPanel content;
 
    public EditToolPanel() {
-      content.setBorder(Constants.GRAY_LINE_BORDER);
+      content = UIComponents.grayBorderedPanel();
+      content.setLayout(new BorderLayout());
    }
 
    /**

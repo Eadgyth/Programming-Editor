@@ -24,29 +24,29 @@ import javax.swing.tree.TreeSelectionModel;
 import java.io.File;
 
 //--Eadgyth--/
-import eg.Constants;
+import eg.BackgroundTheme;
+import eg.FunctionalAction;
 import eg.ui.IconFiles;
-import eg.utils.UIComponents;
+import eg.ui.UIComponents;
 
 /**
  * Defines the panel which contains a tool bar and panel for adding
  * a JTree
  */
 public class TreePanel {
-
-   private final JPanel content = new JPanel(new BorderLayout());
+   
+   private final BackgroundTheme theme = BackgroundTheme.givenTheme();
+   private final JPanel content;
    private final JPanel holdTree = new JPanel(new BorderLayout());
-   private final JScrollPane scroll = new JScrollPane(
-         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
+   private final JScrollPane scroll = UIComponents.scrollPane();
    private final JButton upBt = new JButton(UIManager.getIcon(
          "FileChooser.upFolderIcon"));
 
    private final JButton renewBt = new JButton(IconFiles.REFRESH_ICON);
-   private final JButton closeBt = new JButton(IconFiles.CLOSE_ICON);
+   private final JButton closeBt = UIComponents.undecoratedButton();
 
    public TreePanel() {
+      content = UIComponents.grayBorderedPanel();
       init();
    }
 
@@ -61,19 +61,19 @@ public class TreePanel {
    }
 
    /**
-    * Adds the specified <code>JTree</code>
+    * Sets the specified <code>JTree</code>
     *
     * @param tree  the JTree
     */
    public void setTree(JTree tree) {
       tree.setRootVisible(true);
-      tree.setBorder(new LineBorder(Color.WHITE, 5));
       tree.setCellRenderer(new TreeRenderer());
       tree.setToggleClickCount(0);
       tree.getSelectionModel().setSelectionMode(
             TreeSelectionModel.SINGLE_TREE_SELECTION);
 
       tree.setFocusable(false);
+      tree.setBackground(theme.background());
       renewBt.setEnabled(true);
       holdTree.add(tree);
    }
@@ -97,12 +97,12 @@ public class TreePanel {
    }
 
    /**
-    * Sets the listener for actions to close the file view panel
+    * Sets the action for closing the this panel to this closing button
     *
-    * @param al  the <code>ActionListener</code>
+    * @param act  the closing action
     */
-   public void setCloseAct(ActionListener al) {
-      closeBt.addActionListener(al);
+   public void setClosingAct(FunctionalAction act) {
+      closeBt.setAction(act);
    }
 
    /**
@@ -119,31 +119,45 @@ public class TreePanel {
    //
 
    private void init() {
-      scroll.setBorder(Constants.MATTE_TOP_LIGHT_GRAY);
-      scroll.setViewportView(holdTree);
-      scroll.getVerticalScrollBar().setUnitIncrement(10);
+      content.setLayout(new BorderLayout());
       content.add(toolbar(), BorderLayout.NORTH);
       content.add(scroll, BorderLayout.CENTER);
-      content.setBorder(Constants.GRAY_LINE_BORDER);
+      holdTree.setBackground(theme.background());
+      holdTree.setBorder(new LineBorder(theme.background(), 5));
+      scroll.setViewportView(holdTree);
       renewBt.setEnabled(false);
       enableFolderUpAct(false);
    }
 
    private JToolBar toolbar() {
       JButton[] bts = new JButton[] {
-         upBt, renewBt, closeBt
+         upBt, renewBt
       };
       String[] tooltips = new String[] {
          "Folder up",
          "Update tree",
-         "Close the project explorer",
       };
-      return UIComponents.toolBar(bts, tooltips);
+      return UIComponents.toolBar(bts, tooltips, closeBt);
    }
 
    private class TreeRenderer extends DefaultTreeCellRenderer {
 
       private final FileSystemView fsv = FileSystemView.getFileSystemView();
+      
+      @Override
+      public Color getBackgroundNonSelectionColor() {
+         return theme.background();
+      }
+      
+      @Override
+      public Color getBackgroundSelectionColor() {
+         return theme.selectionBackground();
+      }
+   
+      @Override
+      public Color getBackground() {
+         return theme.background();
+      }
 
       @Override
       public Component getTreeCellRendererComponent(JTree tree, Object value,
@@ -153,6 +167,8 @@ public class TreePanel {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
               row, hasFocus);
 
+        
+        setForeground(theme.normalForeground());
         if (value instanceof DefaultMutableTreeNode) {
            value = ((DefaultMutableTreeNode) value).getUserObject();
            if (value instanceof File) {

@@ -12,10 +12,10 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.plaf.TabbedPaneUI;
-import javax.swing.border.EmptyBorder;
 
-//--Eadgyth-/
-import eg.Constants;
+//--Eadgyth--/
+import eg.FunctionalAction;
+import eg.ui.UIComponents;
 
 /**
  * The <code>JTabbedPane</code> for the editor.
@@ -26,26 +26,27 @@ public final class ExtTabbedPane extends JTabbedPane {
 
    private final static FlowLayout FLOW_LAYOUT_LEFT
          = new FlowLayout(FlowLayout.LEFT, 0, 0);
-   private final static EmptyBorder EMPTY_BORDER = new EmptyBorder(1, 5, 0, 0);
+
    private final ExtTabbedPaneUI tui = new ExtTabbedPaneUI();
 
    private int iTabMouseOver = -1;
    private boolean isShowTabbar;
 
    /**
-    * Creates an <code>ExtTabbedPane</code> using the parameterless
-    * constructor of the superclass (tab placement at the top)
+    * Creates an <code>ExtTabbedPane</code>
+    *
+    * @param barHeight  the height of the tab bar
     */
-   public ExtTabbedPane() {
-      tui.setHeight(Constants.BAR_HEIGHT);
+   public ExtTabbedPane(int barHeight) {
+      tui.setHeight(barHeight);
       super.setUI(tui);
       addMouseMotionListener(mml);
    }
 
    /**
-    * Sets the boolean that specifies if the tabbar is shown or hidden
+    * Shows or hides the tabbar
     *
-    * @param b  the boolean value, true to show the tabbar
+    * @param b  true to show the tabbar, false to hide
     * @throws IllegalStateException  if <code>b</code> is false while more
     * than one tab is open
     */
@@ -61,37 +62,28 @@ public final class ExtTabbedPane extends JTabbedPane {
    }
 
    /**
-    * Adds a new tab.
-    * <p>
-    * It is required that the specified <code>closeBt</code> has got an
-    * <code>ActionListener</code> added. {@link #iTabMouseOver()} must be
-    * be called by the listener to determine the index of a tab that
-    * is to be closed but that may not be selected.
+    * Adds a new tab
     *
     * @param title  the title for the tab
     * @param c  the component to be displayed when the tab is selected
-    * @param closeBt  the button displayed in the tab
+    * @param closeAct  the closing action 
     */
-   public void addTab(String title, Component c, JButton closeBt) {
+   public void addTab(String title, Component c, FunctionalAction closeAct) {
       int index = getTabCount();
       addTab(null, c);
-      JPanel tabPnl = new JPanel(FLOW_LAYOUT_LEFT);
-      tabPnl.setOpaque(false);
       JLabel titleLb = new JLabel(title);
       Font f = titleLb.getFont().deriveFont(Font.PLAIN);
       titleLb.setFont(f);
-      closeBt.setBorder(EMPTY_BORDER);
-      closeBt.setContentAreaFilled(false);
-      closeBt.setFocusable(false);
-      tabPnl.add(titleLb);
-      tabPnl.add(closeBt);
-      setTabComponentAt(index, tabPnl);
+      JButton closeBt = UIComponents.undecoratedButton();
+      closeBt.setAction(closeAct);
+      JPanel pnl = UIComponents.labeledPanel(titleLb, closeBt);
+      setTabComponentAt(index, pnl);
       setSelectedIndex(index);
    }
 
    /**
     * Sets the title at the index in tabs that were added by
-    * {@link #addTab(String,Component,JButton)}
+    * {@link #addTab(String,Component,FunctionalAction)}
     *
     * @param index  the index
     * @param title  the title

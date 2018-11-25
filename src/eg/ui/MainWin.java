@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 
@@ -33,7 +32,6 @@ import eg.ui.menu.FormatMenu;
 import eg.ui.menu.ViewMenu;
 import eg.ui.filetree.TreePanel;
 import eg.ui.tabpane.ExtTabbedPane;
-import eg.utils.UIComponents;
 import eg.utils.ScreenParams;
 import eg.utils.FileUtils;
 
@@ -262,9 +260,9 @@ public class MainWin {
    public void setFileActions(TabbedDocuments td) {
       menuBar.fileMenu().setActions(td);
       menuBar.fileMenu().setExitActions(e -> exit(td));
-
       menuBar.languageMenu().setChangeLanguageActions((l) -> td.changeLanguage(l));
       toolBar.setFileActions(td);
+
       frame.addWindowListener(new WindowAdapter() {
 
          @Override
@@ -285,7 +283,6 @@ public class MainWin {
       };
       toolBar.setEditActions(edit);
       menuBar.editMenu().setEditActions(edit, e -> runBusyFunction(clearSpacesAct));
-
    }
 
    /**
@@ -353,18 +350,21 @@ public class MainWin {
       vm.setConsoleItmAction(e -> showConsole(vm.isConsoleItmSelected()));
       vm.setFileViewItmAction(e -> showFileView(vm.isFileViewItmSelected()));
       vm.setTabItmAction(e -> tabPane.showTabbar(vm.isTabItmSelected()));
-      treePnl.setCloseAct(e -> vm.doUnselectFileViewAct());
-      consPnl.setCloseAct(e -> vm.doConsoleItmAct(false));
+
+      treePnl.setClosingAct(new FunctionalAction(
+            "", IconFiles.CLOSE_ICON, e -> vm.doUnselectFileViewAct()));
+
+      consPnl.setClosingAct(new FunctionalAction(
+            "", IconFiles.CLOSE_ICON, e -> vm.doConsoleItmAct(false)));
    }
 
    private void setEditToolsActions(AddableEditTool tool, int i) {
-      JButton closeBt = new JButton();
       ActionListener closeAct = (ActionEvent e) -> {
          showEditToolPnl(false, 0);
          menuBar.editMenu().unselectEditToolItmAt(i);
       };
-      closeBt.setAction(new FunctionalAction("", IconFiles.CLOSE_ICON, closeAct));
-      tool.addClosingButton(closeBt);
+      tool.addClosingAction(new FunctionalAction(
+            "", IconFiles.CLOSE_ICON, closeAct));
 
       ActionListener addAct = (ActionEvent e) -> {
          EventQueue.invokeLater(() -> {
@@ -517,6 +517,7 @@ public class MainWin {
 
       splitVert.setDividerSize(0);
       splitVert.setBorder(null);
+      splitVert.setResizeWeight(1);
       splitHor = new JSplitPane(
             JSplitPane.HORIZONTAL_SPLIT, true, null, splitVert);
 
