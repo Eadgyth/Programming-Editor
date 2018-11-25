@@ -10,13 +10,14 @@ import java.util.Date;
 
 import java.text.SimpleDateFormat;
 
-//--Eadgyth--/
-import eg.Constants;
-
 /**
  * Static methods for file operations
  */
 public class FileUtils {
+   
+   /**
+    * The system's line separator */
+   public final static String LINE_SEP = System.lineSeparator();
    
    /**
     * Returns the extension of the specified file
@@ -130,11 +131,11 @@ public class FileUtils {
       String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
       try (FileWriter writer = new FileWriter(f, true)) {
          writer.write(date + "\n");
-         writer.write(e.getMessage() + Constants.LINE_SEP);
+         writer.write(e.getMessage() + LINE_SEP);
          for (StackTraceElement el : e.getStackTrace()) {
-            writer.write("   " + el.toString() + Constants.LINE_SEP);
+            writer.write("   " + el.toString() + LINE_SEP);
          }
-         writer.write("_________________" + Constants.LINE_SEP);
+         writer.write("_________________" + LINE_SEP);
          Dialogs.errorMessage("Error: " + e.getMessage(), null);
       }
       catch(IOException ioe) {
