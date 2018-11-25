@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 //--Eadgyth--/
 import eg.ui.MainWin;
 import eg.ui.ViewSettingWin;
+import eg.ui.Fonts;
 import eg.utils.FileUtils;
 
 /**
@@ -19,7 +20,7 @@ import eg.utils.FileUtils;
  * @author Malte Bussiek, m.bussiek@web.de
  */
 public class Eadgyth {
-
+    
    public static void main(String[] arg) {
       Locale.setDefault(Locale.US);
       uiManagerSettings();
@@ -30,13 +31,13 @@ public class Eadgyth {
 
       MainWin mw = new MainWin();
       ViewSettingWin viewSetWin = new ViewSettingWin();
-      Formatter format = new Formatter(15, "");
-      ViewSetter viewSet = new ViewSetter(mw, viewSetWin, format);
-      TabbedDocuments tabDocs = new TabbedDocuments(mw, format);
+      Formatter f = new Formatter(15, "");
+      ViewSetter viewSet = new ViewSetter(mw, viewSetWin, f);
+      TabbedDocuments tabDocs = new TabbedDocuments(mw, f);
 
       mw.setFileActions(tabDocs);
       mw.setViewSettingWinAction(viewSetWin);
-      mw.setFormatActions(format);
+      mw.setFormatActions(f);
       viewSetWin.setOkAct(e -> {
          viewSet.applySettings();
          viewSetWin.setVisible(false);
@@ -49,9 +50,9 @@ public class Eadgyth {
 
    private static void uiManagerSettings() {
       UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-      UIManager.put("Menu.font", Constants.SANSSERIF_PLAIN_9);
-      UIManager.put("MenuItem.font", Constants.SANSSERIF_PLAIN_9);
-      UIManager.put("CheckBoxMenuItem.font", Constants.SANSSERIF_PLAIN_9);
+      UIManager.put("Menu.font", Fonts.SANSSERIF_PLAIN_9);
+      UIManager.put("MenuItem.font", Fonts.SANSSERIF_PLAIN_9);
+      UIManager.put("CheckBoxMenuItem.font", Fonts.SANSSERIF_PLAIN_9);
       UIManager.put("SplitPaneDivider.border", new EmptyBorder(0, 0, 0, 0));
       UIManager.put("Tree.rowHeight", eg.utils.ScreenParams.scaledSize(14));
    }
