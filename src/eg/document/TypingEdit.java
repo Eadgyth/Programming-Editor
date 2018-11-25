@@ -21,7 +21,7 @@ import eg.syntax.*;
  */
 public class TypingEdit {
 
-   private final StyledText txt;
+   private final EditableText txt;
    private final LineNumbers lineNum;
    private final SyntaxHighlighter syntax;
    private final Indentation indent;
@@ -33,6 +33,7 @@ public class TypingEdit {
    private int chgPos = 0;
    private String change = "";
    private boolean isAddToUndo = true;
+   
    private EditingStateReadable esr;
    private boolean inChangeState = false;
    private boolean selectionState = false;
@@ -42,10 +43,10 @@ public class TypingEdit {
    private int colNr = 1;
 
    /**
-    * @param txt  the reference to {@link StyledText}
+    * @param txt  the reference to {@link EditableText}
     * @param lineNum  the reference to {@link LineNumbers}
     */
-   public TypingEdit(StyledText txt, LineNumbers lineNum) {
+   public TypingEdit(EditableText txt, LineNumbers lineNum) {
       this.txt = txt;
       this.lineNum = lineNum;
       syntax = new SyntaxHighlighter(txt);
@@ -244,7 +245,7 @@ public class TypingEdit {
    }
 
    private void updateText() {
-      txt.updateText();
+      txt.updateTextCopy();
       lineNum.updateLineNumber(txt.text());
       updateInChangeState();
    }
@@ -267,7 +268,7 @@ public class TypingEdit {
          return;
       }
       if (!inChangeState) {
-         inChangeState = true; //undo.canUndo();
+         inChangeState = true;
          esr.updateInChangeState(inChangeState);
       }
    }

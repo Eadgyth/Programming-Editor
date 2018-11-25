@@ -1,126 +1,63 @@
 package eg.document;
 
-import java.awt.Color;
-
 import javax.swing.JTextPane;
-
-import javax.swing.event.DocumentListener;
 
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
-import javax.swing.text.StyleConstants;
 
+
+//--Eadgyth--/
 import eg.utils.FileUtils;
 
 /**
- * The text that is edited
+ * The styled text in a <code>JTextPane</code>
  */
-public class StyledText {
-
-   private final static SimpleAttributeSet SET = new SimpleAttributeSet();
-
-   private final JTextPane textArea;
-   private final StyledDocument doc;
-
-   private String text = "";
-
-   static {
-      StyleConstants.setForeground(SET, Color.BLACK);
-      StyleConstants.setBold(SET, false);
-      StyleConstants.setLineSpacing(SET, 0.25f);
-   }
+public abstract class StyledText {
 
    /**
-    * @param textArea  the reference to the <code>JTextPane</code> that
-    * displays the text
+    * The <code>StyledDocument</code> that belongs to this
+    * <code>JTextPane</code>
     */
-   public StyledText(JTextPane textArea) {
+   protected final StyledDocument doc;
+  
+   private final SimpleAttributeSet normal;
+   private final JTextPane textArea;
+   
+   /**
+    * @param textArea  the JTextPane that displays the text
+    * @param normal  the SimpleAttributeSet for normal text
+    */
+   public StyledText(JTextPane textArea, SimpleAttributeSet normal) {
       this.textArea = textArea;
+      this.normal = normal;
       doc = textArea.getStyledDocument();
       Element el = doc.getParagraphElement(0);
-      doc.setParagraphAttributes(0, el.getEndOffset(), SET, false);
+      doc.setParagraphAttributes(0, el.getEndOffset(), normal, false);
    }
 
    /**
-    * Adds a <code>DocumentListener</code>
+    * Gets this <code>Attributes</code>
     *
-    * @param dl  the <code>DocumentListener</code>
+    * @return  the Attributes
     */
-   public void addDocumentListener(DocumentListener dl) {
-      doc.addDocumentListener(dl);
-   }
+   public abstract Attributes attributes();
 
    /**
-    * Updates this text
-    */
-   public void updateText() {
-      try {
-         text = doc.getText(0, doc.getLength());
-      }
-      catch (BadLocationException e) {
-         FileUtils.log(e);
-      }
-   }
-
-   /**
-    * Gets the text which is contained in the <code>Document</code>
-    * that is displayed in this text area. The text is alsways only
-    * the text that is updated by {@link #updateText()}.
+    * Gets the text in the document
     *
     * @return  the text
     */
-   public String text() {
-      return text;
-   }
-
+   public abstract String text();
+   
    /**
-    * Resets the character attributes in the entire text to black
-    * and plain
-    */
-   public void resetAttributes() {
-      setAttributes(0, doc.getLength(), SET);
-   }
-
-   /**
-    * Resets the character attributes in a section of the text to
-    * black and plain
-    *
-    * @param pos  the position where the section start
-    * @param length  the length of the section
-    */
-   public void resetAttributes(int pos, int length) {
-      setAttributes(pos, length, SET);
-   }
-
-   /**
-    * Sets character attributes in a section of the text
-    *
-    * @param pos  the position where the section starts
-    * @param length  the length of the section
-    * @param set  the character attributes
-    */
-   public void setAttributes(int pos, int length, SimpleAttributeSet set) {
-      doc.setCharacterAttributes(pos, length, set, false);
-   }
-
-   /**
-    * Appends a string
-    *
-    * @param s  the string to append
-    */
-   public void append(String s) {
-      insert(doc.getLength(), s);
-   }
-
-   /**
-    * Inserts a string
+    * Inserts a string in the document
     *
     * @param pos  the position where the string is inserted
     * @param s  the string
     */
-   public void insert(int pos, String s) {
+   public final void insert(int pos, String s) {
       try {
          doc.insertString(pos, s, null);
       }
@@ -130,18 +67,33 @@ public class StyledText {
    }
 
    /**
-    * Removes text
-    *
-    * @param pos  the position where the text to be removed starts
-    * @param length  the length of the text to be removed
+    * Resets to the character attributes for normal text in the entire
+    * in entire text
     */
-   public void remove(int pos, int length) {
-      try {
-         doc.remove(pos, length);
-      }
-      catch (BadLocationException e) {
-         FileUtils.log(e);
-      }
+   public void resetAttributes() {
+      setAttributes(0, doc.getLength(), normal);
+   }
+
+   /**
+    * Resets to the character attributes for normal text in a section of
+    * text
+    *
+    * @param pos  the position where the section start
+    * @param length  the length of the section
+    */
+   public void resetAttributes(int pos, int length) {
+      setAttributes(pos, length, normal);
+   }
+
+   /**
+    * Sets character attributes in a section of the text
+    *
+    * @param pos  the position where the section starts
+    * @param length  the length of the section
+    * @param set  the attributes applied to the section
+    */
+   public void setAttributes(int pos, int length, SimpleAttributeSet set) {
+      doc.setCharacterAttributes(pos, length, set, false);
    }
 
    /**
@@ -149,7 +101,7 @@ public class StyledText {
     *
     * @return  the text area
     */
-   public JTextPane textArea() {
+   public final JTextPane textArea() {
       return textArea;
    }
 }

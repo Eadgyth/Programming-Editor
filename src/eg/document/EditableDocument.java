@@ -2,6 +2,8 @@ package eg.document;
 
 import java.awt.EventQueue;
 
+import java.awt.print.PrinterException;
+
 import javax.swing.JTextPane;
 
 import java.io.File;
@@ -13,9 +15,11 @@ import java.io.IOException;
 //--Eadgyth--//
 import eg.Languages;
 import eg.LanguageSelector;
-import eg.Constants;
 import eg.utils.FileUtils;
 import eg.ui.EditArea;
+import eg.syntax.SyntaxHighlighter;
+import eg.syntax.Highlighter;
+import eg.syntax.HighlighterSelector;
 
 /**
  * Represents the document that is edited
@@ -23,7 +27,7 @@ import eg.ui.EditArea;
 public final class EditableDocument {
 
    private final TypingEdit type;
-   private final StyledText txt;
+   private final EditableText txt;
 
    private File docFile = null;
    private String filename = "";
@@ -65,7 +69,7 @@ public final class EditableDocument {
     * @param editArea  a new {@link EditArea}
     */
    public EditableDocument(EditArea editArea) {
-      txt = new StyledText(editArea.textArea());
+      txt = new EditableText(editArea.textArea());
       LineNumbers lineNum = new LineNumbers(editArea.lineNrArea(),
             editArea.lineNrWidth());
 
@@ -91,12 +95,18 @@ public final class EditableDocument {
    }
 
    /**
-    * Asks the text area that shows this document to gain focus and reads
-    * the current editing state
-    * @see TypingEdit#readEditingState()
+    * Asks the text area that shows this document to gain focus
     */
    public void setFocused() {
       txt.textArea().requestFocusInWindow();
+   }
+   
+   /**
+    * Reads the current editing state
+    *
+    * @see TypingEdit#readEditingState()
+    */
+   public void readEditingState() {
       type.readEditingState();
    }
 
@@ -333,6 +343,25 @@ public final class EditableDocument {
    public void redo() {
       type.redo();
    }
+   
+   /**
+    * Prints the document text to printer
+    */
+   public void print() {
+      PrintableText printTxt = new PrintableText(docText(), textArea().getFont());
+      if (lang != Languages.NORMAL_TEXT) {
+         SyntaxHighlighter sh = new SyntaxHighlighter(printTxt);
+         Highlighter hl = HighlighterSelector.createHighlighter(lang);
+         sh.setHighlighter(hl);
+         sh.highlight();
+      }
+      try {
+         printTxt.textArea().print();
+      }
+      catch(PrinterException e) {
+         FileUtils.log(e);
+      }
+   }
 
    //
    //--private--/
@@ -366,7 +395,7 @@ public final class EditableDocument {
       String[] lines = txt.text().split("\n");
       try (FileWriter writer = new FileWriter(f)) {
          for (String s : lines) {
-            writer.write(s + Constants.LINE_SEP);
+            writer.write(s + FileUtils.LINE_SEP);
          }
          return true;
       }

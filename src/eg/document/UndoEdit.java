@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class UndoEdit {
 
-   private final StyledText txt;
+   private final EditableText txt;
 
    private final List<String> edits = new ArrayList<>(1000);
    private final List<Integer> positions = new ArrayList<>(1000);
@@ -57,9 +57,9 @@ public class UndoEdit {
    private boolean isDeleteTyped = false;
 
    /**
-    * @param txt  the reference to {@link StyledText}
+    * @param txt  the reference to {@link EditableText}
     */
-   public UndoEdit(StyledText txt) {
+   public UndoEdit(EditableText txt) {
       this.txt = txt;
       txt.textArea().addKeyListener(keyListener);
    }
@@ -72,7 +72,7 @@ public class UndoEdit {
     * @param isInsert  specifies if the edit is an insertion or
     * a deletion
     */
-   void addEdit(String change, int pos, boolean isInsert) {
+   public void addEdit(String change, int pos, boolean isInsert) {
       trim();
       edits.add(change);
       positions.add(pos);

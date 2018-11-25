@@ -7,15 +7,15 @@ package eg.document;
  */
 public class Indentation {
 
-   private final StyledText txt;
+   private final EditableText txt;
 
    private String indentUnit = "";
    private int indentLength = 0;
 
    /**
-    * @param txt  the reference to {@link StyledText}
+    * @param txt  the reference to {@link EditableText}
     */
-   public Indentation(StyledText txt) {
+   public Indentation(EditableText txt) {
       this.txt = txt;
    }
 
