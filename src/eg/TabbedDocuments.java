@@ -1,8 +1,11 @@
 package eg;
 
+import java.awt.EventQueue;
+
+import java.awt.event.ActionListener;
+
 import javax.swing.JTabbedPane;
 import javax.swing.JOptionPane;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import javax.swing.event.ChangeEvent;
@@ -165,9 +168,8 @@ public class TabbedDocuments {
     * Closes the selected tab and may ask to save the content of the
     * document before closing
     *
-    * @param createBlankDoc  the boolean that is true to create a new
-    * tab with a blank document if the tab to be closed is the only open
-    * tab
+    * @param createBlankDoc  true to create a new tab with a blank
+    * document if the tab to be closed is the only open tab
     */
    public void close(boolean createBlankDoc) {
       if (createBlankDoc && isFirstTabUnnamed() && edtDoc[iTab].docLength() == 0) {
@@ -252,7 +254,12 @@ public class TabbedDocuments {
     * Prints the text content in the selected document to a printer
     */
    public void print() {
-      editArea[iTab].print();
+      BusyFunction bf = (() -> {
+         EventQueue.invokeLater(() -> {
+            edtDoc[iTab].print();
+         });
+      });
+      mw.runBusyFunction(bf);
    }
 
    //
@@ -339,12 +346,14 @@ public class TabbedDocuments {
    }
 
    private void addTab(String filename, JPanel pnl) {
-      JButton closeBt = new JButton(eg.ui.IconFiles.CLOSE_ICON);
-      tabPane.addTab(filename, pnl, closeBt);
-      closeBt.addActionListener(e -> {
+      ActionListener close = (e -> {
          iTab = tabPane.iTabMouseOver();
          close(true);
       });
+      FunctionalAction closeAct = new FunctionalAction(
+            "", eg.ui.IconFiles.CLOSE_ICON, close);
+
+      tabPane.addTab(filename, pnl, closeAct);
    }
 
    private boolean save(boolean setFile) {
@@ -468,6 +477,7 @@ public class TabbedDocuments {
 
    private void changedTabUpdate() {
       edtDoc[iTab].setFocused();
+      edtDoc[iTab].readEditingState();
       format.setIndex(iTab);
       proj.setDocumentAt(iTab);
       edit.setDocument(edtDoc[iTab]);
