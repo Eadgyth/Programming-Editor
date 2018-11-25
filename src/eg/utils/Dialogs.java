@@ -10,13 +10,19 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+
 //--Eadgyth--//
+import eg.ui.Fonts;
 import eg.ui.IconFiles;
 
 /**
  * Static methods to show dialogs using <code>JOptionPane</code>
  */
 public class Dialogs {
+   
+   private final static Border EMPTY_BORDER = new EmptyBorder(5, 5, 5, 5);
 
    /**
     * Shows an information message
@@ -136,11 +142,11 @@ public class Dialogs {
       if (preselected != null) {
          cBox.setSelectedItem(preselected);
       }
-      cBox.setFont(eg.Constants.SANSSERIF_PLAIN_9);
+      cBox.setFont(Fonts.SANSSERIF_PLAIN_9);
       JPanel pnl = new JPanel(new GridLayout(2, 1));
       JLabel lb = new JLabel(message);
       lb.setFont(new Font("Arial", Font.PLAIN, ScreenParams.scaledSize(9)));
-      lb.setBorder(eg.Constants.EMPTY_BORDER_5);
+      lb.setBorder(EMPTY_BORDER);
       pnl.add(lb);
       JPanel holdCBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
       holdCBox.add(cBox);
