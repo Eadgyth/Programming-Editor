@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 //--Eadgyth---/
-import eg.Constants;
 import eg.utils.ScreenParams;
 
 /**
@@ -62,7 +61,7 @@ public class StatusBar {
     */
    public void displayWordwrapState(boolean b) {
       if (b) {
-         cursorPosLb.setForeground(Constants.GRAY);
+         cursorPosLb.setForeground(Color.GRAY);
          wordwrapLb.setText("Word-wrap ");
       }
       else {
@@ -114,7 +113,7 @@ public class StatusBar {
 
    private void setLbFont(JLabel[] lb) {
       for (JLabel l : lb) {
-         l.setFont(Constants.VERDANA_PLAIN_8);
+         l.setFont(Fonts.VERDANA_PLAIN_8);
       }
    }
 
