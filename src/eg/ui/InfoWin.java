@@ -9,8 +9,8 @@ import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
-//--Eadgyth--/
-import eg.Constants;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 
 /**
  * The window that shows info about Eadgyth
@@ -23,6 +23,8 @@ public class InfoWin {
          + "Malte Bussiek<br>"
          + "https://eadgyth.github.io/Programming-Editor"
          + "</html>";
+         
+   private final static Border EMPTY_BORDER = new EmptyBorder(5, 5, 5, 5);
 
    private final JFrame  frame    = new JFrame();
    private final JPanel  okButton = new JPanel(new FlowLayout());
@@ -33,19 +35,17 @@ public class InfoWin {
    private final JLabel  infoLb   = new JLabel(INFO);
 
    public InfoWin() {  
-      titleLb.setFont(Constants.SANSSERIF_BOLD_11);
-      infoLb.setFont(Constants.SANSSERIF_PLAIN_9);
+      titleLb.setFont(Fonts.SANSSERIF_BOLD_11);
+      infoLb.setFont(Fonts.SANSSERIF_PLAIN_9);
       okBt.setFocusPainted(false);
-      okBt.addActionListener(e -> frame.setVisible(false));  
-
-      okButton.add(okBt);
-      
+      okBt.addActionListener(e -> frame.setVisible(false));
+      okButton.add(okBt);     
       text.setBackground(Color.white);
-      text.setBorder(eg.Constants.EMPTY_BORDER_5);
+      text.setBorder(EMPTY_BORDER);
       text.add(titleLb);
       text.add(infoLb);
 
-      combine.setBorder(Constants.EMPTY_BORDER_5);
+      combine.setBorder(EMPTY_BORDER);
       combine.add(text, BorderLayout.CENTER);
       combine.add(okButton, BorderLayout.SOUTH);
             
