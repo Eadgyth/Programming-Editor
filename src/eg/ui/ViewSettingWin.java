@@ -17,34 +17,33 @@ import javax.swing.JButton;
 import javax.swing.BoxLayout;
 import javax.swing.BorderFactory;
 
-//--Eadgyth--/
-import eg.Constants;
-
 /**
  * The dialog to enter preferences for the display of the main window.
  */
 public class ViewSettingWin {
 
-   public final static String[] LAF_OPT = {"System", "Java default"};
+   public final static String[] BKGRD_OPT = {"White", "Dark"};
    public final static String[] ICON_SIZES = {"Small", "Large"};
-   
+   public final static String[] LAF_OPT = {"System", "Java default"};
+
    private final static Dimension LABEL_DIM
          = eg.utils.ScreenParams.scaledDimension(230, 0);
 
    private final JFrame frame = new JFrame("View preferences");
-   
-   private final JCheckBox checkLineNumbers       = new JCheckBox();
-   private final JCheckBox checkToolbar           = new JCheckBox();
-   private final JCheckBox checkStatusbar         = new JCheckBox();
-   private final JComboBox<String> selectLaf      = new JComboBox<>(LAF_OPT);
-   private final JComboBox<String> selectIconSize = new JComboBox<>(ICON_SIZES);
-   private final JButton   okBt                   = new JButton("OK");
-   private final JButton   cancelBt               = new JButton("Cancel");
-   
+
+   private final JCheckBox checkLineNumbers         = new JCheckBox();
+   private final JCheckBox checkToolbar             = new JCheckBox();
+   private final JCheckBox checkStatusbar           = new JCheckBox();
+   private final JComboBox<String> selectBackground = new JComboBox<>(BKGRD_OPT);
+   private final JComboBox<String> selectIconSize   = new JComboBox<>(ICON_SIZES);
+   private final JComboBox<String> selectLaf        = new JComboBox<>(LAF_OPT);
+   private final JButton   okBt                     = new JButton("OK");
+   private final JButton   cancelBt                 = new JButton("Cancel");
+
    public ViewSettingWin() {
       initFrame();
    }
-   
+
    /**
     * Sets this frame visible or invisible
     *
@@ -54,7 +53,7 @@ public class ViewSettingWin {
    public void setVisible(boolean b) {
       frame.setVisible(b);
    }
-   
+
    /**
     * Sets the listener to this ok button
     *
@@ -63,7 +62,7 @@ public class ViewSettingWin {
    public void setOkAct(ActionListener al) {
       okBt.addActionListener(al);
    }
-   
+
    /**
     * Sets the listener to this cancel button
     *
@@ -72,7 +71,7 @@ public class ViewSettingWin {
    public void setCancelAct(ActionListener al) {
       cancelBt.addActionListener(al);
    }
-   
+
    /**
     * Sets the listener for the close button of this frame
     *
@@ -81,17 +80,17 @@ public class ViewSettingWin {
    public void setDefaultCloseAction(WindowAdapter wa) {
       frame.addWindowListener(wa);
    }
-   
+
    /**
     * Returns the state of the checkbox for showing/hiding line numbers
     *
     * @return  the boolean value that is true if selected, false
     * otherwie
-    */ 
+    */
    public boolean isShowLineNumbers() {
       return checkLineNumbers.isSelected();
    }
-   
+
    /**
     * Sets the state of the checkbox for showing/hiding line numbers
     *
@@ -100,17 +99,17 @@ public class ViewSettingWin {
     */
    public void setShowLineNumbers(boolean b) {
       checkLineNumbers.setSelected(b);
-   }      
-   
+   }
+
     /**
     * Returns the state of the checkbox for showing/hiding the toolbar
     *
     * @return  the boolean value; true if selected, false otherwie
-    */ 
+    */
    public boolean isShowToolbar() {
       return checkToolbar.isSelected();
    }
-   
+
    /**
     * Sets the state of the checkbox for showing/hiding the toolbar
     *
@@ -119,16 +118,16 @@ public class ViewSettingWin {
    public void setShowToolbar(boolean b) {
       checkToolbar.setSelected(b);
    }
-   
+
    /**
     * Returns the state of the checkbox for showing/hiding the statusbar
     *
     * @return  the boolean value that is true if selectedd, false otherwise
-    */ 
+    */
    public boolean isShowStatusbar() {
       return checkStatusbar.isSelected();
    }
-   
+
    /**
     * Sets the state of the checkbox for showing/hiding the statusbar
     *
@@ -137,16 +136,28 @@ public class ViewSettingWin {
    public void setShowStatusbar(boolean b) {
       checkStatusbar.setSelected(b);
    }
-   
+
+   public int backgroundIndex() {
+      return selectBackground.getSelectedIndex();
+   }
+
+   public void setBackground(int index) {
+      selectBackground.setSelectedIndex(index);
+   }
+
+   public void setBackground(String item) {
+      selectBackground.setSelectedItem(item);
+   }
+
    /**
     * Returns the index of the combobox selection for the icon size
     *
     * @return  the index
-    */ 
+    */
    public int iconSizeIndex() {
       return selectIconSize.getSelectedIndex();
    }
-   
+
    /**
     * Sets the combobox selection for the icon size
     *
@@ -155,7 +166,7 @@ public class ViewSettingWin {
    public void setIconSize(int index) {
       selectIconSize.setSelectedIndex(index);
    }
-   
+
   /**
     * Sets the combobox selection for the icon size
     *
@@ -164,16 +175,16 @@ public class ViewSettingWin {
    public void setIconSize(String item) {
       selectIconSize.setSelectedItem(item);
    }
-   
+
    /**
     * Returns the index of combobox selection for the look and feel
     *
     * @return  the index
-    */ 
+    */
    public int lafIndex() {
       return selectLaf.getSelectedIndex();
    }
-   
+
    /**
     * Sets the combobox selection for the LaF
     *
@@ -182,7 +193,7 @@ public class ViewSettingWin {
    public void setLaf(int index) {
       selectLaf.setSelectedIndex(index);
    }
-   
+
   /**
     * Sets the combobox selection for the LaF
     *
@@ -190,12 +201,12 @@ public class ViewSettingWin {
     */
    public void setLaf(String item) {
       selectLaf.setSelectedItem(item);
-   }  
-   
+   }
+
    //
    //--private--/
    //
-   
+
    private void initFrame() {
       frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
       frame.setResizable(false);
@@ -207,61 +218,66 @@ public class ViewSettingWin {
       frame.setAlwaysOnTop(true);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
    }
-   
+
    private JPanel allPanels() {
       JPanel pnl = new JPanel(new BorderLayout());
       pnl.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-      JPanel selectionsPnl = new JPanel(new GridLayout(5, 1));
-      selectionsPnl.add(setLineNumberPanel());
-      selectionsPnl.add(setToolbarPanel());
-      selectionsPnl.add(setStatusBarPanel());
-      selectionsPnl.add(setIconSizePnl());
-      selectionsPnl.add(setLafPnl());
-      selectionsPnl.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-      pnl.add(selectionsPnl, BorderLayout.CENTER);
+      JPanel selectPnl = new JPanel(new GridLayout(6, 1));
+      selectPnl.add(setLineNumberPanel());
+      selectPnl.add(setToolbarPanel());
+      selectPnl.add(setStatusBarPanel());
+      selectPnl.add(setBackgroundPnl());
+      selectPnl.add(setIconSizePnl());
+      selectPnl.add(setLafPnl());
+      selectPnl.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+      pnl.add(selectPnl, BorderLayout.CENTER);
       pnl.add(buttonsPanel(), BorderLayout.SOUTH);
       return pnl;
    }
-   
+
    private JPanel setLineNumberPanel() {
       return checkBxPnl(checkLineNumbers,
             "Show line numbers when wordwrap is disabled:");
    }
-   
-   private JPanel setToolbarPanel() { 
+
+   private JPanel setToolbarPanel() {
       return checkBxPnl(checkToolbar, "Show toolbar:");
    }
-   
+
    private JPanel setStatusBarPanel() {
       return checkBxPnl(checkStatusbar, "Show status bar:");
    }
-   
+
+   private JPanel setBackgroundPnl() {
+      return comboBxPnl(selectBackground, "Background (requires restart)");
+   }
+
    private JPanel setIconSizePnl() {
       return comboBxPnl(selectIconSize, "Size of icons (requires restart):");
    }
-   
+
    private JPanel setLafPnl() {
       return comboBxPnl(selectLaf, "Look & feel (requires restart):");
    }
 
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
       JLabel lb = new JLabel(title);
-      lb.setFont(Constants.SANSSERIF_BOLD_8);
+      lb.setFont(Fonts.SANSSERIF_BOLD_8);
       lb.setPreferredSize(LABEL_DIM);
-      JPanel pnl = new JPanel(); 
-      pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));     
+      JPanel pnl = new JPanel();
+      pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
       pnl.add(lb);
       JPanel holdCheckBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
       holdCheckBox.add(checkBox);
       pnl.add(holdCheckBox);
       return pnl;
    }
-   
+
    private JPanel comboBxPnl(JComboBox<String> comboBox, String title) {
       JLabel lb = new JLabel(title);
-      lb.setFont(Constants.SANSSERIF_BOLD_8);
+      lb.setFont(Fonts.SANSSERIF_BOLD_8);
       lb.setPreferredSize(LABEL_DIM);
-      comboBox.setFont(Constants.SANSSERIF_PLAIN_9);
+      comboBox.setFont(Fonts.SANSSERIF_PLAIN_9);
       JPanel pnl = new JPanel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
       pnl.add(lb);
@@ -270,9 +286,9 @@ public class ViewSettingWin {
       pnl.add(holdComboBox);
       return pnl;
    }
-   
+
    private JPanel buttonsPanel() {
-      JPanel pnl = new JPanel(new FlowLayout());   
+      JPanel pnl = new JPanel(new FlowLayout());
       pnl.add(okBt);
       pnl.add(cancelBt);
       return pnl;
