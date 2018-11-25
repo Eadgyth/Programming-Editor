@@ -86,7 +86,7 @@ public class SyntaxUtils {
       boolean found = false;
       int start = pos + 1;
       int offset = 0;
-      if (successors != null) {
+      if (successors != null && text.length() > start) {
          if (isCharEqualTo(text, successors, start)) {
             offset = 1;
          }
