@@ -19,7 +19,7 @@ import java.awt.event.WindowAdapter;
 
 //--Eadgyth--//
 import eg.ui.IconFiles;
-import eg.Constants;
+import eg.ui.Fonts;
 import eg.utils.ScreenParams;
 
 /**
@@ -34,7 +34,7 @@ public class SettingsWindow {
 
    private final JTextField projDirTf       = new JTextField();
    
-   private final JTextField fileTf                = new JTextField();
+   private final JTextField fileTf          = new JTextField();
    private final JTextField sourcesDirTf    = new JTextField();
    private final JTextField execDirTf       = new JTextField();
    private final JTextField cmdArgsTf       = new JTextField();
@@ -510,8 +510,8 @@ public class SettingsWindow {
 
    private JPanel holdLbAndTf(JLabel lb, JTextField tf) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-      lb.setFont(eg.Constants.SANSSERIF_BOLD_8);
-      tf.setFont(eg.Constants.SANSSERIF_PLAIN_8);
+      lb.setFont(Fonts.SANSSERIF_BOLD_8);
+      tf.setFont(Fonts.SANSSERIF_PLAIN_8);
       tf.setPreferredSize(DIM_TF);
       pnl.add(lb);
       pnl.add(tf);
@@ -521,7 +521,7 @@ public class SettingsWindow {
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       JLabel label = new JLabel(title);
-      label.setFont(Constants.SANSSERIF_BOLD_8);
+      label.setFont(Fonts.SANSSERIF_BOLD_8);
       pnl.add(label);
       pnl.add(checkBox);
       return pnl;
@@ -534,7 +534,6 @@ public class SettingsWindow {
       JTabbedPane tb = null;
       if (useCmdOptions || useCmdArgs) {
          tb = new JTabbedPane();
-         tb.setFont(Constants.SANSSERIF_PLAIN_8);
          tb.add("Run", commandPnl());
       }
       if (buildNameLabel != null || extensionsLabel != null) {
