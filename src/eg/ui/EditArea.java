@@ -1,14 +1,10 @@
 package eg.ui;
 
-import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.print.*;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-
-import java.text.MessageFormat;
 
 import javax.swing.JTextPane;
 import javax.swing.JPanel;
@@ -16,14 +12,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
 
+import javax.swing.border.LineBorder;
+
 import javax.swing.text.DefaultCaret;
 
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
-
 //--Eadgyth--//
-import eg.Constants;
-import eg.utils.FileUtils;
+import eg.BackgroundTheme;
 import eg.utils.ScreenParams;
 
 /**
@@ -34,32 +28,21 @@ import eg.utils.ScreenParams;
  */
 public final class EditArea {
 
-   private final static LineBorder WHITE_BORDER
-         = new LineBorder(Color.WHITE, 5);
+   private final static BackgroundTheme THEME = BackgroundTheme.givenTheme();
 
-   private final JPanel content = new JPanel(new BorderLayout());
+   private final static LineBorder AREA_BORDER
+         = new LineBorder(THEME.background(), 5);
+
+   private final JPanel content = UIComponents.grayBorderedPanel();
    private final JTextPane textArea = new JTextPane();
    private final JTextPane lineNrArea = new JTextPane();
    private final JPanel disabledWordwrapPnl = new JPanel(new BorderLayout());
-   private final JPanel enabledWordwrapPnl = new JPanel();
-   private final JScrollPane wordwrapScoll = new JScrollPane(
-         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-   private final JScrollPane noWordwrapScroll = new JScrollPane(
-         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-   private final JScrollPane linkedLineNrScroll = new JScrollPane(
-         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
+   private final JScrollPane scroll = UIComponents.scrollPane();
    private final JScrollPane lineNrScroll = new JScrollPane(
-         JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-         JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
    private boolean isWordwrap;
-   private int scrollPos;
 
    /**
     * @param isWordwrap  true to enable, false to disable wordwrap
@@ -72,12 +55,11 @@ public final class EditArea {
          String font, int fontSize) {
 
       removeShortCuts();
-      initEditAreaPnl();
+      content.setLayout(new BorderLayout());
+      content.add(scroll, BorderLayout.CENTER);
       initTextArea();
       initLineNrArea();
-      initLinkedLineNrScrolling();
-      initWordwrapScrolling();
-      initNoWordwrapScrolling();
+      initLineNrScrollPane();
       setFont(font, fontSize);
       if (isWordwrap) {
          enableWordwrap();
@@ -123,10 +105,9 @@ public final class EditArea {
    }
 
    /**
-    * Gets this implemented method that is specified in
-    * <code>LineNrWidthAdaptable</code>
+    * Gets this <code>LineNrWidthAdaptable</code>
     *
-    * @return  the implemented method
+    * @return  the LineNrWidthAdaptable
     */
    public LineNrWidthAdaptable lineNrWidth() {
       return (i, j) -> adaptLineNrWidth(i, j);
@@ -190,125 +171,86 @@ public final class EditArea {
     * @param fontSize  the font size
     */
    public void setFont(String font, int fontSize) {
-      Font fontNew = new Font(font, Font.PLAIN, ScreenParams.scaledSize(fontSize));
-      lineNrArea.setFont(fontNew);
-      textArea.setFont(fontNew);
+      Font f = new Font(font, Font.PLAIN, ScreenParams.scaledSize(fontSize));
+      lineNrArea.setFont(f);
+      textArea.setFont(f);
       revalidate();
-   }
-
-   /**
-    * Prints the text content in this text area to a printer
-    */
-   public void print() {
-      try {
-         MessageFormat footer = new MessageFormat("Page {0}");
-         textArea.print(null, footer, true, null, null, false);
-      } catch (PrinterException e) {
-         FileUtils.log(e);
-      }
    }
 
    //
    //--private--/
    //
-
+   
    private void showLineNumbersImpl() {
-      removeCenterComponent();
+      int pos = scroll.getVerticalScrollBar().getValue();
       disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
-      linkedLineNrScroll.setViewportView(disabledWordwrapPnl);
+      scroll.setViewportView(disabledWordwrapPnl);
       content.add(lineNrScroll, BorderLayout.WEST);
-      content.add(linkedLineNrScroll, BorderLayout.CENTER);
-      setScrollPos(linkedLineNrScroll);
+      setScrollPos(pos);
       textArea.requestFocusInWindow();
       revalidate();
       isWordwrap = false;
    }
-
+   
    private void hideLineNumbersImpl() {
+      int pos = scroll.getVerticalScrollBar().getValue();
       content.remove(lineNrScroll);
-      removeCenterComponent();
       disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
-      noWordwrapScroll.setViewportView(disabledWordwrapPnl);
-      content.add(noWordwrapScroll, BorderLayout.CENTER);
-      setScrollPos(noWordwrapScroll);
+      scroll.setViewportView(disabledWordwrapPnl);
+      setScrollPos(pos);
       textArea.requestFocusInWindow();
       revalidate();
       isWordwrap = false;
    }
-
+   
    private void enableWordwrapImpl() {
+      int pos = scroll.getVerticalScrollBar().getValue();
       content.remove(lineNrScroll);
-      removeCenterComponent();
-      wordwrapScoll.setViewportView(textArea);
-      content.add(wordwrapScoll, BorderLayout.CENTER);
-      setScrollPos(wordwrapScoll);
+      scroll.setViewportView(textArea);
+      setScrollPos(pos);
       textArea.requestFocusInWindow();
       revalidate();
       isWordwrap = true;
    }
-
+   
+   private void revalidate() {
+      content.revalidate();
+      content.repaint();
+   }
+   
    private void adaptLineNrWidth(int prevLineNr, int lineNr) {
       if ((int) Math.log10(prevLineNr) - (int) Math.log10(lineNr) != 0) {
          revalidate();
       }
    }
 
-   private void revalidate() {
-      content.revalidate();
-      content.repaint();
-   }
-
-   private void removeCenterComponent() {
-      BorderLayout layout = (BorderLayout) content.getLayout();
-      JScrollPane c = (JScrollPane) layout.getLayoutComponent(BorderLayout.CENTER);
-      if (c != null) {
-         scrollPos = c.getVerticalScrollBar().getValue();
-         content.remove(c);
-      }
-   }
-
-   private void setScrollPos(JScrollPane pane) {
-      JScrollBar bar = pane.getVerticalScrollBar();
-      bar.setValue(scrollPos);
-   }
-
-   private void initEditAreaPnl() {
-      content.setBorder(Constants.GRAY_LINE_BORDER);
+   private void setScrollPos(int pos) {
+      JScrollBar bar = scroll.getVerticalScrollBar();
+      bar.setValue(pos);
    }
 
    private void initTextArea() {
-      textArea.setBorder(WHITE_BORDER);
+      textArea.setBorder(AREA_BORDER);
+      textArea.setBackground(THEME.background());
+      textArea.setCaretColor(THEME.normalForeground());
+      textArea.setSelectionColor(THEME.selectionBackground());
+      textArea.setSelectedTextColor(THEME.normalForeground());
    }
 
    private void initLineNrArea() {
-      lineNrArea.setBorder(WHITE_BORDER);
+      lineNrArea.setBorder(AREA_BORDER);
+      lineNrArea.setBackground(THEME.background());
       lineNrArea.setEditable(false);
       lineNrArea.setFocusable(false);
       DefaultCaret caret = (DefaultCaret) lineNrArea.getCaret();
       caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
    }
 
-   private void initWordwrapScrolling() {
-      wordwrapScoll.getVerticalScrollBar().setUnitIncrement(15);
-      wordwrapScoll.setBorder(null);
-      wordwrapScoll.setViewportView(enabledWordwrapPnl);
-   }
-
-   private void initNoWordwrapScrolling() {
-      noWordwrapScroll.getVerticalScrollBar().setUnitIncrement(15);
-      noWordwrapScroll.setBorder(null);
-      noWordwrapScroll.setViewportView(disabledWordwrapPnl);
-   }
-
-   private void initLinkedLineNrScrolling() {
-      linkedLineNrScroll.getVerticalScrollBar().setUnitIncrement(15);
-      linkedLineNrScroll.setBorder(null);
-      linkedLineNrScroll.setViewportView(disabledWordwrapPnl);
+   private void initLineNrScrollPane() {
       lineNrScroll.setViewportView(lineNrArea);
-      lineNrScroll.setBorder(null);
-      lineNrScroll.setBorder(new MatteBorder(0, 0, 0, 1, Constants.GRAY));
-      lineNrScroll.getVerticalScrollBar().setModel
-            (linkedLineNrScroll.getVerticalScrollBar().getModel());
+      lineNrScroll.setBorder(UIComponents.grayMatteBorder(0, 0, 0, 1));
+      lineNrScroll.getVerticalScrollBar().setModel(
+            scroll.getVerticalScrollBar().getModel());
    }
 
    private void removeShortCuts() {
