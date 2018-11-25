@@ -1,6 +1,5 @@
 package eg.ui;
 
-import java.awt.Color;
 import java.awt.BorderLayout;
 
 import java.awt.event.ActionListener;
@@ -12,11 +11,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 
+import javax.swing.border.LineBorder;
+
 import javax.swing.event.CaretListener;
 
-//--Eadgyth--//
-import eg.Constants;
-import eg.utils.UIComponents;
+//--Eadgyth--/
+import eg.BackgroundTheme;
+import eg.FunctionalAction;
 
 /**
  * Defines the panel which contains a text area for messages and for
@@ -27,31 +28,29 @@ import eg.utils.UIComponents;
  */
 public class ConsolePanel {
 
-   private final Color areaFontColor = new Color(60, 60, 60);
-
-   private final JPanel    content  = new JPanel(new BorderLayout());
-   private final JTextArea area     = new JTextArea();
-   private final JToolBar  toolbar;
-   private final JButton   setCmdBt = new JButton("Cmd...");
-   private final JButton   runBt    = new JButton(IconFiles.RUN_CMD_ICON);
-   private final JButton   stopBt   = new JButton(IconFiles.STOP_PROCESS_ICON);
-   private final JButton   closeBt  = new JButton(IconFiles.CLOSE_ICON);
-   private final JScrollPane scroll = new JScrollPane(
-         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+   private final JPanel content;
+   private final JTextArea area = new JTextArea();
+   private final JToolBar toolbar;
+   private final JButton setCmdBt = new JButton("Cmd...");
+   private final JButton runBt = new JButton(IconFiles.RUN_CMD_ICON);
+   private final JButton stopBt = new JButton(IconFiles.STOP_PROCESS_ICON);
+   private final JButton closeBt = UIComponents.undecoratedButton();
+   private final JScrollPane scroll = UIComponents.scrollPane();
          
    private boolean isActive = false;
 
    public ConsolePanel() {
-      scroll.setViewportView(area);
-      scroll.setBorder(Constants.MATTE_TOP_LIGHT_GRAY);
-      area.setBorder(Constants.EMPTY_BORDER_5);
-      area.setFont(Constants.SANSSERIF_PLAIN_8);
-      area.setForeground(areaFontColor);
+      content = UIComponents.grayBorderedPanel();
+      content.setLayout(new BorderLayout());
+      area.setFont(Fonts.SANSSERIF_PLAIN_8);
       area.setEditable(false);
       area.setFocusable(false);
+      BackgroundTheme bt = BackgroundTheme.givenTheme();
+      area.setBackground(bt.background());
+      area.setForeground(bt.normalForeground());
+      area.setBorder(new LineBorder(bt.background(), 5));
+      scroll.setViewportView(area);
       toolbar = createToolbar();
-      content.setBorder(Constants.GRAY_LINE_BORDER);
       content.add(toolbar, BorderLayout.NORTH);
       content.add(scroll, BorderLayout.CENTER);
       setCmdBt.setEnabled(false);
@@ -69,12 +68,10 @@ public class ConsolePanel {
    }
    
    /**
-    * Sets the boolean that specifies if the console is in the active
-    * or inactive state. This text area is editable and focusable and
-    * also this stop button is enabled in the active state.
+    * Sets the active or the inactive state. Active means that text area
+    * is editable and focusable and also that this stop button is enabled.
     *
-    * @param isActive  the boolean value; true for active, false
-    * for inactive
+    * @param isActive  true for the active, false for the inactive sate
     */
    public void setActive(boolean isActive) {
       area.setEditable(isActive);
@@ -84,7 +81,7 @@ public class ConsolePanel {
    }
    
    /**
-    * Returns the boolean that indicates if the active state is set.
+    * Returns if the active state is set.
     * <p>
     * The active state should indicate that this text area is used by
     * a started process.
@@ -204,12 +201,13 @@ public class ConsolePanel {
    }
    
    /**
-    * Sets the listener for actions to close this console panel
+    * Sets the action for closing the <code>EditToolPanel</code>
+    * to this closing button
     *
-    * @param al  the {@code ActionListener}
+    * @param act  the action
     */
-   public void setCloseAct(ActionListener al) {
-      closeBt.addActionListener(al);
+   public void setClosingAct(FunctionalAction act) {
+      closeBt.setAction(act);
    }
 
    /**
@@ -245,14 +243,13 @@ public class ConsolePanel {
 
    private JToolBar createToolbar() {
       JButton[] bts = new JButton[] {
-         setCmdBt, runBt, stopBt, closeBt
+         setCmdBt, runBt, stopBt
       };
       String[] tooltips = new String[] {
          "Enter and run a system command",
          "Run a previous system command",
-         "Quit the current process",
-         "Close the console"
+         "Quit the current process"
       };
-      return UIComponents.toolBar(bts, tooltips);
+      return UIComponents.toolBar(bts, tooltips, closeBt);
    }
 }
