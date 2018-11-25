@@ -20,6 +20,7 @@ public class ViewSetter {
    private boolean isShowLineNumbers;
    private boolean isShowToolbar;
    private boolean isShowStatusbar;
+   private int backgroundIndex;
    private int iconSizeIndex;
    private int lafIndex;
 
@@ -33,7 +34,7 @@ public class ViewSetter {
       this.vsw = vsw;
       this.f = f;
       initSettings();
-      vsw.setCancelAct(e -> undoSettings());   
+      vsw.setCancelAct(e -> undoSettings());
       vsw.setDefaultCloseAction(DefaultClosing);
    }
 
@@ -51,11 +52,11 @@ public class ViewSetter {
          isShowLineNumbers = show;
          state = show ? "show" : "hide";
          prefs.setProperty("LineNumbers", state);
-      }    
+      }
       show = vsw.isShowToolbar();
       if (show != isShowToolbar) {
          mw.showToolbar(show);
-         isShowToolbar = show; 
+         isShowToolbar = show;
          state = isShowToolbar ? "show" : "hide";
          prefs.setProperty("Toolbar", state);
       }
@@ -65,6 +66,12 @@ public class ViewSetter {
          isShowStatusbar = show;
          state = isShowStatusbar ? "show" : "hide";
          prefs.setProperty("Statusbar", state);
+      }
+      index = vsw.backgroundIndex();
+      if (index != backgroundIndex) {
+         backgroundIndex = index;
+         prefs.setProperty("Background",
+             ViewSettingWin.BKGRD_OPT[backgroundIndex]);
       }
       index = vsw.iconSizeIndex();
       if (index != iconSizeIndex) {
@@ -78,42 +85,52 @@ public class ViewSetter {
          prefs.setProperty("LaF", ViewSettingWin.LAF_OPT[lafIndex]);
       }
    }
-   
+
    private void initSettings() {
       isShowLineNumbers = "show".equals(prefs.getProperty("LineNumbers"));
       vsw.setShowLineNumbers(isShowLineNumbers);
       f.showLineNumbers(isShowLineNumbers);
-      
+
       isShowToolbar =  "show".equals(prefs.getProperty("Toolbar"));
       vsw.setShowToolbar(isShowToolbar);
       mw.showToolbar(isShowToolbar);
-      
+
       isShowStatusbar =  "show".equals(prefs.getProperty("Statusbar"));
       vsw.setShowStatusbar(isShowStatusbar);
       mw.showStatusbar(isShowStatusbar);
-      
+
       vsw.setIconSize(prefs.getProperty("IconSize"));
       iconSizeIndex = vsw.iconSizeIndex();
-      
+
       String laf = prefs.getProperty("LaF");
       if (laf.length() > 0) {
          vsw.setLaf(laf);
       }
       else {
          vsw.setLaf(ViewSettingWin.LAF_OPT[1]);
-      }      
+      }
       lafIndex = vsw.lafIndex();
+
+      String bkgrd = prefs.getProperty("Background");
+      if (bkgrd.length() > 0) {
+         vsw.setBackground(bkgrd);
+      }
+      else {
+         vsw.setBackground(ViewSettingWin.BKGRD_OPT[0]);
+      }
+      backgroundIndex = vsw.backgroundIndex();
    }
-   
+
    private void undoSettings() {
       vsw.setShowLineNumbers(isShowLineNumbers);
       vsw.setShowToolbar(isShowToolbar);
       vsw.setShowStatusbar(isShowStatusbar);
+      vsw.setBackground(backgroundIndex);
       vsw.setIconSize(iconSizeIndex);
       vsw.setLaf(lafIndex);
       vsw.setVisible(false);
-   }      
-   
+   }
+
    private final WindowAdapter DefaultClosing = new WindowAdapter() {
 
       @Override
