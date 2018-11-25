@@ -17,16 +17,14 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import javax.swing.border.EmptyBorder;
-
 //--Eadgyth--/
-import eg.Constants;
 import eg.Languages;
 import eg.Edit;
 import eg.Formatter;
 import eg.FunctionalAction;
 import eg.Prefs;
 import eg.ui.EditArea;
+import eg.ui.UIComponents;
 import eg.ui.menu.FormatMenu;
 import eg.ui.menu.LanguageMenu;
 import eg.document.EditableDocument;
@@ -34,12 +32,11 @@ import eg.document.EditingStateReadable;
 import eg.utils.ScreenParams;
 
 /**
- * An editor to edit and view text in a separate text area
+ * An editor panel to edit and view text in a separate text area
  */
 public class ExchangeEditor implements AddableEditTool {
 
    private final JPanel content = new JPanel(new BorderLayout());
-   private final JMenuBar menuBar = new JMenuBar();
    private final JMenuItem loadItm = new JMenuItem("Load file content...");
    private final JMenuItem copyFromItm = new JMenuItem();
    private final JMenuItem copyToItm = new JMenuItem();
@@ -55,6 +52,7 @@ public class ExchangeEditor implements AddableEditTool {
    private final JMenuItem clearItm = new JMenuItem("Clear");
    private final LanguageMenu languageMenu = new LanguageMenu();
    private final FormatMenu formatMenu  = new FormatMenu();
+   private final JButton closeBt = UIComponents.undecoratedButton();
 
    private final Formatter format = new Formatter(1, "Exchg");
    private final Prefs prefs = new Prefs();
@@ -80,13 +78,8 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    @Override
-   public void addClosingButton(JButton closeBt) {
-      menuBar.add(Box.createGlue());
-      menuBar.add(closeBt);
-      closeBt.setContentAreaFilled(false);
-      closeBt.setBorder(new EmptyBorder(5, 7, 5, 7));
-      closeBt.setToolTipText("Close the exchange editor");
-      closeBt.setFocusable(false);
+   public void addClosingAction(FunctionalAction act) {
+      closeBt.setAction(act);
    }
 
    @Override
@@ -131,9 +124,8 @@ public class ExchangeEditor implements AddableEditTool {
    //
 
    private void initContentPnl() {
-      editorPnl.setBorder(Constants.MATTE_TOP_GREY);
-      initMenuBar();
-      content.add(menuBar, BorderLayout.NORTH);
+      editorPnl.setBorder(null);
+      content.add(menuBar(), BorderLayout.NORTH);
       content.add(editorPnl, BorderLayout.CENTER);
       content.setMinimumSize(new Dimension(ScreenParams.scaledSize(150), 0));
       setActions();
@@ -141,14 +133,15 @@ public class ExchangeEditor implements AddableEditTool {
       enableCutCopy(false);
    }
 
-   private void initMenuBar() {
-      menuBar.setOpaque(false);
-      menuBar.setBorder(null);
-      menuBar.setPreferredSize(new Dimension(0, Constants.BAR_HEIGHT));
-      menuBar.add(textMenu());
-      menuBar.add(adoptMenu());
-      menuBar.add(editMenu());
-      menuBar.add(formatMenu.getMenu());
+   private JMenuBar menuBar() {
+      JMenuBar mb = UIComponents.menuBar();
+      mb.add(textMenu());
+      mb.add(editMenu());
+      mb.add(formatMenu.getMenu());
+      mb.add(Box.createHorizontalGlue());
+      mb.add(closeBt);
+      mb.add(Box.createRigidArea(ScreenParams.scaledDimension(5, 0)));
+      return mb;
    }
 
    private JMenu textMenu() {

@@ -18,17 +18,19 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JLabel;
 
+import javax.swing.border.EmptyBorder;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import eg.document.EditableDocument;
 
 //--Eadgyth--/
-import eg.Constants;
-import eg.utils.UIComponents;
+import eg.FunctionalAction;
+import eg.document.EditableDocument;
+import eg.ui.Fonts;
+import eg.ui.UIComponents;
 
 /**
- * The <code>AddableEditTool</code> for finding and replacing
- * text
+ * The graphical view for the finding and replacing of text
  */
 public class Finder implements AddableEditTool {
 
@@ -38,6 +40,7 @@ public class Finder implements AddableEditTool {
    private final JButton searchBt     = new JButton("Find");
    private final JButton replaceBt    = new JButton("Replace");
    private final JButton replaceAllBt = new JButton("Replace all");
+   private final JButton closeBt      = UIComponents.undecoratedButton();
 
    private final TextSearch search = new TextSearch();
 
@@ -47,8 +50,8 @@ public class Finder implements AddableEditTool {
    }
 
    @Override
-   public void addClosingButton(JButton closeBt) {
-      content.add(toolbar(closeBt), BorderLayout.NORTH);
+   public void addClosingAction(FunctionalAction act) {
+      closeBt.setAction(act);
    }
 
    @Override
@@ -83,17 +86,13 @@ public class Finder implements AddableEditTool {
 
    private void initFinderPnl() {
       enableButtons(false);
+      content.add(toolbar(), BorderLayout.NORTH);
       content.add(controlsPnl(), BorderLayout.CENTER);
    }
 
-   private JToolBar toolbar(JButton closeBt) {
-      JButton[] bts = new JButton[] {
-         closeBt
-      };
-      String[] toolTips = new String[] {
-         "Close Finder"
-      };
-      JToolBar tb = UIComponents.toolBar(bts, toolTips);
+   private JToolBar toolbar() {
+      JButton bt = new JButton();
+      JToolBar tb = UIComponents.toolBar(null, null, closeBt);
       return tb;
    }
 
@@ -115,7 +114,7 @@ public class Finder implements AddableEditTool {
       pnl.add(replaceTf);
       pnl.add(Box.createVerticalStrut(10));
       pnl.add(buttonsPnl(replaceBt, replaceAllBt));
-      pnl.setBorder(Constants.EMPTY_BORDER_10);
+      pnl.setBorder(new EmptyBorder(10, 10, 10, 10));
       inputTf.getDocument().addDocumentListener(docListener);
       return pnl;
    }
@@ -123,8 +122,7 @@ public class Finder implements AddableEditTool {
    private JPanel labelPnl(String text) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
       JLabel lb = new JLabel(text);
-      lb.setFont(Constants.SANSSERIF_BOLD_9);
-      lb.setForeground(Constants.GRAY);
+      lb.setFont(Fonts.SANSSERIF_BOLD_8);
       pnl.add(lb);
       setSize(pnl);
       return pnl;
@@ -141,7 +139,7 @@ public class Finder implements AddableEditTool {
       group.add(downBt);
       pnl.add(upBt);
       pnl.add(downBt);
-      pnl.setBorder(UIComponents.titledBorder("Search direction"));
+      pnl.setBorder(UIComponents.lightGrayTitledBorder("Search direction"));
       setSize(pnl);
       upBt.addItemListener(e ->
          search.setUpwardSearch(e.getStateChange() == ItemEvent.SELECTED));
@@ -162,7 +160,7 @@ public class Finder implements AddableEditTool {
 
       pnl.add(cBx);
       pnl.add(cBxCase);
-      pnl.setBorder(UIComponents.titledBorder("Search options"));
+      pnl.setBorder(UIComponents.lightGrayTitledBorder("Search options"));
       setSize(pnl);
       return pnl;
    }

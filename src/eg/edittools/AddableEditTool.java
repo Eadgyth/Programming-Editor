@@ -2,9 +2,8 @@ package eg.edittools;
 
 import java.awt.Component;
 
-import javax.swing.JButton;
-
 //--Eadgyth--/
+import eg.FunctionalAction;
 import eg.document.EditableDocument;
 
 /**
@@ -18,12 +17,13 @@ import eg.document.EditableDocument;
 public interface AddableEditTool {
 
    /**
-    * Adds the button for closing the <code>EditToolPanel</code>
+    * Sets the action for closing the <code>EditToolPanel</code>
+    * to this closing button. The specified <code>act</code> contains
+    * the close icon
     *
-    * @param closeBt  the reference to the button that closes
-    * {@link eg.ui.EditToolPanel} in the main window
+    * @param act  the action
     */
-   public void addClosingButton(JButton closeBt);
+   public void addClosingAction(FunctionalAction act);
 
    /**
     * Returns the current width of this <code>Component</code>. May define
