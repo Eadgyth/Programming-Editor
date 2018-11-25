@@ -19,7 +19,7 @@ public class InfoWin {
 
    private final static String INFO
          = "<html>"
-         + "Version 1.0.6.3<br>"
+         + "Version to test since 1.0.6.3<br>"
          + "Malte Bussiek<br>"
          + "https://eadgyth.github.io/Programming-Editor"
          + "</html>";
