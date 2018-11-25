@@ -16,9 +16,6 @@ import javax.swing.Box;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
-//--Eadgyth--/
-import eg.Constants;
-
 /**
  * The dialog for setting the font and font size
  */
@@ -150,9 +147,9 @@ public class FontSettingWin {
 
    private JPanel comboBoxPnl(JComboBox<String> comboBox, String title) {
       comboBox.setFocusable(false);
-      comboBox.setFont(Constants.VERDANA_PLAIN_8);
+      comboBox.setFont(Fonts.VERDANA_PLAIN_8);
       JLabel titleLb = new JLabel(title);
-      titleLb.setFont(Constants.SANSSERIF_BOLD_9);
+      titleLb.setFont(Fonts.SANSSERIF_BOLD_9);
       JPanel pnl = new JPanel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
       pnl.add(titleLb);
