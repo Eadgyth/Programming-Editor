@@ -11,35 +11,34 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 /**
  * A modified appearance for the <code>JTabbedPane</code>.
- * <p>The background of a selected tab is white; other tabs are in 'normal'
+ * <p>The background of a selected tab is yellow; other tabs are in 'normal'
  * gray.<br>
- * The tab height can be defined in {@link #setHeight(int)} and the selected
+ * The tab height can be defined by {@link #setHeight(int)} and the selected
  * tab is not elevated.<br>
  * Tabs are rectangular and aligned at the left edge.<br>
  * The content area insets are set to zero and a content border is not
- * painted. The tab area insets are zero except for the lower end where the
- * inset value is one point when the tab bar is visible.<br>
+ * painted. The tab area insets are also set to zero.<br>
  * The tab bar is visible or hidden depending on the value passed in
  * {@link #setShowTabs(boolean)}.
  */
 public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
 
-   private final static Color BORDER_GRAY = new Color(100, 100, 100);
-   private final static Color LIGHT_GRAY = new Color(150, 150, 200);
-   private final static Insets TAB_INSETS_BOTTOM = new Insets(0, 0, 1, 0);
+   private final static Color BORDER_BLUE = new Color(150, 150, 150);
+   private final static Color SEL_TAB_YELLOW = new Color(245, 245, 190);
+   private final static Insets TAB_INSETS_BOTTOM = new Insets(0, 0, 0, 0);
    private final static Insets TAB_INSETS_ZERO = new Insets(0, 0, 0, 0);
    private final static Insets CONTENT_INSETS = new Insets(0, 0, 0, 0);
 
    private boolean isShowTabs = true;
    private int tabHeight;
-   
+
    /**
     * Sets the height of the tabs
     *
     * @param height  the height
     */
    public void setHeight(int height) {
-      tabHeight = height;      
+      tabHeight = height;
    }
 
    /**
@@ -71,14 +70,13 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
 
       y = 0;
       if (tabIndex == 0 && x != 0) {
-        w = w + x;
-        x = 0;
+         w = w + x;
+         x = 0;
       }
-      g.setColor(BORDER_GRAY);
+      g.setColor(BORDER_BLUE);
       g.drawLine(x, y , x + w, y);
       g.drawLine(x, y, x, y + h);
       g.drawLine(x + w, y, x + w, y + h);
-      g.drawLine(x, y + tabHeight, x + w, y + tabHeight);
    }
 
    @Override
@@ -91,16 +89,16 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
 
       y = 0;
       if (tabIndex == 0 && x != 0) {
-        w = w + x;
-        x = 0;
+         w = w + x;
+         x = 0;
       }
-      Polygon shape = new Polygon(); 
+      Polygon shape = new Polygon();
       shape.addPoint(x, y);
       shape.addPoint(x, y + h);
       shape.addPoint(x + w, y + h);
       shape.addPoint(x + w, y);
       if (isSelected) {
-         g.setColor(Color.WHITE);
+         g.setColor(SEL_TAB_YELLOW);
       }
       else {
          g.setColor(UIManager.getColor("Panel.background"));
