@@ -1,6 +1,6 @@
 package eg.syntax;
 
-import eg.document.Attributes;
+import eg.document.styledtext.Attributes;
 
 /**
  * Syntax highlighting for Perl

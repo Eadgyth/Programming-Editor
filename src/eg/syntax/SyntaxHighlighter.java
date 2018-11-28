@@ -4,8 +4,8 @@ import javax.swing.text.SimpleAttributeSet;
 
 //--Eadgyth--/
 import eg.utils.LinesFinder;
-import eg.document.StyledText;
-import eg.document.Attributes;
+import eg.document.styledtext.StyledText;
+import eg.document.styledtext.Attributes;
 
 /**
  * The syntax highlighting
@@ -63,7 +63,7 @@ public class SyntaxHighlighter {
    /**
     * Highlights text elements in a section that may be multiline. The
     * section initially consists of the completed lines that contain
-    * <code>change</code> and begins with the line that contains
+    * <code>change</code> and it begins with the line that contains
     * <code>chgPos</code>.
     *
     * @param change  the change to the text
