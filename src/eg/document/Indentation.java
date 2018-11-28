@@ -1,5 +1,8 @@
 package eg.document;
 
+//--Eadgyth--/
+import eg.document.styledtext.EditableText;
+
 /**
  * The indentation which works with spaces.
  * <p>
