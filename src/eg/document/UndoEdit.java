@@ -7,6 +7,9 @@ import java.awt.event.KeyAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+//--Eadgyth--/
+import eg.document.styledtext.EditableText;
+
 /**
  * The undo and redo editing.
  * <p>

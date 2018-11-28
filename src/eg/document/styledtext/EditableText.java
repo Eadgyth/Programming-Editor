@@ -1,4 +1,4 @@
-package eg.document;
+package eg.document.styledtext;
 
 import javax.swing.JTextPane;
 
@@ -20,6 +20,8 @@ public class EditableText extends StyledText {
    private final static BackgroundTheme THEME = BackgroundTheme.givenTheme();
    private final static Attributes ATTR = new Attributes(THEME);
    private final static SimpleAttributeSet SET = new SimpleAttributeSet();
+
+   private final JTextPane textArea;
    
    private String text = "";
    
@@ -33,7 +35,8 @@ public class EditableText extends StyledText {
     * @param textArea  the JTextPane that displays the text
     */
    public EditableText(JTextPane textArea) {
-      super(textArea, SET);
+      super(textArea.getStyledDocument(), SET);
+      this.textArea = textArea;
    }
    
    @Override
@@ -56,7 +59,7 @@ public class EditableText extends StyledText {
     */
    public void updateTextCopy() {
       try {
-         text = doc.getText(0, doc.getLength());
+         text = doc().getText(0, doc().getLength());
       }
       catch (BadLocationException e) {
          FileUtils.log(e);
@@ -69,18 +72,33 @@ public class EditableText extends StyledText {
     * @param s  the string to append
     */
    public void append(String s) {
-      insert(doc.getLength(), s);
+      insert(doc().getLength(), s);
+   }
+   
+   /**
+    * Inserts a string
+    *
+    * @param pos  the position where the string is inserted
+    * @param s  the string
+    */
+   public final void insert(int pos, String s) {
+      try {
+         doc().insertString(pos, s, null);
+      }
+      catch (BadLocationException e) {
+         FileUtils.log(e);
+      }
    }
 
    /**
     * Removes text
     *
-    * @param pos  the position where the text to be removed starts
-    * @param length  the length of the text to be removed
+    * @param pos  the position where the removed starts
+    * @param length  the length of the removed text
     */
    public void remove(int pos, int length) {
       try {
-         doc.remove(pos, length);
+         doc().remove(pos, length);
       }
       catch (BadLocationException e) {
          FileUtils.log(e);
@@ -93,6 +111,15 @@ public class EditableText extends StyledText {
     * @param dl  the DocumentListener
     */
    public void addDocumentListener(DocumentListener dl) {
-      doc.addDocumentListener(dl);
+      doc().addDocumentListener(dl);
+   }
+   
+   /**
+    * Gets the text area that displays the text
+    *
+    * @return  the text area
+    */
+   public JTextPane textArea() {
+      return textArea;
    }
 }
