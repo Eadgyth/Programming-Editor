@@ -11,13 +11,12 @@ import javax.swing.event.CaretEvent;
 import eg.Languages;
 import eg.utils.LinesFinder;
 import eg.syntax.*;
+import eg.document.styledtext.EditableText;
 
 /**
  * The mediation between the editing of the document by typing in,
  * removing, pasting or replacing text and the actions that happen
- * in response.
- * <p>
- * Created in {@link EditableDocument}
+ * in response
  */
 public class TypingEdit {
 
@@ -28,11 +27,12 @@ public class TypingEdit {
    private final UndoEdit undo;
 
    private boolean isDocUpdate = true;
-   private boolean isCodeEditing = false;
+   private boolean isCodeUpdate = false;
+   private boolean isAddToUndo = true;
+   
    private boolean isInsert;
    private int chgPos = 0;
    private String change = "";
-   private boolean isAddToUndo = true;
    
    private EditingStateReadable esr;
    private boolean inChangeState = false;
@@ -57,9 +57,9 @@ public class TypingEdit {
    }
 
    /**
-    * Sets the reference to <code>EditingStateReadable</code>
+    * Sets the <code>EditingStateReadable</code>
     *
-    * @param esr  the {@link EditingStateReadable}
+    * @param esr  the EditingStateReadable
     */
    public void setEditingStateReadable(EditingStateReadable esr) {
       if (this.esr != null) {
@@ -79,7 +79,6 @@ public class TypingEdit {
       isDocUpdate = b;
       if (b) {
          updateText();
-         txt.textArea().setCaretPosition(0);
       }
    }
 
@@ -91,19 +90,53 @@ public class TypingEdit {
    public void setEditingMode(Languages lang) {
       if (lang == Languages.NORMAL_TEXT) {
          txt.resetAttributes();
-         isCodeEditing = false;
+         isCodeUpdate = false;
       }
       else {
          Highlighter hl = HighlighterSelector.createHighlighter(lang);
          syntax.setHighlighter(hl);
          syntax.highlight();
-         isCodeEditing = true;
+         isCodeUpdate = true;
+      }
+   }
+   
+   /**
+    * Makes a text change
+    *
+    * @param tc  the TextChange
+    * @param highlight  true to do syntax highlighlighting after the change
+    */
+   public void editText(TextChange tc, boolean highlight) {
+      boolean isCodeUpdateHelper = isCodeUpdate;
+      isCodeUpdate = false;
+      tc.edit(highlight);
+      isCodeUpdate = isCodeUpdateHelper;
+   }
+
+   /**
+    * Highlights text in a section around the position where a change
+    * happened. The exact range is defined by the {@link Highlighter}
+    * for a given language.
+    */
+   public void highlightAtPos() {
+      syntax.highlight(chgPos);
+      if (isInsert && change.equals("\n")) {
+         syntax.highlight(chgPos + 1);
+      }
+   }
+   
+   /**
+    * Highlights text in a section that may be multiline. The exact
+    * range is defined by the {@link Highlighter} for a given language.
+    */
+   public void highlightInsertion() {
+      if (change.length() > 0) {
+         syntax.highlight(change, chgPos);
       }
    }
 
    /**
-    * Resets the state which indicates that document text has been
-    * changed
+    * Resets the state which indicates that the text has been changed
     */
    public void resetInChangeState() {
       inChangeState = false;
@@ -129,71 +162,13 @@ public class TypingEdit {
    }
 
    /**
-    * Disables or re-enables the addition of breakpoint that define
-    * undoable units.
+    * Disables or re-enables adding breakpoint to define undoable units
     *
     * @param b  true to disable, false to re-enable
     * @see UndoEdit #disableBreakpointAdding(boolean)
     */
    public void disableBreakpointAdding(boolean b) {
       undo.disableBreakpointAdding(b);
-   }
-
-   /**
-    * Inserts the specified string at the specified position
-    *
-    * @param pos  the position
-    * @param s  the string
-    */
-   public void insert(int pos, String s) {
-      boolean isCodeEditingHelper = isCodeEditing;
-      isCodeEditing = false;
-      txt.insert(pos, s);
-      if (isCodeEditingHelper) {
-         highlightInsertion();
-      }
-      isCodeEditing = isCodeEditingHelper;
-   }
-
-   /**
-    * Replaces a section of the document with the specified string
-    *
-    * @param pos  the position where the section to be replaced starts
-    * @param length  the length of the section
-    * @param s  the String to insert
-    */
-   public void replace(int pos, int length, String s) {
-      boolean isCodeEditingHelper = isCodeEditing;
-      isCodeEditing = false;  
-      if (length != 0) {
-         txt.remove(pos, length);
-         if (isCodeEditingHelper) {
-            highlightAtPos();
-         }
-      }
-      txt.insert(pos, s);
-      if (isCodeEditingHelper) {
-         highlightInsertion();
-      }
-      isCodeEditing = isCodeEditingHelper;
-   }
-
-   /**
-    * Removes a section from the document
-    *
-    * @param pos  the position where the section starts
-    * @param length  the length of the section
-    * @param highlight  the boolean value that is true to update
-    * syntax highlighting after the removal
-    */
-   public void remove(int pos, int length, boolean highlight) {
-      boolean isCodeEditingHelper = isCodeEditing;
-      isCodeEditing = highlight;
-      txt.remove(pos, length);
-      if (isCodeEditingHelper) {
-         highlightAtPos();
-      }
-      isCodeEditing = isCodeEditingHelper;
    }
 
    /**
@@ -233,7 +208,7 @@ public class TypingEdit {
 
    private void updateAfterUndoRedo() {
       updateUndoableState();
-      if (isCodeEditing) {
+      if (isCodeUpdate) {
          if (isInsert) {          
             syntax.highlight();
          }
@@ -248,19 +223,6 @@ public class TypingEdit {
       txt.updateTextCopy();
       lineNum.updateLineNumber(txt.text());
       updateInChangeState();
-   }
-   
-   private void highlightAtPos() {
-      syntax.highlight(chgPos);
-      if (isInsert && change.equals("\n")) {
-         syntax.highlight(chgPos + 1);
-      }
-   }
-
-   private void highlightInsertion() {
-      if (change.length() > 0) {
-         syntax.highlight(change, chgPos);
-      }
    }
 
    private void updateInChangeState() {
@@ -345,7 +307,7 @@ public class TypingEdit {
          if (isAddToUndo) {
             undo.addEdit(change, chgPos, isInsert);
             updateUndoableState();
-            if (isCodeEditing) {
+            if (isCodeUpdate) {
                EventQueue.invokeLater(() -> highlightAtPos());
                EventQueue.invokeLater(() -> indent.adjustIndent(chgPos));
             }
@@ -364,7 +326,7 @@ public class TypingEdit {
          if (isAddToUndo) {
             undo.addEdit(change, chgPos, isInsert);
             updateUndoableState();   
-            if (isCodeEditing) {
+            if (isCodeUpdate) {
                EventQueue.invokeLater(() -> highlightAtPos());
             }
          }

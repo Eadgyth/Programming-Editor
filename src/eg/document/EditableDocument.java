@@ -2,8 +2,6 @@ package eg.document;
 
 import java.awt.EventQueue;
 
-import java.awt.print.PrinterException;
-
 import javax.swing.JTextPane;
 
 import java.io.File;
@@ -20,6 +18,8 @@ import eg.ui.EditArea;
 import eg.syntax.SyntaxHighlighter;
 import eg.syntax.Highlighter;
 import eg.syntax.HighlighterSelector;
+import eg.document.styledtext.EditableText;
+import eg.document.styledtext.PrintableText;
 
 /**
  * Represents the document that is edited
@@ -100,7 +100,7 @@ public final class EditableDocument {
    public void setFocused() {
       txt.textArea().requestFocusInWindow();
    }
-   
+
    /**
     * Reads the current editing state
     *
@@ -210,6 +210,7 @@ public final class EditableDocument {
       type.enableDocUpdate(false);
       displayFileContentImpl(f);
       type.enableDocUpdate(true);
+      textArea().setCaretPosition(0);
       setEditingMode(f);
    }
 
@@ -300,34 +301,37 @@ public final class EditableDocument {
     * @param s  the string
     */
    public void insert(int pos, String s) {
-      type.insert(pos, s);
+      TextChange tc = b -> insertImpl(pos, s, b);
+      boolean highlight = lang != Languages.NORMAL_TEXT;
+      type.editText(tc, highlight);
    }
-
-    /**
-    * Replaces a section with the specified string
-    *
-    * @param pos  the position where the section to be replaced starts
-    * @param length  the length of the section
-    * @param s  the string
-    */
-   public void replace(int pos, int length, String s) {
-      type.replace(pos, length, s);
-   }
-
+   
    /**
     * Removes a section from the document
     *
     * @param pos  the position where the section starts
     * @param length  the length of the section
     * @param highlight  true to update syntax highlighting after the
-    * removal, false otherwise. Is ignored if this language is not a
-    * coding language
+    * removal, false otherwise. Is ignored if this language is normal
+    * text
     */
    public void remove(int pos, int length, boolean highlight) {
-      if (lang == Languages.NORMAL_TEXT) {
-         highlight = false;
-      }
-      type.remove(pos, length, highlight);
+      TextChange tc = b -> removeImpl(pos, length, b);
+      highlight = highlight && lang != Languages.NORMAL_TEXT;
+      type.editText(tc, highlight);
+   }
+
+   /**
+    * Replaces a section with the specified string
+    *
+    * @param pos  the position where the section to be replaced starts
+    * @param length  the length of the section
+    * @param s  the string
+    */   
+   public void replace(int pos, int length, String s) {
+      TextChange tc = b -> replaceImpl(pos, length, s, b);
+      boolean highlight = lang != Languages.NORMAL_TEXT;
+      type.editText(tc, highlight);
    }
 
    /**
@@ -343,24 +347,19 @@ public final class EditableDocument {
    public void redo() {
       type.redo();
    }
-   
+
    /**
     * Prints the document text to printer
     */
-   public void print() {
-      PrintableText printTxt = new PrintableText(docText(), textArea().getFont());
+    public void print() {
+      PrintableText printTxt = new PrintableText(docText());
       if (lang != Languages.NORMAL_TEXT) {
-         SyntaxHighlighter sh = new SyntaxHighlighter(printTxt);
          Highlighter hl = HighlighterSelector.createHighlighter(lang);
+         SyntaxHighlighter sh = new SyntaxHighlighter(printTxt);
          sh.setHighlighter(hl);
          sh.highlight();
       }
-      try {
-         printTxt.textArea().print();
-      }
-      catch(PrinterException e) {
-         FileUtils.log(e);
-      }
+      printTxt.print(textArea().getFont());
    }
 
    //
@@ -403,6 +402,27 @@ public final class EditableDocument {
          FileUtils.log(e);
       }
       return false;
+   }
+   
+   private void insertImpl(int pos, String s, boolean highlight) {
+      txt.insert(pos, s);
+      if (highlight) {
+         type.highlightInsertion();
+      }
+   }
+   
+   private void removeImpl(int pos, int length, boolean highlight) {
+      txt.remove(pos, length);
+      if (highlight) {
+         type.highlightAtPos();
+      }
+   }
+   
+   private void replaceImpl(int pos, int length, String s, boolean highlight) {
+      if (length != 0) {
+         removeImpl(pos, length, highlight);
+      }
+      insertImpl(pos, s, highlight);
    }
 
    private void setEditingMode(File f) {
