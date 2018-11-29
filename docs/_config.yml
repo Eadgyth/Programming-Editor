@@ -1,6 +1,6 @@
 theme: jekyll-theme-slate
 title: Eadgyth Programming-Editor
-description: A text editor for coding/programming projects
+description: A text editor for coding and programming projects
 baseurl: /Programming-Editor
 plugins:
   - jekyll-seo-tag
