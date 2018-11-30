@@ -1,14 +1,11 @@
 package eg.edittools;
 
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.EventQueue;
-
-import javax.swing.RootPaneContainer;
+import javax.swing.JFrame;
 
 import java.io.File;
 
 //--Eadgyth--/
+import eg.BusyFunction;
 import eg.FileChooser;
 import eg.Languages;
 import eg.document.EditableDocument;
@@ -108,10 +105,10 @@ public class TextExchange {
       }
       if (res == 0) {
          clear();
-         loadFile(f);
+         loadFile(() -> exchangeDoc.displayFileContent(f));
       }
    }
-   
+
    /**
     * Changes the language in the exchange editor
     *
@@ -120,7 +117,7 @@ public class TextExchange {
    public void changeLanguage(Languages lang) {
       exchangeDoc.changeLanguage(lang);
    }
-   
+
    /**
     * Sets in this exchange document the language of the source
     * document
@@ -169,20 +166,16 @@ public class TextExchange {
    //--private--/
    //
 
-   private void loadFile(File f) {
-      Component glassPane = ((RootPaneContainer) exchangeDoc.textArea()
-            .getTopLevelAncestor()).getGlassPane();
+   private void loadFile(BusyFunction bf) {
+      JFrame frame = ((JFrame) exchangeDoc.textArea()
+            .getTopLevelAncestor());
 
       try {
-         glassPane.setVisible(true);
-         glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-         exchangeDoc.displayFileContent(f);
+         bf.setBusyCursor(frame);
+         bf.run();
       }
       finally {
-         EventQueue.invokeLater(() -> {
-            glassPane.setVisible(false);
-            glassPane.setCursor(Cursor.getDefaultCursor());
-         });
+         bf.setDefaultCursor(frame);
       }
    }
 

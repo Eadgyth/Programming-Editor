@@ -1,7 +1,7 @@
 package eg.document;
 
 /**
- * The interface to edit text (remove, paste, replace) programmatically
+ * The interface make changes to the text programmatically
  */
 @FunctionalInterface
 public interface TextChange {

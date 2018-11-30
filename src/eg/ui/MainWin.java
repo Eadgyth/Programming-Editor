@@ -1,8 +1,6 @@
 package eg.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 
@@ -43,7 +41,6 @@ public class MainWin {
    private final static int DIVIDER_SIZE = 6;
 
    private final JFrame frame = new JFrame();
-   private final Component glassPane = frame.getGlassPane();
    private final MenuBar menuBar = new MenuBar();
    private final ToolBar toolBar = new ToolBar();
    private final StatusBar statusBar = new StatusBar();
@@ -329,15 +326,11 @@ public class MainWin {
     */
    public void runBusyFunction(BusyFunction bf) {
       try {
-         glassPane.setVisible(true);
-         glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+         bf.setBusyCursor(frame);
          bf.run();
       }
       finally {
-         EventQueue.invokeLater(() -> {
-            glassPane.setVisible(false);
-            glassPane.setCursor(Cursor.getDefaultCursor());
-         });
+         bf.setDefaultCursor(frame);
       }
    }
 
@@ -366,21 +359,23 @@ public class MainWin {
       tool.addClosingAction(new FunctionalAction(
             "", IconFiles.CLOSE_ICON, closeAct));
 
-      ActionListener addAct = (ActionEvent e) -> {
-         EventQueue.invokeLater(() -> {
-            if (menuBar.editMenu().isEditToolItmSelected(i)) {
-               edToolPnl.addComponent(tool.content());
-               splitHorMid.setResizeWeight(tool.resize() ? 0 : 1);
-               showEditToolPnl(true, tool.width());
-               menuBar.editMenu().unselectEditToolItmExcept(i);
-            }
-            else {
-               showEditToolPnl(false, 0);
-               menuBar.editMenu().unselectEditToolItmAt(i);
-            }
-         });
-      };
+      ActionListener addAct = e -> selectEditTool(tool, i);
       menuBar.editMenu().setEditToolsActionsAt(addAct, i);
+   }
+
+   private void selectEditTool(AddableEditTool tool, int i) {
+      EventQueue.invokeLater(() -> {
+         if (menuBar.editMenu().isEditToolItmSelected(i)) {
+            edToolPnl.addComponent(tool.content());
+            splitHorMid.setResizeWeight(tool.resize() ? 0 : 1);
+            showEditToolPnl(true, tool.width());
+            menuBar.editMenu().unselectEditToolItmExcept(i);
+         }
+         else {
+            showEditToolPnl(false, 0);
+            menuBar.editMenu().unselectEditToolItmAt(i);
+         }
+      });
    }
 
    private void showEditToolPnl(boolean b, double width) {
