@@ -58,8 +58,8 @@
 <br>
 <h2>Screenshots</h2>
 Example Java project run in the program<br>
-<img src="images/ExampleProject.png" width="600"/><br>
+<img src="images/ExampleProject.png" width="600"/><br><br>
 Html code in dark theme<br>
-<img src="images/DarkTheme.png" width="500"/><br>
+<img src="images/DarkTheme.png" width="500"/><br><br>
 Simple editor view<br>
 <img src="images/SimpleEditorView.png" width="400"/>
