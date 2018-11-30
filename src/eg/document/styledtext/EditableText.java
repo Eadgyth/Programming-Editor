@@ -40,7 +40,7 @@ public class EditableText extends StyledText {
    }
    
    @Override
-   public Attributes attributes() {
+   public final Attributes attributes() {
       return ATTR;
    }
    
@@ -50,14 +50,14 @@ public class EditableText extends StyledText {
     * by {@link #updateTextCopy}
     */
    @Override
-   public String text() {
+   public final String text() {
       return text;
    }
 
    /**
     * Updates this copy of the text in the document
     */
-   public void updateTextCopy() {
+   public final void updateTextCopy() {
       try {
          text = doc().getText(0, doc().getLength());
       }

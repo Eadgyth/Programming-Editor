@@ -46,12 +46,12 @@ public class PrintableText extends StyledText {
    }
 
    @Override
-   public Attributes attributes() {
+   public final Attributes attributes() {
       return ATTR;
    }
    
    @Override
-   public String text() {
+   public final String text() {
       return text;
    }      
    
@@ -61,7 +61,7 @@ public class PrintableText extends StyledText {
     *
     * @param font  the font
     */
-   public void print(Font font) {
+   public final void print(Font font) {
       int size = ScreenParams.invertedScaledSize(font.getSize());
       Font printFont = font.deriveFont((float) size);
       printArea.setFont(printFont);
