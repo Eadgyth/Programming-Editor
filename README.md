@@ -1,10 +1,9 @@
 This is a simple text editor, written in Java, which may also be used for writing and
-testing source code. It is then intended for smaller coding projects, maybe to develop
-application for own use or for learning purposes. Project categories in the present version
-are Java (so far worked out most), Perl, R and HTML. The code of this program is made such
-that it is possible to implement other project categories. A goal is that it should be easy
-to assign files as a programming project and that several projects, which can be switched between,
-can be defined in parallel.
+testing source code. A goal is that it should be easy to assign files as a programming
+project and that several projects, which can be switched between, can be defined in
+parallel. Project categories in the present version are Java (so far worked out most),
+Perl, R and HTML. The code of this program is made such that it is possible to implement
+other project categories.
 <p>
 DOCUMENTATION<br>
 A list of the features, screenshots, a help site and code documentation can be found under
@@ -28,8 +27,6 @@ Among the countless limitations some need mention:
     STDOUT is enabled in the script itself.</li>
 <li>The compilation of java files and the creation of an executable jar file cannot include
     external libraries if the built-in options for compiling and crating a jar are selected.</li>
-<li>The printing to a printer is rudimentary and is rather the blueprint for a printing function.
-    The font size relative to the page size is not controlled.</li>
 <li>I tested the program on Windows. There are some problems with the graphical apprearance
     when a high dpi screen is used. I would be grateful for feedback, especially from somebody
     who may have tried it on other platforms (m.bussiek@web.de).</li>
