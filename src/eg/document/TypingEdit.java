@@ -14,9 +14,8 @@ import eg.syntax.*;
 import eg.document.styledtext.EditableText;
 
 /**
- * The mediation between the editing of the document by typing in,
- * removing, pasting or replacing text and the actions that happen
- * in response
+ * The mediation between the editing of the document the actions that
+ * happen in response
  */
 public class TypingEdit {
 
@@ -29,11 +28,11 @@ public class TypingEdit {
    private boolean isDocUpdate = true;
    private boolean isCodeUpdate = false;
    private boolean isAddToUndo = true;
-   
+
    private boolean isInsert;
    private int chgPos = 0;
    private String change = "";
-   
+
    private EditingStateReadable esr;
    private boolean inChangeState = false;
    private boolean selectionState = false;
@@ -99,7 +98,7 @@ public class TypingEdit {
          isCodeUpdate = true;
       }
    }
-   
+
    /**
     * Makes a text change
     *
@@ -124,7 +123,7 @@ public class TypingEdit {
          syntax.highlight(chgPos + 1);
       }
    }
-   
+
    /**
     * Highlights text in a section that may be multiline. The exact
     * range is defined by the {@link Highlighter} for a given language.
@@ -209,7 +208,7 @@ public class TypingEdit {
    private void updateAfterUndoRedo() {
       updateUndoableState();
       if (isCodeUpdate) {
-         if (isInsert) {          
+         if (isInsert) {
             syntax.highlight();
          }
          else {
@@ -325,7 +324,7 @@ public class TypingEdit {
          updateText();
          if (isAddToUndo) {
             undo.addEdit(change, chgPos, isInsert);
-            updateUndoableState();   
+            updateUndoableState();
             if (isCodeUpdate) {
                EventQueue.invokeLater(() -> highlightAtPos());
             }
