@@ -16,7 +16,7 @@ public abstract class StyledText {
     * @param doc  the document that contains the tex
     * @param normal  the SimpleAttributeSet for normal text
     */
-   public StyledText(StyledDocument doc, SimpleAttributeSet normal) {
+   protected StyledText(StyledDocument doc, SimpleAttributeSet normal) {
       this.doc = doc;
       this.normal = normal;
       Element el = doc.getParagraphElement(0);
@@ -69,6 +69,8 @@ public abstract class StyledText {
    
    /**
     * Gets this document
+    * 
+    * @return this document
     */
    protected final StyledDocument doc() {
       return doc;
