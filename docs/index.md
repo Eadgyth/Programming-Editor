@@ -57,7 +57,9 @@
 </ul>
 <br>
 <h2>Screenshots</h2>
-A demo Java project run in the program<br>
-<img src="images/Windows10SystemLAF.png" width="600"/><br>
+Example Java project run in the program<br>
+<img src="images/ExampleProject.png" width="600"/><br>
+Html code in dark theme<br>
+<img src="images/DarkTheme.png" width="500"/><br>
 Simple editor view<br>
 <img src="images/SimpleEditorView.png" width="400"/>
