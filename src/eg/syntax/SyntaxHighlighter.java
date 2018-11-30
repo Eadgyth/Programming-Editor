@@ -32,8 +32,8 @@ public class SyntaxHighlighter {
     * @param hl  the {@link Highlighter}
     */
    public void setHighlighter(Highlighter hl) {
-      if (hl == null) {
-         throw new IllegalArgumentException("The Highlighter reference is null");
+      if (hl == null && this.hl != null) {
+         txt.resetAttributes();
       }
       this.hl = hl;
    }

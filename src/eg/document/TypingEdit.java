@@ -87,13 +87,12 @@ public class TypingEdit {
     * @param lang  the language which is a constant in {@link Languages}
     */
    public void setEditingMode(Languages lang) {
+      Highlighter hl = HighlighterSelector.createHighlighter(lang);
+      syntax.setHighlighter(hl);
       if (lang == Languages.NORMAL_TEXT) {
-         txt.resetAttributes();
          isCodeUpdate = false;
       }
       else {
-         Highlighter hl = HighlighterSelector.createHighlighter(lang);
-         syntax.setHighlighter(hl);
          syntax.highlight();
          isCodeUpdate = true;
       }
@@ -103,12 +102,11 @@ public class TypingEdit {
     * Makes a text change
     *
     * @param tc  the TextChange
-    * @param highlight  true to do syntax highlighlighting after the change
     */
-   public void editText(TextChange tc, boolean highlight) {
+   public void editText(TextChange tc) {
       boolean isCodeUpdateHelper = isCodeUpdate;
       isCodeUpdate = false;
-      tc.edit(highlight);
+      tc.edit(isCodeUpdateHelper);
       isCodeUpdate = isCodeUpdateHelper;
    }
 

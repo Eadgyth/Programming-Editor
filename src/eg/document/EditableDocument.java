@@ -301,9 +301,7 @@ public final class EditableDocument {
     * @param s  the string
     */
    public void insert(int pos, String s) {
-      TextChange tc = b -> insertImpl(pos, s, b);
-      boolean highlight = lang != Languages.NORMAL_TEXT;
-      type.editText(tc, highlight);
+      type.editText(b -> insertImpl(pos, s, b));
    }
 
    /**
@@ -316,9 +314,12 @@ public final class EditableDocument {
     * text
     */
    public void remove(int pos, int length, boolean highlight) {
-      TextChange tc = b -> removeImpl(pos, length, b);
-      highlight = highlight && lang != Languages.NORMAL_TEXT;
-      type.editText(tc, highlight);
+      if (highlight) {
+         type.editText(b -> removeImpl(pos, length, b));
+      }
+      else {
+         txt.remove(pos, length);
+      }
    }
 
    /**
@@ -329,9 +330,7 @@ public final class EditableDocument {
     * @param s  the string
     */
    public void replace(int pos, int length, String s) {
-      TextChange tc = b -> replaceImpl(pos, length, s, b);
-      boolean highlight = lang != Languages.NORMAL_TEXT;
-      type.editText(tc, highlight);
+      type.editText(b -> replaceImpl(pos, length, s, b));
    }
 
    /**

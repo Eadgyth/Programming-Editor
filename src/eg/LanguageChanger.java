@@ -3,7 +3,7 @@ package eg;
 import eg.Languages;
 
 /**
- * The interface to set the language
+ * The interface to change the language
 */
 @FunctionalInterface
 public interface LanguageChanger {
