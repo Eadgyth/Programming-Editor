@@ -10,7 +10,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.Languages;
 import eg.LanguageSelector;
 import eg.utils.FileUtils;
@@ -40,7 +40,7 @@ public final class EditableDocument {
     * Creates an <code>EditableDocument</code> that displays the content
     * of the specified file
     *
-    * @param editArea  a new {@link EditArea}
+    * @param editArea  a {@link EditArea}
     * @param f  the file
     */
    public EditableDocument(EditArea editArea, File f) {
@@ -54,7 +54,7 @@ public final class EditableDocument {
     * Creates a blank <code>EditableDocument</code> with the specified
     * language
     *
-    * @param editArea  a new {@link EditArea}
+    * @param editArea  a {@link EditArea}
     * @param lang  the language
     */
    public EditableDocument(EditArea editArea, Languages lang) {
@@ -66,7 +66,7 @@ public final class EditableDocument {
    /**
     * Creates a blank <code>EditableDocument</code>
     *
-    * @param editArea  a new {@link EditArea}
+    * @param editArea  a {@link EditArea}
     */
    public EditableDocument(EditArea editArea) {
       txt = new EditableText(editArea.textArea());
@@ -305,7 +305,7 @@ public final class EditableDocument {
       boolean highlight = lang != Languages.NORMAL_TEXT;
       type.editText(tc, highlight);
    }
-   
+
    /**
     * Removes a section from the document
     *
@@ -327,7 +327,7 @@ public final class EditableDocument {
     * @param pos  the position where the section to be replaced starts
     * @param length  the length of the section
     * @param s  the string
-    */   
+    */
    public void replace(int pos, int length, String s) {
       TextChange tc = b -> replaceImpl(pos, length, s, b);
       boolean highlight = lang != Languages.NORMAL_TEXT;
@@ -366,7 +366,7 @@ public final class EditableDocument {
    //--private--/
    //
 
-   public void displayFileContentImpl(File f) {
+   private void displayFileContentImpl(File f) {
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
          String line = br.readLine();
          String nextLine = br.readLine();
@@ -403,21 +403,21 @@ public final class EditableDocument {
       }
       return false;
    }
-   
+
    private void insertImpl(int pos, String s, boolean highlight) {
       txt.insert(pos, s);
       if (highlight) {
          type.highlightInsertion();
       }
    }
-   
+
    private void removeImpl(int pos, int length, boolean highlight) {
       txt.remove(pos, length);
       if (highlight) {
          type.highlightAtPos();
       }
    }
-   
+
    private void replaceImpl(int pos, int length, String s, boolean highlight) {
       if (length != 0) {
          removeImpl(pos, length, highlight);
