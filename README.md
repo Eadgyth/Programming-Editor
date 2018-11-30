@@ -3,7 +3,7 @@ testing source code. It is then intended for smaller coding projects, maybe to d
 application for own use or for learning purposes. Project categories in the present version
 are Java (so far worked out most), Perl, R and HTML. The code of this program is made such
 that it is possible to implement other project categories. A goal is that it should be easy
-to assign files as a coding project and that several projects, which can be switched between,
+to assign files as a programming project and that several projects, which can be switched between,
 can be defined in parallel.
 <p>
 DOCUMENTATION<br>
