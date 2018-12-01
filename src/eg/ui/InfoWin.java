@@ -19,34 +19,36 @@ public class InfoWin {
 
    private final static String INFO
          = "<html>"
-         + "Version to test since 1.0.6.3<br>"
+         + "Version 1.0.7<br>"
          + "Malte Bussiek<br>"
          + "https://eadgyth.github.io/Programming-Editor"
          + "</html>";
          
-   private final static Border EMPTY_BORDER = new EmptyBorder(5, 5, 5, 5);
+   private final static Border EMPTY_BORDER = new EmptyBorder(10, 10, 10, 10);
 
    private final JFrame  frame    = new JFrame();
-   private final JPanel  okButton = new JPanel(new FlowLayout());
-   private final JPanel  text     = new JPanel(new GridLayout(2, 1));
+   private final JPanel  textPnl  = new JPanel();
+   private final JPanel  holdTextPnl = UIComponents.grayBorderedPanel();
    private final JPanel  combine  = new JPanel(new BorderLayout());
-   private final JButton okBt     = new JButton("OK");
    private final JLabel  titleLb  = new JLabel("Eadgyth Programming-Editor");
    private final JLabel  infoLb   = new JLabel(INFO);
+   private final JPanel  okButton = new JPanel(new FlowLayout());
+   private final JButton okBt     = new JButton("OK");
 
    public InfoWin() {  
       titleLb.setFont(Fonts.SANSSERIF_BOLD_11);
       infoLb.setFont(Fonts.SANSSERIF_PLAIN_9);
       okBt.setFocusPainted(false);
       okBt.addActionListener(e -> frame.setVisible(false));
-      okButton.add(okBt);     
-      text.setBackground(Color.white);
-      text.setBorder(EMPTY_BORDER);
-      text.add(titleLb);
-      text.add(infoLb);
-
+      okButton.add(okBt);
+      textPnl.setLayout(new GridLayout(2, 1));
+      textPnl.setBackground(Color.white);
+      textPnl.add(titleLb);
+      textPnl.add(infoLb);
+      holdTextPnl.add(textPnl);
+      holdTextPnl.setBackground(Color.white);
       combine.setBorder(EMPTY_BORDER);
-      combine.add(text, BorderLayout.CENTER);
+      combine.add(holdTextPnl, BorderLayout.CENTER);
       combine.add(okButton, BorderLayout.SOUTH);
             
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -55,7 +57,7 @@ public class InfoWin {
       frame.setTitle("About");
       frame.setContentPane(combine);
       frame.setResizable(false);
-      frame.setSize(eg.utils.ScreenParams.scaledDimension(300, 150));
+      frame.setSize(eg.utils.ScreenParams.scaledDimension(250, 150));
       frame.setVisible(true);
    }
 }
