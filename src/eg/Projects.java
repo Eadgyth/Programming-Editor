@@ -261,6 +261,7 @@ public class Projects {
    public void build() {
       BusyFunction bf = () -> current.build();
       mw.runBusyFunction(bf);
+      updateFileTree();
    }
 
    //
