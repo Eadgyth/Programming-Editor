@@ -3,7 +3,6 @@ package eg.ui;
 import java.awt.Color;
 import java.awt.Dimension;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -64,10 +63,8 @@ public class UIComponents {
     * @param title  the title
     * @return a new titled border
     */
-   public static TitledBorder lightGrayTitledBorder(String title) {
-      TitledBorder tb
-            = BorderFactory.createTitledBorder(LIGHT_GRAY_LINE_BORDER, title);
-
+   public static TitledBorder titledBorder(String title) {
+      TitledBorder tb = new TitledBorder(LIGHT_GRAY_LINE_BORDER, title);
       tb.setTitleFont(Fonts.VERDANA_PLAIN_8);
       return tb;
    }

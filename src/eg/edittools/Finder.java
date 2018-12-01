@@ -139,7 +139,7 @@ public class Finder implements AddableEditTool {
       group.add(downBt);
       pnl.add(upBt);
       pnl.add(downBt);
-      pnl.setBorder(UIComponents.lightGrayTitledBorder("Search direction"));
+      pnl.setBorder(UIComponents.titledBorder("Search direction"));
       setSize(pnl);
       upBt.addItemListener(e ->
          search.setUpwardSearch(e.getStateChange() == ItemEvent.SELECTED));
@@ -160,7 +160,7 @@ public class Finder implements AddableEditTool {
 
       pnl.add(cBx);
       pnl.add(cBxCase);
-      pnl.setBorder(UIComponents.lightGrayTitledBorder("Search options"));
+      pnl.setBorder(UIComponents.titledBorder("Search options"));
       setSize(pnl);
       return pnl;
    }
