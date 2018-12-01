@@ -18,7 +18,7 @@ class HelpMenu {
    private final JMenu     menu        = new JMenu("?");
    private final JMenuItem showHelpItm = new JMenuItem("Open help site");
    private final JMenuItem showDocuItm = new JMenuItem("Open docu site");
-   private final JMenuItem aboutItm    = new JMenuItem("About Eadgyth");
+   private final JMenuItem aboutItm    = new JMenuItem("About");
    
    public HelpMenu() {
       menu.add(showHelpItm);
