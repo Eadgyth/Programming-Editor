@@ -1,16 +1,16 @@
 package eg.document;
 
 /**
- * The interface make changes to the text programmatically
+ * The interface to edit text programmatically
  */
 @FunctionalInterface
 public interface TextChange {
    
    /**
-    * Performs the text change
+    * Makes the text change and applies syntax highlighting if the
+    * specified boolean is true
     *
-    * @param highlight  true to do syntax highlighting after the
-    * text change
+    * @param highlight  true for syntax highlighting
     */
    public void edit(boolean highlight);
 }

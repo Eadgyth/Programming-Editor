@@ -8,7 +8,7 @@ import eg.ui.MainWin;
 import eg.ui.ViewSettingWin;
 
 /**
- * The view settings in the main window.
+ * The applying of view settings made in <code>ViewSettingsWin</code>
  */
 public class ViewSetter {
 
@@ -39,8 +39,8 @@ public class ViewSetter {
    }
 
    /**
-    * Applies the selections made in {@link ViewSettingWin} and sets the
-    * corresponding properties in <code>Prefs</code>
+    * Applies the selections made in <code>ViewSettingWin</code> and sets
+    * the corresponding properties in <code>Prefs</code>
     */
    public void applySettings() {
       boolean show;

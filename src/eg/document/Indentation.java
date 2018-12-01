@@ -4,9 +4,7 @@ package eg.document;
 import eg.document.styledtext.EditableText;
 
 /**
- * The indentation which works with spaces.
- * <p>
- * Created in {@link TypingEdit}
+ * The auto-indentation
  */
 public class Indentation {
 
@@ -16,7 +14,7 @@ public class Indentation {
    private int indentLength = 0;
 
    /**
-    * @param txt  the reference to {@link EditableText}
+    * @param txt  the {@link EditableText}
     */
    public Indentation(EditableText txt) {
       this.txt = txt;

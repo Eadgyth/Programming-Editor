@@ -42,8 +42,8 @@ public class TypingEdit {
    private int colNr = 1;
 
    /**
-    * @param txt  the reference to {@link EditableText}
-    * @param lineNum  the reference to {@link LineNumbers}
+    * @param txt  the {@link EditableText}
+    * @param lineNum  the {@link LineNumbers}
     */
    public TypingEdit(EditableText txt, LineNumbers lineNum) {
       this.txt = txt;

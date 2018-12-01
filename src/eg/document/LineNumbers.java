@@ -17,8 +17,6 @@ import eg.ui.LineNrWidthAdaptable;
 
 /**
  * The line numbering
- * <p>
- * Created in {@link EditableDocument}
  */
 public class LineNumbers {
 
@@ -38,9 +36,9 @@ public class LineNumbers {
    }
 
    /**
-    * @param lineNrArea  the reference to the <code>JTextPane</code> that
-    * displays the line numbers
-    * @param  lineNrWidth  the reference to {@link LineNrWidthAdaptable}
+    * @param lineNrArea  the <code>JTextPane</code> that displays line
+    * numbers
+    * @param  lineNrWidth  the {@link LineNrWidthAdaptable}
     */
    public LineNumbers(JTextPane lineNrArea, LineNrWidthAdaptable lineNrWidth) {
       this.doc = lineNrArea.getStyledDocument();
@@ -51,9 +49,9 @@ public class LineNumbers {
    }
 
    /**
-    * Updates the line numbers
+    * Updates the line numbers for the specified text
     *
-    * @param text  the text of the document
+    * @param text  the text
     */
    public void updateLineNumber(String text) {
       int nNew = LinesFinder.lineCount(text);
@@ -67,7 +65,7 @@ public class LineNumbers {
    }
 
    //
-   //--private--//
+   //--private--/
    //
 
    private void appendLineNumbers(int prevLineNr, int lineNr) {

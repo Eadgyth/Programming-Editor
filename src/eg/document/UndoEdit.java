@@ -41,8 +41,6 @@ import eg.document.styledtext.EditableText;
  * and after adding the edits to be included in the undoable unit.
  * <p>
  * Any undone edits are always removed when a new edit is added.
- * <p>
- * Created in {@link TypingEdit}.
  */
 public class UndoEdit {
 
@@ -60,7 +58,7 @@ public class UndoEdit {
    private boolean isDeleteTyped = false;
 
    /**
-    * @param txt  the reference to {@link EditableText}
+    * @param txt  the {@link EditableText}
     */
    public UndoEdit(EditableText txt) {
       this.txt = txt;
@@ -71,9 +69,8 @@ public class UndoEdit {
     * Adds an edit
     *
     * @param change  the text content of the edit
-    * @param pos  the position of the edit in the document
-    * @param isInsert  specifies if the edit is an insertion or
-    * a deletion
+    * @param pos  the position of the edit
+    * @param isInsert  true for an insertion, false for a removal
     */
    public void addEdit(String change, int pos, boolean isInsert) {
       trim();

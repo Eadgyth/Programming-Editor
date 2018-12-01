@@ -93,7 +93,7 @@ public class SyntaxHighlighter {
       private int condition = 0;
 
       /**
-       * Sets a condition for validating a found text element. The
+       * Sets a condition for validating a text element. The
        * condition is passed to {@link Highlighter#isValid} when a
        * text element is found.
        *
@@ -487,7 +487,8 @@ public class SyntaxHighlighter {
        *
        * @param blockStart  the block comment start
        * @param blockEnd  the block comment end
-       * @param skipQuoted  true to skip block marks in quotes
+       * @param skipQuoted  true to skip block marks in quotes where the
+       * quotation must be found in a line
        * @return  the boolean value that is true if inside a block
        * comment; false regardless of the position if the text change
        * is multiline
@@ -508,7 +509,8 @@ public class SyntaxHighlighter {
        *
        * @param blockStart  the block start
        * @param blockEnd  the block end
-       * @param skipQuoted  true to skip block marks in quotes
+       * @param skipQuoted  true to skip block marks in quotes where the
+       * quotation must be found in a line
        */
       public void block(String blockStart, String blockEnd, boolean skipQuoted) {
          if (!isHighlightBlockCmnt) {
