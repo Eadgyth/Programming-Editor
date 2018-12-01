@@ -348,17 +348,17 @@ public final class EditableDocument {
    }
 
    /**
-    * Prints the document text to printer
+    * Prints the document text to a printer
     */
     public void print() {
-      PrintableText printTxt = new PrintableText(docText());
+      PrintableText printTxt = new PrintableText(docText(), textArea().getFont());
       if (lang != Languages.NORMAL_TEXT) {
          Highlighter hl = HighlighterSelector.createHighlighter(lang);
          SyntaxHighlighter sh = new SyntaxHighlighter(printTxt);
          sh.setHighlighter(hl);
          sh.highlight();
       }
-      printTxt.print(textArea().getFont());
+      printTxt.print();
    }
 
    //
@@ -369,7 +369,7 @@ public final class EditableDocument {
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
          String line = br.readLine();
          String nextLine = br.readLine();
-         while (null != line) {
+         while (null != line) {           
             if (null == nextLine) {
                txt.append(line);
             }

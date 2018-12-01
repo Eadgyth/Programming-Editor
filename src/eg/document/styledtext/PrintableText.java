@@ -16,8 +16,7 @@ import eg.utils.FileUtils;
 import eg.utils.ScreenParams;
 
 /**
- * The styled text for printing to a printer with the white
- * background theme and a font size that is the inverted scaled size
+ * The styled text for printing to a printer
  */
 public class PrintableText extends StyledText {
 
@@ -36,12 +35,16 @@ public class PrintableText extends StyledText {
 
    /**
     * @param text  the text to style and to print
+    * @param font  the font
     */
-   public PrintableText(String text) {
+   public PrintableText(String text, Font font) {
       super(new DefaultStyledDocument(), SET);
       this.text = text;
       printArea = new JTextPane();
       printArea.setDocument(doc());
+      int size = ScreenParams.invertedScaledSize(font.getSize());
+      Font printFont = font.deriveFont((float) size);
+      printArea.setFont(printFont);
       printArea.setText(text);
    }
 
@@ -56,15 +59,9 @@ public class PrintableText extends StyledText {
    }      
    
    /**
-    * Prints the styled content of this <code>JTextPane</code> to a
-    * printer
-    *
-    * @param font  the font
+    * Prints this styled text
     */
-   public final void print(Font font) {
-      int size = ScreenParams.invertedScaledSize(font.getSize());
-      Font printFont = font.deriveFont((float) size);
-      printArea.setFont(printFont);
+   public final void print() {
       try {
          printArea.print();
       }
