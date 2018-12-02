@@ -27,9 +27,9 @@ Among the countless limitations some need mention:
     STDOUT is enabled in the script itself.</li>
 <li>The compilation of java files and the creation of an executable jar file cannot include
     external libraries if the built-in options for compiling and crating a jar are selected.</li>
-<li>I tested the program on Windows. There are some problems with the graphical apprearance
-    when a high dpi screen is used. I would be grateful for feedback, especially from somebody
-    who may have tried it on other platforms (m.bussiek@web.de).</li>
+<li>I tested the program on Windows. There are some problems with the graphical appearance
+    on a high dpi screen. I would be grateful for feedback, especially from somebody who may
+    have tried it on other platforms (m.bussiek@web.de).</li>
 </ul>
 <p>
 IDEAS FOR FURTHER DEVELOPEMENT<br>
