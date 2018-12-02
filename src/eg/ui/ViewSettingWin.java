@@ -235,12 +235,12 @@ public class ViewSettingWin {
       pnl.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       JPanel innerPnl = new JPanel(new GridLayout(1, 2));
       innerPnl.add(windowSettingsPnl());
-      innerPnl.add(appearenceSettingsPnl());
+      innerPnl.add(appearanceSettingsPnl());
       pnl.add(innerPnl, BorderLayout.CENTER);
       pnl.add(buttonsPanel(), BorderLayout.SOUTH);
       return pnl;
    }
-   
+
    private JPanel windowSettingsPnl() {
       JPanel pnl = new JPanel(new GridLayout(3, 1));
       pnl.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -251,10 +251,10 @@ public class ViewSettingWin {
       ctrPnl.add(pnl);
       return ctrPnl;
    }
-   
-   private JPanel appearenceSettingsPnl() {
+
+   private JPanel appearanceSettingsPnl() {
       JPanel pnl = new JPanel();
-      pnl.setBorder(UIComponents.titledBorder("Appearence"));
+      pnl.setBorder(UIComponents.titledBorder("Appearance"));
       JPanel innerPnl = new JPanel(new GridLayout(4, 1));
       JLabel lb = new JLabel("Selections take effect only after restart");
       lb.setFont(Fonts.SANSSERIF_PLAIN_8);
