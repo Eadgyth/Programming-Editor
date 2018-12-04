@@ -179,13 +179,16 @@ public class MainWin {
    }
 
    /**
-    * Enables or disables to save text
+    * Enables or disables to save text. The specified booleans each are
+    * true to enable, false to disable
     *
-    * @param b  true to enable, false to disable
+    * @param isSave  the boolean for save
+    * @param isSaveAll  the boolean for save all
     */
-   public void enableSave(boolean b) {
-      toolBar.enableSaveBt(b);
-      menuBar.fileMenu().enableSaveItm(b);
+   public void enableSave(boolean isSave, boolean isSaveAll) {
+      toolBar.enableSaveBt(isSave);
+      menuBar.fileMenu().enableSaveItm(isSave);
+      menuBar.fileMenu().enableSaveAllItm(isSaveAll);
    }
 
    /**
@@ -319,8 +322,7 @@ public class MainWin {
    }
 
    /**
-    * Executes the run method in <code>BusyFunction</code> and shows the
-    * wait curser during processing
+    * Executes the run method in <code>BusyFunction</code>
     *
     * @param bf  the function to run
     */

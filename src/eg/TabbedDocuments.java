@@ -24,10 +24,8 @@ import eg.ui.filetree.FileTree;
 /**
  * The documents in the tabs.
  * <p>
- * Documents viewed when tabs are selected are represented by objects
- * of {@link EditableDocument}. If the tabbar is set invisible (see
- * {@link ExtTabbedPane}) the viewed document is regarded as (and
- * technically is) the 'selected document'.
+ * Documents viewed in selected tabs are represented by objects
+ * of {@link EditableDocument}.
  */
 public class TabbedDocuments {
 
@@ -46,8 +44,8 @@ public class TabbedDocuments {
    private boolean isEdited = false;
 
    /**
-    * @param mw  the reference to {@link MainWin}
-    * @param format  the reference to {@link Formatter}
+    * @param mw  the {@link MainWin}
+    * @param format  the {@link Formatter}
     */
    public TabbedDocuments(MainWin mw, Formatter format) {
       this.mw = mw;
@@ -117,7 +115,7 @@ public class TabbedDocuments {
 
    /**
     * Saves the text content in the selected document to its file or
-    * uses {@link #saveAs} if no file is set in the document or a set
+    * calls {@link #saveAs} if no file is set in the document or a set
     * file no more exists.
     */
    public void save() {
@@ -130,22 +128,37 @@ public class TabbedDocuments {
     * document
     */
    public void saveAs() {
-      saveNew(true);
+      saveAs(true);
    }
 
    /**
-    * Saves the text content in all documents that have an existing file
+    * Saves the text content in all open documents and may ask to save
+    * unnamed files as a new file
     */
    public void saveAll() {
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < nTabs(); i++) {
          if (edtDoc[i].hasFile()) {
+            if (edtDoc[i].isSaved()) {
+               continue;
+            }
             if (edtDoc[i].docFile().exists()) {
                edtDoc[i].saveFile();
             }
             else {
                sb.append(edtDoc[i].filename());
                sb.append("\n");
+            }
+         }
+         else {
+            if (iTab == i) {
+               edtDoc[iTab].readEditingState();
+            }
+            else {
+               tabPane.setSelectedIndex(i);
+            }
+            if (isEdited) {
+               saveAs(true);
             }
          }
       }
@@ -161,18 +174,20 @@ public class TabbedDocuments {
     * in the document
     */
    public void saveCopy() {
-      saveNew(false);
+      saveAs(false);
    }
 
    /**
-    * Closes the selected tab and may ask to save the content of the
-    * document before closing
+    * Closes the selected tab and may ask to save changes before closing
     *
     * @param createBlankDoc  true to create a new tab with a blank
     * document if the tab to be closed is the only open tab
     */
    public void close(boolean createBlankDoc) {
-      if (createBlankDoc && isFirstTabUnnamed() && edtDoc[iTab].docLength() == 0) {
+      boolean keepFirstUnnamedTab =
+            createBlankDoc && isOnlyUnnamedTab() && edtDoc[iTab].docLength() == 0;
+
+      if (keepFirstUnnamedTab) {
          return;
       }
       boolean b;
@@ -194,11 +209,10 @@ public class TabbedDocuments {
    }
 
    /**
-    * Closes all tabs and may ask to save the content of documents
-    * before closing
+    * Closes all tabs and may ask to save changes before closing
     *
-    * @param createBlankDoc  the boolean value that is true to create
-    * a new blank document after closing
+    * @param createBlankDoc  true to create a new blank document after
+    * all tabs are closed
     */
    public void closeAll(boolean createBlankDoc) {
       int iMissing = missingFile();
@@ -233,8 +247,8 @@ public class TabbedDocuments {
    }
 
    /**
-    * Closes all tabs and may ask to save the content of documents
-    * before closing; saves properties to 'Prefs'
+    * Closes all tabs and may ask to save changes before closing;
+    * saves properties to 'Prefs'
     *
     * @return  true if all tabs were closed, false otherwise
     */
@@ -277,7 +291,7 @@ public class TabbedDocuments {
       if (isFileOpen(f) || isMaxTabNumber()) {
          return;
       }
-      if (isFirstTabUnnamed() && !isEdited) {
+      if (isOnlyUnnamedTab() && !isEdited) {
          removeTab();
       }
       if (isTabOpenable()) {
@@ -318,7 +332,7 @@ public class TabbedDocuments {
       return b;
    }
 
-   private boolean isFirstTabUnnamed() {
+   private boolean isOnlyUnnamedTab() {
       return nTabs() == 1 && !edtDoc[iTab].hasFile();
    }
 
@@ -358,15 +372,15 @@ public class TabbedDocuments {
 
    private boolean save(boolean setFile) {
       if (!edtDoc[iTab].hasFile() || !edtDoc[iTab].docFile().exists()) {
-         return saveNew(setFile);
+         return saveAs(setFile);
       }
       else {
          return edtDoc[iTab].saveFile();
       }
    }
 
-   private boolean saveNew(boolean setFile) {
-      File f = fc.fileToSave(edtDoc[iTab].filepath());
+   private boolean saveAs(boolean setFile) {
+      File f = fc.fileToSave(displayFilename());
       if (f == null) {
          return false;
       }
@@ -418,13 +432,9 @@ public class TabbedDocuments {
 
    private boolean closeUnsavedFile(int i) {
       tabPane.setSelectedIndex(i);
-      String filename = edtDoc[i].filename();
-      if (filename.isEmpty()) {
-         filename = "unnamed";
-      }
       int res = Dialogs.confirmYesNoCancel(
             "Save changes in "
-            + filename
+            + displayFilename()
             + " ?");
 
       boolean b;
@@ -447,7 +457,7 @@ public class TabbedDocuments {
 
       boolean b;
       if (JOptionPane.YES_OPTION == res) {
-         b = saveNew(false);
+         b = saveAs(false);
       }
       else {
          b = JOptionPane.NO_OPTION == res;
@@ -469,6 +479,14 @@ public class TabbedDocuments {
          iTab = tabPane.getSelectedIndex();
          changedTabUpdate();
       }
+   }
+
+   String displayFilename() {
+      String name = edtDoc[iTab].filename();
+      if (name.isEmpty()) {
+         name = "unnamed";
+      }
+      return name;
    }
 
    private int nTabs() {
@@ -508,14 +526,18 @@ public class TabbedDocuments {
    private final EditingStateReadable editState = new EditingStateReadable() {
 
       @Override
-      public void updateInChangeState(boolean b) {
-        mw.enableSave(b);
+      public void updateInChangeState(boolean isSave) {
+         boolean isSaveAll = isSave;
+         if (!isSave) {
+            isSaveAll = unsavedFile() < nTabs();
+         }
+         mw.enableSave(isSave, isSaveAll);
       }
 
       @Override
       public void updateUndoableState(boolean canUndo, boolean canRedo) {
          mw.enableUndoRedo(canUndo, canRedo);
-         isEdited = canUndo;
+         isEdited = canUndo || canRedo;
       }
 
       @Override

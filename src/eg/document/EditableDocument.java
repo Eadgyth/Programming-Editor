@@ -37,10 +37,10 @@ public final class EditableDocument {
    private Languages lang;
 
    /**
-    * Creates an <code>EditableDocument</code> that displays the content
-    * of the specified file
+    * Creates an <code>EditableDocument</code> with the specified file
+    * whose content is displayed
     *
-    * @param editArea  a {@link EditArea}
+    * @param editArea  the {@link EditArea}
     * @param f  the file
     */
    public EditableDocument(EditArea editArea, File f) {
@@ -54,7 +54,7 @@ public final class EditableDocument {
     * Creates a blank <code>EditableDocument</code> with the specified
     * language
     *
-    * @param editArea  a {@link EditArea}
+    * @param editArea  the {@link EditArea}
     * @param lang  the language
     */
    public EditableDocument(EditArea editArea, Languages lang) {
@@ -66,7 +66,7 @@ public final class EditableDocument {
    /**
     * Creates a blank <code>EditableDocument</code>
     *
-    * @param editArea  a {@link EditArea}
+    * @param editArea  the {@link EditArea}
     */
    public EditableDocument(EditArea editArea) {
       txt = new EditableText(editArea.textArea());
@@ -196,8 +196,8 @@ public final class EditableDocument {
    public boolean setFile(File f) {
       setFileParams(f);
       setEditingMode(f);
-      type.resetInChangeState();
       savedContent = txt.text();
+      type.resetInChangeState();
       return writeToFile(f);
    }
 
@@ -369,7 +369,7 @@ public final class EditableDocument {
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
          String line = br.readLine();
          String nextLine = br.readLine();
-         while (null != line) {           
+         while (null != line) {
             if (null == nextLine) {
                txt.append(line);
             }
