@@ -71,7 +71,7 @@ public class EditableText extends StyledText {
     *
     * @param s  the string to append
     */
-   public void append(String s) {
+   public final void append(String s) {
       insert(doc().getLength(), s);
    }
    
@@ -96,7 +96,7 @@ public class EditableText extends StyledText {
     * @param pos  the position where the removed starts
     * @param length  the length of the removed text
     */
-   public void remove(int pos, int length) {
+   public final void remove(int pos, int length) {
       try {
          doc().remove(pos, length);
       }
@@ -110,7 +110,7 @@ public class EditableText extends StyledText {
     *
     * @param dl  the DocumentListener
     */
-   public void addDocumentListener(DocumentListener dl) {
+   public final void addDocumentListener(DocumentListener dl) {
       doc().addDocumentListener(dl);
    }
    
@@ -119,7 +119,7 @@ public class EditableText extends StyledText {
     *
     * @return  the text area
     */
-   public JTextPane textArea() {
+   public final JTextPane textArea() {
       return textArea;
    }
 }
