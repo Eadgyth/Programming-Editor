@@ -9,9 +9,9 @@ import java.awt.Color;
 import eg.BackgroundTheme;
 
 /**
- * Defines character attributes, each with the attributes foreground
- * color and weight. The shade of blue and the forground for brackets
- * depend on the background theme.
+ * Defines character attributes, each with a foreground color and a weight.
+ * The shade of the blue foreground and the foreground for brackets depend
+ * on the background theme.
  */
 public final class Attributes {
 

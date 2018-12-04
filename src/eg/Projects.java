@@ -19,7 +19,7 @@ import eg.document.EditableDocument;
 import eg.utils.Dialogs;
 
 /**
- * The assigned projects which are reprented by objects of
+ * The assigned projects which are represented by objects of
  * <code>ProjectActions</code>.
  * <p>
  * Class maintains a <code>List</code> of assigned projects of which one

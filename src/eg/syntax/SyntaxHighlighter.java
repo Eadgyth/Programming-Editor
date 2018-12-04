@@ -338,7 +338,7 @@ public class SyntaxHighlighter {
 
       /**
        * Searches and highlights markup elements. Tag names are shown in
-       * blue, attributes in red and quoted attribute in purple.
+       * blue, attributes in red and quoted attribute values in purple.
        *
        * @param html  true for html, false for xml
        */
