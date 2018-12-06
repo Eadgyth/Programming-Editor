@@ -179,16 +179,13 @@ public class MainWin {
    }
 
    /**
-    * Enables or disables to save text. The specified booleans each are
-    * true to enable, false to disable
+    * Enables or disables to save text
     *
-    * @param isSave  the boolean for save
-    * @param isSaveAll  the boolean for save all
+    * @param isSave  true to enable, false otherwise
     */
-   public void enableSave(boolean isSave, boolean isSaveAll) {
+   public void enableSave(boolean isSave) {
       toolBar.enableSaveBt(isSave);
       menuBar.fileMenu().enableSaveItm(isSave);
-      menuBar.fileMenu().enableSaveAllItm(isSaveAll);
    }
 
    /**

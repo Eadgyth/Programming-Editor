@@ -82,15 +82,6 @@ public class FileMenu {
       saveItm.setEnabled(b);
    }
 
-   /**
-    * Enables or disables the item for save all actions
-    *
-    * @param b  true to enable, false to disable
-    */
-   public void enableSaveAllItm(boolean b) {
-      saveAllItm.setEnabled(b);
-   }
-
    //
    //--private--/
    //

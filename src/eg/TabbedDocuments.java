@@ -41,7 +41,7 @@ public class TabbedDocuments {
    private EditArea[] editArea = null;
    private int iTab = -1;
    private Languages lang;
-   private boolean isEdited = false;
+   private boolean isEdited;
 
    /**
     * @param mw  the {@link MainWin}
@@ -151,13 +151,11 @@ public class TabbedDocuments {
             }
          }
          else {
-            if (iTab == i) {
-               edtDoc[iTab].readEditingState();
-            }
-            else {
-               tabPane.setSelectedIndex(i);
-            }
+            edtDoc[i].readEditingState();
             if (isEdited) {
+               if (i != iTab) {
+                  tabPane.setSelectedIndex(i);
+               }
                saveAs(true);
             }
          }
@@ -184,10 +182,7 @@ public class TabbedDocuments {
     * document if the tab to be closed is the only open tab
     */
    public void close(boolean createBlankDoc) {
-      boolean keepFirstUnnamedTab =
-            createBlankDoc && isOnlyUnnamedTab() && edtDoc[iTab].docLength() == 0;
-
-      if (keepFirstUnnamedTab) {
+      if (createBlankDoc && isOnlyUnnamedBlank()) {
          return;
       }
       boolean b;
@@ -215,6 +210,9 @@ public class TabbedDocuments {
     * all tabs are closed
     */
    public void closeAll(boolean createBlankDoc) {
+      if (createBlankDoc && isOnlyUnnamedBlank()) {
+         return;
+      }
       int iMissing = missingFile();
       int iUnsaved = unsavedFile();
       boolean b = iUnsaved == nTabs() && iMissing == nTabs();
@@ -291,7 +289,7 @@ public class TabbedDocuments {
       if (isFileOpen(f) || isMaxTabNumber()) {
          return;
       }
-      if (isOnlyUnnamedTab() && !isEdited) {
+      if (isOnlyUnnamedBlank()) {
          removeTab();
       }
       if (isTabOpenable()) {
@@ -332,8 +330,9 @@ public class TabbedDocuments {
       return b;
    }
 
-   private boolean isOnlyUnnamedTab() {
-      return nTabs() == 1 && !edtDoc[iTab].hasFile();
+   private boolean isOnlyUnnamedBlank() {
+      return nTabs() == 1 && !edtDoc[iTab].hasFile()
+            && edtDoc[iTab].docLength() == 0;
    }
 
    private void createDocument() {
@@ -527,11 +526,7 @@ public class TabbedDocuments {
 
       @Override
       public void updateInChangeState(boolean isSave) {
-         boolean isSaveAll = isSave;
-         if (!isSave) {
-            isSaveAll = unsavedFile() < nTabs();
-         }
-         mw.enableSave(isSave, isSaveAll);
+         mw.enableSave(isSave);
       }
 
       @Override
