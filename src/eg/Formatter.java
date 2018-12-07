@@ -36,7 +36,7 @@ public class Formatter {
     * @param keyPrefix  A prefix for the keys for the format properties
     * set in {@link Prefs}. Can be the empty string
     */
-   public Formatter (int number, String keyPrefix) {           
+   public Formatter (int number, String keyPrefix) {
       setPropertyKeys(keyPrefix);
       getFormatProperties();
       fontWin = new FontSettingWin(font, fontSize);
