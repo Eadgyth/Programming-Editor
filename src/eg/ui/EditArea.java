@@ -38,6 +38,7 @@ public final class EditArea {
    private final JTextPane lineNrArea = new JTextPane();
    private final JPanel disabledWordwrapPnl = new JPanel(new BorderLayout());
    private final JScrollPane scroll = UIComponents.scrollPane();
+   private final JScrollPane wordwrapScroll = UIComponents.scrollPane();
    private final JScrollPane lineNrScroll = new JScrollPane(
             JScrollPane.VERTICAL_SCROLLBAR_NEVER,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -45,13 +46,13 @@ public final class EditArea {
    private boolean isWordwrap;
 
    /**
-    * @param isWordwrap  true to enable, false to disable wordwrap
-    * @param isLineNumbers  true to show, false to hide line numbers.
+    * @param wordwrap  true to enable, false to disable wordwrap
+    * @param lineNumbers  true to show, false to hide line numbers.
     * Effectless if isWordwrap is true.
     * @param font  the font name
     * @param fontSize  the font size
     */
-   public EditArea(boolean isWordwrap, boolean isLineNumbers,
+   public EditArea(boolean wordwrap, boolean lineNumbers,
          String font, int fontSize) {
 
       removeShortCuts();
@@ -61,11 +62,11 @@ public final class EditArea {
       initLineNrArea();
       initLineNrScrollPane();
       setFont(font, fontSize);
-      if (isWordwrap) {
+      if (wordwrap) {
          enableWordwrap();
       }
       else {
-         disableWordwrap(isLineNumbers);
+         disableWordwrap(lineNumbers);
       }
       textArea.addFocusListener(new FocusAdapter() {
 
@@ -128,12 +129,7 @@ public final class EditArea {
     * @param lineNumbers  true to show line numbers
     */
    public void disableWordwrap(boolean lineNumbers) {
-      if (lineNumbers) {
-         showLineNumbersImpl();
-      }
-      else {
-         hideLineNumbersImpl();
-      }
+      showLineNumbersImpl(lineNumbers);
    }
 
    /**
@@ -156,12 +152,7 @@ public final class EditArea {
       if (isWordwrap) {
          throw new IllegalStateException("Wordwrap is currently enabled");
       }
-      if (b) {
-         showLineNumbersImpl();
-      }
-      else {
-         hideLineNumbersImpl();
-      }
+      showLineNumbersImpl(b);
    }
 
    /**
@@ -181,20 +172,22 @@ public final class EditArea {
    //--private--/
    //
    
-   private void showLineNumbersImpl() {
+   private void showLineNumbersImpl(boolean show) {
       int pos = scroll.getVerticalScrollBar().getValue();
-      disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
-      scroll.setViewportView(disabledWordwrapPnl);
-      content.add(lineNrScroll, BorderLayout.WEST);
-      setScrollPos(pos);
-      textArea.requestFocusInWindow();
-      revalidate();
-      isWordwrap = false;
-   }
-   
-   private void hideLineNumbersImpl() {
-      int pos = scroll.getVerticalScrollBar().getValue();
-      content.remove(lineNrScroll);
+      if (show) {
+         content.add(lineNrScroll, BorderLayout.WEST);
+      }
+      else {
+         content.remove(lineNrScroll);
+      }
+      if (isWordwrap) {
+         content.remove(wordwrapScroll);
+         content.add(scroll);
+         pos = 0;
+      }
+      else {
+         pos = scroll.getVerticalScrollBar().getValue();
+      }
       disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
       scroll.setViewportView(disabledWordwrapPnl);
       setScrollPos(pos);
@@ -204,10 +197,10 @@ public final class EditArea {
    }
    
    private void enableWordwrapImpl() {
-      int pos = scroll.getVerticalScrollBar().getValue();
       content.remove(lineNrScroll);
-      scroll.setViewportView(textArea);
-      setScrollPos(pos);
+      content.remove(scroll);
+      content.add(wordwrapScroll, BorderLayout.CENTER);
+      wordwrapScroll.setViewportView(textArea);
       textArea.requestFocusInWindow();
       revalidate();
       isWordwrap = true;
