@@ -36,8 +36,8 @@ public final class EditArea {
    private final JPanel content = UIComponents.grayBorderedPanel();
    private final JTextPane textArea = new JTextPane();
    private final JTextPane lineNrArea = new JTextPane();
-   private final JPanel disabledWordwrapPnl = new JPanel(new BorderLayout());
-   private final JScrollPane scroll = UIComponents.scrollPane();
+   private final JPanel nonWordwrapPnl = new JPanel(new BorderLayout());
+   private final JScrollPane nonWordwrapScroll = UIComponents.scrollPane();
    private final JScrollPane wordwrapScroll = UIComponents.scrollPane();
    private final JScrollPane lineNrScroll = new JScrollPane(
             JScrollPane.VERTICAL_SCROLLBAR_NEVER,
@@ -57,7 +57,6 @@ public final class EditArea {
 
       removeShortCuts();
       content.setLayout(new BorderLayout());
-      content.add(scroll, BorderLayout.CENTER);
       initTextArea();
       initLineNrArea();
       initLineNrScrollPane();
@@ -173,7 +172,7 @@ public final class EditArea {
    //
    
    private void showLineNumbersImpl(boolean show) {
-      int pos = scroll.getVerticalScrollBar().getValue();
+      int pos;
       if (show) {
          content.add(lineNrScroll, BorderLayout.WEST);
       }
@@ -181,16 +180,16 @@ public final class EditArea {
          content.remove(lineNrScroll);
       }
       if (isWordwrap) {
-         content.remove(wordwrapScroll);
-         content.add(scroll);
+         content.remove(wordwrapScroll);         
          pos = 0;
       }
       else {
-         pos = scroll.getVerticalScrollBar().getValue();
+         pos = nonWordwrapScroll.getVerticalScrollBar().getValue();
       }
-      disabledWordwrapPnl.add(textArea, BorderLayout.CENTER);
-      scroll.setViewportView(disabledWordwrapPnl);
-      setScrollPos(pos);
+      nonWordwrapPnl.add(textArea, BorderLayout.CENTER);
+      nonWordwrapScroll.setViewportView(nonWordwrapPnl);
+      content.add(nonWordwrapScroll);
+      setScrollPos(nonWordwrapScroll, pos);
       textArea.requestFocusInWindow();
       revalidate();
       isWordwrap = false;
@@ -198,7 +197,7 @@ public final class EditArea {
    
    private void enableWordwrapImpl() {
       content.remove(lineNrScroll);
-      content.remove(scroll);
+      content.remove(nonWordwrapScroll);
       content.add(wordwrapScroll, BorderLayout.CENTER);
       wordwrapScroll.setViewportView(textArea);
       textArea.requestFocusInWindow();
@@ -217,7 +216,7 @@ public final class EditArea {
       }
    }
 
-   private void setScrollPos(int pos) {
+   private void setScrollPos(JScrollPane scroll, int pos) {
       JScrollBar bar = scroll.getVerticalScrollBar();
       bar.setValue(pos);
    }
@@ -243,7 +242,7 @@ public final class EditArea {
       lineNrScroll.setViewportView(lineNrArea);
       lineNrScroll.setBorder(UIComponents.grayMatteBorder(0, 0, 0, 1));
       lineNrScroll.getVerticalScrollBar().setModel(
-            scroll.getVerticalScrollBar().getModel());
+            nonWordwrapScroll.getVerticalScrollBar().getModel());
    }
 
    private void removeShortCuts() {
