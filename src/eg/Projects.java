@@ -19,15 +19,14 @@ import eg.document.EditableDocument;
 import eg.utils.Dialogs;
 
 /**
- * The assigned projects which are represented by objects of
- * <code>ProjectActions</code>.
+ * The assigned projects.
  * <p>
- * Class maintains a <code>List</code> of assigned projects of which one
- * is set active. Assigning and retrieving projects as well as changing
- * between listed projects takes place based on the selected element
- * in the array of {@link EditableDocument} objects.
- *
- * @see ProjectActions
+ * Projets are are represented by objects of {@link ProjectActions}.
+ * <p>
+ * A <code>List</code> of assigned projects of which one is set active
+ * is mantained. Assigning and retrieving projects as well as changing
+ * between listed projects takes place based on the file of the
+ * {@link EditableDocument} that is selected at a time.
  */
 public class Projects {
 
@@ -104,8 +103,7 @@ public class Projects {
     * Assigns a new project or asks to replace the project if the
     * selected <code>EditableDocument</code> already bolongs to a project
     *
-    * @param projType  the project type which has a valaue in
-    * {@link ProjectTypes}
+    * @param projType  the project type
     */
    public void assign(ProjectTypes projType) {
       ProjectActions inList = selectFromList(edtDoc[iDoc].dir(), false);
@@ -120,11 +118,10 @@ public class Projects {
    }
 
    /**
-    * Retrieves a project from a configuration that was saved in a
-    * ProjConfig file in a project or in the Prefs file in the program
-    * directory
+    * Tries to retrieve a project based on the directory of the
+    * currently selected <code>EditableDocument</code>
     *
-    * @see eg.projects.AbstractProject#retrieve(String)
+    * @see eg.projects.AbstractProject#retrieve
     */
    public void retrieve() {
       String dir = edtDoc[iDoc].dir();

@@ -13,11 +13,13 @@ import javax.swing.JTextPane;
 import java.io.IOException;
 
 //--Eadgyth--/
-import eg.utils.*;
+import eg.utils.Dialogs;
+import eg.utils.FileUtils;
+import eg.utils.LinesFinder;
 import eg.document.EditableDocument;
 
 /**
- * The editing actions invoked by menu selections and toolbar buttons
+ * The editing of an <code>EditableDocument</code>
  */
 public class Edit {
 

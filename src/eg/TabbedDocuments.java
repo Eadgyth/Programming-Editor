@@ -246,11 +246,11 @@ public class TabbedDocuments {
 
    /**
     * Closes all tabs and may ask to save changes before closing;
-    * saves properties to 'Prefs'
+    * saves properties to 'Prefs' if all rabs could be closed
     *
     * @return  true if all tabs were closed, false otherwise
     */
-   public boolean closeForExit() {
+   public boolean closeAllForExit() {
       closeAll(false);
       boolean b = iTab == -1;
       if (b) {

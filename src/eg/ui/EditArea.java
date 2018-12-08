@@ -21,10 +21,11 @@ import eg.BackgroundTheme;
 import eg.utils.ScreenParams;
 
 /**
- * Defines the panel that contains the text area for editing text and the
+ * Defines the panel that contains the area for editing text and the
  * area that displays line numbers.
  * <p>
- * The usual shortcuts for cut, copy, paste and select text are disabled
+ * The usual shortcuts for cut, copy, paste and select actions are
+ * disabled in the text area
  */
 public final class EditArea {
 
@@ -48,7 +49,7 @@ public final class EditArea {
    /**
     * @param wordwrap  true to enable, false to disable wordwrap
     * @param lineNumbers  true to show, false to hide line numbers.
-    * Effectless if isWordwrap is true.
+    * Effectless if wordwrap is true.
     * @param font  the font name
     * @param fontSize  the font size
     */
@@ -77,8 +78,8 @@ public final class EditArea {
    }
 
    /**
-    * Gets this JPanel which contains the text area for editing
-    * text and the text area that shows line numbers
+    * Gets this <code>JPanel</code> that contains the area for editing
+    * text and, if selected, the area that shows line numbers
     *
     * @return  the JPanel
     */
@@ -87,7 +88,7 @@ public final class EditArea {
    }
 
    /**
-    * Gets this text area that displays the editable text
+    * Gets this area for editing text
     *
     * @return  the text area
     */
@@ -96,7 +97,7 @@ public final class EditArea {
    }
 
    /**
-    * Gets this text area that displays the line numbers
+    * Gets this area for showing line numbers
     *
     * @return  the text area
     */
@@ -114,18 +115,17 @@ public final class EditArea {
    }
 
    /**
-    * Enables wordwrap. Invoking this method also hides the area that
-    * displays line numbers
+    * Enables wordwrap and hides line numbers
     */
    public void enableWordwrap() {
       enableWordwrapImpl();
    }
 
    /**
-    * Disables wordwrap and makes the area that displays line numbers
-    * visible if <code>lineNumbers</code> is true
+    * Disables wordwrap and shows line numbers if the specified
+    * boolean is true
     *
-    * @param lineNumbers  true to show line numbers
+    * @param lineNumbers  true to show, false to hide line numbers
     */
    public void disableWordwrap(boolean lineNumbers) {
       showLineNumbersImpl(lineNumbers);
@@ -170,7 +170,7 @@ public final class EditArea {
    //
    //--private--/
    //
-   
+
    private void showLineNumbersImpl(boolean show) {
       int pos;
       if (show) {
@@ -180,7 +180,7 @@ public final class EditArea {
          content.remove(lineNrScroll);
       }
       if (isWordwrap) {
-         content.remove(wordwrapScroll);         
+         content.remove(wordwrapScroll);
          pos = 0;
       }
       else {
@@ -194,7 +194,7 @@ public final class EditArea {
       revalidate();
       isWordwrap = false;
    }
-   
+
    private void enableWordwrapImpl() {
       content.remove(lineNrScroll);
       content.remove(nonWordwrapScroll);
@@ -204,12 +204,12 @@ public final class EditArea {
       revalidate();
       isWordwrap = true;
    }
-   
+
    private void revalidate() {
       content.revalidate();
       content.repaint();
    }
-   
+
    private void adaptLineNrWidth(int prevLineNr, int lineNr) {
       if ((int) Math.log10(prevLineNr) - (int) Math.log10(lineNr) != 0) {
          revalidate();

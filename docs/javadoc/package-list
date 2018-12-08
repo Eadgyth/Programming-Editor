@@ -1,6 +1,7 @@
 eg
 eg.console
 eg.document
+eg.document.styledtext
 eg.edittools
 eg.javatools
 eg.projects
