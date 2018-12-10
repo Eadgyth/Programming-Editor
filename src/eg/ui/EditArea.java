@@ -173,18 +173,18 @@ public final class EditArea {
 
    private void showLineNumbersImpl(boolean show) {
       int pos;
-      if (show) {
-         content.add(lineNrScroll, BorderLayout.WEST);
-      }
-      else {
-         content.remove(lineNrScroll);
-      }
       if (isWordwrap) {
          content.remove(wordwrapScroll);
          pos = 0;
       }
       else {
          pos = nonWordwrapScroll.getVerticalScrollBar().getValue();
+      }
+      if (show) {
+         content.add(lineNrScroll, BorderLayout.WEST);
+      }
+      else {
+         content.remove(lineNrScroll);
       }
       nonWordwrapPnl.add(textArea, BorderLayout.CENTER);
       nonWordwrapScroll.setViewportView(nonWordwrapPnl);
