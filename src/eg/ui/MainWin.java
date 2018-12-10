@@ -22,6 +22,7 @@ import eg.Edit;
 import eg.Formatter;
 import eg.Prefs;
 import eg.Languages;
+import eg.LanguageChanger;
 import eg.FunctionalAction;
 import eg.BusyFunction;
 import eg.edittools.*;
@@ -257,9 +258,7 @@ public class MainWin {
    public void setFileActions(TabbedDocuments td) {
       menuBar.fileMenu().setActions(td);
       menuBar.fileMenu().setExitActions(e -> exit(td));
-      menuBar.languageMenu().setChangeLanguageActions((l) -> td.changeLanguage(l));
       toolBar.setFileActions(td);
-
       frame.addWindowListener(new WindowAdapter() {
 
          @Override
@@ -273,13 +272,15 @@ public class MainWin {
     * Sets listeners for actions to edit text
     *
     * @param edit  the reference to {@link Edit}
+    * @param lc  the reference to {@link LanguageChanger}
     */
-   public void setEditActions(Edit edit) {
+   public void setEditActions(Edit edit, LanguageChanger lc) {
       BusyFunction clearSpacesAct = () -> {
          EventQueue.invokeLater(() -> edit.clearTrailingSpaces());
       };
       toolBar.setEditActions(edit);
       menuBar.editMenu().setEditActions(edit, e -> runBusyFunction(clearSpacesAct));
+      menuBar.languageMenu().setChangeLanguageActions(lc);
    }
 
    /**
