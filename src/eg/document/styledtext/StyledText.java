@@ -11,9 +11,9 @@ public abstract class StyledText {
 
    private final StyledDocument doc;
    private final SimpleAttributeSet normal;
-   
+
    /**
-    * @param doc  the document that contains the tex
+    * @param doc  the document that contains the text
     * @param normal  the SimpleAttributeSet for normal text
     */
    protected StyledText(StyledDocument doc, SimpleAttributeSet normal) {
@@ -66,10 +66,10 @@ public abstract class StyledText {
    public void setAttributes(int pos, int length, SimpleAttributeSet set) {
       doc.setCharacterAttributes(pos, length, set, false);
    }
-   
+
    /**
     * Gets this document
-    * 
+    *
     * @return this document
     */
    protected final StyledDocument doc() {
