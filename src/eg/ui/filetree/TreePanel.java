@@ -34,7 +34,7 @@ import eg.ui.UIComponents;
  * a JTree
  */
 public class TreePanel {
-   
+
    private final BackgroundTheme theme = BackgroundTheme.givenTheme();
    private final JPanel content;
    private final JPanel holdTree = new JPanel(new BorderLayout());
@@ -143,17 +143,17 @@ public class TreePanel {
    private class TreeRenderer extends DefaultTreeCellRenderer {
 
       private final FileSystemView fsv = FileSystemView.getFileSystemView();
-      
+
       @Override
       public Color getBackgroundNonSelectionColor() {
          return theme.background();
       }
-      
+
       @Override
       public Color getBackgroundSelectionColor() {
          return theme.selectionBackground();
       }
-   
+
       @Override
       public Color getBackground() {
          return theme.background();
@@ -167,7 +167,7 @@ public class TreePanel {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
               row, hasFocus);
 
-        
+
         setForeground(theme.normalForeground());
         if (value instanceof DefaultMutableTreeNode) {
            value = ((DefaultMutableTreeNode) value).getUserObject();

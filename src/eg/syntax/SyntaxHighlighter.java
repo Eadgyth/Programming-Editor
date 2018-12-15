@@ -228,8 +228,8 @@ public class SyntaxHighlighter {
                boolean ok = SyntaxUtils.isWord(section, start, length,
                         nonWordStart)
                      && isValid(absStart, base.length());
-               
-               if (ok) {   
+
+               if (ok) {
                   txt.setAttributes(absStart, length, set);
                }
                start += length;
@@ -622,11 +622,11 @@ public class SyntaxHighlighter {
             if (!SyntaxUtils.isQuoted(tag, i)
                   && !SyntaxUtils.isCharEqualTo(tag,
                         SyntaxConstants.RESERVED_XML_CHARS, i)) {
-            
+
                txt.setAttributes(i + tagStart, 1, attr.redPlain);
             }
             i++;
-         }    
+         }
       }
 
       private void quote(String scn, int scnPos, SimpleAttributeSet set) {
