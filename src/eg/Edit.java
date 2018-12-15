@@ -19,7 +19,7 @@ import eg.utils.LinesFinder;
 import eg.document.EditableDocument;
 
 /**
- * The editing of an <code>EditableDocument</code>
+ * The editing of text in an <code>EditableDocument</code>
  */
 public class Edit {
 
@@ -33,22 +33,24 @@ public class Edit {
    private JTextPane textArea;
    private String indentUnit;
    private int indentLength;
-   private String changedIndentUnit;
+   private String indentUnitSelection;
 
    public Edit(){}
 
    /**
-    * @param initialIndentUnit  the indent undit that may change by
-    * setting a new value in the 'Set indent unit' dialog.
+    * @param indentUnitSelection  the initial value for the selection
+    * of the indent unit. The value can only be changed in
+    * {@link #setIndentUnit}
     */
-   public Edit(String initialIndentUnit) {
-      changedIndentUnit = initialIndentUnit;
+   public Edit(String indentUnitSelection) {
+      this.indentUnitSelection = indentUnitSelection;
    }
 
    /**
-    * Sets the <code>EditableDocument</code> that is edited
+    * Sets the <code>EditableDocument</code> that is edited and assigns
+    * its indent unit
     *
-    * @param edtDoc  the {@link EditableDocument}
+    * @param edtDoc  the EditableDocument
     */
    public void setDocument(EditableDocument edtDoc) {
       this.edtDoc  = edtDoc;
@@ -115,7 +117,7 @@ public class Edit {
    }
 
    /**
-    * Sets the indent length
+    * Sets the indent length using a selection dialog
     */
    public void setIndentUnit() {
       String number = Dialogs.comboBoxOpt(
@@ -132,18 +134,18 @@ public class Edit {
             indentUnit += " ";
          }
          edtDoc.setIndentUnit(indentUnit);
-         changedIndentUnit = indentUnit;
+         indentUnitSelection = indentUnit;
       }
    }
 
    /**
-    * Gets the indent unit currently set in the "Set indent length"
-    * dialog
+    * Gets the lastly selected indent unit
     *
+    * @see #setIndentUnit
     * @return  the indent unit
     */
-   public String changedIndentUnit() {
-      return changedIndentUnit;
+   public String indentUnitSelection() {
+      return indentUnitSelection;
    }
 
    /**
@@ -174,13 +176,15 @@ public class Edit {
    public void outdent() {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
-      String text = edtDoc.docText();
       if (sel == null) {
          boolean isAtLineStart
-               = LinesFinder.lastNewline(text, start) > start - indentLength;
+               = LinesFinder.lastNewline(
+                     edtDoc.text(), start) > start - indentLength;
 
          if (!isAtLineStart && start >= indentLength) {
-            if (indentUnit.equals(text.substring(start - indentLength, start))) {
+            if (indentUnit.equals(edtDoc.text().substring(
+                  start - indentLength, start))) {
+
                edtDoc.remove(start - indentLength, indentLength, true);
             }
             else {
@@ -198,7 +202,8 @@ public class Edit {
             int diff = indentLength - countSpaces;
             start -= diff;
             if (start >= 0) {
-               selArr[0] = text.substring(start, start + selArr[0].length() + diff);
+               selArr[0] = edtDoc.text().substring(
+                     start, start + selArr[0].length() + diff);
             }
          }
          if (selArr[0].startsWith(" ") && isIndentConsistent(selArr)) {
@@ -221,8 +226,7 @@ public class Edit {
     * Clears trailing spaces
     */
    public void clearTrailingSpaces() {
-      String text = edtDoc.docText();
-      String[] textArr = text.split("\n");
+      String[] textArr = edtDoc.text().split("\n");
       int sum = 0;
       for (String s : textArr) {
          int startOfSpaces = startOfTrailingSpaces(s);
@@ -242,6 +246,7 @@ public class Edit {
       try {
          if (transf != null
                && transf.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+
             inClipboard = (String) transf.getTransferData(DataFlavor.stringFlavor);
          }
       }
@@ -267,6 +272,7 @@ public class Edit {
       for (String s : textArr) {
          if (!s.startsWith(indentUnit)
                 && s.length() > 0 && !s.matches("[\\s]+")) {
+
             isConsistent = false;
             break;
          }
