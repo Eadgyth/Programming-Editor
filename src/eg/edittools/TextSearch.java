@@ -68,7 +68,7 @@ public class TextSearch {
     * @param searchTerm  the search term
     */
    public void searchText(String searchTerm) {
-      String content = doc.docText();
+      String content = doc.text();
       if (!isCaseSensitive) {
          content = content.toLowerCase();
          searchTerm = searchTerm.toLowerCase();
@@ -128,7 +128,7 @@ public class TextSearch {
       if (searchTerm.length() == 0) {
          return;
       }
-      String content = doc.docText();
+      String content = doc.text();
       if (!isCaseSensitive) {
          content = content.toLowerCase();
          searchTerm = searchTerm.toLowerCase();
@@ -226,7 +226,7 @@ public class TextSearch {
    
    private void resetSearchStart() {
       if (isUpward) {
-         pos = doc.docLength() - 1;
+         pos = doc.textLength() - 1;
       }
       else {
          pos = 0;
