@@ -98,7 +98,7 @@ public class TextExchange {
          return;
       }
       int res = 0;
-      if (exchangeDoc.docLength() > 0) {
+      if (exchangeDoc.textLength() > 0) {
          res = Dialogs.confirmYesNo(
                "The current text content will be replaced.\n"
                + " Continue?");
@@ -151,7 +151,7 @@ public class TextExchange {
     * Clears the exchange document
     */
    public void clear() {
-      exchangeDoc.remove(0, exchangeDoc.docLength(), false);
+      exchangeDoc.remove(0, exchangeDoc.textLength(), false);
    }
 
    /**
