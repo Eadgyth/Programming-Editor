@@ -53,10 +53,10 @@ public class FileMenu {
     * @param td  the reference to {@link TabbedDocuments}
     */
    public void setActions(TabbedDocuments td) {
-      newFileItm.addActionListener(e -> td.createBlankDocument());
+      newFileItm.addActionListener(e -> td.openBlankDocument());
       openItm.addActionListener(e -> td.open());
-      closeItm.addActionListener(e -> td.close(true));
-      closeAllItm.addActionListener(e -> td.closeAll(true));
+      closeItm.addActionListener(e -> td.close());
+      closeAllItm.addActionListener(e -> td.closeAll());
       saveItm.addActionListener(e -> td.save());
       saveAllItm.addActionListener(e -> td.saveAll());
       saveAsItm.addActionListener(e -> td.saveAs());
