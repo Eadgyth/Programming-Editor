@@ -29,12 +29,12 @@ public final class EditableDocument {
    private final TypingEdit type;
    private final EditableText txt;
 
-   private File docFile = null;
+   private Languages lang;
+   private File file = null;
    private String filename = "";
    private String filepath = "";
-   private String dir = "";
+   private String fileParent = "";
    String savedContent = "";
-   private Languages lang;
 
    /**
     * Creates an <code>EditableDocument</code> with the specified file
@@ -118,6 +118,40 @@ public final class EditableDocument {
     public JTextPane textArea() {
        return txt.textArea();
     }
+    
+   /**
+    * Returns if a file is set
+    *
+    * @return  true if a file is set, false otherwise
+    */
+   public boolean hasFile() {
+      return file != null;
+   }
+    
+   /**
+    * Gets this file or throws an exception if no file is set
+    *
+    * @return  the file
+    */
+   public File file() {
+      if (file == null) {
+         throw new IllegalStateException("No file has been set");
+      }
+      return file;
+   }
+   
+   /**
+    * Gets the path of the parent directory of this file or throws
+    * an exception if no file is set
+    *
+    * @return  the parent directory
+    */
+   public String fileParent() {
+      if (file == null) {
+         throw new IllegalStateException("No file has been set");
+      }
+      return fileParent;
+   }
 
    /**
     * Gets the last name in the path of this file
@@ -127,45 +161,15 @@ public final class EditableDocument {
    public String filename() {
       return filename;
    }
-
-   /**
-    * Gets the path of the parent directory of this file
-    *
-    * @return  the parent directory; the empty string of no file is set
-    */
-   public String dir() {
-      return dir;
-   }
-
+   
    /**
     * Gets the path of this file
     *
-    * @return  the path; the empty string of no file is set
+    * @return  the path; the empty String if no file is set
     */
-   public String filepath() {
-      return filepath;
-   }
-
-   /**
-    * Returns if a file is set
-    *
-    * @return  true if a file is set, false otherwise
-    */
-   public boolean hasFile() {
-      return docFile != null;
-   }
-
-   /**
-    * Gets this file or throws an exception if no file is set
-    *
-    * @return  the file
-    */
-   public File docFile() {
-      if (docFile == null) {
-         throw new IllegalStateException("No file has been set");
-      }
-      return docFile;
-   }
+    public String filepath() {
+       return filepath;
+    }
 
    /**
     * Saves the text content to this file or throws an exception if
@@ -175,10 +179,10 @@ public final class EditableDocument {
     * be saved
     */
    public boolean saveFile() {
-      if (docFile == null) {
+      if (file == null) {
          throw new IllegalStateException("No file has been assigned");
       }
-      boolean isWritten = writeToFile(docFile);
+      boolean isWritten = writeToFile(file);
       if (isWritten) {
          savedContent = txt.text();
          type.resetInChangeState();
@@ -240,7 +244,7 @@ public final class EditableDocument {
     *
     * @return  the text
     */
-   public String docText() {
+   public String text() {
       return txt.text();
    }
 
@@ -249,7 +253,7 @@ public final class EditableDocument {
     *
     * @return  the length
     */
-   public int docLength() {
+   public int textLength() {
       return txt.text().length();
    }
 
@@ -351,7 +355,7 @@ public final class EditableDocument {
     * Prints the document text to a printer
     */
     public void print() {
-      PrintableText printTxt = new PrintableText(docText(), textArea().getFont());
+      PrintableText printTxt = new PrintableText(text(), textArea().getFont());
       if (lang != Languages.NORMAL_TEXT) {
          Highlighter hl = HighlighterSelector.createHighlighter(lang);
          SyntaxHighlighter sh = new SyntaxHighlighter(printTxt);
@@ -364,6 +368,13 @@ public final class EditableDocument {
    //
    //--private--/
    //
+   
+   private void setFileParams(File f) {
+      file = f;
+      filename = f.getName();
+      filepath = f.getPath();
+      fileParent = f.getParent();
+   }
 
    private void displayFileContentImpl(File f) {
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
@@ -427,12 +438,5 @@ public final class EditableDocument {
    private void setEditingMode(File f) {
       lang = LanguageSelector.selectLanguage(f.getName());
       type.setEditingMode(lang);
-   }
-
-   private void setFileParams(File f) {
-      docFile = f;
-      filename = f.getName();
-      filepath = f.toString();
-      dir = f.getParent();
    }
 }
