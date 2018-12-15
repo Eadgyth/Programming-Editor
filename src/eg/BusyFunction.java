@@ -1,20 +1,18 @@
 package eg;
 
+import java.lang.Runnable;
+
 import java.awt.Cursor;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
 /**
- * The interface to run an action during which a wait cursor is displayed
+ * The interface to run an action during which a wait cursor may
+ * be displayed
  */
 @FunctionalInterface
-public interface BusyFunction {
-
-   /**
-    * Runs the action
-    */
-   public void run();
+public interface BusyFunction extends Runnable {
 
    /**
     * Makes the glass pane visible and sets the wait cursor
@@ -28,7 +26,8 @@ public interface BusyFunction {
 
    /**
     * Makes the glass pane invisible and sets the default cursor after
-    * other processes started before on the EDT are finished
+    * other processes started on the EDT before <code>run</code> are
+    * finished
     *
     * @param f  the top level JFrame
     */

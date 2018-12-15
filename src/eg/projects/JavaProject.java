@@ -112,7 +112,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       if (!co.isConsoleOpen()) {
          co.openConsole();
       }
-      proc.startProcess(startCommand);
+      proc.startProcess(startCommand, false);
    }
 
    /**

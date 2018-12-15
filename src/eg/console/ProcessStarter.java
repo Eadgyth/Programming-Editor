@@ -30,17 +30,17 @@ import eg.utils.FileUtils;
 /**
  * The starting of external system processes.
  * <p>
- * A process is run by either calling the method {@link #startProcess(String)}
- * or by a command that is entered in a Dialog. Starting a process requires
- * to set a working directory.
- * <p>
- * Created by {@link Console}
+ * A process is run by either calling the method {@link #startProcess}
+ * or by a command that is entered in a Dialog. Starting a process
+ * requires to set a working directory.
  */
 public class ProcessStarter {
 
    private final ConsolePanel consPnl;
+   private final Runnable fileTreeUpdate;
    /*
-    * Associates working directories with commands entered in the dialog */
+    * Associates working directories with commands entered in the
+    * dialog */
    private final HashMap<String, String> cmdMap = new HashMap<>();
 
    private String workingDir;
@@ -54,11 +54,12 @@ public class ProcessStarter {
    private Runnable kill;
 
    /**
-    * @param consPnl  the reference to {@link ConsolePanel} contained in
-    * {@link eg.ui.MainWin}
+    * @param consPnl  the ConsolePanel
+    * @param fileTreeUpdate  the updating of the file tree
     */
-   public ProcessStarter(ConsolePanel consPnl) {
+   public ProcessStarter(ConsolePanel consPnl, Runnable fileTreeUpdate) {
       this.consPnl = consPnl;
+      this.fileTreeUpdate = fileTreeUpdate;
       consPnl.setCmdAct(e -> startNewCmd());
       consPnl.setRunAct(e -> startPreviousCmd());
       consPnl.setStopAct(e -> endProcess());
@@ -88,12 +89,14 @@ public class ProcessStarter {
    /**
     * Starts a system process in this working directory. A warning dialog
     * is shown if it is tried to start a process while a previous process
-    * is not yet termineated.
+    * is not yet terminated.
     *
     * @param cmd  the start command in which arguments are separated by
     * spaces
+    * @param updateFileTree  true to update the file tree view, false
+    * otherwise
     */
-   public void startProcess(String cmd) {
+   public void startProcess(String cmd, boolean updateFileTree) {
       isAborted = false;
       if (!canStart()) {
          return;
@@ -112,7 +115,7 @@ public class ProcessStarter {
             pb.directory(fWorkingDir);
             process = pb.start();
             out = new PrintWriter(process.getOutputStream());
-            new CaptureInput().execute();
+            new CaptureInput(updateFileTree).execute();
          }
          catch(IOException e) {
             setConsoleActive(false);
@@ -141,7 +144,7 @@ public class ProcessStarter {
          cmdMap.put(workingDir, cmd);
          if (cmd.length() > 0) {
             consPnl.enableRunBt(false);
-            startProcess(cmd);
+            startProcess(cmd, true);
          }
          else {
             consPnl.enableRunBt(previousCmd.length() > 0);
@@ -150,7 +153,7 @@ public class ProcessStarter {
    }
 
    private void startPreviousCmd() {
-      startProcess(previousCmd);
+      startProcess(previousCmd, true);
    }
 
    private void endProcess() {
@@ -164,9 +167,14 @@ public class ProcessStarter {
    }
 
    private class CaptureInput extends SwingWorker<Void, String> {
-      InputStream is = process.getInputStream();
-      InputStreamReader isr = new InputStreamReader(is);
-      BufferedReader reader = new BufferedReader(isr);
+      private InputStream is = process.getInputStream();
+      private InputStreamReader isr = new InputStreamReader(is);
+      private BufferedReader reader = new BufferedReader(isr);
+      private boolean updateFileTree;
+      
+      CaptureInput(boolean updateFileTree) {
+         this.updateFileTree = updateFileTree;
+      }
 
       @Override
       protected Void doInBackground() {
@@ -186,8 +194,6 @@ public class ProcessStarter {
             FileUtils.log(e);
          }
          finally {
-            consPnl.setCaret(consPnl.getText().length());
-            setConsoleActive(process.isAlive());
             try {
                reader.close();
                out.close();
@@ -197,6 +203,15 @@ public class ProcessStarter {
             }
          }
          return null;
+      }
+      
+      @Override
+      protected void done() {
+         consPnl.setCaret(consPnl.getText().length());
+         setConsoleActive(process.isAlive());
+         if (updateFileTree) {
+            EventQueue.invokeLater(fileTreeUpdate);
+         }
       }
    }
 

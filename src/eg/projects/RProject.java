@@ -37,7 +37,7 @@ public final class RProject extends AbstractProject implements ProjectActions {
       if (!co.isConsoleOpen()) {
          co.openConsole();
       }
-      proc.startProcess(startCmd);
+      proc.startProcess(startCmd, false);
    }
    
    @Override

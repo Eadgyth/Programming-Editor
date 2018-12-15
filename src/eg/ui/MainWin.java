@@ -317,12 +317,19 @@ public class MainWin {
    public void setProjectActions(Projects p) {
       menuBar.projectMenu().setActions(p);
       toolBar.setProjectActions(p);
+      frame.addWindowListener(new WindowAdapter() {
+
+         @Override
+         public void windowActivated(WindowEvent we) {
+            EventQueue.invokeLater(p.fileTreeUpdate());
+         }
+      });
    }
 
    /**
-    * Executes the run method in <code>BusyFunction</code>
+    * Executes a <code>BusyFunction</code>
     *
-    * @param bf  the function to run
+    * @param bf  the function to execute
     */
    public void runBusyFunction(BusyFunction bf) {
       try {

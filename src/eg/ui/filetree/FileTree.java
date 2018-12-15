@@ -29,9 +29,9 @@ import eg.utils.FileUtils;
 public class FileTree {
 
    private final TreePanel treePnl;
+   private final FileOpener opener;
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
    private final PopupMenu popupDir  = new PopupMenu(PopupMenu.FOLDER_OPT);
-   private final FileOpener opener;
 
    private JTree tree = null;
    private DefaultTreeModel model;
@@ -45,12 +45,12 @@ public class FileTree {
    private DefaultMutableTreeNode selectedNode = null;
 
    /**
-    * @param treePanel  the reference to {@link TreePanel}
-    * @param o  the reference to {@link FileOpener}
+    * @param treePnl  the TreePanel
+    * @param opener  the FileOpener
     */
-   public FileTree(TreePanel treePanel, FileOpener o) {
-      treePnl = treePanel;
-      opener = o;
+   public FileTree(TreePanel treePnl, FileOpener opener) {
+      this.treePnl = treePnl;
+      this.opener = opener;
       setActions();   
    }
 
@@ -93,13 +93,17 @@ public class FileTree {
     * Updates the tree at the currently shown root
     */
    public void updateTree() {
+      if (currentRoot.isEmpty()) {
+         return;
+      }
       setExpandedNodeList();
       setNewTree(currentRoot);
       expand();
    }
    
    /**
-    * Gets this currently shown root
+    * Gets this currently shown root which may be a subdirectory
+    * of the initial project root
     *
     * @return  the root
     */
