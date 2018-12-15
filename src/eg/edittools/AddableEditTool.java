@@ -55,7 +55,7 @@ public interface AddableEditTool {
     *
     * @param edtDoc  the {@link EditableDocument}
     */
-   public void setEditableDocument(EditableDocument edtDoc);
+   public void setDocument(EditableDocument edtDoc);
 
    /**
     * Ends the edit tool. Called when the program is exited

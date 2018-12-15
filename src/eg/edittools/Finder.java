@@ -70,7 +70,7 @@ public class Finder implements AddableEditTool {
    }
 
    @Override
-   public void setEditableDocument(EditableDocument edtDoc) {
+   public void setDocument(EditableDocument edtDoc) {
       search.setDocument(edtDoc);
    }
 

@@ -103,7 +103,7 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    @Override
-   public void setEditableDocument(EditableDocument edtDoc) {
+   public void setDocument(EditableDocument edtDoc) {
       exch.setSourceDocument(edtDoc);
    }
 
@@ -136,6 +136,7 @@ public class ExchangeEditor implements AddableEditTool {
    private JMenuBar menuBar() {
       JMenuBar mb = UIComponents.menuBar();
       mb.add(textMenu());
+      mb.add(adoptMenu());
       mb.add(editMenu());
       mb.add(formatMenu.getMenu());
       mb.add(Box.createHorizontalGlue());
