@@ -485,7 +485,7 @@ public class TabbedDocuments {
    }
 
    private void changedFileUpdate(EditableDocument doc) {
-      proj.updateUIForDocument();
+      proj.updateProjectControls();
       mw.setLanguageSelected(doc.language());
       mw.displayFrameTitle(doc.filepath());
    }
