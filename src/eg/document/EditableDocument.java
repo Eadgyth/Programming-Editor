@@ -77,7 +77,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Sets the refenence to <code>EditingStateReadable</code>
+    * Sets the <code>EditingStateReadable</code>
     *
     * @param esr  the {@link EditingStateReadable}
     */

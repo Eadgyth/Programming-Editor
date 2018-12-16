@@ -8,7 +8,7 @@ import eg.utils.Dialogs;
 
 /**
  * The console for showing messages and for running system processes.
- * System commands are run by this {@link ProcessStarter} and there
+ * System commands are run by this {@link ProcessStarter} and their
  * output is displayed in the same text area that this print methods
  * write to. 
  */
