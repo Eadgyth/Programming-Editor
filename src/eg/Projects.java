@@ -22,11 +22,6 @@ import eg.utils.Dialogs;
  * The assigned projects.
  * <p>
  * Projets are are represented by objects of {@link ProjectActions}.
- * <p>
- * A <code>List</code> of assigned projects of which one is set active
- * is mantained. Assigning and retrieving projects as well as changing
- * between listed projects takes place based on the file of the
- * {@link EditableDocument} that is selected at a time.
  */
 public class Projects {
 
@@ -45,9 +40,9 @@ public class Projects {
    private boolean isReplace = false;
 
    /**
-    * @param mw  the reference to {@link MainWin}
-    * @param fileTree  the reference to {@link FileTree}
-    * @param edtDoc  the reference to the array of {@link EditableDocument}
+    * @param mw  the {@link MainWin}
+    * @param fileTree  the {@link FileTree}
+    * @param edtDoc  the array of {@link EditableDocument}
     */
    public Projects(MainWin mw, FileTree fileTree, EditableDocument[] edtDoc) {
       this.mw = mw;
@@ -61,15 +56,6 @@ public class Projects {
       ConsoleOpenable co = mw.consoleOpener();
       projSelect = new ProjectSelector(co, cons);
    }
-   
-   /**
-    * Gets this method to update the file tree of the active project
-    *
-    * @return  the Runnable
-    */
-   public Runnable fileTreeUpdate() {
-      return fileTreeUpdate;
-   }
 
    /**
     * Selects the element in this array of <code>EditableDocument</code>
@@ -81,12 +67,14 @@ public class Projects {
    }
 
    /**
-    * Enables or disables buttons and menu items depending on
-    * the belonging of the file of the currently selected
-    * <code>EditableDocument</code> to a listed, the active or
-    * no project
+    * Enables or disables buttons and menu items depending on whether
+    * the selected <code>EditableDocument</code> bolongs to the active,
+    * a listed or no project
     */
-   public void updateUIForDocument() {
+   public void updateProjectControls() {
+      if (current == null) {
+         return;
+      }
       ProjectActions inList = null;
       boolean isProject = false;
       if (edtDoc[iDoc].hasFile()) {
@@ -110,8 +98,28 @@ public class Projects {
    }
 
    /**
-    * Assigns a new project or asks to replace the project if the
-    * selected <code>EditableDocument</code> already bolongs to a project
+    * Updates the file tree
+    */
+   public void updateFileTree() {
+      updateFileTreeImpl();
+   }
+
+   /**
+    * Updates the file tree if <code>file</code> is contained in the
+    * currently shown directory
+    *
+    * @param file  the file
+    */
+   public void updateFileTree(String file) {
+      if (file.startsWith(fileTree.currentRoot())) {
+         updateFileTreeImpl();
+      }
+   }
+
+   /**
+    * Assigns a new project that the file of the selected
+    * <code>EditableDocument</code> belongs to; may ask to replace
+    * the project
     *
     * @param projType  the project type
     */
@@ -128,8 +136,8 @@ public class Projects {
    }
 
    /**
-    * Tries to retrieve a project based on the directory of the
-    * currently selected <code>EditableDocument</code>
+    * Tries to retrieve a saved project based on the directory of the
+    * selected <code>EditableDocument</code>
     *
     * @see eg.projects.AbstractProject#retrieve
     */
@@ -149,7 +157,7 @@ public class Projects {
          }
       }
       if (isFound) {
-         ProjectActions projFin = projToFind;            
+         ProjectActions projFin = projToFind;
          if (current == null) {
             current = projFin;
             current.setConfiguringAction(e -> configure(current));
@@ -168,21 +176,8 @@ public class Projects {
    }
 
    /**
-    * Updates the file tree if <code>file</code> is contained in the
-    * currently shown root
-    *
-    * @param file  the file
-    */
-   public void updateFileTree(String file) {
-      if (file.startsWith(fileTree.currentRoot())) {
-         updateFileTreeImpl();
-      }
-   }
-
-   /**
-    * Opens the window of the <code>SettingsWindow</code> object
-    * that belongs to the active project or to one that is changed
-    * to
+    * Opens the window of the <code>SettingsWindow</code> of the project
+    * that the selected <code>EditableDocument</code> belongs to
     */
    public void openSettingsWindow() {
       boolean open = true;
@@ -196,7 +191,7 @@ public class Projects {
    }
 
    /**
-    * Changes to the project which the currently selected
+    * Changes to the project that the selected
     * <code>EditableDocument</code> belongs to
     */
    public void change() {
@@ -205,8 +200,8 @@ public class Projects {
    }
 
    /**
-    * Saves the selected file of the active project and copmiles
-    * compiles the project
+    * Saves the selected file of the active project and compiles the
+    * project
     */
    public void saveAndCompile() {
       if (!edtDoc[iDoc].file().exists()) {
@@ -228,7 +223,9 @@ public class Projects {
    public void saveAllAndCompile() {
       StringBuilder missingFiles = new StringBuilder();
       for (EditableDocument d : edtDoc) {
-         boolean isProjSrc = d != null && current.isInProject(d.fileParent());
+         boolean isProjSrc = d != null && d.hasFile()
+               && current.isInProject(d.fileParent());
+
          if (isProjSrc) {
              if (d.file().exists()) {
                  d.saveFile();
@@ -248,7 +245,7 @@ public class Projects {
    }
 
    /**
-    * Runs the currently active project
+    * Runs the active project
     */
    public void run() {
       if (current.usesProjectFile()) {
@@ -260,7 +257,7 @@ public class Projects {
    }
 
    /**
-    * Creates a build of the currently active project
+    * Creates a build of the active project
     */
    public void build() {
       BusyFunction bf = () -> current.build();

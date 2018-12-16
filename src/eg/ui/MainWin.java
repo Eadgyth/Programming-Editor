@@ -321,7 +321,7 @@ public class MainWin {
 
          @Override
          public void windowActivated(WindowEvent we) {
-            EventQueue.invokeLater(p.fileTreeUpdate());
+            p.updateFileTree();
          }
       });
    }
