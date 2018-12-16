@@ -48,12 +48,6 @@ public class PopupMenu {
     * @param b  the boolean value
     */
    public void enableDelete(boolean b) {
-      /*if (b) {
-         deleteItm.setText("Delete");
-      }
-      else {
-         deleteItm.setText("Deletable if empty");
-      }*/
       deleteItm.setEnabled(b);
    }
 
