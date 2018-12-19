@@ -22,9 +22,9 @@ public class TextSearch {
    private JTextPane textArea;
    
    /**
-    * Sets the <code>EditableDocument</code> which text in searched in
+    * Sets the <code>EditableDocument</code> which text is searched in
     *
-    * @param doc  the <code>EditableDocument</code>
+    * @param doc  the EditableDocument
     */
    public void setDocument(EditableDocument doc) {
       this.doc = doc;
@@ -32,8 +32,8 @@ public class TextSearch {
    }
    
    /**
-    * Sets the boolean that indicates if the search is restricted to a word.
-    * Default is not restricted
+    * Sets the boolean that indicates if the search is restricted to a word;
+    * default is not restricted
     *
     * @param b  the boolen value
     */

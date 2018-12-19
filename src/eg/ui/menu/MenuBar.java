@@ -52,6 +52,11 @@ public class MenuBar {
       return editMenu;
    }
    
+   /**
+    * Gets this language menu
+    *
+    * @return  this language menu
+    */
    public LanguageMenu languageMenu() {
       return languageMenu;
    }

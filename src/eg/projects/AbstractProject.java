@@ -167,7 +167,7 @@ public abstract class AbstractProject implements Configurable {
       this.sourceExtension = "." + sourceExtension;
       this.useMainFile = useMainFile;
       sw = new SettingsWindow();
-      inputOptions = sw.getInputOptionsBuilder();
+      inputOptions = sw.inputOptionsBuilder();
       sw.setCancelAct(e -> undoSettings());
       sw.setDefaultCloseAct(DefaultClosing);
    }

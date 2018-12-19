@@ -60,7 +60,7 @@ public class SettingsWindow {
     *
     * @return  the {@link SettingsWindow.InputOptionsBuilder}
     */
-   public InputOptionsBuilder getInputOptionsBuilder() {
+   public InputOptionsBuilder inputOptionsBuilder() {
       SettingsWindow.InputOptionsBuilder optBuilder
             = new SettingsWindow.InputOptionsBuilder(this);
 

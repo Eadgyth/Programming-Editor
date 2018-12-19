@@ -20,7 +20,7 @@ import eg.utils.FileUtils;
  * @author Malte Bussiek, m.bussiek@web.de
  */
 public class Eadgyth {
-    
+
    public static void main(String[] arg) {
       Locale.setDefault(Locale.US);
       uiManagerSettings();
