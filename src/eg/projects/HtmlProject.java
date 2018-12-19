@@ -6,19 +6,31 @@ import java.io.IOException;
 //--Eadgyth--/
 import eg.utils.FileUtils;
 import eg.utils.Dialogs;
+import eg.ui.ProjectActionsControl;
 
 /**
  * Represents a coding project in HTML
  */
 public final class HtmlProject extends AbstractProject implements ProjectActions {
+   
+   private final ProjectActionsControl update;
 
-   public HtmlProject() {
+   /**
+    * @param update  the ProjectActionsControl
+    */
+   public HtmlProject(ProjectActionsControl update) {
       super(ProjectTypes.HTML, false, null);
+      this.update = update;
    }
 
    @Override
    public void buildSettingsWindow() {
       inputOptions.buildWindow();
+   }
+
+   @Override
+   public void enableActions() {
+      update.enableProjectActions(false, true, false, null);
    }
 
    /**

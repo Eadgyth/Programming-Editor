@@ -8,13 +8,11 @@ import java.awt.EventQueue;
 //--Eadgyth--/
 import eg.console.*;
 import eg.ui.MainWin;
-import eg.ui.ProjectStateUpdate;
-import eg.ui.ConsoleOpenable;
+import eg.ui.ProjectActionsControl;
 import eg.ui.filetree.FileTree;
 import eg.projects.ProjectActions;
 import eg.projects.ProjectSelector;
 import eg.projects.ProjectTypes;
-import eg.projects.ProjectTypeChange;
 import eg.document.EditableDocument;
 import eg.utils.Dialogs;
 
@@ -26,12 +24,11 @@ import eg.utils.Dialogs;
 public class Projects {
 
    private final MainWin mw;
-   private final ProjectStateUpdate update;
+   private final ProjectActionsControl update;
    private final FileTree fileTree;
    private final ProjectSelector projSelect;
    private final ProcessStarter proc;
    private final EditableDocument[] edtDoc;
-   private final ProjectTypeChange projTypeChg;
    private final Runnable fileTreeUpdate;
    private final List<ProjectActions> projList = new ArrayList<>();
 
@@ -48,13 +45,11 @@ public class Projects {
       this.mw = mw;
       this.fileTree = fileTree;
       this.edtDoc = edtDoc;
-      update = mw.projectUpdate();
-      projTypeChg = new ProjectTypeChange(update);
+      update = mw.projActControl();
       fileTreeUpdate = () -> fileTree.updateTree();
       Console cons = new Console(mw.consolePnl(), fileTreeUpdate);
       proc = cons.processStarter();
-      ConsoleOpenable co = mw.consoleOpener();
-      projSelect = new ProjectSelector(co, cons);
+      projSelect = new ProjectSelector(update, cons);
    }
 
    /**
@@ -72,28 +67,25 @@ public class Projects {
     * a listed or no project
     */
    public void updateProjectControls() {
+      mw.enableAssignProject(edtDoc[iDoc].hasFile());
       if (current == null) {
          return;
       }
-      ProjectActions inList = null;
-      boolean isProject = false;
+      ProjectActions inList;
+      boolean isInProject = false;
+      boolean isCurrent = false;
       if (edtDoc[iDoc].hasFile()) {
          inList = selectFromList(edtDoc[iDoc].fileParent(), false);
-         isProject = inList != null;
-      }
-      update.enableOpenSettingsWin(isProject);
-      update.enableChangeProject(isProject && inList != current);
-      update.enableAssignProject(edtDoc[iDoc].hasFile());
-      if (isProject) {
-         if (!current.isInProject(edtDoc[iDoc].fileParent())) {
-            update.enableProjectActions(false, false, false);
-         }
-         else {
-            projTypeChg.enableProjectActions(current.projectType());
-         }
+         isInProject = inList != null;
+         isCurrent = inList == current;         
+      }  
+      mw.enableOpenSettingsWin(isInProject);
+      mw.enableChangeProject(isInProject && !isCurrent);
+      if (isCurrent) {
+         current.enableActions();
       }
       else {
-         update.enableProjectActions(false, false, false);
+        update.disableProjectActions();
       }
    }
 
@@ -288,8 +280,8 @@ public class Projects {
          return true;
       }
       else {
-         update.enableChangeProject(true);
-         update.enableProjectActions(false, false, false);
+         mw.enableChangeProject(true);
+         update.disableProjectActions();
          return false;
       }
    }
@@ -297,7 +289,6 @@ public class Projects {
    private void replaceCurrent(ProjectTypes projType, ProjectActions newProj) {
       if (projType != newProj.projectType()) {
          int res = replaceProjectRes(
-               edtDoc[iDoc].filename(),
                newProj.projectName(),
                newProj.projectType().display(),
                projType.display());
@@ -308,9 +299,7 @@ public class Projects {
          }
       }
       else {
-         projectAssignedMsg(
-               edtDoc[iDoc].filename(),
-               newProj.projectName(),
+         projectAssignedMsg(newProj.projectName(),
                newProj.projectType().display());
       }
    }
@@ -344,46 +333,42 @@ public class Projects {
 
    private void updateProjectSetting() {
       proc.setWorkingDir(current.projectPath());
-      projTypeChg.enableProjectActions(current.projectType());
-      projTypeChg.setBuildLabel(current.projectType());
-      update.displayProjectName(current.projectName(),
+      current.enableActions();
+      mw.displayProjectName(current.projectName(),
             current.projectType().display());
 
+      mw.enableChangeProject(false);
+      mw.enableOpenSettingsWin(true);
       fileTree.setProjectTree(current.projectPath());
       fileTree.setDeletableDir(current.executableDirName());
-      update.enableChangeProject(false);
-      update.enableOpenSettingsWin(true);
    }
 
    private void updateFileTreeImpl() {
       EventQueue.invokeLater(fileTreeUpdate);
    }
 
-   private int replaceProjectRes(String filename, String projName,
-         String previousProj, String newProj) {
+   private int replaceProjectRes(String projName, String previousProj,
+         String newProj) {
 
       return Dialogs.warnConfirmYesNo(
-            filename
+            edtDoc[iDoc].filename()
             + " belongs to the "
             + previousProj
-            + " project "
+            + " project \'"
             + projName
-            + ".\n\n"
-            + "Remove "
-            + projName
-            + " and assign a new project in the category \'"
+            + "\'.\n"
+            + "Replace the project with a new project in the category \'"
             + newProj
             + "\'?");
    }
 
-   private void projectAssignedMsg(String filename, String projName,
-         String currProj) {
-
-      Dialogs.infoMessage(
-            edtDoc[iDoc].filename()
-            + " already belongs to the project "
+   private void projectAssignedMsg(String projName, String currProj) {
+      Dialogs.errorMessage(
+            "A new project cannot be assigned.\n"
+            + edtDoc[iDoc].filename()
+            + " already belongs to the project \'"
             + projName
-            + " in the category \'"
+            + "\' in the category \'"
             + currProj
             + "\'.",
             null);

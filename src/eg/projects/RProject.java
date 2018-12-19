@@ -1,29 +1,29 @@
 package eg.projects;
 
 //--Eadgyth--//
-import eg.console.*;
-import eg.ui.ConsoleOpenable;
+import eg.console.ProcessStarter;
+import eg.ui.ProjectActionsControl;
 
 /**
  * Represents a programming project in R
  */
 public final class RProject extends AbstractProject implements ProjectActions {
-   
-   private final ConsoleOpenable co;
+
+   private final ProjectActionsControl update;
    private final ProcessStarter proc;
 
    private String startCmd = "";
 
    /**
-    * @param co  the reference to {@link ConsoleOpenable}
-    * @param proc  the reference to {@link ProcessStarter}
+    * @param update  the ProjectActionsControl
+    * @param proc  the ProcessStarter
     */
-   public RProject(ConsoleOpenable co, ProcessStarter proc) {
+   public RProject(ProjectActionsControl update, ProcessStarter proc) {
       super(ProjectTypes.R, true, "R");
-      this.co = co;
+      this.update = update;
       this.proc = proc;
    }
-   
+
    @Override
    public void buildSettingsWindow() {
       inputOptions.addFileInput("Name of R script")
@@ -33,13 +33,18 @@ public final class RProject extends AbstractProject implements ProjectActions {
    }
 
    @Override
+   public void enableActions() {
+      update.enableProjectActions(false, true, false, null);
+   }
+
+   @Override
    public void runProject() {
-      if (!co.isConsoleOpen()) {
-         co.openConsole();
+      if (!update.isConsoleOpen()) {
+         update.openConsole();
       }
       proc.startProcess(startCmd, false);
    }
-   
+
    @Override
    protected void setCommandParameters() {
       StringBuilder sb = new StringBuilder("Rscript ");

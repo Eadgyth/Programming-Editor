@@ -149,6 +149,7 @@ public class ProjectMenu {
       menu.add(openSetWinItm);
       menu.add(changeProjItm);
       menu.setMnemonic(KeyEvent.VK_P);
+      assignProjMenu.setEnabled(false);
       openSetWinItm.setEnabled(false);
       changeProjItm.setEnabled(false);
       enableProjectActionsItms(false, false, false);

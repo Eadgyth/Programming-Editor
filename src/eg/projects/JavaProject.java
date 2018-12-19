@@ -10,14 +10,14 @@ import eg.console.*;
 import eg.javatools.*;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
-import eg.ui.ConsoleOpenable;
+import eg.ui.ProjectActionsControl;
 
 /**
  * Represents a programming project in Java
  */
 public final class JavaProject extends AbstractProject implements ProjectActions {
 
-   private final ConsoleOpenable co;
+   private final ProjectActionsControl update;
    private final ProcessStarter proc;
    private final Console cons;
    private final Compilation comp;
@@ -29,12 +29,12 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    private boolean isNonJavaExtTested = true;
 
    /**
-    * @param co  the reference to {@link ConsoleOpenable}
-    * @param cons  the reference to {@link Console}
+    * @param update  the ProjectActionsControl
+    * @param cons  the Console
     */
-   public JavaProject(ConsoleOpenable co, Console cons) {
+   public JavaProject(ProjectActionsControl update, Console cons) {
       super(ProjectTypes.JAVA, true, "java");
-      this.co = co;
+      this.update = update;
       this.cons = cons;
       proc = cons.processStarter();
       comp = new Compilation(cons);
@@ -54,6 +54,11 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    }
 
    @Override
+   public void enableActions() {
+      update.enableProjectActions(true, true, true, "Create jar");
+   }
+
+   @Override
    public void compile() {
       if (!cons.canPrint()) {
          return;
@@ -69,7 +74,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                sourceDirName(), nonJavaExt, compileOption());
 
          cons.toTop();
-         if (!co.isConsoleOpen()) {
+         if (!update.isConsoleOpen()) {
             boolean needConfirm = false;
             StringBuilder msg = new StringBuilder();
             if (!comp.isCompiled()) {
@@ -94,7 +99,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                msg.append("\nOpen the console window to view messages?\n");
                int res = Dialogs.warnConfirmYesNo(msg.toString());
                if (0 == res) {
-                  co.openConsole();
+                  update.openConsole();
                }
             }
             else {
@@ -109,8 +114,8 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       if (!existsMainClassFile()) {
          return;
       }
-      if (!co.isConsoleOpen()) {
-         co.openConsole();
+      if (!update.isConsoleOpen()) {
+         update.openConsole();
       }
       proc.startProcess(startCommand, false);
    }
@@ -138,7 +143,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                   qualifiedMain, executableDirName(), sourceDirName(),
                   nonJavaExt);
 
-            if (!co.isConsoleOpen()) {
+            if (!update.isConsoleOpen()) {
                if (created) {
                   StringBuilder msg = new StringBuilder();
                   msg.append(jar.successMessage()).append(".\n");

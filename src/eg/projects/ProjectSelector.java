@@ -1,7 +1,7 @@
 package eg.projects;
 
-import eg.console.*;
-import eg.ui.ConsoleOpenable;
+import eg.console.Console;
+import eg.ui.ProjectActionsControl;
 
 /**
  * The selection and creation of a <code>ProjectActions</code>
@@ -9,42 +9,41 @@ import eg.ui.ConsoleOpenable;
  */
 public class ProjectSelector {
 
-   private final ConsoleOpenable co;
+   private final ProjectActionsControl update;
    private final Console console;
 
    /**
-    * @param co  the reference to {@link ConsoleOpenable}
-    * @param console  the reference to {@link Console}.
+    * @param update  the ProjectActionsControl
+    * @param console  the Console
     */
-   public ProjectSelector(ConsoleOpenable co, Console console) {
-      this.co = co;
+   public ProjectSelector(ProjectActionsControl update, Console console) {
+      this.update = update;
       this.console = console;
    }
 
    /**
     * Returns a new <code>ProjectActions</code>
     *
-    * @param projType  the project type which has a valaue in
-    * {@link ProjectTypes}
-    * @return  a new {@link ProjectActions}
+    * @param projType  the project type
+    * @return  the ProjectActions
     */
    public ProjectActions createProject(ProjectTypes projType) {
       ProjectActions newProj = null;
       switch (projType) {
          case JAVA:
-            newProj = new JavaProject(co, console);
+            newProj = new JavaProject(update, console);
             break;
          case HTML:
-            newProj = new HtmlProject();
+            newProj = new HtmlProject(update);
             break;
          case PERL:
-            newProj = new PerlProject(co, console.processStarter());
+            newProj = new PerlProject(update, console.processStarter());
             break;
          case R:
-            newProj = new RProject(co, console.processStarter());
+            newProj = new RProject(update, console.processStarter());
             break;
          case GENERIC:
-            newProj = new GenericProject();
+            newProj = new GenericProject(update);
             break;
       }
       return newProj;

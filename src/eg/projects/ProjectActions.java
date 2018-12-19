@@ -1,11 +1,16 @@
 package eg.projects;
 
 /**
- * The interface that defines the actions to compile, run and
- * build a project.
+ * The interface that defines the actions to compile, run and build
+ * a project
  */
 public interface ProjectActions extends Configurable {
-   
+
+   /**
+    * Enables and disables actions
+    */
+   public void enableActions();
+
    /**
     * Compiles source files
     */
@@ -13,7 +18,7 @@ public interface ProjectActions extends Configurable {
       throw new UnsupportedOperationException(
             "Compiling source files is not supported");
    };
-   
+
    /**
     * Runs the project
     */
@@ -21,7 +26,7 @@ public interface ProjectActions extends Configurable {
       throw new UnsupportedOperationException(
             "Running the project is not supported");
    };
-   
+
    /**
     * Runs the project using the specified file
     *
@@ -29,9 +34,9 @@ public interface ProjectActions extends Configurable {
     */
    public default void runProject(String filepath) {
       throw new UnsupportedOperationException(
-            "Running the project with a file as argument is not supported");
+            "Running the project is not supported");
    };
-   
+
    /**
     * Creates a build of the project
     */

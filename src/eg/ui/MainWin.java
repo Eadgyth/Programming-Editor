@@ -111,21 +111,12 @@ public class MainWin {
    }
 
    /**
-    * Gets this <code>ProjectStateUpdate</code>
+    * Gets this <code>ProjectActionsControl</code>
     *
-    * @return  the {@link ProjectStateUpdate}
+    * @return  the ProjectActionsControl
     */
-   public ProjectStateUpdate projectUpdate() {
-      return projUpdate;
-   }
-
-   /**
-    * Gets this <code>ConsoleOpenable</code>
-    *
-    * @return  the {@link ConsoleOpenable}
-    */
-   public ConsoleOpenable consoleOpener() {
-      return consOpener;
+   public ProjectActionsControl projActControl() {
+      return projActContr;
    }
 
    /**
@@ -218,6 +209,44 @@ public class MainWin {
     */
    public void enableHideTabbar(boolean b) {
       menuBar.viewMenu().enableTabItm(b);
+   }
+
+   /**
+    * Enables or disables to assign a project
+    *
+    * @param b  true to enable, false to disable
+    */
+   public void enableAssignProject(boolean b) {
+      menuBar.projectMenu().enableAssignProjMenu(b);
+   }
+
+   /**
+    * Enables or disables to open the project settings window
+    *
+    * @param b  true to enable, false to disable
+    */
+   public void enableOpenSettingsWin(boolean b) {
+      menuBar.projectMenu().enableOpenSetWinItm(b);
+   }
+
+   /**
+    * Enables or disables to change project
+    *
+    * @param b  true to enable, false to disable
+    */
+   public void enableChangeProject(boolean b) {
+      menuBar.projectMenu().enableChangeProjItm(b);
+      toolBar.enableChangeProjBt(b);
+   }
+
+   /**
+    * Displays the project name and type in the status bar
+    *
+    * @param projName  the name of the project
+    * @param projType  the type of project
+    */
+   public void displayProjectName(String projName, String projType) {
+      statusBar.displayProjectName(projName, projType);
    }
 
    /**
@@ -432,66 +461,16 @@ public class MainWin {
       }
    }
 
-   private final ProjectStateUpdate projUpdate = new ProjectStateUpdate() {
-
-      @Override
-      public void enableProjectActions(boolean isCompile, boolean isRun,
-            boolean isBuild) {
-
-         menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun, isBuild);
-         toolBar.enableProjectActionsBts(isCompile, isRun);
-      }
-
-      @Override
-      public void enableAssignProject(boolean b) {
-         menuBar.projectMenu().enableAssignProjMenu(b);
-      }
-
-      @Override
-      public void enableOpenSettingsWin(boolean b) {
-         menuBar.projectMenu().enableOpenSetWinItm(b);
-      }
-
-      @Override
-      public void enableChangeProject(boolean b) {
-         menuBar.projectMenu().enableChangeProjItm(b);
-         toolBar.enableChangeProjBt(b);
-      }
-
-      @Override
-      public void setBuildLabel(String label) {
-         menuBar.projectMenu().setBuildLabel(label);
-      }
-
-      @Override
-      public void displayProjectName(String projName, String projType) {
-         statusBar.displayProjectName(projName, projType);
-      }
-   };
-
-   private final ConsoleOpenable consOpener = new ConsoleOpenable() {
-
-      @Override
-      public boolean isConsoleOpen() {
-         return menuBar.viewMenu().isConsoleItmSelected();
-      }
-
-      @Override
-      public void openConsole() {
-         menuBar.viewMenu().doConsoleItmAct(true);
-      }
-   };
-
    private void exit(TabbedDocuments td) {
-      editTools.forEach((t) -> {
-         t.end();
-      });
-      ViewMenu vm = menuBar.viewMenu();
-      String state = vm.isTabItmSelected() ? "show" : "hide";
-      prefs.setProperty("Tabbar", state);
-      state = vm.isFileViewItmSelected() ? "show" : "hide";
-      prefs.setProperty("FileView", state);
       if (td.closeAllForExit()) {
+         editTools.forEach((t) -> {
+            t.end();
+         });
+         ViewMenu vm = menuBar.viewMenu();
+         String state = vm.isTabItmSelected() ? "show" : "hide";
+         prefs.setProperty("Tabbar", state);
+         state = vm.isFileViewItmSelected() ? "show" : "hide";
+         prefs.setProperty("FileView", state);
          prefs.store();
          System.exit(0);
       }
@@ -557,4 +536,36 @@ public class MainWin {
          FileUtils.log(e);
       }
    }
+   
+   private final ProjectActionsControl projActContr = new ProjectActionsControl() {
+
+      @Override
+      public void enableProjectActions(boolean isCompile, boolean isRun,
+            boolean isBuild, String buildLabel) {
+   
+         menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun,
+               isBuild);
+   
+         toolBar.enableProjectActionsBts(isCompile, isRun);
+         if (!isBuild)  {
+            buildLabel = "Build";
+         }
+         menuBar.projectMenu().setBuildLabel(buildLabel);
+      }
+      
+      @Override
+      public void disableProjectActions() {
+         enableProjectActions(false, false, false, null);
+      }
+   
+      @Override
+      public boolean isConsoleOpen() {
+         return menuBar.viewMenu().isConsoleItmSelected();
+      }
+   
+      @Override
+      public void openConsole() {
+          menuBar.viewMenu().doConsoleItmAct(true);
+      }
+   };
 }
