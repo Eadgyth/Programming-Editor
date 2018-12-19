@@ -272,7 +272,6 @@ public class TabbedDocuments {
       edtDoc[n] = new EditableDocument(editArea[n], f);
       setupDocument(n);
       tabPane.addTab(edtDoc[n].filename(), editArea[n].content(), closeAct());
-      changedFileUpdate(edtDoc[n]);
       EventQueue.invokeLater(() -> proj.retrieve());
    }
 
@@ -458,11 +457,12 @@ public class TabbedDocuments {
    }
 
    String displayFilename() {
-      String name = edtDoc[iTab].filename();
-      if (name.isEmpty()) {
-         name = "unnamed";
+      if (edtDoc[iTab].hasFile()) {
+         return edtDoc[iTab].filename();
       }
-      return name;
+      else {
+         return "unnamed";
+      }
    }
 
    private int nTabs() {
