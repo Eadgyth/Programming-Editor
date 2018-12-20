@@ -128,14 +128,15 @@ public class Projects {
    }
 
    /**
-    * Tries to retrieve a saved project based on the directory of the
-    * selected <code>EditableDocument</code>
+    * Tries to retrieve a saved project that contains the directory
+    * of the selected <code>EditableDocument</code>
     *
     * @see eg.projects.AbstractProject#retrieve
     */
    public void retrieve() {
       String dir = edtDoc[iDoc].fileParent();
-      if (current != null && current.isInProject(dir)) {
+      ProjectActions fromList = selectFromList(dir, false);
+      if (current != null && fromList != null) {
          return;
       }
       ProjectActions projToFind = null;
@@ -144,26 +145,22 @@ public class Projects {
          projToFind = projSelect.createProject(t);
          isFound = projToFind.retrieve(dir);
          if (isFound) {
-            projToFind.buildSettingsWindow();
             break;
          }
       }
-      if (isFound) {
-         ProjectActions projFin = projToFind;
+      if (isFound) {    
          if (current == null) {
-            current = projFin;
-            current.setConfiguringAction(e -> configure(current));
+            current = projToFind;
             projList.add(current);
             updateProjectSetting();
          }
          else {
-            ProjectActions fromList = selectFromList(dir, true);
-            if (fromList == null) {
-               projFin.setConfiguringAction(e -> configure(projFin));
-               projList.add(projFin);
-               change(projFin);
-            }
+            projList.add(projToFind);
+            change(projToFind);
          }
+         projToFind.buildSettingsWindow();
+         ProjectActions projFin = projToFind;
+         projFin.setConfiguringAction(e -> configure(projFin));
       }
    }
 
@@ -200,11 +197,8 @@ public class Projects {
          fileNotFoundMsg(edtDoc[iDoc].filename());
       }
       else {
-         BusyFunction bf = () -> {
-            edtDoc[iDoc].saveFile();
-            current.compile();
-         };
-         mw.runBusyFunction(bf);
+         edtDoc[iDoc].saveFile();
+         mw.runBusyFunction(() -> current.compile());
          updateFileTreeImpl();
        }
    }
@@ -230,8 +224,7 @@ public class Projects {
          filesNotFoundMsg(missingFiles.toString());
       }
       else {
-         BusyFunction bf = () -> current.compile();
-         mw.runBusyFunction(bf);
+         mw.runBusyFunction(() -> current.compile());
          updateFileTreeImpl();
       }
    }
@@ -244,7 +237,7 @@ public class Projects {
          current.runProject();
       }
       else {
-         current.runProject(edtDoc[iDoc].file().getPath());
+         current.runProject(edtDoc[iDoc].filepath());
       }
    }
 
@@ -252,8 +245,7 @@ public class Projects {
     * Creates a build of the active project
     */
    public void build() {
-      BusyFunction bf = () -> current.build();
-      mw.runBusyFunction(bf);
+      mw.runBusyFunction(() -> current.build());
       updateFileTreeImpl();
    }
 
