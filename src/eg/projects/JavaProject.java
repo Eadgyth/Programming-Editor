@@ -55,7 +55,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
 
    @Override
    public void enableActions() {
-      update.enableProjectActions(true, true, true, "Create jar");
+      update.enable(true, true, true, "Create jar");
    }
 
    @Override

@@ -540,7 +540,7 @@ public class MainWin {
    private final ProjectActionsControl projActContr = new ProjectActionsControl() {
 
       @Override
-      public void enableProjectActions(boolean isCompile, boolean isRun,
+      public void enable(boolean isCompile, boolean isRun,
             boolean isBuild, String buildLabel) {
    
          menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun,
@@ -554,8 +554,8 @@ public class MainWin {
       }
       
       @Override
-      public void disableProjectActions() {
-         enableProjectActions(false, false, false, null);
+      public void disable() {
+         enable(false, false, false, null);
       }
    
       @Override

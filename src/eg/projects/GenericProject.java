@@ -16,12 +16,12 @@ public final class GenericProject extends AbstractProject implements ProjectActi
 
    @Override
    public void buildSettingsWindow() {
-         inputOptions.buildWindow();
+      inputOptions.buildWindow();
    }
 
    @Override
    public void enableActions() {
-      update.disableProjectActions();
+      update.disable();
    }
 
    /**

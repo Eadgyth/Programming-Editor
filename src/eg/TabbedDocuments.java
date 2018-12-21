@@ -486,6 +486,7 @@ public class TabbedDocuments {
 
    private void changedFileUpdate(EditableDocument doc) {
       proj.updateProjectControls();
+      mw.enableAssignProject(doc.hasFile());
       mw.setLanguageSelected(doc.language());
       mw.displayFrameTitle(doc.filepath());
    }

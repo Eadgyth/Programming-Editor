@@ -37,9 +37,9 @@ public class Projects {
    private boolean isReplace = false;
 
    /**
-    * @param mw  the {@link MainWin}
-    * @param fileTree  the {@link FileTree}
-    * @param edtDoc  the array of {@link EditableDocument}
+    * @param mw  the MainWin
+    * @param fileTree  FileTree
+    * @param edtDoc  the array of EditableDocument
     */
    public Projects(MainWin mw, FileTree fileTree, EditableDocument[] edtDoc) {
       this.mw = mw;
@@ -67,7 +67,6 @@ public class Projects {
     * a listed or no project
     */
    public void updateProjectControls() {
-      mw.enableAssignProject(edtDoc[iDoc].hasFile());
       if (current == null) {
          return;
       }
@@ -85,7 +84,7 @@ public class Projects {
          current.enableActions();
       }
       else {
-        update.disableProjectActions();
+         update.disable();
       }
    }
 
@@ -273,7 +272,7 @@ public class Projects {
       }
       else {
          mw.enableChangeProject(true);
-         update.disableProjectActions();
+         update.disable();
          return false;
       }
    }

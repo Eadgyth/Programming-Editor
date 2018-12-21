@@ -30,7 +30,7 @@ public final class HtmlProject extends AbstractProject implements ProjectActions
 
    @Override
    public void enableActions() {
-      update.enableProjectActions(false, true, false, null);
+      update.enable(false, true, false, null);
    }
 
    /**

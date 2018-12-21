@@ -162,7 +162,7 @@ public class TypingEdit {
     * Disables or re-enables adding breakpoint to define undoable units
     *
     * @param b  true to disable, false to re-enable
-    * @see UndoEdit #disableBreakpointAdding(boolean)
+    * @see UndoEdit#disableBreakpointAdding
     */
    public void disableBreakpointAdding(boolean b) {
       undo.disableBreakpointAdding(b);
@@ -170,7 +170,9 @@ public class TypingEdit {
 
    /**
     * Reads the current editing state by calling the methods defined in
-    * {@link EditingStateReadable}
+    * <code>EditingStateReadable</code>
+    *
+    * @see EditingStateReadable
     */
    public void readEditingState() {
       if (esr != null) {
