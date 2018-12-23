@@ -177,11 +177,11 @@ public class Edit {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
       if (sel == null) {
-         boolean isAtLineStart
-               = LinesFinder.lastNewline(
-                     edtDoc.text(), start) > start - indentLength;
+         boolean isIndented
+               = start - indentLength
+                     > LinesFinder.lastNewline(edtDoc.text(), start);
 
-         if (!isAtLineStart && start >= indentLength) {
+         if (isIndented) {
             if (indentUnit.equals(edtDoc.text().substring(
                   start - indentLength, start))) {
 
@@ -195,11 +195,11 @@ public class Edit {
       else {
          String[] selArr = sel.split("\n");
          if (!selArr[0].startsWith(indentUnit)) {
-            int countSpaces = 0;
-            while (selArr[0].charAt(countSpaces) == ' ') {
-               countSpaces++;
+            int nSpaces = 0;
+            while (selArr[0].charAt(nSpaces) == ' ') {
+               nSpaces++;
             }
-            int diff = indentLength - countSpaces;
+            int diff = indentLength - nSpaces;
             start -= diff;
             if (start >= 0) {
                selArr[0] = edtDoc.text().substring(
