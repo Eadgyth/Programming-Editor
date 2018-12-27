@@ -364,7 +364,7 @@ public class SyntaxUtils {
       line = LinesFinder.lineAtPos(text, pos);
       relStart = pos - LinesFinder.lastNewline(text, pos);
       return SyntaxUtils.isQuoted(line, relStart, SyntaxConstants.DOUBLE_QUOTE)
-         || SyntaxUtils.isQuoted(line, relStart, SyntaxConstants.SINGLE_QUOTE);
+            || SyntaxUtils.isQuoted(line, relStart, SyntaxConstants.SINGLE_QUOTE);
    }
 
    /**

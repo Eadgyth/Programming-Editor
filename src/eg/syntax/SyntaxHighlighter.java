@@ -364,8 +364,7 @@ public class SyntaxHighlighter {
                boolean isTagName = false;
                if (section.length() > offset) {
                   char test = section.charAt(offset);
-                  isTagName = Character.isLetter(test)
-                     || (!html & test == '_');
+                  isTagName = Character.isLetter(test) || (!html & test == '_');
                }
                if (isTagName) {
                   int nameLength;
