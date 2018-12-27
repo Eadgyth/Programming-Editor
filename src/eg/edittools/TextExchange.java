@@ -105,7 +105,7 @@ public class TextExchange {
       }
       if (res == 0) {
          clear();
-         loadFile(() -> exchangeDoc.displayFileContent(f));
+         loadFile(f);
       }
    }
 
@@ -165,18 +165,11 @@ public class TextExchange {
    //
    //--private--/
    //
-
-   private void loadFile(BusyFunction bf) {
+   private void loadFile(File f) {
       JFrame frame = ((JFrame) exchangeDoc.textArea()
             .getTopLevelAncestor());
-
-      try {
-         bf.setBusyCursor(frame);
-         bf.run();
-      }
-      finally {
-         bf.setDefaultCursor(frame);
-      }
+      
+      new BusyFunction(frame).execute(() -> exchangeDoc.displayFileContent(f));
    }
 
    private void copy(EditableDocument destination, String text) {

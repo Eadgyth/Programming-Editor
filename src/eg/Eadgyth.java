@@ -44,7 +44,6 @@ public class Eadgyth {
       });
       EventQueue.invokeLater(() -> {
          mw.makeVisible();
-         tabDocs.openBlankDocument();
       });
    }
 

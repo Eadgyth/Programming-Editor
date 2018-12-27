@@ -76,8 +76,8 @@ public class Projects {
       if (edtDoc[iDoc].hasFile()) {
          inList = selectFromList(edtDoc[iDoc].fileParent(), false);
          isInProject = inList != null;
-         isCurrent = inList == current;         
-      }  
+         isCurrent = inList == current;
+      }
       mw.enableOpenSettingsWin(isInProject);
       mw.enableChangeProject(isInProject && !isCurrent);
       if (isCurrent) {
@@ -147,7 +147,7 @@ public class Projects {
             break;
          }
       }
-      if (isFound) {    
+      if (isFound) {
          if (current == null) {
             current = projToFind;
             projList.add(current);
@@ -197,7 +197,7 @@ public class Projects {
       }
       else {
          edtDoc[iDoc].saveFile();
-         mw.runBusyFunction(() -> current.compile());
+         mw.runBusyFunction(() -> current.compile(), false);
          updateFileTreeImpl();
        }
    }
@@ -223,7 +223,7 @@ public class Projects {
          filesNotFoundMsg(missingFiles.toString());
       }
       else {
-         mw.runBusyFunction(() -> current.compile());
+         mw.runBusyFunction(() -> current.compile(), false);
          updateFileTreeImpl();
       }
    }
@@ -244,7 +244,7 @@ public class Projects {
     * Creates a build of the active project
     */
    public void build() {
-      mw.runBusyFunction(() -> current.build());
+      mw.runBusyFunction(() -> current.build(), false);
       updateFileTreeImpl();
    }
 

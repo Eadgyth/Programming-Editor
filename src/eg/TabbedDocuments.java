@@ -81,6 +81,8 @@ public class TabbedDocuments {
 
       String recentPath = prefs.getProperty("RecentPath");
       fc = new FileChooser(recentPath);
+
+      createDocument();
    }
 
    /**
@@ -186,12 +188,7 @@ public class TabbedDocuments {
     * Prints the text content of the selected document to a printer
     */
    public void print() {
-      BusyFunction bf = (() -> {
-         EventQueue.invokeLater(() -> {
-            edtDoc[iTab].print();
-         });
-      });
-      mw.runBusyFunction(bf);
+      mw.runBusyFunction(() -> edtDoc[iTab].print(), true);
    }
 
    //
@@ -206,7 +203,7 @@ public class TabbedDocuments {
          removeTab();
       }
       if (isTabOpenable()) {
-         mw.runBusyFunction(() -> createDocument(f));
+         mw.runBusyFunction(() -> createDocument(f), false);
       }
    }
 

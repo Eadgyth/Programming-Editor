@@ -50,6 +50,7 @@ public class MainWin {
    private final ConsolePanel consPnl = new ConsolePanel();
    private final EditToolPanel edToolPnl = new EditToolPanel();
    private final List<AddableEditTool> editTools = new ArrayList<>();
+   private final BusyFunction bf = new BusyFunction(frame);
    private final Prefs prefs = new Prefs();
 
    private JSplitPane splitHor;
@@ -173,11 +174,11 @@ public class MainWin {
    /**
     * Enables or disables to save text
     *
-    * @param isSave  true to enable, false otherwise
+    * @param b  true to enable, false otherwise
     */
-   public void enableSave(boolean isSave) {
-      toolBar.enableSaveBt(isSave);
-      menuBar.fileMenu().enableSaveItm(isSave);
+   public void enableSave(boolean b) {
+      toolBar.enableSaveBt(b);
+      menuBar.fileMenu().enableSaveItm(b);
    }
 
    /**
@@ -280,6 +281,24 @@ public class MainWin {
    }
 
    /**
+    * Runs an action during which a wait cursur is displayed using this
+    * <code>BusyFunction</code>
+    *
+    * @param r  the action to run
+    * @param runLater  true to run the action only after other processes
+    * are finished, false to run immediately
+    * @see  BusyFunction
+    */
+   public void runBusyFunction(Runnable r, boolean runLater) {
+      if (runLater) {
+         bf.executeLater(r);
+      }
+      else {
+         bf.execute(r);
+      }
+   }
+
+   /**
     * Sets listeners for file actions
     *
     * @param td  the reference to {@link TabbedDocuments}
@@ -304,11 +323,10 @@ public class MainWin {
     * @param lc  the reference to {@link LanguageChanger}
     */
    public void setEditActions(Edit edit, LanguageChanger lc) {
-      BusyFunction clearSpacesAct = () -> {
-         EventQueue.invokeLater(() -> edit.clearTrailingSpaces());
-      };
       toolBar.setEditActions(edit);
-      menuBar.editMenu().setEditActions(edit, e -> runBusyFunction(clearSpacesAct));
+      menuBar.editMenu().setEditActions(edit,
+            e -> bf.executeLater(() -> edit.clearTrailingSpaces()));
+
       menuBar.languageMenu().setChangeLanguageActions(lc);
    }
 
@@ -355,21 +373,6 @@ public class MainWin {
       });
    }
 
-   /**
-    * Executes a <code>BusyFunction</code>
-    *
-    * @param bf  the function to execute
-    */
-   public void runBusyFunction(BusyFunction bf) {
-      try {
-         bf.setBusyCursor(frame);
-         bf.run();
-      }
-      finally {
-         bf.setDefaultCursor(frame);
-      }
-   }
-
    //
    //--private--/
    //
@@ -387,21 +390,22 @@ public class MainWin {
             "", IconFiles.CLOSE_ICON, e -> vm.doConsoleItmAct(false)));
    }
 
-   private void setEditToolsActions(AddableEditTool tool, int i) {
+   private void setEditToolsActions(int i) {
       ActionListener closeAct = (ActionEvent e) -> {
          showEditToolPnl(false, 0);
          menuBar.editMenu().unselectEditToolItmAt(i);
       };
-      tool.addClosingAction(new FunctionalAction(
+      editTools.get(i).addClosingAction(new FunctionalAction(
             "", IconFiles.CLOSE_ICON, closeAct));
 
-      ActionListener addAct = e -> selectEditTool(tool, i);
+      ActionListener addAct = e -> selectEditTool(i);
       menuBar.editMenu().setEditToolsActionsAt(addAct, i);
    }
 
-   private void selectEditTool(AddableEditTool tool, int i) {
+   private void selectEditTool(int i) {
       EventQueue.invokeLater(() -> {
          if (menuBar.editMenu().isEditToolItmSelected(i)) {
+            AddableEditTool tool = editTools.get(i);
             edToolPnl.addComponent(tool.content());
             splitHorMid.setResizeWeight(tool.resize() ? 0 : 1);
             showEditToolPnl(true, tool.width());
@@ -527,7 +531,7 @@ public class MainWin {
                   "eg.edittools."
                   + EditTools.values()[i].className()).newInstance());
 
-            setEditToolsActions(editTools.get(i), i);
+            setEditToolsActions(i);
          }
       }
       catch (ClassNotFoundException | InstantiationException
@@ -536,33 +540,33 @@ public class MainWin {
          FileUtils.log(e);
       }
    }
-   
+
    private final ProjectActionsControl projActContr = new ProjectActionsControl() {
 
       @Override
       public void enable(boolean isCompile, boolean isRun,
             boolean isBuild, String buildLabel) {
-   
+
          menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun,
                isBuild);
-   
+
          toolBar.enableProjectActionsBts(isCompile, isRun);
          if (!isBuild)  {
             buildLabel = "Build";
          }
          menuBar.projectMenu().setBuildLabel(buildLabel);
       }
-      
+
       @Override
       public void disable() {
          enable(false, false, false, null);
       }
-   
+
       @Override
       public boolean isConsoleOpen() {
          return menuBar.viewMenu().isConsoleItmSelected();
       }
-   
+
       @Override
       public void openConsole() {
           menuBar.viewMenu().doConsoleItmAct(true);
