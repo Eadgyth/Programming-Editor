@@ -18,6 +18,7 @@ import eg.ui.MainWin;
 import eg.ui.EditArea;
 import eg.ui.tabpane.ExtTabbedPane;
 import eg.ui.filetree.FileTree;
+import eg.utils.FileUtils;
 import eg.utils.Dialogs;
 
 /**
@@ -196,7 +197,7 @@ public class TabbedDocuments {
    //
 
    private void open(File f) {
-      if (f == null || !f.exists() || isFileOpen(f) || isMaxTabNumber()) {
+      if (f == null || !FileUtils.exists(f) || isFileOpen(f) || isMaxTabNumber()) {
          return;
       }
       if (isOnlyUnnamedBlank()) {
@@ -204,16 +205,6 @@ public class TabbedDocuments {
       }
       if (isTabOpenable()) {
          mw.runBusyFunction(() -> createDocument(f), false);
-      }
-   }
-
-   private boolean exists(File f) {
-      if (f.exists()) {
-         return true;
-      }
-      else {
-         Dialogs.warnMessage(f.getName() + " was not found.");
-         return false;
       }
    }
 
@@ -225,7 +216,7 @@ public class TabbedDocuments {
                   + " is already open.",
                   null);
 
-           return true;
+            return true;
          }
       }
       return false;
@@ -278,10 +269,10 @@ public class TabbedDocuments {
    }
 
    private FunctionalAction closeAct() {
-      ActionListener close = (e -> {
+      ActionListener close = e -> {
          iTab = tabPane.iTabMouseOver();
          close(true);
-      });
+      };
       return new FunctionalAction(
             "", eg.ui.IconFiles.CLOSE_ICON, close);
    }
@@ -300,7 +291,9 @@ public class TabbedDocuments {
       if (f == null) {
          return false;
       }
-      if (f.exists() && JOptionPane.YES_OPTION != replaceFileOption(f)) {
+      if (f.exists() && JOptionPane.YES_OPTION != Dialogs.warnConfirmYesNo(
+            f.getName() + " already exists.\nReplace file?")) {
+
          return false;
       }
       boolean b;
@@ -319,11 +312,6 @@ public class TabbedDocuments {
          proj.updateFileTree(f.toString());
       }
       return b;
-   }
-
-   private int replaceFileOption(File f) {
-      return Dialogs.warnConfirmYesNo(
-            f.getName() + " already exists.\nReplace file?");
    }
 
    private void close(boolean createBlankDoc) {

@@ -14,11 +14,11 @@ import java.text.SimpleDateFormat;
  * Static methods for file operations
  */
 public class FileUtils {
-   
+
    /**
     * The system's line separator */
    public final static String LINE_SEP = System.lineSeparator();
-   
+
    /**
     * Returns the extension of the specified file
     *
@@ -36,7 +36,7 @@ public class FileUtils {
          return "";
       }
    }
-   
+
    /**
     * Replaces slashes in the specified string (forward or backward) with
     * periods
@@ -49,7 +49,7 @@ public class FileUtils {
       dottedPath = dottedPath.replace("/", ".");
       return dottedPath;
    }
-   
+
    /**
     * Returns an array in which the files in the specified array
     * of files are sorted such that directories are listed first
@@ -72,7 +72,23 @@ public class FileUtils {
       File[] sortedList = all.toArray(new File[toSort.length]);
       return sortedList;
    }
-   
+
+   /**
+    * Returns if the specified file exists and shows a warn message
+    * if not
+    *
+    * @return  true if exists
+    */
+   public static boolean exists(File f) {
+      if (f.exists()) {
+         return true;
+      }
+      else {
+         Dialogs.warnMessage(f.getName() + " was not found.");
+         return false;
+      }
+   }
+
    /**
     * Returns if a file is writeable and shows a message dialog
     * if not
@@ -92,7 +108,7 @@ public class FileUtils {
       }
       return isWriteable;
    }
-   
+
    /**
     * Deletes a folder and its content
     *
@@ -108,7 +124,7 @@ public class FileUtils {
       }
       return ret && dir.delete();
    }
-   
+
    /**
     * Returns if the specified directory is empty
     *
@@ -119,7 +135,7 @@ public class FileUtils {
       File[] content = dir.listFiles();
       return content.length == 0;
    }
-   
+
    /**
     * Appends to the file 'log.txt' in the program folder the date,
     * message and stack trace of an exception
