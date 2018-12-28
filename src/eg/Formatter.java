@@ -82,7 +82,7 @@ public class Formatter {
    public void createEditAreaAt(int i) {
       if (i > editArea.length - 1) {
          throw new IllegalArgumentException(
-               "The index is larger than the maximum possible index");
+               "i is larger than the maximum possible index");
       }
       if (editArea.length < 2) {
          throw new IllegalStateException(

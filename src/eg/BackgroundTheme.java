@@ -23,8 +23,7 @@ public class BackgroundTheme {
     */
    public static BackgroundTheme givenTheme() {
       String theme = PREFS.getProperty("Background");
-      BackgroundTheme bth = new BackgroundTheme(theme);
-      return bth;
+      return new BackgroundTheme(theme);
    }
 
    /**
@@ -34,8 +33,7 @@ public class BackgroundTheme {
     */
    public static BackgroundTheme whiteTheme() {
       String theme = "White";
-      BackgroundTheme bth = new BackgroundTheme(theme);
-      return bth;
+      return new BackgroundTheme(theme);
    }
 
    /**
