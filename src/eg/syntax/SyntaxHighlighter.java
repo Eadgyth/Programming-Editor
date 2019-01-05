@@ -413,8 +413,6 @@ public class SyntaxHighlighter {
       public void embeddedHtmlSections(String startTag, String endTag,
             Highlighter hlSection) {
 
-         Highlighter hlCurr = hl;
-         setHighlighter(hlSection);
          String t = txt.text().toLowerCase();
          int start = 0;
          while (start != -1) {
@@ -425,8 +423,8 @@ public class SyntaxHighlighter {
                   SyntaxConstants.HTML_BLOCK_CMNT_END, start, false);
 
                if (!isInCmnt) {
-                  int end = SyntaxUtils.nextBlockEnd(txt.text().toLowerCase(),
-                        start + 1, startTag, endTag, false, false);
+                  int end = SyntaxUtils.nextBlockEnd(t, start + 1, startTag,
+                       endTag, false, false);
 
                   if (end != -1) {
                      int startTagEnd = SyntaxUtils.nextBlockEnd(txt.text(),
@@ -437,7 +435,7 @@ public class SyntaxHighlighter {
                         innerEnd = end;
                         String innerScn = txt.text().substring(innerStart, end);
                         setTextParams(innerScn, chgPos, innerStart);
-                        hl.highlight(this, attr);
+                        hlSection.highlight(this, attr);
                         length = innerScn.length();
                      }
                   }
@@ -447,7 +445,6 @@ public class SyntaxHighlighter {
          }
          innerStart = 0;
          innerEnd = 0;
-         setHighlighter(hlCurr);
       }
 
       /**
