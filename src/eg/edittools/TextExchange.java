@@ -37,7 +37,7 @@ public class TextExchange {
     */
    public TextExchange(EditableDocument exchangeDoc, String recentDir) {
       this.exchangeDoc = exchangeDoc;
-      fc = new eg.FileChooser(recentDir);
+      fc = new FileChooser(recentDir);
       if (BACK_UP.exists()) {
           exchangeDoc.displayFileContent(BACK_UP);
       }

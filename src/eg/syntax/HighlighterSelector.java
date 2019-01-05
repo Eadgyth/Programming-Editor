@@ -19,17 +19,17 @@ public class HighlighterSelector {
    public static Highlighter createHighlighter(Languages lang) {
       Highlighter hl = null;
          switch(lang) {
-            case JAVA:
-               hl = new JavaHighlighter();
+            case CSS:
+               hl = new CSSHighlighter();
                break;
             case HTML:
                hl = new HTMLHighlighter();
                break;
+            case JAVA:
+               hl = new JavaHighlighter();
+               break;
             case JAVASCRIPT:
                hl = new JavascriptHighlighter();
-               break;
-            case CSS:
-               hl = new CSSHighlighter();
                break;
             case PERL:
                hl = new PerlHighlighter();

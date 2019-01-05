@@ -29,7 +29,9 @@ public class JavascriptHighlighter implements Highlighter {
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
-      if (!s.isInBlock(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH, true)) {
+      if (!s.isInBlock(SyntaxConstants.SLASH_STAR,
+            SyntaxConstants.STAR_SLASH, true)) {
+
          s.resetAttributes();
          s.keywords(JS_KEYWORDS, true, null, attr.redPlain);
          s.brackets();
