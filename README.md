@@ -5,8 +5,8 @@ projects, which can be easily switched between, may be defined in parallel. Proj
 categories are Java (so far worked out most), Perl, R and HTML in the present version.
 A project without a specific category (generic) may be as well defined to run self-chosen
 system commands in a semi-interactive console. The code of this program is made such that
-it is possible to implement other project categories. The program also provides a basic
-file explorer.
+it is possible to implement other project categories (a basic support for Python is slowly
+under work). The program also provides a basic file explorer.
 <p>
 DOCUMENTATION<br>
 A list of the features, screenshots, a help site and code documentation can be found under
