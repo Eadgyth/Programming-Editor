@@ -516,7 +516,7 @@ public class SyntaxHighlighter {
          int start = innerStart;
          while (start != -1) {
             start = txt.text().indexOf(blockStart, start);
-            int length = 0;
+            int length = 1;
             if (innerEnd > 0 && start >= innerEnd - blockStart.length()) {
                start = -1;
             }
@@ -538,7 +538,7 @@ public class SyntaxHighlighter {
                      removedBlockEnd(start, blockStart, blockEnd, skipQuoted);
                   }
                }
-               start += length + 1;
+               start += length;
             }
          }
       }
@@ -675,7 +675,7 @@ public class SyntaxHighlighter {
          if (innerEnd > 0 && nextEnd > innerEnd) {
              nextEnd = -1;
          }
-         if (nextEnd != -1) {
+         if (nextEnd != -1 && nextEnd != cmntEnd) {
             int lastStart = SyntaxUtils.lastBlockStart(txt.text(), cmntEnd,
                   blockStart, blockEnd, skipQuoted, true);
 
@@ -737,7 +737,7 @@ public class SyntaxHighlighter {
             nextEnd = SyntaxUtils.nextBlockEnd(txt.text(), pos, blockStart,
                blockEnd, skipQuoted, true);
          }
-         return lastStart != -1 & nextEnd != -1;
+         return (lastStart != -1 & nextEnd != -1) && nextEnd != lastStart;
       }
 
       private boolean isValid(int pos, int length) {

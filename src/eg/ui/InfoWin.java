@@ -23,7 +23,7 @@ public class InfoWin {
          + "Malte Bussiek<br>"
          + "https://eadgyth.github.io/Programming-Editor"
          + "</html>";
-         
+
    private final static Border EMPTY_BORDER = new EmptyBorder(10, 10, 10, 10);
 
    private final JFrame  frame    = new JFrame();
@@ -35,7 +35,7 @@ public class InfoWin {
    private final JPanel  okButton = new JPanel(new FlowLayout());
    private final JButton okBt     = new JButton("OK");
 
-   public InfoWin() {  
+   public InfoWin() {
       titleLb.setFont(Fonts.SANSSERIF_BOLD_11);
       infoLb.setFont(Fonts.SANSSERIF_PLAIN_9);
       okBt.setFocusPainted(false);
@@ -50,7 +50,7 @@ public class InfoWin {
       combine.setBorder(EMPTY_BORDER);
       combine.add(holdTextPnl, BorderLayout.CENTER);
       combine.add(okButton, BorderLayout.SOUTH);
-            
+
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
       frame.setLocation(650, 100);

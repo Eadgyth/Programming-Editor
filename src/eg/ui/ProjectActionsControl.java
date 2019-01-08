@@ -2,10 +2,10 @@ package eg.ui;
 
 /**
  * The interaface for the control of UI items used for the project
- * actions run, compile and build 
+ * actions run, compile and build
  */
 public interface ProjectActionsControl {
-   
+
    /**
     * Enables or disables separately to compile, run and build a
     * project. The specified booleans each are true to enable, false
@@ -19,7 +19,7 @@ public interface ProjectActionsControl {
     */
    public void enable(boolean isCompile, boolean isRun,
          boolean isBuild, String buildLabel);
-   
+
    /**
     * Disables all project actions (compile, run and build)
     */

@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Date;
 
 import java.text.SimpleDateFormat;
@@ -20,24 +18,6 @@ public class FileUtils {
    public final static String LINE_SEP = System.lineSeparator();
 
    /**
-    * Returns the extension of the specified file
-    *
-    * @param file  the file
-    * @return  the extension. The empty string if no period is found
-    * after the last file separator
-    */
-   public static String fileExtension(String file) {
-      int i = file.lastIndexOf(".") + 1;
-      int j = file.lastIndexOf(File.separator);
-      if (i > j) {
-         return file.substring(i);
-      }
-      else {
-         return "";
-      }
-   }
-
-   /**
     * Replaces slashes in the specified string (forward or backward) with
     * periods
     *
@@ -48,45 +28,6 @@ public class FileUtils {
       String dottedPath = path.replace("\\", "/");
       dottedPath = dottedPath.replace("/", ".");
       return dottedPath;
-   }
-
-   /**
-    * Returns an array in which the files in the specified array
-    * of files are sorted such that directories are listed first
-    * and files after it
-    *
-    * @param toSort  the array of files
-    * @return  the array of sorted files
-    */
-   public static File[] sortedFiles(File[] toSort) {
-      List<File> all = new ArrayList<>();
-      List<File> files = new ArrayList<>();
-      for (File f : toSort) {
-           if (f.isDirectory()) {
-               all.add(f);
-           } else {
-               files.add(f);
-           }
-       }
-      all.addAll(files);
-      File[] sortedList = all.toArray(new File[toSort.length]);
-      return sortedList;
-   }
-
-   /**
-    * Returns if the specified file exists and shows a warn message
-    * if not
-    *
-    * @return  true if exists
-    */
-   public static boolean exists(File f) {
-      if (f.exists()) {
-         return true;
-      }
-      else {
-         Dialogs.warnMessage(f.getName() + " was not found.");
-         return false;
-      }
    }
 
    /**
@@ -107,33 +48,6 @@ public class FileUtils {
                null);
       }
       return isWriteable;
-   }
-
-   /**
-    * Deletes a folder and its content
-    *
-    * @param dir  the directory to be deleted
-    * @return  true if dir has been deleted
-    */
-   public static boolean deleteFolder(File dir) {
-      boolean ret = true;
-      if (dir.isDirectory()) {
-         for (File f : dir.listFiles()) {
-            ret = ret && FileUtils.deleteFolder(f);
-         }
-      }
-      return ret && dir.delete();
-   }
-
-   /**
-    * Returns if the specified directory is empty
-    *
-    * @param dir  the directory
-    * @return  true if dir is empty
-    */
-   public static boolean isFolderEmpty(File dir) {
-      File[] content = dir.listFiles();
-      return content.length == 0;
    }
 
    /**

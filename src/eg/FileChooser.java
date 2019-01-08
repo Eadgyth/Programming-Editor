@@ -11,8 +11,7 @@ import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 
 /**
- * Defines two objects of <code>JFileChooser</code>, one to open and
- * another to save files
+ * Defines objects of <code>JFileChooser</code> to open and to save files
  */
 public class FileChooser {
 

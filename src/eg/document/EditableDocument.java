@@ -12,12 +12,10 @@ import java.io.IOException;
 
 //--Eadgyth--/
 import eg.Languages;
-import eg.LanguageSelector;
 import eg.utils.FileUtils;
 import eg.ui.EditArea;
 import eg.syntax.SyntaxHighlighter;
 import eg.syntax.Highlighter;
-import eg.syntax.HighlighterSelector;
 import eg.document.styledtext.EditableText;
 import eg.document.styledtext.PrintableText;
 
@@ -28,8 +26,8 @@ public final class EditableDocument {
 
    private final TypingEdit type;
    private final EditableText txt;
+   private final CurrentLanguage currLang = new CurrentLanguage();
 
-   private Languages lang;
    private File file = null;
    private String filename = "";
    private String filepath = "";
@@ -59,8 +57,8 @@ public final class EditableDocument {
     */
    public EditableDocument(EditArea editArea, Languages lang) {
       this(editArea);
-      this.lang = lang;
-      type.setEditingMode(lang);
+      currLang.setLanguage(lang);
+      setEditingMode();
    }
 
    /**
@@ -118,7 +116,7 @@ public final class EditableDocument {
     public JTextPane textArea() {
        return txt.textArea();
     }
-    
+
    /**
     * Returns if a file is set
     *
@@ -127,7 +125,7 @@ public final class EditableDocument {
    public boolean hasFile() {
       return file != null;
    }
-    
+
    /**
     * Gets this file or throws an exception if no file is set
     *
@@ -139,7 +137,7 @@ public final class EditableDocument {
       }
       return file;
    }
-   
+
    /**
     * Gets the path of the parent directory of this file or throws
     * an exception if no file is set
@@ -161,7 +159,7 @@ public final class EditableDocument {
    public String filename() {
       return filename;
    }
-   
+
    /**
     * Gets the path of this file
     *
@@ -211,11 +209,22 @@ public final class EditableDocument {
     * @param f  the file
     */
    public void displayFileContent(File f) {
+      displayFileContentIgnoreLang(f);
+      setEditingMode(f);
+   }
+   
+   /**
+    * Diplays the content of the specified file but does not set the file
+    * and also does not set the language that would correspond to the
+    * file type
+    *
+    * @param f  the file
+    */
+   public void displayFileContentIgnoreLang(File f) {
       type.enableDocUpdate(false);
       displayFileContentImpl(f);
       type.enableDocUpdate(true);
       textArea().setCaretPosition(0);
-      setEditingMode(f);
    }
 
    /**
@@ -227,6 +236,16 @@ public final class EditableDocument {
     */
    public boolean saveCopy(File f) {
       return writeToFile(f);
+   }
+   
+   /**
+    * Changes the language
+    *
+    * @param lang  the language to change to
+    */
+   public void changeLanguage(Languages lang) {
+      currLang.setLanguage(lang);
+      EventQueue.invokeLater(() -> setEditingMode());
    }
 
    /**
@@ -258,15 +277,12 @@ public final class EditableDocument {
    }
 
    /**
-    * Gets this language
+    * Gets the current language
     *
     * @return  the language
     */
    public Languages language() {
-      if (lang == null) {
-         throw new IllegalStateException("A language is not set");
-      }
-      return lang;
+      return currLang.lang();
    }
 
    /**
@@ -274,18 +290,8 @@ public final class EditableDocument {
     *
     * @return  the indent unit
     */
-   public String currIndentUnit() {
-      return type.getIndentUnit();
-   }
-
-   /**
-    * Changes the language
-    *
-    * @param lang  the language to change to
-    */
-   public void changeLanguage(Languages lang) {
-      this.lang = lang;
-      EventQueue.invokeLater(() -> type.setEditingMode(lang));
+   public String indentUnit() {
+      return type.indentUnit();
    }
 
    /**
@@ -356,8 +362,8 @@ public final class EditableDocument {
     */
     public void print() {
       PrintableText printTxt = new PrintableText(text(), textArea().getFont());
-      if (lang != Languages.NORMAL_TEXT) {
-         Highlighter hl = HighlighterSelector.createHighlighter(lang);
+      if (currLang.lang() != Languages.NORMAL_TEXT) {
+         Highlighter hl = currLang.createHighlighter();
          SyntaxHighlighter sh = new SyntaxHighlighter(printTxt);
          sh.setHighlighter(hl);
          sh.highlight();
@@ -368,7 +374,7 @@ public final class EditableDocument {
    //
    //--private--/
    //
-   
+
    private void setFileParams(File f) {
       file = f;
       filename = f.getName();
@@ -436,7 +442,11 @@ public final class EditableDocument {
    }
 
    private void setEditingMode(File f) {
-      lang = LanguageSelector.selectLanguage(f.getName());
-      type.setEditingMode(lang);
+      currLang.setLanguage(f.toString());
+      setEditingMode();
+   }
+
+   private void setEditingMode() {
+      type.setEditingMode(currLang);
    }
 }

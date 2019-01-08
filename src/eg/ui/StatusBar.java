@@ -15,17 +15,17 @@ import eg.utils.ScreenParams;
  * Defines the status bar
  */
 public class StatusBar {
-   
+
    private final JPanel content = new JPanel();
    private final JLabel projectLb = new JLabel();
    private final JLabel languageLb = new JLabel();
    private final JLabel cursorPosLb = new JLabel();
    private final JLabel wordwrapLb = new JLabel();
-   
+
    public StatusBar() {
       init();
    }
-   
+
    /**
     * Gets this <code>JPanel</code> which represents the status bar
     *
@@ -34,7 +34,7 @@ public class StatusBar {
    public JPanel content() {
       return content;
    }
-   
+
    /**
     * Displays the language
     *
@@ -43,7 +43,7 @@ public class StatusBar {
    public void displayLanguage(String lang) {
       languageLb.setText("Language: " + lang);
    }
-   
+
    /**
     * Displays the cursor position
     *
@@ -53,7 +53,7 @@ public class StatusBar {
    public void displayCursorPosition(int lineNr, int colNr) {
       cursorPosLb.setText("Line " + lineNr + "  Col " + colNr);
    }
-   
+
    /**
     * Displays if wordwrap is switched on
     *
@@ -69,7 +69,7 @@ public class StatusBar {
          wordwrapLb.setText("");
       }
    }
-   
+
    /**
     * Displays the project name and type
     *
@@ -84,9 +84,9 @@ public class StatusBar {
             + projType
             + ")");
    }
-   
+
    //--private--/
-   
+
    private void init() {
       int lbHeight = 15;
       Dimension width5   = ScreenParams.scaledDimension(5, lbHeight);

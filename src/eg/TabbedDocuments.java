@@ -18,7 +18,6 @@ import eg.ui.MainWin;
 import eg.ui.EditArea;
 import eg.ui.tabpane.ExtTabbedPane;
 import eg.ui.filetree.FileTree;
-import eg.utils.FileUtils;
 import eg.utils.Dialogs;
 
 /**
@@ -197,7 +196,7 @@ public class TabbedDocuments {
    //
 
    private void open(File f) {
-      if (f == null || !FileUtils.exists(f) || isFileOpen(f) || isMaxTabNumber()) {
+      if (f == null || !exists(f) || isFileOpen(f) || isMaxTabNumber()) {
          return;
       }
       if (isOnlyUnnamedBlank()) {
@@ -205,6 +204,16 @@ public class TabbedDocuments {
       }
       if (isTabOpenable()) {
          mw.runBusyFunction(() -> createDocument(f), false);
+      }
+   }
+
+   private static boolean exists(File f) {
+      if (f.exists()) {
+         return true;
+      }
+      else {
+         Dialogs.warnMessage(f.getName() + " was not found.");
+         return false;
       }
    }
 
@@ -233,7 +242,8 @@ public class TabbedDocuments {
    }
 
    private boolean isOnlyUnnamedBlank() {
-      return nTabs() == 1 && !edtDoc[iTab].hasFile()
+      return nTabs() == 1
+            && !edtDoc[iTab].hasFile()
             && edtDoc[iTab].textLength() == 0;
    }
 

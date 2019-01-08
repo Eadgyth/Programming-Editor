@@ -39,7 +39,7 @@ public class TextExchange {
       this.exchangeDoc = exchangeDoc;
       fc = new FileChooser(recentDir);
       if (BACK_UP.exists()) {
-          exchangeDoc.displayFileContent(BACK_UP);
+          exchangeDoc.displayFileContentIgnoreLang(BACK_UP);
       }
    }
 
@@ -144,7 +144,7 @@ public class TextExchange {
     * document
     */
    public void adoptIndentUnit() {
-      exchangeDoc.setIndentUnit(sourceDoc.currIndentUnit());
+      exchangeDoc.setIndentUnit(sourceDoc.indentUnit());
    }
 
    /**

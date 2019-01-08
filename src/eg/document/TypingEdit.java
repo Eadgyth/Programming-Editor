@@ -84,12 +84,12 @@ public class TypingEdit {
    /**
     * Sets the editing mode
     *
-    * @param lang  the language which is a constant in {@link Languages}
+    * @param cl  the CurrentLanguege
     */
-   public void setEditingMode(Languages lang) {
-      Highlighter hl = HighlighterSelector.createHighlighter(lang);
-      syntax.setHighlighter(hl);
-      if (lang == Languages.NORMAL_TEXT) {
+   public void setEditingMode(CurrentLanguage cl) {
+      syntax.setHighlighter(cl.createHighlighter());
+      indent.setCurlyBracketMode(cl.curlyBracketMode());
+      if (cl.lang() == Languages.NORMAL_TEXT) {
          isCodeUpdate = false;
       }
       else {
@@ -154,8 +154,8 @@ public class TypingEdit {
     *
     * @return  the indent unit
     */
-   public String getIndentUnit() {
-      return indent.getIndentUnit();
+   public String indentUnit() {
+      return indent.indentUnit();
    }
 
    /**

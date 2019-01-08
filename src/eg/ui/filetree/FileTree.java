@@ -51,7 +51,7 @@ public class FileTree {
    public FileTree(TreePanel treePnl, FileOpener opener) {
       this.treePnl = treePnl;
       this.opener = opener;
-      setActions();   
+      setActions();
    }
 
    /**
@@ -67,7 +67,7 @@ public class FileTree {
          tree.expandRow(0);
       }
    }
-   
+
    /**
     * Sets the directory that may be deleted (by using this popup
     * menu) although it is not empty. Usually, non-empty folders
@@ -83,10 +83,10 @@ public class FileTree {
       }
       if (deletableDirName == null || deletableDirName.length() == 0) {
          deletableDir = null;
-      }      
+      }
       else {
          deletableDir = projRoot + File.separator + deletableDirName;
-      }     
+      }
    }
 
    /**
@@ -100,7 +100,7 @@ public class FileTree {
       setNewTree(currentRoot);
       expand();
    }
-   
+
    /**
     * Gets this currently shown root which may be a subdirectory
     * of the initial project root
@@ -130,7 +130,7 @@ public class FileTree {
          tree.addMouseListener(mouseListener);
          treePnl.setTree(tree);
       }
-      else {         
+      else {
          tree.setModel(model);
       }
    }
@@ -138,7 +138,7 @@ public class FileTree {
    private void getFiles(DefaultMutableTreeNode node, File f) {
       File fList[] = f.listFiles();
       if (fList != null) {
-         File fListSorted[] = FileUtils.sortedFiles(fList);
+         File fListSorted[] = sortedFiles(fList);
          for (File fs : fListSorted) {
             DefaultMutableTreeNode child = new DefaultMutableTreeNode(fs);
             node.add(child);
@@ -148,7 +148,22 @@ public class FileTree {
          }
       }
    }
-   
+
+   private File[] sortedFiles(File[] toSort) {
+      List<File> all = new ArrayList<>();
+      List<File> files = new ArrayList<>();
+      for (File f : toSort) {
+           if (f.isDirectory()) {
+               all.add(f);
+           } else {
+               files.add(f);
+           }
+       }
+      all.addAll(files);
+      File[] sortedList = all.toArray(new File[toSort.length]);
+      return sortedList;
+   }
+
    private void folderDown() {
       setNewTree(selectedFile.toString());
       tree.expandRow(0);
@@ -169,7 +184,7 @@ public class FileTree {
          }
          else {
             boolean deletable
-                  = FileUtils.isFolderEmpty(selectedFile)
+                  = isFolderEmpty(selectedFile)
                   || (deletableDir != null
                   && selectedFile.toString().startsWith(deletableDir));
 
@@ -178,7 +193,12 @@ public class FileTree {
          }
       }
    }
-   
+
+   private boolean isFolderEmpty(File dir) {
+      File[] content = dir.listFiles();
+      return content.length == 0;
+   }
+
    private void openFile() {
       opener.open(selectedFile);
    }
@@ -190,14 +210,14 @@ public class FileTree {
       int res = Dialogs.warnConfirmYesNo(
             selectedFile.getName()
             + " will be permanently deleted!\nContinue?");
-            
+
       if (res == JOptionPane.YES_OPTION) {
          boolean success;
          if (selectedFile.isFile()) {
             success = selectedFile.delete();
          }
          else {
-            success = FileUtils.deleteFolder(selectedFile);
+            success = deleteFolder(selectedFile);
          }
          if (success) {
             if (selectedNode == tree.getModel().getRoot()) {
@@ -214,6 +234,16 @@ public class FileTree {
                   + " failed", null);
          }
       }
+   }
+
+   private boolean deleteFolder(File dir) {
+      boolean ret = true;
+      if (dir.isDirectory()) {
+         for (File f : dir.listFiles()) {
+            ret = ret && deleteFolder(f);
+         }
+      }
+      return ret && dir.delete();
    }
 
    private void newFolder() {

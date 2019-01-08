@@ -12,6 +12,7 @@ public class Indentation {
 
    private String indentUnit = "";
    private int indentLength = 0;
+   private boolean curlyBracketMode;
 
    /**
     * @param txt  the {@link EditableText}
@@ -37,11 +38,22 @@ public class Indentation {
    }
 
    /**
+    * Sets the boolen which indicates that indentation is increased
+    * after an opening and reduced after a closing curly bracket
+    *
+    * @param b  true to enable, false to disable extra curly-bracket
+    * indentation
+    */
+   public void setCurlyBracketMode(boolean b) {
+      curlyBracketMode = b;
+   }
+
+   /**
     * Returns the currently set indent unit
     *
     * @return  the indent unit
     */
-   public String getIndentUnit() {
+   public String indentUnit() {
       return indentUnit;
    }
 
@@ -54,7 +66,9 @@ public class Indentation {
       if ('\n' == txt.text().charAt(pos)) {
          indent(pos);
       }
-      else if (pos >= indentLength && '}' == txt.text().charAt(pos)) {
+      else if (pos >= indentLength && curlyBracketMode
+            && '}' == txt.text().charAt(pos)) {
+
          outdent(pos);
       }
    }
@@ -65,7 +79,7 @@ public class Indentation {
 
    private void indent(int pos) {
       String currIndent = currentIndentAt(pos);
-      if (pos > 1 && '{' == txt.text().charAt(pos - 1)) {
+      if (pos > 1 && curlyBracketMode && '{' == txt.text().charAt(pos - 1)) {
          currIndent += indentUnit;
       }
       txt.insert(pos + 1, currIndent);
@@ -106,7 +120,7 @@ public class Indentation {
       }
       return currIndent;
    }
-   
+
    private int currentIndentLengthAt(int pos) {
       int length = 0;
       if (pos > 1) {
@@ -117,7 +131,7 @@ public class Indentation {
       }
       return length;
    }
-   
+
    private char[] lineAt(int pos) {
       int lineStart = txt.text().lastIndexOf("\n", pos - 1) + 1;
       char[] line = txt.text().substring(lineStart, pos).toCharArray();

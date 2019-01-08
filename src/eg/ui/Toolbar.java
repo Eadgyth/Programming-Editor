@@ -112,7 +112,7 @@ public class ToolBar {
       cutBt.setEnabled(b);
       copyBt.setEnabled(b);
    }
-   
+
    /**
     * Enables or disables the button for saving actions
     *

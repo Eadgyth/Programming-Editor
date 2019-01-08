@@ -6,7 +6,7 @@ package eg.ui;
  */
 @FunctionalInterface
 public interface LineNrWidthAdaptable {
-   
+
    /**
     * Revalidates the edit area as the number of digits of the
     * largest line number changes

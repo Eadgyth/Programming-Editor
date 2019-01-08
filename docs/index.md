@@ -16,7 +16,8 @@
 <li>Clearing end-of-line (trailing) white spaces.</li>
 <li>An "exchange editor" pane to edit text in a separate view and to facilitate
     the exchange of text within a file or between files.</li>
-<li>A basic syntax highlighting (for Java, Perl, R, HTML, XML, CSS, Javascript).</li>
+<li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
+    Javascript).</li>
 <li>A basic auto-indentation.</li>
 <li>Block-wise increase or decrease of the indentation.</li>
 </ul>

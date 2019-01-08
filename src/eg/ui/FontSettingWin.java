@@ -101,7 +101,7 @@ public class FontSettingWin {
    //
    //--private--/
    //
-   
+
    private void undoSettings() {
       selectFont.setSelectedItem(font);
       selectSize.setSelectedItem(String.valueOf(size));
