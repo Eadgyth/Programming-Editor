@@ -123,7 +123,7 @@ public class ProcessStarter {
          }
       });
    }
-   
+
    //
    //--private--/
    //
@@ -171,7 +171,7 @@ public class ProcessStarter {
       private InputStreamReader isr = new InputStreamReader(is);
       private BufferedReader reader = new BufferedReader(isr);
       private boolean updateFileTree;
-      
+
       CaptureInput(boolean updateFileTree) {
          this.updateFileTree = updateFileTree;
       }
@@ -204,7 +204,7 @@ public class ProcessStarter {
          }
          return null;
       }
-      
+
       @Override
       protected void done() {
          consPnl.setCaret(consPnl.getText().length());
