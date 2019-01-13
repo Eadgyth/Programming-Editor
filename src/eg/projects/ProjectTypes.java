@@ -9,6 +9,7 @@ public enum ProjectTypes {
    HTML("HTML"),
    JAVA("Java"),
    PERL("Perl"),
+   PYTHON("Python"),
    R("R");
 
    private final String display;

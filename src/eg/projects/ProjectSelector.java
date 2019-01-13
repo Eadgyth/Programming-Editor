@@ -39,6 +39,9 @@ public class ProjectSelector {
          case PERL:
             newProj = new PerlProject(update, console.processStarter());
             break;
+         case PYTHON:
+            newProj = new PythonProject(update, console.processStarter());
+            break;
          case R:
             newProj = new RProject(update, console.processStarter());
             break;

@@ -47,6 +47,7 @@ public abstract class AbstractProject implements Configurable {
    private String buildName = "";
    //
    // Variables to control the configuration
+   private File mainFilePath = null;
    private boolean isPathname = false;
    private String namespacePath = "";
    private boolean isNameConflict = false;
@@ -178,6 +179,38 @@ public abstract class AbstractProject implements Configurable {
    protected abstract void setCommandParameters();
 
    /**
+    * Returns if the main project file can be located based on the last
+    * successful configuration or, if not, after re-configuring the
+    * project. A dialog which asks to open the settings window is shown
+    * if the file cannot be located.
+    *
+    * @return  true if the main can be located
+    */
+   protected boolean locateMainFile() {
+      if (!useMainFile) {
+         throw new IllegalStateException("A main file is not used");
+      }
+      boolean exists = mainFilePath.exists();
+      if (!exists) {
+         exists = configBySettingsInput(projectRoot);
+         if (exists) {
+            setCommandParameters();
+            storeConfiguration();
+         }
+         else {
+            int res = Dialogs.warnConfirmYesNo(
+                  MAIN_FILE_PATH_ERR
+                  +"\n\nOpen the project settings?");
+
+            if (res == 0) {
+               sw.setVisible(true);
+            }
+         }
+      }
+      return exists;
+   }
+
+   /**
     * Returns the name of main project file without extension
     *
     * @return  the name
@@ -195,7 +228,7 @@ public abstract class AbstractProject implements Configurable {
     * if a sources directory is not given, at the project's root
     * directory.
     *
-    * @return  the namespace. The empty string if no namespace is given
+    * @return  the namespace; the empty string if no namespace is given
     */
    protected String namespace() {
       return namespace;
@@ -204,7 +237,7 @@ public abstract class AbstractProject implements Configurable {
    /**
     * Returns the last name of the directoy where source files are saved
     *
-    * @return  the name. The empty string if no source directory is given
+    * @return  the name; the empty string if no source directory is given
     */
    protected String sourceDirName() {
       return sourceDirName;
@@ -214,7 +247,7 @@ public abstract class AbstractProject implements Configurable {
     * Returns the extension of source files (or of the main project
     * file if extensions differ) with the beginning period
     *
-    * @return  the extension. Null if no source extension is given
+    * @return  the extension; null if no source extension is given
     */
    protected String sourceExtension() {
       return sourceExtension;
@@ -223,7 +256,7 @@ public abstract class AbstractProject implements Configurable {
    /**
     * Returns command options
     *
-    * @return  the options. The empty string if no options are given
+    * @return  the options; the empty string if no options are given
     */
    protected String cmdOptions() {
       return cmdOptions;
@@ -317,14 +350,16 @@ public abstract class AbstractProject implements Configurable {
                namespace = namespacePath.substring(sourceRoot.length() + 1);
             }
             else {
-               namespace = ""; // no subdir in source root or project root
+               namespace = ""; // no subdir in source or project root
             }
+            mainFilePath = new File(root + "/" + pathRelToRoot());
             success = true;
          }
       }
       else {
-         File fToTest = new File(root + "/" + pathRelToRoot());
-         if (fToTest.exists()) {
+         File toTest = new File(root + "/" + pathRelToRoot());
+         if (toTest.exists()) {
+            mainFilePath = toTest;
             success = true;
          }
       }
@@ -402,6 +437,9 @@ public abstract class AbstractProject implements Configurable {
             if (pr == conf) {
                store(prefs);
             }
+            if (useMainFile) {
+               mainFilePath = toTest;
+            }
          }
       }
       return success;
@@ -473,7 +511,7 @@ public abstract class AbstractProject implements Configurable {
          }
          else {
             if (useMainFile) {
-               Dialogs.warnMessageOnTop(GENERAL_INPUT_ERR);
+               Dialogs.warnMessageOnTop(MAIN_FILE_PATH_ERR);
             }
             else {
                showProjRootInputWarning();
@@ -483,6 +521,7 @@ public abstract class AbstractProject implements Configurable {
       else {
          if (projectRoot.isEmpty() || !projectRoot.equals(rootToTest)) {
             projectRoot = rootToTest;
+
          }
       }
       return success;
@@ -578,8 +617,9 @@ public abstract class AbstractProject implements Configurable {
          + " existing directoy.");
    }
 
-   private final static String GENERAL_INPUT_ERR
-         = "The entries cannot be matched with an existing file.";
+   private final static String MAIN_FILE_PATH_ERR
+         = "The entries in the project settings window cannot be matched"
+         + " with an existing path to the main project file.";
 
    private final static String DELETE_CONF_OPT
          = "<html>"

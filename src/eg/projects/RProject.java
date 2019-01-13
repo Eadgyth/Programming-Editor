@@ -39,6 +39,9 @@ public final class RProject extends AbstractProject implements ProjectActions {
 
    @Override
    public void runProject() {
+      if (!locateMainFile()) {
+         return;
+      }
       if (!update.isConsoleOpen()) {
          update.openConsole();
       }

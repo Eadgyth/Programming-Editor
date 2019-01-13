@@ -25,6 +25,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
 
    private String startCommand = "";
    private String qualifiedMain = "";
+   private File mainClassFile = null;
    private String[] nonJavaExt = null;
    private boolean isNonJavaExtTested = true;
 
@@ -61,6 +62,9 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    @Override
    public void compile() {
       if (!cons.canPrint()) {
+         return;
+      }
+      if (!locateMainFile()) {
          return;
       }
       if (!isNonJavaExtCorrect()) {
@@ -111,7 +115,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
 
    @Override
    public void runProject() {
-      if (!existsMainClassFile()) {
+      if (!locateMainFile()) {
          return;
       }
       if (!update.isConsoleOpen()) {
@@ -167,6 +171,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    protected void setCommandParameters() {
       setQualifiedMain();
       setStartCommand();
+      setMainClassFile();
       setNonJavaExtensions();
    }
 
@@ -195,12 +200,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       startCommand = sb.toString();
    }
 
-   private void setNonJavaExtensions() {
-      nonJavaExt = fileExtensions();
-      isNonJavaExtTested = nonJavaExt == null;
-   }
-
-   private boolean existsMainClassFile() {
+   private void setMainClassFile() {
       StringBuilder sb = new StringBuilder(projectPath() + "/");
       if (!executableDirName().isEmpty()) {
          sb.append(executableDirName()).append("/");
@@ -209,14 +209,23 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          sb.append(namespace()).append("/");
       }
       sb.append(mainFileName()).append(".class");
-      File f = new File(sb.toString());
-      if (!f.exists()) {
-         Dialogs.warnMessage("A compiled main class file could not be found.");
-         return false;
+      mainClassFile = new File(sb.toString());
+   }
+   
+   private void setNonJavaExtensions() {
+      nonJavaExt = fileExtensions();
+      isNonJavaExtTested = nonJavaExt == null;
+   }
+   
+   private boolean existsMainClassFile() {
+      boolean exists = mainClassFile.exists();      
+      if (!exists) {
+         Dialogs.warnMessage(
+            "A compiled main file "
+            + mainFileName()
+            + " could not be found");
       }
-      else {
-         return true;
-      }
+      return exists;
    }
 
    private boolean isNonJavaExtCorrect() {

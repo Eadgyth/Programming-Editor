@@ -5,9 +5,9 @@ import eg.console.ProcessStarter;
 import eg.ui.ProjectActionsControl;
 
 /**
- * Represents a programming project in Perl
+ * Represents a programming project in Python
  */
-public final class PerlProject extends AbstractProject implements ProjectActions {
+public final class PythonProject extends AbstractProject implements ProjectActions {
 
    private final ProjectActionsControl update;
    private final ProcessStarter proc;
@@ -18,16 +18,16 @@ public final class PerlProject extends AbstractProject implements ProjectActions
     * @param update  the ProjectActionsControl
     * @param proc  the ProcessStarter
     */
-   public PerlProject(ProjectActionsControl update, ProcessStarter proc) {
-      super(ProjectTypes.PERL, true, "pl");
+   public PythonProject(ProjectActionsControl update, ProcessStarter proc) {
+      super(ProjectTypes.PYTHON, true, "py");
       this.update = update;
       this.proc = proc;
    }
 
    @Override
    public void buildSettingsWindow() {
-      inputOptions.addFileInput("Name of Perl script")
-            .addSourceDirInput()
+      inputOptions.addFileInput("Name of main python script")
+            .addCmdOptionsInput()
             .addCmdArgsInput()
             .buildWindow();
    }
@@ -45,14 +45,17 @@ public final class PerlProject extends AbstractProject implements ProjectActions
       if (!update.isConsoleOpen()) {
          update.openConsole();
       }
-      proc.startProcess(startCmd, false);
+      proc.startProcess(startCmd, true);
    }
 
    @Override
    protected void setCommandParameters() {
-      StringBuilder sb = new StringBuilder("perl ");
-      if (!sourceDirName().isEmpty()) {
+      StringBuilder sb = new StringBuilder("python ");
+      /*if (!sourceDirName().isEmpty()) {
          sb.append(sourceDirName()).append("/");
+      }*/
+      if (!cmdOptions().isEmpty()) {
+         sb.append(cmdOptions()).append(" ");
       }
       if (!namespace().isEmpty()) {
          sb.append(namespace()).append("/");
