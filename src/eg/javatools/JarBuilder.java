@@ -17,18 +17,10 @@ public class JarBuilder {
 
    private final static String F_SEP = File.separator;
    private final FilesFinder fFind = new FilesFinder();
-   private final Console cons;
 
    private String successMsg = "";
    private String includedFilesErr = "";
    private String errorMsg = "";
-
-   /**
-    * @param cons  the reference to {@link Console}
-    */
-   public JarBuilder(Console cons) {
-      this.cons = cons;
-   }
 
    /**
     * Returns the message created if the jar was created
@@ -102,12 +94,10 @@ public class JarBuilder {
                .append(" in ").append(loc);
 
          successMsg = msg.toString();
-         cons.printBr(successMsg);
          return true;
       }
       else {
          errorMsg = "An error occured while creating the jar file";
-         cons.printBr(errorMsg);
          return false;
       }
    }
@@ -142,13 +132,12 @@ public class JarBuilder {
             List<File> toInclude = fFind.filteredFiles(searchRoot, ext, sourceDir);
             if (toInclude.isEmpty()) {
                StringBuilder msg = new StringBuilder();
-               msg.append("Note: ")
+               msg.append("NOTE: ")
                      .append("Files with extension \"")
                      .append(ext)
                      .append("\" for inclusion in the jar were not found");
 
                includedFilesErr = msg.toString();
-               cons.printBr(includedFilesErr);
             }
             else {
                List<File> relativeInclFilePaths

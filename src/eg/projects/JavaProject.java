@@ -39,7 +39,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       this.cons = cons;
       proc = cons.processStarter();
       comp = new Compilation(cons);
-      jar = new JarBuilder(cons);
+      jar = new JarBuilder();
    }
 
    @Override
@@ -71,6 +71,9 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          cons.clear();
          return;
       }
+      if (!update.isConsoleOpen()) {
+         update.openConsole();
+      }
       cons.clear();
       cons.printBr("Compile " + projectName());
       EventQueue.invokeLater(() -> {
@@ -78,50 +81,18 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                sourceDirName(), nonJavaExt, compileOption());
 
          cons.toTop();
-         if (!update.isConsoleOpen()) {
-            boolean needConfirm = false;
-            StringBuilder msg = new StringBuilder();
-            if (!comp.isCompiled()) {
-               msg.append("Compilation failed.\n");
-               msg.append(comp.firstCompileErr()).append(".\n");
-               needConfirm = true;
-            }
-            else {
-               msg.append("Compilation successful.\n");
-            }
-            if (comp.isNonErrMessage()) {
-               msg.append("Warning: One or more compiler messages are present.\n");
-               needConfirm = true;
-            }
-            if (!comp.copyFilesErr().isEmpty()) {
-               msg.append(comp.copyFilesErr()).append(".\n");
-            }
-            if (!comp.optionErr().isEmpty()) {
-               msg.append(comp.optionErr()).append(".\n");
-            }
-            if (needConfirm) {
-               msg.append("\nOpen the console window to view messages?\n");
-               int res = Dialogs.warnConfirmYesNo(msg.toString());
-               if (0 == res) {
-                  update.openConsole();
-               }
-            }
-            else {
-               Dialogs.infoMessage(msg.toString(), null);
-            }
-         }
       });
    }
 
    @Override
-   public void runProject() {
+   public void run() {
       if (!locateMainFile()) {
          return;
       }
       if (!update.isConsoleOpen()) {
          update.openConsole();
       }
-      proc.startProcess(startCommand, false);
+      proc.startProcess(startCommand);
    }
 
    /**
@@ -136,7 +107,6 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          cons.clear();
          return;
       }
-      cons.clear();
       EventQueue.invokeLater(() -> {
          String jarName = buildName();
          if (jarName.length() == 0) {
@@ -147,18 +117,16 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                   qualifiedMain, executableDirName(), sourceDirName(),
                   nonJavaExt);
 
-            if (!update.isConsoleOpen()) {
-               if (created) {
-                  StringBuilder msg = new StringBuilder();
-                  msg.append(jar.successMessage()).append(".\n");
-                  if (!jar.incudedFilesErr().isEmpty()) {
-                     msg.append(jar.incudedFilesErr()).append(".");
-                  }
-                  Dialogs.infoMessage(msg.toString(), null);
+            if (created) {
+               StringBuilder msg = new StringBuilder();
+               msg.append(jar.successMessage()).append(".\n");
+               if (!jar.incudedFilesErr().isEmpty()) {
+                  msg.append(jar.incudedFilesErr()).append(".");
                }
-               else {
-                  Dialogs.errorMessage(jar.errorMessage() + ".", null);
-               }
+               Dialogs.infoMessage(msg.toString(), null);
+            }
+            else {
+               Dialogs.errorMessage(jar.errorMessage() + ".", null);
             }
          }
          catch (IOException | InterruptedException e) {
@@ -211,19 +179,19 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       sb.append(mainFileName()).append(".class");
       mainClassFile = new File(sb.toString());
    }
-   
+
    private void setNonJavaExtensions() {
       nonJavaExt = fileExtensions();
       isNonJavaExtTested = nonJavaExt == null;
    }
-   
+
    private boolean existsMainClassFile() {
-      boolean exists = mainClassFile.exists();      
+      boolean exists = mainClassFile.exists();
       if (!exists) {
          Dialogs.warnMessage(
-            "A compiled main file "
+            "A compiled main class file \'"
             + mainFileName()
-            + " could not be found");
+            + "\' could not be found");
       }
       return exists;
    }

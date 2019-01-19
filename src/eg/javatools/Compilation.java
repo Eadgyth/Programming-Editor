@@ -36,8 +36,6 @@ public class Compilation {
    private final Console cons;
 
    private boolean success = false;
-   private String firstCompileErr = "";
-   private boolean isNonErrMessage = false;
    private String copyFilesErr = "";
    private String optionErr = "";
 
@@ -56,25 +54,6 @@ public class Compilation {
     */
    public boolean isCompiled() {
       return success;
-   }
-
-   /**
-    * Returns the shortened error message which indicates the source
-    * file and the line number in the first listed compilation error
-    *
-    * @return  the message or the empty empty string if there is none
-    */
-   public String firstCompileErr() {
-      return firstCompileErr;
-   }
-
-   /**
-    * Returns if messages of a kind other than error are present
-    *
-    * @return  the boolean value which is true if messages are present
-    */
-   public boolean isNonErrMessage() {
-      return isNonErrMessage;
    }
 
    /**
@@ -150,7 +129,6 @@ public class Compilation {
          printDiagnostics(diagnostics);
       }
       catch (IllegalArgumentException | IllegalStateException e) {
-         cons.printBr("Error: " + e.getMessage());
          FileUtils.log(e);
       }
       finally {
@@ -168,8 +146,6 @@ public class Compilation {
 
    private void reset() {
       success = false;
-      firstCompileErr = "";
-      isNonErrMessage = false;
       copyFilesErr = "";
       optionErr = "";
    }
@@ -214,8 +190,7 @@ public class Compilation {
          else {
             opt = new String[] {"-d", targetDir};
             optionErr =
-                  "Note: \""
-                  + xlintOption
+                  xlintOption
                   + "\" cannot be used as"
                   + " Xlint compiler option and was ignored";
 
@@ -237,9 +212,8 @@ public class Compilation {
       for (String ext : nonJavaExt) {
          List<File> toCopy = fFind.filteredFiles(searchRoot, ext, execDir);
          if (toCopy.isEmpty()) {
-            copyFilesErr
-                  = "Note: "
-                  +" Files with extension \""
+            copyFilesErr =
+                  " Files with extension \""
                   + ext
                   + "\" for copying to the compilation were not found";
 
@@ -273,21 +247,6 @@ public class Compilation {
          cons.printBr("Compilation successful");
       }
       if (diagnostics.getDiagnostics().size() > 0) {
-         Diagnostic<?> firstSource = diagnostics.getDiagnostics().get(0);
-         if (firstSource != null) {
-            String file = new File(firstSource.getSource().toString()).getName();
-            file = file.substring(0, file.length() - 1);
-            if (firstSource.getKind() == Diagnostic.Kind.ERROR) {
-               firstCompileErr =
-                     "First listed error is found in "
-                     + file
-                     + ", line "
-                     + firstSource.getLineNumber();
-            }
-            else {
-               isNonErrMessage = true;
-            }
-         }
          for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
             cons.print(diagnostic.getKind().toString() + ":\n");
             cons.print(diagnostic.getCode() + ": ");
