@@ -45,10 +45,11 @@ public class ConsolePanel {
       area.setFont(Fonts.SANSSERIF_PLAIN_8);
       area.setEditable(false);
       area.setFocusable(false);
-      BackgroundTheme bt = BackgroundTheme.givenTheme();
-      area.setBackground(bt.background());
-      area.setForeground(bt.normalForeground());
-      area.setBorder(new LineBorder(bt.background(), 5));
+      BackgroundTheme theme = BackgroundTheme.givenTheme();
+      area.setBackground(theme.background());
+      area.setForeground(theme.normalForeground());
+      area.setBorder(new LineBorder(theme.background(), 5));
+      area.setCaretColor(theme.normalForeground());
       scroll.setViewportView(area);
       toolbar = createToolbar();
       content.add(toolbar, BorderLayout.NORTH);
@@ -136,14 +137,13 @@ public class ConsolePanel {
    }
    
    /**
-    * Adds the specified text after it is formatted such that it is
-    * bordered by double angle brackets and the line separator is
-    * appended.
+    * Adds the specified text after it is formatted such that it starts
+    * with an angle brackets and ends with the line separator
     *
     * @param text  the text
     */
    public void appendTextBr(String text) {
-      area.append("<<" + text + ">>\n");
+      area.append(">> " + text + "\n");
    }
 
    /**
