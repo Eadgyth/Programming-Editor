@@ -38,14 +38,14 @@ public final class RProject extends AbstractProject implements ProjectActions {
    }
 
    @Override
-   public void runProject() {
+   public void run() {
       if (!locateMainFile()) {
          return;
       }
       if (!update.isConsoleOpen()) {
          update.openConsole();
       }
-      proc.startProcess(startCmd, false);
+      proc.startProcess(startCmd);
    }
 
    @Override

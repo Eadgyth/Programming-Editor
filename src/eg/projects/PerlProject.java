@@ -13,6 +13,7 @@ public final class PerlProject extends AbstractProject implements ProjectActions
    private final ProcessStarter proc;
 
    private String startCmd = "";
+   private String compileCmd = "";
 
    /**
     * @param update  the ProjectActionsControl
@@ -28,39 +29,49 @@ public final class PerlProject extends AbstractProject implements ProjectActions
    public void buildSettingsWindow() {
       inputOptions.addFileInput("Name of Perl script")
             .addSourceDirInput()
+            .addCmdOptionsInput()
             .addCmdArgsInput()
             .buildWindow();
    }
 
    @Override
    public void enableActions() {
-      update.enable(false, true, false, null);
+      update.enable(true, true, false, null);
    }
 
    @Override
-   public void runProject() {
+   public void compile() {
       if (!locateMainFile()) {
          return;
       }
       if (!update.isConsoleOpen()) {
          update.openConsole();
       }
-      proc.startProcess(startCmd, false);
+      proc.startProcess(compileCmd);
+   }
+
+   @Override
+   public void run() {
+      if (!locateMainFile()) {
+         return;
+      }
+      if (!update.isConsoleOpen()) {
+         update.openConsole();
+      }
+      proc.startProcess(startCmd);
    }
 
    @Override
    protected void setCommandParameters() {
-      StringBuilder sb = new StringBuilder("perl ");
+      StringBuilder sb = new StringBuilder();
       if (!sourceDirName().isEmpty()) {
          sb.append(sourceDirName()).append("/");
-      }
-      if (!namespace().isEmpty()) {
-         sb.append(namespace()).append("/");
       }
       sb.append(mainFileName()).append(sourceExtension());
       if (!cmdArgs().isEmpty()) {
          sb.append(" ").append(cmdArgs());
       }
-      startCmd = sb.toString();
+      startCmd = "perl " + sb.toString();
+      compileCmd = "perl -c " + sb.toString();
    }
 }

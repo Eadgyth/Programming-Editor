@@ -40,7 +40,7 @@ public final class HtmlProject extends AbstractProject implements ProjectActions
     * @param filepath  the filepath
     */
    @Override
-   public void runProject(String filepath) {
+   public void run(String filepath) {
       File htmlFile = new File(filepath);
       if (!filepath.endsWith(".html") && !filepath.endsWith(".htm")) {
          Dialogs.warnMessage("No HTML file is open or in the selected tab.");

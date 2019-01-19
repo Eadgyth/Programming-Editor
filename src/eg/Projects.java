@@ -233,10 +233,10 @@ public class Projects {
     */
    public void run() {
       if (current.usesProjectFile()) {
-         current.runProject();
+         current.run();
       }
       else {
-         current.runProject(edtDoc[iDoc].filepath());
+         current.run(edtDoc[iDoc].filepath());
       }
    }
 

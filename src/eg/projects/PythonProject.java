@@ -38,14 +38,14 @@ public final class PythonProject extends AbstractProject implements ProjectActio
    }
 
    @Override
-   public void runProject() {
+   public void run() {
       if (!locateMainFile()) {
          return;
       }
       if (!update.isConsoleOpen()) {
          update.openConsole();
       }
-      proc.startProcess(startCmd, true);
+      proc.startProcess(startCmd);
    }
 
    @Override

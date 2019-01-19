@@ -22,7 +22,7 @@ public interface ProjectActions extends Configurable {
    /**
     * Runs the project
     */
-   public default void runProject() {
+   public default void run() {
       throw new UnsupportedOperationException(
             "Running the project is not supported");
    };
@@ -32,7 +32,7 @@ public interface ProjectActions extends Configurable {
     *
     * @param  filepath  the full filepath
     */
-   public default void runProject(String filepath) {
+   public default void run(String filepath) {
       throw new UnsupportedOperationException(
             "Running the project is not supported");
    };
