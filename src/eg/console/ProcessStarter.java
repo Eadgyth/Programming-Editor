@@ -93,29 +93,27 @@ public class ProcessStarter {
     *
     * @param cmd  the start command in which arguments are separated by
     * spaces
-    * @param updateFileTree  true to update the file tree view, false
-    * otherwise
     */
-   public void startProcess(String cmd, boolean updateFileTree) {
+   public void startProcess(String cmd) {
       isAborted = false;
       if (!canStart()) {
          return;
       }
-      List<String> cmdList = Arrays.asList(cmd.split(" "));
-      consoleText = "Run: " + cmd;
+      consoleText = "Run " + cmd;
       consPnl.setText("");
       consPnl.appendTextBr(consoleText);
       setConsoleActive(true);
       consPnl.focus();
       EventQueue.invokeLater(() -> {
          try {
+            List<String> cmdList = Arrays.asList(cmd.split(" "));
             ProcessBuilder pb
                   = new ProcessBuilder(cmdList).redirectErrorStream(true);
 
             pb.directory(fWorkingDir);
             process = pb.start();
             out = new PrintWriter(process.getOutputStream());
-            new CaptureInput(updateFileTree).execute();
+            new CaptureInput().execute();
          }
          catch(IOException e) {
             setConsoleActive(false);
@@ -140,11 +138,12 @@ public class ProcessStarter {
    private void startNewCmd() {
       String cmd = Dialogs.textFieldInput(enterCmdMsg(), "Run", previousCmd);
       if (cmd != null) {
+         cmd = cmd.trim();
          previousCmd = cmd;
          cmdMap.put(workingDir, cmd);
          if (cmd.length() > 0) {
             consPnl.enableRunBt(false);
-            startProcess(cmd, true);
+            startProcess(cmd);
          }
          else {
             consPnl.enableRunBt(previousCmd.length() > 0);
@@ -153,7 +152,7 @@ public class ProcessStarter {
    }
 
    private void startPreviousCmd() {
-      startProcess(previousCmd, true);
+      startProcess(previousCmd);
    }
 
    private void endProcess() {
@@ -167,14 +166,9 @@ public class ProcessStarter {
    }
 
    private class CaptureInput extends SwingWorker<Void, String> {
-      private InputStream is = process.getInputStream();
-      private InputStreamReader isr = new InputStreamReader(is);
-      private BufferedReader reader = new BufferedReader(isr);
-      private boolean updateFileTree;
-
-      CaptureInput(boolean updateFileTree) {
-         this.updateFileTree = updateFileTree;
-      }
+      private final InputStream is = process.getInputStream();
+      private final InputStreamReader isr = new InputStreamReader(is);
+      private final BufferedReader reader = new BufferedReader(isr);
 
       @Override
       protected Void doInBackground() {
@@ -209,9 +203,7 @@ public class ProcessStarter {
       protected void done() {
          consPnl.setCaret(consPnl.getText().length());
          setConsoleActive(process.isAlive());
-         if (updateFileTree) {
-            EventQueue.invokeLater(fileTreeUpdate);
-         }
+         EventQueue.invokeLater(fileTreeUpdate);
       }
    }
 
