@@ -24,10 +24,12 @@ An executable jar of the program together with a Prefs file is found in the fold
 LIMITATIONS<br>
 Among the countless limitations some need mention:
 <ul>
-<li>Running an interactive program that asks for input through a command-line is not guaranteed
-    to work in the console area of the program. Interactive programs in Java seem to work fine
-    but, for example, an interactive Perl script does not unless the autoflushing of Perl's
-    STDOUT is enabled in the script itself.</li>
+<li>The editor includes a basic console to show output/error messages from a tested program
+    or also freely defined system commands. This console is in principle interactive but
+    interaction may not work in all cases. Specifically, the output of processes that buffer
+    the standard output is not shown interactively but only after the process ended. Therefore,
+    buffering would have to be disabled, for example, by specifying a corresponding command option,
+    if available for a given language/process.</li>
 <li>The compilation of java files and the creation of an executable jar file cannot include
     external libraries if the built-in options for compiling and crating a jar are selected.</li>
 <li>I tested the program on Windows. There are some problems with the graphical appearance
