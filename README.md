@@ -1,10 +1,9 @@
 This is a text editor, written in Java, which may be used for writing and testing source
-code. A goal is that it should be easy to assign files as a programming project to use
-built-in actions to run (or compile/build) a program for testing. Several projects, which
-can be switched between, can be defined in parallel. Project categories are so far are Java,
-Perl, Python, R and HTML. Also, a "generic" project may be defined to run self-chosen
-system commands. The program includes a basic console, a basic file explorer and a basic
-syntax highlighting.
+code. A goal is that it should be easy to set up a programming project to use built-in
+actions to run (or compile/build) an application for testing. Project categories so far
+are Java, Perl, Python, R and HTML. Also, a "generic" project may be defined to run
+self-chosen system commands. The program includes a basic console, a file explorer and a
+basic syntax highlighting.
 <p>
 DOCUMENTATION<br>
 A more detailed description of the features, screenshots, a help site and code documentation
