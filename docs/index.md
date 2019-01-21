@@ -18,7 +18,7 @@
     the exchange of text within a file or between files.</li>
 <li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
     Javascript).</li>
-<li>A basic auto-indentation.</li>
+<li>A basic auto-indentation which distinguishes "curly-bracket-indentation".</li>
 <li>Block-wise increase or decrease of the indentation.</li>
 </ul>
 <h4>Testing source code</h4>
@@ -38,14 +38,18 @@
    <li>Compiling/testing Java code and bundling a Java program in an executable
        jar file.</li>
    <li>Testing a Perl script.</li>
+   <li>Testing a Python script.</li>
    <li>Testing an R script.</li>
    <li>Viewing Html code in the default web browser.</li>
    </ul>
 <li>A basic console to view the output and error messages after compiling a Java
-    program or during testing a Java, R or Perl program. If the tested program asks
-    for input this can be entered in the text area of the console (for a limitation
-    when an interactive Perl script is run see
-    <a href="help/help.html#PerlProject">Testing a Perl script</a>).</li>
+    program or during running a tested program. The console also allows to enter
+    input in a tested interactive command line program. Still, the correct display
+    of the output from a run process has limitations, specifically if the process
+    uses buffering of the standard output (e.g. Perl and Python). (see also
+    <a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
+    README</a>
+    </li>
 <li>Running self-chosen system commands in the current working directory. The output
     of the process is shown in the console. Such commands may be used for actions
     that are not pre-defined in a project category. Also, a generic project without
