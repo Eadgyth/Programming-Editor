@@ -549,8 +549,9 @@ public class MainWin {
 
          menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun,
                isBuild);
-
+               
          toolBar.enableProjectActionsBts(isCompile, isRun);
+
          if (!isBuild)  {
             buildLabel = "Build";
          }
