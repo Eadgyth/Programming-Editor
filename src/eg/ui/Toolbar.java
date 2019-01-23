@@ -155,7 +155,7 @@ public class ToolBar {
          "Undo", "Redo", "Cut selection", "Copy selection", "Paste",
          "Increase indentation by the set indent length",
          "Reduce indentation by the set indent length",
-         "Save all opened source files of active project and compile",
+         "Save all opened project files and compile project",
          "Run project", "Change project"
       };
       for (int i = 0; i < bts.length; i++) {
