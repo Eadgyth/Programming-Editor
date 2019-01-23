@@ -97,19 +97,19 @@
       <ol>
       <li>Open a file from or save a new file to the directory that is the presumed root
           directory of the project. The file may also be saved in a sub-directory or a
-          sub-directory path contained in that root. Assigning a project requires that a
-          file that belongs to the project is open and also is in the selected tab if
-          multiple files are open.</li>
+          sub-directory path contained in that root. Assigning a project only requires
+          that a (any) file that is contained in the project directory is open and also
+          is in the selected tab if multiple files are open.</li>
       <li>Open the project settings window by selecting 'Assign as project' in the
           'Project' menu and choosing a project category. The input options depend on
           the project category. The required entries are the name of the project root
           directory and, in the categories in which a main file is used to run a tested
           program, the name of the main file. In addition, it may be possible that the
           main file (or generally source files) are stored in a separate directory that
-          is a sub-directory of the project root. In this case the name of this directory
-          MUST be specified in the input field 'Name of sources directory'. For Java
-          this directory would contain packages if source files are organized in
-          packages.</li>
+          is a sub-directory of the project root (a source folder). In this case the
+          name of this directory is specified in the input field 'Name of sources
+          directory'. For Java this directory must not be directory that is also
+          defined as package.</li>
       <li>Make the required entries in the input field(s) and click ok.</li>
       </ol>
       <br>
@@ -122,7 +122,7 @@
       <li>Changing between already set projects is done by selecting, opening or saving a
           file that is part of the project to be changed to and then selecting 'Change
           project' or, to additionally view or modify the settings, 'Project settings'
-          in the Project menu.</li>
+          in the 'Project' menu.</li>
       </ul>
       <br>
 
@@ -150,19 +150,20 @@
       <p> A project is run for testing by selecting 'Run' in the Project menu or by
           clicking the run button in the toolbar. Commands other than the pre-defined
           commands may be entered in the console (see:
-          <a href="#Console">Using the console</a>).
-          A tested program can be forcibly quit by clicking the 'stop' symbol in the
-          tool bar of the console.
+          <a href="#Console">Using the console</a>). Any output and error messages
+          from a tested program are displayed on the console window. A tested program
+          can be forcibly quit by clicking the 'stop' symbol in the tool bar of the
+          console.
       </p>
       <br>
       <h4 id="JavaProject">Testing Java code and creating a jar file</h4>
       <ol>
-      <li>To run the Java program for testing first compile the source file(s) by the
+      <li>To run a Java program for testing first compile the source file(s) by the
           selecting 'Save selected file and compile project' or 'Save all open project
           files and compile project' in the project menu. Note that files outside of the
           source root cannot be included in a compilation when these preset options to
-          compile a project are used. If the compilation was successfull the programm
-          can be run by selecting 'Run' in the project menu.</li>
+          compile a project are used. If the compilation was successfull the program
+          can be run by selecting 'Run'.</li>
       <li>To include compiler warnings -Xlint compiler options may be specified. The
           input field for the -Xlint option is found in the tab 'Compilation and build'
           in the project settings.</li>
@@ -170,23 +171,22 @@
           main method) may be entered in the input field 'Command arguments' which is
           found in the tab 'Run' in the project settings.</li>
       <li>An executable java archive (jar) may be created by selecting 'Create jar' in
-          the project menu. A name for the jar file can be specified in the tab 'Compilation
-          and build' in the project settings. If no name is specified the name of the main
-          class is used.</li>
+          the project menu. A name for the jar file can be specified in the tab
+          'Compilation and build' in the project settings. If no name is specified the
+          name of the main class is used.</li>
       <li>Files other than .java files and .class files can be included in compilation
           and a jar, resepctively. The extensions of included files are specified in the
           input field 'Extensions of included non-Java files' which is found in the tab
           'Compilation and build' in the project settings. Extensions may be separated
           by spaces, commas or semicolons but must begin with the period. Including
           non-Java files is supported only if the project contains separate directories
-          for source files (where also the non-Java files must be found) and for class
+          for source files (where also the non-Java files must be found) and class
           files.</li>
       </ol>
       <br>
       <h4 id="PerlProject">Testing a Perl script</h4>
       <ol>
-      <li>Save changes to the Perl script and start it by selecting 'Run' in the
-          'Project' menu.</li>
+      <li>Save changes to the Perl script and start it by selecting 'Run'.</li>
       <li>Options and arguments for the start command may be entered in the input
           fields 'Command options' and 'Command arguments', respectively, which are
           found in the tab 'Run' in the project settings.</li>
@@ -196,29 +196,28 @@
           with the -c option).
           </li>  
       <li>NOTE: For correct output of a Perl program to the console window it may be
-          necessary to turn of buffering of the STDOUT in the script (e.g. by adding
-          $| = 1 at the beginning of the script).</li>
+          necessary to turn of buffering of the standard output in the script (e.g. by
+          adding $| = 1 at the beginning of the script).</li>
       </ol>
       <br>
       <h4 id="PythonProject">Testing a Python script</h4>
       <ol>
-      <li>Save changes to the Python script and start it by selecting 'Run' in the
-          'Project' menu.</li>
+      <li>Save changes to the Python script and start it by selecting 'Run'.</li>
       <li>Options and arguments for the start command may be entered in the input fields
           'Command options' and 'Command arguments', respectively, which are found in
           the tab 'Run' in the project settings.</li>
       <li>NOTE: For correct output of a Python program to the console window it may be
-          necessary to specify a command option that turns off buffering of the STDOUT
-          (-i or -u).</li>
+          necessary to specify a command option that turns off buffering of the standard
+          output and standerd error (-u).</li>
       </ol>
       <br>
       <h4 id="RProject">Testing an R script</h4>
       <ol>
-      <li>Save changes to the R script and start it by selecting 'Run' in the project
-          menu.</li>
+      <li>Save changes to the R script and start it by selecting 'Run'.</li>
       <li>Options and arguments for the start command may be entered in the input
           fields 'Command options' and 'Command arguments', respectively, which are
-          found in the tab 'Run' in the project settings.</li>
+          found in the tab 'Run' in the project settings. The script is run by using
+          the Rscript command.</li>
       </ol>
       <br>
       <h4 id="HtmlProject">Viewing HTML code in a web browser</h4>
