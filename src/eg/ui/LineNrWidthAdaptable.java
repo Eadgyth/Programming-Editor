@@ -1,7 +1,7 @@
 package eg.ui;
 
 /**
- * Interface to revalidate the edit area when the width of the
+ * The interface to revalidate the edit area when the width of the
  * area that shows line numbers has to change
  */
 @FunctionalInterface

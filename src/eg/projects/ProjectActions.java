@@ -1,5 +1,7 @@
 package eg.projects;
 
+import eg.ui.ProjectActionsUpdate;
+
 /**
  * The interface that defines the actions to compile, run and build
  * a project
@@ -8,8 +10,10 @@ public interface ProjectActions extends Configurable {
 
    /**
     * Enables and disables actions
+    *
+    * @param update  the ProjectActionsUpdate
     */
-   public void enableActions();
+   public void enableActions(ProjectActionsUpdate update);
 
    /**
     * Compiles source files

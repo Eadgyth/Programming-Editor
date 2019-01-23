@@ -8,7 +8,7 @@ import java.awt.EventQueue;
 //--Eadgyth--/
 import eg.console.*;
 import eg.ui.MainWin;
-import eg.ui.ProjectActionsControl;
+import eg.ui.ProjectActionsUpdate;
 import eg.ui.filetree.FileTree;
 import eg.projects.ProjectActions;
 import eg.projects.ProjectSelector;
@@ -24,7 +24,7 @@ import eg.utils.Dialogs;
 public class Projects {
 
    private final MainWin mw;
-   private final ProjectActionsControl update;
+   private final ProjectActionsUpdate update;
    private final FileTree fileTree;
    private final ProjectSelector projSelect;
    private final ProcessStarter proc;
@@ -45,11 +45,11 @@ public class Projects {
       this.mw = mw;
       this.fileTree = fileTree;
       this.edtDoc = edtDoc;
-      update = mw.projActControl();
+      update = mw.projActUpdate();
       fileTreeUpdate = () -> fileTree.updateTree();
       Console cons = new Console(mw.consolePnl(), fileTreeUpdate);
       proc = cons.processStarter();
-      projSelect = new ProjectSelector(update, cons);
+      projSelect = new ProjectSelector(cons, mw.consoleOpener());
    }
 
    /**
@@ -81,10 +81,10 @@ public class Projects {
       mw.enableOpenSettingsWin(isInProject);
       mw.enableChangeProject(isInProject && !isCurrent);
       if (isCurrent) {
-         current.enableActions();
+         current.enableActions(update);
       }
       else {
-         update.disable();
+         update.enable(false, false, false, null);
       }
    }
 
@@ -272,7 +272,7 @@ public class Projects {
       }
       else {
          mw.enableChangeProject(true);
-         update.disable();
+         update.enable(false, false, false, null);
          return false;
       }
    }
@@ -324,7 +324,7 @@ public class Projects {
 
    private void updateProjectSetting() {
       proc.setWorkingDir(current.projectPath());
-      current.enableActions();
+      current.enableActions(update);
       mw.displayProjectName(current.projectName(),
             current.projectType().display());
 

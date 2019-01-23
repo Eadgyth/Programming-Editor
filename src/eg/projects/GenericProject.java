@@ -1,17 +1,14 @@
 package eg.projects;
 
-import eg.ui.ProjectActionsControl;
+import eg.ui.ProjectActionsUpdate;
 
 /**
  * Represents a project that is only defined by its directory
  */
 public final class GenericProject extends AbstractProject implements ProjectActions {
 
-   private final ProjectActionsControl update;
-
-   public GenericProject(ProjectActionsControl update) {
+   public GenericProject() {
       super(ProjectTypes.GENERIC, false, null);
-      this.update = update;
    }
 
    @Override
@@ -20,8 +17,8 @@ public final class GenericProject extends AbstractProject implements ProjectActi
    }
 
    @Override
-   public void enableActions() {
-      update.disable();
+   public void enableActions(ProjectActionsUpdate update) {
+      update.enable(false, false, false, null);
    }
 
    /**

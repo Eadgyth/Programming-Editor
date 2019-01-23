@@ -2,27 +2,28 @@ package eg.projects;
 
 //--Eadgyth--/
 import eg.console.ProcessStarter;
-import eg.ui.ProjectActionsControl;
+import eg.ui.ProjectActionsUpdate;
+import eg.ui.ConsoleOpener;
 
 /**
  * Represents a programming project in Perl
  */
 public final class PerlProject extends AbstractProject implements ProjectActions {
 
-   private final ProjectActionsControl update;
    private final ProcessStarter proc;
+   private final ConsoleOpener opener;
 
    private String startCmd = "";
    private String compileCmd = "";
 
    /**
-    * @param update  the ProjectActionsControl
     * @param proc  the ProcessStarter
+    * @param opener  the ConsoleOpener
     */
-   public PerlProject(ProjectActionsControl update, ProcessStarter proc) {
+   public PerlProject(ProcessStarter proc, ConsoleOpener opener) {
       super(ProjectTypes.PERL, true, "pl");
-      this.update = update;
       this.proc = proc;
+      this.opener = opener;
    }
 
    @Override
@@ -35,7 +36,7 @@ public final class PerlProject extends AbstractProject implements ProjectActions
    }
 
    @Override
-   public void enableActions() {
+   public void enableActions(ProjectActionsUpdate update) {
       update.enable(true, true, false, null);
    }
 
@@ -44,9 +45,7 @@ public final class PerlProject extends AbstractProject implements ProjectActions
       if (!locateMainFile()) {
          return;
       }
-      if (!update.isConsoleOpen()) {
-         update.openConsole();
-      }
+      opener.open();
       proc.startProcess(compileCmd);
    }
 
@@ -55,17 +54,21 @@ public final class PerlProject extends AbstractProject implements ProjectActions
       if (!locateMainFile()) {
          return;
       }
-      if (!update.isConsoleOpen()) {
-         update.openConsole();
-      }
+      opener.open();
       proc.startProcess(startCmd);
    }
 
    @Override
    protected void setCommandParameters() {
       StringBuilder sb = new StringBuilder();
+      if (!cmdOptions().isEmpty()) {
+         sb.append(cmdOptions()).append(" ");
+      }
       if (!sourceDirName().isEmpty()) {
          sb.append(sourceDirName()).append("/");
+      }
+      if (!namespace().isEmpty()) {
+         sb.append(namespace()).append("/");
       }
       sb.append(mainFileName()).append(sourceExtension());
       if (!cmdArgs().isEmpty()) {

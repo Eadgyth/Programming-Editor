@@ -1,7 +1,7 @@
 package eg.projects;
 
 import eg.console.Console;
-import eg.ui.ProjectActionsControl;
+import eg.ui.ConsoleOpener;
 
 /**
  * The selection and creation of a <code>ProjectActions</code>
@@ -9,16 +9,16 @@ import eg.ui.ProjectActionsControl;
  */
 public class ProjectSelector {
 
-   private final ProjectActionsControl update;
    private final Console console;
+   private final ConsoleOpener opener;
 
    /**
-    * @param update  the ProjectActionsControl
     * @param console  the Console
+    * @param opener  the ConsoleOpener
     */
-   public ProjectSelector(ProjectActionsControl update, Console console) {
-      this.update = update;
+   public ProjectSelector(Console console, ConsoleOpener opener) {
       this.console = console;
+      this.opener = opener;
    }
 
    /**
@@ -31,22 +31,22 @@ public class ProjectSelector {
       ProjectActions newProj = null;
       switch (projType) {
          case JAVA:
-            newProj = new JavaProject(update, console);
+            newProj = new JavaProject(console, opener);
             break;
          case HTML:
-            newProj = new HtmlProject(update);
+            newProj = new HtmlProject();
             break;
          case PERL:
-            newProj = new PerlProject(update, console.processStarter());
+            newProj = new PerlProject(console.processStarter(), opener);
             break;
          case PYTHON:
-            newProj = new PythonProject(update, console.processStarter());
+            newProj = new PythonProject(console.processStarter(), opener);
             break;
          case R:
-            newProj = new RProject(update, console.processStarter());
+            newProj = new RProject(console.processStarter(), opener);
             break;
          case GENERIC:
-            newProj = new GenericProject(update);
+            newProj = new GenericProject();
             break;
       }
       return newProj;

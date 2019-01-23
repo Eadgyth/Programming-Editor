@@ -2,38 +2,40 @@ package eg.projects;
 
 //--Eadgyth--/
 import eg.console.ProcessStarter;
-import eg.ui.ProjectActionsControl;
+import eg.ui.ProjectActionsUpdate;
+import eg.ui.ConsoleOpener;
 
 /**
  * Represents a programming project in Python
  */
 public final class PythonProject extends AbstractProject implements ProjectActions {
 
-   private final ProjectActionsControl update;
    private final ProcessStarter proc;
+   private final ConsoleOpener opener;
 
    private String startCmd = "";
 
    /**
-    * @param update  the ProjectActionsControl
     * @param proc  the ProcessStarter
+    * @param opener  the ConsoleOpener
     */
-   public PythonProject(ProjectActionsControl update, ProcessStarter proc) {
+   public PythonProject(ProcessStarter proc, ConsoleOpener opener) {
       super(ProjectTypes.PYTHON, true, "py");
-      this.update = update;
       this.proc = proc;
+      this.opener = opener;
    }
 
    @Override
    public void buildSettingsWindow() {
       inputOptions.addFileInput("Name of main python script")
+            .addSourceDirInput()
             .addCmdOptionsInput()
             .addCmdArgsInput()
             .buildWindow();
    }
 
    @Override
-   public void enableActions() {
+   public void enableActions(ProjectActionsUpdate update) {
       update.enable(false, true, false, null);
    }
 
@@ -42,20 +44,18 @@ public final class PythonProject extends AbstractProject implements ProjectActio
       if (!locateMainFile()) {
          return;
       }
-      if (!update.isConsoleOpen()) {
-         update.openConsole();
-      }
+      opener.open();
       proc.startProcess(startCmd);
    }
 
    @Override
    protected void setCommandParameters() {
       StringBuilder sb = new StringBuilder("python ");
-      /*if (!sourceDirName().isEmpty()) {
-         sb.append(sourceDirName()).append("/");
-      }*/
       if (!cmdOptions().isEmpty()) {
          sb.append(cmdOptions()).append(" ");
+      }
+      if (!sourceDirName().isEmpty()) {
+         sb.append(sourceDirName()).append("/");
       }
       if (!namespace().isEmpty()) {
          sb.append(namespace()).append("/");

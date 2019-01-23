@@ -10,16 +10,17 @@ import eg.console.*;
 import eg.javatools.*;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
-import eg.ui.ProjectActionsControl;
+import eg.ui.ProjectActionsUpdate;
+import eg.ui.ConsoleOpener;
 
 /**
  * Represents a programming project in Java
  */
 public final class JavaProject extends AbstractProject implements ProjectActions {
 
-   private final ProjectActionsControl update;
    private final ProcessStarter proc;
    private final Console cons;
+   private final ConsoleOpener opener;
    private final Compilation comp;
    private final JarBuilder jar;
 
@@ -30,13 +31,13 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    private boolean isNonJavaExtTested = true;
 
    /**
-    * @param update  the ProjectActionsControl
     * @param cons  the Console
+    * @param opener  the ConoleOpener
     */
-   public JavaProject(ProjectActionsControl update, Console cons) {
+   public JavaProject(Console cons, ConsoleOpener opener) {
       super(ProjectTypes.JAVA, true, "java");
-      this.update = update;
       this.cons = cons;
+      this.opener = opener;
       proc = cons.processStarter();
       comp = new Compilation(cons);
       jar = new JarBuilder();
@@ -55,7 +56,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    }
 
    @Override
-   public void enableActions() {
+   public void enableActions(ProjectActionsUpdate update) {
       update.enable(true, true, true, "Create jar");
    }
 
@@ -71,9 +72,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          cons.clear();
          return;
       }
-      if (!update.isConsoleOpen()) {
-         update.openConsole();
-      }
+      opener.open();
       cons.clear();
       cons.printBr("Compile " + projectName());
       EventQueue.invokeLater(() -> {
@@ -89,9 +88,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       if (!locateMainFile()) {
          return;
       }
-      if (!update.isConsoleOpen()) {
-         update.openConsole();
-      }
+      opener.open();
       proc.startProcess(startCommand);
    }
 
@@ -100,11 +97,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
     */
    @Override
    public void build() {
-      if (!cons.canPrint()) {
-         return;
-      }
       if (!existsMainClassFile() || !isNonJavaExtCorrect()) {
-         cons.clear();
          return;
       }
       EventQueue.invokeLater(() -> {

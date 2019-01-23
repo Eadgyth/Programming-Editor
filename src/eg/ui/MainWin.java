@@ -112,12 +112,22 @@ public class MainWin {
    }
 
    /**
-    * Gets this <code>ProjectActionsControl</code>
+    * Gets this <code>ProjectActionsUpdate</code>
     *
     * @return  the ProjectActionsControl
     */
-   public ProjectActionsControl projActControl() {
-      return projActContr;
+   public ProjectActionsUpdate projActUpdate() {
+      return (isRun, isCompile, isBuild, buildName)
+           -> enableProjectActions(isRun, isCompile, isBuild, buildName);
+   }
+   
+   /**
+    * Gets this <code>ConsoleOpener</code>
+    *
+    * @return  the ConsoleOpener
+    */
+   public ConsoleOpener consoleOpener() {
+      return () -> openConsole();
    }
 
    /**
@@ -417,6 +427,26 @@ public class MainWin {
          }
       });
    }
+   
+   private void enableProjectActions(boolean isCompile, boolean isRun,
+            boolean isBuild, String buildLabel) {
+
+      menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun,
+            isBuild);
+            
+      toolBar.enableProjectActionsBts(isCompile, isRun);
+
+      if (!isBuild)  {
+         buildLabel = "Build";
+      }
+      menuBar.projectMenu().setBuildLabel(buildLabel);
+   }
+
+   private void openConsole() {
+      if (!menuBar.viewMenu().isConsoleItmSelected()) {
+         menuBar.viewMenu().doConsoleItmAct(true);
+      }
+   }
 
    private void showEditToolPnl(boolean b, double width) {
       if (b) {
@@ -540,37 +570,4 @@ public class MainWin {
          FileUtils.log(e);
       }
    }
-
-   private final ProjectActionsControl projActContr = new ProjectActionsControl() {
-
-      @Override
-      public void enable(boolean isCompile, boolean isRun,
-            boolean isBuild, String buildLabel) {
-
-         menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun,
-               isBuild);
-               
-         toolBar.enableProjectActionsBts(isCompile, isRun);
-
-         if (!isBuild)  {
-            buildLabel = "Build";
-         }
-         menuBar.projectMenu().setBuildLabel(buildLabel);
-      }
-
-      @Override
-      public void disable() {
-         enable(false, false, false, null);
-      }
-
-      @Override
-      public boolean isConsoleOpen() {
-         return menuBar.viewMenu().isConsoleItmSelected();
-      }
-
-      @Override
-      public void openConsole() {
-          menuBar.viewMenu().doConsoleItmAct(true);
-      }
-   };
 }

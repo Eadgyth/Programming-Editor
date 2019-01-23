@@ -48,8 +48,8 @@ public abstract class AbstractProject implements Configurable {
    //
    // Variables to control the configuration
    private File mainFilePath = null;
-   private boolean isPathname = false;
    private String namespacePath = "";
+   private boolean isPathname = false;
    private boolean isNameConflict = false;
    private boolean showNameConflictMsg = true;
    //
@@ -112,7 +112,6 @@ public abstract class AbstractProject implements Configurable {
       }
       if (success) {
          setCommandParameters();
-         showNameConflictMsg = false;
       }
       return success;
    }
@@ -614,7 +613,7 @@ public abstract class AbstractProject implements Configurable {
          "The name \'"
          + sw.projDirNameInput()
          + "\' for the project directory cannot be matched with an"
-         + " existing directoy.");
+         + " existing directory.");
    }
 
    private final static String MAIN_FILE_PATH_ERR

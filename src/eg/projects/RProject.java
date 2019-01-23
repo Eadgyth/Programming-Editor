@@ -2,26 +2,27 @@ package eg.projects;
 
 //--Eadgyth--//
 import eg.console.ProcessStarter;
-import eg.ui.ProjectActionsControl;
+import eg.ui.ProjectActionsUpdate;
+import eg.ui.ConsoleOpener;
 
 /**
  * Represents a programming project in R
  */
 public final class RProject extends AbstractProject implements ProjectActions {
 
-   private final ProjectActionsControl update;
    private final ProcessStarter proc;
+   private final ConsoleOpener opener;
 
    private String startCmd = "";
 
    /**
-    * @param update  the ProjectActionsControl
     * @param proc  the ProcessStarter
+    * @param opener  the ConsoleOpener
     */
-   public RProject(ProjectActionsControl update, ProcessStarter proc) {
+   public RProject(ProcessStarter proc, ConsoleOpener opener) {
       super(ProjectTypes.R, true, "R");
-      this.update = update;
       this.proc = proc;
+      this.opener = opener;
    }
 
    @Override
@@ -33,7 +34,7 @@ public final class RProject extends AbstractProject implements ProjectActions {
    }
 
    @Override
-   public void enableActions() {
+   public void enableActions(ProjectActionsUpdate update) {
       update.enable(false, true, false, null);
    }
 
@@ -42,9 +43,7 @@ public final class RProject extends AbstractProject implements ProjectActions {
       if (!locateMainFile()) {
          return;
       }
-      if (!update.isConsoleOpen()) {
-         update.openConsole();
-      }
+      opener.open();
       proc.startProcess(startCmd);
    }
 

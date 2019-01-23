@@ -6,21 +6,15 @@ import java.io.IOException;
 //--Eadgyth--/
 import eg.utils.FileUtils;
 import eg.utils.Dialogs;
-import eg.ui.ProjectActionsControl;
+import eg.ui.ProjectActionsUpdate;
 
 /**
  * Represents a coding project in HTML
  */
 public final class HtmlProject extends AbstractProject implements ProjectActions {
-   
-   private final ProjectActionsControl update;
 
-   /**
-    * @param update  the ProjectActionsControl
-    */
-   public HtmlProject(ProjectActionsControl update) {
+   public HtmlProject() {
       super(ProjectTypes.HTML, false, null);
-      this.update = update;
    }
 
    @Override
@@ -29,13 +23,13 @@ public final class HtmlProject extends AbstractProject implements ProjectActions
    }
 
    @Override
-   public void enableActions() {
+   public void enableActions(ProjectActionsUpdate update) {
       update.enable(false, true, false, null);
    }
 
    /**
-    * Shows the HTML file that is specified by the filepath
-    * in the default file browser
+    * Shows the HTML file that is specified by the filepath in the
+    * default file browser
     *
     * @param filepath  the filepath
     */
