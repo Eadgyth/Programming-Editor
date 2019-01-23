@@ -10,7 +10,6 @@ import javax.swing.KeyStroke;
 //--Eadgyth--//
 import eg.Projects;
 import eg.projects.ProjectTypes;
-
 import eg.ui.IconFiles;
 
 /**
@@ -20,17 +19,20 @@ public class ProjectMenu {
 
    private final JMenu menu = new JMenu("Project");
    private final JMenuItem saveCompileItm = new JMenuItem(
-         "Save selected file and compile project");
+         "Save selected project file and compile project");
 
    private final JMenuItem saveAllCompileItm = new JMenuItem(
          "Save all open project files and compile project",
          IconFiles.COMPILE_ICON);
 
-   private final JMenuItem runItm = new JMenuItem("Run", IconFiles.RUN_ICON);
+   private final JMenuItem runItm = new JMenuItem("Run project",
+         IconFiles.RUN_ICON);
 
    private final JMenuItem buildItm        = new JMenuItem("Build");
    private final JMenu assignProjMenu      = new JMenu("Assign as project");
-   private final JMenuItem[] assignProjItm = new JMenuItem[ProjectTypes.values().length];
+   private final JMenuItem[] assignProjItm
+         = new JMenuItem[ProjectTypes.values().length];
+
    private final JMenuItem openSetWinItm   = new JMenuItem("Project settings");
    private final JMenuItem changeProjItm   = new JMenuItem("Change project",
          IconFiles.CHANGE_PROJ_ICON);
@@ -64,7 +66,7 @@ public class ProjectMenu {
       buildItm.addActionListener(e -> p.build());
       saveCompileItm.addActionListener(e -> p.saveAndCompile());
       saveAllCompileItm.addActionListener(e -> p.saveAllAndCompile());
-   }     
+   }
 
    /**
     * Enables or disables the item for actions to change project
@@ -74,7 +76,7 @@ public class ProjectMenu {
    public void enableChangeProjItm(boolean b) {
       changeProjItm.setEnabled(b);
    }
-   
+
    /**
     * Enables or disables the item for actions to open the project
     * settings window
@@ -102,7 +104,7 @@ public class ProjectMenu {
       runItm.setEnabled(isRun);
       buildItm.setEnabled(isBuild);
    }
-   
+
    /**
     * Enables or disables the sub-menu for actions to assign a project
     *
@@ -124,7 +126,7 @@ public class ProjectMenu {
    //
    //--private--/
    //
-   
+
    private void assignProject(ActionEvent e, Projects p) {
       for (int i = 0; i < assignProjItm.length; i++) {
          if (e.getSource() == assignProjItm[i]) {
@@ -158,6 +160,7 @@ public class ProjectMenu {
    private void shortCuts() {
       saveAllCompileItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,
             ActionEvent.CTRL_MASK));
+
       runItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
             ActionEvent.CTRL_MASK));
    }
