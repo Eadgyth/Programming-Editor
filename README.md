@@ -1,9 +1,9 @@
-Eadgyth is a text editor, written in Java, which may be used for writing and testing source
-code. A programming project can be easily set to use built-in actions to run an application
-for testing. Also, several projects, which can be switched between, can be set in parallel.
-Project categories so far are Java, Perl, Python, R and HTML. Also, a "generic" project may
-be defined to run self-chosen system commands. The program includes a basic console, a file
-explorer and a basic syntax highlighting.
+Eadgyth is a text editor, written in Java, which can be used for programming. A programming
+project can be easily set to use built-in functions to run an application for testing. Also,
+several projects, which can be switched between, can be set in parallel. Project categories
+so far are Java, Perl, Python, R and HTML. Also, a "generic" project may be defined to run
+self-chosen system commands. The program includes a basic console, a file explorer and a basic
+syntax highlighting.
 <p>
 DOCUMENTATION<br>
 A more detailed description of the features, screenshots, a help site and code documentation
