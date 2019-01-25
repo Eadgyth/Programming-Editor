@@ -1,4 +1,4 @@
-Eadgyth is a text editor, written in Java, which can be used for programming. A programming
+This is a text editor, written in Java, which can be used for programming. A programming
 project can be easily set to use built-in functions to run an application for testing. Also,
 several projects, which can be switched between, can be set in parallel. Project categories
 so far are Java, Perl, Python, R and HTML. Also, a "generic" project may be defined to run
@@ -10,13 +10,16 @@ A more detailed description of the features, screenshots, a help site and code d
 can be found under <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <p>
 REQUIREMENTS FOR TESTING<br>
-Running (and compiling) the program requires Java 8 or higher.
+Running the program requires Java 8 or higher. Compiling requires Java 8. The executable
+jar in the folder 'JarAndPreferences' was made after compilation with JDK 8 and by using the
+Java Archive Tool in the JDK. A possibility to compile it (and build a Jar from it), is also
+to copy the src folder in any directory and define project with existing sources in NetBeans.
 <p>
 If the program shall be used for compiling Java code by the built-in compile option it must be
 made sure that the program is run using the JRE contained in the JDK (and not the public JRE).
 <p>
-An executable jar of the program together with a Prefs file is found in the folder
-"JarAndPreferences". The jar was created after compiling with Java JDK 8.
+For using the built-in function to run code the path variables that point to the executables
+of a programming language may have to be set in the OS (they have to under Windows).
 <p>
 LIMITATIONS<br>
 Among the countless limitations some need mention:
