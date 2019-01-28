@@ -36,7 +36,7 @@ public class PerlHighlighter implements Highlighter {
    private final static char[] CLOSE_QW_DEL = {
       ')', '}', '>', '/', '\'', '!', '@'
    };
-   
+
    private final static String[] SYNTAX_KEYWORDS = {
       "and",
       "cmp", "continue", "CORE", "do",

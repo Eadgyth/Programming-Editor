@@ -49,7 +49,7 @@ public class Projects {
       fileTreeUpdate = () -> fileTree.updateTree();
       Console cons = new Console(mw.consolePnl(), fileTreeUpdate);
       proc = cons.processStarter();
-      projSelect = new ProjectSelector(cons, mw.consoleOpener());
+      projSelect = new ProjectSelector(cons, mw.consoleOpener(), fileTreeUpdate);
    }
 
    /**
@@ -198,7 +198,6 @@ public class Projects {
       else {
          edtDoc[iDoc].saveFile();
          mw.runBusyFunction(() -> current.compile(), false);
-         updateFileTreeImpl();
        }
    }
 
@@ -224,7 +223,6 @@ public class Projects {
       }
       else {
          mw.runBusyFunction(() -> current.compile(), false);
-         updateFileTreeImpl();
       }
    }
 
@@ -245,7 +243,6 @@ public class Projects {
     */
    public void build() {
       mw.runBusyFunction(() -> current.build(), false);
-      updateFileTreeImpl();
    }
 
    //

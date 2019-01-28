@@ -54,13 +54,7 @@ public final class PythonProject extends AbstractProject implements ProjectActio
       if (!cmdOptions().isEmpty()) {
          sb.append(cmdOptions()).append(" ");
       }
-      if (!sourceDirName().isEmpty()) {
-         sb.append(sourceDirName()).append("/");
-      }
-      if (!namespace().isEmpty()) {
-         sb.append(namespace()).append("/");
-      }
-      sb.append(mainFileName()).append(sourceExtension());
+      sb.append(relMainFilePath());
       if (!cmdArgs().isEmpty()) {
          sb.append(" ").append(cmdArgs());
       }

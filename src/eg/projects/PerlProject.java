@@ -13,7 +13,7 @@ public final class PerlProject extends AbstractProject implements ProjectActions
    private final ProcessStarter proc;
    private final ConsoleOpener opener;
 
-   private String startCmd = "";
+   private String runCmd = "";
    private String compileCmd = "";
 
    /**
@@ -55,26 +55,37 @@ public final class PerlProject extends AbstractProject implements ProjectActions
          return;
       }
       opener.open();
-      proc.startProcess(startCmd);
+      proc.startProcess(runCmd);
    }
 
    @Override
    protected void setCommandParameters() {
-      StringBuilder sb = new StringBuilder();
+      setRunCmd();
+      setCompileCmd();
+   }
+
+   //
+   //--private--/
+   //
+
+   private void setRunCmd() {
+      StringBuilder sb = new StringBuilder("perl ");
       if (!cmdOptions().isEmpty()) {
          sb.append(cmdOptions()).append(" ");
       }
-      if (!sourceDirName().isEmpty()) {
-         sb.append(sourceDirName()).append("/");
-      }
-      if (!namespace().isEmpty()) {
-         sb.append(namespace()).append("/");
-      }
-      sb.append(mainFileName()).append(sourceExtension());
+      sb.append(relMainFilePath());
       if (!cmdArgs().isEmpty()) {
          sb.append(" ").append(cmdArgs());
       }
-      startCmd = "perl " + sb.toString();
-      compileCmd = "perl -c " + sb.toString();
+      runCmd = sb.toString();
+   }
+
+   private void setCompileCmd() {
+      StringBuilder sb = new StringBuilder("perl -c ");
+      sb.append(relMainFilePath());
+      if (!cmdArgs().isEmpty()) {
+         sb.append(" ").append(cmdArgs());
+      }
+      compileCmd = sb.toString();
    }
 }

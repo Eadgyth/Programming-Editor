@@ -11,14 +11,19 @@ public class ProjectSelector {
 
    private final Console console;
    private final ConsoleOpener opener;
+   private final Runnable fileTreeUpdate;
 
    /**
     * @param console  the Console
     * @param opener  the ConsoleOpener
+    * @param fileTreeUpdate  the updating of the file tree
     */
-   public ProjectSelector(Console console, ConsoleOpener opener) {
+   public ProjectSelector(Console console, ConsoleOpener opener,
+         Runnable fileTreeUpdate) {
+
       this.console = console;
       this.opener = opener;
+      this.fileTreeUpdate = fileTreeUpdate;
    }
 
    /**
@@ -31,7 +36,7 @@ public class ProjectSelector {
       ProjectActions newProj = null;
       switch (projType) {
          case JAVA:
-            newProj = new JavaProject(console, opener);
+            newProj = new JavaProject(console, opener, fileTreeUpdate);
             break;
          case HTML:
             newProj = new HtmlProject();

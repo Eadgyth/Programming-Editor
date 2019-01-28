@@ -21,6 +21,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    private final ProcessStarter proc;
    private final Console cons;
    private final ConsoleOpener opener;
+   private final Runnable fileTreeUpdate;
    private final Compilation comp;
    private final JarBuilder jar;
 
@@ -33,11 +34,13 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    /**
     * @param cons  the Console
     * @param opener  the ConoleOpener
+    * @param fileTreeUpdate  the updating of the file tree
     */
-   public JavaProject(Console cons, ConsoleOpener opener) {
+   public JavaProject(Console cons, ConsoleOpener opener, Runnable fileTreeUpdate) {
       super(ProjectTypes.JAVA, true, "java");
       this.cons = cons;
       this.opener = opener;
+      this.fileTreeUpdate = fileTreeUpdate;
       proc = cons.processStarter();
       comp = new Compilation(cons);
       jar = new JarBuilder();
@@ -81,11 +84,12 @@ public final class JavaProject extends AbstractProject implements ProjectActions
 
          cons.toTop();
       });
+      EventQueue.invokeLater(fileTreeUpdate);
    }
 
    @Override
    public void run() {
-      if (!locateMainFile()) {
+      if (!existsMainClassFile()) {
          return;
       }
       opener.open();
@@ -126,6 +130,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
             FileUtils.log(e);
          }
       });
+      EventQueue.invokeLater(fileTreeUpdate);
    }
 
    @Override
@@ -184,7 +189,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
          Dialogs.warnMessage(
             "A compiled main class file \'"
             + mainFileName()
-            + "\' could not be found");
+            + ".class\' could not be found");
       }
       return exists;
    }
@@ -213,19 +218,17 @@ public final class JavaProject extends AbstractProject implements ProjectActions
 
    private void wrongExtMessage(String ext) {
       Dialogs.errorMessage(
-         "\"" + ext + "\" cannot be used.\n"
+         "\'"
+         + ext
+         + "\' cannot be used as extension for included non-Java files.\n"
          + "An extension must begin with a period.",
-         //
-         // title
-         "Extensions of included non-Java files");
+         null);
    }
 
    private void nonJavaFilesNotSupportedMessage() {
       Dialogs.errorMessage(
-         "Including non-java files is supported only if the project"
-         + " contains separate directories for source files and for class files.",
-         //
-         // title
-         "Included non-Java files");
+         "Including non-Java files is supported only if the project\n"
+         + "contains separate directories for source files and for class files.",
+         null);
    }
 }

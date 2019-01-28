@@ -37,6 +37,7 @@ public abstract class AbstractProject implements Configurable {
    private final boolean useMainFile;    //
    private String projectRoot = "";
    private String mainFileName = "";
+   private String relMainFilePath = "";
    private String namespace = "";
    private String execDirName = "";
    private String sourceDirName = "";
@@ -186,9 +187,6 @@ public abstract class AbstractProject implements Configurable {
     * @return  true if the main can be located
     */
    protected boolean locateMainFile() {
-      if (!useMainFile) {
-         throw new IllegalStateException("A main file is not used");
-      }
       boolean exists = mainFilePath.exists();
       if (!exists) {
          exists = configBySettingsInput(projectRoot);
@@ -198,7 +196,7 @@ public abstract class AbstractProject implements Configurable {
          }
          else {
             int res = Dialogs.warnConfirmYesNo(
-                  MAIN_FILE_PATH_ERR
+                  mainFileInputWarning()
                   +"\n\nOpen the project settings?");
 
             if (res == 0) {
@@ -215,17 +213,22 @@ public abstract class AbstractProject implements Configurable {
     * @return  the name
     */
    protected String mainFileName() {
-      if (!useMainFile) {
-         throw new IllegalStateException("A main file is not used");
-      }
       return mainFileName;
    }
 
    /**
+    * Returns the path to the main file relative to the project root
+    *
+    * @return  the filepath
+    */
+   protected String relMainFilePath() {
+      return relMainFilePath;
+   }
+
+   /**
     * Returns the namespace of the main file. This is a relative
-    * directory or directory path based at the sources directory or,
-    * if a sources directory is not given, at the project's root
-    * directory.
+    * directory or directory path based at the sources directory if
+    * given or at the project root directory.
     *
     * @return  the namespace; the empty string if no namespace is given
     */
@@ -264,16 +267,16 @@ public abstract class AbstractProject implements Configurable {
    /**
     * Returns command arguments
     *
-    * @return  the arguments. The empty string if no arguments are given
+    * @return  the arguments; the empty string if no arguments are given
     */
    protected String cmdArgs() {
       return cmdArgs;
    }
 
    /**
-    * Returns the compile option
+    * Returns compile options
     *
-    * @return  the option. The empty string if no option is given
+    * @return  the options; the empty string if no options are given
     */
    protected String compileOption() {
       return compileOption;
@@ -282,7 +285,7 @@ public abstract class AbstractProject implements Configurable {
    /**
     * Returns the array of file extensions
     *
-    * @return  the array or null of no extensions are given
+    * @return  the array; null if no extensions are given
     */
    protected String[] fileExtensions() {
       if (extensions.isEmpty()) {
@@ -336,33 +339,27 @@ public abstract class AbstractProject implements Configurable {
    private boolean configBySettingsInput(String root) {
       boolean success = false;
       namespacePath = "";
+      namespace = "";
       isNameConflict = false;
-      getSettingsInput(); // assigns value to isPathname
+      getSettingsInput(); // also assigns value to isPathname
       if (!isPathname) {
          String sourceRoot = root;
          if (!sourceDirName.isEmpty()) {
             sourceRoot = sourceRoot + "/" + sourceDirName;
          }
          setNamespace(sourceRoot, mainFileName + sourceExtension);
-         if (!namespacePath.isEmpty() && !isNameConflict) {
+         if (!namespacePath.isEmpty()) {
             if (namespacePath.length() > sourceRoot.length()) {
                namespace = namespacePath.substring(sourceRoot.length() + 1);
             }
             else {
                namespace = ""; // no subdir in source or project root
             }
-            mainFilePath = new File(root + "/" + pathRelToRoot());
-            success = true;
          }
       }
-      else {
-         File toTest = new File(root + "/" + pathRelToRoot());
-         if (toTest.exists()) {
-            mainFilePath = toTest;
-            success = true;
-         }
-      }
-      return success;
+      setRelMainFilePath();
+      mainFilePath = new File(root + "/" + relMainFilePath);
+      return mainFilePath.exists();
    }
 
    private void getSettingsInput() {
@@ -384,9 +381,7 @@ public abstract class AbstractProject implements Configurable {
          for (File fInList : list) {
             if (fInList.isFile()) {
                if (fInList.getName().equals(name)) {
-                  if (!isNameConflict && namespacePath.length() > 0
-                        && showNameConflictMsg) {
-
+                  if (!isNameConflict && namespacePath.length() > 0) {
                      isNameConflict = true;
                   }
                   else {
@@ -406,9 +401,10 @@ public abstract class AbstractProject implements Configurable {
       if (!projTypeToTest.equals(projType.toString())) {
          return false;
       }
-      File toTest;
+      boolean success;
       if (!useMainFile) {
-         toTest = new File(root);
+         File toTest = new File(root);
+         success = toTest.exists() && toTest.isDirectory();
       }
       else {
          String mainFileInput = pr.getProperty("MainProjectFile");
@@ -423,22 +419,15 @@ public abstract class AbstractProject implements Configurable {
          execDirName = pr.getProperty("ExecDir");
          extensions = pr.getProperty("IncludedFiles");
          buildName = pr.getProperty("BuildName");
-         toTest = new File(root + F_SEP + pathRelToRoot());
+         setRelMainFilePath();
+         mainFilePath = new File(root + F_SEP + relMainFilePath);
+         success = mainFilePath.exists() && mainFilePath.isFile();
       }
-      boolean success = false;
-      if (toTest.exists()) {
-         success = (useMainFile && toTest.isFile())
-               || (!useMainFile && toTest.isDirectory());
-
-         if (success) {
-            projectRoot = root;
-            displaySettings();
-            if (pr == conf) {
-               store(prefs);
-            }
-            if (useMainFile) {
-               mainFilePath = toTest;
-            }
+      if (success) {
+         projectRoot = root;
+         displaySettings();
+         if (pr == conf) {
+            store(prefs);
          }
       }
       return success;
@@ -449,17 +438,21 @@ public abstract class AbstractProject implements Configurable {
       int lastSepPos = formatted.lastIndexOf("/", mainFileInput.length());
       isPathname = lastSepPos != -1;
       if (isPathname) {
-         namespace = formatted.substring(0, lastSepPos).replaceAll("/",
-               java.util.regex.Matcher.quoteReplacement(F_SEP));
-
+         namespace = sysFileSepPath(formatted.substring(0, lastSepPos));
          mainFileName = formatted.substring(lastSepPos + 1);
       }
       else {
          mainFileName = mainFileInput;
       }
    }
+   
+   private String sysFileSepPath(String path) {
+      return
+         path.replaceAll("/",
+               java.util.regex.Matcher.quoteReplacement(F_SEP));
+   }
 
-   private String pathRelToRoot() {
+   private void setRelMainFilePath() {
       StringBuilder sb = new StringBuilder();
       if (!sourceDirName.isEmpty()) {
          sb.append(sourceDirName).append("/");
@@ -470,7 +463,7 @@ public abstract class AbstractProject implements Configurable {
       if (!mainFileName.isEmpty()) {
          sb.append(mainFileName).append(sourceExtension);
       }
-      return sb.toString();
+      relMainFilePath = sb.toString();
    }
 
    private boolean isInProject(String dir, String projRoot) {
@@ -503,18 +496,17 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private boolean isConfigured(String rootToTest) {
+      if (isNameConflict && showNameConflictMsg) {
+         showNameConflictMsg();
+         return false;
+      }
       boolean success = !rootToTest.isEmpty();
       if (!success) {
-         if (isNameConflict) {
-            showNameConflictMsg();
+         if (useMainFile) {
+            Dialogs.warnMessageOnTop(mainFileInputWarning());
          }
          else {
-            if (useMainFile) {
-               Dialogs.warnMessageOnTop(MAIN_FILE_PATH_ERR);
-            }
-            else {
-               showProjRootInputWarning();
-            }
+            showProjRootInputWarning();
          }
       }
       else {
@@ -592,37 +584,46 @@ public abstract class AbstractProject implements Configurable {
       }
    };
 
-   private void showNameConflictMsg() {
-      Dialogs.warnMessageOnTop(
-         "<html>"
-         + mainFileName
-         + sourceExtension()
-         + " seems to exist more than once in the project."
-         + "<br><br>"
-         + "If this name should be used it may be necessary to specify"
-         + " its pathname relative to the source root.<br>"
-         + "The source root is the sources directory if available or"
-         + " the project directory."
-         + "</html>");
-
-         showNameConflictMsg = false;
-   }
-
    private void showProjRootInputWarning() {
       Dialogs.warnMessageOnTop(
-         "The name \'"
-         + sw.projDirNameInput()
-         + "\' for the project directory cannot be matched with an"
-         + " existing directory.");
+         sw.projDirNameInput()
+         + "\nThe entry for the project directory cannot be matched "
+         + " with an existing directory.");
    }
 
-   private final static String MAIN_FILE_PATH_ERR
-         = "The entries in the project settings window cannot be matched"
-         + " with an existing path to the main project file.";
+   private String mainFileInputWarning() {
+      return
+         sw.fileNameInput()
+         + sourceExtension
+         + "\nThe entries in the project settings cannot be matched"
+         + " with an existing file or filepath.";
+   }
 
    private final static String DELETE_CONF_OPT
-         = "<html>"
-         + "Saving the \'ProjConfig\' file is no more selected.<br>"
-         + "Remove the file?"
-         + "</html>";
+         = "Saving the \'ProjConfig\' file is no more selected.\n"
+         + "Remove the file?";
+         
+   private void showNameConflictMsg() {
+      Dialogs.warnMessage(
+         mainFileName
+         + sourceExtension()
+         + " seems to exist more than once. In the current settings the file "
+         + mainFileInputDisplay()
+         + " is used.\n\n"
+         + PATHNAME_MSG);
+
+      showNameConflictMsg = false;
+   }
+   
+   private String mainFileInputDisplay() {
+      return sw.projDirNameInput()
+         + F_SEP
+         + sysFileSepPath(relMainFilePath);
+   }
+
+   private final static String PATHNAME_MSG
+      = "To select a file in a sub-directory the pathname relative to the"
+      + " source root can be specified in the input field for the main file."
+      + "\nThe source root is the sources directory if specified or the"
+      + " project directory.";
 }
