@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import java.util.List;
-import java.util.Arrays;
+//import java.util.Arrays;
+import java.util.ArrayList;
 
 import static java.nio.file.StandardCopyOption.*;
 
@@ -36,8 +37,6 @@ public class Compilation {
    private final Console cons;
 
    private boolean success = false;
-   private String copyFilesErr = "";
-   private String optionErr = "";
 
    /**
     * @param console  the reference to {@link Console}
@@ -47,49 +46,19 @@ public class Compilation {
    }
 
    /**
-    * Returns the boolean that indicates if java files were compiled
-    * successfully
-    *
-    * @return  the boolean value which is true in the case of success
-    */
-   public boolean isCompiled() {
-      return success;
-   }
-
-   /**
-    * Returns the error message that indicates that an error occured
-    * during copying non-java files
-    *
-    * @return  the message or the empty empty string of there is none
-    */
-   public String copyFilesErr() {
-      return copyFilesErr;
-   }
-
-   /**
-    * Returns the error message that indicates that the input for
-    * the Xlint compiler option is invalid
-    *
-    * @return  the message or the empty string of there is none
-    */
-   public String optionErr() {
-      return optionErr;
-   }
-
-   /**
     * Invokes the javac compiler
     *
     * @param root  the root directory of the java project
     * @param execDir  the name of the destination directory for the
-    * compiled class files/packages. Can be the empty string if nonJavaExt
-    * is null.
-    * @param sourceDir  the name of the directory that contains java files/
-    * packages. Can be the empty string if nonJavaExt is null.
+    * compiled class files/packages. Can be the empty string.
+    * @param sourceDir  the name of the directory that contains java
+    * files/packages. Can be the empty string.
     * @param nonJavaExt  the array of extensions of files that are copied
     * to the compilation. Requires that both a sources and a classes
-    * directory is present. May be null.
-    * @param xlintOption  the Xlint compiler option. Other compiler options
-    * are ignored.
+    * directory are present. May be null.
+    * @param xlintOption  the Xlint compiler options, in which several
+    * options are separated by spaces. Options other than Xlint are
+    * ignored.
     */
    public void compile(String root, String execDir, String sourceDir,
          String[] nonJavaExt, String xlintOption) {
@@ -100,7 +69,7 @@ public class Compilation {
 
          return;
       }
-      reset();
+      success = false;
       DiagnosticCollector<JavaFileObject> diagnostics
             = new DiagnosticCollector<>();
       StandardJavaFileManager fileManager
@@ -144,12 +113,6 @@ public class Compilation {
    //--private--/
    //
 
-   private void reset() {
-      success = false;
-      copyFilesErr = "";
-      optionErr = "";
-   }
-
    private String createTargetDir(String root, String execDir) {
       String targetDir;
       if (!execDir.isEmpty()) {
@@ -164,40 +127,36 @@ public class Compilation {
    }
 
    private Iterable<String> options(String targetDir, String xlintOption) {
-      String[] opt;
-      if (xlintOption.isEmpty()) {
-         opt = new String[] {"-d", targetDir};
-      }
-      else {
-         boolean ok = true;
+      List <String> options = new ArrayList<>();
+      options.add("-d");
+      options.add(targetDir);
+      if (!xlintOption.isEmpty()) {
          String[] test = xlintOption.split("\\s+");
+         List <String> unsupported = new ArrayList<>();
          for (String s : test) {
-            ok = s.startsWith("-Xlint")
+            boolean ok = s.startsWith("-Xlint")
                   && -1 < compiler.isSupportedOption(s);
 
             if (!ok) {
-               break;
+               unsupported.add(s);
+            }
+            else {
+               options.add(s);
             }
          }
-         if (ok) {
-            opt = new String[2 + test.length]; // 2 for -d and target dir
-            opt[0] = "-d";
-            opt[1] = targetDir;
-            for (int i = 2; i < opt.length; i++) {
-               opt[i] = test[i - 2];
-            }
-         }
-         else {
-            opt = new String[] {"-d", targetDir};
-            optionErr =
-                  xlintOption
-                  + "\" cannot be used as"
-                  + " Xlint compiler option and was ignored";
+         if (unsupported.size() > 0) {
+            for (String s : unsupported) {
+               String err =
+                     "NOTE: \'"
+                     + s
+                     + "\' cannot be used as"
+                     + " compiler option and was ignored";
 
-            cons.printBr(optionErr);
+               cons.printBr(err);
+            }
          }
       }
-      return Arrays.asList(opt);
+      return options;
    }
 
    private void copyFiles(String root, String sourceDir, String execDir,
@@ -212,8 +171,8 @@ public class Compilation {
       for (String ext : nonJavaExt) {
          List<File> toCopy = fFind.filteredFiles(searchRoot, ext, execDir);
          if (toCopy.isEmpty()) {
-            copyFilesErr =
-                  " Files with extension \""
+            String copyFilesErr =
+                  "NOTE: Files with extension \""
                   + ext
                   + "\" for copying to the compilation were not found";
 

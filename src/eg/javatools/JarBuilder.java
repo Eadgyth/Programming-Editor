@@ -7,9 +7,6 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 
-//--Eadgyth--/
-import eg.console.Console;
-
 /**
  * The creation of an executable jar file
  */
@@ -35,16 +32,17 @@ public class JarBuilder {
     * Returns the error message that indicates that non-Java files
     * for inclusion in the jar are not found
     *
-    * @return  the message or the empty empty string if there is none
+    * @return  the message; the empty empty string if there is none
     */
    public String incudedFilesErr() {
       return includedFilesErr;
    }
 
    /**
-    * Returns the error message that indicates that an error occured
+    * Returns the error message that indicates that the jar file
+    * could not be created
     *
-    * @return  the message or the empty empty string if there is none
+    * @return  the message; the empty empty string if there is none
     */
    public String errorMessage() {
       return errorMsg;
@@ -64,10 +62,8 @@ public class JarBuilder {
     * included in the jar file in addition to class files. May be null
     * @return  the booelan that is true if the process that creates the
     * jar terminates normally
-    * @throws IOException  if the process that creates a jar cannot receive
-    * any input
-    * @throws InterruptedException  if the thread on which the process runs
-    * is interrupted
+    * @throws IOException  as specified by ProcessBuilder
+    * @throws InterruptedException  as specified by Process
     */
    public boolean createJar(String root, String jarName, String qualifiedMain,
          String execDir, String sourceDir, String[] nonClassExt)
@@ -79,25 +75,29 @@ public class JarBuilder {
       List<String> cmd = jarCmd(root, jarName, qualifiedMain, execDir, sourceDir,
             nonClassExt);
 
+      StringBuilder msg = new StringBuilder();
       ProcessBuilder pb = new ProcessBuilder(cmd);
       pb.directory(new File(root + "/" + execDir));
       pb.redirectErrorStream(true);
       Process p = pb.start();
       if (0 == p.waitFor()) {
-         StringBuilder msg = new StringBuilder();
          String loc = new File(root).getName();
          if (execDir.length() > 0) {
             loc += F_SEP + execDir;
          }
          msg.append("Saved jar file named ")
                .append(jarName)
-               .append(" in ").append(loc);
+               .append(" in ")
+               .append(loc);
 
          successMsg = msg.toString();
          return true;
       }
       else {
-         errorMsg = "An error occured while creating the jar file";
+         msg.append("An error occured while creating the jar file ")
+               .append(jarName);
+       
+         errorMsg = msg.toString();
          return false;
       }
    }
@@ -132,7 +132,7 @@ public class JarBuilder {
             List<File> toInclude = fFind.filteredFiles(searchRoot, ext, sourceDir);
             if (toInclude.isEmpty()) {
                StringBuilder msg = new StringBuilder();
-               msg.append("NOTE: ")
+               msg.append("\nNOTE: ")
                      .append("Files with extension \"")
                      .append(ext)
                      .append("\" for inclusion in the jar were not found");
@@ -144,7 +144,6 @@ public class JarBuilder {
                      = relativePaths(searchRoot, toInclude);
 
                for (File f : relativeInclFilePaths) {
-                  String path = f.getPath();
                   cmd.add(f.toString());
                }
             }
