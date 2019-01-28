@@ -6,6 +6,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import java.util.List;
+import java.util.ArrayList;
+
 //--Eadgyth--//
 import eg.Prefs;
 import eg.utils.Dialogs;
@@ -217,7 +220,8 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns the path to the main file relative to the project root
+    * Returns the pathname of the main project file relative to the
+    * project root
     *
     * @return  the filepath
     */
@@ -358,7 +362,7 @@ public abstract class AbstractProject implements Configurable {
          }
       }
       setRelMainFilePath();
-      mainFilePath = new File(root + "/" + relMainFilePath);
+      mainFilePath = new File(root + F_SEP + relMainFilePath);
       return mainFilePath.exists();
    }
 
@@ -374,14 +378,15 @@ public abstract class AbstractProject implements Configurable {
       buildName = sw.buildNameInput();
    }
 
-   private void setNamespace(String sourceRoot, String name) {
-      File f = new File(sourceRoot);
-      File[] list = f.listFiles();
+   private void setNamespace(String root, String name) {
+      File rootF = new File(root);
+      File[] list = rootF.listFiles();
+      List<File> dirs = new ArrayList<>(10);
       if (list != null) {
          for (File fInList : list) {
             if (fInList.isFile()) {
                if (fInList.getName().equals(name)) {
-                  if (!isNameConflict && namespacePath.length() > 0) {
+                  if (namespacePath.length() > 0) {
                      isNameConflict = true;
                   }
                   else {
@@ -390,8 +395,13 @@ public abstract class AbstractProject implements Configurable {
                }
             }
             else {
-               setNamespace(fInList.getPath(), name);
+               dirs.add(fInList);
             }
+         }
+      }
+      if (dirs.size() > 0) {
+         for (File f : dirs) {
+            setNamespace(f.getPath(), name);
          }
       }
    }
@@ -409,10 +419,7 @@ public abstract class AbstractProject implements Configurable {
       else {
          String mainFileInput = pr.getProperty("MainProjectFile");
          splitMainFileInput(mainFileInput);
-         if (isPathname) {
-            sw.displayFile(namespace + F_SEP + mainFileName);
-         }
-         else {
+         if (!isPathname) {
             namespace = pr.getProperty("Namespace");
          }
          sourceDirName = pr.getProperty("SourceDir");
@@ -445,7 +452,7 @@ public abstract class AbstractProject implements Configurable {
          mainFileName = mainFileInput;
       }
    }
-   
+
    private String sysFileSepPath(String path) {
       return
          path.replaceAll("/",
@@ -455,10 +462,10 @@ public abstract class AbstractProject implements Configurable {
    private void setRelMainFilePath() {
       StringBuilder sb = new StringBuilder();
       if (!sourceDirName.isEmpty()) {
-         sb.append(sourceDirName).append("/");
+         sb.append(sourceDirName).append(F_SEP);
       }
       if (!namespace.isEmpty()) {
-         sb.append(namespace).append("/");
+         sb.append(namespace).append(F_SEP);
       }
       if (!mainFileName.isEmpty()) {
          sb.append(mainFileName).append(sourceExtension);
@@ -602,28 +609,35 @@ public abstract class AbstractProject implements Configurable {
    private final static String DELETE_CONF_OPT
          = "Saving the \'ProjConfig\' file is no more selected.\n"
          + "Remove the file?";
-         
+
    private void showNameConflictMsg() {
-      Dialogs.warnMessage(
-         mainFileName
+      Dialogs.warnMessageOnTop(
+         "<html>"
+         + mainFileName
          + sourceExtension()
-         + " seems to exist more than once. In the current settings the file "
+         + " seems to exist more than once in the source root."
+         + " The currently set file is<br><blockquote>"
          + mainFileInputDisplay()
-         + " is used.\n\n"
-         + PATHNAME_MSG);
+         + "</blockquote><br>"
+         + PATHNAME_INFO
+         + "</html>");
 
       showNameConflictMsg = false;
    }
-   
+
    private String mainFileInputDisplay() {
       return sw.projDirNameInput()
          + F_SEP
          + sysFileSepPath(relMainFilePath);
    }
 
-   private final static String PATHNAME_MSG
-      = "To select a file in a sub-directory the pathname relative to the"
-      + " source root can be specified in the input field for the main file."
-      + "\nThe source root is the sources directory if specified or the"
-      + " project directory.";
+   private final static String PATHNAME_INFO
+      = "<html><hr>"
+      + "TO SELECT A FILE IN A SUB-DIRECTORY:<br>"
+      + "Enter the name or path of a sources directory or a pathname of"
+      + " the project file.<br>"
+      + "A path is relative to the project directory and a pathname of"
+      + " the project file must<br>be relative to the sources directory"
+      + " if this is specified."
+      + "</html>";
 }
