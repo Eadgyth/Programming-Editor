@@ -89,7 +89,8 @@ public class ProcessStarter {
    /**
     * Starts a system process in this working directory. A warning dialog
     * is shown if it is tried to start a process while a previous process
-    * is not yet terminated.
+    * is not yet terminated. The file tree is updated after the process
+    * has ended.
     *
     * @param cmd  the start command in which arguments are separated by
     * spaces
