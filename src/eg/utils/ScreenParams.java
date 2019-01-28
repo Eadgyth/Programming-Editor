@@ -78,10 +78,10 @@ public class ScreenParams {
    public static int invertedScaledSize(int size) {
       if (IS_JAVA_9_OR_HIGHER) {
          if (IS_WINDOWS) {
-            return (int) (Math.round(size / (96 / 72)));
+            return (Math.round(size / (96 / 72)));
          }
          else {
-            return (int) size;
+            return size;
          }
       }
       else {
