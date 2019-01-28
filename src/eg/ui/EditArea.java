@@ -106,15 +106,6 @@ public final class EditArea {
    }
 
    /**
-    * Gets this <code>LineNrWidthAdaptable</code>
-    *
-    * @return  the LineNrWidthAdaptable
-    */
-   public LineNrWidthAdaptable lineNrWidth() {
-      return (i, j) -> adaptLineNrWidth(i, j);
-   }
-
-   /**
     * Enables wordwrap and hides line numbers
     */
    public void enableWordwrap() {
@@ -208,12 +199,6 @@ public final class EditArea {
    private void revalidate() {
       content.revalidate();
       content.repaint();
-   }
-
-   private void adaptLineNrWidth(int prevLineNr, int lineNr) {
-      if ((int) Math.log10(prevLineNr) - (int) Math.log10(lineNr) != 0) {
-         revalidate();
-      }
    }
 
    private void setScrollPos(JScrollPane scroll, int pos) {

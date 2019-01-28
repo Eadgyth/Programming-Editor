@@ -68,9 +68,7 @@ public final class EditableDocument {
     */
    public EditableDocument(EditArea editArea) {
       txt = new EditableText(editArea.textArea());
-      LineNumbers lineNum = new LineNumbers(editArea.lineNrArea(),
-            editArea.lineNrWidth());
-
+      LineNumbers lineNum = new LineNumbers(editArea.lineNrArea());
       type = new TypingEdit(txt, lineNum);
    }
 
