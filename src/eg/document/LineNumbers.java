@@ -13,7 +13,6 @@ import javax.swing.text.StyleConstants;
 //--Eadgyth--//
 import eg.utils.FileUtils;
 import eg.utils.LinesFinder;
-import eg.ui.LineNrWidthAdaptable;
 
 /**
  * The line numbering
@@ -24,7 +23,6 @@ public class LineNumbers {
    private final static SimpleAttributeSet SET = new SimpleAttributeSet();
 
    private final StyledDocument doc;
-   private final LineNrWidthAdaptable lineNrWidth;
    private final StringBuilder lineNrBuilder = new StringBuilder();
 
    private int nOld = 1;
@@ -38,11 +36,9 @@ public class LineNumbers {
    /**
     * @param lineNrArea  the <code>JTextPane</code> that displays line
     * numbers
-    * @param  lineNrWidth  the {@link LineNrWidthAdaptable}
     */
-   public LineNumbers(JTextPane lineNrArea, LineNrWidthAdaptable lineNrWidth) {
+   public LineNumbers(JTextPane lineNrArea) {
       this.doc = lineNrArea.getStyledDocument();
-      this.lineNrWidth = lineNrWidth;
       Element el = doc.getParagraphElement(0);
       doc.setParagraphAttributes(0, el.getEndOffset(), SET, false);
       appendLineNumbers(0, nOld);
@@ -75,7 +71,6 @@ public class LineNumbers {
       }
       try {
          doc.insertString(doc.getLength(), lineNrBuilder.toString(), SET);
-         lineNrWidth.adaptLineNrWidth(prevLineNr, lineNr);
       }
       catch(BadLocationException e) {
          FileUtils.log(e);
@@ -89,7 +84,6 @@ public class LineNumbers {
       }
       try {
          doc.remove(doc.getLength() - length, length);
-         lineNrWidth.adaptLineNrWidth(prevLineNr, lineNr);
       }
       catch (BadLocationException e) {
          FileUtils.log(e);
