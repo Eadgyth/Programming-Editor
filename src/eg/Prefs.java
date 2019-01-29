@@ -32,7 +32,7 @@ public class Prefs {
    * Creates a <code>Prefs</code> that reads from and writes to the
    * Prefs file in the program folder. Every new <code>Prefs</code>
    * object accesses the same set of properties. The properties
-   * are not loaded from the Prefs file.
+   * are initially not loaded from the Prefs file.
    */
    public Prefs() {
       prop = PREF_PROP;
@@ -57,7 +57,7 @@ public class Prefs {
 
    /**
     * Sets a new value for the property that corresponds to the
-    * the specified key.
+    * specified key.
     *
     * @param key  the property key
     * @param value  the new value
@@ -71,7 +71,7 @@ public class Prefs {
     * key
     *
     * @param key  the property key
-    * @return  the value or the empty string if the property coud not be
+    * @return  the value or the empty string if the property could not be
     * found
     */
    public String getProperty(String key) {
