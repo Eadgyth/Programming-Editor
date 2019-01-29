@@ -37,8 +37,8 @@ public class Projects {
    private boolean isReplace = false;
 
    /**
-    * @param mw  the MainWin
-    * @param fileTree  FileTree
+    * @param mw  the reference to MainWin
+    * @param fileTree  the reference to FileTree
     * @param edtDoc  the array of EditableDocument
     */
    public Projects(MainWin mw, FileTree fileTree, EditableDocument[] edtDoc) {

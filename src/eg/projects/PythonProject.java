@@ -27,7 +27,7 @@ public final class PythonProject extends AbstractProject implements ProjectActio
 
    @Override
    public void buildSettingsWindow() {
-      inputOptions.addFileInput("Name of main python script")
+      inputOptions.addFileInput("Name of Python script file")
             .addSourceDirInput()
             .addCmdOptionsInput()
             .addCmdArgsInput()

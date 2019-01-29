@@ -52,7 +52,7 @@ public abstract class AbstractProject implements Configurable {
    //
    // Variables to control the configuration
    private File mainFilePath = null;
-   private String namespacePath = "";
+   private String absNamespace = "";
    private boolean isPathname = false;
    private boolean isNameConflict = false;
    private boolean showNameConflictMsg = true;
@@ -190,24 +190,31 @@ public abstract class AbstractProject implements Configurable {
     * @return  true if the main can be located
     */
    protected boolean locateMainFile() {
-      boolean exists = mainFilePath.exists();
-      if (!exists) {
-         exists = configBySettingsInput(projectRoot);
-         if (exists) {
+      boolean locate = mainFilePath.exists();
+      int openSettings = -1;
+      if (!locate) {
+         locate = configBySettingsInput(projectRoot);
+         if (locate) {
             setCommandParameters();
             storeConfiguration();
+            if (isNameConflict) {
+               locate = false;
+               showNameConflictMsg = false;
+               openSettings = Dialogs.warnConfirmYesNo(
+                     nameConflictMsg()
+                     + "\n\nOpen the project settings?");
+            }       
          }
          else {
-            int res = Dialogs.warnConfirmYesNo(
+            openSettings = Dialogs.warnConfirmYesNo(
                   mainFileInputWarning()
-                  +"\n\nOpen the project settings?");
-
-            if (res == 0) {
-               sw.setVisible(true);
-            }
+                  + "\n\nOpen the project settings?");
          }
       }
-      return exists;
+      if (openSettings == 0) {
+         sw.setVisible(true);
+      }
+      return locate;
    }
 
    /**
@@ -241,7 +248,7 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns the last name of the directoy where source files are saved
+    * Returns the name or the relative path of the sources directory
     *
     * @return  the name; the empty string if no source directory is given
     */
@@ -250,8 +257,8 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns the extension of source files (or of the main project
-    * file if extensions differ) with the beginning period
+    * Returns the extension of source files (or of the main file if
+    * extensions differ) with the beginning period
     *
     * @return  the extension; null if no source extension is given
     */
@@ -342,7 +349,7 @@ public abstract class AbstractProject implements Configurable {
 
    private boolean configBySettingsInput(String root) {
       boolean success = false;
-      namespacePath = "";
+      absNamespace = "";
       namespace = "";
       isNameConflict = false;
       getSettingsInput(); // also assigns value to isPathname
@@ -352,9 +359,9 @@ public abstract class AbstractProject implements Configurable {
             sourceRoot = sourceRoot + "/" + sourceDirName;
          }
          setNamespace(sourceRoot, mainFileName + sourceExtension);
-         if (!namespacePath.isEmpty()) {
-            if (namespacePath.length() > sourceRoot.length()) {
-               namespace = namespacePath.substring(sourceRoot.length() + 1);
+         if (!absNamespace.isEmpty()) {
+            if (absNamespace.length() > sourceRoot.length()) {
+               namespace = absNamespace.substring(sourceRoot.length() + 1);
             }
             else {
                namespace = ""; // no subdir in source or project root
@@ -367,8 +374,7 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private void getSettingsInput() {
-      String mainFileInput = sw.fileNameInput();
-      splitMainFileInput(mainFileInput);
+      splitMainFileInput(sw.fileNameInput());
       sourceDirName = sw.sourcesDirNameInput();
       execDirName = sw.execDirNameInput();
       cmdOptions = sw.cmdOptionsInput();
@@ -386,11 +392,11 @@ public abstract class AbstractProject implements Configurable {
          for (File fInList : list) {
             if (fInList.isFile()) {
                if (fInList.getName().equals(name)) {
-                  if (namespacePath.length() > 0) {
+                  if (absNamespace.length() > 0) {
                      isNameConflict = true;
                   }
                   else {
-                     namespacePath = fInList.getParent();
+                     absNamespace = fInList.getParent();
                   }
                }
             }
@@ -417,8 +423,7 @@ public abstract class AbstractProject implements Configurable {
          success = toTest.exists() && toTest.isDirectory();
       }
       else {
-         String mainFileInput = pr.getProperty("MainProjectFile");
-         splitMainFileInput(mainFileInput);
+         splitMainFileInput(pr.getProperty("MainProjectFile"));
          if (!isPathname) {
             namespace = pr.getProperty("Namespace");
          }
@@ -453,24 +458,22 @@ public abstract class AbstractProject implements Configurable {
       }
    }
 
-   private String sysFileSepPath(String path) {
-      return
-         path.replaceAll("/",
-               java.util.regex.Matcher.quoteReplacement(F_SEP));
-   }
-
    private void setRelMainFilePath() {
       StringBuilder sb = new StringBuilder();
       if (!sourceDirName.isEmpty()) {
-         sb.append(sourceDirName).append(F_SEP);
+         sb.append(sysFileSepPath(sourceDirName)).append(F_SEP);
       }
       if (!namespace.isEmpty()) {
          sb.append(namespace).append(F_SEP);
       }
-      if (!mainFileName.isEmpty()) {
-         sb.append(mainFileName).append(sourceExtension);
-      }
+      sb.append(mainFileName).append(sourceExtension);
       relMainFilePath = sb.toString();
+   }
+   
+   private String sysFileSepPath(String path) {
+      return
+         path.replaceAll("/",
+               java.util.regex.Matcher.quoteReplacement(F_SEP));
    }
 
    private boolean isInProject(String dir, String projRoot) {
@@ -503,10 +506,6 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private boolean isConfigured(String rootToTest) {
-      if (isNameConflict && showNameConflictMsg) {
-         showNameConflictMsg();
-         return false;
-      }
       boolean success = !rootToTest.isEmpty();
       if (!success) {
          if (useMainFile) {
@@ -519,10 +518,9 @@ public abstract class AbstractProject implements Configurable {
       else {
          if (projectRoot.isEmpty() || !projectRoot.equals(rootToTest)) {
             projectRoot = rootToTest;
-
          }
       }
-      return success;
+      return success && !isShowNameConflictMsg();
    }
 
    private void storeConfigurationImpl() {
@@ -610,34 +608,35 @@ public abstract class AbstractProject implements Configurable {
          = "Saving the \'ProjConfig\' file is no more selected.\n"
          + "Remove the file?";
 
-   private void showNameConflictMsg() {
-      Dialogs.warnMessageOnTop(
+   private boolean isShowNameConflictMsg() {
+      if (isNameConflict && showNameConflictMsg) {
+         Dialogs.warnMessageOnTop(nameConflictMsg());
+         showNameConflictMsg = false;
+         return true;
+      }
+      return false;
+   }
+   
+   private String nameConflictMsg() {
+      return
          "<html>"
          + mainFileName
          + sourceExtension()
-         + " seems to exist more than once in the source root."
-         + " The currently set file is<br><blockquote>"
-         + mainFileInputDisplay()
+         + " seems to exist more than once. The currently set"
+         + " file is<br><blockquote>"
+         + relMainFilePath
          + "</blockquote><br>"
          + PATHNAME_INFO
-         + "</html>");
-
-      showNameConflictMsg = false;
+         + "</html>";
    }
-
-   private String mainFileInputDisplay() {
-      return sw.projDirNameInput()
-         + F_SEP
-         + sysFileSepPath(relMainFilePath);
-   }
-
+   
    private final static String PATHNAME_INFO
       = "<html><hr>"
       + "TO SELECT A FILE IN A SUB-DIRECTORY:<br>"
-      + "Enter the name or path of a sources directory or a pathname of"
-      + " the project file.<br>"
+      + "Enter a path for the sources directory and/or a pathname for"
+      + " the file.<br>"
       + "A path is relative to the project directory and a pathname of"
-      + " the project file must<br>be relative to the sources directory"
-      + " if this is specified."
+      + " the file is<br>relative to the sources directory if this is"
+      + " specified."
       + "</html>";
 }

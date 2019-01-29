@@ -28,7 +28,7 @@ public final class PerlProject extends AbstractProject implements ProjectActions
 
    @Override
    public void buildSettingsWindow() {
-      inputOptions.addFileInput("Name of Perl script")
+      inputOptions.addFileInput("Name of Perl script file")
             .addSourceDirInput()
             .addCmdOptionsInput()
             .addCmdArgsInput()

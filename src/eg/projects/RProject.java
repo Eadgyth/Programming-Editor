@@ -27,7 +27,7 @@ public final class RProject extends AbstractProject implements ProjectActions {
 
    @Override
    public void buildSettingsWindow() {
-      inputOptions.addFileInput("Name of R script")
+      inputOptions.addFileInput("Name of R script file")
          .addCmdOptionsInput()
          .addCmdArgsInput()
          .buildWindow();
