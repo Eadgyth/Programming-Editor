@@ -10,10 +10,9 @@ A more detailed description of the features, screenshots, a help site and code d
 can be found under <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <p>
 REQUIREMENTS FOR TESTING<br>
-Running the program requires Java 8 or higher. Compiling requires Java 8. The executable
-jar in the folder 'JarAndPreferences' was made after compilation with JDK 8 and by using the
-Java Archive Tool in the JDK. A possibility to compile it (and build a Jar from it), is also
-to copy the src folder in any directory and define project with existing sources in NetBeans.
+Running and compiling the program requires Java 8 or higher. The executable jar file in the
+folder 'JarAndPreferences' was made after compilation with JDK 8 and by using the Java
+Archive Tool in the JDK.
 <p>
 If the program shall be used for compiling Java code by the built-in compile option it must be
 made sure that the program is run using the JRE contained in the JDK (and not the public JRE).
