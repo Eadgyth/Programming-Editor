@@ -26,18 +26,19 @@ public abstract class AbstractProject implements Configurable {
     */
    protected final SettingsWindow.InputOptionsBuilder inputOptions;
 
-   /**
-    * The system's file separator
-    */
-   protected final static String F_SEP = File.separator;
-
-   private final Prefs prefs = new Prefs();
-   private final SettingsWindow sw;  // Set in constructor
+   private final static String F_SEP = File.separator;
    //
-   // Varaiable that define the configuration
-   private final ProjectTypes projType;  //
-   private final String sourceExtension; // Set in constructor
-   private final boolean useMainFile;    //
+   // The Prefs object that reads from and writes to the Prefs file in
+   // the program folder
+   private final Prefs prefs = new Prefs();
+   //
+   // Set in contructor
+   private final ProjectTypes projType;
+   private final String sourceExtension;
+   private final boolean useMainFile;
+   private final SettingsWindow sw;
+   //
+   // Variables that correspond to or depend on input in settings window
    private String projectRoot = "";
    private String mainFileName = "";
    private String relMainFilePath = "";
@@ -57,7 +58,7 @@ public abstract class AbstractProject implements Configurable {
    private boolean isNameConflict = false;
    private boolean showNameConflictMsg = true;
    //
-   // The Prefs object that stores and reads from a ProjConfig file
+   // The Prefs object that reads from and writes to a ProjConfig file
    // in a project directory
    private Prefs conf;
 
@@ -92,11 +93,10 @@ public abstract class AbstractProject implements Configurable {
    /**
     * {@inheritDoc}.
     * <p>
-    * A 'ProjConfig' file is searched in <code>dir</code> or further
-    * upward the directory path. The project then is the directory
-    * where the file is found. If it is not found, it is tested if
-    * <code>dir</code> is contained in the recent project saved in the
-    * "Prefs" file in the program folder.
+    * First, a 'ProjConfig' file is searched in the specified directory
+    * or further upward the directory path. If this is not found, it is
+    * tested if the directory is contained in the project directory saved
+    * in the Prefs file in the program folder.
     */
    @Override
    public final boolean retrieve(String dir) {
@@ -199,10 +199,11 @@ public abstract class AbstractProject implements Configurable {
             storeConfiguration();
             if (isNameConflict) {
                locate = false;
-               showNameConflictMsg = false;
                openSettings = Dialogs.warnConfirmYesNo(
                      nameConflictMsg()
                      + "\n\nOpen the project settings?");
+                     
+               showNameConflictMsg = false;
             }       
          }
          else {
@@ -385,23 +386,23 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private void setNamespace(String root, String name) {
-      File rootF = new File(root);
-      File[] list = rootF.listFiles();
+      File fRoot = new File(root);
+      File[] files = fRoot.listFiles();
       List<File> dirs = new ArrayList<>(10);
-      if (list != null) {
-         for (File fInList : list) {
-            if (fInList.isFile()) {
-               if (fInList.getName().equals(name)) {
+      if (files != null) {
+         for (File f : files) {
+            if (f.isFile()) {
+               if (f.getName().equals(name)) {
                   if (absNamespace.length() > 0) {
                      isNameConflict = true;
                   }
                   else {
-                     absNamespace = fInList.getParent();
+                     absNamespace = f.getParent();
                   }
                }
             }
             else {
-               dirs.add(fInList);
+               dirs.add(f);
             }
          }
       }

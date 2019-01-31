@@ -52,7 +52,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
             .addSourceDirInput()
             .addExecDirInput()
             .addCmdArgsInput()
-            .addCompileOptionInput("Xlint compiler option")
+            .addCompileOptionInput("Xlint compiler options")
             .addExtensionsInput("Extensions of included non-Java files")
             .addBuildNameInput("jar file")
             .buildWindow();
