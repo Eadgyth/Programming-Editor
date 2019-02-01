@@ -7,7 +7,7 @@ syntax highlighting.
 <p>
 DOCUMENTATION<br>
 A more detailed description of the features, screenshots, a help site and code documentation
-can be found under <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
+can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <p>
 REQUIREMENTS FOR TESTING<br>
 Running and compiling the program requires Java 8 or higher. The executable jar file in the
