@@ -1,7 +1,7 @@
 This is a text editor, written in Java, which can be used for programming. A programming
-project can be easily set to use built-in functions to run an application for testing. Also,
-several projects, which can be switched between, can be set in parallel. Project categories
-so far are Java, Perl, Python, R and HTML. A "generic" project may be as well defined to run
+project can be easily set to use built-in functions to run code for testing. Also, several
+projects, which can be switched between, can be set in parallel. Project categories so far
+are Java, Perl, Python, R and HTML. A "generic" project may be as well defined to run
 self-chosen system commands. The program includes a basic console, a file explorer and a basic
 syntax highlighting.
 <p>
