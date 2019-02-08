@@ -1,4 +1,4 @@
-This is a text editor, written in Java, which can be used for coding and testing code.
+This is a text editor, written in Java, which can be used for coding and running code.
 A programming project can be easily set to use built-in functions to run code. Also,
 several projects, which can be switched between, can be set in parallel. Project categories
 so far are Java, Perl, Python, R and HTML. A "generic" project may be as well defined
