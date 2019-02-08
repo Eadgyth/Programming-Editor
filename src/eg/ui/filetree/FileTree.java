@@ -153,12 +153,12 @@ public class FileTree {
       List<File> all = new ArrayList<>();
       List<File> files = new ArrayList<>();
       for (File f : toSort) {
-           if (f.isDirectory()) {
-               all.add(f);
-           } else {
-               files.add(f);
-           }
-       }
+         if (f.isDirectory()) {
+             all.add(f);
+         } else {
+             files.add(f);
+         }
+      }
       all.addAll(files);
       File[] sortedList = all.toArray(new File[toSort.length]);
       return sortedList;
@@ -220,7 +220,7 @@ public class FileTree {
             success = deleteFolder(selectedFile);
          }
          if (success) {
-            if (selectedNode == tree.getModel().getRoot()) {
+            if (selectedNode == root) {
                folderUp();
             }
             else {
@@ -237,33 +237,43 @@ public class FileTree {
    }
 
    private boolean deleteFolder(File dir) {
-      boolean ret = true;
+      boolean b = true;
       if (dir.isDirectory()) {
          for (File f : dir.listFiles()) {
-            ret = ret && deleteFolder(f);
+            b = b && deleteFolder(f);
          }
       }
-      return ret && dir.delete();
+      return b && dir.delete();
    }
 
    private void newFolder() {
       String newFolder = Dialogs.textFieldInput(
             "Enter a name for the new folder", "New folder", "");
 
-      if (newFolder != null) {
-         File newDir = new File(selectedFile.getPath(), newFolder);
-         boolean succes = newDir.mkdirs();
-         if (succes) {
-            model.insertNodeInto(new DefaultMutableTreeNode(newDir),
-                  selectedNode, selectedNode.getChildCount());
-         }
-         else {
-            Dialogs.errorMessage(
-                  "Creating "
-                  + newDir.getName()
-                  + " failed",
-                  null);
-         }
+      if (newFolder == null || newFolder.isEmpty()) {
+         return;
+      }
+      File newDir = new File(selectedFile.getPath(), newFolder);
+      if (newDir.exists()) {
+         Dialogs.errorMessage(
+               newDir.getName()
+               + " already exists.",
+               null);
+
+          return;
+      }
+      boolean succes = newDir.mkdirs();
+      if (succes) {
+         DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(newDir);
+         model.insertNodeInto(newNode, selectedNode, 0);
+         tree.expandPath(tree.getSelectionPath());
+      }
+      else {
+         Dialogs.errorMessage(
+               "Creating "
+               + newDir.getName()
+               + " failed.",
+               null);
       }
    }
 
@@ -301,9 +311,9 @@ public class FileTree {
       treePnl.setFolderUpAction(e -> folderUp());
       treePnl.setRenewTreeAction(e -> updateTree());
       popupFile.setOpenAction(e -> openFile());
-      popupFile.deleteAct(e -> deleteFile());
-      popupDir.newFolderAct(e -> newFolder());
-      popupDir.deleteAct(e -> deleteFile());
+      popupFile.setDeleteAct(e -> deleteFile());
+      popupDir.setNewFolderAct(e -> newFolder());
+      popupDir.setDeleteAct(e -> deleteFile());
    }
 
    private final MouseListener mouseListener = new MouseAdapter() {
