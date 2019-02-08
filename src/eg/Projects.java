@@ -78,7 +78,7 @@ public class Projects {
          isInProject = inList != null;
          isCurrent = inList == current;
       }
-      mw.enableOpenSettingsWin(isInProject);
+      mw.enableOpenProjectSettings(isInProject);
       mw.enableChangeProject(isInProject && !isCurrent);
       if (isCurrent) {
          current.enableActions(update);
@@ -134,8 +134,8 @@ public class Projects {
     */
    public void retrieve() {
       String dir = edtDoc[iDoc].fileParent();
-      ProjectActions fromList = selectFromList(dir, false);
-      if (current != null && fromList != null) {
+      ProjectActions inList = selectFromList(dir, false);
+      if (current != null && inList != null) {
          return;
       }
       ProjectActions projToFind = null;
@@ -326,7 +326,7 @@ public class Projects {
             current.projectType().display());
 
       mw.enableChangeProject(false);
-      mw.enableOpenSettingsWin(true);
+      mw.enableOpenProjectSettings(true);
       fileTree.setProjectTree(current.projectPath());
       fileTree.setDeletableDir(current.executableDirName());
    }

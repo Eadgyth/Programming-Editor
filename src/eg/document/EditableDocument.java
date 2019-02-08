@@ -36,7 +36,6 @@ public final class EditableDocument {
 
    /**
     * Creates an <code>EditableDocument</code> with the specified file
-    * whose content is displayed
     *
     * @param editArea  the {@link EditArea}
     * @param f  the file

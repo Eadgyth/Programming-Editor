@@ -32,7 +32,7 @@ public abstract class AbstractProject implements Configurable {
    // the program folder
    private final Prefs prefs = new Prefs();
    //
-   // Set in contructor
+   // Set in constructor
    private final ProjectTypes projType;
    private final String sourceExtension;
    private final boolean useMainFile;
@@ -202,9 +202,9 @@ public abstract class AbstractProject implements Configurable {
                openSettings = Dialogs.warnConfirmYesNo(
                      nameConflictMsg()
                      + "\n\nOpen the project settings?");
-                     
+
                showNameConflictMsg = false;
-            }       
+            }
          }
          else {
             openSettings = Dialogs.warnConfirmYesNo(
@@ -470,7 +470,7 @@ public abstract class AbstractProject implements Configurable {
       sb.append(mainFileName).append(sourceExtension);
       relMainFilePath = sb.toString();
    }
-   
+
    private String sysFileSepPath(String path) {
       return
          path.replaceAll("/",
@@ -617,7 +617,7 @@ public abstract class AbstractProject implements Configurable {
       }
       return false;
    }
-   
+
    private String nameConflictMsg() {
       return
          "<html>"
@@ -630,7 +630,7 @@ public abstract class AbstractProject implements Configurable {
          + PATHNAME_INFO
          + "</html>";
    }
-   
+
    private final static String PATHNAME_INFO
       = "<html><hr>"
       + "TO SELECT A FILE IN A SUB-DIRECTORY:<br>"

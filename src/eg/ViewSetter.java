@@ -3,7 +3,7 @@ package eg;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.ui.MainWin;
 import eg.ui.ViewSettingWin;
 
@@ -25,9 +25,9 @@ public class ViewSetter {
    private int lafIndex;
 
    /**
-    * @param mw  the reference to <code>MainWin</code>
-    * @param vsw  the reference to <code>ViewSettingWin</code>
-    * @param f  the reference to {@link Formatter}
+    * @param mw  the reference to MainWin
+    * @param vsw  the reference to ViewSettingWin
+    * @param f  the reference to Formatter
     */
    public ViewSetter(MainWin mw, ViewSettingWin vsw, Formatter f) {
       this.mw = mw;
@@ -45,7 +45,6 @@ public class ViewSetter {
    public void applySettings() {
       boolean show;
       String state;
-      int index;
       show = vsw.isShowLineNumbers();
       if (show != isShowLineNumbers) {
          f.showLineNumbers(show);
@@ -67,6 +66,7 @@ public class ViewSetter {
          state = isShowStatusbar ? "show" : "hide";
          prefs.setProperty("Statusbar", state);
       }
+      int index;
       index = vsw.backgroundIndex();
       if (index != backgroundIndex) {
          backgroundIndex = index;

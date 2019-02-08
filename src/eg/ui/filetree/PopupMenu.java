@@ -67,7 +67,7 @@ public class PopupMenu {
     *
     * @param al  the <code>ActionListener</code>
     */
-   void setOpenAction(ActionListener al) {
+   public void setOpenAction(ActionListener al) {
       openItm.addActionListener(al);
    }
 
@@ -76,7 +76,7 @@ public class PopupMenu {
     *
     * @param al  the <code>ActionListener</code>
     */
-   void deleteAct(ActionListener al) {
+   public void setDeleteAct(ActionListener al) {
       deleteItm.addActionListener(al);
    }
 
@@ -85,7 +85,7 @@ public class PopupMenu {
     *
     * @param al  the <code>ActionListener</code>
     */
-   void newFolderAct(ActionListener al) {
+   public void setNewFolderAct(ActionListener al) {
       newFolderItm.addActionListener(al);
    }
 }

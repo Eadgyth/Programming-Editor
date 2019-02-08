@@ -93,7 +93,7 @@ public class EditableText extends StyledText {
    /**
     * Removes text
     *
-    * @param pos  the position where the removed starts
+    * @param pos  the position where the removed text starts
     * @param length  the length of the removed text
     */
    public final void remove(int pos, int length) {

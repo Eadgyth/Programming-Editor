@@ -88,7 +88,7 @@ public class ExchangeEditor implements AddableEditTool {
    @Override
    public int width() {
       if (content.getWidth() == 0) {
-         return ScreenParams.scaledSize(150);
+         return ScreenParams.scaledSize(200);
       }
       else {
          return content.getWidth();

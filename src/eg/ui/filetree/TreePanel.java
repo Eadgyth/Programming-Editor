@@ -167,7 +167,6 @@ public class TreePanel {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
               row, hasFocus);
 
-
         setForeground(theme.normalForeground());
         if (value instanceof DefaultMutableTreeNode) {
            value = ((DefaultMutableTreeNode) value).getUserObject();

@@ -33,7 +33,7 @@ public class SettingsWindow {
    private final JFrame frame = new JFrame("Project settings");
 
    private final JTextField projDirTf       = new JTextField();
-   
+
    private final JTextField fileTf          = new JTextField();
    private final JTextField sourcesDirTf    = new JTextField();
    private final JTextField execDirTf       = new JTextField();
@@ -75,7 +75,7 @@ public class SettingsWindow {
    public void okAct(ActionListener al) {
       okBt.addActionListener(al);
    }
-   
+
    /**
     * Sets the listener to this cancel button
     *
@@ -84,7 +84,7 @@ public class SettingsWindow {
    public void setCancelAct(ActionListener al) {
       cancelBt.addActionListener(al);
    }
-   
+
    /**
     * Sets the listener to close button of this window
     *
@@ -247,7 +247,7 @@ public class SettingsWindow {
    public void displayBuildName(String s) {
       buildNameTf.setText(s);
    }
-   
+
    /**
     * Shows in the corresponding text field the command arguments
     *
@@ -256,7 +256,7 @@ public class SettingsWindow {
    public void displayCmdArgs(String s) {
       cmdArgsTf.setText(s);
    }
-   
+
    /**
     * Shows in the corresponding text field the command options
     *
@@ -265,7 +265,7 @@ public class SettingsWindow {
    public void displayCmdOptions(String s) {
       cmdOptionsTf.setText(s);
    }
-   
+
    /**
     * Shows in the corresponding text field the compile option
     *
@@ -294,7 +294,7 @@ public class SettingsWindow {
    public void setSaveProjConfigSelected(boolean isSelected) {
       saveConfig.setSelected(isSelected);
    }
-   
+
     /**
     * The building of the content of <code>SettingsWindow</code> with
     * selectable input options.
@@ -420,6 +420,17 @@ public class SettingsWindow {
                "The window has been initialized already");
       }
       initWindow();
+   }
+
+   private void initWindow() {
+      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      frame.setResizable(false);
+      frame.setLocation(550, 100);
+      frame.setVisible(false);
+      frame.setAlwaysOnTop(true);
+      frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
+      frame.getContentPane().add(combinedPnl());
+      frame.pack();
    }
 
    private JPanel structurePnl() {
@@ -549,19 +560,9 @@ public class SettingsWindow {
       }
       pnl.add(checkBxPnl(saveConfig,
             "Save \'ProjConfig\' file in the project"));
+
       pnl.add(Box.createRigidArea(DIM_SPACER));
       pnl.add(buttonsPanel());
       return pnl;
-   }
-
-   private void initWindow() {
-      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      frame.setResizable(false);
-      frame.setLocation(550, 100);
-      frame.setVisible(false);
-      frame.setAlwaysOnTop(true);
-      frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
-      frame.getContentPane().add(combinedPnl());
-      frame.pack();
    }
 }
