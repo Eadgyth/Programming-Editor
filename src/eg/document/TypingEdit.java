@@ -36,8 +36,6 @@ public class TypingEdit {
    private EditingStateReadable esr;
    private boolean inChangeState = false;
    private boolean selectionState = false;
-   private boolean canUndoState = false;
-   private boolean canRedoState = false;
    private int lineNr = 1;
    private int colNr = 1;
 
@@ -177,7 +175,7 @@ public class TypingEdit {
    public void readEditingState() {
       if (esr != null) {
          esr.updateInChangeState(inChangeState);
-         esr.updateUndoableState(canUndoState, canRedoState);
+         esr.updateUndoableState(undo.canUndo(), undo.canRedo());
          esr.updateSelectionState(selectionState);
          esr.updateCursorState(lineNr, colNr);
       }
@@ -238,17 +236,7 @@ public class TypingEdit {
       if (esr == null) {
          return;
       }
-      boolean isUndoableChange = canUndoState != undo.canUndo();
-      boolean isRedoableChange = canRedoState != undo.canRedo();
-      if (isUndoableChange) {
-         canUndoState = undo.canUndo();
-      }
-      if (isRedoableChange) {
-         canRedoState = undo.canRedo();
-      }
-      if (isUndoableChange || isRedoableChange) {
-         esr.updateUndoableState(canUndoState, canRedoState);
-      }
+      esr.updateUndoableState(undo.canUndo(), undo.canRedo());
    }
 
    private void updateSelectionState(boolean isSelection) {
