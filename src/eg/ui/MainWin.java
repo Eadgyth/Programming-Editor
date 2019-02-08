@@ -236,7 +236,7 @@ public class MainWin {
     *
     * @param b  true to enable, false to disable
     */
-   public void enableOpenSettingsWin(boolean b) {
+   public void enableOpenProjectSettings(boolean b) {
       menuBar.projectMenu().enableOpenSetWinItm(b);
    }
 
@@ -300,12 +300,7 @@ public class MainWin {
     * @see  BusyFunction
     */
    public void runBusyFunction(Runnable r, boolean runLater) {
-      if (runLater) {
-         bf.executeLater(r);
-      }
-      else {
-         bf.execute(r);
-      }
+      bf.execute(r, runLater);
    }
 
    /**
@@ -334,9 +329,8 @@ public class MainWin {
     */
    public void setEditActions(Edit edit, LanguageChanger lc) {
       toolBar.setEditActions(edit);
-      menuBar.editMenu().setEditActions(edit,
-            e -> bf.executeLater(() -> edit.clearTrailingSpaces()));
-
+      Runnable clearSpaces = () -> edit.clearTrailingSpaces();
+      menuBar.editMenu().setEditActions(edit, e -> bf.execute(clearSpaces, true));
       menuBar.languageMenu().setChangeLanguageActions(lc);
    }
 
@@ -392,7 +386,6 @@ public class MainWin {
       vm.setConsoleItmAction(e -> showConsole(vm.isConsoleItmSelected()));
       vm.setFileViewItmAction(e -> showFileView(vm.isFileViewItmSelected()));
       vm.setTabItmAction(e -> tabPane.showTabbar(vm.isTabItmSelected()));
-
       treePnl.setClosingAct(new FunctionalAction(
             "", IconFiles.CLOSE_ICON, e -> vm.doUnselectFileViewAct()));
 

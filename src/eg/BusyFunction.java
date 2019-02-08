@@ -23,28 +23,14 @@ public class BusyFunction {
     * Executes the action
     *
     * @param r  the action to execute
+    * @param runLater  true to execute the action only after other
+    * events are processed (the specified <code>Runnable</code> is
+    * passeed to <code>EventQueue.invokeLater</code>)
     */
-   public void execute(Runnable r) {
+   public void execute(Runnable r, boolean runLater) {
       try {
          setWaitCursor();
-         r.run();
-      }
-      finally {
-         setDefCursor();
-      }
-   }
-
-   /**
-    * Executes the action after other events are processed (the
-    * specified <code>Runnable</code> is passeed to
-    * <code>EventQueue.invokeLater</code>)
-    *
-    * @param r  the Runnable to execute
-    */
-   public void executeLater(Runnable r) {
-      try {
-         setWaitCursor();
-         EventQueue.invokeLater(r);
+         run(r, runLater);
       }
       finally {
          setDefCursor();
@@ -54,6 +40,15 @@ public class BusyFunction {
    //
    //--private--/
    //
+   
+   private void run(Runnable r, boolean runLater) {
+      if (runLater) {
+         EventQueue.invokeLater(r);
+      }
+      else {
+         r.run();
+      }
+   }
 
    private void setWaitCursor() {
       f.getGlassPane().setVisible(true);
