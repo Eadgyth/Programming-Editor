@@ -25,7 +25,7 @@
                and changing between projects</a></li>
             <li><a href="#Retrieve">Retrieving projects</a>
             </ul></li>
-         <li><a href="#TestingCode">Testing source code</a>
+         <li><a href="#RunCode">Run source code</a>
          <li><a href="#Console">Using the console</a></li>
          <li><a href="#Explorer">Using the project explorer</a></li>
          </ul>
@@ -70,16 +70,17 @@
             <a href="#Console">Using the console</a>); is not tied to a file type</td>
          <tr>
             <td>Java</td>
-            <td><a href="#JavaProject">Compile and test Java code; create an executable
+            <td><a href="#JavaProject">Compile and run Java code; create an executable
                 jar file</a></td>
          </tr>
          <tr>
             <td>Perl</td>
-            <td><a href="#PerlProject">Test a Perl script</a></td>
+            <td><a href="#PerlProject">Run a Perl script; check syntax without running
+            </a></td>
          </tr>
          <tr>
             <td>Python</td>
-            <td><a href="#PythonProject">Test a Python script</a></td>
+            <td><a href="#PythonProject">Run a Python script</a></td>
          </tr>
          <tr>
             <td>R</td>
@@ -146,7 +147,7 @@
       <p><a href="#top">Back to top</a></p>
       <hr>
 
-      <h2 id="TestingCode">Testing source code</h2>
+      <h2 id="RunCode">Run source code</h2>
       <p> A project is run for testing by selecting 'Run' in the Project menu or by
           clicking the run button in the toolbar. Commands other than the pre-defined
           commands may be entered in the console (see:
@@ -241,7 +242,8 @@
          However, it is possible (or rather not prohibited) to run the system's terminal
          in the console by running the command that starts the terminal (e.g., cmd.exe in
          Windows). It is important to note that a tested program thereupon started from
-         this terminal CANNOT be forcibly quit by clicking the 'stop' symbol.</p>
+         this terminal CANNOT be forcibly quit by clicking the 'stop' symbol as this
+         would only end the terminal.</p>
       <h4>To run a system command...</h4>
       <ol>
       <li>Open the console panel by selecting 'Console' in the View menu.</li>
@@ -255,9 +257,10 @@
       <ul>
       <li>Using the command to start "THE" terminal window (in Windows this would be
           cmd.exe /c start) presets the working directory for the terminal to the
-          project directory.</li>
+          project directory. To run a program in the CMD (again Windows) and keep the
+          CMD open the command would be cmd.exe /c start cmd /k [command].</li>
       <li>The option to enter commands may be used to run batch files saved in the
-          working directory (in Windows the command would be cmd.exe /c aBatchFile.bat).
+          working directory (in Windows the command would be cmd.exe /c [BatchFile.bat]).
       </li>
       </ul>
       <br>
