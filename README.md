@@ -3,9 +3,9 @@ A text editor which can be used for coding and which can easily set up to run co
 testing by built-in functions. It should remain as simple as possible and be useful, for
 example, to write applications for home requirements or also quick testing.
 <p>
-SHORT DESCRIPTION
-To use built-in functions to run code a file is opened or newly saved and a project is
-defined by selecting a project category in the 'Project' menu. This opens a simple
+SHORT DESCRIPTION<br>
+To use built-in functions for running code a file is opened or newly saved and a project
+is defined by selecting a project category in the 'Project' menu. This opens a simple
 settings dialog. Project categories so far are Java, Perl, Python, R and HTML. A "generic"
 project may be as well defined to run self-chosen system commands. In a Java project,
 sources which maybe organized in packages can be compliled and packed in an executable
