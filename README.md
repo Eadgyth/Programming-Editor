@@ -1,7 +1,7 @@
 GOAL<br>
-A text editor which can be used for coding and which can easily set up to run code for
-testing by built-in functions. It should remain as simple as possible and be useful, for
-example, to write applications for home requirements or also quick testing.
+A text editor which can be used for coding and which can be easily set up to run code for
+testing by built-in functions. The editor should remain as simple as possible and be
+useful, for example, to write applications for home requirements or quick testing.
 <p>
 SHORT DESCRIPTION<br>
 To use built-in functions for running code a file is opened or newly saved and a project
