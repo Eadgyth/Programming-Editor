@@ -37,8 +37,8 @@ Among the countless limitations some need mention:
     or also from freely defined system commands. This console is interactive (input can be
     entered) but interaction does not work properly in the case that a process buffers all
     the output until completion if it is not to the terminal of the OS. Therefore output
-    may be unexpected. This can be checked by disabling block-buffering (or enbaling line
-    buffering) if this option is available for a language (by a command option or a variable
+    may be unexpected. This can be checked by disabling block-buffering (or enabling line
+    buffering) if this option is available for a language (by a command option or a switch
     in a script itself).</li>
 <li>The compilation of java files and the creation of an executable jar file cannot include
     external libraries if the built-in options for compiling and creating a jar are selected.</li>
