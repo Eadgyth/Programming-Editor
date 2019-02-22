@@ -9,9 +9,10 @@ is defined by selecting a project category from the 'Project' menu. This opens a
 settings dialog. Project categories so far are Java, Perl, Python, R and HTML.<br>
 In a Java project, the built-in functions to compile sources and to create a Java-archive
 (jar) take into account packages and sub-packages. Also non-Java files may be included
-in compilation and a jar.<br>
+in a compilation and a jar.<br>
 The program allows to set several projects in parallel and projects can be retrieved after
-a new start. It includes a basic console, a file explorer and a basic syntax highlighting.
+a new start.<br>
+The editor includes a basic console, a file explorer and a basic syntax highlighting.
 <p>
 DOCUMENTATION<br>
 A more detailed description of the features, screenshots, a help site and code documentation
