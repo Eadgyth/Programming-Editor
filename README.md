@@ -5,13 +5,13 @@ example, to write applications for home requirements or also quick testing.
 <p>
 SHORT DESCRIPTION<br>
 To use built-in functions for running code a file is opened or newly saved and a project
-is defined by selecting a project category in the 'Project' menu. This opens a simple
-settings dialog. Project categories so far are Java, Perl, Python, R and HTML. A "generic"
-project may be as well defined to run self-chosen system commands. In a Java project,
-sources which maybe organized in packages can be compliled and packed in an executable
-Java-archive (jar). The program allows to set several projects which can be switched between
-in parallel and projects can be retrieved after a new start. The program includes a basic
-console, a file explorer and a basic syntax highlighting.
+is defined by selecting a project category from the 'Project' menu. This opens a simple
+settings dialog. Project categories so far are Java, Perl, Python, R and HTML.<br>
+In a Java project, the built-in functions to compile sources and to create a Java-archive
+(jar) take into account packages and sub-packages. Also non-Java files may be included
+in compilation and a jar.<br>
+The program allows to set several projects in parallel and projects can be retrieved after
+a new start. It includes a basic console, a file explorer and a basic syntax highlighting.
 <p>
 DOCUMENTATION<br>
 A more detailed description of the features, screenshots, a help site and code documentation
@@ -19,10 +19,11 @@ can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <p>
 REQUIREMENTS FOR TESTING<br>
 Running and compiling the program requires Java 8 or higher. The executable jar file in the
-folder 'JarAndPreferences' was made after compilation with JDK 8. Compliling and creating a
-a jar can be done with this program itself or by setting a Java project with existing sources
-in Netbeans (using the src folder in the repository). Compiling with a java version higher than
-8 is also possible but some causes for compiler warnings are not yet removed.
+folder 'JarAndPreferences' was made after compilation with JDK 8. Compiling and building a
+jar of the program can be done with this editor itself or by creating a Java project with
+existing sources in Netbeans (using the src folder in the repository). Compiling with a Java
+version higher than 8 is possible too but some causes for compiler warnings are not yet
+removed.
 <p>
 If the program shall be used for compiling Java code by the built-in compile option it must be
 made sure that the program is run using the JRE contained in the JDK (and not the public JRE).
@@ -38,7 +39,7 @@ Among the countless limitations some need mention:
     entered) but interaction does not work properly in the case that a process buffers all
     the output until completion if it is not to the terminal of the OS. Therefore output
     may be unexpected. This can be checked by disabling block-buffering (or enabling line
-    buffering) if this option is available for a language (by a command option or a switch
+    buffering) if this option is available for a language (a command option or a switch
     in a script itself).</li>
 <li>The compilation of java files and the creation of an executable jar file cannot include
     external libraries if the built-in options for compiling and creating a jar are selected.</li>
