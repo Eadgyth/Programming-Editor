@@ -1,12 +1,12 @@
 <h4>GOAL</h4>
 <p>
 A text editor which can be used for coding and which can be easily set up to run code for
-testing by built-in functions. The editor should remain as simple as possible and be
-useful, for example, to write applications for home requirements or quick testing.
+testing. The editor should be as simple as possible to use and be helpful, for example, to
+write applications for home requirements or quick testing.
 <br>
 <h4>SHORT DESCRIPTION</h4>
 <p>
-To use built-in functions for running code a file is opened or newly saved and a project
+To use built-in options for running code a file is opened or newly saved and a project
 is defined by selecting a project category from the 'Project' menu. This opens a simple
 settings dialog. Project categories so far are Java, Perl, Python, R and HTML.
 <p>
