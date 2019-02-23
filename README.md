@@ -1,9 +1,9 @@
-GOAL<br>
+<h4>GOAL</h4>
 A text editor which can be used for coding and which can be easily set up to run code for
 testing by built-in functions. The editor should remain as simple as possible and be
 useful, for example, to write applications for home requirements or quick testing.
 <p>
-SHORT DESCRIPTION<br>
+<h4>SHORT DESCRIPTION</h4>
 To use built-in functions for running code a file is opened or newly saved and a project
 is defined by selecting a project category from the 'Project' menu. This opens a simple
 settings dialog. Project categories so far are Java, Perl, Python, R and HTML.
@@ -17,11 +17,11 @@ a new start.
 <p>
 The editor includes a basic console, a file explorer and a basic syntax highlighting.
 <p>
-DOCUMENTATION<br>
+<h4>DOCUMENTATION</h4>
 A more detailed description of the features, screenshots, a help site and code documentation
 can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <p>
-REQUIREMENTS FOR TESTING<br>
+<h4>REQUIREMENTS FOR TESTING</h4>
 Running and compiling the program requires Java 8 or higher. The executable jar file in the
 folder 'JarAndPreferences' was made after compilation with JDK 8. Compiling and building a
 jar of the program can be done with this editor itself or by creating a Java project with
@@ -35,7 +35,7 @@ made sure that the program is run using the JRE contained in the JDK (and not th
 For using the built-in function to run code the path variables that point to the executables
 of a programming language may have to be set in the OS (they have to under Windows).
 <p>
-LIMITATIONS<br>
+<h4>LIMITATIONS</h4>
 Among the many limitations some need mention:
 <p>
 The editor includes a basic console to show output/error messages from a tested program
@@ -53,7 +53,7 @@ I tested the program on Windows. There are some problems with the graphical appe
 on a high dpi screen. I would be grateful for feedback, especially from somebody who may
 have tried it on other platforms (m.bussiek@web.de).
 <p>
-ACKLOWLEDGEMENT<br>
+<h4>ACKLOWLEDGEMENT</h4>
 The program uses icons from
 <a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.
 <p>
