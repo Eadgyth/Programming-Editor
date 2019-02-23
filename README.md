@@ -1,9 +1,11 @@
 <h4>GOAL</h4>
+<p>
 A text editor which can be used for coding and which can be easily set up to run code for
 testing by built-in functions. The editor should remain as simple as possible and be
 useful, for example, to write applications for home requirements or quick testing.
-<p>
+
 <h4>SHORT DESCRIPTION</h4>
+<p>
 To use built-in functions for running code a file is opened or newly saved and a project
 is defined by selecting a project category from the 'Project' menu. This opens a simple
 settings dialog. Project categories so far are Java, Perl, Python, R and HTML.
@@ -16,7 +18,7 @@ The program allows to set several projects in parallel and projects can be retri
 a new start.
 <p>
 The editor includes a basic console, a file explorer and a basic syntax highlighting.
-<p>
+
 <h4>DOCUMENTATION</h4>
 A more detailed description of the features, screenshots, a help site and code documentation
 can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
