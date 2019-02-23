@@ -44,10 +44,10 @@ may be unexpected. This can be checked by disabling block-buffering (or enabling
 buffering) if this option is available for a language (a command option or a switch in
 a script itself).
 <p>
-If the built-in functions to compile a Java project and create a jar from it are used only
+If the built-in options to compile a Java project and to create a jar from it are used only
 sources found in the project directory (or a sources sub-directory) are compiled. The
-sources may as well be oganized in packages and sub-packages. However, adding external
-libraries is so far not supported.
+sources may be oganized in packages/sub-packages and it is possibel to include non-Java files.
+However, inclusion of external libraries is so far not supported.
 <p>
 I tested the program on Windows. There are some problems with the graphical appearance
 on a high dpi screen. I would be grateful for feedback, especially from somebody who may
