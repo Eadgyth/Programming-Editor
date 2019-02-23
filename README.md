@@ -6,12 +6,15 @@ useful, for example, to write applications for home requirements or quick testin
 SHORT DESCRIPTION<br>
 To use built-in functions for running code a file is opened or newly saved and a project
 is defined by selecting a project category from the 'Project' menu. This opens a simple
-settings dialog. Project categories so far are Java, Perl, Python, R and HTML.<br>
+settings dialog. Project categories so far are Java, Perl, Python, R and HTML.
+<p>
 In a Java project, the built-in functions to compile sources and to create a Java-archive
 (jar) take into account packages and sub-packages. Also non-Java files may be included
-in a compilation and a jar.<br>
+in a compilation and a jar.
+<p>
 The program allows to set several projects in parallel and projects can be retrieved after
-a new start.<br>
+a new start.
+<p>
 The editor includes a basic console, a file explorer and a basic syntax highlighting.
 <p>
 DOCUMENTATION<br>
@@ -33,21 +36,22 @@ For using the built-in function to run code the path variables that point to the
 of a programming language may have to be set in the OS (they have to under Windows).
 <p>
 LIMITATIONS<br>
-Among the countless limitations some need mention:
-<ul>
-<li>The editor includes a basic console to show output/error messages from a tested program
-    or also from freely defined system commands. This console is interactive (input can be
-    entered) but interaction does not work properly in the case that a process buffers all
-    the output until completion if it is not to the terminal of the OS. Therefore output
-    may be unexpected. This can be checked by disabling block-buffering (or enabling line
-    buffering) if this option is available for a language (a command option or a switch
-    in a script itself).</li>
-<li>The compilation of java files and the creation of an executable jar file cannot include
-    external libraries if the built-in options for compiling and creating a jar are selected.</li>
-<li>I tested the program on Windows. There are some problems with the graphical appearance
-    on a high dpi screen. I would be grateful for feedback, especially from somebody who may
-    have tried it on other platforms (m.bussiek@web.de).</li>
-</ul>
+Among the many limitations some need mention:
+<p>
+The editor includes a basic console to show output/error messages from a tested program
+or also from freely defined system commands. This console is interactive (input can be
+entered) but interaction does not work properly in the case that a process buffers all
+the output until completion if it is not to the terminal of the OS. Therefore output
+may be unexpected. This can be checked by disabling block-buffering (or enabling line
+buffering) if this option is available for a language (a command option or a switch
+in a script itself).
+<p>
+The compilation of java files and the creation of an executable jar file cannot include
+external libraries if the built-in options for compiling and creating a jar are selected.
+<p>
+I tested the program on Windows. There are some problems with the graphical appearance
+on a high dpi screen. I would be grateful for feedback, especially from somebody who may
+have tried it on other platforms (m.bussiek@web.de).
 <p>
 ACKLOWLEDGEMENT<br>
 The program uses icons from
