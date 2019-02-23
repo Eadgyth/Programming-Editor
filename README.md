@@ -36,15 +36,13 @@ For using the built-in function to run code the path variables that point to the
 of a programming language may have to be set in the OS (they have to under Windows).
 <p>
 <h4>LIMITATIONS</h4>
-Among the many limitations some need mention:
-<p>
 The editor includes a basic console to show output/error messages from a tested program
 or also from freely defined system commands. This console is interactive (input can be
 entered) but interaction does not work properly in the case that a process buffers all
 the output until completion if it is not to the terminal of the OS. Therefore output
 may be unexpected. This can be checked by disabling block-buffering (or enabling line
-buffering) if this option is available for a language (a command option or a switch
-in a script itself).
+buffering) if this option is available for a language (a command option or a switch in
+a script itself).
 <p>
 The compilation of java files and the creation of an executable jar file cannot include
 external libraries if the built-in options for compiling and creating a jar are selected.
