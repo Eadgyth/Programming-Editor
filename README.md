@@ -6,13 +6,13 @@ write applications for home requirements or quick testing.
 <br>
 <h4>SHORT DESCRIPTION</h4>
 <p>
-To use built-in options for running code a file is opened or newly saved and a project
-is defined by selecting a project category from the 'Project' menu. This opens a simple
-settings dialog. Project categories so far are Java, Perl, Python, R and HTML.
+To run code a file is first opened or newly saved. While the file is open (and selected in
+the tab bar) a project is assigned by selecting a project category from the 'Project' menu.
+This opens a simple settings dialog. Project categories so far are Java, Perl, Python, R and
+HTML.
 <p>
-The program allows to set several projects in parallel and projects can be retrieved after
-a new start. Switching between set projects can be done after selecting a tab with a file
-that is part of the project to change to.
+The program allows to set several projects in parallel. Switching between set projects can be
+done after selecting a file that is part of the project to change to.
 <br>
 <h4>DOCUMENTATION</h4>
 <p>
