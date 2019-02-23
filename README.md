@@ -3,7 +3,7 @@
 A text editor which can be used for coding and which can be easily set up to run code for
 testing by built-in functions. The editor should remain as simple as possible and be
 useful, for example, to write applications for home requirements or quick testing.
-
+<br>
 <h4>SHORT DESCRIPTION</h4>
 <p>
 To use built-in functions for running code a file is opened or newly saved and a project
@@ -11,13 +11,14 @@ is defined by selecting a project category from the 'Project' menu. This opens a
 settings dialog. Project categories so far are Java, Perl, Python, R and HTML.
 <p>
 The program allows to set several projects in parallel and projects can be retrieved after
-a new start.
-
+a new start. Switching between set projects is done by selecting a tab with a file that is
+part of the project to change to.
+<br>
 <h4>DOCUMENTATION</h4>
 <p>
 A more detailed description of the features, screenshots, a help site and code documentation
 can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
-
+<br>
 <h4>REQUIREMENTS FOR TESTING</h4>
 <p>
 Running and compiling the program requires Java 8 or higher. The executable jar file in the
@@ -32,7 +33,7 @@ made sure that the program is run using the JRE contained in the JDK (and not th
 <p>
 For using the built-in function to run code the path variables that point to the executables
 of a programming language may have to be set in the OS (they have to under Windows).
-
+<br>
 <h4>LIMITATIONS</h4>
 <p>
 The editor includes a basic console to show output/error messages from a tested program
@@ -49,12 +50,12 @@ external libraries if the built-in options for compiling and creating a jar are 
 I tested the program on Windows. There are some problems with the graphical appearance
 on a high dpi screen. I would be grateful for feedback, especially from somebody who may
 have tried it on other platforms (m.bussiek@web.de).
-
+<br>
 <h4>ACKLOWLEDGEMENT</h4>
 <p>
 The program uses icons from
 <a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.
-
+<br>
 <h4>LICENSE</h4>
 <p>
 MIT, see LICENSE<br>
