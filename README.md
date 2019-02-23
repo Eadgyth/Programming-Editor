@@ -11,8 +11,8 @@ is defined by selecting a project category from the 'Project' menu. This opens a
 settings dialog. Project categories so far are Java, Perl, Python, R and HTML.
 <p>
 The program allows to set several projects in parallel and projects can be retrieved after
-a new start. Switching between set projects is done by selecting a tab with a file that is
-part of the project to change to.
+a new start. Switching between set projects can be done after selecting a tab with a file
+that is part of the project to change to.
 <br>
 <h4>DOCUMENTATION</h4>
 <p>
