@@ -45,9 +45,8 @@ settings or a switch in a script itself). Also, a program may be tested by start
 terminal of the OS using the option to enter system commands.
 <p>
 If the built-in options to compile a Java project and to create a jar from it are used only
-sources found in the project directory (or a sources sub-directory) are compiled. The
-sources may be oganized in packages/sub-packages and it is possibel to include non-Java files.
-However, inclusion of external libraries is so far not supported.
+sources found in the project directory (or a sources sub-directory) are compiled. Inclusion of
+external libraries is so far not supported.
 <p>
 I tested the program on Windows. There are some problems with the graphical appearance
 on a high dpi screen. I would be grateful for feedback, especially from somebody who may
