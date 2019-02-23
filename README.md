@@ -44,8 +44,10 @@ may be unexpected. This can be checked by disabling block-buffering (or enabling
 buffering) if this option is available for a language (a command option or a switch in
 a script itself).
 <p>
-The compilation of java files and the creation of an executable jar file cannot include
-external libraries if the built-in options for compiling and creating a jar are selected.
+If the built-in functions to compile a Java project and create a jar from it are used only
+sources found in the project directory (or a sources sub-directory) are compiled. The
+sources may as well be oganized in packages and sub-packages. However, adding external
+libraries is so far not supported.
 <p>
 I tested the program on Windows. There are some problems with the graphical appearance
 on a high dpi screen. I would be grateful for feedback, especially from somebody who may
