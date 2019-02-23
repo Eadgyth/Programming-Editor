@@ -23,10 +23,9 @@ can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <p>
 Running and compiling the program requires Java 8 or higher. The executable jar file in the
 folder 'JarAndPreferences' was made after compilation with JDK 8. Compiling and building a
-jar of the program can be done with this editor itself or by creating a Java project with
-existing sources in Netbeans (using the src folder in the repository). Compiling with a Java
-version higher than 8 is possible too but some causes for compiler warnings are not yet
-removed.
+jar of the program can be done by creating a Java project with existing sources in Netbeans
+(using the src folder from the repository). This program itself may be used too! Compiling with
+a JDK version higher than 8 gives some warnings that are not yet adressed.
 <p>
 If the program shall be used for compiling Java code by the built-in compile option it must be
 made sure that the program is run using the JRE contained in the JDK (and not the public JRE).
@@ -42,7 +41,8 @@ entered) but interaction does not work properly in the case that a process buffe
 the output until completion if it is not to the terminal of the OS. Therefore output
 may be unexpected. This can be checked by disabling block-buffering (or enabling line
 buffering) if this option is available for a language (a command option or a switch in
-a script itself).
+a script itself). Also, a tested program may be run in terminal of the OS by using the
+option to enter system commands.
 <p>
 If the built-in options to compile a Java project and to create a jar from it are used only
 sources found in the project directory (or a sources sub-directory) are compiled. The
