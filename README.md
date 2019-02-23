@@ -8,8 +8,8 @@ write applications for home requirements or quick testing.
 <p>
 To run code a file is first opened or newly saved. While the file is open (and selected in
 the tab bar) a project is assigned by selecting a project category from the 'Project' menu.
-This opens a simple settings dialog. Project categories so far are Java, Perl, Python, R and
-HTML.
+This opens a simple settings dialog with input options that depend on the selected category.
+The selectable categories so far are Java, Perl, Python, R and HTML.
 <p>
 The program allows to set several projects in parallel. Switching between set projects can be
 done after selecting a file that is part of the project to change to.
@@ -38,11 +38,11 @@ of a programming language may have to be set in the OS (they have to under Windo
 The editor includes a basic console to show output/error messages from a tested program
 or also from freely defined system commands. This console is interactive (input can be
 entered) but interaction does not work properly in the case that a process buffers all
-the output until completion if it is not to the terminal of the OS. Therefore output
-may be unexpected. This can be checked by disabling block-buffering (or enabling line
-buffering) if this option is available for a language (a command option or a switch in
-a script itself). Also, a tested program may be run in terminal of the OS by using the
-option to enter system commands.
+the output until completion if output is not to the terminal of the OS. To display output
+correctly block-buffering would have to be disabled (line buffering/flushing SDTOUT enabled)
+if this option is available for a language (a command option which can be entered in the project
+settings or a switch in a script itself). Also, a program may be tested by starting it in
+terminal of the OS using the option to enter system commands.
 <p>
 If the built-in options to compile a Java project and to create a jar from it are used only
 sources found in the project directory (or a sources sub-directory) are compiled. The
