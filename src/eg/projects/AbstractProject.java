@@ -625,6 +625,8 @@ public abstract class AbstractProject implements Configurable {
          + sourceExtension()
          + " seems to exist more than once. The currently set"
          + " file is<br><blockquote>"
+         + projectName()
+         + F_SEP
          + relMainFilePath
          + "</blockquote><br>"
          + PATHNAME_INFO

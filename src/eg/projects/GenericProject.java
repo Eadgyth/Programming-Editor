@@ -5,7 +5,7 @@ import eg.ui.ProjectActionsUpdate;
 /**
  * Represents a project that is only defined by its directory
  */
-public final class GenericProject extends AbstractProject implements ProjectActions {
+public final class GenericProject extends AbstractProject implements ProjectCommands {
 
    public GenericProject() {
       super(ProjectTypes.GENERIC, false, null);
@@ -17,7 +17,7 @@ public final class GenericProject extends AbstractProject implements ProjectActi
    }
 
    @Override
-   public void enableActions(ProjectActionsUpdate update) {
+   public void enable(ProjectActionsUpdate update) {
       update.enable(false, false, false, null);
    }
 

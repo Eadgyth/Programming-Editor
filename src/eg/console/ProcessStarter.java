@@ -23,16 +23,11 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 
 //--Eadgyth--/
-import eg.ui.ConsolePanel;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 
 /**
- * The starting of external system processes.
- * <p>
- * A process is run by either calling the method {@link #startProcess}
- * or by a command that is entered in a Dialog. Starting a process
- * requires to set a working directory.
+ * The starting of external system processes
  */
 public class ProcessStarter {
 
@@ -49,9 +44,9 @@ public class ProcessStarter {
    private String previousCmd;
    private String consoleText = "";
    private boolean isAborted = false;
+   private int exitVal;
    private Process process;
    private PrintWriter out;
-   private Runnable kill;
 
    /**
     * @param consPnl  the ConsolePanel
@@ -63,8 +58,8 @@ public class ProcessStarter {
       consPnl.setCmdAct(e -> startNewCmd());
       consPnl.setRunAct(e -> startPreviousCmd());
       consPnl.setStopAct(e -> endProcess());
-      consPnl.addKeyListener(output);
-      consPnl.addCaretListener(caretCorrection);
+      consPnl.addKeyListener(Output);
+      consPnl.addCaretListener(CaretCorrection);
    }
 
    /**
@@ -89,23 +84,23 @@ public class ProcessStarter {
    /**
     * Starts a system process in this working directory. A warning dialog
     * is shown if it is tried to start a process while a previous process
-    * is not yet terminated. The file tree is updated after the process
-    * has ended.
+    * is not yet terminated or another task uses the console. The file
+    * tree is updated after the process has ended.
     *
     * @param cmd  the start command in which arguments are separated by
     * spaces
     */
    public void startProcess(String cmd) {
       isAborted = false;
-      if (!canStart()) {
+      if (!consPnl.canWrite()) {
          return;
       }
+      setConsoleActive(true);
       consoleText = "Run " + cmd;
+      consPnl.focus();
       consPnl.setText("");
       consPnl.appendTextBr(consoleText);
-      setConsoleActive(true);
-      consPnl.focus();
-      EventQueue.invokeLater(() -> {
+      new Thread(() -> {
          try {
             List<String> cmdList = Arrays.asList(cmd.split(" "));
             ProcessBuilder pb
@@ -115,26 +110,27 @@ public class ProcessStarter {
             process = pb.start();
             out = new PrintWriter(process.getOutputStream());
             new CaptureInput().execute();
+            exitVal = process.waitFor();
          }
-         catch(IOException e) {
-            setConsoleActive(false);
-            consPnl.appendTextBr(cmdNotFoundMsg(cmd));
+         catch (IOException | InterruptedException e) {
+            EventQueue.invokeLater(() -> {
+               consPnl.appendTextBr(cmdNotFoundMsg(cmd));
+               setConsoleActive(false);
+            });
          }
-      });
+         finally {
+            if (out != null) {
+               out.close();
+            }
+            EventQueue.invokeLater(() -> consPnl.keepActive(
+                  process != null && process.isAlive()));
+         }
+      }).start();
    }
 
    //
    //--private--/
    //
-
-   private boolean canStart() {
-      boolean b = process == null || !process.isAlive();
-      if (!b) {
-         Dialogs.warnMessage(
-               "A currently running process must be terminated first.");
-      }
-      return b;
-   }
 
    private void startNewCmd() {
       String cmd = Dialogs.textFieldInput(enterCmdMsg(), "Run", previousCmd);
@@ -158,11 +154,10 @@ public class ProcessStarter {
 
    private void endProcess() {
       if (process != null && process.isAlive()) {
-         kill = () -> {
+         new Thread(() -> {
              process.destroy();
              isAborted = true;
-         };
-         new Thread(kill).start();
+         }).start();
       }
    }
 
@@ -178,20 +173,16 @@ public class ProcessStarter {
             char c;
             while ((cInt = reader.read()) != -1) {
                c = (char) cInt;
-               consPnl.appendText(String.valueOf(c));
-               consoleText = consPnl.getText();
-               consPnl.setCaret(consoleText.length());
+               String s = String.valueOf(c);
+               publish(s);
             }
-            int exitVal = process.waitFor();
-            setEndingMsg(exitVal);
          }
-         catch (IOException | InterruptedException e) {
+         catch (IOException e) {
             FileUtils.log(e);
          }
          finally {
             try {
                reader.close();
-               out.close();
             }
             catch (IOException e) {
                FileUtils.log(e);
@@ -201,14 +192,22 @@ public class ProcessStarter {
       }
 
       @Override
+      protected void process(List<String> s) {
+         for (String str : s) {
+            consPnl.appendText(str);
+            consoleText = consPnl.getText();
+         }
+      }
+
+      @Override
       protected void done() {
-         consPnl.setCaret(consPnl.getText().length());
+         setEndingMsg(exitVal);
          setConsoleActive(process.isAlive());
          EventQueue.invokeLater(fileTreeUpdate);
       }
    }
 
-   private final KeyListener output = new KeyAdapter() {
+   private final KeyListener Output = new KeyAdapter() {
 
       @Override
       public void keyPressed(KeyEvent e) {
@@ -228,11 +227,11 @@ public class ProcessStarter {
       }
    };
 
-   private final CaretListener caretCorrection = new CaretListener() {
+   private final CaretListener CaretCorrection = new CaretListener() {
 
       @Override
       public void caretUpdate(CaretEvent e) {
-         if (!consPnl.isActive()) {
+         if (process == null || !process.isAlive()) {
             return;
          }
          if (e.getDot() < consoleText.length()
@@ -254,7 +253,7 @@ public class ProcessStarter {
       else {
          consPnl.enableRunBt(!isActive);
       }
-      consPnl.setActive(isActive);
+      consPnl.setUnlockedAndActive(isActive);
    }
 
    private void setEndingMsg(int exitVal) {
@@ -285,14 +284,16 @@ public class ProcessStarter {
 
    private String cmdNotFoundMsg(String cmd) {
       return
-         "Error: cannot find "
-         + cmd + " in the directory "
+         "Failed to run "
+         + cmd + " in the current working directory "
          + workingDir;
    }
 
    private String enterCmdMsg() {
       return
          "Enter a system command which is executed in the current"
-          + " working directory (" + workingDirName + ")";
+         + " working directory ("
+         + workingDirName
+         + ")";
    }
 }

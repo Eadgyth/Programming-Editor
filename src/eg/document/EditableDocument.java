@@ -42,8 +42,8 @@ public final class EditableDocument {
     */
    public EditableDocument(EditArea editArea, File f) {
       this(editArea);
-      displayFileContent(f);
       setFileParams(f);
+      displayFileContent(f);
       savedContent = txt.text();
    }
 
@@ -209,7 +209,7 @@ public final class EditableDocument {
       displayFileContentIgnoreLang(f);
       setEditingMode(f);
    }
-   
+
    /**
     * Diplays the content of the specified file but does not set the file
     * and also does not set the language that would correspond to the
@@ -234,7 +234,7 @@ public final class EditableDocument {
    public boolean saveCopy(File f) {
       return writeToFile(f);
    }
-   
+
    /**
     * Changes the language
     *

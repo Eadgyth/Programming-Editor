@@ -1,5 +1,7 @@
 package eg.projects;
 
+import java.awt.Desktop;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -11,7 +13,7 @@ import eg.ui.ProjectActionsUpdate;
 /**
  * Represents a coding project in HTML
  */
-public final class HtmlProject extends AbstractProject implements ProjectActions {
+public final class HtmlProject extends AbstractProject implements ProjectCommands {
 
    public HtmlProject() {
       super(ProjectTypes.HTML, false, null);
@@ -23,7 +25,7 @@ public final class HtmlProject extends AbstractProject implements ProjectActions
    }
 
    @Override
-   public void enableActions(ProjectActionsUpdate update) {
+   public void enable(ProjectActionsUpdate update) {
       update.enable(false, true, false, null);
    }
 
@@ -41,8 +43,8 @@ public final class HtmlProject extends AbstractProject implements ProjectActions
          return;
       }
       try {
-         if (java.awt.Desktop.isDesktopSupported()) {
-            java.awt.Desktop.getDesktop().open(htmlFile);
+         if (Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().open(htmlFile);
          }
       }
       catch (IOException | IllegalArgumentException

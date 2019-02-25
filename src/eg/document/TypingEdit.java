@@ -14,7 +14,7 @@ import eg.syntax.*;
 import eg.document.styledtext.EditableText;
 
 /**
- * The mediation between the editing of the document the actions that
+ * Mediates between the editing of the document and the actions that
  * happen in response
  */
 public class TypingEdit {

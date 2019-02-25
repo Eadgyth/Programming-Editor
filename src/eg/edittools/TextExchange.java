@@ -168,9 +168,9 @@ public class TextExchange {
    private void loadFile(File f) {
       JFrame frame = ((JFrame) exchangeDoc.textArea()
             .getTopLevelAncestor());
-      
-      new BusyFunction(frame).execute(
-            () -> exchangeDoc.displayFileContent(f), false);
+
+      new BusyFunction(frame).executeLater(
+           () -> exchangeDoc.displayFileContent(f));
    }
 
    private void copy(EditableDocument destination, String text) {

@@ -1,4 +1,4 @@
-package eg.ui;
+package eg.console;
 
 import java.awt.BorderLayout;
 
@@ -19,13 +19,13 @@ import javax.swing.event.CaretListener;
 import eg.BackgroundTheme;
 import eg.FunctionalAction;
 import eg.utils.Dialogs;
+import eg.ui.IconFiles;
+import eg.ui.UIComponents;
+import eg.ui.Fonts;
 
 /**
- * Defines the panel which contains a text area for messages and for
- * reading in text and also a toolbar.
- * <p>
- * Initially, the text area is not editable and not focusable and also
- * buttons in the toolbar are disabled.
+ * Defines the panel which contains the text area that functions as the
+ * console and a toolbar for adding actions to run commands.
  */
 public class ConsolePanel {
 
@@ -68,7 +68,7 @@ public class ConsolePanel {
    public JPanel content() {
       return content;
    }
-   
+
    /**
     * Returns if the console is or is not currently used by a task.
     * If it is in use (the unlocked state is set) a dialog is shown.
@@ -84,8 +84,8 @@ public class ConsolePanel {
    }
 
    /**
-    * Sets the active or the inactive state as well as the locked or
-    * unlocked state. Active means that this text area is editable
+    * Sets the active and unlocked or the inactive state and locked
+    * state. Active means that this text area is editable
     * and focusable and also that the stop button is enabled.
     *
     * @param b  true for the active (and unlocked), false for the
@@ -95,9 +95,7 @@ public class ConsolePanel {
       if (b) {
          checkUnlockPermission();
       }
-      area.setEditable(b);
-      area.setFocusable(b);
-      stopBt.setEnabled(b);
+      setActive(b);
       unlocked = b;
    }
 
@@ -112,6 +110,19 @@ public class ConsolePanel {
       }
       unlocked = b;
    }
+   
+   /**
+    * Keeps the active state depending on the specified boolean value.
+    * False does not set the lock state. 
+    *
+    * @param b  true to keep in active state, false otherwise
+    */
+   public void keepActive(boolean b) {
+      if (b) {
+         checkWritePermission();
+      }
+      setActive(b);
+   }
 
    /**
     * Sets the cursor position in this text area
@@ -125,7 +136,7 @@ public class ConsolePanel {
 
    /**
     * Sets the cursor position in this text area although it is
-    * currently uneditable (inactive state)
+    * currently uneditable (in inactive state)
     *
     * @param pos  the position
     */
@@ -186,17 +197,16 @@ public class ConsolePanel {
    }
 
    /**
-    * Sets the boolean that specifies if run actions are enabled (true)
-    * or disabled
+    * Enables or disables actions to run a process
     *
-    * @param b  the boolean  value
+    * @param b  true to enable, fasle to disable
     */
    public void enableRunBt(boolean b) {
       runBt.setEnabled(b);
    }
 
    /**
-    * Enables actions to set a start command
+    * Enables actions to enter a start command
     */
    public void enableSetCmdBt() {
       setCmdBt.setEnabled(true);
@@ -260,19 +270,25 @@ public class ConsolePanel {
    //
    //--private--/
    //
-   
+
    private void checkWritePermission() {
       if (!unlocked) {
          throw new IllegalStateException("The console is not unlocked");
       }
    }
-      
+
    private void checkUnlockPermission() {
       if (unlocked) {
          throw new IllegalStateException("The console is already unlocked");
       }
    }
    
+   private void setActive(boolean b) {
+      area.setEditable(b);
+      area.setFocusable(b);
+      stopBt.setEnabled(b);
+   }
+
    private JToolBar createToolbar() {
       JButton[] bts = new JButton[] {
          setCmdBt, runBt, stopBt

@@ -46,8 +46,8 @@ public class TabbedDocuments {
    private Languages lang;
 
    /**
-    * @param mw  the {@link MainWin}
-    * @param format  the {@link Formatter}
+    * @param mw  the reference to MainWin
+    * @param format  the reference to Formatter
     */
    public TabbedDocuments(MainWin mw, Formatter format) {
       this.mw = mw;
@@ -188,7 +188,7 @@ public class TabbedDocuments {
     * Prints the text content of the selected document to a printer
     */
    public void print() {
-      mw.runBusyFunction(() -> edtDoc[iTab].print(), true);
+      mw.busyFunction().execute(() -> edtDoc[iTab].print());
    }
 
    //
@@ -202,8 +202,8 @@ public class TabbedDocuments {
       if (isOnlyUnnamedBlank()) {
          removeTab();
       }
-      if (isTabOpenable()) {
-         mw.runBusyFunction(() -> createDocument(f), false);
+      if (isTabOpenable()) {     
+         mw.busyFunction().execute(() -> createDocument(f));
       }
    }
 

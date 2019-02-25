@@ -3,25 +3,19 @@ package eg.projects;
 import java.io.File;
 import java.io.IOException;
 
-import java.awt.EventQueue;
-
 //--Eadgyth--/
-import eg.console.*;
+import eg.TaskRunner;
 import eg.javatools.*;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 import eg.ui.ProjectActionsUpdate;
-import eg.ui.ConsoleOpener;
 
 /**
  * Represents a programming project in Java
  */
-public final class JavaProject extends AbstractProject implements ProjectActions {
+public final class JavaProject extends AbstractProject implements ProjectCommands {
 
-   private final ProcessStarter proc;
-   private final Console cons;
-   private final ConsoleOpener opener;
-   private final Runnable fileTreeUpdate;
+   private final TaskRunner runner;
    private final Compilation comp;
    private final JarBuilder jar;
 
@@ -32,17 +26,12 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    private boolean isNonJavaExtTested = true;
 
    /**
-    * @param cons  the Console
-    * @param opener  the ConoleOpener
-    * @param fileTreeUpdate  the updating of the file tree
+    * @param runner  the reference to TaskRunner
     */
-   public JavaProject(Console cons, ConsoleOpener opener, Runnable fileTreeUpdate) {
+   public JavaProject(TaskRunner runner) {
       super(ProjectTypes.JAVA, true, "java");
-      this.cons = cons;
-      this.opener = opener;
-      this.fileTreeUpdate = fileTreeUpdate;
-      proc = cons.processStarter();
-      comp = new Compilation(cons);
+      this.runner = runner;
+      comp = new Compilation(runner.consolePrinter());
       jar = new JarBuilder();
    }
 
@@ -59,32 +48,24 @@ public final class JavaProject extends AbstractProject implements ProjectActions
    }
 
    @Override
-   public void enableActions(ProjectActionsUpdate update) {
+   public void enable(ProjectActionsUpdate update) {
       update.enable(true, true, true, "Create jar");
    }
 
    @Override
    public void compile() {
-      if (!cons.canPrint()) {
-         return;
-      }
       if (!locateMainFile()) {
          return;
       }
       if (!isNonJavaExtCorrect()) {
-         cons.clear();
          return;
       }
-      opener.open();
-      cons.clear();
-      cons.printBr("Compile " + projectName());
-      EventQueue.invokeLater(() -> {
-         comp.compile(projectPath(), executableDirName(),
-               sourceDirName(), nonJavaExt, compileOption());
+      String initialMsg = "Compile " + projectName();
+      runner.runWithConsoleOutput(
+            () -> comp.compile(projectPath(), executableDirName(),
+                  sourceDirName(), nonJavaExt, compileOption()),
 
-         cons.toTop();
-      });
-      EventQueue.invokeLater(fileTreeUpdate);
+            initialMsg, true);
    }
 
    @Override
@@ -92,8 +73,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       if (!existsMainClassFile()) {
          return;
       }
-      opener.open();
-      proc.startProcess(startCommand);
+      runner.runSystemCommand(startCommand);
    }
 
    /**
@@ -104,7 +84,7 @@ public final class JavaProject extends AbstractProject implements ProjectActions
       if (!existsMainClassFile() || !isNonJavaExtCorrect()) {
          return;
       }
-      EventQueue.invokeLater(() -> {
+      runner.runBusy(() -> {
          String jarName = buildName();
          if (jarName.length() == 0) {
             jarName = mainFileName();
@@ -114,8 +94,8 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                   qualifiedMain, executableDirName(), sourceDirName(),
                   nonJavaExt);
 
+            StringBuilder msg = new StringBuilder();
             if (created) {
-               StringBuilder msg = new StringBuilder();
                msg.append(jar.successMessage()).append(".\n");
                if (!jar.incudedFilesErr().isEmpty()) {
                   msg.append(jar.incudedFilesErr()).append(".");
@@ -123,14 +103,14 @@ public final class JavaProject extends AbstractProject implements ProjectActions
                Dialogs.infoMessage(msg.toString(), null);
             }
             else {
-               Dialogs.errorMessage(jar.errorMessage() + ".", null);
+               msg.append(jar.errorMessage()).append(".");
+               Dialogs.errorMessage(msg.toString(), null);
             }
          }
          catch (IOException | InterruptedException e) {
             FileUtils.log(e);
          }
       });
-      EventQueue.invokeLater(fileTreeUpdate);
    }
 
    @Override

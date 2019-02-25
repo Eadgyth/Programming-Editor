@@ -1,6 +1,8 @@
 package eg.ui.filetree;
 
 import java.awt.Component;
+import java.awt.EventQueue;
+
 import java.awt.event.MouseListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -116,7 +118,7 @@ public class FileTree {
    //
 
    private void setNewTree(String path) {
-      if (path.length() == 0) {
+      if (path.isEmpty()) {
          return;
       }
       currentRoot = path;
@@ -200,7 +202,7 @@ public class FileTree {
    }
 
    private void openFile() {
-      opener.open(selectedFile);
+      EventQueue.invokeLater(() -> opener.open(selectedFile));
    }
 
    private void deleteFile() {

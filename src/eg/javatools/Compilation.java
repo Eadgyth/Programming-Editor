@@ -21,7 +21,10 @@ import static java.nio.file.StandardCopyOption.*;
 //--Eadgyth--/
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
-import eg.console.Console;
+import eg.TaskRunner.ConsolePrinter;
+
+//test
+import java.io.StringWriter;
 
 /**
  * The compilation of java files using the Java Compiler API
@@ -33,15 +36,15 @@ public class Compilation {
 
    private final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
    private final FilesFinder fFind = new FilesFinder();
-   private final Console cons;
+   private final ConsolePrinter pr;
 
    private boolean success = false;
 
    /**
-    * @param console  the reference to {@link Console}
+    * @param printer  the reference <code>ConsolePrinter</code>
     */
-   public Compilation(Console console) {
-      cons = console;
+   public Compilation(ConsolePrinter printer) {
+      pr = printer;
    }
 
    /**
@@ -71,12 +74,14 @@ public class Compilation {
       success = false;
       DiagnosticCollector<JavaFileObject> diagnostics
             = new DiagnosticCollector<>();
+
       StandardJavaFileManager fileManager
             = compiler.getStandardFileManager(null, null, null);
       //
       // Java files
       List<File> classes = fFind.filteredFiles(root + "/" + sourceDir,
             ".java", execDir);
+
       File[] fileArr = classes.toArray(new File[classes.size()]);
       Iterable<? extends JavaFileObject>units
             = fileManager.getJavaFileObjects(fileArr);
@@ -133,7 +138,8 @@ public class Compilation {
          String[] test = xlintOption.split("\\s+");
          List <String> unsupported = new ArrayList<>();
          for (String s : test) {
-            boolean ok = s.startsWith("-Xlint")
+            boolean ok
+                  = s.startsWith("-Xlint")
                   && -1 < compiler.isSupportedOption(s);
 
             if (!ok) {
@@ -148,10 +154,10 @@ public class Compilation {
                String err =
                      "NOTE: \'"
                      + s
-                     + "\' cannot be used as"
-                     + " compiler option and was ignored";
+                     + "\' cannot be used as compiler"
+                     + " option and was ignored";
 
-               cons.printBr(err);
+               pr.printBr(err);
             }
          }
       }
@@ -175,7 +181,7 @@ public class Compilation {
                   + ext
                   + "\" for copying to the compilation were not found";
 
-            cons.printBr(copyFilesErr);
+            pr.printBr(copyFilesErr);
          }
          else {
             try {
@@ -202,19 +208,19 @@ public class Compilation {
 
    private void printDiagnostics(DiagnosticCollector<JavaFileObject> diagnostics) {
       if (success) {
-         cons.printBr("Compilation successful");
+         pr.printBr("Compilation successful");
       }
       if (diagnostics.getDiagnostics().size() > 0) {
          for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
-            cons.print(diagnostic.getKind().toString() + ":\n");
-            cons.print(diagnostic.getCode() + ": ");
-            cons.print(diagnostic.getMessage( null ) + "\n");
-            cons.print("at line: " + diagnostic.getLineNumber() + "\n");
-            cons.print("at column: " + diagnostic.getColumnNumber() + "\n");
+            pr.print(diagnostic.getKind().toString() + ":\n");
+            pr.print(diagnostic.getCode() + ": ");
+            pr.printLine(diagnostic.getMessage( null ));
+            pr.printLine("at line: " + diagnostic.getLineNumber());
+            pr.printLine("at column: " + diagnostic.getColumnNumber());
             if (diagnostic.getSource() != null) {
-               cons.print(diagnostic.getSource().toString() + "\n");
+               pr.printLine(diagnostic.getSource().toString());
             }
-            cons.print(DIVIDING_LINE + "\n");
+            pr.printLine(DIVIDING_LINE);
          }
       }
    }

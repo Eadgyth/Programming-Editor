@@ -14,7 +14,7 @@ import eg.utils.Dialogs;
  * The reading from and writing to the Prefs file in the program folder and
  * a ProjectConfig file in a project folder
  */
-public class Prefs {
+public final class Prefs {
 
    /**
     * The name of the ProjConfig file that may be stored in a project

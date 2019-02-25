@@ -1,7 +1,5 @@
 package eg;
 
-import eg.Languages;
-
 /**
  * The interface to change the language
 */

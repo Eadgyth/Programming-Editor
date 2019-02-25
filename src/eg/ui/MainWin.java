@@ -2,10 +2,8 @@ package eg.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 
 import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -26,6 +24,7 @@ import eg.LanguageChanger;
 import eg.FunctionalAction;
 import eg.BusyFunction;
 import eg.edittools.*;
+import eg.console.ConsolePanel;
 import eg.ui.menu.MenuBar;
 import eg.ui.menu.FormatMenu;
 import eg.ui.menu.ViewMenu;
@@ -120,14 +119,14 @@ public class MainWin {
       return (isRun, isCompile, isBuild, buildName)
            -> enableProjectActions(isRun, isCompile, isBuild, buildName);
    }
-   
+
    /**
-    * Gets this <code>ConsoleOpener</code>
+    * Gets this <code>BusyFunction</code>
     *
-    * @return  the ConsoleOpener
+    * @return  the BusyFunction
     */
-   public ConsoleOpener consoleOpener() {
-      return () -> openConsole();
+   public BusyFunction busyFunction() {
+      return bf;
    }
 
    /**
@@ -291,16 +290,12 @@ public class MainWin {
    }
 
    /**
-    * Runs an action during which a wait cursur is displayed using this
-    * <code>BusyFunction</code>
-    *
-    * @param r  the action to run
-    * @param runLater  true to run the action only after other processes
-    * are finished, false to run immediately
-    * @see  BusyFunction
+    * Shows the console
     */
-   public void runBusyFunction(Runnable r, boolean runLater) {
-      bf.execute(r, runLater);
+   public void showConsole() {
+      if (!menuBar.viewMenu().isConsoleItmSelected()) {
+         menuBar.viewMenu().doConsoleItmAct(true);
+      }
    }
 
    /**
@@ -330,7 +325,7 @@ public class MainWin {
    public void setEditActions(Edit edit, LanguageChanger lc) {
       toolBar.setEditActions(edit);
       Runnable clearSpaces = () -> edit.clearTrailingSpaces();
-      menuBar.editMenu().setEditActions(edit, e -> bf.execute(clearSpaces, true));
+      menuBar.editMenu().setEditActions(edit, e -> bf.executeLater(clearSpaces));
       menuBar.languageMenu().setChangeLanguageActions(lc);
    }
 
@@ -394,51 +389,30 @@ public class MainWin {
    }
 
    private void setEditToolsActions(int i) {
-      ActionListener closeAct = (ActionEvent e) -> {
+      ActionListener closeAct = e -> {
          showEditToolPnl(false, 0);
          menuBar.editMenu().unselectEditToolItmAt(i);
       };
       editTools.get(i).addClosingAction(new FunctionalAction(
             "", IconFiles.CLOSE_ICON, closeAct));
 
-      ActionListener addAct = e -> selectEditTool(i);
+      Runnable select = () -> selectEditTool(i);
+      ActionListener addAct = e -> bf.executeLater(select);
       menuBar.editMenu().setEditToolsActionsAt(addAct, i);
    }
 
    private void selectEditTool(int i) {
-      EventQueue.invokeLater(() -> {
-         if (menuBar.editMenu().isEditToolItmSelected(i)) {
-            AddableEditTool tool = editTools.get(i);
-            edToolPnl.addComponent(tool.content());
-            splitHorMid.setResizeWeight(tool.resize() ? 0 : 1);
-            showEditToolPnl(true, tool.width());
-            menuBar.editMenu().unselectEditToolItmExcept(i);
-         }
-         else {
-            showEditToolPnl(false, 0);
-            menuBar.editMenu().unselectEditToolItmAt(i);
-         }
-      });
-   }
-   
-   private void enableProjectActions(boolean isCompile, boolean isRun,
-            boolean isBuild, String buildLabel) {
-
-      menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun,
-            isBuild);
-            
-      toolBar.enableProjectActionsBts(isCompile, isRun);
-
-      if (!isBuild)  {
-         buildLabel = "Build";
-      }
-      menuBar.projectMenu().setBuildLabel(buildLabel);
-   }
-
-   private void openConsole() {
-      if (!menuBar.viewMenu().isConsoleItmSelected()) {
-         menuBar.viewMenu().doConsoleItmAct(true);
-      }
+      if (menuBar.editMenu().isEditToolItmSelected(i)) {
+          AddableEditTool tool = editTools.get(i);
+          edToolPnl.addComponent(tool.content());
+          splitHorMid.setResizeWeight(tool.resize() ? 0 : 1);
+          showEditToolPnl(true, tool.width());
+          menuBar.editMenu().unselectEditToolItmExcept(i);
+       }
+       else {
+          showEditToolPnl(false, 0);
+          menuBar.editMenu().unselectEditToolItmAt(i);
+       }
    }
 
    private void showEditToolPnl(boolean b, double width) {
@@ -486,6 +460,20 @@ public class MainWin {
          splitHor.setDividerSize(0);
          splitHor.setLeftComponent(null);
       }
+   }
+   
+   private void enableProjectActions(boolean isCompile, boolean isRun,
+            boolean isBuild, String buildLabel) {
+
+      menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun,
+            isBuild);
+
+      toolBar.enableProjectActionsBts(isCompile, isRun);
+
+      if (!isBuild)  {
+         buildLabel = "Build";
+      }
+      menuBar.projectMenu().setBuildLabel(buildLabel);
    }
 
    private void exit(TabbedDocuments td) {

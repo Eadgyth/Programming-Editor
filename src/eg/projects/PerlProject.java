@@ -1,29 +1,25 @@
 package eg.projects;
 
 //--Eadgyth--/
-import eg.console.ProcessStarter;
+import eg.TaskRunner;
 import eg.ui.ProjectActionsUpdate;
-import eg.ui.ConsoleOpener;
 
 /**
  * Represents a programming project in Perl
  */
-public final class PerlProject extends AbstractProject implements ProjectActions {
+public final class PerlProject extends AbstractProject implements ProjectCommands {
 
-   private final ProcessStarter proc;
-   private final ConsoleOpener opener;
+   private final TaskRunner runner;
 
    private String runCmd = "";
    private String compileCmd = "";
 
    /**
-    * @param proc  the ProcessStarter
-    * @param opener  the ConsoleOpener
+    * @param runner  the reference to TaskRunner
     */
-   public PerlProject(ProcessStarter proc, ConsoleOpener opener) {
+   public PerlProject(TaskRunner runner) {
       super(ProjectTypes.PERL, true, "pl");
-      this.proc = proc;
-      this.opener = opener;
+      this.runner = runner;
    }
 
    @Override
@@ -36,7 +32,7 @@ public final class PerlProject extends AbstractProject implements ProjectActions
    }
 
    @Override
-   public void enableActions(ProjectActionsUpdate update) {
+   public void enable(ProjectActionsUpdate update) {
       update.enable(true, true, false, null);
    }
 
@@ -45,8 +41,7 @@ public final class PerlProject extends AbstractProject implements ProjectActions
       if (!locateMainFile()) {
          return;
       }
-      opener.open();
-      proc.startProcess(compileCmd);
+      runner.runSystemCommand(compileCmd);
    }
 
    @Override
@@ -54,8 +49,7 @@ public final class PerlProject extends AbstractProject implements ProjectActions
       if (!locateMainFile()) {
          return;
       }
-      opener.open();
-      proc.startProcess(runCmd);
+      runner.runSystemCommand(runCmd);
    }
 
    @Override

@@ -26,15 +26,19 @@ public class FilesFinder {
     * @return  the List of the files
     */
    public List<File> filteredFiles(String dir, String extension,
-         String excludedDirName) {         
+         String excludedDirName) {
 
       if (!extension.startsWith(".")) {
-         throw new IllegalArgumentException(extension + " must be specified"
+         throw new IllegalArgumentException(
+               extension
+               + " must be specified"
                + " with preceding peroid");
       }
       File f = new File(dir);
       if (!f.exists() || !f.isDirectory()) {
-         throw new IllegalArgumentException(dir + " is not a directory");
+         throw new IllegalArgumentException(
+               dir
+               + " is not a directory");
       }
       resultList = new ArrayList<>();
       setFilteredFiles(f, extension, excludedDirName);
@@ -57,17 +61,5 @@ public class FilesFinder {
             }
          }
       }
-   }
-   
-   private String notFoundMessage(String extension) {
-      return "No files with the extension\"" + extension + "\" were found";
-   }
-
-   private String noExtensionMessage(String extension) {
-       return 
-         "<html>"
-         + extension + " cannot be used.<br>"
-         + "Extensions must be specified with a preceding period."
-         + "</html>";
    }
 }

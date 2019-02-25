@@ -6,7 +6,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 
 /**
- * The execution of an action during which a wait cursor is displayed
+ * The execution of a task during which a wait cursor is displayed
  */
 public class BusyFunction {
 
@@ -23,39 +23,44 @@ public class BusyFunction {
     * Executes the action
     *
     * @param r  the action to execute
-    * @param runLater  true to execute the action only after other
-    * events are processed (the specified <code>Runnable</code> is
-    * passeed to <code>EventQueue.invokeLater</code>)
     */
-   public void execute(Runnable r, boolean runLater) {
+   public void execute(Runnable r) {
       try {
-         setWaitCursor();
-         run(r, runLater);
+         start();
+         r.run();
       }
       finally {
-         setDefCursor();
+         end();
+      }
+   }
+
+   /**
+    * Executes the action at the end of pending EDT events
+    *
+    * @param r  the action to execute
+    */
+   public void executeLater(Runnable r) {
+      try {
+         start();
+         EventQueue.invokeLater(() -> {
+            r.run();
+         });
+      }
+      finally {
+         end();
       }
    }
 
    //
    //--private--/
    //
-   
-   private void run(Runnable r, boolean runLater) {
-      if (runLater) {
-         EventQueue.invokeLater(r);
-      }
-      else {
-         r.run();
-      }
-   }
 
-   private void setWaitCursor() {
+   private void start() {
       f.getGlassPane().setVisible(true);
       f.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
    }
 
-   private void setDefCursor() {
+   private void end() {
       EventQueue.invokeLater(() -> {
          f.getGlassPane().setVisible(false);
          f.getGlassPane().setCursor(Cursor.getDefaultCursor());
