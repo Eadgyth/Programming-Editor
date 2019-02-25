@@ -6,13 +6,13 @@ write applications for home requirements or quick testing.
 <br>
 <h4>SHORT DESCRIPTION</h4>
 <p>
-To run code a file is first opened or newly saved. While the file is open (and selected in
-the tab bar) a project is assigned by selecting a project category from the 'Project' menu.
-This opens a simple settings dialog with input options that depend on the selected category.
-The selectable categories so far are Java, Perl, Python, R and HTML.
+To run code a file is first opened from or newly saved to the directory that will be defined
+as a project. While the file is open (and selected in the tab bar) a project category is
+selected from the 'Project' menu. This opens a simple settings dialog. The selectable categories
+so far are Java, Perl, Python, R and HTML.
 <p>
-The program allows to set several projects in parallel. Switching between set projects can be
-done after selecting a file that is part of the project to change to.
+Several projects may be defined in parallel. Switching between projects is done after selecting
+a file that is part of the project to change to.
 <br>
 <h4>DOCUMENTATION</h4>
 <p>
@@ -36,13 +36,13 @@ of a programming language may have to be set in the OS (they have to under Windo
 <h4>LIMITATIONS</h4>
 <p>
 The editor includes a basic console to show output/error messages from a tested program
-or also from freely defined system commands. This console is interactive (input can be
-entered) but interaction does not work properly in the case that a process buffers all
-the output until completion if output is not to the terminal of the OS. To display output
+or from freely defined system commands. This console is interactive but interaction does
+not work properly if a process buffers all the output until completion in the case that
+output is not to the terminal of the OS. To display output
 correctly block-buffering would have to be disabled (line buffering/flushing SDTOUT enabled)
-if this option is available for a language (a command option which can be entered in the project
-settings or a switch in a script itself). Also, a program may be tested by starting it in
-terminal of the OS using the option to enter system commands.
+if this option is available for a language (a command option which can be entered in the
+project settings or a switch in a script itself). Also, a program may be tested by starting
+it in terminal of the OS using the option to enter system commands.
 <p>
 If the built-in options to compile a Java project and to create a jar from it are used only
 sources found in the project directory (or a sources sub-directory) are compiled. Inclusion of
