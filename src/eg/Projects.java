@@ -10,7 +10,7 @@ import eg.console.*;
 import eg.ui.MainWin;
 import eg.ui.ProjectActionsUpdate;
 import eg.ui.filetree.FileTree;
-import eg.projects.ProjectActions;
+import eg.projects.ProjectCommands;
 import eg.projects.ProjectSelector;
 import eg.projects.ProjectTypes;
 import eg.document.EditableDocument;
@@ -19,7 +19,7 @@ import eg.utils.Dialogs;
 /**
  * The assigned projects.
  * <p>
- * Projets are are represented by objects of {@link ProjectActions}.
+ * Projets are represented by objects of {@link ProjectCommands}.
  */
 public class Projects {
 
@@ -30,9 +30,9 @@ public class Projects {
    private final ProcessStarter proc;
    private final EditableDocument[] edtDoc;
    private final Runnable fileTreeUpdate;
-   private final List<ProjectActions> projList = new ArrayList<>();
+   private final List<ProjectCommands> projList = new ArrayList<>();
 
-   private ProjectActions current;
+   private ProjectCommands current;
    private int iDoc;
    private boolean isReplace = false;
 
@@ -47,9 +47,9 @@ public class Projects {
       this.edtDoc = edtDoc;
       update = mw.projActUpdate();
       fileTreeUpdate = () -> fileTree.updateTree();
-      Console cons = new Console(mw.consolePnl(), fileTreeUpdate);
-      proc = cons.processStarter();
-      projSelect = new ProjectSelector(cons, mw.consoleOpener(), fileTreeUpdate);
+      proc = new ProcessStarter(mw.consolePnl(), fileTreeUpdate);
+      TaskRunner runner = new TaskRunner(mw, proc, fileTreeUpdate);     
+      projSelect = new ProjectSelector(runner);
    }
 
    /**
@@ -70,7 +70,7 @@ public class Projects {
       if (current == null) {
          return;
       }
-      ProjectActions inList;
+      ProjectCommands inList;
       boolean isInProject = false;
       boolean isCurrent = false;
       if (edtDoc[iDoc].hasFile()) {
@@ -81,7 +81,7 @@ public class Projects {
       mw.enableOpenProjectSettings(isInProject);
       mw.enableChangeProject(isInProject && !isCurrent);
       if (isCurrent) {
-         current.enableActions(update);
+         current.enable(update);
       }
       else {
          update.enable(false, false, false, null);
@@ -92,7 +92,7 @@ public class Projects {
     * Updates the file tree
     */
    public void updateFileTree() {
-      updateFileTreeImpl();
+      EventQueue.invokeLater(fileTreeUpdate);
    }
 
    /**
@@ -103,7 +103,7 @@ public class Projects {
     */
    public void updateFileTree(String file) {
       if (file.startsWith(fileTree.currentRoot())) {
-         updateFileTreeImpl();
+         EventQueue.invokeLater(fileTreeUpdate);
       }
    }
 
@@ -115,7 +115,7 @@ public class Projects {
     * @param projType  the project type
     */
    public void assign(ProjectTypes projType) {
-      ProjectActions inList = selectFromList(edtDoc[iDoc].fileParent(), false);
+      ProjectCommands inList = selectFromList(edtDoc[iDoc].fileParent(), false);
       if (inList == null) {
          assignImpl(projType);
       }
@@ -134,11 +134,11 @@ public class Projects {
     */
    public void retrieve() {
       String dir = edtDoc[iDoc].fileParent();
-      ProjectActions inList = selectFromList(dir, false);
+      ProjectCommands inList = selectFromList(dir, false);
       if (current != null && inList != null) {
          return;
       }
-      ProjectActions projToFind = null;
+      ProjectCommands projToFind = null;
       boolean isFound = false;
       for (ProjectTypes t : ProjectTypes.values()) {
          projToFind = projSelect.createProject(t);
@@ -158,7 +158,7 @@ public class Projects {
             change(projToFind);
          }
          projToFind.buildSettingsWindow();
-         ProjectActions projFin = projToFind;
+         ProjectCommands projFin = projToFind;
          projFin.setConfiguringAction(e -> configure(projFin));
       }
    }
@@ -169,7 +169,7 @@ public class Projects {
     */
    public void openSettingsWindow() {
       boolean open = true;
-      ProjectActions inList = selectFromList(edtDoc[iDoc].fileParent(), false);
+      ProjectCommands inList = selectFromList(edtDoc[iDoc].fileParent(), false);
       if (inList != null) {
          open = inList == current || change(inList);
       }
@@ -183,7 +183,7 @@ public class Projects {
     * <code>EditableDocument</code> belongs to
     */
    public void change() {
-      ProjectActions inList = selectFromList(edtDoc[iDoc].fileParent(), true);
+      ProjectCommands inList = selectFromList(edtDoc[iDoc].fileParent(), true);
       change(inList);
    }
 
@@ -197,7 +197,7 @@ public class Projects {
       }
       else {
          edtDoc[iDoc].saveFile();
-         mw.runBusyFunction(() -> current.compile(), false);
+         current.compile();
        }
    }
 
@@ -222,7 +222,7 @@ public class Projects {
          filesNotFoundMsg(missingFiles.toString());
       }
       else {
-         mw.runBusyFunction(() -> current.compile(), false);
+         current.compile();
       }
    }
 
@@ -234,7 +234,7 @@ public class Projects {
          current.run();
       }
       else {
-         current.run(edtDoc[iDoc].filepath());
+        current.run(edtDoc[iDoc].filepath());
       }
    }
 
@@ -242,7 +242,7 @@ public class Projects {
     * Creates a build of the active project
     */
    public void build() {
-      mw.runBusyFunction(() -> current.build(), false);
+      current.build();
    }
 
    //
@@ -250,16 +250,16 @@ public class Projects {
    //
 
    private void assignImpl(ProjectTypes projType) {
-      ProjectActions toAssign = projSelect.createProject(projType);
+      ProjectCommands toAssign = projSelect.createProject(projType);
       if (toAssign != null) {
-         ProjectActions projFin = toAssign;
+         ProjectCommands projFin = toAssign;
          projFin.buildSettingsWindow();
          projFin.openSettingsWindow();
          projFin.setConfiguringAction(e -> configure(projFin));
       }
    }
 
-   private boolean change(ProjectActions toChangeTo) {
+   private boolean change(ProjectCommands toChangeTo) {
       int res = switchProjectRes(toChangeTo.projectName());
       if (res == 0) {
          current = toChangeTo;
@@ -274,7 +274,7 @@ public class Projects {
       }
    }
 
-   private void replaceCurrent(ProjectTypes projType, ProjectActions newProj) {
+   private void replaceCurrent(ProjectTypes projType, ProjectCommands newProj) {
       if (projType != newProj.projectType()) {
          int res = replaceProjectRes(
                newProj.projectName(),
@@ -292,9 +292,9 @@ public class Projects {
       }
    }
 
-   private ProjectActions selectFromList(String dir, boolean excludeCurrent) {
-      ProjectActions inList = null;
-      for (ProjectActions p : projList) {
+   private ProjectCommands selectFromList(String dir, boolean excludeCurrent) {
+      ProjectCommands inList = null;
+      for (ProjectCommands p : projList) {
          if (p.isInProject(dir) && (!excludeCurrent || p != current)) {
             inList = p;
             break;
@@ -303,7 +303,7 @@ public class Projects {
       return inList;
    }
 
-   private void configure(ProjectActions toConfig) {
+   private void configure(ProjectCommands toConfig) {
       if (toConfig.configure(edtDoc[iDoc].fileParent())) {
          if (isReplace) {
             projList.remove(current);
@@ -315,13 +315,13 @@ public class Projects {
          }
          toConfig.storeConfiguration();
          updateProjectSetting();
-         updateFileTreeImpl();
+         EventQueue.invokeLater(fileTreeUpdate);
       }
    }
 
    private void updateProjectSetting() {
       proc.setWorkingDir(current.projectPath());
-      current.enableActions(update);
+      current.enable(update);
       mw.displayProjectName(current.projectName(),
             current.projectType().display());
 
@@ -329,10 +329,6 @@ public class Projects {
       mw.enableOpenProjectSettings(true);
       fileTree.setProjectTree(current.projectPath());
       fileTree.setDeletableDir(current.executableDirName());
-   }
-
-   private void updateFileTreeImpl() {
-      EventQueue.invokeLater(fileTreeUpdate);
    }
 
    private int replaceProjectRes(String projName, String previousProj,

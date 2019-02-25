@@ -3,17 +3,20 @@ package eg.projects;
 import eg.ui.ProjectActionsUpdate;
 
 /**
- * The interface that defines the actions to compile, run and build
- * a project
+ * The interface that defines the tasks to compile, run and build a
+ * project. The tasks are optional but throw an exception if an
+ * overriding method is not present in an implementing project.
+ * Controls which the tasks are attached to are therefore enabled
+ * or disabled by {@link #enable}.
  */
-public interface ProjectActions extends Configurable {
+public interface ProjectCommands extends Configurable {
 
    /**
-    * Enables and disables actions
+    * Updates controls that invoke commands
     *
     * @param update  the ProjectActionsUpdate
     */
-   public void enableActions(ProjectActionsUpdate update);
+   public void enable(ProjectActionsUpdate update);
 
    /**
     * Compiles source files
@@ -24,7 +27,7 @@ public interface ProjectActions extends Configurable {
    };
 
    /**
-    * Runs the project
+    * Runs the project using a main file defined by the project
     */
    public default void run() {
       throw new UnsupportedOperationException(

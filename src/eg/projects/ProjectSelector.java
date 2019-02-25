@@ -1,54 +1,45 @@
 package eg.projects;
 
-import eg.console.Console;
-import eg.ui.ConsoleOpener;
+import eg.TaskRunner;
 
 /**
- * The selection and creation of a <code>ProjectActions</code>
+ * The selection and creation of a <code>ProjectCommands</code>
  * based on the project type
  */
 public class ProjectSelector {
-
-   private final Console console;
-   private final ConsoleOpener opener;
-   private final Runnable fileTreeUpdate;
+   
+   private final TaskRunner runner;
 
    /**
-    * @param console  the Console
-    * @param opener  the ConsoleOpener
-    * @param fileTreeUpdate  the updating of the file tree
+    * @param runner  the reference to Task
     */
-   public ProjectSelector(Console console, ConsoleOpener opener,
-         Runnable fileTreeUpdate) {
-
-      this.console = console;
-      this.opener = opener;
-      this.fileTreeUpdate = fileTreeUpdate;
+   public ProjectSelector(TaskRunner runner) {
+      this.runner = runner;
    }
 
    /**
-    * Returns a new <code>ProjectActions</code>
+    * Returns a new <code>ProjectCommands</code>
     *
     * @param projType  the project type
     * @return  the ProjectActions
     */
-   public ProjectActions createProject(ProjectTypes projType) {
-      ProjectActions newProj = null;
+   public ProjectCommands createProject(ProjectTypes projType) {
+      ProjectCommands newProj = null;
       switch (projType) {
          case JAVA:
-            newProj = new JavaProject(console, opener, fileTreeUpdate);
+            newProj = new JavaProject(runner);
             break;
          case HTML:
             newProj = new HtmlProject();
             break;
          case PERL:
-            newProj = new PerlProject(console.processStarter(), opener);
+            newProj = new PerlProject(runner);
             break;
          case PYTHON:
-            newProj = new PythonProject(console.processStarter(), opener);
+            newProj = new PythonProject(runner);
             break;
          case R:
-            newProj = new RProject(console.processStarter(), opener);
+            newProj = new RProject(runner);
             break;
          case GENERIC:
             newProj = new GenericProject();
