@@ -1,45 +1,62 @@
-This is a text editor, written in Java, which can be used for coding and running code.
-A programming project can be easily set to use built-in functions to run code and, in a
-Java project, also to compile code (maybe organized in packages) and create an executable
-jar-archive. The program allows to set several projects, which can be switched between,
-in parallel. Project categories so far are Java, Perl, Python, R and HTML. A "generic"
-project may be as well defined to run self-chosen system commands. The program includes
-a basic console, a file explorer and a basic syntax highlighting.
+<h4>GOAL</h4>
 <p>
-DOCUMENTATION<br>
+A text editor which can be used for coding and which can be easily set up to run code for
+testing. The editor should be as simple as possible to use and be helpful, for example, to
+write applications for home requirements or quick testing.
+<br>
+<h4>SHORT DESCRIPTION</h4>
+<p>
+To run code a file is first opened from or newly saved to the directory that will be defined
+as a project. While the file is open (and selected in the tab bar) a project category is
+selected from the 'Project' menu. This opens a simple settings dialog. The selectable categories
+so far are Java, Perl, Python, R and HTML.
+<p>
+Several projects may be defined in parallel. Switching between projects is done after selecting
+a file that is part of the project to change to.
+<br>
+<h4>DOCUMENTATION</h4>
+<p>
 A more detailed description of the features, screenshots, a help site and code documentation
 can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
+<br>
+<h4>REQUIREMENTS FOR TESTING</h4>
 <p>
-REQUIREMENTS FOR TESTING<br>
 Running and compiling the program requires Java 8 or higher. The executable jar file in the
-folder 'JarAndPreferences' was made after compilation with JDK 8 and by using the Java
-Archive Tool in the JDK.
+folder 'JarAndPreferences' was made after compilation with JDK 8. Compiling and building a
+jar of the program can be done by creating a Java project with existing sources in Netbeans
+(using the src folder from the repository). This program itself may be used too! Compiling with
+a JDK version higher than 8 gives some warnings that are not yet adressed.
 <p>
 If the program shall be used for compiling Java code by the built-in compile option it must be
 made sure that the program is run using the JRE contained in the JDK (and not the public JRE).
 <p>
 For using the built-in function to run code the path variables that point to the executables
 of a programming language may have to be set in the OS (they have to under Windows).
+<br>
+<h4>LIMITATIONS</h4>
 <p>
-LIMITATIONS<br>
-Among the countless limitations some need mention:
-<ul>
-<li>The editor includes a basic console to show output/error messages from a tested program
-    or also freely defined system commands. This console is in principle interactive but
-    does not emulate the terminal of the OS. Therefore, interaction may not work in all cases.
-    Specifically, the output of processes that buffer the output differently if it is not to
-    the terminal of the OS may not be shown interactively. Therefore, buffering would have
-    to be disabled, for example, by specifying a corresponding command option, if available
-    for a given language/process.</li>
-<li>The compilation of java files and the creation of an executable jar file cannot include
-    external libraries if the built-in options for compiling and creating a jar are selected.</li>
-<li>I tested the program on Windows. There are some problems with the graphical appearance
-    on a high dpi screen. I would be grateful for feedback, especially from somebody who may
-    have tried it on other platforms (m.bussiek@web.de).</li>
-</ul>
+The editor includes a basic console to show output/error messages from a tested program
+or from freely defined system commands. This console is interactive but interaction does
+not work properly if a process buffers all the output until completion in the case that
+output is not to the terminal of the OS. To display output
+correctly block-buffering would have to be disabled (line buffering/flushing SDTOUT enabled)
+if this option is available for a language (a command option which can be entered in the
+project settings or a switch in a script itself). Also, a program may be tested by starting
+it in terminal of the OS using the option to enter system commands.
 <p>
-ACKLOWLEDGEMENT<br>
+If the built-in options to compile a Java project and to create a jar from it are used only
+sources found in the project directory (or a sources sub-directory) are compiled. Inclusion of
+external libraries is so far not supported.
+<p>
+I tested the program on Windows. There are some problems with the graphical appearance
+on a high dpi screen. I would be grateful for feedback, especially from somebody who may
+have tried it on other platforms (m.bussiek@web.de).
+<br>
+<h4>ACKLOWLEDGEMENT</h4>
+<p>
 The program uses icons from
 <a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.
+<br>
+<h4>LICENSE</h4>
 <p>
-LICENSE: MIT, see LICENSE<br>
+MIT, see LICENSE<br>
