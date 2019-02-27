@@ -58,11 +58,10 @@ public class TaskRunner {
     * @see ConsolePrinter
     */
    public void runWithConsoleOutput(Runnable r, String initialMsg, boolean toTop) {
-      if (!consPnl.canWrite()) {
+      if (!consPnl.setUnlocked()) {
          return;
       }
       mw.showConsole();
-      consPnl.setUnlocked(true);
       consPnl.setText("");
       if (initialMsg != null && !initialMsg.isEmpty()) {
          consPnl.appendTextBr(initialMsg);
@@ -73,7 +72,7 @@ public class TaskRunner {
             if (toTop) {
               consPnl.setCaretWhenUneditable(0);
             }
-            consPnl.setUnlocked(false);
+            consPnl.setLocked();
          });
          EventQueue.invokeLater(fileTreeUpdate);
       }).start();
@@ -103,12 +102,12 @@ public class TaskRunner {
       mw.showConsole();
       proc.startProcess(cmd);
    }
-   
+
    /**
     * The printing of output to the console
     */
    public final class ConsolePrinter {
-   
+
       /**
        * Prints the specified text without appending a line separator
        *
@@ -117,7 +116,7 @@ public class TaskRunner {
       public void print(String text) {
          EventQueue.invokeLater(() -> consPnl.appendText(text));
       }
-   
+
       /**
        * Prints the specified text with a line separator at the end
        *
@@ -126,7 +125,7 @@ public class TaskRunner {
       public void printLine(String text) {
          EventQueue.invokeLater(() -> consPnl.appendText(text + "\n"));
       }
-   
+
       /**
        * Prints a message which is formatted such that it begins with
        * two opening angle brackets and ends with the line separator.
@@ -137,7 +136,7 @@ public class TaskRunner {
       public void printBr(String text) {
          EventQueue.invokeLater(() -> consPnl.appendTextBr(text));
       }
-      
+
       private ConsolePrinter() {}
    }
 }

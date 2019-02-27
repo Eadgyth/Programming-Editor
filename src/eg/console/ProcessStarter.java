@@ -49,13 +49,13 @@ public class ProcessStarter {
    private PrintWriter out;
 
    /**
-    * @param consPnl  the ConsolePanel
+    * @param consPnl  the reference to ConsolePanel
     * @param fileTreeUpdate  the updating of the file tree
     */
    public ProcessStarter(ConsolePanel consPnl, Runnable fileTreeUpdate) {
       this.consPnl = consPnl;
       this.fileTreeUpdate = fileTreeUpdate;
-      consPnl.setCmdAct(e -> startNewCmd());
+      consPnl.setEnterCmdAct(e -> startNewCmd());
       consPnl.setRunAct(e -> startPreviousCmd());
       consPnl.setStopAct(e -> endProcess());
       consPnl.addKeyListener(Output);
@@ -71,7 +71,7 @@ public class ProcessStarter {
       this.workingDir = workingDir;
       fWorkingDir = new File(workingDir);
       workingDirName = fWorkingDir.getName();
-      consPnl.enableSetCmdBt();
+      consPnl.enableEnterCmdBt();
       if (cmdMap.containsKey(workingDir)) {
          previousCmd = cmdMap.get(workingDir);
       }
@@ -82,22 +82,22 @@ public class ProcessStarter {
    }
 
    /**
-    * Starts a system process in this working directory. A warning dialog
-    * is shown if it is tried to start a process while a previous process
-    * is not yet terminated or another task uses the console. The file
-    * tree is updated after the process has ended.
+    * Starts a system process in this working directory. The file tree
+    * is updated after the process has ended. If it is tried to start a
+    * process while while another task uses the console a dialog is shown
+    * and the process is not startet.
     *
     * @param cmd  the start command in which arguments are separated by
     * spaces
     */
    public void startProcess(String cmd) {
       isAborted = false;
-      if (!consPnl.canWrite()) {
+      if (!consPnl.setUnlockedAndActive()) {
          return;
       }
-      setConsoleActive(true);
-      consoleText = "Run " + cmd;
+      consPnl.enableRunBt(false);
       consPnl.focus();
+      consoleText = "Run " + cmd;
       consPnl.setText("");
       consPnl.appendTextBr(consoleText);
       new Thread(() -> {
@@ -115,7 +115,7 @@ public class ProcessStarter {
          catch (IOException | InterruptedException e) {
             EventQueue.invokeLater(() -> {
                consPnl.appendTextBr(cmdNotFoundMsg(cmd));
-               setConsoleActive(false);
+               lockConsole();
             });
          }
          finally {
@@ -139,11 +139,7 @@ public class ProcessStarter {
          previousCmd = cmd;
          cmdMap.put(workingDir, cmd);
          if (cmd.length() > 0) {
-            consPnl.enableRunBt(false);
             startProcess(cmd);
-         }
-         else {
-            consPnl.enableRunBt(previousCmd.length() > 0);
          }
       }
    }
@@ -202,7 +198,7 @@ public class ProcessStarter {
       @Override
       protected void done() {
          setEndingMsg(exitVal);
-         setConsoleActive(process.isAlive());
+         lockConsole();
          EventQueue.invokeLater(fileTreeUpdate);
       }
    }
@@ -244,18 +240,6 @@ public class ProcessStarter {
       }
    };
 
-   private void setConsoleActive(boolean isActive) {
-      if (!isActive) {
-         if (previousCmd.length() > 0) {
-            consPnl.enableRunBt(!isActive);
-         }
-      }
-      else {
-         consPnl.enableRunBt(!isActive);
-      }
-      consPnl.setUnlockedAndActive(isActive);
-   }
-
    private void setEndingMsg(int exitVal) {
       if (exitVal == 0) {
          consPnl.appendText("\n");
@@ -280,6 +264,11 @@ public class ProcessStarter {
                   + ")");
          }
       }
+   }
+   
+   private void lockConsole() {
+      consPnl.setLocked();
+      consPnl.enableRunBt(previousCmd.length() > 0);
    }
 
    private String cmdNotFoundMsg(String cmd) {

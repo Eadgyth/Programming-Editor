@@ -29,35 +29,17 @@ import eg.ui.Fonts;
  */
 public class ConsolePanel {
 
-   private final JPanel content;
+   private final JPanel content = UIComponents.grayBorderedPanel();;
    private final JTextArea area = new JTextArea();
-   private final JToolBar toolbar;
-   private final JButton setCmdBt = new JButton("Cmd...");
+   private final JButton enterCmdBt = new JButton("Cmd...");
    private final JButton runBt = new JButton(IconFiles.RUN_CMD_ICON);
    private final JButton stopBt = new JButton(IconFiles.STOP_PROCESS_ICON);
    private final JButton closeBt = UIComponents.undecoratedButton();
-   private final JScrollPane scroll = UIComponents.scrollPane();
 
    private boolean unlocked = false;
 
    public ConsolePanel() {
-      content = UIComponents.grayBorderedPanel();
-      content.setLayout(new BorderLayout());
-      area.setFont(Fonts.SANSSERIF_PLAIN_8);
-      area.setEditable(false);
-      area.setFocusable(false);
-      BackgroundTheme theme = BackgroundTheme.givenTheme();
-      area.setBackground(theme.background());
-      area.setForeground(theme.normalForeground());
-      area.setBorder(new LineBorder(theme.background(), 5));
-      area.setCaretColor(theme.normalForeground());
-      scroll.setViewportView(area);
-      toolbar = createToolbar();
-      content.add(toolbar, BorderLayout.NORTH);
-      content.add(scroll, BorderLayout.CENTER);
-      setCmdBt.setEnabled(false);
-      runBt.setEnabled(false);
-      stopBt.setEnabled(false);
+      init();
    }
 
    /**
@@ -70,52 +52,42 @@ public class ConsolePanel {
    }
 
    /**
-    * Returns if the console is or is not currently used by a task.
-    * If it is in use (the unlocked state is set) a dialog is shown.
+    * Sets the unlocked state to access the text area. If the unlocked
+    * state is already set an error dialog is shown.
     *
-    * @return  true if writing is permitted, false otherwise
+    * @return  true if the unlocked state is not set already, false
+    * otherwise
     */
-   public boolean canWrite() {
-      boolean b = !unlocked;
-      if (!b) {
-         Dialogs.errorMessage("A current task is not finished.", null);
+   public boolean setUnlocked() {
+      if (!isLocked()) {
+         return false;
       }
-      return b;
+      unlocked = true;
+      return true;
    }
 
    /**
-    * Sets the active and unlocked or the inactive state and locked
-    * state. Active means that this text area is editable
-    * and focusable and also that the stop button is enabled.
+    * Sets the unlocked and active state to access the text area.
+    * Active in addition to unlocked means that the text area is
+    * editable and focusable and also that the stop button is enabled.
+    * If the unlocked state is already set an error dialog is shown.
     *
-    * @param b  true for the active (and unlocked), false for the
-    * inactive (and locked) state
+    * @return  true if the unlocked state is not set already, false
+    * otherwise
     */
-   public void setUnlockedAndActive(boolean b) {
-      if (b) {
-         checkUnlockPermission();
+   public boolean setUnlockedAndActive() {
+      if (!setUnlocked()) {
+         return false;
       }
-      setActive(b);
-      unlocked = b;
+      setActive(true);
+      return true;
    }
 
    /**
-    * Sets the unlocked or locked state
+    * Keeps or ends the active state but does not change the
+    * unlocked state.
     *
-    * @param b  true for the unlocked, false for the locked state
-    */
-   public void setUnlocked(boolean b) {
-      if (b) {
-         checkUnlockPermission();
-      }
-      unlocked = b;
-   }
-   
-   /**
-    * Keeps the active state depending on the specified boolean value.
-    * False does not set the lock state. 
-    *
-    * @param b  true to keep in active state, false otherwise
+    * @param b  true to keep, false to end the active state
     */
    public void keepActive(boolean b) {
       if (b) {
@@ -125,7 +97,15 @@ public class ConsolePanel {
    }
 
    /**
-    * Sets the cursor position in this text area
+    * Sets the locked (and inactive) state
+    */
+   public void setLocked() {
+      unlocked = false;
+      setActive(false);
+   }
+
+   /**
+    * Sets the cursor position
     *
     * @param pos  the position
     */
@@ -135,8 +115,40 @@ public class ConsolePanel {
    }
 
    /**
-    * Sets the cursor position in this text area although it is
-    * currently uneditable (in inactive state)
+    * Appends the specified text
+    *
+    * @param text  the text
+    */
+   public void appendText(String text) {
+      checkWritePermission();
+      area.append(text);
+   }
+
+   /**
+    * Appends the specified text after it is formatted such that it
+    * starts with two closing angle brackets and ends with the line
+    * separator. This output is intended for predefined status/error
+    * messages.
+    *
+    * @param text  the text
+    */
+   public void appendTextBr(String text) {
+      checkWritePermission();
+      area.append(">> " + text + "\n");
+   }
+
+   /**
+    * Gets the current text
+    *
+    * @return  the text
+    */
+   public String getText() {
+      checkWritePermission();
+      return area.getText();
+   }
+
+   /**
+    * Sets the cursor position although the inactive state is set
     *
     * @param pos  the position
     */
@@ -148,7 +160,7 @@ public class ConsolePanel {
    }
 
    /**
-    * Sets the specified text in this text area
+    * Sets the specified text
     *
     * @param text  the text
     */
@@ -158,38 +170,7 @@ public class ConsolePanel {
    }
 
    /**
-    * Adds the specified text to the text in this text area
-    *
-    * @param text  the text
-    */
-   public void appendText(String text) {
-      checkWritePermission();
-      area.append(text);
-   }
-
-   /**
-    * Adds the specified text after it is formatted such that it starts
-    * with double angle brackets and ends with the line separator
-    *
-    * @param text  the text
-    */
-   public void appendTextBr(String text) {
-      checkWritePermission();
-      area.append(">> " + text + "\n");
-   }
-
-   /**
-    * Gets the text in this text area
-    *
-    * @return  the text
-    */
-   public String getText() {
-      checkWritePermission();
-      return area.getText();
-   }
-
-   /**
-    * Asks this text area to gain focus
+    * Sets the focus in this text area
     */
    public void focus() {
       checkWritePermission();
@@ -197,19 +178,19 @@ public class ConsolePanel {
    }
 
    /**
-    * Enables or disables actions to run a process
+    * Enables actions to enter a new command
+    */
+   public void enableEnterCmdBt() {
+      enterCmdBt.setEnabled(true);
+   }
+
+   /**
+    * Enables or disables actions to run a command
     *
     * @param b  true to enable, fasle to disable
     */
    public void enableRunBt(boolean b) {
       runBt.setEnabled(b);
-   }
-
-   /**
-    * Enables actions to enter a start command
-    */
-   public void enableSetCmdBt() {
-      setCmdBt.setEnabled(true);
    }
 
    /**
@@ -231,8 +212,8 @@ public class ConsolePanel {
    }
 
    /**
-    * Sets the action for closing the <code>EditToolPanel</code>
-    * to this closing button
+    * Sets the action for closing the console panel to this
+    * closing button
     *
     * @param act  the action
     */
@@ -241,16 +222,16 @@ public class ConsolePanel {
    }
 
    /**
-    * Sets the listener for actions to set a command
+    * Sets the listener for actions to enter and run a new command
     *
     * @param al  the {@code ActionListener}
     */
-   public void setCmdAct(ActionListener al) {
-      setCmdBt.addActionListener(al);
+   public void setEnterCmdAct(ActionListener al) {
+      enterCmdBt.addActionListener(al);
    }
 
    /**
-    * Sets the listener for actions to run a command
+    * Sets the listener for actions to run a previous command
     *
     * @param al  the {@code ActionListener}
     */
@@ -271,27 +252,51 @@ public class ConsolePanel {
    //--private--/
    //
 
+   private boolean isLocked() {
+      if (unlocked) {
+         Dialogs.errorMessage("A current task is not finished.", null);
+         return false;
+      }
+      return true;
+   }
+
    private void checkWritePermission() {
       if (!unlocked) {
          throw new IllegalStateException("The console is not unlocked");
       }
    }
 
-   private void checkUnlockPermission() {
-      if (unlocked) {
-         throw new IllegalStateException("The console is already unlocked");
-      }
-   }
-   
    private void setActive(boolean b) {
       area.setEditable(b);
       area.setFocusable(b);
       stopBt.setEnabled(b);
    }
 
+   private void init() {
+      content.setLayout(new BorderLayout());
+      JToolBar toolbar = createToolbar();
+      content.add(toolbar, BorderLayout.NORTH);
+      JScrollPane scroll = UIComponents.scrollPane();
+      scroll.setViewportView(area);
+      content.add(scroll, BorderLayout.CENTER);
+
+      area.setFont(Fonts.SANSSERIF_PLAIN_8);
+      area.setEditable(false);
+      area.setFocusable(false);
+      BackgroundTheme theme = BackgroundTheme.givenTheme();
+      area.setBackground(theme.background());
+      area.setForeground(theme.normalForeground());
+      area.setBorder(new LineBorder(theme.background(), 5));
+      area.setCaretColor(theme.normalForeground());
+
+      runBt.setEnabled(false);
+      enterCmdBt.setEnabled(false);
+      stopBt.setEnabled(false);
+   }
+
    private JToolBar createToolbar() {
       JButton[] bts = new JButton[] {
-         setCmdBt, runBt, stopBt
+         enterCmdBt, runBt, stopBt
       };
       String[] tooltips = new String[] {
          "Enter and run a system command",
