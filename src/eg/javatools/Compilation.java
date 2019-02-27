@@ -213,10 +213,10 @@ public class Compilation {
       if (diagnostics.getDiagnostics().size() > 0) {
          for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
             pr.print(diagnostic.getKind().toString() + ":\n");
-            pr.print(diagnostic.getCode() + ": ");
+            pr.print(diagnostic.getCode() + ":\n   ");
             pr.printLine(diagnostic.getMessage( null ));
-            pr.printLine("at line: " + diagnostic.getLineNumber());
-            pr.printLine("at column: " + diagnostic.getColumnNumber());
+            pr.printLine("   at line: " + diagnostic.getLineNumber());
+            pr.printLine("   at column: " + diagnostic.getColumnNumber());
             if (diagnostic.getSource() != null) {
                pr.printLine(diagnostic.getSource().toString());
             }
