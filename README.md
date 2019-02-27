@@ -27,8 +27,8 @@ jar of the program can be done by creating a Java project with existing sources 
 (using the src folder from the repository). This program itself may be used too! Compiling with
 a JDK version higher than 8 gives some warnings that are not yet adressed.
 <p>
-If the program shall be used for compiling Java code by the built-in compile option it must be
-made sure that the program is run using the JRE contained in the JDK (and not the public JRE).
+If the editor shall be used for compiling Java code by the built-in compile option it must be
+made sure that it is run using the JRE contained in the JDK (and not the public JRE).
 <p>
 For using the built-in function to run code the path variables that point to the executables
 of a programming language may have to be set in the OS (they have to under Windows).
@@ -38,19 +38,18 @@ of a programming language may have to be set in the OS (they have to under Windo
 The editor includes a basic console to show output/error messages from a tested program
 or from freely defined system commands. This console is interactive but interaction does
 not work properly if a process buffers all the output until completion in the case that
-output is not to the terminal of the OS. To display output
-correctly block-buffering would have to be disabled (line buffering/flushing SDTOUT enabled)
-if this option is available for a language (a command option which can be entered in the
-project settings or a switch in a script itself). Also, a program may be tested by starting
-it in terminal of the OS using the option to enter system commands.
+output is not to the terminal of the OS. To display output correctly block-buffering would
+have to be disabled (line buffering/flushing SDTOUT enabled) if this option is available for
+a language (a command option which can be entered in the project settings or a switch in a
+script itself). Also, an application may be tested by starting it in the terminal of the OS
+using the option to enter system commands.
 <p>
 If the built-in options to compile a Java project and to create a jar from it are used only
-sources found in the project directory (or a sources sub-directory) are compiled. Inclusion of
-external libraries is so far not supported.
+sources found in the project directory (or a sources sub-directory if given) are compiled.
+Inclusion of external libraries is so far not supported.
 <p>
-I tested the program on Windows. There are some problems with the graphical appearance
-on a high dpi screen. I would be grateful for feedback, especially from somebody who may
-have tried it on other platforms (m.bussiek@web.de).
+I tested the program on Windows. There are some problems with the graphical appearance on
+a high dpi screen especially if a Java version higher than 8 is used.
 <br>
 <h4>ACKLOWLEDGEMENT</h4>
 <p>
