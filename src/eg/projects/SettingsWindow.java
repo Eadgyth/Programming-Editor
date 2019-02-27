@@ -170,7 +170,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input for file extensions
+    * Returns the input for file extensions.
     * <p>
     * Extensions may be entered as comma, semicolon or space separated
     * but the returnd string is formatted as comma separated
@@ -182,7 +182,7 @@ public class SettingsWindow {
     }
 
    /**
-    * Returns the input for a name of a build
+    * Returns the input for the name of a build
     *
     * @return  the input
     */

@@ -3,11 +3,11 @@ package eg.projects;
 import eg.ui.ProjectActionsUpdate;
 
 /**
- * The interface that defines the tasks to compile, run and build a
- * project. The tasks are optional but throw an exception if an
- * overriding method is not present in an implementing project.
- * Controls which the tasks are attached to are therefore enabled
- * or disabled by {@link #enable}.
+ * The interface that defines the commands to compile, run and build
+ * a project. The commands are optional but throw an exception if
+ * called although an overriding method is not present. The actions
+ * that call the commands are therefore enabled or disabled by
+ * {@link #enable}.
  */
 public interface ProjectCommands extends Configurable {
 

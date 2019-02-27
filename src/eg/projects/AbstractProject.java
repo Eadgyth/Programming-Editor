@@ -115,6 +115,7 @@ public abstract class AbstractProject implements Configurable {
          }
       }
       if (success) {
+         showNameConflictMsg = false;
          setCommandParameters();
       }
       return success;
@@ -523,6 +524,15 @@ public abstract class AbstractProject implements Configurable {
       }
       return success && !isShowNameConflictMsg();
    }
+   
+   private boolean isShowNameConflictMsg() {
+      if (isNameConflict && showNameConflictMsg) {
+         Dialogs.warnMessageOnTop(nameConflictMsg());
+         showNameConflictMsg = false;
+         return true;
+      }
+      return false;
+   }
 
    private void storeConfigurationImpl() {
       if (projectRoot.isEmpty()) {
@@ -608,15 +618,6 @@ public abstract class AbstractProject implements Configurable {
    private final static String DELETE_CONF_OPT
          = "Saving the \'ProjConfig\' file is no more selected.\n"
          + "Remove the file?";
-
-   private boolean isShowNameConflictMsg() {
-      if (isNameConflict && showNameConflictMsg) {
-         Dialogs.warnMessageOnTop(nameConflictMsg());
-         showNameConflictMsg = false;
-         return true;
-      }
-      return false;
-   }
 
    private String nameConflictMsg() {
       return
