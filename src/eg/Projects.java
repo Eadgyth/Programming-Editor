@@ -7,6 +7,7 @@ import java.awt.EventQueue;
 
 //--Eadgyth--/
 import eg.console.*;
+import eg.ui.ConsolePanel;
 import eg.ui.MainWin;
 import eg.ui.ProjectActionsUpdate;
 import eg.ui.filetree.FileTree;
@@ -47,8 +48,9 @@ public class Projects {
       this.edtDoc = edtDoc;
       update = mw.projActUpdate();
       fileTreeUpdate = () -> fileTree.updateTree();
-      proc = new ProcessStarter(mw.consolePnl(), fileTreeUpdate);
-      TaskRunner runner = new TaskRunner(mw, proc, fileTreeUpdate);     
+      Console cons = new Console(mw.consolePnl());
+      proc = new ProcessStarter(cons, fileTreeUpdate);
+      TaskRunner runner = new TaskRunner(mw, cons, proc, fileTreeUpdate);     
       projSelect = new ProjectSelector(runner);
    }
 

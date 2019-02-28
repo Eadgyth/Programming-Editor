@@ -15,22 +15,23 @@ public class TaskRunner {
 
    private final MainWin mw;
    private final ProcessStarter proc;
-   private final ConsolePanel consPnl;
+   private final Console cons;
    private final Runnable fileTreeUpdate;
    private final TaskRunner.ConsolePrinter printer;
 
    /**
     * @param mw  the reference to MainWin
+    * @param cons  the reference to Console
     * @param proc  the reference to ProcessStarter
     * @param fileTreeUpdate  the updating of the file tree
     */
-   public TaskRunner(MainWin mw, ProcessStarter proc,
+   public TaskRunner(MainWin mw, Console cons, ProcessStarter proc,
          Runnable fileTreeUpdate) {
 
       this.mw = mw;
       this.proc = proc;
       this.fileTreeUpdate = fileTreeUpdate;
-      consPnl = mw.consolePnl();
+      this.cons = cons;
       printer = new TaskRunner.ConsolePrinter();
    }
 
@@ -45,10 +46,10 @@ public class TaskRunner {
    }
 
    /**
-    * Runs the specified <code>Runnable</code>, which may use
-    * <code>ConsolePrinter</code> for showing output in the console,
-    * in a separate thread. If the console is blocked by another task
-    * a dialog is shown and the thread is not started.
+    * Runs the specified <code>Runnable</code>, which is supposed
+    * to use <code>ConsolePrinter</code> for output, in a separate
+    * thread. If the console is blocked by another task a warning
+    * dialog is shown and the thread is not started.
     *
     * @param r  the Runnable
     * @param initialMsg  the message that is printed to the console
@@ -58,21 +59,21 @@ public class TaskRunner {
     * @see ConsolePrinter
     */
    public void runWithConsoleOutput(Runnable r, String initialMsg, boolean toTop) {
-      if (!consPnl.setUnlocked()) {
+      if (!cons.setUnlocked()) {
          return;
       }
       mw.showConsole();
-      consPnl.setText("");
+      cons.setText("");
       if (initialMsg != null && !initialMsg.isEmpty()) {
-         consPnl.appendTextBr(initialMsg);
+         cons.appendTextBr(initialMsg);
       }
       new Thread(() -> {
          r.run();
          EventQueue.invokeLater(() -> {
             if (toTop) {
-              consPnl.setCaretWhenUneditable(0);
+              cons.setCaret(0);
             }
-            consPnl.setLocked();
+            cons.setLocked();
          });
          EventQueue.invokeLater(fileTreeUpdate);
       }).start();
@@ -90,12 +91,12 @@ public class TaskRunner {
    }
 
    /**
-    * Runs the specified command as a system process which uses the
-    * console to show output/error and read input. If the conosle
-    * is blocked by another task a dialog is shown and the process
-    * is not started.
+    * Runs a system process which uses the console to show
+    * output/error and read input. If the conosle is blocked by
+    * another task a warning dialog is shown and the process is
+    * not started.
     *
-    * @param cmd  the command
+    * @param cmd  the system command
     * @see ProcessStarter
     */
    public void runSystemCommand(String cmd) {
@@ -114,7 +115,7 @@ public class TaskRunner {
        * @param text  the text
        */
       public void print(String text) {
-         EventQueue.invokeLater(() -> consPnl.appendText(text));
+         EventQueue.invokeLater(() -> cons.appendText(text));
       }
 
       /**
@@ -123,18 +124,18 @@ public class TaskRunner {
        * @param text  the text
        */
       public void printLine(String text) {
-         EventQueue.invokeLater(() -> consPnl.appendText(text + "\n"));
+         EventQueue.invokeLater(() -> cons.appendText(text + "\n"));
       }
 
       /**
        * Prints a message which is formatted such that it begins with
-       * two opening angle brackets and ends with the line separator.
+       * two closing angle brackets and ends with the line separator.
        * This output is intended for predefined status/error messages.
        *
        * @param text  the text
        */
       public void printBr(String text) {
-         EventQueue.invokeLater(() -> consPnl.appendTextBr(text));
+         EventQueue.invokeLater(() -> cons.appendTextBr(text));
       }
 
       private ConsolePrinter() {}

@@ -31,7 +31,7 @@ import eg.utils.FileUtils;
  */
 public class ProcessStarter {
 
-   private final ConsolePanel consPnl;
+   private final Console cons;
    private final Runnable fileTreeUpdate;
    /*
     * Associates working directories with commands entered in the
@@ -49,17 +49,17 @@ public class ProcessStarter {
    private PrintWriter out;
 
    /**
-    * @param consPnl  the reference to ConsolePanel
+    * @param cons  the reference to Console
     * @param fileTreeUpdate  the updating of the file tree
     */
-   public ProcessStarter(ConsolePanel consPnl, Runnable fileTreeUpdate) {
-      this.consPnl = consPnl;
+   public ProcessStarter(Console cons, Runnable fileTreeUpdate) {
+      this.cons = cons;
       this.fileTreeUpdate = fileTreeUpdate;
-      consPnl.setEnterCmdAct(e -> startNewCmd());
-      consPnl.setRunAct(e -> startPreviousCmd());
-      consPnl.setStopAct(e -> endProcess());
-      consPnl.addKeyListener(Output);
-      consPnl.addCaretListener(CaretCorrection);
+      cons.setEnterCmdAct(e -> startNewCmd());
+      cons.setRunAct(e -> startPreviousCmd());
+      cons.setStopAct(e -> endProcess());
+      cons.addKeyListener(Output);
+      cons.addCaretListener(CaretCorrection);
    }
 
    /**
@@ -71,35 +71,36 @@ public class ProcessStarter {
       this.workingDir = workingDir;
       fWorkingDir = new File(workingDir);
       workingDirName = fWorkingDir.getName();
-      consPnl.enableEnterCmdBt();
+      cons.enableEnterCmdBt();
       if (cmdMap.containsKey(workingDir)) {
          previousCmd = cmdMap.get(workingDir);
       }
       else {
          previousCmd = "";
       }
-      consPnl.enableRunBt(previousCmd.length() > 0);
+      cons.enableRunBt(previousCmd.length() > 0);
    }
 
    /**
-    * Starts a system process in this working directory. The file tree
-    * is updated after the process has ended. If it is tried to start a
-    * process while while another task uses the console a dialog is shown
-    * and the process is not startet.
+    * Starts a system process in this working directory. The console
+    * is used to show output/error from the process and to send input
+    * to it. The file tree is updated after the process has ended. If
+    * it is tried to start a process while another task uses the
+    * console a warning dialog is shown and the process is not started.
     *
     * @param cmd  the start command in which arguments are separated by
     * spaces
     */
    public void startProcess(String cmd) {
       isAborted = false;
-      if (!consPnl.setUnlockedAndActive()) {
+      if (!cons.setUnlockedAndActive()) {
          return;
       }
-      consPnl.enableRunBt(false);
-      consPnl.focus();
+      cons.enableRunBt(false);
+      cons.focus();
       consoleText = "Run " + cmd;
-      consPnl.setText("");
-      consPnl.appendTextBr(consoleText);
+      cons.setText("");
+      cons.appendTextBr(consoleText);
       new Thread(() -> {
          try {
             List<String> cmdList = Arrays.asList(cmd.split(" "));
@@ -114,7 +115,7 @@ public class ProcessStarter {
          }
          catch (IOException | InterruptedException e) {
             EventQueue.invokeLater(() -> {
-               consPnl.appendTextBr(cmdNotFoundMsg(cmd));
+               cons.appendTextBr(cmdNotFoundMsg(cmd));
                lockConsole();
             });
          }
@@ -122,7 +123,7 @@ public class ProcessStarter {
             if (out != null) {
                out.close();
             }
-            EventQueue.invokeLater(() -> consPnl.keepActive(
+            EventQueue.invokeLater(() -> cons.keepActive(
                   process != null && process.isAlive()));
          }
       }).start();
@@ -151,8 +152,8 @@ public class ProcessStarter {
    private void endProcess() {
       if (process != null && process.isAlive()) {
          new Thread(() -> {
-             process.destroy();
-             isAborted = true;
+            process.destroy();
+            isAborted = true;
          }).start();
       }
    }
@@ -190,8 +191,8 @@ public class ProcessStarter {
       @Override
       protected void process(List<String> s) {
          for (String str : s) {
-            consPnl.appendText(str);
-            consoleText = consPnl.getText();
+            cons.appendText(str);
+            consoleText = cons.getText();
          }
       }
 
@@ -209,7 +210,7 @@ public class ProcessStarter {
       public void keyPressed(KeyEvent e) {
          int key = e.getKeyCode();
          if (key == KeyEvent.VK_ENTER) {
-            String output = consPnl.getText().substring(consoleText.length());
+            String output = cons.getText().substring(consoleText.length());
             out.println(output);
             out.flush();
          }
@@ -217,8 +218,8 @@ public class ProcessStarter {
 
       @Override
       public void keyReleased(KeyEvent e) {
-         if (consPnl.getText().length() < consoleText.length()) {
-            consPnl.setText(consoleText);
+         if (cons.getText().length() < consoleText.length()) {
+            cons.setText(consoleText);
          }
       }
    };
@@ -234,7 +235,7 @@ public class ProcessStarter {
                || e.getMark() < consoleText.length()) {
 
             EventQueue.invokeLater(() -> {
-               consPnl.setCaret(consPnl.getText().length());
+               cons.setCaret(cons.getText().length());
             });
          }
       }
@@ -242,33 +243,33 @@ public class ProcessStarter {
 
    private void setEndingMsg(int exitVal) {
       if (exitVal == 0) {
-         consPnl.appendText("\n");
-         consPnl.appendTextBr(
+         cons.appendText("\n");
+         cons.appendTextBr(
                "Process ended normally (exit value = "
                + exitVal
                + ")");
       }
       else {
          if (isAborted) {
-            consPnl.appendText("\n");
-            consPnl.appendTextBr(
+            cons.appendText("\n");
+            cons.appendTextBr(
                   "Process aborted (exit value = "
                   + exitVal
                   + ")");
          }
          else {
-            consPnl.appendText("\n");
-            consPnl.appendTextBr(
+            cons.appendText("\n");
+            cons.appendTextBr(
                   "Process ended with error (exit value = "
                   + exitVal
                   + ")");
          }
       }
    }
-   
+
    private void lockConsole() {
-      consPnl.setLocked();
-      consPnl.enableRunBt(previousCmd.length() > 0);
+      cons.setLocked();
+      cons.enableRunBt(previousCmd.length() > 0);
    }
 
    private String cmdNotFoundMsg(String cmd) {

@@ -1,59 +1,59 @@
 package eg.console;
 
-import java.awt.BorderLayout;
-
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
-import javax.swing.JToolBar;
-import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JScrollPane;
-
-import javax.swing.border.LineBorder;
 
 import javax.swing.event.CaretListener;
 
 //--Eadgyth--/
-import eg.BackgroundTheme;
-import eg.FunctionalAction;
-import eg.utils.Dialogs;
+import eg.ui.ConsolePanel;
 import eg.ui.IconFiles;
-import eg.ui.UIComponents;
-import eg.ui.Fonts;
+import eg.utils.Dialogs;
 
 /**
- * Defines the panel which contains the text area that functions as the
- * console and a toolbar for adding actions to run commands.
+ * Represents the console with a text area and buttons for adding
+ * actions to run commands.
+ * <p>
+ * Class can have an unlocked, an unlocked active or a locked state.
+ * Setting the 'unlocked' flag is required to use this methods that
+ * access the text area. Otherwise these methods throw an exception.
+ * Active means that the text area is additinally editable and
+ * focusable and also that this button for stopping a process is
+ * enabled.
  */
-public class ConsolePanel {
+public class Console {
 
-   private final JPanel content = UIComponents.grayBorderedPanel();;
    private final JTextArea area = new JTextArea();
    private final JButton enterCmdBt = new JButton("Cmd...");
    private final JButton runBt = new JButton(IconFiles.RUN_CMD_ICON);
    private final JButton stopBt = new JButton(IconFiles.STOP_PROCESS_ICON);
-   private final JButton closeBt = UIComponents.undecoratedButton();
 
    private boolean unlocked = false;
 
-   public ConsolePanel() {
-      init();
-   }
-
    /**
-    * Gets this JPanel which contains the text area and the toolbar
-    *
-    * @return  the JPanel
+    * @param consPnl  the reference to ConsolePanel of MainWin
     */
-   public JPanel content() {
-      return content;
+   public Console(ConsolePanel consPnl) {
+      JButton[] bts = new JButton[] {
+         enterCmdBt, runBt, stopBt
+      };
+      String[] tooltips = new String[] {
+         "Enter and run a system command",
+         "Run a previous system command",
+         "Forcibly quit the current process"
+      };
+      consPnl.initContent(area, bts, tooltips);
+      runBt.setEnabled(false);
+      enterCmdBt.setEnabled(false);
+      stopBt.setEnabled(false);
    }
 
    /**
-    * Sets the unlocked state to access the text area. If the unlocked
-    * state is already set an error dialog is shown.
+    * Sets the unlocked state. If the unlocked state is already set a
+    * warning dialog is shown.
     *
     * @return  true if the unlocked state is not set already, false
     * otherwise
@@ -67,13 +67,11 @@ public class ConsolePanel {
    }
 
    /**
-    * Sets the unlocked and active state to access the text area.
-    * Active in addition to unlocked means that the text area is
-    * editable and focusable and also that the stop button is enabled.
-    * If the unlocked state is already set an error dialog is shown.
+    * Sets the unlocked and active state
     *
     * @return  true if the unlocked state is not set already, false
     * otherwise
+    * @see #setUnlocked
     */
    public boolean setUnlockedAndActive() {
       if (!setUnlocked()) {
@@ -100,8 +98,17 @@ public class ConsolePanel {
     * Sets the locked (and inactive) state
     */
    public void setLocked() {
+      checkWritePermission();
       unlocked = false;
       setActive(false);
+   }
+
+   /**
+    * Sets the focus in this text area
+    */
+   public void focus() {
+      checkWritePermission();
+      area.requestFocusInWindow();
    }
 
    /**
@@ -112,6 +119,16 @@ public class ConsolePanel {
    public void setCaret(int pos) {
       checkWritePermission();
       area.setCaretPosition(pos);
+   }
+
+   /**
+    * Sets the specified text
+    *
+    * @param text  the text
+    */
+   public void setText(String text) {
+      checkWritePermission();
+      area.setText(text);
    }
 
    /**
@@ -145,36 +162,6 @@ public class ConsolePanel {
    public String getText() {
       checkWritePermission();
       return area.getText();
-   }
-
-   /**
-    * Sets the cursor position although the inactive state is set
-    *
-    * @param pos  the position
-    */
-   public void setCaretWhenUneditable(int pos) {
-      checkWritePermission();
-      area.setEditable(true);
-      area.setCaretPosition(pos);
-      area.setEditable(false);
-   }
-
-   /**
-    * Sets the specified text
-    *
-    * @param text  the text
-    */
-   public void setText(String text) {
-      checkWritePermission();
-      area.setText(text);
-   }
-
-   /**
-    * Sets the focus in this text area
-    */
-   public void focus() {
-      checkWritePermission();
-      area.requestFocusInWindow();
    }
 
    /**
@@ -212,16 +199,6 @@ public class ConsolePanel {
    }
 
    /**
-    * Sets the action for closing the console panel to this
-    * closing button
-    *
-    * @param act  the action
-    */
-   public void setClosingAct(FunctionalAction act) {
-      closeBt.setAction(act);
-   }
-
-   /**
     * Sets the listener for actions to enter and run a new command
     *
     * @param al  the {@code ActionListener}
@@ -254,7 +231,7 @@ public class ConsolePanel {
 
    private boolean isLocked() {
       if (unlocked) {
-         Dialogs.errorMessage("A current task is not finished.", null);
+         Dialogs.warnMessage("A current task is not finished.");
          return false;
       }
       return true;
@@ -270,39 +247,5 @@ public class ConsolePanel {
       area.setEditable(b);
       area.setFocusable(b);
       stopBt.setEnabled(b);
-   }
-
-   private void init() {
-      content.setLayout(new BorderLayout());
-      JToolBar toolbar = createToolbar();
-      content.add(toolbar, BorderLayout.NORTH);
-      JScrollPane scroll = UIComponents.scrollPane();
-      scroll.setViewportView(area);
-      content.add(scroll, BorderLayout.CENTER);
-
-      area.setFont(Fonts.SANSSERIF_PLAIN_8);
-      area.setEditable(false);
-      area.setFocusable(false);
-      BackgroundTheme theme = BackgroundTheme.givenTheme();
-      area.setBackground(theme.background());
-      area.setForeground(theme.normalForeground());
-      area.setBorder(new LineBorder(theme.background(), 5));
-      area.setCaretColor(theme.normalForeground());
-
-      runBt.setEnabled(false);
-      enterCmdBt.setEnabled(false);
-      stopBt.setEnabled(false);
-   }
-
-   private JToolBar createToolbar() {
-      JButton[] bts = new JButton[] {
-         enterCmdBt, runBt, stopBt
-      };
-      String[] tooltips = new String[] {
-         "Enter and run a system command",
-         "Run a previous system command",
-         "Quit the current process"
-      };
-      return UIComponents.toolBar(bts, tooltips, closeBt);
    }
 }

@@ -24,7 +24,6 @@ import eg.LanguageChanger;
 import eg.FunctionalAction;
 import eg.BusyFunction;
 import eg.edittools.*;
-import eg.console.ConsolePanel;
 import eg.ui.menu.MenuBar;
 import eg.ui.menu.FormatMenu;
 import eg.ui.menu.ViewMenu;
@@ -461,7 +460,7 @@ public class MainWin {
          splitHor.setLeftComponent(null);
       }
    }
-   
+
    private void enableProjectActions(boolean isCompile, boolean isRun,
             boolean isBuild, String buildLabel) {
 
