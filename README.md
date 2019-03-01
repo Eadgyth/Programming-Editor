@@ -6,10 +6,11 @@ write applications for home requirements or quick testing.
 <br>
 <h4>SHORT DESCRIPTION</h4>
 <p>
-To run code a file is first opened from or newly saved to the directory that will be defined
-as a project. While the file is open (and selected in the tab bar) a project category is
-selected from the 'Project' menu. This opens a simple settings dialog. The selectable categories
-so far are Java, Perl, Python, R and HTML.
+To run code from within the editor firstly open a file from or newly save a file to the
+directory that is to be defined as a project (the file my be saved in sub-directory of the
+project directory, too). While a file of the project is open (and selected in the tab bar)
+a project category is selected from the 'Project' menu. This opens a simple settings dialog.
+The selectable categories so far are Java, Perl, Python, R and HTML.
 <p>
 Several projects may be defined in parallel. Switching between projects is done after selecting
 a file that is part of the project to change to.
