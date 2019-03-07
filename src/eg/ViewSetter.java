@@ -20,7 +20,7 @@ public class ViewSetter {
    private boolean isShowLineNumbers;
    private boolean isShowToolbar;
    private boolean isShowStatusbar;
-   private int backgroundIndex;
+   private int themeIndex;
    private int iconSizeIndex;
    private int lafIndex;
 
@@ -49,34 +49,31 @@ public class ViewSetter {
       if (show != isShowLineNumbers) {
          f.showLineNumbers(show);
          isShowLineNumbers = show;
-         state = show ? "show" : "hide";
-         prefs.setProperty("LineNumbers", state);
+         prefs.setYesNoProperty(Prefs.LINE_NR_KEY, isShowLineNumbers);
       }
       show = vsw.isShowToolbar();
       if (show != isShowToolbar) {
          mw.showToolbar(show);
          isShowToolbar = show;
-         state = isShowToolbar ? "show" : "hide";
-         prefs.setProperty("Toolbar", state);
+         prefs.setYesNoProperty(Prefs.TOOLBAR_KEY, isShowToolbar);
       }
       show = vsw.isShowStatusbar();
       if (show != isShowStatusbar) {
          mw.showStatusbar(show);
          isShowStatusbar = show;
-         state = isShowStatusbar ? "show" : "hide";
-         prefs.setProperty("Statusbar", state);
+         prefs.setYesNoProperty(Prefs.STATUSBAR_KEY, isShowStatusbar);
       }
       int index;
-      index = vsw.backgroundIndex();
-      if (index != backgroundIndex) {
-         backgroundIndex = index;
-         prefs.setProperty("Background",
-             ViewSettingWin.BKGRD_OPT[backgroundIndex]);
+      index = vsw.themeIndex();
+      if (index != themeIndex) {
+         themeIndex = index;
+         prefs.setProperty(Prefs.THEME_KEY,
+             ViewSettingWin.THEME_OPT[themeIndex]);
       }
       index = vsw.iconSizeIndex();
       if (index != iconSizeIndex) {
          iconSizeIndex = index;
-         prefs.setProperty("IconSize",
+         prefs.setProperty(Prefs.ICON_SIZE_KEY,
                ViewSettingWin.ICON_SIZES[iconSizeIndex]);
       }
       index = vsw.lafIndex();
@@ -87,45 +84,35 @@ public class ViewSetter {
    }
 
    private void initSettings() {
-      isShowLineNumbers = "show".equals(prefs.getProperty("LineNumbers"));
+      isShowLineNumbers = prefs.yesNoProperty(Prefs.LINE_NR_KEY);
       vsw.setShowLineNumbers(isShowLineNumbers);
       f.showLineNumbers(isShowLineNumbers);
 
-      isShowToolbar =  "show".equals(prefs.getProperty("Toolbar"));
+      isShowToolbar =  prefs.yesNoProperty(Prefs.TOOLBAR_KEY);
       vsw.setShowToolbar(isShowToolbar);
       mw.showToolbar(isShowToolbar);
 
-      isShowStatusbar =  "show".equals(prefs.getProperty("Statusbar"));
+      isShowStatusbar =  prefs.yesNoProperty(Prefs.STATUSBAR_KEY);
       vsw.setShowStatusbar(isShowStatusbar);
       mw.showStatusbar(isShowStatusbar);
 
-      vsw.setIconSize(prefs.getProperty("IconSize"));
+      vsw.setIconSize(prefs.property(Prefs.ICON_SIZE_KEY));
       iconSizeIndex = vsw.iconSizeIndex();
 
-      String laf = prefs.getProperty("LaF");
-      if (laf.length() > 0) {
-         vsw.setLaf(laf);
-      }
-      else {
-         vsw.setLaf(ViewSettingWin.LAF_OPT[1]);
-      }
+      String laf = prefs.property(Prefs.LAF_KEY);
+      vsw.setLaf(laf);
       lafIndex = vsw.lafIndex();
 
-      String bkgrd = prefs.getProperty("Background");
-      if (bkgrd.length() > 0) {
-         vsw.setBackground(bkgrd);
-      }
-      else {
-         vsw.setBackground(ViewSettingWin.BKGRD_OPT[0]);
-      }
-      backgroundIndex = vsw.backgroundIndex();
+      String theme = prefs.property(Prefs.THEME_KEY);
+      vsw.setTheme(theme);
+      themeIndex = vsw.themeIndex();
    }
 
    private void undoSettings() {
       vsw.setShowLineNumbers(isShowLineNumbers);
       vsw.setShowToolbar(isShowToolbar);
       vsw.setShowStatusbar(isShowStatusbar);
-      vsw.setBackground(backgroundIndex);
+      vsw.setTheme(themeIndex);
       vsw.setIconSize(iconSizeIndex);
       vsw.setLaf(lafIndex);
       vsw.setVisible(false);

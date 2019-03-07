@@ -20,7 +20,7 @@ public class MenuBar {
    private final HelpMenu helpMenu = new HelpMenu();
 
    public MenuBar() {
-      menuBar.setOpaque(false);
+      //menuBar.setOpaque(false);
       menuBar.setBorder(null);
       assembleMenu();
    }

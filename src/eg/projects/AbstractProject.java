@@ -109,7 +109,7 @@ public abstract class AbstractProject implements Configurable {
       }
       else {
          sw.setSaveProjConfigSelected(false);
-         root = prefs.getProperty("ProjectRoot");
+         root = prefs.property("ProjectRoot");
          if (isInProject(dir, root)) {
              success = configByPrefs(root, prefs);
          }
@@ -415,7 +415,7 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private boolean configByPrefs(String root, Prefs pr) {
-      String projTypeToTest = pr.getProperty("ProjectType");
+      String projTypeToTest = pr.property("ProjectType");
       if (!projTypeToTest.equals(projType.toString())) {
          return false;
       }
@@ -425,14 +425,14 @@ public abstract class AbstractProject implements Configurable {
          success = toTest.exists() && toTest.isDirectory();
       }
       else {
-         splitMainFileInput(pr.getProperty("MainProjectFile"));
+         splitMainFileInput(pr.property("MainProjectFile"));
          if (!isPathname) {
-            namespace = pr.getProperty("Namespace");
+            namespace = pr.property("Namespace");
          }
-         sourceDirName = pr.getProperty("SourceDir");
-         execDirName = pr.getProperty("ExecDir");
-         extensions = pr.getProperty("IncludedFiles");
-         buildName = pr.getProperty("BuildName");
+         sourceDirName = pr.property("SourceDir");
+         execDirName = pr.property("ExecDir");
+         extensions = pr.property("IncludedFiles");
+         buildName = pr.property("BuildName");
          setRelMainFilePath();
          mainFilePath = new File(root + F_SEP + relMainFilePath);
          success = mainFilePath.exists() && mainFilePath.isFile();

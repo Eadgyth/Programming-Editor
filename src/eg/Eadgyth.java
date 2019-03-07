@@ -1,5 +1,7 @@
 package eg;
 
+import java.io.File;
+
 import java.util.Locale;
 
 import java.awt.EventQueue;
@@ -13,6 +15,7 @@ import eg.ui.MainWin;
 import eg.ui.ViewSettingWin;
 import eg.ui.Fonts;
 import eg.utils.FileUtils;
+import eg.utils.SystemParams;
 
 /**
  * Contains the main method
@@ -24,9 +27,10 @@ public class Eadgyth {
    public static void main(String[] arg) {
       Locale.setDefault(Locale.US);
       uiManagerSettings();
+      createEadgythDataDir();
       Prefs prefs = new Prefs();
       prefs.load();
-      String laf = prefs.getProperty("LaF");
+      String laf = prefs.property(Prefs.LAF_KEY);
       setLaf(laf);
 
       MainWin mw = new MainWin();
@@ -57,7 +61,7 @@ public class Eadgyth {
    }
 
    private static void setLaf(String laf) {
-      if (laf.length() > 0 && laf.equals("System")) {
+      if (laf.equals("System")) {
          try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
          }
@@ -69,4 +73,11 @@ public class Eadgyth {
          }
       }
    }
+   
+   private static void createEadgythDataDir() {
+      File newDir = new File(SystemParams.EADGYTH_DATA_DIR);
+      if (!newDir.exists()) {
+         newDir.mkdirs();
+      }
+   }         
 }

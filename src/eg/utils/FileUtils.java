@@ -14,10 +14,6 @@ import java.text.SimpleDateFormat;
 public class FileUtils {
 
    /**
-    * The system's line separator */
-   public final static String LINE_SEP = System.lineSeparator();
-
-   /**
     * Replaces slashes in the specified string (forward or backward) with
     * periods
     *
@@ -57,20 +53,28 @@ public class FileUtils {
     * @param e  the Exception
     */
    public static void log(Exception e) {
-      File f = new File("log.txt");
+      File f = new File(SystemParams.EADGYTH_DATA_DIR + "/log.txt");
       String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-      try (FileWriter writer = new FileWriter(f, true)) {
+      try (FileWriter writer = new FileWriter(f, false)) {
          writer.write(date + "\n");
-         writer.write(e.getMessage() + LINE_SEP);
+         writer.write(e.getMessage() + SystemParams.LINE_SEP);
          for (StackTraceElement el : e.getStackTrace()) {
-            writer.write("   " + el.toString() + LINE_SEP);
+            writer.write("   " + el.toString() + SystemParams.LINE_SEP);
          }
-         writer.write("_________________" + LINE_SEP);
-         Dialogs.errorMessage("Error: " + e.getMessage(), null);
+         writer.write("_________________" + SystemParams.LINE_SEP);
+         Dialogs.errorMessage(
+               "Error: "
+               + e.getMessage()
+               + ".\nSee also"
+               + f.toString(),
+               null);
       }
-      catch(IOException ioe) {
-         throw new RuntimeException(
-               "Could not write to the log file", ioe);
+      catch (IOException ioe) {
+         Dialogs.errorMessage(
+           "Error: "
+            + e.getMessage()
+            + "\nNOTE: Could not write to log file",
+            null);
       }
    }
 }

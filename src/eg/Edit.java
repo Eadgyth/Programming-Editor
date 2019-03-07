@@ -40,7 +40,7 @@ public class Edit {
    /**
     * @param indentUnitSelection  the initial value for the selection
     * of the indent unit. The value can only be changed in
-    * {@link #setIndentUnit}
+    * {@link #setIndentUnit()} and {@link #setIndentUnit(String)}
     */
    public Edit(String indentUnitSelection) {
       this.indentUnitSelection = indentUnitSelection;
@@ -117,7 +117,7 @@ public class Edit {
    }
 
    /**
-    * Sets the indent length using a selection dialog
+    * Sets the indent length from a selection dialog
     */
    public void setIndentUnit() {
       String number = Dialogs.comboBoxOpt(
@@ -127,15 +127,25 @@ public class Edit {
             String.valueOf(indentLength),
             false);
 
+      String unit = "";
       if (number != null) {
-         indentLength = Integer.parseInt(number);
-         indentUnit = "";
-         for (int i = 0; i < indentLength; i++) {
-            indentUnit += " ";
+         int length = Integer.parseInt(number);
+         for (int i = 0; i < length; i++) {
+            unit += " ";
          }
-         edtDoc.setIndentUnit(indentUnit);
-         indentUnitSelection = indentUnit;
       }
+      setIndentUnit(unit);
+   }
+   
+   /**
+    * Sets the indent length. Calling this method is not necessary if
+    * a document is set by {@link #setDocument}
+    *
+    * @param indentUnit  the indent unit which consists of a certain
+    * number of spaces from 0 to 6
+    */
+   public void setIndentUnit(String indentUnit) {
+      setIndentUnitSelection(indentUnit);
    }
 
    /**
@@ -265,6 +275,13 @@ public class Edit {
          }
       }
       return i + 1;
+   }
+   
+   private void setIndentUnitSelection(String indentUnit) {
+      this.indentUnit = indentUnit;
+      indentLength = indentUnit.length();
+      edtDoc.setIndentUnit(indentUnit);
+      indentUnitSelection = indentUnit;
    }
 
    private boolean isIndentConsistent(String[] textArr) {

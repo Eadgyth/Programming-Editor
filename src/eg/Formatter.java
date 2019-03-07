@@ -162,8 +162,7 @@ public class Formatter {
     * font size in <code>Prefs</code>
     */
    public void setProperties() {
-      String state = isWordwrap ? "enabled" : "disabled";
-      prefs.setProperty(wordwrapKey, state);
+      prefs.setYesNoProperty(wordwrapKey, isWordwrap);
       prefs.setProperty(fontKey, font);
       prefs.setProperty(fontSizeKey, String.valueOf(fontSize));
    }
@@ -188,22 +187,19 @@ public class Formatter {
    }
 
    private void setPropertyKeys(String prefix) {
-      wordwrapKey = prefix + "Wordwrap";
-      fontKey = prefix + "Font";
-      fontSizeKey = prefix + "FontSize";
+      wordwrapKey = prefix + Prefs.WORDWRAP_KEY;
+      fontKey = prefix + Prefs.FONT_KEY;
+      fontSizeKey = prefix + Prefs.FONT_SIZE_KEY;
    }
 
    private void getFormatProperties() {
-      isWordwrap = "enabled".equals(prefs.getProperty(wordwrapKey));
-      font = prefs.getProperty(fontKey);
-      if (font.length() == 0) {
-         font = "Consolas";
-      }
+      isWordwrap = prefs.yesNoProperty(wordwrapKey);
+      font = prefs.property(fontKey);
       try {
-         fontSize = Integer.parseInt(prefs.getProperty(fontSizeKey));
+         fontSize = Integer.parseInt(prefs.property(fontSizeKey));
       }
       catch (NumberFormatException e) {
-         fontSize = 10;
+         fontSize = 9;
       }
    }
 }

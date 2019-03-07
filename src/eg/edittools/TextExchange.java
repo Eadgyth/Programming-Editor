@@ -6,10 +6,13 @@ import java.io.File;
 
 //--Eadgyth--/
 import eg.BusyFunction;
+import eg.Edit;
 import eg.FileChooser;
 import eg.Languages;
 import eg.document.EditableDocument;
 import eg.utils.Dialogs;
+import eg.utils.FileUtils;
+import eg.utils.SystemParams;
 
 /**
  * The exchange of text between an <code>EditableDocument</code> set
@@ -20,14 +23,11 @@ import eg.utils.Dialogs;
  */
 public class TextExchange {
 
-   private final static File BACK_UP
-         = new File(System.getProperty("user.dir")
-         + "/exchangeContent.txt");
-
    private final EditableDocument exchangeDoc;
    private final FileChooser fc;
 
    private EditableDocument sourceDoc;
+   private File exchFile;
 
    /**
     * @param exchangeDoc  the <code>EditableDocument</code> that
@@ -38,8 +38,9 @@ public class TextExchange {
    public TextExchange(EditableDocument exchangeDoc, String recentDir) {
       this.exchangeDoc = exchangeDoc;
       fc = new FileChooser(recentDir);
-      if (BACK_UP.exists()) {
-          exchangeDoc.displayFileContentIgnoreLang(BACK_UP);
+      exchFile = new File(SystemParams.EADGYTH_DATA_DIR + "/exchgContent.txt");
+      if (exchFile.exists()) {
+          exchangeDoc.displayFileContentIgnoreLang(exchFile);
       }
    }
 
@@ -140,11 +141,12 @@ public class TextExchange {
    }
 
    /**
-    * Sets in this exchange document the indent unit of the source
-    * document
+    * Gets the indent unit of the source document
+    *
+    * @return  the indent unit
     */
-   public void adoptIndentUnit() {
-      exchangeDoc.setIndentUnit(sourceDoc.indentUnit());
+   public String sourceDocIndentUnit() {
+      return sourceDoc.indentUnit();
    }
 
    /**
@@ -159,7 +161,9 @@ public class TextExchange {
     * 'exchangeContent.txt' in the program folder
     */
    public void save() {
-      exchangeDoc.saveCopy(BACK_UP);
+      if (exchFile.getParentFile().exists()) {
+         exchangeDoc.saveCopy(exchFile);
+      }
    }
 
    //

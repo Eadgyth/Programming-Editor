@@ -14,10 +14,10 @@ public class IconFiles {
    private final static String ICONS_DIR = "icons/";
    private final static String TANGO_DIR;
    private final static String EAD_DIR;
-   
+
    static {
       Prefs prefs = new Prefs();
-      if ("Large".equals(prefs.getProperty("IconSize"))) {
+      if (ViewSettingWin.ICON_SIZES[1].equals(prefs.property(Prefs.ICON_SIZE_KEY))) {
          TANGO_DIR = ICONS_DIR + "Tango/large/";
          EAD_DIR = ICONS_DIR + "EadIcons/large/";
       }
@@ -60,7 +60,7 @@ public class IconFiles {
          = ICONS.createIcon(TANGO_DIR + "dialog-error.png");
    public final static ImageIcon WARNING_ICON
          = ICONS.createIcon(TANGO_DIR + "dialog-warning.png");
-
+   //
    // Eadgyth icons
    public final static ImageIcon CHANGE_PROJ_ICON
          = ICONS.createIcon(EAD_DIR + "changeProj.png" );

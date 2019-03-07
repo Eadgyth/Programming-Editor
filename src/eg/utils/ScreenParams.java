@@ -8,12 +8,7 @@ import java.awt.Toolkit;
  * screen size and resolution
  */
 public class ScreenParams {
-
-   private final static boolean IS_WINDOWS
-         = System.getProperty("os.name").toLowerCase().contains("win");
-         
-   private final static String VERSION = System.getProperty("java.version");
-   private final static boolean IS_JAVA_9_OR_HIGHER = !VERSION.startsWith("1.8");
+   
    private final static int SCREEN_RES
          = Toolkit.getDefaultToolkit().getScreenResolution();
          
@@ -56,8 +51,8 @@ public class ScreenParams {
     * @return  the rounded scaled size
     */
    public static int scaledSize(double size) {
-      if (IS_JAVA_9_OR_HIGHER) {
-         if (IS_WINDOWS) {
+      if (SystemParams.IS_JAVA_9_OR_HIGHER) {
+         if (SystemParams.IS_WINDOWS) {
             return (int) (Math.round(size * 96 / 72));
          }
          else {
@@ -76,8 +71,8 @@ public class ScreenParams {
     * @return  the rounded scaled size
     */
    public static int invertedScaledSize(int size) {
-      if (IS_JAVA_9_OR_HIGHER) {
-         if (IS_WINDOWS) {
+      if (SystemParams.IS_JAVA_9_OR_HIGHER) {
+         if (SystemParams.IS_WINDOWS) {
             return (Math.round(size / (96 / 72)));
          }
          else {

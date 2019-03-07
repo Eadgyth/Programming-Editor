@@ -18,13 +18,12 @@ public class FileChooser {
    private final JFrame frame = new JFrame();
    private JFileChooser chOpen = null;
    private JFileChooser chSave = null;
-   private File currentDir;
+   private File currentDir = new File("");
 
    /**
     * @param startingDir  the initially selected directory
     */
    public FileChooser(String startingDir) {
-      currentDir = new File(startingDir);
       initChooserOpen(startingDir);
       initChooserSave(startingDir);
    }

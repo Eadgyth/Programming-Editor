@@ -3,7 +3,7 @@ package eg;
 import java.awt.Color;
 
 /**
- * Defines colors for the dark and white background themes.<br>
+ * Defines colors for the dark and white background themes
  */
 public class BackgroundTheme {
 
@@ -22,7 +22,7 @@ public class BackgroundTheme {
     * @return  the BackgroundTheme
     */
    public static BackgroundTheme givenTheme() {
-      String theme = PREFS.getProperty("Background");
+      String theme = PREFS.property(Prefs.THEME_KEY);
       return new BackgroundTheme(theme);
    }
 

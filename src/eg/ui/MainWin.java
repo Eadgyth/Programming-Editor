@@ -481,10 +481,8 @@ public class MainWin {
             t.end();
          });
          ViewMenu vm = menuBar.viewMenu();
-         String state = vm.isTabItmSelected() ? "show" : "hide";
-         prefs.setProperty("Tabbar", state);
-         state = vm.isFileViewItmSelected() ? "show" : "hide";
-         prefs.setProperty("FileView", state);
+         prefs.setYesNoProperty(Prefs.TABBAR_KEY, vm.isTabItmSelected());
+         prefs.setYesNoProperty(Prefs.FILE_VIEW_KEY, vm.isFileViewItmSelected());
          prefs.store();
          System.exit(0);
       }
@@ -521,13 +519,13 @@ public class MainWin {
    }
 
    private void initShowTabbar() {
-      boolean show = "show".equals(prefs.getProperty("Tabbar"));
+      boolean show = prefs.yesNoProperty(Prefs.TABBAR_KEY);
       tabPane.showTabbar(show);
       menuBar.viewMenu().selectTabsItm(show);
    }
 
    private void initShowFileView() {
-      boolean show = "show".equals(prefs.getProperty("FileView"));
+      boolean show = prefs.yesNoProperty(Prefs.FILE_VIEW_KEY);
       if (show) {
          showFileView(show);
       }

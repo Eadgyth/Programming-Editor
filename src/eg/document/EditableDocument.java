@@ -13,6 +13,7 @@ import java.io.IOException;
 //--Eadgyth--/
 import eg.Languages;
 import eg.utils.FileUtils;
+import eg.utils.SystemParams;
 import eg.ui.EditArea;
 import eg.syntax.SyntaxHighlighter;
 import eg.syntax.Highlighter;
@@ -407,7 +408,7 @@ public final class EditableDocument {
       String[] lines = txt.text().split("\n");
       try (FileWriter writer = new FileWriter(f)) {
          for (String s : lines) {
-            writer.write(s + FileUtils.LINE_SEP);
+            writer.write(s + SystemParams.LINE_SEP);
          }
          return true;
       }

@@ -75,7 +75,7 @@ public class Finder implements AddableEditTool {
    }
 
    /**
-    * Has no effect in this class
+    * Does nothing in this class
     */
    @Override
    public void end() {}
@@ -153,6 +153,7 @@ public class Finder implements AddableEditTool {
       cBx.setFocusable(false);
       cBx.addItemListener(e ->
          search.setRequireWord(e.getStateChange() == ItemEvent.SELECTED));
+
       JCheckBox cBxCase = new JCheckBox("Case sensitive");
       cBxCase.setFocusable(false);
       cBxCase.addItemListener(e ->

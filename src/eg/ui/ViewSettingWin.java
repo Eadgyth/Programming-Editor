@@ -24,7 +24,7 @@ import eg.utils.ScreenParams;
  */
 public class ViewSettingWin {
 
-   public final static String[] BKGRD_OPT = {"White", "Dark"};
+   public final static String[] THEME_OPT = {"White", "Dark"};
    public final static String[] ICON_SIZES = {"Small", "Large"};
    public final static String[] LAF_OPT = {"System", "Java default"};
 
@@ -32,7 +32,7 @@ public class ViewSettingWin {
    private final JCheckBox lineNumbersChBx = new JCheckBox();
    private final JCheckBox toolbarChBx = new JCheckBox();
    private final JCheckBox statusbarChBx = new JCheckBox();
-   private final JComboBox<String> backgroundCBx = new JComboBox<>(BKGRD_OPT);
+   private final JComboBox<String> backgroundCBx = new JComboBox<>(THEME_OPT);
    private final JComboBox<String> iconSizeCBx = new JComboBox<>(ICON_SIZES);
    private final JComboBox<String> lafCbx = new JComboBox<>(LAF_OPT);
    private final JButton okBt = new JButton("OK");
@@ -135,28 +135,29 @@ public class ViewSettingWin {
 
    /**
     * Returns the index of the combobox selection for the background
+    * theme
     *
     * @return  the index
     */
-   public int backgroundIndex() {
+   public int themeIndex() {
       return backgroundCBx.getSelectedIndex();
    }
 
    /**
-    * Sets the combobox selection for the backgound
+    * Sets the combobox selection for the backgound theme
     *
     * @param index  the index to select
     */
-   public void setBackground(int index) {
+   public void setTheme(int index) {
       backgroundCBx.setSelectedIndex(index);
    }
 
    /**
-    * Sets the combobox selection for the backgound
+    * Sets the combobox selection for the backgound theme
     *
     * @param item  the item to select
     */
-   public void setBackground(String item) {
+   public void setTheme(String item) {
       backgroundCBx.setSelectedItem(item);
    }
 

@@ -64,9 +64,9 @@ public class TabbedDocuments {
          }
       });
 
-      initLanguage();
+      lang = Languages.valueOf(prefs.property(Prefs.LANG_KEY));
 
-      String indentUnit = prefs.getProperty("IndentUnit");
+      String indentUnit = prefs.property("IndentUnit");
       edit = new Edit(indentUnit);
       mw.setEditActions(edit, (l) -> changeLanguage(l));
 
@@ -74,13 +74,13 @@ public class TabbedDocuments {
       proj = new Projects(mw, ft, edtDoc);
       mw.setProjectActions(proj);
 
-      String projectRoot = prefs.getProperty("ProjectRoot");
+      String projectRoot = prefs.property("ProjectRoot");
       if (projectRoot != null && projectRoot.length() > 0) {
          ft.setProjectTree(projectRoot);
       }
 
-      String recentPath = prefs.getProperty("RecentPath");
-      fc = new FileChooser(recentPath);
+      String recentDir = prefs.property(Prefs.RECENT_DIR_KEY);
+      fc = new FileChooser(recentDir);
 
       createDocument();
    }
@@ -177,9 +177,9 @@ public class TabbedDocuments {
       boolean b = iTab == -1;
       if (b) {
          format.setProperties();
-         prefs.setProperty("IndentUnit", edit.indentUnitSelection());
-         prefs.setProperty("Language", lang.toString());
-         prefs.setProperty("RecentPath", fc.currentDir());
+         prefs.setProperty(Prefs.INDENT_UNIT_KEY, edit.indentUnitSelection());
+         prefs.setProperty(Prefs.LANG_KEY, lang.toString());
+         prefs.setProperty(Prefs.RECENT_DIR_KEY, fc.currentDir());
       }
       return b;
    }
@@ -490,15 +490,6 @@ public class TabbedDocuments {
       this.lang = lang;
       edtDoc[iTab].changeLanguage(lang);
       mw.displayLanguage(lang);
-   }
-
-   private void initLanguage() {
-      try {
-         lang = Languages.valueOf(prefs.getProperty("Language"));
-      }
-      catch (IllegalArgumentException e) {
-         lang = Languages.NORMAL_TEXT;
-      }
    }
 
    private final EditingStateReadable editState = new EditingStateReadable() {

@@ -54,7 +54,7 @@ public class ExchangeEditor implements AddableEditTool {
    private final FormatMenu formatMenu  = new FormatMenu();
    private final JButton closeBt = UIComponents.undecoratedButton();
 
-   private final Formatter format = new Formatter(1, "Exchg");
+   private final Formatter format = new Formatter(1, Prefs.EXCHG_PREFIX);
    private final Prefs prefs = new Prefs();
    private final JPanel editorPnl;
    private final TextExchange exch;
@@ -67,14 +67,16 @@ public class ExchangeEditor implements AddableEditTool {
 
       EditableDocument edtDoc = new EditableDocument(ea);
       edtDoc.setEditingStateReadable(editReadable);
-      String indentUnit = prefs.getProperty("IndentUnit");
+      String indentUnit = prefs.property(Prefs.INDENT_UNIT_KEY);
       edtDoc.setIndentUnit(indentUnit);
       edit.setDocument(edtDoc);
 
-      String recentDir = prefs.getProperty("RecentPath");
+      String recentDir = prefs.property(Prefs.RECENT_DIR_KEY);
       exch = new TextExchange(edtDoc, recentDir);
-      
-      Languages lang = initLanguage();
+
+      Languages lang = Languages.valueOf(
+            prefs.property(Prefs.EXCHG_PREFIX + Prefs.LANG_KEY));
+            
       edtDoc.changeLanguage(lang);
       initContentPnl();
       languageMenu.selectLanguageItm(lang);
@@ -118,7 +120,9 @@ public class ExchangeEditor implements AddableEditTool {
    @Override
    public void end() {
       format.setProperties();
-      prefs.setProperty("ExchgLanguage", exch.language().toString());
+      prefs.setProperty(Prefs.EXCHG_PREFIX + Prefs.LANG_KEY,
+            exch.language().toString());
+
       exch.save();
    }
 
@@ -201,7 +205,8 @@ public class ExchangeEditor implements AddableEditTool {
       setKeyBinding(copyToItm, KeyStroke.getKeyStroke(
             KeyEvent.VK_T, ActionEvent.CTRL_MASK), "T_pressed");
 
-      adoptIndentLenItm.addActionListener(e -> exch.adoptIndentUnit());
+      adoptIndentLenItm.addActionListener(
+            e -> edit.setIndentUnit(exch.sourceDocIndentUnit()));
 
       adoptLangItm.setAction(new FunctionalAction("Language", null,
            e -> adoptLanguage()));
@@ -267,17 +272,6 @@ public class ExchangeEditor implements AddableEditTool {
    private void adoptLanguage() {
       Languages lang = exch.adoptedLanguage();
       languageMenu.selectLanguageItm(exch.language());
-   }
-
-   private Languages initLanguage() {
-      Languages lang;
-      try {
-         lang = Languages.valueOf(prefs.getProperty("ExchgLanguage"));
-      }
-      catch (IllegalArgumentException e) {
-         lang = Languages.NORMAL_TEXT;
-      }
-      return lang;
    }
 
    private final EditingStateReadable editReadable = new EditingStateReadable() {
