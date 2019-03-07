@@ -8,7 +8,6 @@ import java.io.FileWriter;
 
 //--Eadgyth--/
 import eg.utils.FileUtils;
-import eg.utils.Dialogs;
 import eg.utils.SystemParams;
 import eg.ui.ViewSettingWin;
 

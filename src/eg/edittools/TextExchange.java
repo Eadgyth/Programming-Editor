@@ -6,12 +6,10 @@ import java.io.File;
 
 //--Eadgyth--/
 import eg.BusyFunction;
-import eg.Edit;
 import eg.FileChooser;
 import eg.Languages;
 import eg.document.EditableDocument;
 import eg.utils.Dialogs;
-import eg.utils.FileUtils;
 import eg.utils.SystemParams;
 
 /**
@@ -25,9 +23,9 @@ public class TextExchange {
 
    private final EditableDocument exchangeDoc;
    private final FileChooser fc;
+   private final File exchFile;
 
    private EditableDocument sourceDoc;
-   private File exchFile;
 
    /**
     * @param exchangeDoc  the <code>EditableDocument</code> that
