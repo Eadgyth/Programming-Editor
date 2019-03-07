@@ -12,8 +12,8 @@ project directory, too). While a file of the project is open (and selected in th
 a project category is selected from the 'Project' menu. This opens a simple settings dialog.
 The selectable categories so far are Java, Perl, Python, R and HTML.
 <p>
-Several projects may be defined in parallel. Switching between projects is done after selecting
-a file that is part of the project to change to.
+Several projects may be defined in parallel. Switching between projects is done after
+selecting a file that is part of the project to change to.
 <br>
 <h4>DOCUMENTATION</h4>
 <p>
@@ -23,10 +23,10 @@ can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <h4>REQUIREMENTS FOR TESTING</h4>
 <p>
 Running and compiling the program requires Java 8 or higher. The executable jar file in the
-folder 'JarAndPreferences' was made after compilation with JDK 8. Compiling and building a
-jar of the program can be done by creating a Java project with existing sources in Netbeans
-(using the src folder from the repository). This program itself may be used too! Compiling with
-a JDK version higher than 8 gives some warnings that are not yet adressed.
+repository was created after compilation with JDK 8. Compiling and building a jar can be done
+by creating a Java project with existing sources in Netbeans (using the src folder from the
+repository as sources directory). This program itself may be used too! Compiling with a JDK
+version higher than 8 gives some warnings that are not yet adressed.
 <p>
 If the editor shall be used for compiling Java code by the built-in compile option it must be
 made sure that it is run using the JRE contained in the JDK (and not the public JRE).
