@@ -22,11 +22,15 @@ can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <br>
 <h4>REQUIREMENTS FOR TESTING</h4>
 <p>
-Running and compiling the program requires Java 8 or higher. The executable jar file in the
-repository was created after compilation with JDK 8. Compiling and building a jar can be done
-by creating a Java project with existing sources in Netbeans (using the src folder from the
-repository as sources directory). This program itself may be used too! Compiling with a JDK
-version higher than 8 gives some warnings that are not yet adressed.
+Running and compiling the program requires Java 8 or higher. Compiling and building an
+executable jar file can be done by creating a Java project with existing sources in Netbeans
+(using the src folder from the repository as sources directory). This program itself may be
+used too! Compiling with a JDK version higher than 8 gives some warnings that are not yet
+adressed.
+<p> 
+To test the program also the executable jar file Eadgyth.jar may be used. Copy this file
+to any directory and run it by double clicking or from a shell using the command
+'java -jar Eadgyth.jar'. 
 <p>
 If the editor shall be used for compiling Java code by the built-in compile option it must be
 made sure that it is run using the JRE contained in the JDK (and not the public JRE).
