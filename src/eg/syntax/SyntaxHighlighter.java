@@ -87,7 +87,8 @@ public class SyntaxHighlighter {
       private int scnStart;
       private boolean isTypeMode = false;
       private boolean isMultiline = true;
-      private boolean isHighlightBlockCmnt = true;
+      private boolean isRepairBlock = false;
+      private boolean isRepairInnerBlock = false;
       private int innerStart = 0;
       private int innerEnd = 0;
       private int condition = 0;
@@ -120,7 +121,7 @@ public class SyntaxHighlighter {
        * unquoted and {@link Highlighter#isValid} returns true.
        */
       public void setStatementSection() {
-         if (isTypeMode && isHighlightBlockCmnt) {
+         if (isTypeMode && !isRepairBlock) {
             int start = scnStart;
             int end = start + section.length();
             if (scnStart > 0 && txt.text().charAt(scnStart - 1) == '\n') {
@@ -161,7 +162,7 @@ public class SyntaxHighlighter {
        * Sets the section that takes into account markup language tags
        */
       public void setMarkupSection() {
-         if (isTypeMode && isHighlightBlockCmnt) {
+         if (isTypeMode && !isRepairBlock) {
             int start = txt.text().lastIndexOf("<", chgPos);
             if (start == -1) {
                start = 0;
@@ -202,6 +203,28 @@ public class SyntaxHighlighter {
          for (String s : keys) {
             key(s, reqWord, nonWordStart, set);
          }
+      }
+
+      /**
+       * Searches and highlights keywords without case sensitivity.<br>
+       * (requires that {@link Highlighter#isValid} returns true)
+       *
+       * @param keys  the array of keywords
+       * @param reqWord  the boolean value that is true to require that
+       * keywords are whole words
+       * @param nonWordStart  the array of characters that must not precede
+       * the keyword. Can be null and is ignored if reqWord is false
+       * @param set  the SimpleAttributeSet set on the keywords
+       */
+      public void keywordsIgnoreCase(String[] keys, boolean reqWord, char[] nonWordStart,
+            SimpleAttributeSet set) {
+
+         String scn = section;
+         section = section.toLowerCase();
+         for (String s : keys) {
+            key(s, reqWord, nonWordStart, set);
+         }
+         section = scn;
       }
 
       /**
@@ -411,8 +434,12 @@ public class SyntaxHighlighter {
        * @param hlSection  the {@link Highlighter}
        */
       public void embeddedHtmlSections(String startTag, String endTag,
-            Highlighter hlSection) {
+            boolean searchStartTagLength, Highlighter hlSection) {
 
+         if (isRepairBlock) {
+            return;
+         }
+         removedBlockStart(0, startTag, endTag, false);
          String t = txt.text().toLowerCase();
          int start = 0;
          while (start != -1) {
@@ -420,31 +447,40 @@ public class SyntaxHighlighter {
             int length = 0;
             if (start != -1) {
                boolean isInCmnt = isInBlock(SyntaxConstants.HTML_BLOCK_CMNT_START,
-                  SyntaxConstants.HTML_BLOCK_CMNT_END, start, false);
+                     SyntaxConstants.HTML_BLOCK_CMNT_END, start, false);
 
                if (!isInCmnt) {
                   int end = SyntaxUtils.nextBlockEnd(t, start + 1, startTag,
                        endTag, false, false);
 
                   if (end != -1) {
-                     int startTagEnd = SyntaxUtils.nextBlockEnd(txt.text(),
-                           start + 1, "<", ">", false, false);
-
+                     int startTagEnd;
+                     if (searchStartTagLength) {
+                        startTagEnd = SyntaxUtils.nextBlockEnd(t, start + 1,
+                              "<", ">", false, false);
+                     }
+                     else {
+                        startTagEnd = start + startTag.length();
+                     }
                      if (startTagEnd != -1) {
                         innerStart = startTagEnd + 1;
                         innerEnd = end;
-                        String innerScn = txt.text().substring(innerStart, end);
+                        String innerScn = t.substring(innerStart, end);
                         setTextParams(innerScn, chgPos, innerStart);
                         hlSection.highlight(this, attr);
                         length = innerScn.length();
                      }
+                     innerStart = 0;
+                     innerEnd = 0;
+                     removedBlockStart(end + endTag.length(), startTag, endTag, false);
+                  }
+                  else {
+                     removedBlockEnd(start, startTag, endTag, false);
                   }
                }
                start += length + 1;
             }
          }
-         innerStart = 0;
-         innerEnd = 0;
       }
 
       /**
@@ -509,7 +545,7 @@ public class SyntaxHighlighter {
        * quotation must be found in a line
        */
       public void block(String blockStart, String blockEnd, boolean skipQuoted) {
-         if (!isHighlightBlockCmnt) {
+         if (isRepairBlock) {
             return;
          }
          removedBlockStart(innerStart, blockStart, blockEnd, skipQuoted);
@@ -720,10 +756,11 @@ public class SyntaxHighlighter {
       }
 
       private void repairCancelledBlock(String toRepair, int pos) {
-         isHighlightBlockCmnt = false;
+         isRepairBlock = true;
          setTextParams(toRepair, pos, pos);
          hl.highlight(this, attr);
-         isHighlightBlockCmnt = true;
+         isRepairBlock = false;
+         isRepairInnerBlock = false;
       }
 
       private boolean isInBlock(String blockStart, String blockEnd, int pos,
