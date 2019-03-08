@@ -4,9 +4,9 @@ package eg.utils;
  * Static methods to search for lines and line parameters
  */
 public class LinesFinder {
-   
+
    private final static char NEW_LINE = '\n';
-   
+
    /**
     * Returns the content of the line that contains the specified
     * position
@@ -19,7 +19,7 @@ public class LinesFinder {
       int lastNewline = LinesFinder.lastNewline(text, pos);
       return line(text, lastNewline);
    }
-   
+
    /**
     * Returns the content of the line that follows <code>lastNewline</code>
     *
@@ -54,7 +54,7 @@ public class LinesFinder {
       int linesEnd = LinesFinder.nextNewline(text, lastNewline + length);
       return text.substring(lastNewline + 1, linesEnd);
    }
-   
+
    /**
     * Returns the position of the last newline before the specified
     * position even if a newline is found at the position
@@ -70,7 +70,7 @@ public class LinesFinder {
       }
       return i;
    }
-   
+
    /**
     * Returns the position of the next newline behind the specified
     * position
@@ -88,14 +88,14 @@ public class LinesFinder {
       }
       return i;
    }
-   
+
    /**
     * Returns the number of the line that contains the specified position
     *
     * @param text  the text
     * @param pos  the position
     * @return  the number
-    */ 
+    */
    public static int lineNrAtPos(String text, int pos) {
       int count = 0;
       int i = 0;
@@ -111,7 +111,7 @@ public class LinesFinder {
       }
       return count + 1;
    }
-   
+
    /**
     * Returns the count of lines in the specified text
     *
@@ -130,10 +130,10 @@ public class LinesFinder {
       }
       return count;
    }
-   
+
    /**
-    * Returns the boolean that indicates if the specified text
-    * contains at least one newline character
+    * Returns if the specified text contains at least one
+    * newline character
     *
     * @param text  the text
     * @return  the boolean value; true if multiline
