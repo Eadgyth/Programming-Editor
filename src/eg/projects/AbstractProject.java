@@ -110,7 +110,7 @@ public abstract class AbstractProject implements Configurable {
       else {
          sw.setSaveProjConfigSelected(false);
          root = prefs.property("ProjectRoot");
-         if (isInProject(dir, root)) {
+         if (root != null && isInProject(dir, root)) {
              success = configByPrefs(root, prefs);
          }
       }
