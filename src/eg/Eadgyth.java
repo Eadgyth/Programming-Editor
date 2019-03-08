@@ -14,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 import eg.ui.MainWin;
 import eg.ui.ViewSettingWin;
 import eg.ui.Fonts;
+import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 import eg.utils.SystemParams;
 
@@ -29,7 +30,6 @@ public class Eadgyth {
       uiManagerSettings();
       createEadgythDataDir();
       Prefs prefs = new Prefs();
-      prefs.load();
       String laf = prefs.property(Prefs.LAF_KEY);
       setLaf(laf);
 
@@ -73,11 +73,9 @@ public class Eadgyth {
          }
       }
    }
-   
+
    private static void createEadgythDataDir() {
       File newDir = new File(SystemParams.EADGYTH_DATA_DIR);
-      if (!newDir.exists()) {
-         newDir.mkdirs();
-      }
-   }         
+      newDir.mkdir();
+   }
 }

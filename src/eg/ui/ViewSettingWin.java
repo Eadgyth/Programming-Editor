@@ -18,6 +18,7 @@ import javax.swing.BorderFactory;
 
 //--Eadgyth--/
 import eg.utils.ScreenParams;
+import eg.utils.SystemParams;
 
 /**
  * The dialog to enter preferences for the display of the main window
@@ -316,6 +317,7 @@ public class ViewSettingWin {
       JPanel holdComboBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
       holdComboBox.add(comboBox);
       pnl.add(holdComboBox);
+      comboBox.setEnabled(SystemParams.eadgythDataDirExists());
       return pnl;
    }
 

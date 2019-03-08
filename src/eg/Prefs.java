@@ -14,12 +14,11 @@ import eg.ui.ViewSettingWin;
 /**
  * The preferences for the editor and for projects. The editor
  * properties correspond to the keys defined as constants in this
- * class.
+ * class. Other key/property pairs can be added.
  */
 public final class Prefs {
    /**
-    * Key for the indent unit which is a number for the number of
-    * spaces */
+    * Key for the indent unit which is a certain number of spaces */
    public final static String INDENT_UNIT_KEY = "IndentUnit";
    /**
     * Key for the font name */
@@ -65,7 +64,8 @@ public final class Prefs {
     * Prefix for keys of properties of the exchange editor */
    public final static String EXCHG_PREFIX = "Exchg";
    /**
-    * The name of the ProjConfig file that may be stored in a project */
+    * The name of the properties file to store the configuration
+    * of a project */
    public final static String PROJ_CONFIG_FILE = "ProjConfig.properties";
 
    private final static String PREFS_FILE
@@ -79,19 +79,24 @@ public final class Prefs {
 
   /**
    * Creates a <code>Prefs</code> that reads from and writes to the
-   * Prefs.properties file but does not load the properties.
+   * Prefs.properties file.
    * <p>
    * The Prefs file is stored in the .eadgyth folder (see
    * {@link SystemParams EADGYTH_DATA_DIR}) if the folder exists.
    * <p>
    * Every new <code>Prefs</code> object accesses the same set of
-   * properties. If the Prefs file does not (yet) exist the editor
-   * properties are pre-set.
+   * properties which are loaded upon first creation. If the Prefs
+   * file does not (yet) exist the editor properties are pre-set.
    */
    public Prefs() {
       prop = PREF_PROP;
       file = new File(PREFS_FILE);
-      if (!file.exists()) {
+      if (file.exists()) {
+         if (prop.isEmpty()) {
+            load();
+         }
+      }
+      else {
          setProperty(INDENT_UNIT_KEY, "   ");
          setProperty(FONT_KEY, "Monospaced");
          setProperty(EXCHG_PREFIX + FONT_KEY, "Monospaced");
@@ -114,7 +119,7 @@ public final class Prefs {
 
    /**
     * Creates a <code>Prefs</code> that reads from and writes to a
-    * {@link #PROJ_CONFIG_FILE} file in the specified project directory.
+    * ProjConfig.properties file in the specified project directory.
     * The properties are loaded if the file exists. Every new
     * <code>Prefs</code> object accesses an own set of properties.
     *
@@ -128,7 +133,8 @@ public final class Prefs {
 
    /**
     * Sets a new value for the property that corresponds to the
-    * specified key.
+    * specified key or adds a new key/value pair if the key is
+    * not contained in the property list
     *
     * @param key  the property key
     * @param value  the new value
@@ -139,7 +145,8 @@ public final class Prefs {
 
    /**
     * Sets a new value for the 'Yes-No' property that corresponds
-    * to the specified key
+    * to the specified key or adds a new key/value pair if the key
+    * is not contained in the property list
     *
     * @param key  the property key
     * @param state  true for 'Yes', false for 'No'
@@ -161,8 +168,8 @@ public final class Prefs {
    }
 
    /**
-    * Returns the boolean that represents the value of the 'Yes-No'
-    * property that corresponds to the specified key
+    * Returns if the value of the 'Yes-No' property that corresponds
+    * to the specified key is 'Yes'
     *
     * @param key  the property key
     * @return  true if the value is 'Yes', false otherwise

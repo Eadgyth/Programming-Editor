@@ -8,10 +8,10 @@ import java.awt.Toolkit;
  * screen size and resolution
  */
 public class ScreenParams {
-   
+
    private final static int SCREEN_RES
          = Toolkit.getDefaultToolkit().getScreenResolution();
-         
+
    private final static double SCREEN_RES_RATIO = SCREEN_RES / 72.0;
 
   /**
@@ -20,9 +20,8 @@ public class ScreenParams {
         = Toolkit.getDefaultToolkit().getScreenSize();
 
    /**
-    * Returns a new <code>Dimension</code> that is scaled to the
-    * screen resolution ratio
-    * @see #scaledSize(double)
+    * Returns a new <code>Dimension</code> which may be scaled
+    * depending on the criteria in {@link #scaledSize}
     *
     * @param width  the width in pt
     * @param height  the height in pt
@@ -35,45 +34,46 @@ public class ScreenParams {
    }
 
    /**
-    * Returns a scaled size that depends on the Java version, the OS or
-    * the screen resolution.
+    * Returns a size which may be scaled depending on the Java version,
+    * the OS or the screen resolution.
     * <p>
-    * If the program is run using Java 8 the scaled size is the product
-    * of the specified size and the resolution ratio. This ratio is the
-    * screen resolution divided by the graphics resolution assumed by
-    * Java (72 dpi).
+    * If the Java version is 8 the scaled size is the product of the
+    * specified size and the resolution ratio. This ratio is the
+    * screen resolution divided by the graphics resolution assumed
+    * by Java graphics (72 dpi).
     * <p>
-    * If the program is run using a higher Java version the specified size
-    * is returned unchanged or, if the OS is Windows, multiplied with the
-    * ratio 96/72.
+    * If the program is run using a higher Java version the specified
+    * size is returned unchanged or, if the OS is Windows, multiplied
+    * with the ratio 96/72.
     *
     * @param size  the size to scale
     * @return  the rounded scaled size
     */
-   public static int scaledSize(double size) {
+   public static int scaledSize(int size) {
       if (SystemParams.IS_JAVA_9_OR_HIGHER) {
          if (SystemParams.IS_WINDOWS) {
-            return (int) (Math.round(size * 96 / 72));
+            return Math.round(size * 96 / 72);
          }
          else {
-            return (int) size;
+            return size;
          }
       }
       else {
          return (int) (Math.round(size * SCREEN_RES_RATIO));
       }
    }
-   
+
    /**
-    * Returns a size that reverts the scaling calculated by {@link #scaledSize}
+    * Returns a size that is the inversion of the scaling calculated
+    * by {@link #scaledSize}
     *
     * @param size  the size to scale
-    * @return  the rounded scaled size
+    * @return  the rounded inverted scaled size
     */
    public static int invertedScaledSize(int size) {
       if (SystemParams.IS_JAVA_9_OR_HIGHER) {
          if (SystemParams.IS_WINDOWS) {
-            return (Math.round(size / (96 / 72)));
+            return Math.round(size / (96 / 72));
          }
          else {
             return size;
@@ -83,4 +83,10 @@ public class ScreenParams {
          return (int) (Math.round(size / SCREEN_RES_RATIO));
       }
    }
+
+   //
+   //--private--/
+   //
+
+   private ScreenParams() {}
 }
