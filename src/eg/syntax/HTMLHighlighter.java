@@ -3,7 +3,7 @@ package eg.syntax;
 import eg.document.styledtext.Attributes;
 
 /**
- * Syntax highlighting for Html
+ * Syntax highlighting for Html (or PHP)
  */
 public class HTMLHighlighter implements Highlighter {
 
@@ -29,9 +29,10 @@ public class HTMLHighlighter implements Highlighter {
       s.block(SyntaxConstants.CDATA_BLOCK_START,
             SyntaxConstants.CDATA_BLOCK_END, false);
 
-      s.embeddedHtmlSections("<script", "</script>", true, js);
-      s.embeddedHtmlSections("<style", "</style>", true, css);
-      s.embeddedHtmlSections("<?", "?>", false, php);
+      s.innerHtmlSections("<?", "?>", false, php);
+      s.innerHtmlSections("<script", "</script>", true, js);
+      s.innerHtmlSections("<style", "</style>", true, css);
+      
    }
 
    @Override

@@ -88,7 +88,7 @@ public class SyntaxHighlighter {
       private boolean isTypeMode = false;
       private boolean isMultiline = true;
       private boolean isRepairBlock = false;
-      private boolean isRepairInnerBlock = false;
+      private Highlighter hlSection;
       private int innerStart = 0;
       private int innerEnd = 0;
       private int condition = 0;
@@ -121,7 +121,7 @@ public class SyntaxHighlighter {
        * unquoted and {@link Highlighter#isValid} returns true.
        */
       public void setStatementSection() {
-         if (isTypeMode && !isRepairBlock) {
+         if (isTypeMode) {
             int start = scnStart;
             int end = start + section.length();
             if (scnStart > 0 && txt.text().charAt(scnStart - 1) == '\n') {
@@ -429,17 +429,18 @@ public class SyntaxHighlighter {
        * Searches sections in an html document where text elements are
        * highlighted with a temporary <code>Highlighter</code>
        *
-       * @param startTag  the start tag
+       * @param startTag  the start tag without closing bracket
        * @param endTag  the end tag
+       * @param reqClosingBracket  true if the start tag needs a closing
+       * bracket; false otherwise
        * @param hlSection  the {@link Highlighter}
        */
-      public void embeddedHtmlSections(String startTag, String endTag,
-            boolean searchStartTagLength, Highlighter hlSection) {
+      public void innerHtmlSections(String startTag, String endTag,
+            boolean reqClosingBracket, Highlighter hlSection) {
 
          if (isRepairBlock) {
             return;
          }
-         removedBlockStart(0, startTag, endTag, false);
          String t = txt.text().toLowerCase();
          int start = 0;
          while (start != -1) {
@@ -450,33 +451,41 @@ public class SyntaxHighlighter {
                      SyntaxConstants.HTML_BLOCK_CMNT_END, start, false);
 
                if (!isInCmnt) {
-                  int end = SyntaxUtils.nextBlockEnd(t, start + 1, startTag,
+                  int searchStart = start + 1;
+                  int end = SyntaxUtils.nextBlockEnd(t, searchStart, startTag,
                        endTag, false, false);
 
-                  if (end != -1) {
-                     int startTagEnd;
-                     if (searchStartTagLength) {
-                        startTagEnd = SyntaxUtils.nextBlockEnd(t, start + 1,
-                              "<", ">", false, false);
-                     }
-                     else {
-                        startTagEnd = start + startTag.length();
-                     }
-                     if (startTagEnd != -1) {
-                        innerStart = startTagEnd + 1;
-                        innerEnd = end;
-                        String innerScn = t.substring(innerStart, end);
-                        setTextParams(innerScn, chgPos, innerStart);
-                        hlSection.highlight(this, attr);
-                        length = innerScn.length();
-                     }
-                     innerStart = 0;
-                     innerEnd = 0;
-                     removedBlockStart(end + endTag.length(), startTag, endTag, false);
+                  if (end == -1) {
+                     end = t.indexOf("<", searchStart);
+                  }
+                  if (end == -1) {
+                     end = t.length();
+                  }
+                  int startTagEnd;
+                  if (reqClosingBracket) {
+                     startTagEnd = SyntaxUtils.nextBlockEnd(t, searchStart,
+                           "<", ">", false, false);
                   }
                   else {
-                     removedBlockEnd(start, startTag, endTag, false);
+                     startTagEnd = start + startTag.length();
                   }
+                  if (startTagEnd != -1) {
+                     innerStart = startTagEnd;
+                     innerEnd = end;
+                     String innerScn;
+                     if (end < t.length()) {
+                        innerScn = t.substring(innerStart, end);
+                     }
+                     else {
+                        innerScn = t.substring(innerStart);
+                     }
+                     setTextParams(innerScn, chgPos, innerStart);
+                     this.hlSection = hlSection;
+                     hlSection.highlight(this, attr);
+                     length = innerScn.length();
+                  }
+                  innerStart = 0;
+                  innerEnd = 0;
                }
                start += length + 1;
             }
@@ -698,6 +707,20 @@ public class SyntaxHighlighter {
                || !SyntaxUtils.isQuoted(scn, pos, SyntaxConstants.DOUBLE_QUOTE))
                && isValid(pos + scnPos, 0);
       }
+      
+     private boolean isInBlock(String blockStart, String blockEnd, int pos,
+            boolean skipQuoted) {
+
+         int lastStart = SyntaxUtils.lastBlockStart(txt.text(), pos, blockStart,
+               blockEnd, skipQuoted, true);
+
+         int nextEnd = -1;
+         if (lastStart != -1) {
+            nextEnd = SyntaxUtils.nextBlockEnd(txt.text(), pos, blockStart,
+               blockEnd, skipQuoted, true);
+         }
+         return (lastStart != -1 & nextEnd != -1) && nextEnd != lastStart;
+      }
 
       private void removedBlockStart(int cmntEnd, String blockStart,
             String blockEnd, boolean skipQuoted) {
@@ -756,29 +779,28 @@ public class SyntaxHighlighter {
       }
 
       private void repairCancelledBlock(String toRepair, int pos) {
+         Highlighter hlRepair;
+         if (innerEnd > 0) {
+            hlRepair = hlSection;
+         }
+         else {
+            hlRepair = hl;
+         }
          isRepairBlock = true;
          setTextParams(toRepair, pos, pos);
-         hl.highlight(this, attr);
+         hlRepair.highlight(this, attr);
          isRepairBlock = false;
-         isRepairInnerBlock = false;
-      }
-
-      private boolean isInBlock(String blockStart, String blockEnd, int pos,
-            boolean skipQuoted) {
-
-         int lastStart = SyntaxUtils.lastBlockStart(txt.text(), pos, blockStart,
-               blockEnd, skipQuoted, true);
-
-         int nextEnd = -1;
-         if (lastStart != -1) {
-            nextEnd = SyntaxUtils.nextBlockEnd(txt.text(), pos, blockStart,
-               blockEnd, skipQuoted, true);
-         }
-         return (lastStart != -1 & nextEnd != -1) && nextEnd != lastStart;
       }
 
       private boolean isValid(int pos, int length) {
-         return hl.isValid(txt.text(), pos, length, condition);
+         Highlighter hlCurr;
+         if (innerEnd > 0) {
+            hlCurr = hlSection;
+         }
+         else {
+           hlCurr = hl;
+         }
+         return hlCurr.isValid(txt.text(), pos, length, condition);
       }
 
       private void setTextParams(String section, int chgPos, int scnStart) {

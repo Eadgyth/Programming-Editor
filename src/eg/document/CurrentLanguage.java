@@ -43,6 +43,9 @@ public class CurrentLanguage {
          case "css":
             lang = Languages.CSS;
             break;
+         case "php":
+             lang = Languages.PHP;
+             break;
          case "pl": case "pm":
             lang = Languages.PERL;
             break;
@@ -95,6 +98,9 @@ public class CurrentLanguage {
             break;
          case PERL:
             hl = new PerlHighlighter();
+            break;
+         case PHP:
+            hl = new HTMLHighlighter();
             break;
          case PYTHON:
             hl = new PythonHighlighter();
