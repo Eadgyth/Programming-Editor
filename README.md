@@ -53,8 +53,8 @@ If the built-in options to compile a Java project and to create a jar from it ar
 sources found in the project directory (or a sources sub-directory if given) are compiled.
 Inclusion of external libraries is so far not supported.
 <p>
-I tested the program on Windows. There are some problems with the graphical appearance on
-a high dpi screen especially if a Java version higher than 8 is used.
+There are some problems with the graphical appearance on a high dpi screen especially if a
+Java version higher than 8 is used under Windows.
 <br>
 <h4>ACKLOWLEDGEMENT</h4>
 <p>
