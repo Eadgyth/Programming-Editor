@@ -31,8 +31,7 @@ public class HTMLHighlighter implements Highlighter {
 
       s.innerHtmlSections("<?", "?>", false, php);
       s.innerHtmlSections("<script", "</script>", true, js);
-      s.innerHtmlSections("<style", "</style>", true, css);
-      
+      s.innerHtmlSections("<style", "</style>", true, css);      
    }
 
    @Override
