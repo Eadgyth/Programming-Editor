@@ -46,10 +46,10 @@ public class TaskRunner {
    }
 
    /**
-    * Runs the specified <code>Runnable</code>, which is supposed
-    * to use <code>ConsolePrinter</code> for output, in a separate
-    * thread. If the console is blocked by another task a warning
-    * dialog is shown and the thread is not started.
+    * Runs the specified <code>Runnable</code> in a separate thread.
+    * The Runnable is supposed to use {@link ConsolePrinter} for
+    * output to the console. If the console is blocked by another task
+    * a warning dialog is shown and the thread is not started.
     *
     * @param r  the Runnable
     * @param initialMsg  the message that is printed to the console

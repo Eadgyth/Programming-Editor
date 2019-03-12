@@ -317,7 +317,7 @@ public class ViewSettingWin {
       JPanel holdComboBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
       holdComboBox.add(comboBox);
       pnl.add(holdComboBox);
-      comboBox.setEnabled(SystemParams.eadgythDataDirExists());
+      comboBox.setEnabled(SystemParams.existsEadgythDataDir());
       return pnl;
    }
 

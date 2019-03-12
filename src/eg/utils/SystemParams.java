@@ -13,13 +13,13 @@ public class SystemParams {
     * The Java version */
    public final static String JAVA_VERSION;
    /**
-    * True if the Java versino is higher than 8 */
+    * True if the Java version is higher than 8 */
    public final static boolean IS_JAVA_9_OR_HIGHER;
    /**
     * The line separator */
    public final static String LINE_SEP;
    /**
-    * The path of the '.eadgyth' folder in the user home directory */
+    * The path of the '.eadgyth' folder where data are saved */
    public final static String EADGYTH_DATA_DIR;
 
    private final static String OS_NAME;
@@ -41,7 +41,7 @@ public class SystemParams {
     * @return  true if exists, false otherwise
     * @see #EADGYTH_DATA_DIR
     */
-   public static boolean eadgythDataDirExists() {
+   public static boolean existsEadgythDataDir() {
       return new File(EADGYTH_DATA_DIR).exists();
    }
 

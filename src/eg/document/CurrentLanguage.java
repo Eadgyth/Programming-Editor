@@ -12,7 +12,7 @@ import eg.syntax.*;
  */
 public class CurrentLanguage {
 
-   private Languages lang;
+   private Languages lang = Languages.NORMAL_TEXT;
 
    /**
     * Sets the language
@@ -44,8 +44,16 @@ public class CurrentLanguage {
             lang = Languages.CSS;
             break;
          case "php":
-             lang = Languages.PHP;
-             break;
+             if (lang == Languages.PHP_PURE) {
+                break;
+             }
+             else if (lang == Languages.PHP_MIXED) {
+                break;
+             }
+             else {
+                lang = Languages.PHP_MIXED;
+                break;
+             }
          case "pl": case "pm":
             lang = Languages.PERL;
             break;
@@ -99,8 +107,11 @@ public class CurrentLanguage {
          case PERL:
             hl = new PerlHighlighter();
             break;
-         case PHP:
+         case PHP_MIXED:
             hl = new HTMLHighlighter();
+            break;
+         case PHP_PURE:
+            hl = new PHPHighlighter(false);
             break;
          case PYTHON:
             hl = new PythonHighlighter();
@@ -126,6 +137,7 @@ public class CurrentLanguage {
          case JAVA:
          case JAVASCRIPT:
          case PERL:
+         case PHP_PURE:
          case CSS:
             b = true;
             break;

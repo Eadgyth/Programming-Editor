@@ -34,7 +34,9 @@ public class JavaHighlighter implements Highlighter {
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
-      if (!s.isInBlock(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH, true)) {
+      if (!s.isInBlock(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
+            SyntaxUtils.SKIP_LINE_QUOTED)) {
+
          s.resetAttributes();
          s.keywords(JAVA_ANNOTATIONS, true, null, attr.bluePlain);
          s.keywords(JAVA_KEYWORDS, true, null, attr.redPlain);
@@ -43,7 +45,8 @@ public class JavaHighlighter implements Highlighter {
          s.quoteInLine();
          s.lineComments(SyntaxConstants.DOUBLE_SLASH);
      }
-     s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH, true);
+     s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
+           SyntaxUtils.SKIP_LINE_QUOTED);
    }
 
    @Override

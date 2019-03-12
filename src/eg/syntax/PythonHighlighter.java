@@ -31,8 +31,11 @@ public class PythonHighlighter implements Highlighter {
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
-      if (!s.isInBlock(TRI_SINGLE_QUOTE, TRI_SINGLE_QUOTE, false)
-            && !s.isInBlock(TRI_DOUBLE_QUOTE, TRI_DOUBLE_QUOTE, false))  {
+      if (!s.isInBlock(TRI_SINGLE_QUOTE, TRI_SINGLE_QUOTE,
+            SyntaxUtils.INCLUDE_QUOTED)
+            
+            && !s.isInBlock(TRI_DOUBLE_QUOTE, TRI_DOUBLE_QUOTE,
+                  SyntaxUtils.INCLUDE_QUOTED))  {
 
          s.resetAttributes();
          s.keywords(KEYWORDS, true, null, attr.redPlain);
@@ -41,8 +44,8 @@ public class PythonHighlighter implements Highlighter {
          s.quoteInLine();
          s.lineComments(SyntaxConstants.HASH);
       }
-      s.block(TRI_SINGLE_QUOTE, TRI_SINGLE_QUOTE, false);
-      s.block(TRI_DOUBLE_QUOTE, TRI_DOUBLE_QUOTE, false);
+      s.block(TRI_SINGLE_QUOTE, TRI_SINGLE_QUOTE, SyntaxUtils.INCLUDE_QUOTED);
+      s.block(TRI_DOUBLE_QUOTE, TRI_DOUBLE_QUOTE, SyntaxUtils.INCLUDE_QUOTED);
    }
 
    @Override
