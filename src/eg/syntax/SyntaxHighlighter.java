@@ -249,7 +249,7 @@ public class SyntaxHighlighter {
                int endPos = start + base.length();
                length += extensionLength(extensions, endPos);
                boolean ok = SyntaxUtils.isWord(section, start, length,
-                        nonWordStart)
+                     nonWordStart)
                      && isValid(absStart, base.length());
 
                if (ok) {

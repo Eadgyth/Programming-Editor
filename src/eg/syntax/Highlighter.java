@@ -16,9 +16,10 @@ public interface Highlighter {
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr);
 
    /**
-    * Returns if a found text element is valid. An implementation may
-    * define conditions that are tested in addition to those specified
-    * in the search methods in {@link SyntaxHighlighter.SyntaxSearcher}
+    * Returns if a text element found by <code>SyntaxSearcher</code>
+    * is valid. An implementation may define additional conditions
+    * that are not specified in the search methods or simpley return
+    * true
     *
     * @param text  the text
     * @param pos  the position where a text element is found
