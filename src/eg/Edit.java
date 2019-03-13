@@ -133,8 +133,8 @@ public class Edit {
          for (int i = 0; i < length; i++) {
             unit += " ";
          }
+         setIndentUnit(unit);
       }
-      setIndentUnit(unit);
    }
    
    /**
