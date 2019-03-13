@@ -32,7 +32,8 @@ public class PHPHighlighter implements Highlighter {
    };
 
    private final static char[] END_OF_VAR = {
-      ' ', '\n', '='
+      ' ', '\n', '{', '}', '?', '!', '[', ']', ';', '.', ':', '\\', '#',
+      '&', '|', '=', '+', '-', '*', '/'
    };
    
    private final boolean mixed;
