@@ -152,6 +152,7 @@ public class TextExchange {
     */
    public void clear() {
       exchangeDoc.remove(0, exchangeDoc.textLength(), false);
+      exchangeDoc.textArea().setCaretPosition(0);
    }
 
    /**

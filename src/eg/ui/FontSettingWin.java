@@ -16,6 +16,8 @@ import javax.swing.Box;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
+import eg.utils.ScreenParams;
+
 /**
  * The dialog for setting the font and font size
  */
@@ -123,7 +125,7 @@ public class FontSettingWin {
       JPanel twoComboBx = new JPanel();
       twoComboBx.setLayout(new BoxLayout(twoComboBx, BoxLayout.LINE_AXIS));
       twoComboBx.add(fontPnl(font));
-      twoComboBx.add(Box.createRigidArea(eg.utils.ScreenParams.scaledDimension(10, 0)));
+      twoComboBx.add(Box.createRigidArea(ScreenParams.scaledDimension(10, 0)));
       twoComboBx.add(sizePnl(size));
 
       JPanel combined = new JPanel();
@@ -147,9 +149,9 @@ public class FontSettingWin {
 
    private JPanel comboBoxPnl(JComboBox<String> comboBox, String title) {
       comboBox.setFocusable(false);
-      comboBox.setFont(Fonts.VERDANA_PLAIN_8);
+      comboBox.setFont(ScreenParams.scaledFontToPlain(comboBox.getFont(), 8));
       JLabel titleLb = new JLabel(title);
-      titleLb.setFont(Fonts.SANSSERIF_BOLD_9);
+      titleLb.setFont(ScreenParams.scaledFontToBold(titleLb.getFont(), 9));
       JPanel pnl = new JPanel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
       pnl.add(titleLb);

@@ -1,5 +1,7 @@
 package eg.ui;
 
+import java.lang.reflect.InvocationTargetException;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
@@ -537,13 +539,15 @@ public class MainWin {
          for (int i = 0; i < EditTools.values().length; i++) {
             editTools.add((AddableEditTool) Class.forName(
                   "eg.edittools."
-                  + EditTools.values()[i].className()).newInstance());
+                  + EditTools.values()[i].className())
+                        .getDeclaredConstructor().newInstance());
 
             setEditToolsActions(i);
          }
       }
       catch (ClassNotFoundException | InstantiationException
-            | IllegalAccessException e) {
+            | IllegalAccessException | NoSuchMethodException
+            | InvocationTargetException e) {
 
          FileUtils.log(e);
       }

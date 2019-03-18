@@ -65,7 +65,7 @@ public class UIComponents {
     */
    public static TitledBorder titledBorder(String title) {
       TitledBorder tb = new TitledBorder(LIGHT_GRAY_LINE_BORDER, title);
-      tb.setTitleFont(Fonts.VERDANA_PLAIN_8);
+      tb.setTitleFont(ScreenParams.SANSSERIF_PLAIN_8);
       return tb;
    }
 

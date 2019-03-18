@@ -1,6 +1,7 @@
 package eg.ui;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Dimension;
 
 import javax.swing.Box;
@@ -112,8 +113,9 @@ public class StatusBar {
    }
 
    private void setLbFont(JLabel[] lb) {
+      Font f = lb[0].getFont();
       for (JLabel l : lb) {
-         l.setFont(Fonts.VERDANA_PLAIN_8);
+         l.setFont(ScreenParams.scaledFontToPlain(f, 8));
       }
    }
 

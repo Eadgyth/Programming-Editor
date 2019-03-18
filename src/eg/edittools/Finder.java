@@ -26,8 +26,8 @@ import javax.swing.event.DocumentListener;
 //--Eadgyth--/
 import eg.FunctionalAction;
 import eg.document.EditableDocument;
-import eg.ui.Fonts;
 import eg.ui.UIComponents;
+import eg.utils.ScreenParams;
 
 /**
  * The graphical view for the finding and replacing of text
@@ -122,7 +122,7 @@ public class Finder implements AddableEditTool {
    private JPanel labelPnl(String text) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
       JLabel lb = new JLabel(text);
-      lb.setFont(Fonts.SANSSERIF_BOLD_8);
+      lb.setFont(ScreenParams.scaledFontToBold(lb.getFont(), 8));
       pnl.add(lb);
       setSize(pnl);
       return pnl;
@@ -133,7 +133,9 @@ public class Finder implements AddableEditTool {
       JRadioButton upBt = new JRadioButton("up");
       JRadioButton downBt = new JRadioButton("down", true);
       upBt.setFocusable(false);
+      upBt.setFont(ScreenParams.scaledFontToPlain(upBt.getFont(), 8));
       downBt.setFocusable(false);
+      downBt.setFont(ScreenParams.scaledFontToPlain(downBt.getFont(), 8));
       ButtonGroup group = new ButtonGroup();
       group.add(upBt);
       group.add(downBt);
@@ -149,17 +151,19 @@ public class Finder implements AddableEditTool {
 
    private JPanel checkBoxPnl() {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      JCheckBox cBx = new JCheckBox("Only whole word");
-      cBx.setFocusable(false);
-      cBx.addItemListener(e ->
+      JCheckBox cBxWord = new JCheckBox("Only whole word");
+      cBxWord.setFocusable(false);
+      cBxWord.setFont(ScreenParams.scaledFontToPlain(cBxWord.getFont(), 8));
+      cBxWord.addItemListener(e ->
          search.setRequireWord(e.getStateChange() == ItemEvent.SELECTED));
 
       JCheckBox cBxCase = new JCheckBox("Case sensitive");
       cBxCase.setFocusable(false);
+      cBxCase.setFont(ScreenParams.scaledFontToPlain(cBxCase.getFont(), 8));
       cBxCase.addItemListener(e ->
          search.setCaseSensitivity(e.getStateChange() == ItemEvent.SELECTED));
 
-      pnl.add(cBx);
+      pnl.add(cBxWord);
       pnl.add(cBxCase);
       pnl.setBorder(UIComponents.titledBorder("Search options"));
       setSize(pnl);

@@ -244,7 +244,7 @@ public class SyntaxUtils {
       }
       return nextEnd;
    }
-   
+
    /**
     * Returns the position of the next <code>toSearch</code> that is not
     * quoted
@@ -281,7 +281,7 @@ public class SyntaxUtils {
       }
       return index;
    }
-   
+
    /**
     * Returns if the specified position is found in a section that is
     * quoted with single or double quote marks
@@ -361,7 +361,7 @@ public class SyntaxUtils {
       }
       if (count > 1) {
          if (pos < i) {
-            return (count) % 2 == 0;
+            return count % 2 == 0;
          }
          else {
             return false;
@@ -371,7 +371,7 @@ public class SyntaxUtils {
          return false;
       }
    }
-   
+
     /**
     * Returns the position of the first quote mark (single or double)
     * in the text before <code>pos</code>

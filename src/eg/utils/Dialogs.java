@@ -14,7 +14,6 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 //--Eadgyth--//
-import eg.ui.Fonts;
 import eg.ui.IconFiles;
 
 /**
@@ -142,7 +141,7 @@ public class Dialogs {
       if (preselected != null) {
          cBox.setSelectedItem(preselected);
       }
-      cBox.setFont(Fonts.SANSSERIF_PLAIN_9);
+      cBox.setFont(ScreenParams.scaledFontToPlain(cBox.getFont(), 8));
       JPanel pnl = new JPanel(new GridLayout(2, 1));
       JLabel lb = new JLabel(message);
       lb.setFont(new Font("Arial", Font.PLAIN, ScreenParams.scaledSize(9)));

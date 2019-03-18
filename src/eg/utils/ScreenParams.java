@@ -1,11 +1,11 @@
 package eg.utils;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 
 /**
- * Static constants and methods to obtain quantities that depend on the
- * screen size and resolution
+ * The screen size and parameters that depend on the screen resolution.
  */
 public class ScreenParams {
 
@@ -23,65 +23,121 @@ public class ScreenParams {
     * Returns a new <code>Dimension</code> which may be scaled
     * depending on the criteria in {@link #scaledSize}
     *
-    * @param width  the width in pt
-    * @param height  the height in pt
+    * @param unscaledWidth  the width in pt
+    * @param unscaledHeight  the height in pt
     * @return   the Dimension
     */
-   public static Dimension scaledDimension(int width, int height) {
-      width = scaledSize(width);
-      height = scaledSize(height);
+   public static Dimension scaledDimension(int unscaledWidth, int unscaledHeight) {
+      int width = scaledSize(unscaledWidth);
+      int height = scaledSize(unscaledHeight);
       return new Dimension(width, height);
    }
+   
+    /**
+    * Scaled sans-serif, plain; unscaled size 8 pt */
+   public final static Font SANSSERIF_PLAIN_8
+         = new Font("SansSerif", Font.PLAIN, scaledSize(8));
 
    /**
-    * Returns a size which may be scaled depending on the Java version,
-    * the OS or the screen resolution.
-    * <p>
-    * If the Java version is 8 the scaled size is the product of the
-    * specified size and the resolution ratio. This ratio is the
-    * screen resolution divided by the graphics resolution assumed
-    * by Java graphics (72 dpi).
-    * <p>
-    * If the program is run using a higher Java version the specified
-    * size is returned unchanged or, if the OS is Windows, multiplied
-    * with the ratio 96/72.
+    * Scaled sans-serif, plain; unscaled size 9 pt */
+   public final static Font SANSSERIF_PLAIN_9
+         = new Font("SansSerif", Font.PLAIN, scaledSize(9));
+
+   /**
+    * Scaled sans-serif, bold; unscaled size 9 pt */
+   public final static Font SANSSERIF_BOLD_9
+         = new Font("SansSerif", Font.BOLD, scaledSize(9));
+
+   /**
+    * Scaled sans-serif, bold; unscaled size 11 pt */
+   public final static Font SANSSERIF_BOLD_11
+         = new Font("SansSerif", Font.BOLD, scaledSize(11));
+   
+   /**
+    * Returns the specified font with a scaled size and type plain
     *
-    * @param size  the size to scale
-    * @return  the rounded scaled size
-    */
-   public static int scaledSize(int size) {
-      if (SystemParams.IS_JAVA_9_OR_HIGHER) {
-         if (SystemParams.IS_WINDOWS) {
-            return Math.round(size * 96 / 72);
-         }
-         else {
-            return size;
-         }
-      }
-      else {
-         return (int) (Math.round(size * SCREEN_RES_RATIO));
-      }
+    * @param f  the font
+    * @param unscaledSize  the original unscaled size
+    * @return  the font
+    */ 
+   public static Font scaledFontToPlain(Font f, int unscaledSize) {
+      float s = (float) scaledSize(unscaledSize);
+      Font fNew = f.deriveFont(Font.PLAIN, s);
+      return fNew;
    }
-
+   
    /**
-    * Returns a size that is the inversion of the scaling calculated
-    * by {@link #scaledSize}
+    * Returns the specified font with a scaled size and type bold
     *
-    * @param size  the size to scale
-    * @return  the rounded inverted scaled size
+    * @param f  the font
+    * @param unscaledSize  the original unscaled size
+    * @return  the font
     */
-   public static int invertedScaledSize(int size) {
-      if (SystemParams.IS_JAVA_9_OR_HIGHER) {
+   public static Font scaledFontToBold(Font f, int unscaledSize) {
+      float s = (float) scaledSize(unscaledSize);
+      Font fNew = f.deriveFont(Font.BOLD, s);
+      return fNew;
+   }
+   
+   /**
+    * Returns the size which is scaled to the screen resolution. The
+    * specified <code>unscaledSize</code> is the size for the resolution
+    * assumed by Java (72 dpi).
+    *
+    * @param  unscaledSize  the unscaled size
+    * @return  the scaled size
+    */
+   public static int scaledSize(int unscaledSize) {
+      //
+      // comment if-else statements and uncomment the last line if ui
+      // scaling is not set to 1 in main method in eg.Eadgyth
+      //
+      /*if (SystemParams.IS_JAVA_9_OR_HIGHER) {
          if (SystemParams.IS_WINDOWS) {
-            return Math.round(size / (96 / 72));
+            return Math.round(unscaledSize * 96 / 72);
          }
          else {
-            return size;
+            return unscaledSize;
          }
       }
       else {
-         return (int) (Math.round(size / SCREEN_RES_RATIO));
+         return (int) (Math.round(unscaledSize * SCREEN_RES_RATIO));
+      }*/
+      //
+      // comment this line and uncomment if-else statements above if
+      // ui scaling is set to 1 main method in eg.Eadgyth
+      //
+      return (int) (Math.round(unscaledSize * SCREEN_RES_RATIO));
+   }
+   
+   /**
+    * Returns the size that is the inversion of the scaled size
+    *
+    * @param  scaledSize  the previously scaled
+    * @return  the rounded inverted scaled size
+    * @see scaledSize
+    */
+   public static int invertedScaledSize(int scaledSize) {
+      //
+      // comment if-else statements and uncomment last line if ui scaling
+      // is not set to 1 in main method in eg.Eadgyth 
+      //
+      /*if (SystemParams.IS_JAVA_9_OR_HIGHER) {
+         if (SystemParams.IS_WINDOWS) {
+            return Math.round(scaledSize / (96 / 72));
+         }
+         else {
+            return scaledSize;
+         }
       }
+      else {
+         return (int) (Math.round(scaledSize / SCREEN_RES_RATIO));
+      }*/
+      //
+      // comment this line and uncomment if-else statements above if
+      // ui scaling is set to 1 main method in eg.Eadgyth
+      //
+      return (int) (Math.round(scaledSize / SCREEN_RES_RATIO));
    }
 
    //

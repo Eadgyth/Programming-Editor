@@ -244,14 +244,13 @@ public class ViewSettingWin {
    }
 
    private JPanel windowSettingsPnl() {
-      JPanel pnl = new JPanel(new GridLayout(3, 1));
-      pnl.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-      pnl.add(lineNumberSettingPnl());
-      pnl.add(toolbarSettingPnl());
-      pnl.add(statusbarSettingPnl());
-      JPanel ctrPnl = new JPanel();
-      ctrPnl.add(pnl);
-      return ctrPnl;
+      JPanel pnl = new JPanel();
+      JPanel innerPnl = new JPanel(new GridLayout(3, 1));
+      innerPnl.add(lineNumberSettingPnl());
+      innerPnl.add(toolbarSettingPnl());
+      innerPnl.add(statusbarSettingPnl());
+      pnl.add(innerPnl);
+      return pnl;
    }
 
    private JPanel appearanceSettingsPnl() {
@@ -259,7 +258,7 @@ public class ViewSettingWin {
       pnl.setBorder(UIComponents.titledBorder("Appearance"));
       JPanel innerPnl = new JPanel(new GridLayout(4, 1));
       JLabel lb = new JLabel("Selections take effect only after restart");
-      lb.setFont(Fonts.SANSSERIF_PLAIN_8);
+      lb.setFont(ScreenParams.scaledFontToPlain(lb.getFont(), 8));
       innerPnl.add(backgroundSettingPnl());
       innerPnl.add(iconSizeSettingPnl());
       innerPnl.add(lafSettingPnl());
@@ -295,28 +294,25 @@ public class ViewSettingWin {
 
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
       JLabel lb = new JLabel(title);
-      lb.setFont(Fonts.SANSSERIF_BOLD_8);
-      lb.setPreferredSize(ScreenParams.scaledDimension(200, 0));
+      lb.setFont(ScreenParams.scaledFontToBold(lb.getFont(), 8));
       JPanel pnl = new JPanel();
+      pnl.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
-      JPanel holdCheckBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      holdCheckBox.add(checkBox);
-      pnl.add(holdCheckBox);
+      pnl.add(checkBox);
       pnl.add(lb);
       return pnl;
    }
 
    private JPanel comboBxPnl(JComboBox<String> comboBox, String title) {
       JLabel lb = new JLabel(title);
-      lb.setFont(Fonts.SANSSERIF_BOLD_8);
-      lb.setPreferredSize(ScreenParams.scaledDimension(75, 0));
-      comboBox.setFont(Fonts.SANSSERIF_PLAIN_9);
+      lb.setFont(ScreenParams.scaledFontToBold(lb.getFont(), 8));
+      lb.setPreferredSize(ScreenParams.scaledDimension(75, 0));      
+      comboBox.setFont(ScreenParams.scaledFontToPlain(comboBox.getFont(), 8));
       JPanel pnl = new JPanel();
+      pnl.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
-      pnl.add(lb);
-      JPanel holdComboBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      holdComboBox.add(comboBox);
-      pnl.add(holdComboBox);
+      pnl.add(lb);      
+      pnl.add(comboBox);
       comboBox.setEnabled(SystemParams.existsEadgythDataDir());
       return pnl;
    }

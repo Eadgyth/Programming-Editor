@@ -26,6 +26,7 @@ import java.io.File;
 //--Eadgyth--/
 import eg.BackgroundTheme;
 import eg.FunctionalAction;
+import eg.utils.ScreenParams;
 import eg.ui.IconFiles;
 import eg.ui.UIComponents;
 
@@ -173,6 +174,7 @@ public class TreePanel {
            if (value instanceof File) {
               File f = (File) value;
               setIcon(fsv.getSystemIcon(f));
+              setFont(ScreenParams.scaledFontToPlain(getFont(), 8));
               setText(f.getName());
            }
         }

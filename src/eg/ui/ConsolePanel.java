@@ -14,6 +14,7 @@ import javax.swing.border.LineBorder;
 //--Eadgyth--/
 import eg.BackgroundTheme;
 import eg.FunctionalAction;
+import eg.utils.ScreenParams;
 
 /**
  * Defines the panel which contains the text area that functions as the
@@ -39,7 +40,7 @@ public class ConsolePanel {
       scroll.setViewportView(area);
       content.add(scroll, BorderLayout.CENTER);
 
-      area.setFont(Fonts.SANSSERIF_PLAIN_8);
+      area.setFont(ScreenParams.SANSSERIF_PLAIN_8);
       area.setEditable(false);
       area.setFocusable(false);
       BackgroundTheme theme = BackgroundTheme.givenTheme();

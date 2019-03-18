@@ -4,6 +4,10 @@ import javax.swing.JMenuBar;
 import javax.swing.Box;
 import javax.swing.UIManager;
 
+import javax.swing.border.EmptyBorder;
+
+import eg.utils.ScreenParams;
+
 /**
  * The menu bar that has the menus.<br>
  * Created in {@link eg.ui.MainWin}
@@ -21,7 +25,7 @@ public class MenuBar {
 
    public MenuBar() {
       //menuBar.setOpaque(false);
-      menuBar.setBorder(null);
+      menuBar.setBorder(new EmptyBorder(0, 0, 0, 0));
       assembleMenu();
    }
 

@@ -19,7 +19,6 @@ import java.awt.event.WindowAdapter;
 
 //--Eadgyth--//
 import eg.ui.IconFiles;
-import eg.ui.Fonts;
 import eg.utils.ScreenParams;
 
 /**
@@ -521,8 +520,8 @@ public class SettingsWindow {
 
    private JPanel holdLbAndTf(JLabel lb, JTextField tf) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-      lb.setFont(Fonts.SANSSERIF_BOLD_8);
-      tf.setFont(Fonts.SANSSERIF_PLAIN_8);
+      lb.setFont(ScreenParams.scaledFontToBold(lb.getFont(), 8));
+      tf.setFont(ScreenParams.scaledFontToPlain(tf.getFont(), 8));
       tf.setPreferredSize(DIM_TF);
       pnl.add(lb);
       pnl.add(tf);
@@ -531,9 +530,9 @@ public class SettingsWindow {
 
    private JPanel checkBxPnl(JCheckBox checkBox, String title) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-      JLabel label = new JLabel(title);
-      label.setFont(Fonts.SANSSERIF_BOLD_8);
-      pnl.add(label);
+      JLabel lb = new JLabel(title);
+      lb.setFont(ScreenParams.scaledFontToBold(lb.getFont(), 8));
+      pnl.add(lb);
       pnl.add(checkBox);
       return pnl;
    }
@@ -545,6 +544,7 @@ public class SettingsWindow {
       JTabbedPane tb = null;
       if (useCmdOptions || useCmdArgs) {
          tb = new JTabbedPane();
+         tb.setFont(ScreenParams.scaledFontToPlain(tb.getFont(), 8));
          tb.add("Run", commandPnl());
       }
       if (buildNameLabel != null || extensionsLabel != null) {

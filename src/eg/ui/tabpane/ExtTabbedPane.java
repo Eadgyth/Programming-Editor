@@ -16,6 +16,7 @@ import javax.swing.plaf.TabbedPaneUI;
 //--Eadgyth--/
 import eg.FunctionalAction;
 import eg.ui.UIComponents;
+import eg.utils.ScreenParams;
 
 /**
  * The <code>JTabbedPane</code> for the editor.
@@ -72,8 +73,8 @@ public final class ExtTabbedPane extends JTabbedPane {
       int index = getTabCount();
       addTab(null, c);
       JLabel titleLb = new JLabel(title);
-      Font f = titleLb.getFont().deriveFont(Font.PLAIN);
-      titleLb.setFont(f);
+      Font f = titleLb.getFont();
+      titleLb.setFont(ScreenParams.scaledFontToPlain(f, 8));
       JButton closeBt = UIComponents.undecoratedButton();
       closeBt.setAction(closeAct);
       JPanel pnl = UIComponents.labeledPanel(titleLb, closeBt);
@@ -120,16 +121,10 @@ public final class ExtTabbedPane extends JTabbedPane {
        super.setUI(tui);
    }
 
-   /**
-    * No effect. The UI object is set in this class
-    */
    @Override
    public void setUI(TabbedPaneUI ui) {
    }
 
-   /**
-    * No effect. The placement must remain at the top
-    */
    @Override
    public void setTabPlacement(int tabPlacement) {
    }

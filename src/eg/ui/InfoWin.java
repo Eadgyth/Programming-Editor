@@ -12,6 +12,9 @@ import java.awt.Color;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+//--Eadgyth--/
+import eg.utils.ScreenParams;
+
 /**
  * The window that shows info about Eadgyth
  */
@@ -36,8 +39,8 @@ public class InfoWin {
    private final JButton okBt     = new JButton("OK");
 
    public InfoWin() {
-      titleLb.setFont(Fonts.SANSSERIF_BOLD_11);
-      infoLb.setFont(Fonts.SANSSERIF_PLAIN_9);
+      titleLb.setFont(ScreenParams.SANSSERIF_BOLD_11);
+      infoLb.setFont(ScreenParams.SANSSERIF_PLAIN_9);
       okBt.setFocusPainted(false);
       okBt.addActionListener(e -> frame.setVisible(false));
       okButton.add(okBt);

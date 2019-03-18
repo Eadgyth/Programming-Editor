@@ -13,10 +13,9 @@ import javax.swing.border.EmptyBorder;
 //--Eadgyth--/
 import eg.ui.MainWin;
 import eg.ui.ViewSettingWin;
-import eg.ui.Fonts;
-import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 import eg.utils.SystemParams;
+import eg.utils.ScreenParams;
 
 /**
  * Contains the main method
@@ -52,12 +51,25 @@ public class Eadgyth {
    }
 
    private static void uiManagerSettings() {
+      //
+      // The dpi scaling is disabled when the Java version is 9+
+      // because the positioning of the caret in the text with the
+      // mouse is not working properly on a high dpi screen. The
+      // following 'if' statement may be commented out for testing.
+      // Then, the methods 'scaledSize' and 'invertedScaledSize'
+      // in eg.utils.ScreenParams should be modified as mentioned
+      // in the comments there.
+      // 
+      if (SystemParams.IS_JAVA_9_OR_HIGHER) {
+         System.setProperty("sun.java2d.uiScale", "1.0");
+         UIManager.put("Button.font", ScreenParams.SANSSERIF_PLAIN_8);
+      }
       UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-      UIManager.put("Menu.font", Fonts.SANSSERIF_PLAIN_9);
-      UIManager.put("MenuItem.font", Fonts.SANSSERIF_PLAIN_9);
-      UIManager.put("CheckBoxMenuItem.font", Fonts.SANSSERIF_PLAIN_9);
+      UIManager.put("Menu.font", ScreenParams.SANSSERIF_PLAIN_9);
+      UIManager.put("MenuItem.font", ScreenParams.SANSSERIF_PLAIN_9);
+      UIManager.put("CheckBoxMenuItem.font", ScreenParams.SANSSERIF_PLAIN_9);
       UIManager.put("SplitPaneDivider.border", new EmptyBorder(0, 0, 0, 0));
-      UIManager.put("Tree.rowHeight", eg.utils.ScreenParams.scaledSize(14));
+      UIManager.put("Tree.rowHeight", ScreenParams.scaledSize(14));
    }
 
    private static void setLaf(String laf) {
@@ -69,6 +81,7 @@ public class Eadgyth {
               | IllegalAccessException
               | InstantiationException
               | UnsupportedLookAndFeelException e) {
+
             FileUtils.log(e);
          }
       }

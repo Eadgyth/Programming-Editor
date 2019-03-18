@@ -56,7 +56,7 @@ public class FileUtils {
       File f = new File(SystemParams.EADGYTH_DATA_DIR + "/log.txt");
       String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
       try (FileWriter writer = new FileWriter(f, false)) {
-         writer.write(date + "\n");
+         writer.write(" " + date + "\n");
          writer.write(e.getMessage() + SystemParams.LINE_SEP);
          for (StackTraceElement el : e.getStackTrace()) {
             writer.write("   " + el.toString() + SystemParams.LINE_SEP);
@@ -65,7 +65,7 @@ public class FileUtils {
          Dialogs.errorMessage(
                "Error: "
                + e.getMessage()
-               + ".\nSee also"
+               + ".\nSee also "
                + f.toString(),
                null);
       }
