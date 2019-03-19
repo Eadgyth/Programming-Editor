@@ -25,10 +25,10 @@ can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 Running and compiling the program requires Java 8 or higher. Compiling and building an
 executable jar file can be done by creating a Java project with existing sources in Netbeans
 (using the src folder from the repository as sources directory). This program itself may be
-used too! Compiling with a JDK version higher than 8 gives some warnings that are not yet
-adressed.
+used too :).
 <p> 
-To test the program also the executable jar file Eadgyth.jar may be used. Copy this file
+To test the program also the executable jar file in
+<a href=> in the releases site may be used. Copy this file
 to any directory and run it by double clicking or from a shell using the command
 'java -jar Eadgyth.jar'. 
 <p>
