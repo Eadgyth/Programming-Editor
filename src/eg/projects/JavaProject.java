@@ -40,6 +40,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
       inputOptions.addFileInput("Name of main class file")
             .addSourceDirInput()
             .addExecDirInput()
+            .addCmdOptionsInput()
             .addCmdArgsInput()
             .addCompileOptionInput("Xlint compiler options")
             .addExtensionsInput("Extensions of included non-Java files")
@@ -138,6 +139,9 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
       StringBuilder sb = new StringBuilder("java ");
       if (!executableDirName().isEmpty()) {
          sb.append("-cp ").append(executableDirName()).append(" ");
+      }
+      if (!cmdOptions().isEmpty()) {
+         sb.append(cmdOptions()).append(" ");
       }
       sb.append(qualifiedMain);
       if (!cmdArgs().isEmpty()) {

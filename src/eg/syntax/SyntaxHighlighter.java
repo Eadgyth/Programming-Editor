@@ -48,7 +48,7 @@ public class SyntaxHighlighter {
 
    /**
     * Highlights text elements in a section around the position where a
-    * a change happened. The section is initially the line that contains
+    * change happened. The section is initially the line that contains
     * <code>chgPos</code>.
     *
     * @param chgPos  the position where a change happened
@@ -192,10 +192,11 @@ public class SyntaxHighlighter {
        * {@link Highlighter#isValid} returns true)
        *
        * @param keys  the array of keywords
-       * @param reqWord  the boolean value that is true to require that
-       * keywords are whole words
-       * @param nonWordStart  the array of characters that must not precede
-       * the keyword. Can be null and is ignored if reqWord is false
+       * @param reqWord  true to require that keywords are whole words,
+       * false otherwise
+       * @param nonWordStart  the array of characters that must not
+       * precede the keyword. Can be null and is ignored if reqWord is
+       * false
        * @param set  the SimpleAttributeSet set on the keywords
        */
       public void keywords(String[] keys, boolean reqWord, char[] nonWordStart,
@@ -228,7 +229,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights an extensible base keyword.<br>
+       * Searches and highlights an extensible keyword.<br>
        * (requires that {@link Highlighter#isValid} returns true)
        *
        * @param base  the base keyword

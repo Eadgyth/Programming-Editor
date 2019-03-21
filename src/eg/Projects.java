@@ -150,13 +150,12 @@ public class Projects {
          }
       }
       if (isFound) {
+         projList.add(projToFind);
          if (current == null) {
             current = projToFind;
-            projList.add(current);
             updateProjectSetting();
          }
          else {
-            projList.add(projToFind);
             change(projToFind);
          }
          projToFind.buildSettingsWindow();
@@ -361,20 +360,23 @@ public class Projects {
    }
 
    private int switchProjectRes(String projName) {
-      return Dialogs.confirmYesNo("Switch to project " + projName + "?");
+      return Dialogs.confirmYesNo(
+            "Switch to project "
+            + projName
+            + "?");
    }
 
    private void fileNotFoundMsg(String filename) {
        Dialogs.errorMessage(
-              filename
-              + ":\nThe file could not be found anymore",
-              "Missing files");
+             filename
+             + ":\nThe file could not be found anymore",
+             "Missing files");
    }
 
    private void filesNotFoundMsg(String filenames) {
       Dialogs.errorMessage(
-              "The following files could not be found anymore:\n"
-              + filenames,
-              "Missing files");
+             "The following files could not be found anymore:\n"
+             + filenames,
+             "Missing files");
    }
 }

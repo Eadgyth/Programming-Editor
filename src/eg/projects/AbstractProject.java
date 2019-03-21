@@ -38,7 +38,7 @@ public abstract class AbstractProject implements Configurable {
    private final boolean useMainFile;
    private final SettingsWindow sw;
    //
-   // Variables that correspond to or depend on input in settings window
+   // Variables that correspond to or depend on input in the settings window
    private String projectRoot = "";
    private String mainFileName = "";
    private String relMainFilePath = "";
@@ -441,7 +441,7 @@ public abstract class AbstractProject implements Configurable {
          projectRoot = root;
          displaySettings();
          if (pr == conf) {
-            store(prefs);
+            store(pr);
          }
       }
       return success;
@@ -502,8 +502,8 @@ public abstract class AbstractProject implements Configurable {
       sw.displayExecDir(execDirName);
       sw.displayExtensions(extensions);
       sw.displayBuildName(buildName);
-      sw.displayCmdArgs(cmdArgs);
       sw.displayCmdOptions(cmdOptions);
+      sw.displayCmdArgs(cmdArgs);
       sw.displayCompileOption(compileOption);
    }
 

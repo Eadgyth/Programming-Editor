@@ -360,7 +360,6 @@ public class SettingsWindow {
          return this;
       }
 
-
       /**
        * Adds the option to enter a compile option and sets the label for
        * the corresponding text field

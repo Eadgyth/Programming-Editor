@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 public interface Configurable {
 
    /**
-    * Builds the settings window depending on the input options
+    * Builds a settings window depending on the input options
     * required in a project
     */
    public void buildSettingsWindow();
