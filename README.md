@@ -35,7 +35,8 @@ output is not to the terminal of the OS (PERL, for example, but not Java). To di
 output correctly block-buffering would have to be disabled if this option is available
 for a language (by a corresponding command option which can be entered in the project
 settings or by a switch in a script itself). Also, an application may be tested by starting
-it in the terminal of the OS using the option to enter system commands.
+it in the terminal of the OS using the option to enter system commands in the working
+(project) directory.
 <p>
 If the built-in options to compile a Java project and to create a jar from it are used only
 sources found in the project directory (or a sources sub-directory if given) are compiled.
