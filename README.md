@@ -4,6 +4,10 @@ A text editor which can be used for coding and which can be easily set up to run
 testing. The editor should be as simple as possible to use and be helpful, for example, to
 write applications for home requirements or quick testing.
 <br>
+<p>
+A more detailed description of the features, screenshots, a help site and code documentation
+can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
+<br>
 <h4>SHORT DESCRIPTION</h4>
 <p>
 To run code from within the editor firstly open a file from or newly save a file to the
@@ -14,11 +18,6 @@ The selectable categories so far are Java, Perl, Python, R and HTML.
 <p>
 Several projects may be defined in parallel. Switching between projects is done after
 selecting a file that is part of the project to change to.
-<br>
-<h4>DOCUMENTATION</h4>
-<p>
-A more detailed description of the features, screenshots, a help site and code documentation
-can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <br>
 <h4>REQUIREMENTS FOR TESTING</h4>
 <p>
