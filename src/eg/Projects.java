@@ -153,6 +153,7 @@ public class Projects {
          projList.add(projToFind);
          if (current == null) {
             current = projToFind;
+            current.storeConfiguration();
             updateProjectSetting();
          }
          else {

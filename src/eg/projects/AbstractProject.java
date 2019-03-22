@@ -440,9 +440,6 @@ public abstract class AbstractProject implements Configurable {
       if (success) {
          projectRoot = root;
          displaySettings();
-         if (pr == conf) {
-            store(pr);
-         }
       }
       return success;
    }
