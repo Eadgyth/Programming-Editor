@@ -9,25 +9,13 @@ A more detailed description of the features, screenshots, a help site and code d
 can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <p> 
 To try the program the executable jar file in a
-<a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used. The
-jar was created after compiling with Java 8.
+<a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
 <br>
-<h4>SHORT DESCRIPTION</h4>
+<h4>REQUIREMENTS</h4>
 <p>
-To run code from within the editor firstly open a file from or newly save a file to the
-directory that is to be defined as a project (the file my be saved in sub-directory of the
-project directory, too). While a file of the project is open (and selected in the tab bar)
-a project category is selected from the 'Project' menu. This opens a simple settings dialog.
-The selectable categories so far are Java, Perl, Python, R and HTML.
-<p>
-Several projects may be defined in parallel. Switching between projects is done after
-selecting a file that is part of the project to change to.
-<br>
-<h4>REQUIREMENTS FOR TESTING</h4>
-<p>
-Running and compiling the program requires Java 8 or higher. Compiling and building an
-executable jar file can be done by creating a Java project with existing sources in Netbeans
-(using the src folder from the repository as sources directory).
+Running and compiling the program requires Java 8 or higher. Building an executable jar
+file can be done by creating a Java project with existing sources in Netbeans using the
+src folder from the repository as sources directory.
 <p>
 If this editor shall be used for compiling Java code by the built-in compile option it must
 be made sure that it is run using the JRE contained in the JDK (and not the public JRE).
