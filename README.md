@@ -1,10 +1,11 @@
 <h3>Eadgyth Programming-Editor</h3>
 <p>
 This is a text editor which can be used for coding and which can be easily set up to run
-code by built-in functions. The goal is that it is as simple as possible to use and is
-helpful, for example, to write applications for home requirements. One feature is compiling
-and running Java code organized in packages and creating an executable jar file of a Java
-project. Also, running scripts in Perl, Python an R is included.
+code by built-in functions. The goal is that setting a coding project is as simple as
+possible and that the editor is helpful, for example, to write applications for home
+requirements. One feature is compiling and running Java code organized in packages and
+creating an executable jar file of a Java project. Also, running scripts in Perl, Python
+an R is included.
 <br>
 <p>
 A more detailed description of the features, screenshots, a help site and code documentation
