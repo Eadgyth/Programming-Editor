@@ -7,6 +7,10 @@ write applications for home requirements or quick testing.
 <p>
 A more detailed description of the features, screenshots, a help site and code documentation
 can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
+<p> 
+To try the program the executable jar file in a
+<a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used. The
+jar was created after compiling with Java 8.
 <br>
 <h4>SHORT DESCRIPTION</h4>
 <p>
@@ -24,10 +28,6 @@ selecting a file that is part of the project to change to.
 Running and compiling the program requires Java 8 or higher. Compiling and building an
 executable jar file can be done by creating a Java project with existing sources in Netbeans
 (using the src folder from the repository as sources directory).
-<p> 
-To try the program also the executable jar file in a
-<a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used. The
-jar was created after compiling with Java 8.
 <p>
 If this editor shall be used for compiling Java code by the built-in compile option it must
 be made sure that it is run using the JRE contained in the JDK (and not the public JRE).
