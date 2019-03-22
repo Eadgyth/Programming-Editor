@@ -1,4 +1,4 @@
-<h4>GOAL</h4>
+<h3>Eadgyth Programming-Editor</h3>
 <p>
 A text editor which can be used for coding and which can be easily set up to run code for
 testing. The editor should be as simple as possible to use and be helpful, for example, to
