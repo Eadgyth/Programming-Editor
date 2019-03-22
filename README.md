@@ -1,8 +1,8 @@
 <h3>Eadgyth Programming-Editor</h3>
 <p>
 A text editor which can be used for coding and which can be easily set up to run code for
-testing. The editor should be as simple as possible to use and be helpful, for example, to
-write applications for home requirements or quick testing.
+testing. The goal is an editor that is as simple as possible to use and is helpful, for
+example, to write applications for home requirements.
 <br>
 <p>
 A more detailed description of the features, screenshots, a help site and code documentation
