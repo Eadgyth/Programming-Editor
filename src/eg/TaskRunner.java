@@ -53,7 +53,7 @@ public class TaskRunner {
     *
     * @param r  the Runnable
     * @param initialMsg  the message that is printed to the console
-    * before the thread is started; may be null or the empty string
+    * before the thread is started; maybe null or the empty string
     * @param toTop  true to move to the top of the console after the
     * task is finished
     * @see ConsolePrinter

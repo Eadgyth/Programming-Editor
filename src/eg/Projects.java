@@ -7,7 +7,6 @@ import java.awt.EventQueue;
 
 //--Eadgyth--/
 import eg.console.*;
-import eg.ui.ConsolePanel;
 import eg.ui.MainWin;
 import eg.ui.ProjectActionsUpdate;
 import eg.ui.filetree.FileTree;
@@ -144,6 +143,7 @@ public class Projects {
       boolean isFound = false;
       for (ProjectTypes t : ProjectTypes.values()) {
          projToFind = projSelect.createProject(t);
+         projToFind.buildSettingsWindow();
          isFound = projToFind.retrieve(dir);
          if (isFound) {
             break;
@@ -159,7 +159,6 @@ public class Projects {
          else {
             change(projToFind);
          }
-         projToFind.buildSettingsWindow();
          ProjectCommands projFin = projToFind;
          projFin.setConfiguringAction(e -> configure(projFin));
       }
@@ -236,7 +235,7 @@ public class Projects {
          current.run();
       }
       else {
-        current.run(edtDoc[iDoc].filepath());
+         current.run(edtDoc[iDoc].filepath());
       }
    }
 

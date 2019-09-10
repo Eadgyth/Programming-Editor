@@ -98,8 +98,8 @@ public class ProcessStarter {
       }
       cons.enableRunBt(false);
       cons.focus();
-      consoleText = "Run " + cmd;
       cons.setText("");
+      consoleText = "Run:";
       cons.appendTextBr(consoleText);
       new Thread(() -> {
          try {

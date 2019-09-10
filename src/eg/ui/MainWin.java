@@ -389,7 +389,7 @@ public class MainWin {
             "", IconFiles.CLOSE_ICON, e -> vm.doConsoleItmAct(false)));
    }
 
-   private void setEditToolsActions(int i) {
+   private void setEditToolSelectionActions(int i) {
       ActionListener closeAct = e -> {
          showEditToolPnl(false, 0);
          menuBar.editMenu().unselectEditToolItmAt(i);
@@ -542,7 +542,7 @@ public class MainWin {
                   + EditTools.values()[i].className())
                         .getDeclaredConstructor().newInstance());
 
-            setEditToolsActions(i);
+            setEditToolSelectionActions(i);
          }
       }
       catch (ClassNotFoundException | InstantiationException

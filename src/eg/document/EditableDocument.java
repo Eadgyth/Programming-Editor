@@ -73,7 +73,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Sets the <code>EditingStateReadable</code>
+    * Sets an <code>EditingStateReadable</code>
     *
     * @param esr  the {@link EditingStateReadable}
     */
@@ -202,7 +202,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Diplays the content of the specified file but does not set the file
+    * Displays the content of the specified file but does not set the file
     *
     * @param f  the file
     */
@@ -318,7 +318,7 @@ public final class EditableDocument {
     * @param pos  the position where the section starts
     * @param length  the length of the section
     * @param highlight  true to update syntax highlighting after the
-    * removal, false otherwise. Is ignored if this language is normal
+    * removal, false otherwise. Is ignored if the language is normal
     * text
     */
    public void remove(int pos, int length, boolean highlight) {
@@ -382,17 +382,9 @@ public final class EditableDocument {
 
    private void displayFileContentImpl(File f) {
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
-         String line = br.readLine();
-         String nextLine = br.readLine();
-         while (null != line) {
-            if (null == nextLine) {
-               txt.append(line);
-            }
-            else {
-               txt.append(line + "\n");
-            }
-            line = nextLine;
-            nextLine = br.readLine();
+         String line;
+         while ((line = br.readLine()) != null ) {
+            txt.append(line + "\n");
          }
       }
       catch (IOException e) {
@@ -408,7 +400,7 @@ public final class EditableDocument {
       String[] lines = txt.text().split("\n");
       try (FileWriter writer = new FileWriter(f)) {
          for (String s : lines) {
-            writer.write(s + SystemParams.LINE_SEP);
+            writer.write(s + System.lineSeparator());
          }
          return true;
       }

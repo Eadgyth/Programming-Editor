@@ -8,15 +8,16 @@ import eg.utils.LinesFinder;
 public class SyntaxUtils {
 
    /**
-    * Option for including text element in quotes */
-   public static int INCLUDE_QUOTED = 0;
+    * Option for no effect if a text element is in quotes */
+   public static int IGNORE_QUOTED = 0;
    /**
-    * Option for skipping text elements in quotes */
-   public static int SKIP_QUOTED = 1;
+    * Option for searching quoted text elements in which the quotation
+    * may be multiline */
+   public static int BLOCK_QUOTED = 1;
    /**
-    * Option for skipping text elements in quotes if the quotation
-    * is found within line */
-   public static int SKIP_LINE_QUOTED = 2;
+    * Option for searching quoted text elements in which the quotation
+    * must be found within line */
+   public static int LINE_QUOTED = 2;
 
    /**
     * Returns if a section of text is a word
@@ -160,7 +161,7 @@ public class SyntaxUtils {
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
     * @param quoteOpt  the option to define if matches in quotes
-    * are skipped: INCLUDE_QUOTED, SKIP_QUOTED, SKIP_LINE_QUOTED
+    * are skipped: IGNORE_QUOTED, BLOCK_QUOTED, LINE_QUOTED
     * @return  the position of the last block start. -1 if a block end
     * is closer than a block start or if no block start is found
     */
@@ -169,7 +170,7 @@ public class SyntaxUtils {
 
       int lastStart = -1;
       int lastEnd = -1;
-      if (quoteOpt == INCLUDE_QUOTED) {
+      if (quoteOpt == IGNORE_QUOTED) {
          lastStart = text.lastIndexOf(blockStart, pos);
          lastEnd = text.lastIndexOf(blockEnd, pos);
       }
@@ -191,7 +192,7 @@ public class SyntaxUtils {
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
     * @param quoteOpt  the option to define if matches in quotes
-    * are skipped: INCLUDE_QUOTED, SKIP_QUOTED, SKIP_LINE_QUOTED
+    * are skipped: IGNORE_QUOTED, BLOCK_QUOTED, LINE_QUOTED
     * @return  the position of the next block start. -1 if a block end
     * is closer than a block start or if no block start is found
     */
@@ -200,7 +201,7 @@ public class SyntaxUtils {
 
       int nextStart = -1;
       int nextEnd = -1;
-      if (quoteOpt == INCLUDE_QUOTED) {
+      if (quoteOpt == IGNORE_QUOTED) {
          nextStart = text.indexOf(blockStart, pos);
          nextEnd = text.indexOf(blockEnd, pos);
       }
@@ -222,7 +223,7 @@ public class SyntaxUtils {
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
     * @param quoteOpt  the option to define if matches in quotes
-    * are skipped: INCLUDE_QUOTED, SKIP_QUOTED, SKIP_LINE_QUOTED
+    * are skipped: IGNORE_QUOTED, BLOCK_QUOTED, LINE_QUOTED
     * @return  the position of the next block end. -1 if a block
     * start is closer than a block end or if no block end is found
     */
@@ -231,7 +232,7 @@ public class SyntaxUtils {
 
       int nextEnd = -1;
       int nextStart = -1;
-      if (quoteOpt == INCLUDE_QUOTED) {
+      if (quoteOpt == IGNORE_QUOTED) {
          nextEnd = text.indexOf(blockEnd, pos);
          nextStart = text.indexOf(blockStart, pos);
       }
@@ -289,14 +290,14 @@ public class SyntaxUtils {
     * @param text  the text
     * @param pos  the position
     * @param quoteOpt  the option to define if the quotation must be found
-    * found within a line: SKIP_QUOTED, SKIP_LINE_QUOTED
+    * found within a line: on of BLOCK_QUOTED and LINE_QUOTED
     * @return  true if quoted
     */
    public static boolean isQuoted(String text, int pos, int quoteOpt) {
-      if (quoteOpt == SKIP_QUOTED) {
+      if (quoteOpt == BLOCK_QUOTED) {
          return isQuoted(text, pos);
       }
-      else if (quoteOpt == SKIP_LINE_QUOTED) {
+      else if (quoteOpt == LINE_QUOTED) {
          return isQuotedInLine(text, pos);
       }
       else {
@@ -479,10 +480,10 @@ public class SyntaxUtils {
    private static int nextUnquoted(String text, int pos, String toSearch,
          int quoteOpt) {
 
-      if (quoteOpt == SKIP_QUOTED) {
+      if (quoteOpt == BLOCK_QUOTED) {
          return nextUnquoted(text, toSearch, pos);
       }
-      else if (quoteOpt == SKIP_LINE_QUOTED) {
+      else if (quoteOpt == LINE_QUOTED) {
          return nextUnquotedInLine(text, toSearch, pos);
       }
       else {
@@ -494,10 +495,10 @@ public class SyntaxUtils {
    private static int lastUnquoted(String text, int pos, String toSearch,
          int quoteOpt) {
 
-      if (quoteOpt == SKIP_QUOTED) {
+      if (quoteOpt == BLOCK_QUOTED) {
          return lastUnquoted(text, pos, toSearch);
       }
-      else if (quoteOpt == SKIP_LINE_QUOTED) {
+      else if (quoteOpt == LINE_QUOTED) {
          return lastUnquotedInLine(text, pos, toSearch);
       }
       else {

@@ -52,7 +52,7 @@ public class UIComponents {
     * @param r  the right inset
     * @return  the border
     */
-  public static MatteBorder grayMatteBorder(int t, int l, int b, int r) {
+   public static MatteBorder grayMatteBorder(int t, int l, int b, int r) {
       return new MatteBorder(t, l, b, r, GRAY);
    }
 
@@ -145,7 +145,7 @@ public class UIComponents {
     */
    public static JMenuBar menuBar() {
       JMenuBar mb = new JMenuBar();
-      mb.setOpaque(false);
+      mb.setBorder(new EmptyBorder(0, 0, 0, 0));
       mb.setPreferredSize(new Dimension(0, BAR_HEIGHT));
       mb.setBorder(MATTE_BOTTOM_GRAY);
       return mb;

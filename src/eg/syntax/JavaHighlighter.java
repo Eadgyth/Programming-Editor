@@ -16,7 +16,6 @@ public class JavaHighlighter implements Highlighter {
      "false", "finally", "final", "float", "for",
      "if", "implements", "import", "instanceof", "int", "interface",
      "long",
-     "module",
      "native", "new", "null",
      "package", "private", "protected", "public",
      "requires", "return",
@@ -35,7 +34,7 @@ public class JavaHighlighter implements Highlighter {
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
       if (!s.isInBlock(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
-            SyntaxUtils.SKIP_LINE_QUOTED)) {
+            SyntaxUtils.LINE_QUOTED)) {
 
          s.resetAttributes();
          s.keywords(JAVA_ANNOTATIONS, true, null, attr.bluePlain);
@@ -46,7 +45,7 @@ public class JavaHighlighter implements Highlighter {
          s.lineComments(SyntaxConstants.DOUBLE_SLASH);
      }
      s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
-           SyntaxUtils.SKIP_LINE_QUOTED);
+           SyntaxUtils.LINE_QUOTED);
    }
 
    @Override

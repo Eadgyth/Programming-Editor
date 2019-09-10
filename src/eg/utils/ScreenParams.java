@@ -90,7 +90,7 @@ public class ScreenParams {
    public static int scaledSize(int unscaledSize) {
       //
       // comment if-else statements and uncomment the last line if ui
-      // scaling is not set to 1 in main method in eg.Eadgyth
+      // scaling is set to 1 in main method in eg.Eadgyth
       //
       /*if (SystemParams.IS_JAVA_9_OR_HIGHER) {
          if (SystemParams.IS_WINDOWS) {
@@ -105,7 +105,7 @@ public class ScreenParams {
       }*/
       //
       // comment this line and uncomment if-else statements above if
-      // ui scaling is set to 1 main method in eg.Eadgyth
+      // ui scaling is not set to 1 in main method in eg.Eadgyth
       //
       return (int) (Math.round(unscaledSize * SCREEN_RES_RATIO));
    }
@@ -120,7 +120,7 @@ public class ScreenParams {
    public static int invertedScaledSize(int scaledSize) {
       //
       // comment if-else statements and uncomment last line if ui scaling
-      // is not set to 1 in main method in eg.Eadgyth 
+      // is set to 1 in main method in eg.Eadgyth 
       //
       /*if (SystemParams.IS_JAVA_9_OR_HIGHER) {
          if (SystemParams.IS_WINDOWS) {
@@ -135,7 +135,7 @@ public class ScreenParams {
       }*/
       //
       // comment this line and uncomment if-else statements above if
-      // ui scaling is set to 1 main method in eg.Eadgyth
+      // ui scaling is not set to 1 in main method in eg.Eadgyth
       //
       return (int) (Math.round(scaledSize / SCREEN_RES_RATIO));
    }

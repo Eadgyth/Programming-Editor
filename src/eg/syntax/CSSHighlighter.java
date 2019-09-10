@@ -77,7 +77,7 @@ public class CSSHighlighter implements Highlighter {
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
       if (!s.isInBlock(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
-            SyntaxUtils.INCLUDE_QUOTED)) {
+            SyntaxUtils.IGNORE_QUOTED)) {
 
          s.resetAttributes();
 
@@ -118,7 +118,7 @@ public class CSSHighlighter implements Highlighter {
          s.braces();
       }
       s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
-            SyntaxUtils.INCLUDE_QUOTED);
+            SyntaxUtils.IGNORE_QUOTED);
    }
 
    @Override
@@ -128,7 +128,7 @@ public class CSSHighlighter implements Highlighter {
       }
       int lastOpenBrace
             = SyntaxUtils.lastBlockStart(text, pos, "{", "}",
-                  SyntaxUtils.INCLUDE_QUOTED);
+                  SyntaxUtils.IGNORE_QUOTED);
 
       return (condition == OPEN_BRACE_AHEAD_COND && lastOpenBrace != -1)
             || (condition == NO_OPEN_BRACE_AHEAD_COND && lastOpenBrace == -1);

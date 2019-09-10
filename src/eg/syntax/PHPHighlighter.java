@@ -49,7 +49,7 @@ public class PHPHighlighter implements Highlighter {
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
       if (!s.isInBlock(SyntaxConstants.SLASH_STAR,
-            SyntaxConstants.STAR_SLASH, SyntaxUtils.SKIP_QUOTED)) {
+            SyntaxConstants.STAR_SLASH, SyntaxUtils.BLOCK_QUOTED)) {
 
          if (!mixed) {
             s.setStatementSection();
@@ -62,7 +62,7 @@ public class PHPHighlighter implements Highlighter {
          s.lineComments(SyntaxConstants.HASH);
       }
       s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
-            SyntaxUtils.SKIP_QUOTED);
+            SyntaxUtils.BLOCK_QUOTED);
    }
 
    @Override

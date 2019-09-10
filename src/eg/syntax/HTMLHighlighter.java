@@ -14,20 +14,20 @@ public class HTMLHighlighter implements Highlighter {
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
       if (!s.isInBlock(SyntaxConstants.HTML_BLOCK_CMNT_START,
-            SyntaxConstants.HTML_BLOCK_CMNT_END, SyntaxUtils.INCLUDE_QUOTED)
+            SyntaxConstants.HTML_BLOCK_CMNT_END, SyntaxUtils.IGNORE_QUOTED)
 
             && !s.isInBlock(SyntaxConstants.CDATA_BLOCK_START,
-                  SyntaxConstants.CDATA_BLOCK_END, SyntaxUtils.INCLUDE_QUOTED)) {
+                  SyntaxConstants.CDATA_BLOCK_END, SyntaxUtils.IGNORE_QUOTED)) {
 
          s.setMarkupSection();
          s.resetAttributes();
          s.markup(true);
       }
       s.block(SyntaxConstants.HTML_BLOCK_CMNT_START,
-            SyntaxConstants.HTML_BLOCK_CMNT_END, SyntaxUtils.INCLUDE_QUOTED);
+            SyntaxConstants.HTML_BLOCK_CMNT_END, SyntaxUtils.IGNORE_QUOTED);
 
       s.block(SyntaxConstants.CDATA_BLOCK_START,
-            SyntaxConstants.CDATA_BLOCK_END, SyntaxUtils.INCLUDE_QUOTED);
+            SyntaxConstants.CDATA_BLOCK_END, SyntaxUtils.IGNORE_QUOTED);
 
       s.innerHtmlSections("<style", "</style>", true, css);
       s.innerHtmlSections("<?", "?>", false, php);

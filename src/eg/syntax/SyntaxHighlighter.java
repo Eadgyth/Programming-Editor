@@ -118,7 +118,7 @@ public class SyntaxHighlighter {
        * statements which may be multiline. The search for the next
        * semicolon relative to the current change position continues
        * until one is found unquoted and {@link Highlighter#isValid}
-       * returns true. The section may be further exdended to the
+       * returns true. The section may be further extended to the
        * region that contains quote marks around the statement.
        */
       public void setStatementSection() {
@@ -443,7 +443,7 @@ public class SyntaxHighlighter {
             return;
          }
          if (!isRepairBlock) {
-            removedBlockStart(0, startTag, endTag, SyntaxUtils.INCLUDE_QUOTED);
+            removedBlockStart(0, startTag, endTag, SyntaxUtils.IGNORE_QUOTED);
          }
          String t = txt.text().toLowerCase();
          int start = 0;
@@ -453,18 +453,18 @@ public class SyntaxHighlighter {
             if (start != -1) {
                boolean isInCmnt = isInBlock(SyntaxConstants.HTML_BLOCK_CMNT_START,
                      SyntaxConstants.HTML_BLOCK_CMNT_END, start,
-                     SyntaxUtils.INCLUDE_QUOTED);
+                     SyntaxUtils.IGNORE_QUOTED);
 
                if (!isInCmnt) {
                   int searchStart = start + 1;
                   int end = SyntaxUtils.nextBlockEnd(t, searchStart, startTag,
-                       endTag, SyntaxUtils.INCLUDE_QUOTED);
+                       endTag, SyntaxUtils.IGNORE_QUOTED);
 
                   if (end != -1) {
                      int startTagEnd;
                      if (reqClosingBracket) {
                         startTagEnd = SyntaxUtils.nextBlockEnd(t, searchStart,
-                              "<", ">", SyntaxUtils.INCLUDE_QUOTED);
+                              "<", ">", SyntaxUtils.IGNORE_QUOTED);
 
                         if (startTagEnd != -1) {
                            startTagEnd++;
@@ -488,13 +488,13 @@ public class SyntaxHighlighter {
                      innerEnd = 0;
                      if (!isRepairBlock) {
                         removedBlockStart(end + endTag.length(), startTag,
-                              endTag, SyntaxUtils.INCLUDE_QUOTED);
+                              endTag, SyntaxUtils.IGNORE_QUOTED);
                      }
                   }
                   else {
                      if (!isRepairBlock) {
                         removedBlockEnd(start, startTag, endTag,
-                              SyntaxUtils.INCLUDE_QUOTED);
+                              SyntaxUtils.IGNORE_QUOTED);
                      }
                   }
                }
@@ -540,7 +540,7 @@ public class SyntaxHighlighter {
        * @param blockStart  the block comment start
        * @param blockEnd  the block comment end
        * @param quoteOpt  the option to define if matches in quotes
-       * are skipped: INCLUDE_QUOTED, SKIP_QUOTED, SKIP_LINE_QUOTED
+       * are skipped: IGNORE_QUOTED, BLOCK_QUOTED, LINE_QUOTED
        * in {@link SyntaxUtils}
        * @return  true if inside a block comment; false otherwise. Also false
        * regardless of the position if the text change is multiline
@@ -562,7 +562,7 @@ public class SyntaxHighlighter {
        * @param blockStart  the block start
        * @param blockEnd  the block end
        * @param quoteOpt  the option to define if matches in quotes
-       * are skipped: INCLUDE_QUOTED, SKIP_QUOTED, SKIP_LINE_QUOTED
+       * are skipped: IGNORE_QUOTED, BLOCK_QUOTED, LINE_QUOTED
        * in {@link SyntaxUtils}
        */
       public void block(String blockStart, String blockEnd, int quoteOpt) {
@@ -579,7 +579,7 @@ public class SyntaxHighlighter {
             }
             if (start != -1) {
                boolean quoteInLine;
-               if (quoteOpt == SyntaxUtils.INCLUDE_QUOTED
+               if (quoteOpt == SyntaxUtils.IGNORE_QUOTED
                      || !SyntaxUtils.isQuoted(txt.text(), start, quoteOpt)) {
 
                   int end = SyntaxUtils.nextBlockEnd(txt.text(), start + 1,
@@ -644,7 +644,7 @@ public class SyntaxHighlighter {
 
       private int markupTagEnd(int pos) {
          int end = SyntaxUtils.nextBlockEnd(txt.text(), pos, "<", ">",
-               SyntaxUtils.INCLUDE_QUOTED);
+               SyntaxUtils.IGNORE_QUOTED);
 
          if (end == -1) {
             end = txt.text().indexOf("<", pos);

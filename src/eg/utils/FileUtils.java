@@ -12,18 +12,24 @@ import java.text.SimpleDateFormat;
  * Static methods for file operations
  */
 public class FileUtils {
+   
+   private final static String LINE_SEP = System.lineSeparator();
 
    /**
-    * Replaces slashes in the specified string (forward or backward) with
-    * periods
+    * Adds the specified extension to the string if it does not end with
+    * with this extension already
     *
-    * @param path  the string
-    * @return  the string with slashes replaced with periods
+    * @param file  the string that represents a file
+    * @param ext  the extension
+    * @return  the string with the extension
     */
-   public static String dottedFileSeparators(String path) {
-      String dottedPath = path.replace("\\", "/");
-      dottedPath = dottedPath.replace("/", ".");
-      return dottedPath;
+   public static String addExtension (String file, String ext) {
+      if (file.endsWith(ext)) {
+         return file;
+      }
+      else {
+         return file + ext;
+      }
    }
 
    /**
@@ -47,7 +53,7 @@ public class FileUtils {
    }
 
    /**
-    * Appends to the file 'log.txt' in the program folder the date,
+    * Appends to the file 'log.txt' in the '.eadgyth' folder the date,
     * message and stack trace of an exception
     *
     * @param e  the Exception
@@ -57,11 +63,11 @@ public class FileUtils {
       String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
       try (FileWriter writer = new FileWriter(f, false)) {
          writer.write(" " + date + "\n");
-         writer.write(e.getMessage() + SystemParams.LINE_SEP);
+         writer.write(e.getMessage() + LINE_SEP);
          for (StackTraceElement el : e.getStackTrace()) {
-            writer.write("   " + el.toString() + SystemParams.LINE_SEP);
+            writer.write("   " + el.toString() + LINE_SEP);
          }
-         writer.write("_________________" + SystemParams.LINE_SEP);
+         writer.write("_________________" + LINE_SEP);
          Dialogs.errorMessage(
                "Error: "
                + e.getMessage()
@@ -72,7 +78,7 @@ public class FileUtils {
       catch (IOException ioe) {
          Dialogs.errorMessage(
            "Error: "
-            + e.getMessage()
+            + e.getMessage() // the message that could not be logged
             + "\nNOTE: Could not write to log file",
             null);
       }

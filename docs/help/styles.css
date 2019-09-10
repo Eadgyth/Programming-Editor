@@ -1,15 +1,6 @@
 * {
    font-family: sans-serif;
 }
-div {
-   width: 100%;
-   border: 1px solid gray;
-}
-header, footer {
-   padding: 1em;
-   color: #b1010;
-   background-color: #55bfec;
-}
 p {
    font-size: 0.95em;
    margin-left: 20px;
@@ -19,17 +10,25 @@ h1, h2, h3, h4 {
    margin-left: 20px;
 }
 nav.left {
+   position: fixed;
    float: left;
-   max-width: 280px;
+   width: 300px;
    margin: 0;
    padding: 0.5em;
+   font-size: 0.95em;
+   overflow: hidden;
 }
 a {
    text-decoration: none;
 }
+div.top {
+   height: 100px;
+   padding: 1em;
+   background-color:#55bfec;
+}
 ol li {
    font-size: 0.95em;
-   margin-top: 1em;
+   margin-top: 0.5em;
    margin-right: 50px;
 }
 ul li {
@@ -38,16 +37,16 @@ ul li {
    margin-right: 10px;
 }
 hr {
-   height: 6px;
+   height: 5px;
    color:#55bfec;
    background-color:#55bfec;
    border: none;
 }
 article.right {
-   margin-left: 160px;
+   margin-left: 300px;
    border-left: 1px solid gray;
    padding: 1em;
-   overflow: hidden;
+   overflow: auto;
 }
 article ul li {
    margin-top: 0.5em;

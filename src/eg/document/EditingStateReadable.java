@@ -7,14 +7,14 @@ package eg.document;
 public interface EditingStateReadable {
 
    /**
-    * Updates the state in which the document is in change
+    * Updates the state which indicates that the document is being changed
     *
     * @param b  true if in change, false otherwise
     */
    public void updateInChangeState(boolean b);
    
    /**
-    * Updates the state in which edits can be redone and/or
+    * Updates the state which indicates if edits can be redone and/or
     * undone
     *
     * @param canUndo  true if edits can be undone, false otherwise
@@ -23,7 +23,7 @@ public interface EditingStateReadable {
    public void updateUndoableState(boolean canUndo, boolean canRedo);
    
    /**
-    * Updates the state in which text is selected
+    * Updates the state which indicates if text is selected
     *
     * @param b  true if text is selected, false otherwise 
     */

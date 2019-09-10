@@ -8,11 +8,6 @@
 </head>
 <body>
    <div>
-      <header>
-         <a id="top"></a>
-         <h4>Eadgyth Programming-Editor</h4>
-         <h1>Help</h1>
-      </header>
       <nav class="left">
          <h2>Content</h2>
          <ul>
@@ -25,13 +20,19 @@
                and changing between projects</a></li>
             <li><a href="#Retrieve">Retrieving projects</a>
             </ul></li>
-         <li><a href="#RunCode">Run source code</a>
+         <li><a href="#RunCode">Running source code</a>
          <li><a href="#Console">Using the console</a></li>
          <li><a href="#Explorer">Using the project explorer</a></li>
          </ul>
       </nav>
-      
+   </div>
+   <div>   
       <article class="right">
+      <a id="top"></a>
+      <div class="top">
+         <h4>Eadgyth Programming-Editor</h4>
+         <h1>Help</h1>
+      </div>
       <!--Requirements-->
       <h2 id="Requirements">Requirements</h2>
       <p>See also
@@ -84,7 +85,7 @@
          </tr>
          <tr>
             <td>R</td>
-            <td><a href="#RProject">Test an R script</a></td>
+            <td><a href="#RProject">Run an R script</a></td>
          </tr>
          <tr>
             <td>HTML</td>
@@ -147,45 +148,44 @@
       <p><a href="#top">Back to top</a></p>
       <hr>
 
-      <h2 id="RunCode">Run source code</h2>
-      <p> A project is run for testing by selecting 'Run' in the Project menu or by
-          clicking the run button in the toolbar. Commands other than the pre-defined
-          commands may be entered in the console (see:
+      <h2 id="RunCode">Running source code</h2>
+      <p> A project is run for testing by selecting 'Run project' in the Project menu
+          or by clicking the run button in the toolbar. Commands other than the
+          pre-defined commands may be entered in the console (see:
           <a href="#Console">Using the console</a>). Any output and error messages
           from a tested program are displayed on the console window. A tested program
           can be forcibly quit by clicking the 'stop' symbol in the tool bar of the
           console.
       </p>
       <br>
-      <h4 id="JavaProject">Testing Java code and creating a jar file</h4>
+      <h4 id="JavaProject">Run Java code and create an executable jar file</h4>
       <ol>
-      <li>To run a Java program for testing first compile the source file(s) by the
-          selecting 'Save selected file and compile project' or 'Save all open project
-          files and compile project' in the project menu. Note that files outside of the
-          source root cannot be included in a compilation when these preset options to
-          compile a project are used. If the compilation was successfull the program
-          can be run by selecting 'Run'.</li>
-      <li>To include compiler warnings -Xlint compiler options may be specified. The
-          input field for the -Xlint option is found in the tab 'Compilation and build'
-          in the project settings.</li>
-      <li>For running the project also arguments (those that would be passed to the
-          main method) may be entered in the input field 'Command arguments' which is
-          found in the tab 'Run' in the project settings.</li>
+      <li>To run a Java program first compile the source file(s) by selecting 'Save
+          selected file and compile project' or 'Save all open project files and compile
+          project' in the project menu. If it is specified to save compiled class
+          files in a separate directory (executables directory in the project settings)
+          this folder may be deleted in the project explorer for a renewed compilation.</li>
       <li>An executable java archive (jar) may be created by selecting 'Create jar' in
           the project menu. A name for the jar file can be specified in the tab
           'Compilation and build' in the project settings. If no name is specified the
-          name of the main class is used.</li>
-      <li>Files other than .java files and .class files can be included in compilation
-          and a jar, resepctively. The extensions of included files are specified in the
-          input field 'Extensions of included non-Java files' which is found in the tab
-          'Compilation and build' in the project settings. Extensions may be separated
-          by spaces, commas or semicolons but must begin with the period. Including
-          non-Java files is supported only if the project contains separate directories
-          for source files (where also the non-Java files must be found) and class
-          files.</li>
+          name of the main class is used. The jar is saved in the project directory
+          unnless a full pathname is specified to save the jar to another location.</li>
+      <li>Files other than .java files and .class files can be included in a compilation
+          and a jar, resepctively. Extensions of included files are specified with the
+          beginning period in the input field 'Extensions of included non-Java files'
+          which is found in the tab 'Compilation and build' in the project settings.</li>
+      <li>Libraries may be specified in the tab 'Libraries' in the project settings.
+          These are added in classpath of the program and can be jar files or folders
+          containing class files. Classpath can be a path relative to the project
+          directory (e.g. libs/x.jar) but also an absolute path. When the program is
+          packaged in a jar the paths are added to the CLASS-PATH header in the
+          manifest file as specified. To use libraries stored in the project it is
+          recommended to store project source files in separate sources directory
+          and to specify a separate directory for class files (executables directory
+          in the project settings).</li>          
       </ol>
       <br>
-      <h4 id="PerlProject">Testing a Perl script</h4>
+      <h4 id="PerlProject">Run a Perl script</h4>
       <ol>
       <li>Save changes to the Perl script and start it by selecting 'Run'.</li>
       <li>Options and arguments for the start command may be entered in the input
@@ -201,7 +201,7 @@
           adding $| = 1 at the beginning of the script).</li>
       </ol>
       <br>
-      <h4 id="PythonProject">Testing a Python script</h4>
+      <h4 id="PythonProject">Run a Python script</h4>
       <ol>
       <li>Save changes to the Python script and start it by selecting 'Run'.</li>
       <li>Options and arguments for the start command may be entered in the input fields
@@ -212,7 +212,7 @@
           output and standerd error (-u).</li>
       </ol>
       <br>
-      <h4 id="RProject">Testing an R script</h4>
+      <h4 id="RProject">Run an R script</h4>
       <ol>
       <li>Save changes to the R script and start it by selecting 'Run'.</li>
       <li>Options and arguments for the start command may be entered in the input
@@ -287,13 +287,12 @@
       <br>
       <p><a href="#top">Back to top</a></p>
       <br>
-      </article>
-      <footer>
-        <p>
+      <hr>
+      <p>
         Contact: <a href="mailto:m.bussiek@web.de">m.bussiek@web.de</a><br>
         (<i>A message is welcome if the program does not work as suggested in this help</i>)
-        </p>
-      </footer>
+      </p>
+      </article>
    </div>
    </body>
 </html>

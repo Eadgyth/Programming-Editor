@@ -11,11 +11,18 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
 
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
+
+import javax.swing.event.ChangeEvent;
+
+import java.util.List;
 
 //--Eadgyth--//
 import eg.ui.IconFiles;
@@ -31,28 +38,40 @@ public class SettingsWindow {
 
    private final JFrame frame = new JFrame("Project settings");
 
-   private final JTextField projDirTf       = new JTextField();
+   private final JTextField projDirTf        = new JTextField();
+   private final JTextField fileTf           = new JTextField();
+   private final JTextField sourcesDirTf     = new JTextField();
+   private final JTextField execDirTf        = new JTextField();
+   private final JTextField cmdArgsTf        = new JTextField();
+   private final JTextField cmdOptionsTf     = new JTextField();
+   private final JTextField compileOptionsTf = new JTextField();
+   private final JTextField extensionsTf     = new JTextField();
+   private final JTextField buildNameTf      = new JTextField();
+   private final JButton    okBt             = new JButton("   OK   ");
+   private final JButton    cancelBt         = new JButton("Cancel");
+   private final JCheckBox  saveConfig       = new JCheckBox();
 
-   private final JTextField fileTf          = new JTextField();
-   private final JTextField sourcesDirTf    = new JTextField();
-   private final JTextField execDirTf       = new JTextField();
-   private final JTextField cmdArgsTf       = new JTextField();
-   private final JTextField cmdOptionsTf    = new JTextField();
-   private final JTextField compileOptionTf = new JTextField();
-   private final JTextField extensionsTf    = new JTextField();
-   private final JTextField buildNameTf     = new JTextField();
-   private final JButton    okBt            = new JButton("   OK   ");
-   private final JButton    cancelBt        = new JButton("Cancel");
-   private final JCheckBox  saveConfig      = new JCheckBox();
+   private ListInputPanel librariesPnl;
 
    private String fileLabel = null;
    private boolean useSrcDir = false;
    private boolean useExecDir = false;
+   private boolean useLibs = false;
    private boolean useCmdOptions = false;
    private boolean useCmdArgs = false;
-   private String compileOptionLb = null;
-   private String extensionsLabel = null;
-   private String buildNameLabel = null;
+   private boolean useRunSettings = false;
+   private String compileOptionsLb = null;
+   private String extensionsLb = null;
+   private String buildNameLb = null;
+   private boolean useBuildSettings = false;
+   private boolean needTabs = false;
+
+   private Component focused = projDirTf;
+
+   public SettingsWindow() {
+      cancelBt.setFocusable(false);
+      okBt.setFocusable(false);
+   }
 
    /**
     * Gets a new <code>InputOptionsBuilder</code>
@@ -100,9 +119,21 @@ public class SettingsWindow {
     */
    public void setVisible(boolean b) {
       if (b) {
-         projDirTf.requestFocusInWindow();
+         focused.requestFocusInWindow();
+      }
+      else {
+         focused = frame.getFocusOwner();
       }
       frame.setVisible(b);
+   }
+
+   /**
+    * Returns the input for the name of a project root directory
+    *
+    * @return  the input
+    */
+   public String projDirNameInput() {
+      return projDirTf.getText().trim();
    }
 
    /**
@@ -133,12 +164,15 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input for the name of a project root directory
+    * Assigns the input for libraries in the specified list if the
+    * option to set libraries is added
     *
-    * @return  the input
+    * @param l  the list
     */
-   public String projDirNameInput() {
-      return projDirTf.getText().trim();
+   public void assignLibrariesInput(List<String> l) {
+      if (useLibs) {
+         librariesPnl.assignListInput(l);
+      }
    }
 
    /**
@@ -164,8 +198,8 @@ public class SettingsWindow {
     *
     * @return  the input
     */
-   public String compileOptionInput() {
-      return compileOptionTf.getText().trim();
+   public String compileOptionsInput() {
+      return compileOptionsTf.getText().trim();
    }
 
    /**
@@ -187,6 +221,16 @@ public class SettingsWindow {
     */
    public String buildNameInput() {
       return buildNameTf.getText().trim();
+   }
+
+   /**
+    * Shows in the corresponding text field the name of the project
+    * root directory
+    *
+    * @param s  the name
+    */
+   public void displayProjDirName(String s) {
+      projDirTf.setText(s);
    }
 
    /**
@@ -219,32 +263,15 @@ public class SettingsWindow {
    }
 
    /**
-    * Shows in the corresponding text field the name of the project
-    * root directory
+    * Shows in the corresponding text fields the libraries if this
+    * option is added by a project
     *
-    * @param s  the name
+    * @param l  the list of libraries
     */
-   public void displayProjDirName(String s) {
-      projDirTf.setText(s);
-   }
-
-   /**
-    * Shows in the corresponding text field the string that contains
-    * file extensions
-    *
-    * @param s  the file extensions
-    */
-   public void displayExtensions(String s) {
-      extensionsTf.setText(s);
-   }
-
-   /**
-    * Shows in the corresponding text field the name for a build
-    *
-    * @param s  the name
-    */
-   public void displayBuildName(String s) {
-      buildNameTf.setText(s);
+   public void displayLibraries(List<String> l) {
+      if (useLibs) {
+         librariesPnl.displayText(l);
+      }
    }
 
    /**
@@ -270,8 +297,27 @@ public class SettingsWindow {
     *
     * @param s  the compile option
     */
-   public void displayCompileOption(String s) {
-      compileOptionTf.setText(s);
+   public void displayCompileOptions(String s) {
+      compileOptionsTf.setText(s);
+   }
+
+   /**
+    * Shows in the corresponding text field the string that contains
+    * file extensions
+    *
+    * @param s  the file extensions
+    */
+   public void displayExtensions(String s) {
+      extensionsTf.setText(s);
+   }
+
+   /**
+    * Shows in the corresponding text field the name for a build
+    *
+    * @param s  the name
+    */
+   public void displayBuildName(String s) {
+      buildNameTf.setText(s);
    }
 
    /**
@@ -312,7 +358,7 @@ public class SettingsWindow {
        * Adds the option to enter a name for a main project file and sets
        * the label for the corresponding text field
        *
-       * @param label  the label which " (without extension)" is added to
+       * @param label  the label for which " (without extension)" is added to
        * @return  this
        */
       public InputOptionsBuilder addFileInput(String label) {
@@ -341,12 +387,25 @@ public class SettingsWindow {
       }
 
       /**
+       * Adds the option to enter libraries
+       *
+       * @param label  the label for the list input
+       * @return  this
+       */
+      public InputOptionsBuilder addLibrariesInput(String label) {
+         sw.librariesPnl = new ListInputPanel(label);
+         sw.useLibs = true;
+         return this;
+      }
+
+      /**
        * Adds the option to enter command options
        *
        * @return  this
        */
       public InputOptionsBuilder addCmdOptionsInput() {
          sw.useCmdOptions = true;
+         sw.useRunSettings = true;
          return this;
       }
 
@@ -357,6 +416,7 @@ public class SettingsWindow {
        */
       public InputOptionsBuilder addCmdArgsInput() {
          sw.useCmdArgs = true;
+         sw.useRunSettings = true;
          return this;
       }
 
@@ -368,7 +428,8 @@ public class SettingsWindow {
        * @return  this
        */
       public InputOptionsBuilder addCompileOptionInput(String label) {
-         sw.compileOptionLb = label;
+         sw.compileOptionsLb = label;
+         sw.useBuildSettings = true;
          return this;
       }
 
@@ -380,7 +441,8 @@ public class SettingsWindow {
        * @return  this
        */
        public InputOptionsBuilder addExtensionsInput(String label) {
-          sw.extensionsLabel = label;
+          sw.extensionsLb = label;
+          sw.useBuildSettings = true;
           return this;
        }
 
@@ -392,7 +454,8 @@ public class SettingsWindow {
        * @return  this
        */
       public InputOptionsBuilder addBuildNameInput(String label) {
-         sw.buildNameLabel = label;
+         sw.buildNameLb = label;
+         sw.useBuildSettings = true;
          return this;
       }
 
@@ -404,6 +467,7 @@ public class SettingsWindow {
        * directory of a project.
        */
       public void buildWindow() {
+         sw.needTabs = sw.useLibs || sw.useRunSettings || sw.useBuildSettings;
          sw.buildWindow();
       }
    }
@@ -425,10 +489,60 @@ public class SettingsWindow {
       frame.setResizable(false);
       frame.setLocation(550, 100);
       frame.setVisible(false);
-      frame.setAlwaysOnTop(true);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
       frame.getContentPane().add(combinedPnl());
       frame.pack();
+   }
+
+   private JPanel combinedPnl() {
+      JPanel pnl = new JPanel();
+      pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
+      pnl.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+      JTabbedPane tb = null;
+      if (needTabs) {
+         tb = new JTabbedPane();
+         tb.setFont(ScreenParams.scaledFontToPlain(tb.getFont(), 8));
+      }
+      if (useLibs) {
+         tb.add("Libraries", libPnl());
+         tb.addChangeListener((ChangeEvent e) -> {
+            JTabbedPane sourceTb = (JTabbedPane) e.getSource();
+            int i = sourceTb.getSelectedIndex();
+            if (i == 1) {
+               if (!sourceTb.hasFocus()) {
+                  librariesPnl.setLastFocus();
+               }
+            }
+         });
+         tb.addFocusListener(new FocusAdapter() {
+
+            @Override
+            public void focusGained(FocusEvent e) {
+               JTabbedPane sourceTb = (JTabbedPane) e.getSource();
+               librariesPnl.disableButtons();
+            }
+         });
+      }
+      if (useRunSettings) {
+         tb.add("Run", commandPnl());
+      }
+      if (useBuildSettings) {
+         tb.addTab("Compilation and build", compileAndBuildPnl());
+      }
+      if (tb != null) {
+         tb.insertTab("Project structure", null, structurePnl(), null, 0);
+         tb.setSelectedIndex(0);
+         pnl.add(tb);
+      }
+      else {
+         pnl.add(structurePnl());
+      }
+      pnl.add(checkBxPnl(saveConfig,
+            "Save \'ProjConfig\' file in the project"));
+
+      pnl.add(Box.createRigidArea(DIM_SPACER));
+      pnl.add(buttonsPanel());
+      return pnl;
    }
 
    private JPanel structurePnl() {
@@ -451,15 +565,21 @@ public class SettingsWindow {
          pnl.add(holdLbAndTf(sourcesDirLb, sourcesDirTf));
       }
       //
-      // executable dir option
+      // executables dir option
       if (useExecDir) {
          JLabel execDirLb = new JLabel("Name of executables directory:");
          pnl.add(holdLbAndTf(execDirLb, execDirTf));
       }
-
       JPanel holder = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       holder.add(pnl);
       return holder;
+   }
+
+   private JPanel libPnl() {
+      JPanel pnl = new JPanel();
+      pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
+      pnl.add(librariesPnl.content());
+      return pnl;
    }
 
    private JPanel commandPnl() {
@@ -488,20 +608,20 @@ public class SettingsWindow {
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
       //
       // compile options
-      if (compileOptionLb != null) {
-         JLabel compOptLb = new JLabel(compileOptionLb + ":");
-         pnl.add(holdLbAndTf(compOptLb, compileOptionTf));
+      if (compileOptionsLb != null) {
+         JLabel compOptLb = new JLabel(compileOptionsLb + ":");
+         pnl.add(holdLbAndTf(compOptLb, compileOptionsTf));
       }
       //
       // include files option
-      if (extensionsLabel != null) {
-         JLabel extLb = new JLabel(extensionsLabel + ":");
+      if (extensionsLb != null) {
+         JLabel extLb = new JLabel(extensionsLb + ":");
          pnl.add(holdLbAndTf(extLb, extensionsTf));
       }
       //
       // set build name option
-      if (buildNameLabel != null) {
-         JLabel buildLb = new JLabel("Name for " + buildNameLabel +":");
+      if (buildNameLb != null) {
+         JLabel buildLb = new JLabel("Name for " + buildNameLb +":");
          pnl.add(holdLbAndTf(buildLb, buildNameTf));
       }
       JPanel holder = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -533,35 +653,7 @@ public class SettingsWindow {
       lb.setFont(ScreenParams.scaledFontToBold(lb.getFont(), 8));
       pnl.add(lb);
       pnl.add(checkBox);
-      return pnl;
-   }
-
-   private JPanel combinedPnl() {
-      JPanel pnl = new JPanel();
-      pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
-      pnl.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-      JTabbedPane tb = null;
-      if (useCmdOptions || useCmdArgs) {
-         tb = new JTabbedPane();
-         tb.setFont(ScreenParams.scaledFontToPlain(tb.getFont(), 8));
-         tb.add("Run", commandPnl());
-      }
-      if (buildNameLabel != null || extensionsLabel != null) {
-         tb.addTab("Compilation and build", compileAndBuildPnl());
-      }
-      if (tb != null) {
-         tb.insertTab("Project structure", null, structurePnl(), null, 0);
-         tb.setSelectedIndex(0);
-         pnl.add(tb);
-      }
-      else {
-         pnl.add(structurePnl());
-      }
-      pnl.add(checkBxPnl(saveConfig,
-            "Save \'ProjConfig\' file in the project"));
-
-      pnl.add(Box.createRigidArea(DIM_SPACER));
-      pnl.add(buttonsPanel());
+      checkBox.setFocusable(false);
       return pnl;
    }
 }

@@ -12,19 +12,15 @@ import java.io.File;
 import java.io.IOException;
 
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import java.util.List;
 import java.util.ArrayList;
-
-import static java.nio.file.StandardCopyOption.*;
 
 //--Eadgyth--/
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 import eg.TaskRunner.ConsolePrinter;
-
-//test
-import java.io.StringWriter;
 
 /**
  * The compilation of java files using the Java Compiler API
@@ -48,27 +44,30 @@ public class Compilation {
    }
 
    /**
-    * Invokes the javac compiler
+    * Compiles java files and copies non java files with the specified
+    * extensions to the compilation
     *
-    * @param root  the root directory of the java project
-    * @param execDir  the name of the destination directory for the
-    * compiled class files/packages. Can be the empty string.
-    * @param sourceDir  the name of the directory that contains java
-    * files/packages. Can be the empty string.
+    * @param classDir  the destination directory for the compiles class
+    * files/packages
+    * @param sourceDir  the directory that contains java files/packages
     * @param nonJavaExt  the array of extensions of files that are copied
-    * to the compilation. Requires that both a sources and a classes
-    * directory are present. May be null.
+    * to the compilation if classDir and sourceDir differ. May be the zero
+    * length array.
+    * @param libs  the libraries in which individual paths are separated
+    * by the system's path separator. May be the empty string
     * @param xlintOption  the Xlint compiler options, in which several
     * options are separated by spaces. Options other than Xlint are
-    * ignored.
+    * ignored
     */
-   public void compile(String root, String execDir, String sourceDir,
-         String[] nonJavaExt, String xlintOption) {
+   public void compile(
+            String classDir,
+            String sourceDir,
+            String[] nonJavaExt,
+            String libs,
+            String xlintOption) {
 
       if (compiler == null) {
-         Dialogs.errorMessage(
-               "The compiler was not found.", null);
-
+         Dialogs.errorMessage("The compiler was not found.", null);
          return;
       }
       success = false;
@@ -79,25 +78,27 @@ public class Compilation {
             = compiler.getStandardFileManager(null, null, null);
       //
       // Java files
-      List<File> classes = fFind.filteredFiles(root + "/" + sourceDir,
-            ".java", execDir);
-
-      File[] fileArr = classes.toArray(new File[classes.size()]);
+      List<File> sources = fFind.filteredFiles(sourceDir, ".java", classDir, "");
+      File[] fileArr = sources.toArray(new File[sources.size()]);
       Iterable<? extends JavaFileObject>units
             = fileManager.getJavaFileObjects(fileArr);
       //
       // Compiler options
-      String targetDir = createTargetDir(root, execDir);
-      Iterable<String> compileOptions = options(targetDir, xlintOption);
+      Iterable<String> compileOptions = options(classDir, sourceDir, libs, xlintOption);
       //
-      // compile
+      // compile, print messages
       try {
-         CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
-               compileOptions, null, units);
+         CompilationTask task = compiler.getTask(
+               null,
+               fileManager,
+               diagnostics,
+               compileOptions,
+               null,
+               units);
 
          success = task.call();
-         if (nonJavaExt != null) {
-            copyFiles(root, sourceDir, execDir, nonJavaExt);
+         if (nonJavaExt.length > 0) {
+            copyFiles(sourceDir, classDir, nonJavaExt);
          }
          printDiagnostics(diagnostics);
       }
@@ -117,29 +118,25 @@ public class Compilation {
    //--private--/
    //
 
-   private String createTargetDir(String root, String execDir) {
-      String targetDir;
-      if (!execDir.isEmpty()) {
-         File target = new File(root + "/" + execDir);
-         target.mkdirs();
-         targetDir = root + "/" + execDir;
-      }
-      else {
-         targetDir = root;
-      }
-      return targetDir;
-   }
+   private Iterable<String> options(String classDir, String sourceDir, String libs,
+            String xlintOption) {
 
-   private Iterable<String> options(String targetDir, String xlintOption) {
       List <String> options = new ArrayList<>();
       options.add("-d");
-      options.add(targetDir);
+      options.add(classDir);
+      if (!sourceDir.isEmpty()) {
+         options.add("-sourcepath");
+         options.add(sourceDir);
+      }
+      if (!libs.isEmpty()) {
+         options.add("-cp");
+         options.add(libs);
+      }
       if (!xlintOption.isEmpty()) {
          String[] test = xlintOption.split("\\s+");
          List <String> unsupported = new ArrayList<>();
          for (String s : test) {
-            boolean ok
-                  = s.startsWith("-Xlint")
+            boolean ok = s.startsWith("-Xlint")
                   && -1 < compiler.isSupportedOption(s);
 
             if (!ok) {
@@ -164,17 +161,15 @@ public class Compilation {
       return options;
    }
 
-   private void copyFiles(String root, String sourceDir, String execDir,
+   private void copyFiles(String sourceDir, String classDir,
          String[] nonJavaExt) {
 
-      if (sourceDir.isEmpty() || execDir.isEmpty()) {
-         throw new IllegalArgumentException(
-               "A sources and a classes directory must be"
-               + " defined for copying non-java files");
+      if (classDir.equals(sourceDir)) {
+         return;
       }
-      String searchRoot = root + "/" + sourceDir;
+
       for (String ext : nonJavaExt) {
-         List<File> toCopy = fFind.filteredFiles(searchRoot, ext, execDir);
+         List<File> toCopy = fFind.filteredFiles(sourceDir, ext, classDir, "");
          if (toCopy.isEmpty()) {
             String copyFilesErr =
                   "NOTE: Files with extension \""
@@ -186,17 +181,19 @@ public class Compilation {
          else {
             try {
                for (File f : toCopy) {
-                  String source = f.getPath();
-                  String destination = source.replace(sourceDir, execDir);
-                  if (destination != null) {
-                     File fDest = new File(destination);
+                  String source = f.getPath().replace("\\", "/");
+                  String destination = source.replace(
+                        sourceDir.replace("\\", "/"), classDir.replace("\\", "/"));
+
+                  File fDest = new File(destination);
+                  if (fDest.isAbsolute()) {
                      File destDir = fDest.getParentFile();
                      if (!destDir.exists()) {
                         destDir.mkdirs();
                      }
                      Files.copy(f.toPath(), fDest.toPath(),
-                           REPLACE_EXISTING);
-                  }
+                           StandardCopyOption.REPLACE_EXISTING);
+                     }
                }
             }
             catch (IOException e) {

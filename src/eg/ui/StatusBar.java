@@ -39,7 +39,7 @@ public class StatusBar {
    /**
     * Displays the language
     *
-    * @param lang   the language
+    * @param lang  the language
     */
    public void displayLanguage(String lang) {
       languageLb.setText("Language: " + lang);

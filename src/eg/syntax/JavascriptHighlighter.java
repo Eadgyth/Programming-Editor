@@ -30,7 +30,7 @@ public class JavascriptHighlighter implements Highlighter {
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
       if (!s.isInBlock(SyntaxConstants.SLASH_STAR,
-            SyntaxConstants.STAR_SLASH, SyntaxUtils.SKIP_LINE_QUOTED)) {
+            SyntaxConstants.STAR_SLASH, SyntaxUtils.LINE_QUOTED)) {
 
          s.resetAttributes();
          s.keywords(JS_KEYWORDS, true, null, attr.redPlain);
@@ -42,7 +42,7 @@ public class JavascriptHighlighter implements Highlighter {
          s.lineComments(SyntaxConstants.HTML_BLOCK_CMNT_END);
       }
       s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
-            SyntaxUtils.SKIP_LINE_QUOTED);
+            SyntaxUtils.LINE_QUOTED);
    }
 
    @Override

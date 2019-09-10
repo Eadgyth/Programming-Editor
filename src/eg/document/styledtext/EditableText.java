@@ -55,7 +55,7 @@ public class EditableText extends StyledText {
    }
 
    /**
-    * Updates this copy of the text in the document
+    * Updates this copy of the text contained in the document
     */
    public final void updateTextCopy() {
       try {

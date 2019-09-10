@@ -1,6 +1,7 @@
 package eg.javatools;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import java.util.Collections;
@@ -12,15 +13,97 @@ import java.util.List;
  */
 public class JarBuilder {
 
+   private final static String MANIFEST_INFO_FILE = "ManifestInfo.txt";
    private final static String F_SEP = File.separator;
    private final FilesFinder fFind = new FilesFinder();
 
+   private boolean isManifestInfo;
    private String successMsg = "";
    private String includedFilesErr = "";
    private String errorMsg = "";
 
    /**
-    * Returns the message created if the jar was created
+    * Creates the file 'ManifestInfo.txt" that contains the classpaths
+    * added to the Class-Path header in the manifest of the jar
+    *
+    * @param dir  the directory where the 'info'-file is saved
+    * @param classpaths  the list of classpaths
+    */
+   public void createClasspathInfo(String dir, List<String> classpaths) {
+      isManifestInfo = true;
+      File f = new File(dir + "/" + MANIFEST_INFO_FILE);
+      try (FileWriter writer = new FileWriter(f)) {
+         writer.write("Class-Path:");
+         for (String s : classpaths) {
+            writer.write(" ");
+            writer.write(s);
+         }
+         writer.write("\n");
+      }
+      catch (IOException e) {
+         eg.utils.FileUtils.log(e);
+      }
+   }
+
+   /**
+    * Creates an executable jar file
+    *
+    * @param jarName  the name or path name for the jar file
+    * @param qualifiedMain  the fully qualified name of the main class
+    * @param classDir  the directory that contains class files
+    * @param sourceDir  the directory that contains source files
+    * @param nonClassExt  the array of extensions of files that are
+    * included in the jar file. May be the zero length array
+    * @return  true if the process that creates the jar terminates
+    * normally
+    * @throws IOException  if an IO error occurs
+    * @throws InterruptedException  if the process is interupted by
+    * another thread
+    */
+   public boolean createJar(
+            String jarName,
+            String qualifiedMain,
+            String classDir,
+            String sourceDir,
+            String[] nonClassExt)
+            throws IOException, InterruptedException {
+
+      includedFilesErr = "";
+      successMsg = "";
+      errorMsg = "";
+      List<String> cmd = jarCmd(
+            jarName,
+            qualifiedMain,
+            classDir,
+            sourceDir,
+            nonClassExt);
+
+      StringBuilder msg = new StringBuilder();
+      ProcessBuilder pb = new ProcessBuilder(cmd);
+      pb.directory(new File(classDir));
+      pb.redirectErrorStream(true);
+      Process p = pb.start();
+      if (0 == p.waitFor()) {
+         File f = new File(jarName);
+         msg.append("Saved jar file named ")
+               .append(f.getName())
+               .append(".\n\nThe location is\n")
+               .append(f.getParent());
+
+         successMsg = msg.toString();
+         return true;
+      }
+      else {
+         msg.append("An error occured while creating the jar file ")
+               .append(jarName);
+
+         errorMsg = msg.toString();
+         return false;
+      }
+   }
+
+   /**
+    * Returns the message that is set if the jar was created
     *
     * @return  the message or the empty empty string if there is none
     */
@@ -48,88 +131,39 @@ public class JarBuilder {
       return errorMsg;
    }
 
-   /**
-    * Creates a jar file
-    *
-    * @param root  the root directory of the project
-    * @param jarName  the name for the jar file
-    * @param qualifiedMain  the fully qualified name of the main class
-    * @param execDir  the name of the directory that contains class files.
-    * Can be the empty string if nonClassExt is null.
-    * @param sourceDir  the name of the directory that contains source
-    * files. Can be the empty string if nonClassExt is null.
-    * @param nonClassExt  the array of extensions of files that are
-    * included in the jar file in addition to class files. May be null
-    * @return  the booelan that is true if the process that creates the
-    * jar terminates normally
-    * @throws IOException  as specified by ProcessBuilder
-    * @throws InterruptedException  as specified by Process
-    */
-   public boolean createJar(String root, String jarName, String qualifiedMain,
-         String execDir, String sourceDir, String[] nonClassExt)
-         throws IOException, InterruptedException {
-
-      includedFilesErr = "";
-      successMsg = "";
-      errorMsg = "";
-      List<String> cmd = jarCmd(root, jarName, qualifiedMain, execDir, sourceDir,
-            nonClassExt);
-
-      StringBuilder msg = new StringBuilder();
-      ProcessBuilder pb = new ProcessBuilder(cmd);
-      pb.directory(new File(root + "/" + execDir));
-      pb.redirectErrorStream(true);
-      Process p = pb.start();
-      if (0 == p.waitFor()) {
-         String loc = new File(root).getName();
-         if (execDir.length() > 0) {
-            loc += F_SEP + execDir;
-         }
-         msg.append("Saved jar file named ")
-               .append(jarName)
-               .append(" in ")
-               .append(loc);
-
-         successMsg = msg.toString();
-         return true;
-      }
-      else {
-         msg.append("An error occured while creating the jar file ")
-               .append(jarName);
-       
-         errorMsg = msg.toString();
-         return false;
-      }
-   }
-
    //
    //--private--/
    //
 
-   private List<String> jarCmd(String root, String jarName, String qualifiedMain,
-          String execDir, String sourceDir, String[] nonClassExt) {
+   private List<String> jarCmd(
+            String jarName,
+            String qualifiedMain,
+            String classDir,
+            String sourceDir,
+            String[] nonClassExt) {
 
       List<String> cmd = new ArrayList<>();
-      Collections.addAll(cmd, "jar", "-cfe", jarName + ".jar", qualifiedMain);
-      String searchRoot = root;
-      if (!execDir.isEmpty()) {
-         searchRoot += "/" + execDir;
+      if (!isManifestInfo) {
+         Collections.addAll(cmd, "jar", "cfe", jarName, qualifiedMain);
+      }
+      else {
+         Collections.addAll(cmd, "jar", "cfme", jarName, MANIFEST_INFO_FILE,
+               qualifiedMain);
       }
       List<File> classes
-            = fFind.filteredFiles(searchRoot, ".class", sourceDir);
+            = fFind.filteredFiles(classDir, ".class", sourceDir, "");
+
       List<File> relativeClassFilePaths
-            = relativePaths(searchRoot, classes);
+            = relativePaths(classDir, classes);
+
       relativeClassFilePaths.forEach((i) -> {
           cmd.add(i.toString());
       });
-      if (nonClassExt != null) {
-         if (sourceDir.isEmpty() || execDir.isEmpty()) {
-            throw new IllegalArgumentException(
-                  "A sources and a classes directory must be"
-                  + " defined for copying non-java files");
-         }
+      if (nonClassExt.length > 0) {
          for (String ext : nonClassExt) {
-            List<File> toInclude = fFind.filteredFiles(searchRoot, ext, sourceDir);
+            List<File> toInclude = fFind.filteredFiles(classDir, ext, sourceDir,
+                  MANIFEST_INFO_FILE);
+
             if (toInclude.isEmpty()) {
                StringBuilder msg = new StringBuilder();
                msg.append("\nNOTE: ")
@@ -141,11 +175,11 @@ public class JarBuilder {
             }
             else {
                List<File> relativeInclFilePaths
-                     = relativePaths(searchRoot, toInclude);
+                     = relativePaths(classDir, toInclude);
 
-               for (File f : relativeInclFilePaths) {
+               relativeInclFilePaths.forEach((f) -> {
                   cmd.add(f.toString());
-               }
+               });
             }
          }
       }
