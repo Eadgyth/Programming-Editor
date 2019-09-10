@@ -3,9 +3,8 @@
 This is a text editor which can be used for coding and which can be easily set up to run
 code by using built-in functions. The goal is that setting up a coding project is as simple
 as possible and that the editor is helpful, for example, to write applications for home
-requirements. One feature is compiling and running Java code organized in packages and
-creating an executable jar file of a Java project. Also, running scripts in Perl, Python
-an R is included.
+requirements. So far, project categories are Java (worked out most), Perl, Python, R and
+HTML.
 <br>
 <p>
 A more detailed description of the features, screenshots, a help site and code documentation
@@ -29,18 +28,13 @@ of a programming language may have to be set in the OS (they have to under Windo
 <h4>LIMITATIONS</h4>
 <p>
 The editor includes a basic console to show output/error messages from a tested program
-or from freely defined system commands. This console is interactive but interaction does
-not work properly if a process buffers all the output until completion in the case that
-output is not to the terminal of the OS (PERL, for example, but not Java). To display
-output correctly block-buffering would have to be disabled if this option is available
-for a language (by a corresponding command option which can be entered in the project
-settings or by a switch in a script itself). Also, an application may be tested by starting
-it in the terminal of the OS using the option to enter system commands in the working
-(project) directory.
-<p>
-If the built-in options to compile a Java project and to create a jar from it are used only
-sources found in the project directory (or a sources sub-directory if given) are compiled.
-Inclusion of external libraries is so far not supported.
+or from freely defined system commands and also allows to run interactive command-line
+programms. However, the console does not work as expected if a process buffers its
+output until completion in the case that the output is not to the terminal of the OS
+(PERL, for example, but not Java). To display output correctly block-buffering would
+have to be disabled if this option is available for a language (by a corresponding
+command option which can be entered in the project settings or by a switch in a script
+itself).
 <br>
 <h4>ACKLOWLEDGEMENT</h4>
 <p>
