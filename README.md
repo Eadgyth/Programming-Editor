@@ -1,8 +1,8 @@
 <h3>Eadgyth Programming-Editor</h3>
 <p>
 This is a text editor which can be used for coding and which can be easily set up to run
-code by built-in functions. The goal is that setting a coding project is as simple as
-possible and that the editor is helpful, for example, to write applications for home
+code by using built-in functions. The goal is that setting up a coding project is as simple
+as possible and that the editor is helpful, for example, to write applications for home
 requirements. One feature is compiling and running Java code organized in packages and
 creating an executable jar file of a Java project. Also, running scripts in Perl, Python
 an R is included.
@@ -17,8 +17,8 @@ To try the program the executable jar file in a
 <h4>REQUIREMENTS</h4>
 <p>
 Running and compiling the program requires Java 8 or higher. Building an executable jar
-file can be done by creating a Java project with existing sources in Netbeans using the
-src folder from the repository as sources directory.
+file can be done, for example, after creating a Java project with existing sources in
+Netbeans using the src folder from the repository as sources directory.
 <p>
 If this editor shall be used for compiling Java code by the built-in compile option it must
 be made sure that it is run using the JRE contained in the JDK (and not the public JRE).
