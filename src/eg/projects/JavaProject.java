@@ -29,6 +29,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    private String jarName = "";
    private String[] nonJavaExt = null;
    private String inclExtErrMsg = "";
+   private String jarNameErr = "";
 
    /**
     * @param runner  the reference to TaskRunner
@@ -49,7 +50,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
             .addCmdArgsInput()
             .addCompileOptionInput("Xlint compiler options")
             .addExtensionsInput("Extensions of included non-Java files")
-            .addBuildNameInput("jar file")
+            .addBuildNameInput(JAR_NAME_LABEL)
             .buildWindow();
    }
 
@@ -64,11 +65,11 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          return;
       }
       if (!libs.errorMessage().isEmpty()) {
-         Dialogs.errorMessage(libs.errorMessage(), null);
+         Dialogs.errorMessage(libs.errorMessage(), "Libraries");
          return;
       }
       if (!inclExtErrMsg.isEmpty()) {
-         Dialogs.errorMessage(inclExtErrMsg, null);
+         Dialogs.errorMessage(inclExtErrMsg, "Included non-java files");
          return;
       }
       String sourceDir = inProjectDir(sourceDirName());
@@ -103,12 +104,16 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
       if (!existsMainClassFile()) {
          return;
       }
+      if (!jarNameErr.isEmpty()) {
+         Dialogs.errorMessage(jarNameErr, "Jar name");
+         return;
+      }
       if (!libs.errorMessage().isEmpty()) {
-         Dialogs.errorMessage(libs.errorMessage(), null);
+         Dialogs.errorMessage(libs.errorMessage(), "Libraries");
          return;
       }
       if (!inclExtErrMsg.isEmpty()) {
-         Dialogs.errorMessage(inclExtErrMsg, null);
+         Dialogs.errorMessage(inclExtErrMsg, "Included non-class files");
          return;
       }
       runner.runBusy(() -> {
@@ -202,20 +207,26 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    }
 
    private void setJarName() {
-       String name = buildName();
-       File f = new File(name);
-       if (f.isAbsolute()) {
-          if (f.isDirectory()) {
-             name += "/" + mainFileName();
-          }
-       }
-       else {
-          name = buildName().isEmpty() ? mainFileName() : buildName();
-          name = inProjectDir(name);
-       }
-       name = FileUtils.addExtension(name, ".jar");
-       this.jarName = name;
-    }
+      jarNameErr = "";
+      String name = buildName();
+      File f = new File(name);
+      if (!f.isAbsolute()) {
+         name = inProjectDir(name);
+         f = new File(name);
+      }
+      if (f.isDirectory()) {
+         jarNameErr
+                = f.getPath()
+                + "\n\nA directory cannot be used as name for the jar file.";
+      }
+      if (!f.getParentFile().isDirectory()) {
+          jarNameErr
+                = f.getParentFile()
+                + "\n\nThe location for the jar file cannot be found.";
+      }
+      name = FileUtils.addExtension(f.getPath(), ".jar");
+      jarName = name;
+   }
 
    private void setNonJavaExtensions() {
       inclExtErrMsg = "";
@@ -249,9 +260,12 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
       return
          "\'"
          + ext
-         + "\' cannot be used as extension for included non-Java files.\n"
+         + "\' cannot be used as extension for included files.\n"
          + "An extension must begin with a period.";
    }
+
+   private final String JAR_NAME_LABEL =
+         "Name or pathname for jar file (relative to project or absolute)";
 
    private final String LIB_LABEL =
          "Folder or jar file (path relative to project or absolute):";

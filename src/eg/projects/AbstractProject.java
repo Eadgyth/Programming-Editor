@@ -80,16 +80,22 @@ public abstract class AbstractProject implements Configurable {
    public final boolean configure(String dir) {
       String rootName = sw.projDirNameInput();
       String root = rootByName(dir, rootName);
-      boolean rootTest = !root.isEmpty();
+      boolean isRootFound = !root.isEmpty();
       boolean success = false;
-      if (!rootTest) {
+      if (!isRootFound) {
          Dialogs.warnMessageOnTop(projRootInputWarning());
       }
       else {
-         success = !useMainFile || configBySettingsInput(root);
-      }
-      if (!success && rootTest) {
-         Dialogs.warnMessageOnTop(mainFileInputWarning());
+         if (!useMainFile) {
+            success = true;
+         }
+         else {
+            displayDefaultBuildName(rootName);
+            success = configBySettingsInput(root);
+            if (!success) {
+               Dialogs.warnMessageOnTop(mainFileInputWarning());
+            }
+         }
       }
       if (success) {
          projectRoot = root;
@@ -331,7 +337,9 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns the name for a build
+    * Returns the name for a build. If no input is present
+    * in the text field for the build name a default name
+    * is returned.
     *
     * @return  the name
     */
@@ -396,6 +404,13 @@ public abstract class AbstractProject implements Configurable {
       return mainFilePath.exists();
    }
 
+   private void displayDefaultBuildName(String rootName) {
+      if (sw.buildNameInput().isEmpty()) {
+         String buildName = rootName + "Project";
+         sw.displayBuildName(buildName);
+      }
+   }
+
    private void getSettingsInput() {
       splitMainFileInput(sw.fileNameInput());
       sourceDirName = sw.sourcesDirNameInput();
@@ -405,7 +420,7 @@ public abstract class AbstractProject implements Configurable {
       cmdArgs = sw.cmdArgsInput();
       compileOptions = sw.compileOptionsInput();
       extensions = sw.extensionsInput();
-      buildName = sw.buildNameInput();
+      buildName = sw.buildNameInput().replace("/", F_SEP);
    }
 
    private void setNamespace(String root, String name) {
@@ -605,7 +620,7 @@ public abstract class AbstractProject implements Configurable {
          undoSettings();
       }
    };
-   
+
    private final static String DELETE_CONF_OPT
          = "Saving the \'ProjConfig\' file is no more selected.\n"
          + "Remove the file?";

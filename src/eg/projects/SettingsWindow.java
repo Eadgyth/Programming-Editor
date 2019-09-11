@@ -621,7 +621,7 @@ public class SettingsWindow {
       //
       // set build name option
       if (buildNameLb != null) {
-         JLabel buildLb = new JLabel("Name for " + buildNameLb +":");
+         JLabel buildLb = new JLabel(buildNameLb +":");
          pnl.add(holdLbAndTf(buildLb, buildNameTf));
       }
       JPanel holder = new JPanel(new FlowLayout(FlowLayout.RIGHT));

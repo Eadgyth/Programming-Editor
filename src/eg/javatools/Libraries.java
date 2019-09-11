@@ -77,7 +77,8 @@ public class Libraries {
       }
       joined = joinedLibs(libs);
       joinedAbsPath = joinedLibs(libsAbs);
-      errMsg = notFound.length() == 0 ? "" : notFound.toString();
+      errMsg = notFound.length() == 0 ? "" :
+            "The following libraries cannot be found:" + notFound.toString();
    }
 
    /**
