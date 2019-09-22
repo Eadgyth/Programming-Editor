@@ -65,6 +65,9 @@ public class PerlHighlighter implements Highlighter {
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
       s.setCondition(QW_COND);
       s.setStatementSection();
+      s.setExtendedBlockSection(
+            SyntaxConstants.SINGLE_QUOTE_STR, SyntaxConstants.DOUBLE_QUOTE_STR);
+
       s.resetAttributes();
       s.signedVariables(START_OF_ARR_HASH, END_OF_VAR, null,
             attr.purplePlain);
@@ -75,9 +78,10 @@ public class PerlHighlighter implements Highlighter {
       s.keywords(SYNTAX_KEYWORDS, true, START_OF_VAR, attr.redPlain);
       s.brackets();
       s.braces();
-      s.quote();
       s.setCondition(LINE_CMNT_COND);
-      s.lineComments(SyntaxConstants.HASH);
+      s.lineComments(SyntaxConstants.HASH, SyntaxUtils.BLOCK_QUOTED);
+      s.setCondition(QW_COND);
+      s.quote();
    }
 
    @Override
@@ -110,10 +114,14 @@ public class PerlHighlighter implements Highlighter {
                   }
                }
             }
-            if (ithDel != -1 && ithDel != OPEN_QW_DEL.length) {
-               char[] close = {
-                  CLOSE_QW_DEL[ithDel]
-               };
+            char[] close;
+            if (ithDel != -1) {
+               if (ithDel != OPEN_QW_DEL.length) {
+                  close = new char[] {CLOSE_QW_DEL[ithDel]};
+               }
+               else {
+                  close = new char[] {';'};
+               }
                int length = SyntaxUtils.sectionLength(text, delStart, close, null);
                ok = pos <= qwPos || pos > delStart + length;
             }

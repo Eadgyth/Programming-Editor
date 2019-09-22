@@ -14,6 +14,22 @@ public class SyntaxConstants {
    public  final static char DOUBLE_QUOTE = '\"';
 
    /**
+    * The single quote*/
+   public final static String SINGLE_QUOTE_STR = "\'";
+
+   /**
+    * The double quote */
+   public  final static String DOUBLE_QUOTE_STR = "\"";
+
+   /**
+    * The triple double quotes*/
+   public final static String TRI_DOUBLE_QUOTE = "\"\"\"";
+
+   /**
+    * The triple single quotes*/
+   public final static String TRI_SINGLE_QUOTE = "\'\'\'";
+
+   /**
     * The slash-star block comment start */
    public final static String SLASH_STAR = "/*";
 
@@ -50,6 +66,9 @@ public class SyntaxConstants {
    public final static char[] XML_TAG_ENDS = {
       '<', '>'
    };
+   
+   /**
+    * The characters that are reserved in XML */
    public final static char[] RESERVED_XML_CHARS = {
       '>', '<', '/', ' ', '\n',  '&', '\"', '\'', '%', '=', '+', ';', ',', '\\'
    };

@@ -37,9 +37,9 @@ public class JavascriptHighlighter implements Highlighter {
          s.brackets();
          s.braces();
          s.quoteInLine();
-         s.lineComments(SyntaxConstants.DOUBLE_SLASH);
-         s.lineComments(SyntaxConstants.HTML_BLOCK_CMNT_START);
-         s.lineComments(SyntaxConstants.HTML_BLOCK_CMNT_END);
+         s.lineComments(SyntaxConstants.DOUBLE_SLASH, SyntaxUtils.LINE_QUOTED);
+         s.lineComments(SyntaxConstants.HTML_BLOCK_CMNT_START, SyntaxUtils.LINE_QUOTED);
+         s.lineComments(SyntaxConstants.HTML_BLOCK_CMNT_END, SyntaxUtils.LINE_QUOTED);
       }
       s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
             SyntaxUtils.LINE_QUOTED);

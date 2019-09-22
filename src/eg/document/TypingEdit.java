@@ -91,7 +91,9 @@ public class TypingEdit {
          isCodeUpdate = false;
       }
       else {
-         syntax.highlight();
+         if (!txt.text().isEmpty()) {
+            syntax.highlight();
+         }
          isCodeUpdate = true;
       }
    }

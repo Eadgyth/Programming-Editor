@@ -2,6 +2,9 @@ package eg.syntax;
 
 import javax.swing.text.SimpleAttributeSet;
 
+import java.util.List;
+import java.util.ArrayList;
+
 //--Eadgyth--/
 import eg.utils.LinesFinder;
 import eg.document.styledtext.StyledText;
@@ -82,6 +85,8 @@ public class SyntaxHighlighter {
     */
    public class SyntaxSearcher {
 
+      private final List<Integer> lineCmntStarts = new ArrayList<>();
+
       private String section = "";
       private int chgPos;
       private int scnStart;
@@ -105,57 +110,66 @@ public class SyntaxHighlighter {
          this.condition = condition;
       }
 
-     /**
-      * Sets the section that is simply the entire text
-      */
-      public void setEntireText() {
-         scnStart = 0;
-         section = txt.text();
+      /**
+       * Sets the section that comprise semicolon separated
+       * statements which may be multiline. The search for the next
+       * semicolon relative to the current change position continues
+       * until {@link Highlighter#isValid} returns true.
+       */
+      public void setStatementSection() {
+         if (!isTypeMode || isRepairBlock) {
+            return;
+         }
+         int start = scnStart;
+         int end = start + section.length();
+         int sep = SyntaxUtils.nextUnquoted(txt.text(), ";", end);
+         while (sep != -1 && !isValid(sep, 0)) {
+            sep = SyntaxUtils.nextUnquoted(txt.text(), ";", sep + 1);
+         }
+         if (sep != -1) {
+            end = sep;
+         }
+         else {
+            if (innerEnd > 0) {
+               end = innerEnd;
+            }
+            else {
+               end = txt.text().length();
+            }
+         }
+         end = LinesFinder.nextNewline(txt.text(), end);
+         scnStart = start;
+         section = txt.text().substring(scnStart, end);
       }
 
       /**
-       * Sets the section that takes into account semicolon separated
-       * statements which may be multiline. The search for the next
-       * semicolon relative to the current change position continues
-       * until one is found unquoted and {@link Highlighter#isValid}
-       * returns true. The section may be further extended to the
-       * region that contains quote marks around the statement.
+       * Sets the section that ranges from the first to last position
+       * of the specified delimiter(s).
+       *
+       * @param del1  the delimiter
+       * @param del2  the optional second delimiter, may be the empty
+       * string
        */
-      public void setStatementSection() {
-         if (isTypeMode && !isRepairBlock) {
-            int start = scnStart;
-            int end = start + section.length();
-            if (scnStart > 0 && txt.text().charAt(scnStart - 1) == '\n') {
-               start = LinesFinder.lastNewline(txt.text(), scnStart - 1) + 1;
+      public void setExtendedBlockSection(String del1, String del2) {
+         if (!isTypeMode || isRepairBlock) {
+            return;
+         }
+         int start = scnStart;
+         int end = start + section.length();
+         int firstDel = SyntaxUtils.firstBefore(txt.text(), del1, del2, start);
+         if (firstDel != -1) {
+            start = LinesFinder.lastNewline(txt.text(), firstDel) + 1;
+         }
+         if (end < txt.text().length()) {
+            int lastDel = SyntaxUtils.lastBehind(txt.text(), del1, del2, end);
+            if (lastDel != -1) {
+               end = LinesFinder.nextNewline(txt.text(), lastDel);
             }
-            int sep = SyntaxUtils.nextUnquoted(txt.text(), ";", end);
-            while (sep != -1 && !isValid(sep, 0)) {
-               sep = SyntaxUtils.nextUnquoted(txt.text(), ";", sep + 1);
-            }
-            if (sep != -1) {
-               end = sep;
-            }
-            else {
-               if (innerEnd > 0) {
-                  end = innerEnd;
-               }
-               else {
-                  end = txt.text().length();
-               }
-            }
-            int firstQuote = SyntaxUtils.firstQuoteMark(txt.text(), start);
-            if (firstQuote != -1) {
-               start = LinesFinder.lastNewline(txt.text(), firstQuote) + 1;
-            }
-            if (end < txt.text().length()) {
-               int lastQuote = SyntaxUtils.lastQuoteMark(txt.text(), end);
-               if (lastQuote != -1) {
-                  end = lastQuote;
-               }
-            }
-            end = LinesFinder.nextNewline(txt.text(), end);
+         }
+         if (scnStart > start || end > start + section.length()) {
             scnStart = start;
             section = txt.text().substring(scnStart, end);
+            isMultiline = LinesFinder.isMultiline(section);
          }
       }
 
@@ -163,21 +177,22 @@ public class SyntaxHighlighter {
        * Sets the section that takes into account markup language tags
        */
       public void setMarkupSection() {
-         if (isTypeMode && !isRepairBlock) {
-            int start = txt.text().lastIndexOf("<", chgPos);
-            if (start == -1) {
-               start = 0;
-            }
-            int end;
-            if (isMultiline) {
-               end = markupTagEnd(scnStart + section.length() + 1);
-            }
-            else {
-               end = markupTagEnd(chgPos + 1);
-            }
-            scnStart = start;
-            section = txt.text().substring(start, end);
+         if (!isTypeMode || isRepairBlock) {
+            return;
          }
+         int start = txt.text().lastIndexOf("<", chgPos);
+         if (start == -1) {
+            start = 0;
+         }
+         int end;
+         if (isMultiline) {
+            end = markupTagEnd(scnStart + section.length() + 1);
+         }
+         else {
+            end = markupTagEnd(chgPos + 1);
+         }
+         scnStart = start;
+         section = txt.text().substring(start, end);
       }
 
       /**
@@ -508,17 +523,20 @@ public class SyntaxHighlighter {
        * (requires that {@link Highlighter#isValid} returns true)
        *
        * @param lineCmntStart  the line comment start
+       * @param quoteOpt  the option to define if matches in quotes
+       * are skipped: IGNORE_QUOTED, BLOCK_QUOTED, LINE_QUOTED
        */
-      public void lineComments(String lineCmntStart) {
+      public void lineComments(String lineCmntStart, int quoteOpt) {
          int start = 0;
          while (start != -1) {
             int length = 0;
             start = section.indexOf(lineCmntStart, start);
             if (start != -1) {
                int absStart = start + scnStart;
-               if (!SyntaxUtils.isQuotedInLine(section, start)
+               if (!SyntaxUtils.isQuoted(section, start, quoteOpt)
                      && isValid(absStart, lineCmntStart.length())) {
 
+                  lineCmntStarts.add(absStart);
                   int lineEnd = section.indexOf("\n", start);
                   if (lineEnd != -1) {
                      length = lineEnd - start;
@@ -529,6 +547,29 @@ public class SyntaxHighlighter {
                   txt.setAttributes(absStart, length, attr.greenPlain);
                }
                start += length + 1;
+            }
+         }
+      }
+
+      public void textBlock(String del) {
+         int start = 0;
+         while (start != -1) {
+            start = txt.text().indexOf(del, start);
+            while (start != -1 && !isValid(start, 0)) {
+               start = txt.text().indexOf(del, start + 1);
+            }
+            if (start != -1) {
+               int length = skippedLineCmntLength(start);
+               if (length < 2) {
+                  int next = txt.text().indexOf(del, start + del.length());
+                  if (next != -1) {
+                     length = next - start + del.length();
+                     txt.setAttributes(start, length, attr.orangePlain);
+                  } else {
+                     length = del.length();
+                  }
+               }
+               start += length;
             }
          }
       }
@@ -578,7 +619,6 @@ public class SyntaxHighlighter {
                start = -1;
             }
             if (start != -1) {
-               boolean quoteInLine;
                if (quoteOpt == SyntaxUtils.IGNORE_QUOTED
                      || !SyntaxUtils.isQuoted(txt.text(), start, quoteOpt)) {
 
@@ -695,33 +735,49 @@ public class SyntaxHighlighter {
       private void quote(String scn, int scnPos, char quoteMark,
             SimpleAttributeSet set) {
 
-         final boolean isSingleQuote = quoteMark == SyntaxConstants.SINGLE_QUOTE;
+         final char altQuoteMark = quoteMark == SyntaxConstants.DOUBLE_QUOTE ?
+               SyntaxConstants.SINGLE_QUOTE : SyntaxConstants.DOUBLE_QUOTE;
+
          int start = 0;
          int end = 0;
          while (start != -1 && end != -1) {
-            start = SyntaxUtils.nextNonEscaped(scn, quoteMark, start);
+            start = scn.indexOf(quoteMark, start);
             int absStart = start + scnPos;
             if (start != -1) {
-               int length = 0;
-               boolean ok = isQuotation(isSingleQuote, scn, start, scnPos);
-               end = SyntaxUtils.nextNonEscaped(scn, quoteMark, start + 1);
-               if (end != -1) {
-                  ok = ok && isQuotation(isSingleQuote, scn, end, scnPos);
-                  if (ok) {
-                     length = end - start + 1;
-                     txt.setAttributes(absStart, length, set);
+               int length = skippedLineCmntLength(absStart);
+               if (length < 2) {
+                  boolean ok = isValidQuoteMark(altQuoteMark, scn, start, scnPos);
+                  end = SyntaxUtils.nextNonEscaped(scn, quoteMark, start + 1);
+                  if (end != -1) {
+                     ok = ok && isValidQuoteMark(altQuoteMark, scn, end, scnPos);
+                     if (ok) {
+                        length = end - start + 1;
+                        txt.setAttributes(absStart, length, set);
+                     }
                   }
                }
-               start += length + 1;
+               start += length;
             }
          }
       }
 
-      private boolean isQuotation(boolean isSingleQuote, String scn, int pos,
+      private int skippedLineCmntLength(int pos) {
+         int length = 1;
+         int nextNewline = LinesFinder.nextNewline(txt.text(), pos);
+         int lastNewline = LinesFinder.lastNewline(txt.text(), pos);
+         for (int i : lineCmntStarts) {
+            if (i > lastNewline && i < pos) {
+               length = nextNewline - pos;
+               break;
+            }
+         }
+         return length;
+      }
+
+      private boolean isValidQuoteMark(char altQuoteMark, String scn, int pos,
             int scnPos) {
 
-         return (!isSingleQuote
-               || !SyntaxUtils.isQuoted(scn, pos, SyntaxConstants.DOUBLE_QUOTE))
+         return !SyntaxUtils.isQuoted(scn, pos, altQuoteMark)
                && isValid(pos + scnPos, 0);
       }
 
@@ -818,6 +874,7 @@ public class SyntaxHighlighter {
          this.scnStart = scnStart;
          isTypeMode = txt.text().length() > section.length();
          isMultiline = LinesFinder.isMultiline(section);
+         lineCmntStarts.clear();
       }
 
       private SyntaxSearcher() {}

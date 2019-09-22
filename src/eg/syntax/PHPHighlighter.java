@@ -35,9 +35,9 @@ public class PHPHighlighter implements Highlighter {
       ' ', '\n', '{', '}', '?', '!', '[', ']', ';', '.', ':', '\\', '#',
       '&', '|', '=', '+', '-', '*', '/'
    };
-   
+
    private final boolean mixed;
-   
+
    /**
     * @param mixed  true to use <code>PHPHighlighter</code>
     * in <code>HTMLHighlighter</code>; false for pure PHP
@@ -53,13 +53,15 @@ public class PHPHighlighter implements Highlighter {
 
          if (!mixed) {
             s.setStatementSection();
+            s.setExtendedBlockSection(
+                  SyntaxConstants.SINGLE_QUOTE_STR, SyntaxConstants.DOUBLE_QUOTE_STR);
          }
          s.resetAttributes();
          s.signedVariable('$', END_OF_VAR, null, attr.bluePlain);
          s.keywordsIgnoreCase(PHP_KEYWORDS, true, null, attr.redPlain);
+         s.lineComments(SyntaxConstants.DOUBLE_SLASH, SyntaxUtils.BLOCK_QUOTED);
+         s.lineComments(SyntaxConstants.HASH, SyntaxUtils.BLOCK_QUOTED);
          s.quote();
-         s.lineComments(SyntaxConstants.DOUBLE_SLASH);
-         s.lineComments(SyntaxConstants.HASH);
       }
       s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
             SyntaxUtils.BLOCK_QUOTED);

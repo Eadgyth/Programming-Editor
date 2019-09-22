@@ -59,7 +59,7 @@ public class Eadgyth {
       // Then, the methods 'scaledSize' and 'invertedScaledSize'
       // in eg.utils.ScreenParams should be modified as mentioned
       // in the comments there.
-      // 
+      //
       if (SystemParams.IS_JAVA_9_OR_HIGHER) {
          System.setProperty("sun.java2d.uiScale", "1.0");
          UIManager.put("Button.font", ScreenParams.SANSSERIF_PLAIN_8);
