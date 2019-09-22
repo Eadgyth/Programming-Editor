@@ -104,8 +104,9 @@ public class Libraries {
 
    /**
     * Gets a string in which the libraries are joined with the
-    * system's path separator and libraries that exist in the
-    * project directory are converted to absolute paths
+    * system's path separator and libraries that were given as
+    * paths relative to the project directory are converted to
+    * absolute paths
     *
     * @return  the joined libraries
     */
@@ -115,6 +116,8 @@ public class Libraries {
 
    /**
     * Gets the list that contains the libraries as absolute paths
+    * including those that were given as paths relative to to the
+    * project directory
     *
     * @return  the list
     */

@@ -20,7 +20,7 @@ public class FilesFinder {
    /**
     * Returns a <code>List</code> of all files with the specified
     * extension in the specified directory and its sub-directories.
-    * The file 'ProjectConfig-properties' is alsways excluded.
+    * The file 'ProjectConfig.properties' is alsways excluded.
     *
     * @param dir  the directory
     * @param extension  the file extension which starts with a period.

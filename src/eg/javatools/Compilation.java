@@ -51,20 +51,19 @@ public class Compilation {
     * files/packages
     * @param sourceDir  the directory that contains java files/packages
     * @param nonJavaExt  the array of extensions of files that are copied
-    * to the compilation if classDir and sourceDir differ. May be the zero
-    * length array.
+    * to the compilation if classDir and sourceDir differ. May be the
+    * zero length array.
     * @param libs  the libraries in which individual paths are separated
     * by the system's path separator. May be the empty string
-    * @param xlintOption  the Xlint compiler options, in which several
-    * options are separated by spaces. Options other than Xlint are
-    * ignored
+    * @param options  Compiler options, in which several options and
+    * arguments are separated by spaces.
     */
    public void compile(
             String classDir,
             String sourceDir,
             String[] nonJavaExt,
             String libs,
-            String xlintOption) {
+            String options) {
 
       if (compiler == null) {
          Dialogs.errorMessage("The compiler was not found.", null);
@@ -85,7 +84,7 @@ public class Compilation {
       //
       // Compiler options
       Iterable<String> compileOptions
-            = compileOptions(classDir, sourceDir, libs, xlintOption);
+            = compileOptions(classDir, sourceDir, libs, options);
       //
       // compile, print messages
       try {

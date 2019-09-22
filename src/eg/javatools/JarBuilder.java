@@ -48,7 +48,8 @@ public class JarBuilder {
    /**
     * Creates an executable jar file
     *
-    * @param jarName  the name or path name for the jar file
+    * @param jarName  the name or pathname for the jar file. If not
+    * a pathname the location of the jar file is classDir
     * @param qualifiedMain  the fully qualified name of the main class
     * @param classDir  the directory that contains class files
     * @param sourceDir  the directory that contains source files
@@ -57,8 +58,8 @@ public class JarBuilder {
     * @return  true if the process that creates the jar terminates
     * normally
     * @throws IOException  if an IO error occurs
-    * @throws InterruptedException  if the process is interupted by
-    * another thread
+    * @throws InterruptedException  if the process that creates the
+    * jar file is interupted by another thread
     */
    public boolean createJar(
             String jarName,
