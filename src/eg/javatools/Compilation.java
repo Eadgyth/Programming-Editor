@@ -84,7 +84,8 @@ public class Compilation {
             = fileManager.getJavaFileObjects(fileArr);
       //
       // Compiler options
-      Iterable<String> compileOptions = options(classDir, sourceDir, libs, xlintOption);
+      Iterable<String> compileOptions
+            = compileOptions(classDir, sourceDir, libs, xlintOption);
       //
       // compile, print messages
       try {
@@ -102,8 +103,13 @@ public class Compilation {
          }
          printDiagnostics(diagnostics);
       }
-      catch (IllegalArgumentException | IllegalStateException e) {
+      catch (IllegalStateException e) {
          FileUtils.log(e);
+      }
+      catch (RuntimeException e) {
+         //
+         // not checked before if compile option arguments are valid
+         pr.printLine(e.getMessage());
       }
       finally {
          try {
@@ -118,47 +124,67 @@ public class Compilation {
    //--private--/
    //
 
-   private Iterable<String> options(String classDir, String sourceDir, String libs,
-            String xlintOption) {
+   private Iterable<String> compileOptions(String classDir, String sourceDir,
+         String libs, String options) {
 
-      List <String> options = new ArrayList<>();
-      options.add("-d");
-      options.add(classDir);
+      List <String> optList = new ArrayList<>();
+      optList.add("-d");
+      optList.add(classDir);
       if (!sourceDir.isEmpty()) {
-         options.add("-sourcepath");
-         options.add(sourceDir);
+         optList.add("-sourcepath");
+         optList.add(sourceDir);
       }
       if (!libs.isEmpty()) {
-         options.add("-cp");
-         options.add(libs);
+         optList.add("-cp");
+         optList.add(libs);
       }
-      if (!xlintOption.isEmpty()) {
-         String[] test = xlintOption.split("\\s+");
-         List <String> unsupported = new ArrayList<>();
-         for (String s : test) {
-            boolean ok = s.startsWith("-Xlint")
-                  && -1 < compiler.isSupportedOption(s);
+      if (!options.isEmpty()) {
+         String[] test = options.split("\\s+");
+         boolean ok = true;
+         String msg = "";
+         for (int i = 0; i < test.length; i++) {
+            int args = 0;
+            if (test[i].startsWith("-")) {
+               args = compiler.isSupportedOption(test[i]);
+               ok = -1 < args;
+               if (!ok) {
+                  msg = test[i] + " is not a valid compiler option.";
+                  break;
+               }
+               if (args == 0) {
+                  ok = i == test.length - 1
+                        || (i < test.length - 1 && test[i + 1].startsWith("-"));
 
-            if (!ok) {
-               unsupported.add(s);
+                  if (!ok) {
+                     msg = test[i] + "  does not take arguments.";
+                     break;
+                  }
+               }
+               if (args > 0) {
+                  ok = i < test.length - 1 && !test[i + 1].startsWith("-");
+                  if (!ok) {
+                     msg = test[i] + " requires an argument.";
+                     break;
+                  }
+               }
             }
             else {
-               options.add(s);
+               ok = i > 0 && test[i - 1].startsWith("-");
+               if (!ok) {
+                  msg = test[i] + " is not a valid compiler option.";
+                  break;
+               }
+            }
+            if (ok) {
+               optList.add(test[i]);
             }
          }
-         if (unsupported.size() > 0) {
-            for (String s : unsupported) {
-               String err =
-                     "NOTE: \'"
-                     + s
-                     + "\' cannot be used as compiler"
-                     + " option and was ignored";
-
-               pr.printBr(err);
-            }
+         if (!ok) {
+            String err = "NOTE: " + msg;
+            pr.printBr(err);
          }
       }
-      return options;
+      return optList;
    }
 
    private void copyFiles(String sourceDir, String classDir,

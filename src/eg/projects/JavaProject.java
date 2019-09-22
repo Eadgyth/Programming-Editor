@@ -48,7 +48,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
             .addLibrariesInput(LIB_LABEL)
             .addCmdOptionsInput()
             .addCmdArgsInput()
-            .addCompileOptionInput("Xlint compiler options")
+            .addCompileOptionInput("Compiler options")
             .addExtensionsInput("Extensions of included non-Java files")
             .addBuildNameInput(JAR_NAME_LABEL)
             .buildWindow();
