@@ -560,7 +560,8 @@ public class SyntaxHighlighter {
             }
             if (start != -1) {
                int length = skippedLineCmntLength(start);
-               if (length < 2) {
+               if (length == 0) {
+                  length = 1;
                   int next = txt.text().indexOf(del, start + del.length());
                   if (next != -1) {
                      length = next - start + del.length();
@@ -745,7 +746,8 @@ public class SyntaxHighlighter {
             int absStart = start + scnPos;
             if (start != -1) {
                int length = skippedLineCmntLength(absStart);
-               if (length < 2) {
+               if (length == 0) {
+                  length = 1;
                   boolean ok = isValidQuoteMark(altQuoteMark, scn, start, scnPos);
                   end = SyntaxUtils.nextNonEscaped(scn, quoteMark, start + 1);
                   if (end != -1) {
@@ -762,7 +764,7 @@ public class SyntaxHighlighter {
       }
 
       private int skippedLineCmntLength(int pos) {
-         int length = 1;
+         int length = 0;
          int nextNewline = LinesFinder.nextNewline(txt.text(), pos);
          int lastNewline = LinesFinder.lastNewline(txt.text(), pos);
          for (int i : lineCmntStarts) {
