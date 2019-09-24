@@ -88,7 +88,7 @@ public class JarBuilder {
          File f = new File(jarName);
          msg.append("Saved jar file named ")
                .append(f.getName())
-               .append(".\n\nThe location is\n")
+               .append(".\n\nThe location is:\n")
                .append(f.getParent());
 
          successMsg = msg.toString();

@@ -36,6 +36,7 @@ public class JavaHighlighter implements Highlighter {
 
    private final int IGNORE_COND = 0;
    private final static int TEXT_BLOCK_COND = 1;
+   private final static int VALID_TEXT_BLOCK_COND = 2;
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
@@ -43,16 +44,21 @@ public class JavaHighlighter implements Highlighter {
             SyntaxUtils.LINE_QUOTED)) {
 
          s.setCondition(IGNORE_COND);
-         s.setExtendedBlockSection(SyntaxConstants.TRI_DOUBLE_QUOTE, "");
+         if (SystemParams.IS_JAVA_13) {
+            s.setExtendedBlockSection(SyntaxConstants.TRI_DOUBLE_QUOTE, "");
+         }
          s.resetAttributes();
          s.keywords(JAVA_ANNOTATIONS, true, null, attr.bluePlain);
          s.keywords(JAVA_KEYWORDS, true, null, attr.redPlain);
          s.brackets();
          s.braces();
+         if (SystemParams.IS_JAVA_13) {
+            s.setCondition(TEXT_BLOCK_COND);
+         }
          s.quoteInLine();
          s.lineComments(SyntaxConstants.DOUBLE_SLASH, SyntaxUtils.LINE_QUOTED);
          if (SystemParams.IS_JAVA_13) {
-            s.setCondition(TEXT_BLOCK_COND);
+            s.setCondition(VALID_TEXT_BLOCK_COND);
             s.textBlock(SyntaxConstants.TRI_DOUBLE_QUOTE);
          }
       }
@@ -62,22 +68,43 @@ public class JavaHighlighter implements Highlighter {
 
    @Override
    public boolean isValid(String text, int pos, int length, int condition) {
-      if (condition == IGNORE_COND) {
-         return true;
-      }
-      else {
-         if (text.length() > pos + 3) {
-            int nextNonSpace = SyntaxUtils.nextNonSpace(text, pos + 3);
-            if (text.charAt(nextNonSpace) == '\n') {
-               return true;
+      switch (condition) {
+         case IGNORE_COND:
+            return true;
+
+         case TEXT_BLOCK_COND:
+            return !SyntaxUtils.isInTextBlock(
+                    text, SyntaxConstants.TRI_DOUBLE_QUOTE, pos, SyntaxConstants.HASH);
+
+         case VALID_TEXT_BLOCK_COND:
+            if (text.length() > pos + 3) {
+               int nextNonSpace = SyntaxUtils.nextNonSpace(text, pos + 3);
+               boolean isStart = text.charAt(nextNonSpace) == '\n';
+               boolean isStartInBlockCnmt =
+                       SyntaxUtils.isInBlock(
+                               text,
+                               SyntaxConstants.SLASH_STAR,
+                               SyntaxConstants.STAR_SLASH, pos,
+                               SyntaxUtils.IGNORE_QUOTED);
+
+               boolean isEndInBlockCmnt =
+                       SyntaxUtils.isInBlock(
+                               text,
+                               SyntaxConstants.SLASH_STAR,
+                               SyntaxConstants.STAR_SLASH,
+                               pos + length,
+                               SyntaxUtils.IGNORE_QUOTED);
+
+               boolean isBlockCmnt = isStartInBlockCnmt || isEndInBlockCmnt;
+               return isStart && !isBlockCmnt;
             }
             else {
                return false;
             }
-         }
-         else {
-            return false;
-         }
+
+         default:
+            break;
       }
+      return false;
    }
 }

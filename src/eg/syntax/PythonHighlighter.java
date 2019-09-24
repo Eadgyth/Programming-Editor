@@ -2,7 +2,6 @@ package eg.syntax;
 
 import eg.document.styledtext.Attributes;
 
-import eg.utils.LinesFinder;
 /**
  * Syntax highlighting for Python
  */
@@ -35,8 +34,8 @@ public class PythonHighlighter implements Highlighter {
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
       s.setCondition(IGNORE_COND);
-      s.setExtendedBlockSection(
-            SyntaxConstants.SINGLE_QUOTE_STR, SyntaxConstants.DOUBLE_QUOTE_STR);
+      s.setExtendedBlockSection(SyntaxConstants.TRI_DOUBLE_QUOTE,
+            SyntaxConstants.TRI_SINGLE_QUOTE);
 
       s.resetAttributes();
       s.keywords(KEYWORDS, true, null, attr.redPlain);
@@ -44,7 +43,7 @@ public class PythonHighlighter implements Highlighter {
       s.braces();
       s.setCondition(TEXT_BLOCK_COND);
       s.lineComments(SyntaxConstants.HASH, SyntaxUtils.BLOCK_QUOTED);
-      s.quote();
+      s.quoteInLine();
       s.setCondition(DOUBLE_QUOTE_TEXT_BLOCK_COND);
       s.textBlock(SyntaxConstants.TRI_DOUBLE_QUOTE);
       s.setCondition(SINGLE_QUOTE_TEXT_BLOCK_COND);
@@ -53,20 +52,22 @@ public class PythonHighlighter implements Highlighter {
 
    @Override
    public boolean isValid(String text, int pos, int length, int condition) {
-      if (condition == IGNORE_COND) {
-         return true;
-      }
-      else if (condition == TEXT_BLOCK_COND) {
-         return !SyntaxUtils.isInTextBlock(
-               text, SyntaxConstants.TRI_SINGLE_QUOTE, pos, SyntaxConstants.HASH)
-               && !SyntaxUtils.isInTextBlock(
-               text, SyntaxConstants.TRI_DOUBLE_QUOTE, pos, SyntaxConstants.HASH);
-      }
-      else {
-         String altDel = condition == DOUBLE_QUOTE_TEXT_BLOCK_COND ?
-               SyntaxConstants.TRI_SINGLE_QUOTE : SyntaxConstants.TRI_DOUBLE_QUOTE;
+      switch (condition) {
+         case IGNORE_COND:
+            return true;
 
-         return !SyntaxUtils.isInTextBlock(text, altDel, pos, SyntaxConstants.HASH);
+         case TEXT_BLOCK_COND:
+            return !SyntaxUtils.isInTextBlock(
+                    text, SyntaxConstants.TRI_SINGLE_QUOTE, pos, SyntaxConstants.HASH)
+                    && !SyntaxUtils.isInTextBlock(
+                            text, SyntaxConstants.TRI_DOUBLE_QUOTE, pos,
+                            SyntaxConstants.HASH);
+
+         default:
+            String altDel = condition == DOUBLE_QUOTE_TEXT_BLOCK_COND ?
+                    SyntaxConstants.TRI_SINGLE_QUOTE : SyntaxConstants.TRI_DOUBLE_QUOTE;
+
+            return !SyntaxUtils.isInTextBlock(text, altDel, pos, SyntaxConstants.HASH);
       }
    }
 }

@@ -466,7 +466,9 @@ public class SyntaxHighlighter {
             start = t.indexOf(startTag, start);
             int length = 0;
             if (start != -1) {
-               boolean isInCmnt = isInBlock(SyntaxConstants.HTML_BLOCK_CMNT_START,
+               boolean isInCmnt = SyntaxUtils.isInBlock(
+                     txt.text(),
+                     SyntaxConstants.HTML_BLOCK_CMNT_START,
                      SyntaxConstants.HTML_BLOCK_CMNT_END, start,
                      SyntaxUtils.IGNORE_QUOTED);
 
@@ -551,23 +553,27 @@ public class SyntaxHighlighter {
          }
       }
 
+      /**
+       * Searches and highlights text blocks surrounded by the specified
+       * delimiter (requires that {@link Highlighter#isValid} returns true
+       *
+       * @param del  the delimiter
+       */
       public void textBlock(String del) {
          int start = 0;
          while (start != -1) {
             start = txt.text().indexOf(del, start);
-            while (start != -1 && !isValid(start, 0)) {
-               start = txt.text().indexOf(del, start + 1);
-            }
             if (start != -1) {
                int length = skippedLineCmntLength(start);
                if (length == 0) {
-                  length = 1;
+                  length = del.length();
                   int next = txt.text().indexOf(del, start + del.length());
                   if (next != -1) {
-                     length = next - start + del.length();
-                     txt.setAttributes(start, length, attr.orangePlain);
-                  } else {
-                     length = del.length();
+                     int l = next - start + del.length();
+                     if (isValid(start, l)) {
+                        length = l;
+                        txt.setAttributes(start, length, attr.orangePlain);
+                     }
                   }
                }
                start += length;
@@ -594,7 +600,8 @@ public class SyntaxHighlighter {
             return false;
          }
          else {
-            return isInBlock(blockStart, blockEnd, chgPos, quoteOpt);
+            return SyntaxUtils.isInBlock(txt.text(),blockStart, blockEnd, chgPos,
+                  quoteOpt);
          }
       }
 
@@ -740,18 +747,19 @@ public class SyntaxHighlighter {
                SyntaxConstants.SINGLE_QUOTE : SyntaxConstants.DOUBLE_QUOTE;
 
          int start = 0;
-         int end = 0;
-         while (start != -1 && end != -1) {
+         while (start != -1) {
             start = scn.indexOf(quoteMark, start);
             int absStart = start + scnPos;
             if (start != -1) {
                int length = skippedLineCmntLength(absStart);
                if (length == 0) {
+                  boolean ok = !SyntaxUtils.isQuoted(scn, start, altQuoteMark)
+                        && isValid(start + scnPos, 0);
+                  
+                  int end = SyntaxUtils.nextNonEscaped(scn, quoteMark, start + 1);
                   length = 1;
-                  boolean ok = isValidQuoteMark(altQuoteMark, scn, start, scnPos);
-                  end = SyntaxUtils.nextNonEscaped(scn, quoteMark, start + 1);
                   if (end != -1) {
-                     ok = ok && isValidQuoteMark(altQuoteMark, scn, end, scnPos);
+                     ok = ok && isValid(end + scnPos, 0);
                      if (ok) {
                         length = end - start + 1;
                         txt.setAttributes(absStart, length, set);
@@ -776,14 +784,7 @@ public class SyntaxHighlighter {
          return length;
       }
 
-      private boolean isValidQuoteMark(char altQuoteMark, String scn, int pos,
-            int scnPos) {
-
-         return !SyntaxUtils.isQuoted(scn, pos, altQuoteMark)
-               && isValid(pos + scnPos, 0);
-      }
-
-      private boolean isInBlock(String blockStart, String blockEnd, int pos,
+      /*private boolean isInBlock(String blockStart, String blockEnd, int pos,
             int quoteOpt) {
 
          int lastStart = SyntaxUtils.lastBlockStart(txt.text(), pos, blockStart,
@@ -795,7 +796,7 @@ public class SyntaxHighlighter {
                blockEnd, quoteOpt);
          }
          return (lastStart != -1 & nextEnd != -1) && nextEnd != lastStart;
-      }
+      }*/
 
       private void removedBlockStart(int lastEnd, String blockStart,
             String blockEnd, int quoteOpt) {

@@ -152,6 +152,20 @@ public class SyntaxUtils {
       }
       return false;
    }
+   
+   public static boolean isInBlock(String text, String blockStart, String blockEnd,
+         int pos, int quoteOpt) {
+
+      int lastStart = SyntaxUtils.lastBlockStart(text, pos, blockStart,
+            blockEnd, quoteOpt);
+
+      int nextEnd = -1;
+      if (lastStart != -1) {
+         nextEnd = SyntaxUtils.nextBlockEnd(text, pos, blockStart,
+            blockEnd, quoteOpt);
+      }
+      return (lastStart != -1 & nextEnd != -1) && nextEnd != lastStart;
+   }
 
    /**
     * Returns the position of the last block start
@@ -440,13 +454,16 @@ public class SyntaxUtils {
     * @param pos  the position
     * @param lineCmntStart  the mark for line comments
     * @return  true if inside a text block, false otherwise
-    */  
+    */
    public static boolean isInTextBlock(String text, String del, int pos,
          String lineCmntStart) {
 
       int before = SyntaxUtils.countBefore(text, del, pos, lineCmntStart);
-      int after = SyntaxUtils.countAfter(text, del, pos, lineCmntStart);
-      return before % 2 != 0 & after % 2 != 0;
+      int after = 0;
+      if (text.length() > pos + 3) {
+         after = SyntaxUtils.countAfter(text, del, pos, lineCmntStart);
+      }
+      return (before > 0 && before % 2 != 0) && (after > 0 && after % 2 != 0);
    }
 
    //
@@ -466,8 +483,8 @@ public class SyntaxUtils {
             if (lineCmntStart != null && isLineCommented(text, lineCmntStart, i)) {
                i+= toSearch.length();
                continue;
-            }
-            if (i > pos) {
+            }                  
+             if (i >= pos) {
                break;
             }
             count++;
