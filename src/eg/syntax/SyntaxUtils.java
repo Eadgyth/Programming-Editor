@@ -459,7 +459,7 @@ public class SyntaxUtils {
     * @param lineCmntStart  the string that starts a line comment
     * @param pos  the position
     * @param quoteOpt  one of {@link IGNORE_QUOTED}, {@link #BLOCK_QUOTED}
-    * and {@link #LINE_QUOTED}  
+    * and {@link #LINE_QUOTED}
     * @return  true if in a line comment, false otherwise
     */
     public static boolean isLineCommented(String text, String lineCmntStart, int pos,
@@ -480,7 +480,7 @@ public class SyntaxUtils {
    //
 
    private SyntaxUtils() {}
-   
+
    private static int countBefore (String text, String str, int pos,
          String lineCmntStart) {
 
