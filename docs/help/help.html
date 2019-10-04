@@ -105,13 +105,14 @@
       <li>Open the project settings window by selecting 'Assign as project' in the
           'Project' menu and choosing a project category. The input options depend on
           the project category. The required entries are the name of the project root
-          directory and, in the categories in which a main file is used to run a tested
-          program, the name of the main file. In addition, it may be possible that the
-          main file (or generally source files) are stored in a separate directory that
-          is a sub-directory of the project root (a source folder). In this case the
-          name of this directory is specified in the input field 'Name of sources
-          directory'. For Java this directory must not be a directory that is also
-          defined as a package.</li>
+          directory and the name of the main file/script (the latter not asked for in an
+          HTML project). In addition, it may be possible that source files are stored in
+          a separate sub-directory of the project root (a source folder). In this case
+          the name of this directory is specified in the input field 'Name of sources
+          directory'. For Java this directory must not be a directory that is a
+          package.</li>
+      <li>Options and arguments for a start command or compile options (in a Java
+          project) may be entered in the project settings.</li>
       <li>Make the required entries in the input field(s) and click ok.</li>
       </ol>
       <br>
@@ -176,22 +177,16 @@
           beginning period in the input field 'Extensions of included non-Java files'
           which is found in the tab 'Compilation and build' in the project settings.</li>
       <li>Libraries may be specified in the tab 'Libraries' in the project settings.
-          These are added in classpath of the program and can be jar files or folders
-          containing class files. Classpath can be a path relative to the project
-          directory (e.g. libs/x.jar) but also an absolute path. When the program is
-          packaged in a jar the paths are added to the CLASS-PATH header in the
-          manifest file as specified. To use libraries stored in the project it is
-          recommended to store project source files in separate sources directory
-          and to specify a separate directory for class files (executables directory
-          in the project settings).</li>          
+          These are added in classpath and can be folders containing class files or
+          jar files. Classpath can be a path relative to the project directory (e.g.
+          libs/some.jar given this file exists in the project directory) but also an
+          absolute path. When the program is packaged in a jar the paths are added to
+          the CLASS-PATH header in the manifest file as specified.</li>          
       </ol>
       <br>
       <h4 id="PerlProject">Run a Perl script</h4>
       <ol>
       <li>Save changes to the Perl script and start it by selecting 'Run'.</li>
-      <li>Options and arguments for the start command may be entered in the input
-          fields 'Command options' and 'Command arguments', respectively, which are
-          found in the tab 'Run' in the project settings.</li>
       <li>The Perl script may be checked for correct syntax without running it by
           by selecting 'Save selected file and compile project' or 'Save all open
           project files and compile project' in the 'Project' menu (starts the script
@@ -205,9 +200,6 @@
       <h4 id="PythonProject">Run a Python script</h4>
       <ol>
       <li>Save changes to the Python script and start it by selecting 'Run'.</li>
-      <li>Options and arguments for the start command may be entered in the input fields
-          'Command options' and 'Command arguments', respectively, which are found in
-          the tab 'Run' in the project settings.</li>
       <li>NOTE: For correct output of a Python program to the console window it may be
           necessary to specify a command option that turns off buffering of the standard
           output and standerd error (-u).</li>
@@ -215,11 +207,8 @@
       <br>
       <h4 id="RProject">Run an R script</h4>
       <ol>
-      <li>Save changes to the R script and start it by selecting 'Run'.</li>
-      <li>Options and arguments for the start command may be entered in the input
-          fields 'Command options' and 'Command arguments', respectively, which are
-          found in the tab 'Run' in the project settings. The script is run by using
-          the Rscript command.</li>
+      <li>Save changes to the R script and start it by selecting 'Run'. The script is run
+          by using the Rscript command.</li>
       </ol>
       <br>
       <h4 id="HtmlProject">Viewing HTML code in a web browser</h4>
