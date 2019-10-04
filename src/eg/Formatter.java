@@ -143,18 +143,18 @@ public class Formatter {
     * Line numbers are not shown in {@link EditArea} objects in which
     * wordwrap is enabled.
     *
-    * @param lineNumbers  true to show, false to hide line numbers
+    * @param b  true to show, false to hide line numbers
     */
-   public void showLineNumbers(boolean lineNumbers) {
-      if (isShowLineNr == lineNumbers) {
+   public void showLineNumbers(boolean b) {
+      if (isShowLineNr == b) {
          return;
       }
       for (EditArea ea : editArea) {
          if (ea != null && !ea.isWordwrap()) {
-            ea.showLineNumbers(lineNumbers);
+            ea.showLineNumbers(b);
          }
       }
-      isShowLineNr = lineNumbers;
+      isShowLineNr = b;
    }
 
    /**

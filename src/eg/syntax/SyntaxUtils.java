@@ -20,7 +20,7 @@ public class SyntaxUtils {
    public static int LINE_QUOTED = 2;
 
    /**
-    * Returns if a section of text is a word
+    * Returns if a section with the specified length is a word
     *
     * @param text  the text
     * @param pos  the position where the section starts
@@ -108,6 +108,7 @@ public class SyntaxUtils {
             if (text.charAt(i) == endMarks[j]) {
                found = true;
                i--;
+               break;
             }
          }
       }
@@ -152,7 +153,19 @@ public class SyntaxUtils {
       }
       return false;
    }
-   
+
+   /**
+    * Returns if the specified position is found inside a block
+    *
+    * @param text  the text
+    * @param blockStart  the start of a block
+    * @param blockEnd  the end of a block
+    * @param pos  the position
+    * @param quoteOpt  the option to define if or how matches in quotes
+    * are skipped: one of {@link #IGNORE_QUOTED}, {@link #BLOCK_QUOTED}
+    * and {@link #LINE_QUOTED}
+    * @return  true if inside a block, false otherwise
+    */
    public static boolean isInBlock(String text, String blockStart, String blockEnd,
          int pos, int quoteOpt) {
 
@@ -174,8 +187,9 @@ public class SyntaxUtils {
     * @param pos  the position where the search starts
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
-    * @param quoteOpt  the option to define if matches in quotes
-    * are skipped: IGNORE_QUOTED, BLOCK_QUOTED, LINE_QUOTED
+    * @param quoteOpt  the option to define if or how matches in quotes
+    * are skipped: one of {@link #IGNORE_QUOTED}, {@link #BLOCK_QUOTED}
+    * and {@link #LINE_QUOTED}
     * @return  the position of the last block start. -1 if a block end
     * is closer than a block start or if no block start is found
     */
@@ -205,8 +219,9 @@ public class SyntaxUtils {
     * @param pos  the position where the search starts
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
-    * @param quoteOpt  the option to define if matches in quotes
-    * are skipped: IGNORE_QUOTED, BLOCK_QUOTED, LINE_QUOTED
+    * @param quoteOpt  the option to define if or how matches in quotes
+    * are skipped: one of {@link #IGNORE_QUOTED}, {@link #BLOCK_QUOTED}
+    * and {@link #LINE_QUOTED}
     * @return  the position of the next block start. -1 if a block end
     * is closer than a block start or if no block start is found
     */
@@ -236,8 +251,9 @@ public class SyntaxUtils {
     * @param pos  the position where the search starts
     * @param blockStart  the start of a block
     * @param blockEnd  the end of a block
-    * @param quoteOpt  the option to define if matches in quotes
-    * are skipped: IGNORE_QUOTED, BLOCK_QUOTED, LINE_QUOTED
+    * @param quoteOpt  the option to define if or how matches in quotes
+    * are skipped: one of {@link #IGNORE_QUOTED}, {@link #BLOCK_QUOTED}
+    * and {@link #LINE_QUOTED}
     * @return  the position of the next block end. -1 if a block
     * start is closer than a block end or if no block end is found
     */
@@ -281,14 +297,34 @@ public class SyntaxUtils {
    }
 
    /**
+    * Returns the position of the last <code>toSearch</code> that
+    * is not quoted
+    *
+    * @param text  the text
+    * @param toSearch  the string that is searched
+    * @param pos  the position where the search starts
+    * @return  the position of toSearch, -1 if not found
+    */
+   public static int lastUnquoted(String text, String toSearch, int pos) {
+      int index = text.lastIndexOf(toSearch, pos);
+      while (index != -1
+            && (isQuoted(text, index, SyntaxConstants.DOUBLE_QUOTE)
+            || isQuoted(text, index, SyntaxConstants.SINGLE_QUOTE))) {
+
+         index = text.lastIndexOf(toSearch, index - 1);
+      }
+      return index;
+   }
+
+   /**
     * Returns if the specified position is found in a section that is
     * quoted with single or double quote marks
     *
     * @param text  the text
     * @param pos  the position
-    * @param quoteOpt  the option to define if the quotation must be found
-    * found within a line: on of BLOCK_QUOTED and LINE_QUOTED
-    * @return  true if quoted
+    * @param quoteOpt  the option for quotations: one of {@link #BLOCK_QUOTED}
+    * and {@link #LINE_QUOTED}
+    * @return  true if quoted, false otherwise
     */
    public static boolean isQuoted(String text, int pos, int quoteOpt) {
       if (quoteOpt == BLOCK_QUOTED) {
@@ -317,8 +353,7 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns if the specified position is found in a quoted section.
-    * Does not take into account if the quotation spans lines or not.
+    * Returns if the specified position is found in a quoted section
     *
     * @param text  the text
     * @param pos  the position
@@ -354,58 +389,6 @@ public class SyntaxUtils {
       else {
          return false;
       }
-   }
-
-   /**
-    * Returns the first position where either <code>s1</code> or <code>s2</code>
-    * is found before <code>endIndex</code>
-    *
-    * @param text  the text
-    * @param s1  the one alternative string to search
-    * @param s2  the other alternative string to search
-    * @param endIndex  the position before which either s1 or s2 must be found
-    * @return  the position, -1 if s1 and s2 are not found
-    */
-   public static int firstBefore(String text, String s1, String s2, int endIndex) {
-      int index = -1;
-      int i1 = text.indexOf(s1, 0);
-      int i2 = -1;
-      if (!s2.isEmpty()) {
-         i2 = text.indexOf(s2, 0);
-      }
-      if (i1 != -1 && i1 < endIndex && (i2 == -1 || i1 < i2)) {
-         index = i1;
-      }
-      else if (i2 != -1 && i2 < endIndex && (i1 == -1 || i2 < i1)) {
-         index = i2;
-      }
-      return index;
-   }
-
-   /**
-    * Returns the last position where either <code>s1</code> or <code>s2</code>
-    * is found behind <code>beginIndex</code>
-    *
-    * @param text  the text
-    * @param s1  the one alternative string to search
-    * @param s2  the other alternative string to search
-    * @param beginIndex  the position behind which either s1 or s2 must be found
-    * @return  the position, -1 if s1 and s2 are not found
-    */
-   public static int lastBehind(String text, String s1, String s2, int beginIndex) {
-      int index = -1;
-      int i1 = text.lastIndexOf(s1, text.length());
-      int i2 = -1;
-      if (!s2.isEmpty()) {
-         i2 = text.lastIndexOf(s2, text.length());
-      }
-      if (i1 != -1 && i1 > beginIndex && i1 > i2) {
-         index = i1;
-      }
-      if (i2 != -1 && i2 > beginIndex && i2 > i1) {
-         index = i2;
-      }
-      return index;
    }
 
    /**
@@ -452,7 +435,9 @@ public class SyntaxUtils {
     * @param text  the text
     * @param del  the delimiter that surrounds the text block
     * @param pos  the position
-    * @param lineCmntStart  the mark for line comments
+    * @param lineCmntStart  the mark for line comment. The delimiter
+    * is skipped if found in a commented line. Null to ignore line
+    * comments
     * @return  true if inside a text block, false otherwise
     */
    public static boolean isInTextBlock(String text, String del, int pos,
@@ -466,57 +451,79 @@ public class SyntaxUtils {
       return (before > 0 && before % 2 != 0) && (after > 0 && after % 2 != 0);
    }
 
+   /**
+    * Returns if an (unquoted) line comment start is found before the
+    * the specified position
+    *
+    * @param text  the text
+    * @param lineCmntStart  the string that starts a line comment
+    * @param pos  the position
+    * @param quoteOpt  one of {@link IGNORE_QUOTED}, {@link #BLOCK_QUOTED}
+    * and {@link #LINE_QUOTED}  
+    * @return  true if in a line comment, false otherwise
+    */
+    public static boolean isLineCommented(String text, String lineCmntStart, int pos,
+         int quoteOpt) {
+
+      int lineStart = LinesFinder.lastNewline(text, pos) + 1;
+      int cmntStart = text.lastIndexOf(lineCmntStart, pos);
+      if (cmntStart == -1 || cmntStart < lineStart) {
+         return false;
+      }
+      else {
+         return quoteOpt == IGNORE_QUOTED || !isQuoted(text, cmntStart, quoteOpt);
+      }
+   }
+
    //
    //--private--/
    //
 
    private SyntaxUtils() {}
-
-   private static int countBefore (String text, String toSearch, int pos,
+   
+   private static int countBefore (String text, String str, int pos,
          String lineCmntStart) {
 
       int count = 0;
       int i = 0;
       while (i != -1) {
-         i = text.indexOf(toSearch, i);
+         i = text.indexOf(str, i);
          if (i != -1) {
-            if (lineCmntStart != null && isLineCommented(text, lineCmntStart, i)) {
-               i+= toSearch.length();
+            if (lineCmntStart != null
+                  && isLineCommented(text, lineCmntStart, i, IGNORE_QUOTED)) {
+
+               i+= str.length();
                continue;
-            }                  
+            }
              if (i >= pos) {
                break;
             }
             count++;
-            i+= toSearch.length();
+            i+= str.length();
          }
       }
       return count;
    }
 
-   private static int countAfter(String text, String toSearch, int pos,
+   private static int countAfter(String text, String str, int pos,
          String lineCmntStart) {
 
       int count = 0;
       int i = pos;
       while (i != -1) {
-         i = text.indexOf(toSearch, i);
+         i = text.indexOf(str, i);
          if (i != -1) {
-            if (lineCmntStart != null && isLineCommented(text, lineCmntStart, i)) {
-               i+= toSearch.length();
+            if (lineCmntStart != null
+                  && isLineCommented(text, lineCmntStart, i, IGNORE_QUOTED)) {
+
+               i+= str.length();
                continue;
             }
             count++;
-            i+= toSearch.length();
+            i+= str.length();
          }
       }
       return count;
-   }
-
-   private static boolean isLineCommented(String text, String lineCmntStart, int pos) {
-      int posInLine = pos - LinesFinder.lastNewline(text, pos);
-      String line = LinesFinder.lineAtPos(text, pos);
-      return line.lastIndexOf(lineCmntStart, posInLine) != -1;
    }
 
    private static int nextUnquoted(String text, int pos, String toSearch,
@@ -538,7 +545,7 @@ public class SyntaxUtils {
          int quoteOpt) {
 
       if (quoteOpt == BLOCK_QUOTED) {
-         return lastUnquoted(text, pos, toSearch);
+         return lastUnquoted(text, toSearch, pos);
       }
       else if (quoteOpt == LINE_QUOTED) {
          return lastUnquotedInLine(text, pos, toSearch);
@@ -553,17 +560,6 @@ public class SyntaxUtils {
       int index = text.indexOf(toSearch, pos);
       while (index != -1 && isQuotedInLine(text, index)) {
          index = text.indexOf(toSearch, index + 1);
-      }
-      return index;
-   }
-
-   private static int lastUnquoted(String text, int pos,  String toSearch) {
-      int index = text.lastIndexOf(toSearch, pos);
-      while (index != -1
-            && (isQuoted(text, index, SyntaxConstants.DOUBLE_QUOTE)
-            || isQuoted(text, index, SyntaxConstants.SINGLE_QUOTE))) {
-
-         index = text.lastIndexOf(toSearch, index - 1);
       }
       return index;
    }

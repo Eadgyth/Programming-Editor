@@ -69,9 +69,9 @@ public class JarBuilder {
             String[] nonClassExt)
             throws IOException, InterruptedException {
 
-      includedFilesErr = "";
       successMsg = "";
       errorMsg = "";
+      includedFilesErr = "";
       List<String> cmd = jarCmd(
             jarName,
             qualifiedMain,

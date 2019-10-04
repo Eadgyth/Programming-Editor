@@ -34,9 +34,6 @@ public class PythonHighlighter implements Highlighter {
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
       s.setCondition(IGNORE_COND);
-      s.setExtendedBlockSection(SyntaxConstants.TRI_DOUBLE_QUOTE,
-            SyntaxConstants.TRI_SINGLE_QUOTE);
-
       s.resetAttributes();
       s.keywords(KEYWORDS, true, null, attr.redPlain);
       s.brackets();
@@ -67,7 +64,8 @@ public class PythonHighlighter implements Highlighter {
             String altDel = condition == DOUBLE_QUOTE_TEXT_BLOCK_COND ?
                     SyntaxConstants.TRI_SINGLE_QUOTE : SyntaxConstants.TRI_DOUBLE_QUOTE;
 
-            return !SyntaxUtils.isInTextBlock(text, altDel, pos, SyntaxConstants.HASH);
+            return length == 0
+                  || !SyntaxUtils.isInTextBlock(text, altDel, pos, SyntaxConstants.HASH);
       }
    }
 }

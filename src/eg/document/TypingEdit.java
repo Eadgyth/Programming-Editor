@@ -116,9 +116,12 @@ public class TypingEdit {
     * for a given language.
     */
    public void highlightAtPos() {
-      syntax.highlight(chgPos);
+      
       if (isInsert && change.equals("\n")) {
-         syntax.highlight(chgPos + 1);
+         syntax.highlight(chgPos, true);
+      }
+      else {
+         syntax.highlight(chgPos, false);
       }
    }
 

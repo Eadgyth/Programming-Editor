@@ -172,9 +172,12 @@ public final class EditArea {
          pos = nonWordwrapScroll.getVerticalScrollBar().getValue();
       }
       if (show) {
+         lineNrScroll.setViewportView(lineNrArea);
          content.add(lineNrScroll, BorderLayout.WEST);
+
       }
       else {
+         lineNrScroll.getViewport().remove(lineNrArea());
          content.remove(lineNrScroll);
       }
       nonWordwrapPnl.add(textArea, BorderLayout.CENTER);
@@ -224,7 +227,6 @@ public final class EditArea {
    }
 
    private void initLineNrScrollPane() {
-      lineNrScroll.setViewportView(lineNrArea);
       lineNrScroll.setBorder(UIComponents.grayMatteBorder(0, 0, 0, 1));
       lineNrScroll.getVerticalScrollBar().setModel(
             nonWordwrapScroll.getVerticalScrollBar().getModel());

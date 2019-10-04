@@ -10,6 +10,7 @@ import javax.tools.StandardJavaFileManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -85,11 +86,13 @@ public class Compilation {
       // Compiler options
       Iterable<String> compileOptions
             = compileOptions(classDir, sourceDir, libs, options);
+            
+      StringWriter writer = new StringWriter();
       //
       // compile, print messages
       try {
          CompilationTask task = compiler.getTask(
-               null,
+               writer,
                fileManager,
                diagnostics,
                compileOptions,
@@ -100,6 +103,7 @@ public class Compilation {
          if (nonJavaExt.length > 0) {
             copyFiles(sourceDir, classDir, nonJavaExt);
          }
+         pr.printLine(writer.toString());
          printDiagnostics(diagnostics);
       }
       catch (IllegalStateException e) {

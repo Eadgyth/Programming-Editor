@@ -397,10 +397,15 @@ public final class EditableDocument {
       if (!isWriteable) {
           return false;
       }
-      String[] lines = txt.text().split("\n");
       try (FileWriter writer = new FileWriter(f)) {
-         for (String s : lines) {
-            writer.write(s + System.lineSeparator());
+         if (txt.text().equals("")) {
+            writer.write("");
+         }
+         else {
+            String[] lines = txt.text().split("\n");
+            for (String s : lines) {
+               writer.write(s + System.lineSeparator());
+            }
          }
          return true;
       }

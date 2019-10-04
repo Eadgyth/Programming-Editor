@@ -51,7 +51,7 @@ public class ExchangeEditor implements AddableEditTool {
    private final JMenuItem outdentItm = new JMenuItem();
    private final JMenuItem clearItm = new JMenuItem("Clear");
    private final LanguageMenu languageMenu = new LanguageMenu();
-   private final FormatMenu formatMenu  = new FormatMenu();
+   private final FormatMenu formatMenu = new FormatMenu();
    private final JButton closeBt = UIComponents.undecoratedButton();
 
    private final Formatter format = new Formatter(1, Prefs.EXCHG_PREFIX);
@@ -61,6 +61,7 @@ public class ExchangeEditor implements AddableEditTool {
    private final Edit edit = new Edit();
 
    public ExchangeEditor() {
+      //format.showLineNumbers(true);
       EditArea ea = format.editArea();
       editorPnl = ea.content();
       formatMenu.selectWordWrapItm(ea.isWordwrap());

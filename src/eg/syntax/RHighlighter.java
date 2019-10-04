@@ -21,9 +21,6 @@ public class RHighlighter implements Highlighter {
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
-      s.setExtendedBlockSection(
-            SyntaxConstants.SINGLE_QUOTE_STR, SyntaxConstants.DOUBLE_QUOTE_STR);
-
       s.resetAttributes();
       s.keywords(KEYWORDS, true, null, attr.redPlain);
       s.braces();

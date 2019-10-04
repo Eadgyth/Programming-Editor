@@ -53,8 +53,6 @@ public class PHPHighlighter implements Highlighter {
 
          if (!mixed) {
             s.setStatementSection();
-            s.setExtendedBlockSection(
-                  SyntaxConstants.SINGLE_QUOTE_STR, SyntaxConstants.DOUBLE_QUOTE_STR);
          }
          s.resetAttributes();
          s.signedVariable('$', END_OF_VAR, null, attr.bluePlain);

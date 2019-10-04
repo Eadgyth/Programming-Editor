@@ -44,9 +44,6 @@ public class JavaHighlighter implements Highlighter {
             SyntaxUtils.LINE_QUOTED)) {
 
          s.setCondition(IGNORE_COND);
-         if (SystemParams.IS_JAVA_13) {
-            s.setExtendedBlockSection(SyntaxConstants.TRI_DOUBLE_QUOTE, "");
-         }
          s.resetAttributes();
          s.keywords(JAVA_ANNOTATIONS, true, null, attr.bluePlain);
          s.keywords(JAVA_KEYWORDS, true, null, attr.redPlain);
