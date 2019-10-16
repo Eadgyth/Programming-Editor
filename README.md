@@ -13,6 +13,8 @@ can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 To try the program the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
 <br>
+<br>
+<img src="docs/images/ExampleProject.png" width="700"/><br><br>
 <h4>REQUIREMENTS</h4>
 <p>
 Running and compiling the program requires Java 8 or higher. Building an executable jar
