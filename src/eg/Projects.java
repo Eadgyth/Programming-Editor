@@ -17,16 +17,15 @@ import eg.document.EditableDocument;
 import eg.utils.Dialogs;
 
 /**
- * The assigned projects.
+ * The assigned projects
  * <p>
  * Projets are represented by objects of {@link ProjectCommands}.
  */
 public class Projects {
 
    private final MainWin mw;
-   private final ProjectActionsUpdate update;
    private final FileTree fileTree;
-   private final ProjectSelector projSelect;
+   private final ProjectSelector selector;
    private final ProcessStarter proc;
    private final EditableDocument[] edtDoc;
    private final Runnable fileTreeUpdate;
@@ -35,6 +34,12 @@ public class Projects {
    private ProjectCommands current;
    private int iDoc;
    private boolean isReplace = false;
+
+   private boolean isRun;
+   private boolean isSaveAndRun;
+   private boolean isCompile;
+   private boolean isBuild;
+   private String buildLabel = "Build";
 
    /**
     * @param mw  the reference to MainWin
@@ -45,12 +50,11 @@ public class Projects {
       this.mw = mw;
       this.fileTree = fileTree;
       this.edtDoc = edtDoc;
-      update = mw.projActUpdate();
       fileTreeUpdate = () -> fileTree.updateTree();
       Console cons = new Console(mw.consolePnl());
       proc = new ProcessStarter(cons, fileTreeUpdate);
-      TaskRunner runner = new TaskRunner(mw, cons, proc, fileTreeUpdate);     
-      projSelect = new ProjectSelector(runner);
+      TaskRunner runner = new TaskRunner(mw, cons, proc, fileTreeUpdate);
+      selector = new ProjectSelector(runner);
    }
 
    /**
@@ -63,12 +67,13 @@ public class Projects {
    }
 
    /**
-    * Enables or disables buttons and menu items depending on whether
-    * the selected <code>EditableDocument</code> bolongs to the active,
-    * a listed or no project
+    * Updates buttons and menu items. Method is called after another
+    * <code>EditableDocument</code> has been selected or its file
+    * has changed
     */
-   public void updateProjectControls() {
+   public void changedDocumentUpdate() {
       if (current == null) {
+         mw.enableAssignProject(edtDoc[iDoc].hasFile());
          return;
       }
       ProjectCommands inList;
@@ -79,14 +84,10 @@ public class Projects {
          isInProject = inList != null;
          isCurrent = inList == current;
       }
-      mw.enableOpenProjectSettings(isInProject);
+      mw.enableAssignProject(edtDoc[iDoc].hasFile() && (!isInProject || isCurrent));
+      mw.enableOpenProjectSettings(isCurrent);
       mw.enableChangeProject(isInProject && !isCurrent);
-      if (isCurrent) {
-         current.enable(update);
-      }
-      else {
-         update.enable(false, false, false, null);
-      }
+      enableProjectCommands(isCurrent);
    }
 
    /**
@@ -121,15 +122,26 @@ public class Projects {
          assignImpl(projType);
       }
       else {
-         if (inList == current || change(inList)) {
-            replaceCurrent(projType, inList);
+         if (projType != inList.projectType()) {
+            int res = replaceProjectRes(
+                  inList.projectName(),
+                  inList.projectType().display(),
+                  projType.display());
+
+            isReplace = 0 == res;
+            if (isReplace) {
+               assignImpl(projType);
+            }
+         }
+         else {
+            projectAssignedMsg(inList.projectName(),
+                  inList.projectType().display());
          }
       }
    }
 
    /**
-    * Tries to retrieve a saved project that contains the directory
-    * of the selected <code>EditableDocument</code>
+    * Tries to retrieve a saved project
     *
     * @see eg.projects.AbstractProject#retrieve
     */
@@ -142,7 +154,7 @@ public class Projects {
       ProjectCommands projToFind = null;
       boolean isFound = false;
       for (ProjectTypes t : ProjectTypes.values()) {
-         projToFind = projSelect.createProject(t);
+         projToFind = selector.createProject(t);
          projToFind.buildSettingsWindow();
          isFound = projToFind.retrieve(dir);
          if (isFound) {
@@ -169,12 +181,8 @@ public class Projects {
     * that the selected <code>EditableDocument</code> belongs to
     */
    public void openSettingsWindow() {
-      boolean open = true;
       ProjectCommands inList = selectFromList(edtDoc[iDoc].fileParent(), false);
-      if (inList != null) {
-         open = inList == current || change(inList);
-      }
-      if (open) {
+      if (inList != null && inList == current) {
          current.openSettingsWindow();
       }
    }
@@ -189,40 +197,10 @@ public class Projects {
    }
 
    /**
-    * Saves the selected file of the active project and compiles the
-    * project
+    * Saves open files of the active project and compiles the project
     */
-   public void saveAndCompile() {
-      if (!edtDoc[iDoc].file().exists()) {
-         fileNotFoundMsg(edtDoc[iDoc].filename());
-      }
-      else {
-         edtDoc[iDoc].saveFile();
-         current.compile();
-       }
-   }
-
-   /**
-    * Saves all open files of the active project and compiles the project
-    */
-   public void saveAllAndCompile() {
-      StringBuilder missingFiles = new StringBuilder();
-      for (EditableDocument d : edtDoc) {
-         boolean isProjSrc = d != null && d.hasFile()
-               && current.isInProject(d.fileParent());
-
-         if (isProjSrc) {
-             if (d.file().exists()) {
-                 d.saveFile();
-             } else {
-                 missingFiles.append("\n").append(d.filename());
-             }
-         }
-      }
-      if (missingFiles.length() > 0) {
-         filesNotFoundMsg(missingFiles.toString());
-      }
-      else {
+   public void compile() {
+      if (saveAllProjFiles()) {
          current.compile();
       }
    }
@@ -231,7 +209,10 @@ public class Projects {
     * Runs the active project
     */
    public void run() {
-      if (current.usesProjectFile()) {
+      if (isSaveAndRun && !saveAllProjFiles()) {
+         return;
+      }
+      if (current.usesMainFile()) {
          current.run();
       }
       else {
@@ -251,7 +232,7 @@ public class Projects {
    //
 
    private void assignImpl(ProjectTypes projType) {
-      ProjectCommands toAssign = projSelect.createProject(projType);
+      ProjectCommands toAssign = selector.createProject(projType);
       if (toAssign != null) {
          ProjectCommands projFin = toAssign;
          projFin.buildSettingsWindow();
@@ -260,36 +241,16 @@ public class Projects {
       }
    }
 
-   private boolean change(ProjectCommands toChangeTo) {
+   private void change(ProjectCommands toChangeTo) {
       int res = switchProjectRes(toChangeTo.projectName());
       if (res == 0) {
          current = toChangeTo;
          current.storeConfiguration();
          updateProjectSetting();
-         return true;
       }
       else {
          mw.enableChangeProject(true);
-         update.enable(false, false, false, null);
-         return false;
-      }
-   }
-
-   private void replaceCurrent(ProjectTypes projType, ProjectCommands newProj) {
-      if (projType != newProj.projectType()) {
-         int res = replaceProjectRes(
-               newProj.projectName(),
-               newProj.projectType().display(),
-               projType.display());
-
-         isReplace = 0 == res;
-         if (isReplace) {
-            assignImpl(projType);
-         }
-      }
-      else {
-         projectAssignedMsg(newProj.projectName(),
-               newProj.projectType().display());
+         mw.enableAssignProject(false);
       }
    }
 
@@ -321,15 +282,74 @@ public class Projects {
    }
 
    private void updateProjectSetting() {
+      enableProjectCommands(true);
       proc.setWorkingDir(current.projectPath());
-      current.enable(update);
       mw.displayProjectName(current.projectName(),
             current.projectType().display());
 
       mw.enableChangeProject(false);
       mw.enableOpenProjectSettings(true);
+      mw.enableAssignProject(true);
       fileTree.setProjectTree(current.projectPath());
       fileTree.setDeletableDir(current.executableDirName());
+   }
+
+   private void enableProjectCommands(boolean isCurrent) {
+      isRun = false;
+      isCompile = false;
+      isBuild = false;
+      buildLabel = "Build";
+      if (isCurrent) {
+         ProjectActionsUpdate update = new ProjectActionsUpdate() {
+
+            @Override
+            public void enableCompile() {
+               isCompile = true;
+            }
+
+            @Override
+            public void enableRun(boolean save) {
+               isRun = true;
+               isSaveAndRun = save;
+            }
+
+            @Override
+            public void enableBuild(String buildLb) {
+               isBuild = true;
+               if (buildLb != null) {
+                  buildLabel = buildLb;
+               }
+            }
+         };
+         current.enable(update);
+      }
+      String runLb = isSaveAndRun ? SAVE_AND_RUN_LB : RUN_LB;
+      mw.enableCompileProject(isCompile);
+      mw.enableRunProject(isRun, runLb);
+      mw.enableBuildProject(isBuild, buildLabel);
+   }
+
+   private boolean saveAllProjFiles() {
+      StringBuilder missingFiles = new StringBuilder();
+      for (EditableDocument d : edtDoc) {
+         boolean isProjFile = d != null && d.hasFile()
+               && current.isInProject(d.fileParent());
+
+         if (isProjFile) {
+             if (d.file().exists()) {
+                 d.saveFile();
+             } else {
+                 missingFiles.append("\n").append(d.filename());
+             }
+         }
+      }
+      if (missingFiles.length() > 0) {
+         filesNotFoundMsg(missingFiles.toString());
+         return false;
+      }
+      else {
+         return true;
+      }
    }
 
    private int replaceProjectRes(String projName, String previousProj,
@@ -341,7 +361,7 @@ public class Projects {
             + previousProj
             + " project \'"
             + projName
-            + "\'.\n"
+            + "\'.\n\n"
             + "Replace the project with a new project in the category \'"
             + newProj
             + "\'?");
@@ -349,7 +369,7 @@ public class Projects {
 
    private void projectAssignedMsg(String projName, String currProj) {
       Dialogs.errorMessage(
-            "A new project cannot be assigned.\n"
+            "A new project cannot be assigned.\n\n"
             + edtDoc[iDoc].filename()
             + " already belongs to the project \'"
             + projName
@@ -379,4 +399,13 @@ public class Projects {
              + filenames,
              "Missing files");
    }
+
+   private final static String SAVE_AND_RUN_LB
+         = "Save and run project";
+
+   private final static String RUN_LB
+         = "Run project";
+
+   private final static String DEF_BUILD_LB
+         = "Build";
 }

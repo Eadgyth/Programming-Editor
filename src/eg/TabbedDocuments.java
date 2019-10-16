@@ -202,7 +202,7 @@ public class TabbedDocuments {
       if (isOnlyUnnamedBlank()) {
          removeTab();
       }
-      if (isTabOpenable()) {     
+      if (isTabOpenable()) {
          mw.busyFunction().execute(() -> createDocument(f));
       }
    }
@@ -480,8 +480,7 @@ public class TabbedDocuments {
    }
 
    private void changedFileUpdate(EditableDocument doc) {
-      proj.updateProjectControls();
-      mw.enableAssignProject(doc.hasFile());
+      proj.changedDocumentUpdate();
       mw.setLanguageSelected(doc.language());
       mw.displayFrameTitle(doc.filepath());
    }

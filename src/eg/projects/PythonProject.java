@@ -32,7 +32,7 @@ public final class PythonProject extends AbstractProject implements ProjectComma
 
    @Override
    public void enable(ProjectActionsUpdate update) {
-      update.enable(false, true, false, null);
+      update.enableRun(true);
    }
 
    @Override

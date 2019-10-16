@@ -33,7 +33,8 @@ public final class PerlProject extends AbstractProject implements ProjectCommand
 
    @Override
    public void enable(ProjectActionsUpdate update) {
-      update.enable(true, true, false, null);
+      update.enableRun(true);
+      update.enableCompile();
    }
 
    @Override

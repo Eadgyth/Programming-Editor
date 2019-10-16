@@ -26,7 +26,7 @@ public final class HtmlProject extends AbstractProject implements ProjectCommand
 
    @Override
    public void enable(ProjectActionsUpdate update) {
-      update.enable(false, true, false, null);
+      update.enableRun(true);
    }
 
    /**

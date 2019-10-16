@@ -64,7 +64,7 @@ public class ToolBar {
    public void setProjectActions(Projects p) {
       changeProjBt.addActionListener(e -> p.change());
       runBt.addActionListener(e -> p.run());
-      compileBt.addActionListener(e -> p.saveAllAndCompile());
+      compileBt.addActionListener(e -> p.compile());
    }
 
    /**
@@ -80,27 +80,6 @@ public class ToolBar {
       pasteBt.addActionListener(e -> edit.pasteText());
       indentBt.addActionListener(e -> edit.indent());
       outdentBt.addActionListener(e -> edit.outdent());
-   }
-
-   /**
-    * Enables the buttons for actions to compile and run a project.
-    * The specified booleans each are true to enable, false to disable
-    *
-    * @param isCompile  the boolean for compile actions
-    * @param isRun  the boolean for run actions
-    */
-   public void enableProjectActionsBts(boolean isCompile, boolean isRun) {
-      compileBt.setEnabled(isCompile);
-      runBt.setEnabled(isRun);
-   }
-
-   /**
-    * Enables or disables the button for actions to change project
-    *
-    * @param b  true to enable, false to disable
-    */
-   public void enableChangeProjBt(boolean b) {
-      changeProjBt.setEnabled(b);
    }
 
    /**
@@ -133,6 +112,35 @@ public class ToolBar {
       undoBt.setEnabled(isUndo);
       redoBt.setEnabled(isRedo);
    }
+   
+   /**
+    * Enables the button for actions to compile a project
+    *
+    * @param b  true to enable, false to disable
+    */
+   public void enableCompileBt(boolean b) {
+      compileBt.setEnabled(b);
+   }
+   
+   /**
+    * Enables the button for actions to run a project
+    *
+    * @param b  true to enable, false to disable
+    * @param tooltip  the tooltip text for the button
+    */
+   public void enableRunBt(boolean b, String tooltip) {
+      runBt.setEnabled(b);
+      runBt.setToolTipText(tooltip);
+   }
+
+   /**
+    * Enables or disables the button for actions to change project
+    *
+    * @param b  true to enable, false to disable
+    */
+   public void enableChangeProjBt(boolean b) {
+      changeProjBt.setEnabled(b);
+   }
 
    //
    //--private--/
@@ -142,7 +150,8 @@ public class ToolBar {
       toolBar.setOpaque(false);
       toolBar.setBorder(null);
       toolBar.setFloatable(false);
-      enableProjectActionsBts(false, false);
+      compileBt.setEnabled(false);
+      runBt.setEnabled(false);
       changeProjBt.setEnabled(false);
       JButton[] bts = new JButton[] {
          openBt, saveBt,
@@ -155,7 +164,7 @@ public class ToolBar {
          "Undo", "Redo", "Cut selection", "Copy selection", "Paste",
          "Increase indentation by the set indent length",
          "Reduce indentation by the set indent length",
-         "Save all opened project files and compile project",
+         "Save and compile project",
          "Run project", "Change project"
       };
       for (int i = 0; i < bts.length; i++) {

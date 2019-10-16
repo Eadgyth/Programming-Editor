@@ -16,8 +16,8 @@ public class BackgroundTheme {
    private final Color selectionBackground;
 
    /**
-    * Returns a <code>BackgroundTheme</code> in which the theme
-    * is given by the theme name read from <code>Prefs</code>
+    * Returns a <code>BackgroundTheme</code> in which is given by the
+    * theme name read from <code>Prefs</code>
     *
     * @return  the BackgroundTheme
     */

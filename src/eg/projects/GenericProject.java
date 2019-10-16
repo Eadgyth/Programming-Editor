@@ -18,7 +18,7 @@ public final class GenericProject extends AbstractProject implements ProjectComm
 
    @Override
    public void enable(ProjectActionsUpdate update) {
-      update.enable(false, false, false, null);
+      // does nothing
    }
 
    /**

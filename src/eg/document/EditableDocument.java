@@ -212,7 +212,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Diplays the content of the specified file but does not set the file
+    * Displays the content of the specified file but does not set the file
     * and also does not set the language that would correspond to the
     * file type
     *
@@ -296,7 +296,7 @@ public final class EditableDocument {
     * Marks the beginning or the end of a merged undoable unit.
     * Calls {@link TypingEdit#disableBreakpointAdding(boolean)}
     *
-    * @param b  true to begin meging, false to end merging
+    * @param b  true to begin merging, false to end merging
     */
    public void enableUndoMerging(boolean b) {
       type.disableBreakpointAdding(b);

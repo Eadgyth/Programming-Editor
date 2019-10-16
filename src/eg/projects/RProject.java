@@ -31,7 +31,7 @@ public final class RProject extends AbstractProject implements ProjectCommands {
 
    @Override
    public void enable(ProjectActionsUpdate update) {
-      update.enable(false, true, false, null);
+      update.enableRun(true);
    }
 
    @Override

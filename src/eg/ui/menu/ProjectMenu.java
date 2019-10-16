@@ -18,24 +18,21 @@ import eg.ui.IconFiles;
 public class ProjectMenu {
 
    private final JMenu menu = new JMenu("Project");
-   private final JMenuItem saveCompileItm = new JMenuItem(
-         "Save selected project file and compile project");
 
-   private final JMenuItem saveAllCompileItm = new JMenuItem(
-         "Save all open project files and compile project",
-         IconFiles.COMPILE_ICON);
+   private final JMenuItem compileItm
+         = new JMenuItem("Save and compile project", IconFiles.COMPILE_ICON);
 
-   private final JMenuItem runItm = new JMenuItem("Run project",
-         IconFiles.RUN_ICON);
+   private final JMenuItem runItm
+         = new JMenuItem("Run project", IconFiles.RUN_ICON);
 
-   private final JMenuItem buildItm        = new JMenuItem("Build");
-   private final JMenu assignProjMenu      = new JMenu("Assign as project");
+   private final JMenuItem buildItm = new JMenuItem("Build");
+   private final JMenu assignProjMenu = new JMenu("Assign as project");
    private final JMenuItem[] assignProjItm
          = new JMenuItem[ProjectTypes.values().length];
 
-   private final JMenuItem openSetWinItm   = new JMenuItem("Project settings");
-   private final JMenuItem changeProjItm   = new JMenuItem("Change project",
-         IconFiles.CHANGE_PROJ_ICON);
+   private final JMenuItem openSetWinItm = new JMenuItem("Project settings");
+   private final JMenuItem changeProjItm
+         = new JMenuItem("Change project", IconFiles.CHANGE_PROJ_ICON);
 
    public ProjectMenu() {
       assembleMenu();
@@ -62,10 +59,9 @@ public class ProjectMenu {
       }
       openSetWinItm.addActionListener(e -> p.openSettingsWindow());
       changeProjItm.addActionListener(e -> p.change());
+      compileItm.addActionListener(e -> p.compile());
       runItm.addActionListener(e -> p.run());
       buildItm.addActionListener(e -> p.build());
-      saveCompileItm.addActionListener(e -> p.saveAndCompile());
-      saveAllCompileItm.addActionListener(e -> p.saveAllAndCompile());
    }
 
    /**
@@ -88,24 +84,6 @@ public class ProjectMenu {
    }
 
    /**
-    * Enables or disables the items for actions to compile, run and
-    * build a project. The specified booleans each are true to enable,
-    * false to disable
-    *
-    * @param isCompile  the boolean for compile actions
-    * @param isRun  the boolean for run actions
-    * @param isBuild  the boolean for build actions
-    */
-   public void enableProjectActionsItms(boolean isCompile, boolean isRun,
-         boolean isBuild) {
-
-      saveCompileItm.setEnabled(isCompile);
-      saveAllCompileItm.setEnabled(isCompile);
-      runItm.setEnabled(isRun);
-      buildItm.setEnabled(isBuild);
-   }
-
-   /**
     * Enables or disables the sub-menu for actions to assign a project
     *
     * @param b  true to enable, false  to disable
@@ -113,13 +91,35 @@ public class ProjectMenu {
    public void enableAssignProjMenu(boolean b) {
       assignProjMenu.setEnabled(b);
    }
-
+   
    /**
-    * Sets the label for the item for building actions
+    * Enables the item for actions to compile a project
     *
-    * @param label  the label
+    * @param b  true to enable, false to disable
     */
-   public void setBuildLabel(String label) {
+   public void enableCompileItm(boolean b) {
+      compileItm.setEnabled(b);
+   }
+   
+   /**
+    * Enables the item for actions to run a project
+    *
+    * @param b  true to enable, false to disable
+    * @param label  the label for the item
+    */
+   public void enableRunItm(boolean b, String label) {
+      runItm.setEnabled(b);
+      runItm.setText(label);
+   }
+   
+   /**
+    * Enables the item for actions to build a project
+    *
+    * @param b  true to enable, false to disable
+    * @param label  the label for the item
+    */
+   public void enableBuildItm(boolean b, String label) {
+      buildItm.setEnabled(b);
       buildItm.setText(label);
    }
 
@@ -137,8 +137,7 @@ public class ProjectMenu {
    }
 
    private void assembleMenu() {
-      menu.add(saveCompileItm);
-      menu.add(saveAllCompileItm);
+      menu.add(compileItm);
       menu.add(runItm);
       menu.addSeparator();
       menu.add(buildItm);
@@ -154,11 +153,13 @@ public class ProjectMenu {
       assignProjMenu.setEnabled(false);
       openSetWinItm.setEnabled(false);
       changeProjItm.setEnabled(false);
-      enableProjectActionsItms(false, false, false);
+      compileItm.setEnabled(false);
+      runItm.setEnabled(false);
+      buildItm.setEnabled(false);
    }
 
    private void shortCuts() {
-      saveAllCompileItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,
+      compileItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,
             ActionEvent.CTRL_MASK));
 
       runItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,

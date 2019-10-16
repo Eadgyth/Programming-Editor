@@ -86,7 +86,7 @@ public class Compilation {
       // Compiler options
       Iterable<String> compileOptions
             = compileOptions(classDir, sourceDir, libs, options);
-            
+
       StringWriter writer = new StringWriter();
       //
       // compile, print messages
@@ -146,7 +146,7 @@ public class Compilation {
          boolean ok = true;
          String msg = "";
          for (int i = 0; i < test.length; i++) {
-            int args = 0;
+            int args;
             if (test[i].startsWith("-")) {
                args = compiler.isSupportedOption(test[i]);
                ok = -1 < args;

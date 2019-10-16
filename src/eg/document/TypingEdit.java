@@ -116,13 +116,8 @@ public class TypingEdit {
     * for a given language.
     */
    public void highlightAtPos() {
-      
-      if (isInsert && change.equals("\n")) {
-         syntax.highlight(chgPos, true);
-      }
-      else {
-         syntax.highlight(chgPos, false);
-      }
+      boolean isNewline = isInsert && change.equals("\n");
+      syntax.highlight(chgPos, isNewline);
    }
 
    /**

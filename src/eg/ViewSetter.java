@@ -88,11 +88,11 @@ public class ViewSetter {
       vsw.setShowLineNumbers(isShowLineNumbers);
       f.showLineNumbers(isShowLineNumbers);
 
-      isShowToolbar =  prefs.yesNoProperty(Prefs.TOOLBAR_KEY);
+      isShowToolbar = prefs.yesNoProperty(Prefs.TOOLBAR_KEY);
       vsw.setShowToolbar(isShowToolbar);
       mw.showToolbar(isShowToolbar);
 
-      isShowStatusbar =  prefs.yesNoProperty(Prefs.STATUSBAR_KEY);
+      isShowStatusbar = prefs.yesNoProperty(Prefs.STATUSBAR_KEY);
       vsw.setShowStatusbar(isShowStatusbar);
       mw.showStatusbar(isShowStatusbar);
 

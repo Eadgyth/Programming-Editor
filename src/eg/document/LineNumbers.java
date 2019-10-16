@@ -67,12 +67,12 @@ public class LineNumbers {
    private void appendLineNumbers(int prevLineNr, int lineNr) {
       lineNrBuilder.setLength(0);
       for (int i = prevLineNr + 1; i <= lineNr; i++) {
-         lineNrBuilder.append(Integer.toString(i)).append("\n");
+         lineNrBuilder.append(i).append("\n");
       }
       try {
          doc.insertString(doc.getLength(), lineNrBuilder.toString(), SET);
       }
-      catch(BadLocationException e) {
+      catch (BadLocationException e) {
          FileUtils.log(e);
       }
    }

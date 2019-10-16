@@ -144,7 +144,7 @@ public abstract class AbstractProject implements Configurable {
    }
 
    @Override
-   public final boolean usesProjectFile() {
+   public final boolean usesMainFile() {
       return useMainFile;
    }
 
@@ -406,8 +406,8 @@ public abstract class AbstractProject implements Configurable {
 
    private void displayDefaultBuildName(String rootName) {
       if (sw.buildNameInput().isEmpty()) {
-         String buildName = rootName + "Project";
-         sw.displayBuildName(buildName);
+         String name = rootName + "Project";
+         sw.displayBuildName(name);
       }
    }
 

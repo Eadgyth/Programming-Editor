@@ -57,12 +57,12 @@ public interface Configurable {
    public ProjectTypes projectType();
 
    /**
-    * Returns if the project uses a main file that is executed when
-    * the project is run
+    * Returns if the project uses a main source file that is executed
+    * when the project is run
     *
     * @return  true if a main file is used, false otherwise
     */
-   public boolean usesProjectFile();
+   public boolean usesMainFile();
 
    /**
     * Returns if the specified directory is or is contained in the

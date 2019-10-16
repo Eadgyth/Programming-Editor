@@ -21,16 +21,16 @@
 <li>A basic auto-indentation which distinguishes "curly-bracket-indentation".</li>
 <li>Block-wise increase or decrease of the indentation.</li>
 </ul>
-<h4>Testing source code</h4>
+<h4>Running source code</h4>
 <ul>
-<li>An easy assignment of files as project and setting of parameters for a
+<li>An easy assignment of files as coding project and setting of parameters for a
    project.</li>
    <ul>
    <li>A project may be simply the location of (source) files.</li>
    <li>The program can work with a given directory structure of a project,
-       that is folders for source files or for executable files. Also
-       packages are taken into account in a Java project.</li>
-   <li>A number of projects can be assigned which can be switch between.</li>
+       that is folders for source files or for executable files within a project
+       directory. Packages are taken into account in a Java project.</li>
+   <li>A number of projects can be set in parallel and switch between.</li>
    <li>Retrieval of already defined projects after newly starting the program.</li>
    </ul>
 <li>Pre-defined actions to run (or compile/build) a project.</li>

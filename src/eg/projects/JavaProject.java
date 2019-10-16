@@ -3,9 +3,6 @@ package eg.projects;
 import java.io.File;
 import java.io.IOException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 //--Eadgyth--/
 import eg.TaskRunner;
 import eg.javatools.*;
@@ -56,7 +53,9 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
 
    @Override
    public void enable(ProjectActionsUpdate update) {
-      update.enable(true, true, true, "Create jar");
+      update.enableRun(false);
+      update.enableCompile();
+      update.enableBuild("Create jar");
    }
 
    @Override

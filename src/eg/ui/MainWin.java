@@ -78,7 +78,7 @@ public class MainWin {
    /**
     * Gets this <code>ExtTabbedPane</code>
     *
-    * @return  this {@link ExtTabbedPane}
+    * @return  the ExtTabbedPane
     */
    public ExtTabbedPane tabPane() {
       return tabPane;
@@ -105,20 +105,10 @@ public class MainWin {
    /**
     * Gets this List of <code>AddableEditTool</code>
     *
-    * @return  the List of type {@link AddableEditTool}
+    * @return  the List of type AddableEditTool
     */
    public List<AddableEditTool> editTools() {
       return editTools;
-   }
-
-   /**
-    * Gets this <code>ProjectActionsUpdate</code>
-    *
-    * @return  the ProjectActionsControl
-    */
-   public ProjectActionsUpdate projActUpdate() {
-      return (isRun, isCompile, isBuild, buildName)
-           -> enableProjectActions(isRun, isCompile, isBuild, buildName);
    }
 
    /**
@@ -184,7 +174,7 @@ public class MainWin {
    /**
     * Enables or disables to save text
     *
-    * @param b  true to enable, false otherwise
+    * @param b  true to enable, false to disbable
     */
    public void enableSave(boolean b) {
       toolBar.enableSaveBt(b);
@@ -223,6 +213,16 @@ public class MainWin {
    }
 
    /**
+    * Displays the project name and category in the status bar
+    *
+    * @param projName  the name of the project
+    * @param projType  the project category
+    */
+   public void displayProjectName(String projName, String projType) {
+      statusBar.displayProjectName(projName, projType);
+   }
+
+    /**
     * Enables or disables to assign a project
     *
     * @param b  true to enable, false to disable
@@ -231,7 +231,7 @@ public class MainWin {
       menuBar.projectMenu().enableAssignProjMenu(b);
    }
 
-   /**
+    /**
     * Enables or disables to open the project settings window
     *
     * @param b  true to enable, false to disable
@@ -251,13 +251,35 @@ public class MainWin {
    }
 
    /**
-    * Displays the project name and type in the status bar
+    * Enables or disables to compile a project
     *
-    * @param projName  the name of the project
-    * @param projType  the type of project
+    * @param b  true enable, false to disable
     */
-   public void displayProjectName(String projName, String projType) {
-      statusBar.displayProjectName(projName, projType);
+   public void enableCompileProject(boolean b) {
+      menuBar.projectMenu().enableCompileItm(b);
+      toolBar.enableCompileBt(b);
+   }
+
+   /**
+    * Enables or disables to run a project
+    *
+    * @param b  true enable, false to disable
+    * @param label  the label for the corresponding menu item
+    * and for the tooltip of the corresponding toolbar button
+    */
+   public void enableRunProject(boolean b, String label) {
+      menuBar.projectMenu().enableRunItm(b, label);
+      toolBar.enableRunBt(b, label);
+   }
+
+   /**
+    * Enables or disables to build a project
+    *
+    * @param b  true enable, false to disable
+    * @param label  the label for the corresponding menu item
+    */
+   public void enableBuildProject(boolean b, String label) {
+      menuBar.projectMenu().enableBuildItm(b, label);
    }
 
    /**
@@ -461,20 +483,6 @@ public class MainWin {
          splitHor.setDividerSize(0);
          splitHor.setLeftComponent(null);
       }
-   }
-
-   private void enableProjectActions(boolean isCompile, boolean isRun,
-            boolean isBuild, String buildLabel) {
-
-      menuBar.projectMenu().enableProjectActionsItms(isCompile, isRun,
-            isBuild);
-
-      toolBar.enableProjectActionsBts(isCompile, isRun);
-
-      if (!isBuild)  {
-         buildLabel = "Build";
-      }
-      menuBar.projectMenu().setBuildLabel(buildLabel);
    }
 
    private void exit(TabbedDocuments td) {
