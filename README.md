@@ -4,7 +4,8 @@ This is a text editor which can be used for coding and which can be easily set u
 code by using built-in functions. So far, built-in functions are included to run code
 written in Java, Perl, Python, R and HTML.
 <br>
-<p>Some features for editing text are...
+<p>
+Some features for editing text are...
 <ul>
 <li>Undo/redo.</li>
 <li>A basic find and find/replace function.</li>
@@ -17,10 +18,10 @@ written in Java, Perl, Python, R and HTML.
 <li>Block-wise increase or decrease of the indentation.</li>
 </ul>
 <p>
-<Further features are ...
+Further features for working with source code are ...
 <ul>
-<li>A basic console for showing output/error during running (or compiling) a program</li>
-<li>Run a project by pre-defined functions or run self-chosen system commands</li>
+<li>A basic console for showing output/error during running (or compiling) a program.</li>
+<li>Run a project by pre-defined functions or run self-chosen system commands.</li>
 <li>Set a number of coding projects which can be switched between.</li>
 <li>Retrieval of already defined projects after newly starting the program.</li>
 </ul>
