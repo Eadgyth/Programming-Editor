@@ -1,18 +1,18 @@
 <h3>Eadgyth Programming-Editor</h3>
 <p>
 This is a text editor which can be used for coding and which can be easily set up to run
-code by using built-in functions. The goal is that setting up a coding project is as simple
-as possible and that the editor is helpful, for example, to write applications for home
-requirements. So far, project categories are Java (worked out most), Perl, Python, R and
-HTML.
+code by using built-in functions. So far, built-in functions are included to run code
+written in Java, Perl, Python, R and HTML.
 <br>
-<p>
-A more detailed description of the features, screenshots, a help site and code documentation
-can be found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 <p> 
 To try the program the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
+A help site which contains some information about setting up the program to run
+code is accessible in the '?' menu.
 <br>
+<p>
+The image below shows an example Java "project" run in the editor. For compiling (and also
+creating an executable jar file) the program can work with code organzed in packages.
 <br>
 <img src="docs/images/ExampleProject.png" width="700"/><br><br>
 <h4>REQUIREMENTS</h4>
