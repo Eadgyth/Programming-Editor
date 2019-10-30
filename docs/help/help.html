@@ -12,7 +12,7 @@
          <h2>Content</h2>
          <ul>
          <li><a href="#Requirements">Requirements</a><br></li>
-         <li><a href="#Projects">Working with projects</a>
+         <li><a href="#Projects">Setup to run source code</a>
          <li><a href="#Categories">Project categories</a>
          <li><a href="#Console">Using the console</a></li>
          </ul>
@@ -31,56 +31,51 @@
          <a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
          README</a>
       </p>
-      <p>For a programming project the computer is set up in the same way as if any text
-         editor (like Notepad) is used for coding and the tested program would be run
-         from the command-line interface of the OS. This may also mean to set environment
-         variables for the used programming language.
+      <p>For running source code (and maybe compiling) the computer must be set up in the
+         same way as if any text editor (like Notepad) is used for coding and the code
+         would be run from the command-line interface of the OS. This may also mean
+         to set environment variables for the used programming language.
       </p>
       <p>To compile Java files by the pre-defined compile option (as opposed to using the
          command-line interface of the OS or the option to start system commands in the
          console of the program) it must be made sure that the program is run using the
-         Java Runtime environment (JRE) contained in the Java Development Kit (JDK).
+         Java Runtime environment (JRE) contained in a Java Development Kit (JDK).
       </p>
       <hr>
 
       <!--Project-->
-      <h2 id="Projects">Working with projects</h2>
-      <h4>What is a project?</h4>
-      <p>A project is initially just a working directory which distinguishes
-         "project files" from "non-project files" and which defines the directory
-         where commands are executed. The required or optional settings for a
-         project depend on the <a href="#Categories"> project category</a>. The
-         program sets commands to run code after a project has been successfully
-         assigned. However, setting up a project requires existing (source) files.
+      <h2 id="Projects">Setup to run source code</h2>
+      <p>The program is set up for running source code by creating a "project". This
+         is initially just a working directory which distinguishes "project files"
+         from "non-project files" and which defines the directory where commands are
+         executed. The required and optional settings for a project depend on the
+         <a href="#Categories">category</a>.
       </p>
       <br>
       
-      <h4>Assigning files as project</h4>
+      <h4>Setting up a project</h4>
       <ol>
       <li>Open a file from or save a new file to the directory that is the presumed root
           directory of the project. The file may also be saved in a sub-directory or a
           sub-directory path contained in that root. Assigning a project only requires
           that a (any) file that is contained in the project directory is open and also
           is in the selected tab if multiple files are open.</li>
-      <li>Open the project settings window by selecting 'Assign as project' in the
-          'Project' menu and choosing a project category. The input options in the
-          settings window depend on the project category. The required entries are the
-          name of the project root directory and the name of the main file/script that is
-          executed when the project is run (the latter not asked for in an HTML project
-          and also not in a 'generic' project). In addition, it may be possible that
-          source files are stored in a separate sub-directory of the project root (a
-          source folder). In this case the name of this directory is specified in the
-          input field 'Name of sources directory'. For Java this directory must not be
-          a directory that is a package.</li>
-      <li>Make the required entries in the input field(s) and click ok.</li>
+      <li>Open the project settings by selecting 'Setup for...' in the 'Project' menu
+          and choosing a category to open the project settings.</li>
+      <li>The required entries in the settings window are the name of the project
+          directory and, in the case that a main source file/script is used to run the
+          project, the name of this "main" source file. Make the required entries and
+          click ok. Settings may by viewed or changed anytime by selecting 'Settings...'
+          in the 'Project' menu.</li>
       </ol>
       <br>
 
       <h4>Adding projects and changing between projects</h4>
       <ul>
-      <li>'Assign as project' in the 'Project' menu may be selected to assign an additional
-          project. For this a file that is part of the new project must be currently
-          open and also in the selected tab if multiple files are open.</li>
+      <li>Several projects may be created. To set up an additional project 'Setup for...'
+          in the 'Project' is selected while a file that is found in the directory of the
+          new project is currently open and also in the selected tab if multiple files
+          are open.</li>
       <li>Changing between already set projects is done by selecting, opening or saving a
           file that is part of the project to be changed to and then selecting 'Change
           project' in the 'Project' menu or clicking the corresponding button in the
@@ -94,10 +89,10 @@
           retrieved and set active when a file of the project is opened (or a new
           file is saved to the project) and no other project is already active. Also,
           the recent project is shown in the project explorer.</li>
-      <li>If 'Save ProjConfig file in the project' is selected in the project settings
-          the parameters for the project are stored in the project folder. This
-          properties file can be deleted at any time by unselecting the option to save
-          it.<br>
+      <li>If 'Save ProjConfig file in the project to retrieve settings' is selected
+          in the project settings the parameters for the project are stored in the
+          project folder. This properties file can be deleted at any time by
+          unselecting the option to save it.<br>
           A project is marked as such by the presence the ProjConfig file. This means
           that a project is loaded even if it was not active lastly or other projects
           are already active. Loading the project again takes place if a file of the
@@ -114,10 +109,6 @@
             <th>Category</th>
             <th>Supported actions</th>
          </tr>
-         <tr>
-            <td>Generic</td>
-            <td>run only self-chosen system commands (see:
-            <a href="#Console">Using the console</a>); is not tied to a file type</td>
          <tr>
             <td>Java</td>
             <td><a href="#JavaProject">Compile and run Java code; create an executable
@@ -140,29 +131,34 @@
             <td>HTML</td>
             <td><a href="#HtmlProject">View HTML code in the default browser</a></td>
          </tr>
+         <tr>
+            <td>Custom cmd</td>
+            <td>Specify a system command to run</td>
+         </tr>
       </table>
       <nav>
       <h4 id="JavaProject">Java</h4>
       <ul>
       <li>To run a Java program first compile the source file(s) by selecting 'Save
-          and compile project' in the 'Project' menu. If it is specified to save
-          compiled class files in a separate sub-directory of the project directory
-          in the project settings this folder may be deleted in the project explorer
-          for a renewed compilation. If the compilation was successful the Java
-          program is started by selecting 'Run project'.</li>
-      <li>An executable java archive (jar) may be created by selecting 'Create jar' in
-          the project menu. A name for the jar file can be specified in the tab
-          'Compilation and build' in the project settings. The jar is saved in the
-          project directory unless a pathname is specified to save it to another
-          location. This path may be relative to the project directory or also a full
-          path to save the jar to a directory outside the project directory.</li>
+          and compile' in the 'Project' menu (or clicking the corresponding button
+          in the toolbar). If it is specified directory to save compiled class files
+          in a separate sub-directory of the project directory this folder may be
+          deleted using project explorer for a renewed compilation. If the compilation
+          was successful the Java program is started by selecting 'Run' in the 'Project'
+          menu (or by clicking the corresponding button in the toolbar.</li>
+      <li>An executable java archive (jar) may be created by selecting 'Create
+          executable jar' in the 'Project' menu. A name for the jar file can be
+          specified in the tab 'Compilation and build' in the project settings. The
+          jar is saved in the project directory unless a pathname is specified to save
+          it to another location. This path may be relative to the project directory or
+          also a full path to save the jar to a directory outside the project directory.</li>
       <li>Files other than .java files and .class files can be included in a compilation
           and a jar, resepctively. Extensions of included files are specified with the
           beginning period in the input field 'Extensions of included non-Java files'
           which is found in the tab 'Compilation and build' in the project settings.</li>
       <li>Libraries may be specified in the tab 'Libraries' in the project settings.
-          These are added in classpath and can be folders containing class files or
-          jar files. Classpath can be a path relative to the project directory (e.g.
+          These are added in classpath and can be jar files or folders containing class
+          files. Classpath can be a path relative to the project directory (e.g.
           libs/some.jar given this file exists in the project directory) but also an
           absolute path. When the program is packaged in a jar the paths are added to
           the CLASS-PATH header in the manifest file as specified.</li>          
@@ -170,9 +166,10 @@
       <br>
       <h4 id="PerlProject">Perl</h4>
       <ul>
-      <li>A Perl script is started by selecting 'Save and run project'.</li>
+      <li>A Perl script is started by selecting 'Save and run' (or by clicking
+          the corresponding button in the toolbar).</li>
       <li>The Perl script may be checked for correct syntax without running it by
-          by selecting 'Save and compile project' (this starts the script with the -c
+          by selecting 'Save and compile' (this starts the script with the -c
           option).</li>  
       <li>NOTE: For correct output of a Perl program to the console window it may be
           necessary to turn of buffering of the standard output in the script (e.g. by
@@ -181,7 +178,8 @@
       <br>
       <h4 id="PythonProject">Python</h4>
       <ul>
-      <li>A Python script is started by selecting 'Save and run project'.</li>
+      <li>A Python script is started by selecting 'Save and run' (or by clicking
+          the corresponding button in the toolbar).</li>
       <li>NOTE: For correct output of a Python program to the console window it may be
           necessary to specify a command option that turns off buffering of the standard
           output and standerd error (-u).</li>
@@ -189,16 +187,18 @@
       <br>
       <h4 id="RProject">R</h4>
       <ul>
-      <li>An R script is started by selecting 'Save and run project'. The script is run
-          by using the Rscript command.</li>
+      <li>An R script is started by selecting 'Save and run' (or by clicking the
+          corresponding button in the toolbar). The script is run by using
+          the Rscript command.</li>
       </ul>
       <br>
       <h4 id="HtmlProject">HTML</h4>
       <ul>
-      <li>An HTML file is viewed in the default browser by selecting 'Save and run project'.
-          Any HTML file that is located in the project directory can be viewed. The viewed
-          file is the currently open file or the file in the selected tab if multiple files
-          are open.</li>
+      <li>An HTML file is viewed in the default browser by selecting 'Save and run'
+          (or by clicking the corresponding button in the toolbar).
+          Any HTML file that is located in the project directory can be viewed. The
+          viewed file is the currently open file or the file in the selected tab if
+          multiple files are open.</li>
       </ul>
       <br>
       <p><a href="#top">Back to top</a></p>
