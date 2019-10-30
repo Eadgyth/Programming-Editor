@@ -11,8 +11,8 @@ A help site which contains some information about setting up the program to run
 code is accessible in the '?' menu.
 <br>
 <p>
-The image below shows an example Java "project" run in the editor. For compiling (and also
-creating an executable jar file) the program can work with code organzed in packages.
+The image below shows an example Java "project" run in the editor.
+<br>
 <br>
 <img src="docs/images/ExampleProject.png" width="700"/><br><br>
 <h4>REQUIREMENTS</h4>
