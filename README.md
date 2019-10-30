@@ -1,6 +1,6 @@
 <h3>Eadgyth Programming-Editor</h3>
 <p>
-This is a text editor which can be easily set up to run source code. So far, built-in
+A text editor which can be easily set up to run source code. So far, built-in
 functions to run a program are available for code written in Java, Perl, Python, R and
 HTML.
 <br>
