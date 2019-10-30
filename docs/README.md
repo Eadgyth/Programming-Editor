@@ -39,7 +39,7 @@ code is accessible in the '?' menu.
 The image below shows an example Java "project" run in the editor.
 <br>
 <br>
-<img src="docs/images/ExampleProject.png" width="700"/><br><br>
+<img src="images/ExampleProject.png" width="700"/><br><br>
 <h4>REQUIREMENTS</h4>
 <p>
 Running and compiling the program requires Java 8 or higher. Building an executable jar
