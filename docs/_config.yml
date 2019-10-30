@@ -1,6 +1,0 @@
-theme: jekyll-theme-slate
-title: Eadgyth Programming-Editor
-description: A text editor, written in Java, for writing and running source code
-baseurl: /Programming-Editor
-plugins:
-  - jekyll-seo-tag
