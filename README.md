@@ -4,13 +4,25 @@ This is a text editor which can be used for coding and which can be easily set u
 code by using built-in functions. So far, built-in functions are included to run code
 written in Java, Perl, Python, R and HTML.
 <br>
+<p>Some features of the editor are...
+<ul>
+<li>Working with several open files in tabs. The tabbar may be hidden to work
+    with a single document.</li>
+<li>Undo/redo.</li>
+<li>A basic find and find/replace function.</li>
+<li>Clearing end-of-line (trailing) white spaces.</li>
+<li>An "exchange editor" pane to edit text in a separate view and to facilitate
+    the exchange of text within a file or between files.</li>
+<li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
+    Javascript, PHP).</li>
+<li>A basic auto-indentation which distinguishes "curly-bracket-indentation".</li>
+<li>Block-wise increase or decrease of the indentation.</li>
+</ul>
 <p> 
 To try the program the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
 A help site which contains some information about setting up the program to run
-code is found
-<a href="https://github.com/Eadgyth/Programming-Editor/docs/help/help.html">here</a>
-and is also accessible in the '?' menu.
+code is accessible in the '?' menu.
 <br>
 <p>
 The image below shows an example Java "project" run in the editor.
