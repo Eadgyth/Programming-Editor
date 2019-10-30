@@ -33,13 +33,13 @@ Features for running source code are ...
 To try the program the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
 A help site which contains some information about setting up the program to run
-code is accessible in the '?' menu.
+code is accessible in the '?' menu. <a href="https://github.com/Eadgyth/Programming-Editor/docs/help/help.html">here</a>
 <br>
 <p>
 The image below shows an example Java "project" run in the editor.
 <br>
 <br>
-<img src="images/ExampleProject.png" width="700"/><br><br>
+<img src="docs/images/ExampleProject.png" width="700"/><br><br>
 <h4>REQUIREMENTS</h4>
 <p>
 Running and compiling the program requires Java 8 or higher. Building an executable jar
