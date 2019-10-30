@@ -1,5 +1,8 @@
 package eg.ui.filetree;
 
+import java.lang.InterruptedException;
+import java.util.concurrent.ExecutionException;
+
 import java.awt.Component;
 import java.awt.EventQueue;
 
@@ -10,6 +13,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTree;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -58,7 +62,8 @@ public class FileTree {
 
    /**
     * Sets the project's root directory and displays the file system at
-    * this root if the same root is not aready set
+    * this root if the same root is not aready set or updates the
+    * the tree otherwise
     *
     * @param projectRoot  the project's root directory
     */
@@ -66,7 +71,11 @@ public class FileTree {
       if (!projRoot.equals(projectRoot)) {
          projRoot = projectRoot;
          setNewTree(projRoot);
-         tree.expandRow(0);
+      }
+      else {
+         if (tree != null) {
+            updateTree();
+         }
       }
    }
 
@@ -98,9 +107,10 @@ public class FileTree {
       if (currentRoot.isEmpty()) {
          return;
       }
-      setExpandedNodeList();
-      setNewTree(currentRoot);
-      expand();
+      EventQueue.invokeLater(() -> {
+         setExpandedNodeList();
+         setNewTree(currentRoot);
+      });
    }
 
    /**
@@ -116,7 +126,7 @@ public class FileTree {
    //
    //--private--/
    //
-
+   
    private void setNewTree(String path) {
       if (path.isEmpty()) {
          return;
@@ -124,9 +134,43 @@ public class FileTree {
       currentRoot = path;
       treePnl.enableFolderUpAct(!path.equals(projRoot));
       File rootFile = new File(path);
-      root = new DefaultMutableTreeNode(rootFile);
+      if (SwingUtilities.isEventDispatchThread()) {
+         TreeSetter ts = new TreeSetter(rootFile);
+         ts.execute();
+      }
+      else {
+         setModel(rootFile);
+         setTree();
+      }
+   }
+   
+   private class TreeSetter extends SwingWorker {
+      
+      File rootFile;
+      
+      private TreeSetter(File rootFile) {
+         this.rootFile = rootFile;
+      }
+      
+      @Override
+      protected Void doInBackground() {      
+         setModel(rootFile);
+         return null;
+      }
+      
+      @Override
+      protected void done() {
+         setTree();
+      }
+   }
+   
+   private void setModel(File f) {
+      root = new DefaultMutableTreeNode(f);
       model = new DefaultTreeModel(root);
-      getFiles(root, rootFile);
+      getFiles(root, f);
+   }
+   
+   private void setTree() {
       if (tree == null) {
          tree = new JTree(model);
          tree.addMouseListener(mouseListener);
@@ -134,6 +178,7 @@ public class FileTree {
       }
       else {
          tree.setModel(model);
+         expand();
       }
    }
 

@@ -36,7 +36,8 @@ public class TabbedDocuments {
    private final ExtTabbedPane tabPane;
    private final EditableDocument[] edtDoc;
    private final Prefs prefs = new Prefs();
-   private final FileChooser fc;
+   private final FileChooser chOpen;
+   private final FileChooser chSave;
    private final Formatter format;
    private final Edit edit;
    private final Projects proj;
@@ -75,12 +76,13 @@ public class TabbedDocuments {
       mw.setProjectActions(proj);
 
       String projectRoot = prefs.property("ProjectRoot");
-      if (projectRoot != null && projectRoot.length() > 0) {
-         ft.setProjectTree(projectRoot);
-      }
+      ft.setProjectTree(projectRoot);
 
       String recentDir = prefs.property(Prefs.RECENT_DIR_KEY);
-      fc = new FileChooser(recentDir);
+      chOpen = new FileChooser(recentDir);
+      chOpen.initOpenFileChooser();
+      chSave = new FileChooser(recentDir);
+      chSave.initSaveFileChooser();
 
       createDocument();
    }
@@ -102,7 +104,7 @@ public class TabbedDocuments {
     * before opening otherwise.
     */
    public void open() {
-      File f = fc.fileToOpen();
+      File f = chOpen.selectedFile();
       open(f);
    }
 
@@ -179,7 +181,7 @@ public class TabbedDocuments {
          format.setProperties();
          prefs.setProperty(Prefs.INDENT_UNIT_KEY, edit.indentUnitSelection());
          prefs.setProperty(Prefs.LANG_KEY, lang.toString());
-         prefs.setProperty(Prefs.RECENT_DIR_KEY, fc.currentDir());
+         prefs.setProperty(Prefs.RECENT_DIR_KEY, chOpen.currentDir());
       }
       return b;
    }
@@ -270,7 +272,7 @@ public class TabbedDocuments {
       edtDoc[n] = new EditableDocument(editArea[n], f);
       setupDocument(n);
       tabPane.addTab(edtDoc[n].filename(), editArea[n].content(), closeAct());
-      EventQueue.invokeLater(() -> proj.retrieve());
+      mw.busyFunction().executeLater(() -> proj.retrieve());
    }
 
    private void setupDocument(int index) {
@@ -297,7 +299,7 @@ public class TabbedDocuments {
    }
 
    private boolean saveAs(boolean setFile) {
-      File f = fc.fileToSave(displayFilename());
+      File f = chSave.selectedFileToSave(displayFilename());
       if (f == null) {
          return false;
       }

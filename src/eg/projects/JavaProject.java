@@ -8,7 +8,7 @@ import eg.TaskRunner;
 import eg.javatools.*;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
-import eg.ui.ProjectActionsUpdate;
+import eg.Projects.ProjectActionsUpdate;
 
 /**
  * Represents a programming project in Java
@@ -55,7 +55,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    public void enable(ProjectActionsUpdate update) {
       update.enableRun(false);
       update.enableCompile();
-      update.enableBuild("Create jar");
+      update.enableBuild("Create executable jar");
    }
 
    @Override

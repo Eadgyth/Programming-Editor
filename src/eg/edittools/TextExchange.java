@@ -36,6 +36,7 @@ public class TextExchange {
    public TextExchange(EditableDocument exchangeDoc, String recentDir) {
       this.exchangeDoc = exchangeDoc;
       fc = new FileChooser(recentDir);
+      fc.initOpenFileChooser();
       exchFile = new File(SystemParams.EADGYTH_DATA_DIR + "/exchgContent.txt");
       if (exchFile.exists()) {
           exchangeDoc.displayFileContentIgnoreLang(exchFile);
@@ -88,7 +89,7 @@ public class TextExchange {
     * Loads the content of a file that is selected in the file chooser
     */
    public void loadFile() {
-      File f = fc.fileToOpen();
+      File f = fc.selectedFile();
       if (f == null) {
          return;
       }

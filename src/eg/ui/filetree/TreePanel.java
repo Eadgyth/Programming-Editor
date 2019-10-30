@@ -77,6 +77,7 @@ public class TreePanel {
       tree.setBackground(theme.background());
       renewBt.setEnabled(true);
       holdTree.add(tree);
+      holdTree.revalidate();
    }
 
    /**

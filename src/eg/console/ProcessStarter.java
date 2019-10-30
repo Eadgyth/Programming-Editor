@@ -200,7 +200,7 @@ public class ProcessStarter {
       protected void done() {
          setEndingMsg(exitVal);
          lockConsole();
-         EventQueue.invokeLater(fileTreeUpdate);
+         fileTreeUpdate.run();
       }
    }
 

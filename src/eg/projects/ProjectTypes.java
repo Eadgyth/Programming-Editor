@@ -5,12 +5,12 @@ package eg.projects;
  */
 public enum ProjectTypes {
 
-   GENERIC("Generic"),
    HTML("HTML"),
    JAVA("Java"),
    PERL("Perl"),
    PYTHON("Python"),
-   R("R");
+   R("R"),
+   GENERIC("Custom cmd");
 
    private final String display;
 

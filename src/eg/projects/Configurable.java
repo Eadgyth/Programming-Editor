@@ -11,41 +11,42 @@ import java.awt.event.ActionListener;
 public interface Configurable {
 
    /**
-    * Builds a settings window depending on the input options
-    * required in a project
+    * Builds the content of the settings window depending on
+    * the input options required by a project
     */
    public void buildSettingsWindow();
 
    /**
     * Opens the settings window
+    *
+    * @param dir  the directory that maybe or be contained in the
+    * project directory
     */
-   public void openSettingsWindow();
+   public void openSettingsWindow(String dir);
 
    /**
-    * Sets the <code>ActionListener</code> that is called when the
-    * entries in the settings window are confirmed. The listener
-    * calls {@link #configure} and assigns/updates the project if the
-    * configuration is successful
+    * Sets the <code>Runnable</code> that is called when the
+    * entries in the settings window are confirmed
     *
-    * @param al  <code>the ActionListener</code>
+    * @param r  the Runnable invoked by the action
     */
-   public void setConfiguringAction(ActionListener al);
+   public void setConfiguringAction(Runnable r);
 
    /**
-    * Configures a project based on the entries in the settings window
+    * Configures a project based on the entries in the settings
+    * window
     *
-    * @param dir  the directory that may be or be contained in the
-    * project directory named in the settings window
     * @return  true if the project could be configured
     */
-   public boolean configure(String dir);
+   public boolean configure();
 
    /**
     * Tries to retrieve a project stored in a preferences file
     *
-    * @param dir  the directory that may be or be contained in a stored
-    * project
-    * @return  true if a stored project could be retrieved
+    * @param dir  the directory that may be or be contained in a
+    * stored project
+    * @return  true if a stored project could be retrieved, false
+    * otherwise
     */
    public boolean retrieve(String dir);
 

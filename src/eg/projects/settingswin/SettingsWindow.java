@@ -1,4 +1,4 @@
-package eg.projects;
+package eg.projects.settingswin;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -25,11 +25,14 @@ import javax.swing.event.ChangeEvent;
 import java.util.List;
 
 //--Eadgyth--//
+import eg.BusyFunction;
+import eg.FileChooser;
 import eg.ui.IconFiles;
 import eg.utils.ScreenParams;
 
 /**
- * The window that shows input options for the configuration of a project
+ * The window that shows input options to configure commands to run, compile
+ * or build a program
  */
 public class SettingsWindow {
 
@@ -37,9 +40,11 @@ public class SettingsWindow {
    private final static Dimension DIM_SPACER = ScreenParams.scaledDimension(0, 14);
 
    private final JFrame frame = new JFrame("Project settings");
+   private final BusyFunction bf = new BusyFunction(frame);
 
    private final JTextField projDirTf        = new JTextField();
    private final JTextField fileTf           = new JTextField();
+   private final JTextField customCmdTf      = new JTextField();
    private final JTextField sourcesDirTf     = new JTextField();
    private final JTextField execDirTf        = new JTextField();
    private final JTextField cmdArgsTf        = new JTextField();
@@ -51,9 +56,11 @@ public class SettingsWindow {
    private final JButton    cancelBt         = new JButton("Cancel");
    private final JCheckBox  saveConfig       = new JCheckBox();
 
-   private ListInputPanel librariesPnl;
+   private static FileChooser CHOOSER = null;
 
+   private ListInputPanel librariesPnl;
    private String fileLabel = null;
+   private boolean useCustomCmd = false;
    private boolean useSrcDir = false;
    private boolean useExecDir = false;
    private boolean useLibs = false;
@@ -69,6 +76,10 @@ public class SettingsWindow {
    private Component focused = projDirTf;
 
    public SettingsWindow() {
+      if (CHOOSER == null) {
+         CHOOSER = new FileChooser();
+         CHOOSER.initSelectFileOrDirectoryChooser();
+      }
       cancelBt.setFocusable(false);
       okBt.setFocusable(false);
    }
@@ -86,18 +97,28 @@ public class SettingsWindow {
    }
 
    /**
+    * Sets the current directory for the file chooser used by
+    * <code>SettingsWindow</code>.
+    *
+    * @param dir  the directory
+    */
+   public void setDirectory(String dir) {
+      CHOOSER.setDirectory(dir);
+   }
+
+   /**
     * Sets the listener to this ok button
     *
-    * @param al  the <code>ActionListener</code>
+    * @param r  the Runnable invoked by the action
     */
-   public void okAct(ActionListener al) {
-      okBt.addActionListener(al);
+   public void okAct(Runnable r) {
+      okBt.addActionListener(e -> bf.execute(r));
    }
 
    /**
     * Sets the listener to this cancel button
     *
-    * @param al  the <code>ActionListener</code>
+    * @param al  the ActionListener
     */
    public void setCancelAct(ActionListener al) {
       cancelBt.addActionListener(al);
@@ -128,6 +149,15 @@ public class SettingsWindow {
    }
 
    /**
+    * Returns if this frame is visible
+    *
+    * @return  true if visible, false otherwise
+    */
+   public boolean isVisible() {
+      return frame.isVisible();
+   }
+
+   /**
     * Returns the input for the name of a project root directory
     *
     * @return  the input
@@ -143,6 +173,15 @@ public class SettingsWindow {
     */
    public String fileNameInput() {
       return fileTf.getText().trim();
+   }
+
+   /**
+    * Returns the input for a custom command
+    *
+    * @return  the input
+    */
+   public String customCmdInput() {
+      return customCmdTf.getText().trim();
    }
 
    /**
@@ -164,7 +203,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Assigns the input for libraries in the specified list if the
+    * Assigns the input for libraries to the specified list if the
     * option to set libraries is added
     *
     * @param l  the list
@@ -240,6 +279,15 @@ public class SettingsWindow {
     */
    public void displayFile(String s) {
       fileTf.setText(s);
+   }
+   
+   /**
+    * Displays in the corresponding text field a custom commannd
+    *
+    * @param s  the custom command
+    */
+   public void displayCustomCmd(String s) {
+      customCmdTf.setText(s);
    }
 
    /**
@@ -354,15 +402,20 @@ public class SettingsWindow {
          this.sw = sw;
       }
 
+      public InputOptionsBuilder addCustomCommandInput() {
+         sw.useCustomCmd = true;
+         return this;
+      }
+
       /**
        * Adds the option to enter a name for a main project file and sets
        * the label for the corresponding text field
        *
-       * @param label  the label for which " (without extension)" is added to
+       * @param label  the label for the file input
        * @return  this
        */
       public InputOptionsBuilder addFileInput(String label) {
-         sw.fileLabel = label + " (without extension)";
+         sw.fileLabel = label;
          return this;
       }
 
@@ -460,29 +513,32 @@ public class SettingsWindow {
       }
 
       /**
-       * Builds the window content of <code>SettingsWindow</code>.
+       * Builds the content of <code>SettingsWindow</code>.
        * <p>
        * If none of the methods to add input options has been invoked
        * the window shows only the field to enter the name of a root
        * directory of a project.
+       *
+       * @throws IllegalStateException  if the content has been already
+       * built
        */
       public void buildWindow() {
+         if (sw.frame.getContentPane().getComponentCount() > 0) {
+            throw new IllegalStateException(
+                  "The window has been initialized already");
+         }
+         if (sw.fileLabel != null && sw.useCustomCmd == true) {
+            throw new IllegalArgumentException(
+                  "Input for both main file name and custom command is not permitted");
+         }
          sw.needTabs = sw.useLibs || sw.useRunSettings || sw.useBuildSettings;
-         sw.buildWindow();
+         sw.initWindow();
       }
    }
 
    //
    //--private--/
    //
-
-   private void buildWindow() {
-      if (frame.getContentPane().getComponentCount() > 0) {
-         throw new IllegalStateException(
-               "The window has been initialized already");
-      }
-      initWindow();
-   }
 
    private void initWindow() {
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -530,7 +586,7 @@ public class SettingsWindow {
          tb.addTab("Compilation and build", compileAndBuildPnl());
       }
       if (tb != null) {
-         tb.insertTab("Project structure", null, structurePnl(), null, 0);
+         tb.insertTab("Structure", null, structurePnl(), null, 0);
          tb.setSelectedIndex(0);
          pnl.add(tb);
       }
@@ -538,7 +594,7 @@ public class SettingsWindow {
          pnl.add(structurePnl());
       }
       pnl.add(checkBxPnl(saveConfig,
-            "Save \'ProjConfig\' file in the project"));
+            "Save \'ProjConfig\' file in the project to retrieve settings"));
 
       pnl.add(Box.createRigidArea(DIM_SPACER));
       pnl.add(buttonsPanel());
@@ -551,24 +607,36 @@ public class SettingsWindow {
       //
       // project dir
       JLabel projDirLb = new JLabel("Name of project directory:");
-      pnl.add(holdLbAndTf(projDirLb, projDirTf));
+      BrowserButton projDirBr = new BrowserButton(CHOOSER, projDirTf);
+      pnl.add(holdLbAndTf(projDirBr, projDirLb, projDirTf));
+      //
+      // custom run cmd
+      if (useCustomCmd) {
+         JLabel cmdLb = new JLabel("System command to run:");
+         pnl.add(Box.createRigidArea(DIM_SPACER));
+         pnl.add(holdLbAndTf(cmdLb, customCmdTf));
+         pnl.add(Box.createRigidArea(DIM_SPACER));
+      }
       //
       // project file option
       if (fileLabel != null) {
          JLabel fileLb = new JLabel(fileLabel + ":");
-         pnl.add(holdLbAndTf(fileLb, fileTf));
+         BrowserButton fileBr = new BrowserButton(CHOOSER, fileTf);
+         pnl.add(holdLbAndTf(fileBr, fileLb, fileTf));
       }
       //
       // sources dir option
       if (useSrcDir) {
          JLabel sourcesDirLb = new JLabel("Name of sources directory:");
-         pnl.add(holdLbAndTf(sourcesDirLb, sourcesDirTf));
+         BrowserButton sourceDirBr = new BrowserButton(CHOOSER, sourcesDirTf);
+         pnl.add(holdLbAndTf(sourceDirBr, sourcesDirLb, sourcesDirTf));
       }
       //
       // executables dir option
       if (useExecDir) {
          JLabel execDirLb = new JLabel("Name of executables directory:");
-         pnl.add(holdLbAndTf(execDirLb, execDirTf));
+         BrowserButton execDirBr = new BrowserButton(CHOOSER, execDirTf);
+         pnl.add(holdLbAndTf(execDirBr, execDirLb, execDirTf));
       }
       JPanel holder = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       holder.add(pnl);
@@ -597,7 +665,6 @@ public class SettingsWindow {
          JLabel cmdArgsLb = new JLabel("Command arguments:");
          pnl.add(holdLbAndTf(cmdArgsLb, cmdArgsTf));
       }
-
       JPanel holder = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       holder.add(pnl);
       return holder;
@@ -643,6 +710,17 @@ public class SettingsWindow {
       tf.setFont(ScreenParams.scaledFontToPlain(tf.getFont(), 8));
       tf.setPreferredSize(DIM_TF);
       pnl.add(lb);
+      pnl.add(tf);
+      return pnl;
+   }
+
+    private JPanel holdLbAndTf(BrowserButton brBt, JLabel lb, JTextField tf) {
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+      lb.setFont(ScreenParams.scaledFontToBold(lb.getFont(), 8));
+      tf.setFont(ScreenParams.scaledFontToPlain(tf.getFont(), 8));
+      tf.setPreferredSize(DIM_TF);
+      pnl.add(lb);
+      brBt.addButton(pnl);
       pnl.add(tf);
       return pnl;
    }

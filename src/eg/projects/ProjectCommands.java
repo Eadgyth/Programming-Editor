@@ -1,18 +1,16 @@
 package eg.projects;
 
-import eg.ui.ProjectActionsUpdate;
+import eg.Projects.ProjectActionsUpdate;
 
 /**
  * The interface that defines the commands to compile, run and build
- * a project. The commands are optional but throw an exception if
- * called although an overriding method is not present. The actions
- * that call the commands are therefore enabled or disabled by
- * {@link #enable}.
+ * a project
  */
 public interface ProjectCommands extends Configurable {
 
    /**
-    * Updates controls that invoke commands
+    * Enables the controls in the UI that invoke the commands used by
+    * the project
     *
     * @param update  the ProjectActionsUpdate
     */
@@ -35,7 +33,9 @@ public interface ProjectCommands extends Configurable {
    };
 
    /**
-    * Runs the project using the specified file
+    * Runs the project using the specified file.
+    * Method is called when the project does not use a main source
+    * file that is executed
     *
     * @param  filepath  the full filepath
     */
@@ -45,7 +45,8 @@ public interface ProjectCommands extends Configurable {
    };
 
    /**
-    * Creates a build of the project
+    * Creates a build of the project.
+    * It is not defined what a "Build" is
     */
    public default void build() {
       throw new UnsupportedOperationException(

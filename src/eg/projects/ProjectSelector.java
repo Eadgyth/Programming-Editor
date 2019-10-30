@@ -42,7 +42,7 @@ public class ProjectSelector {
             newProj = new RProject(runner);
             break;
          case GENERIC:
-            newProj = new GenericProject();
+            newProj = new GenericProject(runner);
             break;
       }
       return newProj;

@@ -1,4 +1,4 @@
-package eg.projects;
+package eg.projects.settingswin;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -25,8 +25,8 @@ import eg.BackgroundTheme;
 import eg.utils.ScreenParams;
 
 /**
- * Defines a panel in which a list of strings is displayed in or obtained from
- * a list of text fields
+ * Defines a panel in which a list of strings is displayed in or
+ * obtained from a list of text fields
  */
 public class ListInputPanel {
 
@@ -85,7 +85,7 @@ public class ListInputPanel {
 
    /**
     * Assigns the strings in the list of text fields to the specified
-    * list object. Empty text field are skipped.
+    * list object. Empty text fields are skipped.
     *
     * @param l  the list
     */

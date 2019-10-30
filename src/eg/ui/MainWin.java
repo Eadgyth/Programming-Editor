@@ -33,6 +33,7 @@ import eg.ui.filetree.TreePanel;
 import eg.ui.tabpane.ExtTabbedPane;
 import eg.utils.ScreenParams;
 import eg.utils.FileUtils;
+import eg.projects.ProjectTypes;
 
 /**
  * The main window
@@ -216,19 +217,33 @@ public class MainWin {
     * Displays the project name and category in the status bar
     *
     * @param projName  the name of the project
-    * @param projType  the project category
     */
-   public void displayProjectName(String projName, String projType) {
-      statusBar.displayProjectName(projName, projType);
+   public void displayProjectName(String projName) {
+      statusBar.displayProjectName(projName);
    }
 
-    /**
+   /**
     * Enables or disables to assign a project
     *
-    * @param b  true to enable, false to disable
+    * @param b  true to enable, false to disable tha 'Assign as project'
+    * menu
+    * @param all  true to enable to assign all project types in the menu,
+    * false to not change the enabled state of any of the project types
     */
-   public void enableAssignProject(boolean b) {
+   public void enableAssignProject(boolean b, boolean all) {
       menuBar.projectMenu().enableAssignProjMenu(b);
+      if (all) {
+         menuBar.projectMenu().enableAssignProjectItms();
+      }
+   }
+
+   /**
+    * Disables to assign a project of the specified project type
+    *
+    * @param  projType  the project type to disable
+    */
+   public void disableAssignProjectType(ProjectTypes projType) {
+      menuBar.projectMenu().disableAssignProjectItm(projType);
    }
 
     /**
@@ -239,7 +254,6 @@ public class MainWin {
    public void enableOpenProjectSettings(boolean b) {
       menuBar.projectMenu().enableOpenSetWinItm(b);
    }
-
    /**
     * Enables or disables to change project
     *
@@ -330,6 +344,7 @@ public class MainWin {
       menuBar.fileMenu().setActions(td);
       menuBar.fileMenu().setExitActions(e -> exit(td));
       toolBar.setFileActions(td);
+
       frame.addWindowListener(new WindowAdapter() {
 
          @Override
@@ -386,11 +401,14 @@ public class MainWin {
    public void setProjectActions(Projects p) {
       menuBar.projectMenu().setActions(p);
       toolBar.setProjectActions(p);
+
       frame.addWindowListener(new WindowAdapter() {
 
          @Override
-         public void windowActivated(WindowEvent we) {
-            p.updateFileTree();
+         public void windowActivated(WindowEvent e) {
+            if (e.getOppositeWindow() == null) {
+               p.updateFileTree();
+            }
          }
       });
    }

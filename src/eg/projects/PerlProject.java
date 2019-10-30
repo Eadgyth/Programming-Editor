@@ -2,7 +2,7 @@ package eg.projects;
 
 //--Eadgyth--/
 import eg.TaskRunner;
-import eg.ui.ProjectActionsUpdate;
+import eg.Projects.ProjectActionsUpdate;
 
 /**
  * Represents a programming project in Perl

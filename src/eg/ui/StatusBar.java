@@ -75,15 +75,9 @@ public class StatusBar {
     * Displays the project name and type
     *
     * @param projName  the name
-    * @param projType  the type
     */
-   public void displayProjectName(String projName, String projType) {
-      projectLb.setText(
-            "Active project: "
-            + projName
-            + " ("
-            + projType
-            + ")");
+   public void displayProjectName(String projName) {
+      projectLb.setText("Current project: " + projName);
    }
 
    //--private--/
@@ -109,7 +103,7 @@ public class StatusBar {
       content.add(wordwrapLb);
       content.add(Box.createRigidArea(width5));
       content.add(cursorPosLb);
-      projectLb.setText("Active project: none");
+      projectLb.setText("Current project: none");
    }
 
    private void setLbFont(JLabel[] lb) {

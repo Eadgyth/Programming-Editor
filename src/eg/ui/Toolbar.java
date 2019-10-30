@@ -57,17 +57,6 @@ public class ToolBar {
    }
 
    /**
-    * Sets listeners for project actions
-    *
-    * @param p  the reference to {@link Projects}
-    */
-   public void setProjectActions(Projects p) {
-      changeProjBt.addActionListener(e -> p.change());
-      runBt.addActionListener(e -> p.run());
-      compileBt.addActionListener(e -> p.compile());
-   }
-
-   /**
     * Sets listeners for actions to edit text
     *
     * @param edit  the reference to {@link Edit}
@@ -80,6 +69,17 @@ public class ToolBar {
       pasteBt.addActionListener(e -> edit.pasteText());
       indentBt.addActionListener(e -> edit.indent());
       outdentBt.addActionListener(e -> edit.outdent());
+   }
+   
+   /**
+    * Sets listeners for project actions
+    *
+    * @param p  the reference to {@link Projects}
+    */
+   public void setProjectActions(Projects p) {
+      changeProjBt.addActionListener(e -> p.change());
+      runBt.addActionListener(e -> p.run());
+      compileBt.addActionListener(e -> p.compile());
    }
 
    /**
@@ -165,7 +165,7 @@ public class ToolBar {
          "Increase indentation by the set indent length",
          "Reduce indentation by the set indent length",
          "Save and compile project",
-         "Run project", "Change project"
+         "", "Change Project"
       };
       for (int i = 0; i < bts.length; i++) {
          toolBar.add(bts[i]);

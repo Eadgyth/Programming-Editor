@@ -67,7 +67,7 @@ public final class ExtTabbedPane extends JTabbedPane {
     *
     * @param title  the title for the tab
     * @param c  the component to be displayed when the tab is selected
-    * @param closeAct  the closing action 
+    * @param closeAct  the closing action
     */
    public void addTab(String title, Component c, FunctionalAction closeAct) {
       int index = getTabCount();
