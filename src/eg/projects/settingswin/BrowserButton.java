@@ -10,9 +10,8 @@ import java.io.File;
 import eg.FileChooser;
 
 /**
- * Defines a button which is pressed to select a file or directory
- * in a file chooser and to set the name of the file or directory in
- * a text field
+ * Defines a button which is pressed to open a file chooser and set
+ * the name of the chosen file or directory in a text field
  */
 public class BrowserButton {
    
