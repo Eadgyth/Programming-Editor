@@ -1,11 +1,11 @@
 <h3>Eadgyth Programming-Editor</h3>
 <p>
-This is a text editor which can be used for coding and which can be easily set up to run
-code by using built-in functions. So far, built-in functions are included to run code
-written in Java, Perl, Python, R and HTML.
+This is a text editor which can be easily set up to run source code by built-in
+functions. So far, built-in functions are included for code written in Java, Perl,
+Python, R and HTML.
 <br>
 <p>
-Some features for editing text are...
+Some features for editing text are ...
 <ul>
 <li>Undo/redo.</li>
 <li>A basic find and find/replace function.</li>
@@ -18,10 +18,13 @@ Some features for editing text are...
 <li>Block-wise increase or decrease of the indentation.</li>
 </ul>
 <p>
-Further features for working with source code are ...
+Features for running source code ...
 <ul>
 <li>A basic console for showing output/error during running (or compiling) a program.</li>
-<li>Run a project by pre-defined functions or run self-chosen system commands.</li>
+<li>Run a program by pre-defined functions or run self-chosen system commands.</li>
+<li>Specify command options/arguments of the commands that run a program</li>
+<li>Compile and run Java code that is organized in packages and create an executabe jar
+    file of a Java program</li>
 <li>Set a number of coding projects which can be switched between.</li>
 <li>Retrieval of already defined projects after newly starting the program.</li>
 </ul>
@@ -50,14 +53,11 @@ of a programming language may have to be set in the OS (they have to under Windo
 <br>
 <h4>LIMITATIONS</h4>
 <p>
-The editor includes a basic console to show output/error messages from a tested program
-or from freely defined system commands and also allows to run interactive command-line
-programms. However, the console does not work as expected if a process buffers its
-output until completion in the case that the output is not to the terminal of the OS
-(PERL, for example, but not Java). To display output correctly block-buffering would
-have to be disabled if this option is available for a language (by a corresponding
-command option which can be entered in the project settings or by a switch in a script
-itself).
+Output to the console does not work as expected if a run process buffers its output
+until completion in the case that the output is not to the terminal of the OS (this is the
+case for Perl, for example). To display output correctly block-buffering would have to be
+disabled if this option is available for a language (by a corresponding command option which
+can be entered in the project settings or by a switch in a script itself).
 <br>
 <h4>ACKLOWLEDGEMENT</h4>
 <p>
