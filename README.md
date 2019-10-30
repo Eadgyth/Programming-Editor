@@ -9,7 +9,7 @@ To try the program the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
 A help site which contains some information about setting up the program to run
 code is found
-<a href="https://github.com/Eadgyth/Programming-Editor/tree/master/docs/help/help.html">here</a>
+<a href="docs/help/help.html">here</a>
 and is also accessible in the '?' menu.
 <br>
 <p>
