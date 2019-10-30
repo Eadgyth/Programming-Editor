@@ -32,8 +32,6 @@ Features for running source code are ...
 <p>
 To try the program the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
-A help site which contains some information about setting up the program to run
-code is accessible in the '?' menu. <a href="https://github.com/Eadgyth/Programming-Editor/docs/help/help.html">here</a>
 <br>
 <p>
 The image below shows an example Java "project" run in the editor.
