@@ -1,4 +1,4 @@
-<h4>Features</h3>
+<h4>FEATURES</h4>
 <p>
 A text editor which can be easily set up to run source code. So far, built-in
 functions to run a program are available for code written in Java, Perl, Python, R and
