@@ -8,7 +8,8 @@ written in Java, Perl, Python, R and HTML.
 To try the program the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
 A help site which contains some information about setting up the program to run
-code is found <a href="https://github.com/Eadgyth/Programming-Editor/docs/help.html">here</a>
+code is found
+<a href="https://github.com/Eadgyth/Programming-Editor/tree/master/docs/help">here</a>
 and is also accessible in the '?' menu.
 <br>
 <p>
