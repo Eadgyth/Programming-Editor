@@ -1,8 +1,8 @@
 <h3>Eadgyth Programming-Editor</h3>
 <p>
-This is a text editor which can be easily set up to run source code by built-in
-functions. So far, built-in functions are included for code written in Java, Perl,
-Python, R and HTML.
+This is a text editor which can be easily set up to run source code. So far, built-in
+functions to run a program are available for code written in Java, Perl, Python, R and
+HTML.
 <br>
 <p>
 Some features for editing text are ...
@@ -18,15 +18,16 @@ Some features for editing text are ...
 <li>Block-wise increase or decrease of the indentation.</li>
 </ul>
 <p>
-Features for running source code ...
+Features for running source code are ...
 <ul>
 <li>A basic console for showing output/error during running (or compiling) a program.</li>
 <li>Run a program by pre-defined functions or run self-chosen system commands.</li>
-<li>Specify command options/arguments of the commands that run a program</li>
+<li>Specify additional command options/arguments for running a program</li>
 <li>Compile and run Java code that is organized in packages and create an executabe jar
-    file of a Java program</li>
-<li>Set a number of coding projects which can be switched between.</li>
-<li>Retrieval of already defined projects after newly starting the program.</li>
+    file of a Java program. A Java program may also use external Libraries.</li>
+<li>View HTML code in the default Browser.</li>
+<li>Set several coding projects which can be switched between.</li>
+<li>Retrieval of projects after newly starting the program.</li>
 </ul>
 <p>
 To try the program the executable jar file in a
