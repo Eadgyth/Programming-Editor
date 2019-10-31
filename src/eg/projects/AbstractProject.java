@@ -97,8 +97,6 @@ public abstract class AbstractProject implements Configurable {
       }
       boolean success = false;
       if (!isRootFound) {
-         projectRoot = "";
-         mainFilePath = null;
          Dialogs.warnMessageOnTop(projRootInputWarning());
       }
       else {
@@ -225,7 +223,7 @@ public abstract class AbstractProject implements Configurable {
     * @return  true if the main can be located
     */
    protected boolean locateMainFile() {
-      boolean locate = mainFilePath != null && mainFilePath.exists();
+      boolean locate = mainFilePath.exists();
       int openSettings = -1;
       if (!locate) {
          locate = configForMainFile(projectRoot);
@@ -242,16 +240,9 @@ public abstract class AbstractProject implements Configurable {
             }
          }
          else {
-            if (projectRoot.isEmpty()) {
-               openSettings = Dialogs.warnConfirmYesNo(
-                     projRootInputWarning()
-                     + "\n\nOpen the project settings?");
-            }
-            else {
-               openSettings = Dialogs.warnConfirmYesNo(
-                     mainFileInputWarning()
-                     + "\n\nOpen the project settings?");
-            }
+            openSettings = Dialogs.warnConfirmYesNo(
+                  mainFileInputWarning()
+                  + "\n\nOpen the project settings?");
          }
       }
       if (openSettings == 0) {
@@ -279,11 +270,6 @@ public abstract class AbstractProject implements Configurable {
       return relMainFilePath;
    }
 
-   /**
-    * Returns the custom command
-    *
-    * @return the custom command; the empty string if none is given
-    */
    protected String customRunCmd() {
       return customCmd;
    }
@@ -413,15 +399,6 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private boolean configForMainFile(String root) {
-      sourceDirName = sw.sourcesDirNameInput();
-      execDirName = sw.execDirNameInput();
-      sw.assignLibrariesInput(libraries);
-      cmdOptions = sw.cmdOptionsInput();
-      cmdArgs = sw.cmdArgsInput();
-      compileOptions = sw.compileOptionsInput();
-      extensions = sw.extensionsInput();
-      buildName = sw.buildNameInput().replace("/", F_SEP);
-
       boolean success = false;
       absNamespace = "";
       namespace = "";
@@ -445,6 +422,14 @@ public abstract class AbstractProject implements Configurable {
       setRelMainFilePath();
       mainFilePath = new File(root + F_SEP + relMainFilePath);
       if (mainFilePath.exists()) {
+         sourceDirName = sw.sourcesDirNameInput();
+         execDirName = sw.execDirNameInput();
+         sw.assignLibrariesInput(libraries);
+         cmdOptions = sw.cmdOptionsInput();
+         cmdArgs = sw.cmdArgsInput();
+         compileOptions = sw.compileOptionsInput();
+         extensions = sw.extensionsInput();
+         buildName = sw.buildNameInput().replace("/", F_SEP);
          if (buildName.isEmpty()) {
             buildName = new File(root).getName() + "Project";
             sw.displayBuildName(buildName);
@@ -565,9 +550,7 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private void displaySettings() {
-      if (!projectRoot.isEmpty()) {
-         sw.displayProjDirName(projectName());
-      }
+      sw.displayProjDirName(projectName());
       if (isPathname) {
          sw.displayFile(namespace + F_SEP + mainFileName);
       }
