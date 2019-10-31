@@ -299,7 +299,7 @@ public class Projects {
       }
       else {
          changedDocumentUpdate();
-      } 
+      }
    }
 
    private ProjectCommands selectFromList(String dir, boolean excludeCurrent) {
@@ -325,7 +325,7 @@ public class Projects {
          if (edtDoc[iDoc].hasFile()) {
             inList = selectFromList(edtDoc[iDoc].fileParent(), false);
          }
-         boolean apply = !edtDoc[iDoc].hasFile() || (inList == null)
+         boolean apply = !edtDoc[iDoc].hasFile() || inList == null
                || inList == toConfig;
 
          if (apply) {

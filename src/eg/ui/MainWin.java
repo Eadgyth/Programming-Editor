@@ -5,6 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
+import javax.swing.SwingUtilities;
+
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -238,7 +240,7 @@ public class MainWin {
    }
 
    /**
-    * Disables to assign a project of the specified project type
+    * Disables to assign a project of the specified type
     *
     * @param  projType  the project type to disable
     */
@@ -246,7 +248,7 @@ public class MainWin {
       menuBar.projectMenu().disableAssignProjectItm(projType);
    }
 
-    /**
+   /**
     * Enables or disables to open the project settings window
     *
     * @param b  true to enable, false to disable
@@ -254,6 +256,7 @@ public class MainWin {
    public void enableOpenProjectSettings(boolean b) {
       menuBar.projectMenu().enableOpenSetWinItm(b);
    }
+
    /**
     * Enables or disables to change project
     *
@@ -438,22 +441,22 @@ public class MainWin {
             "", IconFiles.CLOSE_ICON, closeAct));
 
       Runnable select = () -> selectEditTool(i);
-      ActionListener addAct = e -> bf.executeLater(select);
+      ActionListener addAct = e -> bf.execute(select);
       menuBar.editMenu().setEditToolsActionsAt(addAct, i);
    }
 
    private void selectEditTool(int i) {
       if (menuBar.editMenu().isEditToolItmSelected(i)) {
-          AddableEditTool tool = editTools.get(i);
-          edToolPnl.addComponent(tool.content());
-          splitHorMid.setResizeWeight(tool.resize() ? 0 : 1);
-          showEditToolPnl(true, tool.width());
-          menuBar.editMenu().unselectEditToolItmExcept(i);
-       }
-       else {
-          showEditToolPnl(false, 0);
-          menuBar.editMenu().unselectEditToolItmAt(i);
-       }
+         AddableEditTool tool = editTools.get(i);
+         edToolPnl.addComponent(tool.content());
+         splitHorMid.setResizeWeight(tool.resize() ? 0 : 1);
+         showEditToolPnl(true, tool.width());
+         menuBar.editMenu().unselectEditToolItmExcept(i);
+      }
+      else {
+         showEditToolPnl(false, 0);
+         menuBar.editMenu().unselectEditToolItmAt(i);
+      }
    }
 
    private void showEditToolPnl(boolean b, double width) {
