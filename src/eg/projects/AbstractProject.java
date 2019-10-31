@@ -270,6 +270,12 @@ public abstract class AbstractProject implements Configurable {
       return relMainFilePath;
    }
 
+   /**
+    * Returns the custom command
+    *
+    * @return  the custom command; the empty string if no custom
+    * command is given
+    */
    protected String customRunCmd() {
       return customCmd;
    }
@@ -399,6 +405,14 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private boolean configForMainFile(String root) {
+      sourceDirName = sw.sourcesDirNameInput();
+      execDirName = sw.execDirNameInput();
+      sw.assignLibrariesInput(libraries);
+      cmdOptions = sw.cmdOptionsInput();
+      cmdArgs = sw.cmdArgsInput();
+      compileOptions = sw.compileOptionsInput();
+      extensions = sw.extensionsInput();
+      buildName = sw.buildNameInput().replace("/", F_SEP);
       boolean success = false;
       absNamespace = "";
       namespace = "";
@@ -422,14 +436,6 @@ public abstract class AbstractProject implements Configurable {
       setRelMainFilePath();
       mainFilePath = new File(root + F_SEP + relMainFilePath);
       if (mainFilePath.exists()) {
-         sourceDirName = sw.sourcesDirNameInput();
-         execDirName = sw.execDirNameInput();
-         sw.assignLibrariesInput(libraries);
-         cmdOptions = sw.cmdOptionsInput();
-         cmdArgs = sw.cmdArgsInput();
-         compileOptions = sw.compileOptionsInput();
-         extensions = sw.extensionsInput();
-         buildName = sw.buildNameInput().replace("/", F_SEP);
          if (buildName.isEmpty()) {
             buildName = new File(root).getName() + "Project";
             sw.displayBuildName(buildName);
