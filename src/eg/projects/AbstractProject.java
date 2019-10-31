@@ -97,6 +97,8 @@ public abstract class AbstractProject implements Configurable {
       }
       boolean success = false;
       if (!isRootFound) {
+         projectRoot = "";
+         mainFilePath = null;
          Dialogs.warnMessageOnTop(projRootInputWarning());
       }
       else {
@@ -223,7 +225,7 @@ public abstract class AbstractProject implements Configurable {
     * @return  true if the main can be located
     */
    protected boolean locateMainFile() {
-      boolean locate = mainFilePath.exists();
+      boolean locate = mainFilePath != null && mainFilePath.exists();
       int openSettings = -1;
       if (!locate) {
          locate = configForMainFile(projectRoot);
@@ -240,9 +242,16 @@ public abstract class AbstractProject implements Configurable {
             }
          }
          else {
-            openSettings = Dialogs.warnConfirmYesNo(
-                  mainFileInputWarning()
-                  + "\n\nOpen the project settings?");
+            if (projectRoot.isEmpty()) {
+               openSettings = Dialogs.warnConfirmYesNo(
+                     projRootInputWarning()
+                     + "\n\nOpen the project settings?");
+            }
+            else {
+               openSettings = Dialogs.warnConfirmYesNo(
+                     mainFileInputWarning()
+                     + "\n\nOpen the project settings?");
+            }
          }
       }
       if (openSettings == 0) {
@@ -556,7 +565,9 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private void displaySettings() {
-      sw.displayProjDirName(projectName());
+      if (!projectRoot.isEmpty()) {
+         sw.displayProjDirName(projectName());
+      }
       if (isPathname) {
          sw.displayFile(namespace + F_SEP + mainFileName);
       }
