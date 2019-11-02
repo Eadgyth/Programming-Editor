@@ -1,5 +1,7 @@
 package eg;
 
+import java.awt.EventQueue;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -141,6 +143,7 @@ public class Projects {
          toAssign.openSettingsWindow(dir);
          toAssign.setConfiguringAction(() -> configure(toAssign));
       }
+      changedDocumentUpdate();
    }
 
    /**
