@@ -3,8 +3,9 @@ package eg.ui.menu;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
-import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
@@ -19,9 +20,10 @@ import eg.ui.IconFiles;
 public class ProjectMenu {
 
    private final JMenu menu = new JMenu("Project");
-   private final JMenu assignProjMenu = new JMenu("Setup for...");
-   private final JCheckBoxMenuItem[] assignProjItm
-         = new JCheckBoxMenuItem[ProjectTypes.values().length];
+   private final JMenu assignProjMenu = new JMenu("Setting for...");
+   private final ButtonGroup group = new ButtonGroup();
+   private final JRadioButtonMenuItem[] assignProjItm
+         = new JRadioButtonMenuItem[ProjectTypes.values().length];
 
    private final JMenuItem openSetWinItm = new JMenuItem("Settings...");
    private final JMenuItem changeProjItm
@@ -64,6 +66,28 @@ public class ProjectMenu {
    }
 
    /**
+    * Enables the menu for actions to assign a project and
+    * may set an item in the menu selected
+    *
+    * @param b  true to enable, false to disable
+    * @param projType  the project type whose corresponding
+    * item is selected; null to unselect all items
+    */
+   public void enableAssignProjectMenu(boolean b, ProjectTypes projType) {
+      assignProjMenu.setEnabled(b);
+      if (projType == null) {
+         group.clearSelection();
+      }
+      else {
+         for (int i = 0; i < assignProjItm.length; i++) {
+            if (projType == ProjectTypes.values()[i]) {
+               assignProjItm[i].setSelected(true);
+            }
+         }
+      }
+   }
+
+   /**
     * Enables or disables the item for actions to open the project
     * settings window
     *
@@ -71,41 +95,6 @@ public class ProjectMenu {
     */
    public void enableOpenSetWinItm(boolean b) {
       openSetWinItm.setEnabled(b);
-   }
-
-   /**
-    * Enables or disables the sub-menu for actions to assign a project
-    *
-    * @param b  true to enable, false  to disable
-    */
-   public void enableAssignProjMenu(boolean b) {
-      assignProjMenu.setEnabled(b);
-   }
-
-   public void enableAssignProjectItms() {
-      for (int i = 0; i < assignProjItm.length; i++) {
-         assignProjItm[i].setEnabled(true);
-         assignProjItm[i].setSelected(false);
-      }
-   }
-
-    /**
-    * Disables the item for actions to assign a project of
-    * the specified project type
-    *
-    * @param  projType  the project type to disable
-    */
-   public void disableAssignProjectItm(ProjectTypes projType) {
-      for (int i = 0; i < assignProjItm.length; i++) {
-         if (projType == ProjectTypes.values()[i]) {
-            assignProjItm[i].setEnabled(false);
-            assignProjItm[i].setSelected(true);
-         }
-         else {
-            assignProjItm[i].setEnabled(true);
-            assignProjItm[i].setSelected(false);
-         }
-      }
    }
 
    /**
@@ -164,7 +153,8 @@ public class ProjectMenu {
    private void assembleMenu() {
       menu.add(assignProjMenu);
       for (int i = 0; i < assignProjItm.length; i++) {
-         assignProjItm[i] = new JCheckBoxMenuItem(ProjectTypes.values()[i].display());
+         assignProjItm[i] = new JRadioButtonMenuItem(ProjectTypes.values()[i].display());
+         group.add(assignProjItm[i]);
          assignProjMenu.add(assignProjItm[i]);
          if (i == assignProjItm.length - 2) {
             assignProjMenu.addSeparator();

@@ -98,6 +98,9 @@ public abstract class AbstractProject implements Configurable {
       boolean success = false;
       if (!isRootFound) {
          Dialogs.warnMessageOnTop(projRootInputWarning());
+         if (!projectRoot.isEmpty()) {
+            sw.displayProjDirName(projectName());
+         }
       }
       else {
          if (!useMainFile) {
@@ -637,6 +640,9 @@ public abstract class AbstractProject implements Configurable {
          }
          else {
             sw.setSaveProjConfigSelected(true);
+            if (conf == null) {
+               conf = new Prefs(projectRoot);
+            }
             store(conf);
          }
       }
@@ -660,17 +666,30 @@ public abstract class AbstractProject implements Configurable {
          + "Remove the file?";
 
    private String projRootInputWarning() {
+      String prevRootMsg = "";
+      if (!projectRoot.isEmpty()) {
+         prevRootMsg
+            = "\n\nThe previous directory '"
+            + projectName()
+            + "' will be kept.";
+      }
       return
          sw.projDirNameInput()
-         + "\nThe specified project directory cannot be found.";
+         + "\nThe directory cannot be found."
+         + prevRootMsg;
    }
 
    private String mainFileInputWarning() {
-      String sourceRootInfo = sourceDirName.isEmpty() ?
-            "" : " in the sources directory " + sourceDirName;
+      String sourceRootInfo = ".";
+      if (!sourceDirName.isEmpty()) {
+         sourceRootInfo
+               = " in the sources directory "
+               + sourceDirName
+               + ".";
+      }
       return
          mainFileName
-         + "\nThe main source file cannot be found"
+         + "\nThe file cannot be found"
          + sourceRootInfo;
    }
 

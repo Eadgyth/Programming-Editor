@@ -13,7 +13,6 @@ import java.io.IOException;
 //--Eadgyth--/
 import eg.Languages;
 import eg.utils.FileUtils;
-import eg.utils.SystemParams;
 import eg.ui.EditArea;
 import eg.syntax.SyntaxHighlighter;
 import eg.syntax.Highlighter;

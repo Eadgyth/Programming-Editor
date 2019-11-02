@@ -20,7 +20,7 @@ public class FileChooser {
 
    private final JFrame frame = new JFrame();
    private JFileChooser ch = null;
-   private File currentDir = new File("");
+   private File currentDir;
    
    public FileChooser() {
       ch = new JFileChooser();

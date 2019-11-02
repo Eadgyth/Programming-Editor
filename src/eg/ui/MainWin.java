@@ -5,8 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import javax.swing.SwingUtilities;
-
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -227,25 +225,12 @@ public class MainWin {
    /**
     * Enables or disables to assign a project
     *
-    * @param b  true to enable, false to disable tha 'Assign as project'
-    * menu
-    * @param all  true to enable to assign all project types in the menu,
-    * false to not change the enabled state of any of the project types
+    * @param b  true to enable, false disable
+    * @param projType  the project type whose corresponding
+    * menu item is selected; null to unselect all items
     */
-   public void enableAssignProject(boolean b, boolean all) {
-      menuBar.projectMenu().enableAssignProjMenu(b);
-      if (all) {
-         menuBar.projectMenu().enableAssignProjectItms();
-      }
-   }
-
-   /**
-    * Disables to assign a project of the specified type
-    *
-    * @param  projType  the project type to disable
-    */
-   public void disableAssignProjectType(ProjectTypes projType) {
-      menuBar.projectMenu().disableAssignProjectItm(projType);
+   public void enableAssignProject(boolean b, ProjectTypes projType) {
+      menuBar.projectMenu().enableAssignProjectMenu(b, projType);
    }
 
    /**

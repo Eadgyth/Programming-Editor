@@ -29,7 +29,6 @@ public class Projects {
    private final ProjectSelector selector;
    private final ProcessStarter proc;
    private final EditableDocument[] edtDoc;
-   private final Runnable fileTreeUpdate;
    private final List<ProjectCommands> projects = new ArrayList<>();
    private final ProjectActionsUpdate pau = new ProjectActionsUpdate();
 
@@ -47,8 +46,8 @@ public class Projects {
       this.mw = mw;
       this.fileTree = fileTree;
       this.edtDoc = edtDoc;
-      fileTreeUpdate = () -> fileTree.updateTree();
       Console cons = new Console(mw.consolePnl());
+      Runnable fileTreeUpdate = () -> fileTree.updateTree();
       proc = new ProcessStarter(cons, fileTreeUpdate);
       TaskRunner runner = new TaskRunner(mw, cons, proc, fileTreeUpdate);
       selector = new ProjectSelector(runner);
@@ -66,33 +65,37 @@ public class Projects {
 
    /**
     * Updates the project UI controls depending on the selected
-    * document or the file that is set in a document
+    * document and the file that is set in a document
     */
    public void changedDocumentUpdate() {
       if (currentProject == null) {
-         mw.enableAssignProject(edtDoc[iDoc].hasFile(), true);
+         mw.enableAssignProject(edtDoc[iDoc].hasFile(), null);
       }
       else {
          ProjectCommands inList;
          boolean isProject = false;
          boolean isCurrentProject = false;
          boolean isAssignProject = false;
+         ProjectTypes projType = null;
          if (edtDoc[iDoc].hasFile()) {
             inList = selectFromList(edtDoc[iDoc].fileParent(), false);
             isProject = inList != null;
             isCurrentProject = inList == currentProject;
             isAssignProject = !isProject || isCurrentProject;
+            if (isCurrentProject) {
+               projType = currentProject.projectType();
+            }
          }
-         if (isCurrentProject) {
-            mw.disableAssignProjectType(currentProject.projectType());
-         }
-         mw.enableAssignProject(isAssignProject, !isProject);
+         mw.enableAssignProject(isAssignProject, projType);
          mw.enableOpenProjectSettings(isCurrentProject);
          mw.enableChangeProject(isProject && !isCurrentProject);
          enableProjectCommands(isCurrentProject);
       }
    }
 
+   /**
+    * Updates the file tree
+    */
    public void updateFileTree() {
       fileTree.updateTree();
    }
@@ -112,7 +115,7 @@ public class Projects {
    /**
     * Assigns a new project that the file of the selected document
     * belongs to or opens the settings window if the file already
-    * belongs to a project of the specified type
+    * belongs to the current project of the specified type
     *
     * @param projType  the project type
     */
@@ -121,10 +124,15 @@ public class Projects {
       ProjectCommands inList = selectFromList(dir, false);
       boolean assign = inList == null;
       if (!assign) {
-         int res = replaceRes(projType, inList.projectType());
-         if (0 == res) {
-            replace = true;
-            assign = true;
+         if (currentProject.projectType() == projType) {
+            currentProject.openSettingsWindow(dir);
+         }
+         else {
+            int res = replaceRes(projType, inList.projectType());
+            if (0 == res) {
+               replace = true;
+               assign = true;
+            }
          }
       }
       if (assign) {
@@ -333,6 +341,9 @@ public class Projects {
             currentProject = toConfig;
             updateProjectSetting();
          }
+      }
+      else {
+         changedDocumentUpdate();
       }
       replace = false;
    }
