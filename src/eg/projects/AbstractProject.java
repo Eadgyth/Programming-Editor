@@ -40,10 +40,8 @@ public abstract class AbstractProject implements Configurable {
    private final boolean useMainFile;
    private final SettingsWindow sw;
    //
-   // object to store libraries
-   private final List<String> libraries = new ArrayList<>();
-   //
    // Variables that correspond to or depend on input in the settings window
+   private final List<String> libraries = new ArrayList<>();
    private String projectRoot = "";
    private String mainFileName = "";
    private String customCmd = "";
@@ -666,22 +664,37 @@ public abstract class AbstractProject implements Configurable {
          + "Remove the file?";
 
    private String projRootInputWarning() {
-      String prevRootMsg = "";
+      String rootInfo
+            = sw.projDirNameInput()
+            + "\nThe directory cannot be found.";
+
+      if (sw.projDirNameInput().isEmpty()) {
+         rootInfo = "A project directory is not specified.";
+      }
+      String prevRootInfo = "";
       if (!projectRoot.isEmpty()) {
-         prevRootMsg
+         prevRootInfo
             = "\n\nThe previous directory '"
             + projectName()
             + "' will be kept.";
       }
-      return
-         sw.projDirNameInput()
-         + "\nThe directory cannot be found."
-         + prevRootMsg;
+      return rootInfo + prevRootInfo;
    }
 
    private String mainFileInputWarning() {
+      String fileInfo
+            = "\nThe "
+            + projType.display()
+            + " file cannot be found";
+
+      if (mainFileName.isEmpty()) {
+         fileInfo
+               = "The name of a "
+               + projType.display()
+               + " file is not specified";
+      }
       String sourceRootInfo = ".";
-      if (!sourceDirName.isEmpty()) {
+      if (!mainFileName.isEmpty() && !sourceDirName.isEmpty()) {
          sourceRootInfo
                = " in the sources directory "
                + sourceDirName
@@ -689,7 +702,7 @@ public abstract class AbstractProject implements Configurable {
       }
       return
          mainFileName
-         + "\nThe file cannot be found"
+         + fileInfo
          + sourceRootInfo;
    }
 
