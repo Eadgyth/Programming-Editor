@@ -9,9 +9,9 @@ import eg.Projects.ProjectActionsUpdate;
  * Represents a project to run a custom system command
  */
 public final class GenericProject extends AbstractProject implements ProjectCommands {
-   
+
    private final TaskRunner runner;
-   
+
    boolean isCmd;
 
    public GenericProject(TaskRunner runner) {
@@ -30,25 +30,22 @@ public final class GenericProject extends AbstractProject implements ProjectComm
       update.enableRun(false);
    }
 
-   /**
-    * Not implemented
-    */
    @Override
    protected void setCommandParameters() {
       isCmd = !customRunCmd().isEmpty();
    }
-   
+
    @Override
    public void run() {
      if (isCmdDefined()) {
          runner.runSystemCommand(customRunCmd());
       }
    }
-   
+
    //
    //--private--/
    //
-   
+
    private boolean isCmdDefined() {
       boolean isCmd = !customRunCmd().isEmpty();
       if (!isCmd) {
