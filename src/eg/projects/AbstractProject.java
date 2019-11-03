@@ -664,58 +664,51 @@ public abstract class AbstractProject implements Configurable {
          + "Remove the file?";
 
    private String projRootInputWarning() {
-      String rootInfo
-            = sw.projDirNameInput()
-            + "\nThe directory cannot be found.";
-
+      StringBuilder sb = new StringBuilder();
       if (sw.projDirNameInput().isEmpty()) {
-         rootInfo = "A project directory is not specified.";
+         sb.append("A project directory is not specified.");
       }
-      String prevRootInfo = "";
+      else {
+         sb.append(sw.projDirNameInput())
+            .append("\nThe directory cannot be found.");
+      }
       if (!projectRoot.isEmpty()) {
-         prevRootInfo
-            = "\n\nThe previous directory '"
-            + projectName()
-            + "' will be kept.";
+         sb.append("\n\nThe previous directory '")
+            .append(projectName())
+            .append("' will be kept.");
       }
-      return rootInfo + prevRootInfo;
+      return sb.toString();
    }
 
    private String mainFileInputWarning() {
-      String fileInfo
-            = "\nThe "
-            + projType.display()
-            + " file cannot be found";
-
+      StringBuilder sb = new StringBuilder();
       if (mainFileName.isEmpty()) {
-         fileInfo
-               = "The name of a "
-               + projType.display()
-               + " file is not specified";
+         sb.append("The name of a ")
+            .append(projType.display())
+            .append(" file is not specified");
       }
-      String sourceRootInfo = ".";
+      else {
+         sb.append(mainFileName)
+            .append("\nThe ")
+            .append(projType.display())
+            .append(" file cannot be found");
+      }
       if (!mainFileName.isEmpty() && !sourceDirName.isEmpty()) {
-         sourceRootInfo
-               = " in the sources directory "
-               + sourceDirName
-               + ".";
+         sb.append(" in the sources directory ")
+            .append(sourceDirName);
       }
-      return
-         mainFileName
-         + fileInfo
-         + sourceRootInfo;
+      sb.append(".");
+      return sb.toString();
    }
 
    private String nameConflictMsg() {
       return
-         "<html>"
-         + mainFileName
-         + " seems to exist more than once in the project."
-         + " The currently set file is<br><blockquote>"
-         + projectName()
+         mainFileName
+         + "\nMore than one file with this name seems to exist"
+         + " in the project. The currently set file is:\n."
          + F_SEP
          + relMainFilePath
-         + "</blockquote><br>"
-         + "</html>";
+         + "\n\nTo use another file a relative pathname/r"
+         + " and/or a sources directory maybe specified.";
    }
 }
