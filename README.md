@@ -7,7 +7,6 @@ HTML. Adding support for other langauages can be reasonably easily realized too.
 <p>
 Some features for editing text are ...
 <ul>
-<li>Undo/redo.</li>
 <li>A basic find and find/replace function.</li>
 <li>Clearing end-of-line (trailing) white spaces.</li>
 <li>An "exchange editor" pane to edit text in a separate view and to facilitate
@@ -34,10 +33,13 @@ To try the program the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
 <br>
 <p>
+<p>A little more and a guide how to set up the editor to run code is found
+<a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
+<p>
 The image below shows an example Java "project" run in the editor.
 <br>
 <br>
-<img src="docs/images/ExampleProject.png" width="700"/><br><br>
+<img src="docs/images/ExampleProject.png" width="600"/><br><br>
 <h4>REQUIREMENTS</h4>
 <p>
 Running and compiling the program requires Java 8 or higher. Building an executable jar
