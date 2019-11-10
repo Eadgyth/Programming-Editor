@@ -28,10 +28,11 @@ part of the project is open and also in the selected tab if multiple files are o
 can be any file and does not even have to be a source file. It may also be found in a
 sub-directory path relative to the project directory.
 
+
 Here is an example for a 'Hello World' program in Java. The 'Hello World' program was saved as
 HelloWorld.java in a directory named helloworld. The project settings are opened by selecting
 'Open settings for...' and choosing the category Java:
-<br><br>
+
 <img src="images/opensettings.png" width="600"/>
 
 
