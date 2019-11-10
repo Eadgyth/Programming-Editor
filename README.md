@@ -1,11 +1,12 @@
-<h4>Programming Editor</h4>
+<h3>Programming Editor</h3>
 <p>
 A text editor which can be easily set up to run source code. So far, built-in
 functions to run a program are available for code written in Java, Perl, Python, R and
-HTML. Adding support for other langauages can be reasonably easily realized too. 
+HTML. Extending the code to add support for other langauages can be reasonably easily
+realized too. 
 <br>
 <p>
-Some features for editing text are ...
+<h2>Some features for editing text are ...</h2>
 <ul>
 <li>A basic find and find/replace function.</li>
 <li>Clearing end-of-line (trailing) white spaces.</li>
@@ -17,7 +18,7 @@ Some features for editing text are ...
 <li>Block-wise increase or decrease of the indentation.</li>
 </ul>
 <p>
-Features for running source code are ...
+<h2>Features for running source code are ...</h2>
 <ul>
 <li>A basic console for showing output/error during running (or compiling) a program.</li>
 <li>Run a program by pre-defined functions or run self-chosen system commands.</li>
@@ -29,17 +30,11 @@ Features for running source code are ...
 <li>Retrieval of projects after newly starting the program.</li>
 </ul>
 <p>
+A little more about it and an example to set up the editor for running a program code
+is found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 To try the program the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
 <br>
-<p>
-<p>A little more and a guide how to set up the editor to run code is found
-<a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
-<p>
-The image below shows an example Java "project" run in the editor.
-<br>
-<br>
-<img src="docs/images/ExampleProject.png" width="600"/><br><br>
 <h4>REQUIREMENTS</h4>
 <p>
 Running and compiling the program requires Java 8 or higher. Building an executable jar
@@ -68,3 +63,8 @@ The program uses icons from
 <h4>LICENSE</h4>
 <p>
 MIT, see LICENSE<br>
+<p>
+The image below shows an example Java "project" run in the editor.
+<br>
+<br>
+<img src="docs/images/ExampleProject.png" width="600"/><br><br>
