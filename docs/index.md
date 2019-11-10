@@ -13,7 +13,7 @@ file in a given project directory or to not use the built-in function.
 The github repository for the program also contains, well ... "releases". Anyway, these include
 an executable jar file of the program which can be run by double clicking. The jar file is
 named after the user name of the repo because that's for me a name for the program. Eadgyth is
-an Old English version of the name Edit.
+an Old English version of the name Edit. I did the naming of the repo wrong, I think.
 
 See also <a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
 README</a> for requirements.
