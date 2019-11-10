@@ -56,3 +56,8 @@ program could be run:
 
 <img src="images/run.png" width="600"/>
 
+<hr>
+Some more detailed info is found at the
+<a href="https://eadgyth.github.io/Programming-Editor/help/help.html">help site</a> which also
+accessible from the '?' menu.
+
