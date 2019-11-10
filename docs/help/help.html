@@ -22,7 +22,7 @@
       <article class="right">
       <a id="top"></a>
       <div class="top">
-         <h4>Eadgyth Programming-Editor</h4>
+         <h4>Eadgyth Programming Editor</h4>
          <h1>Help</h1>
       </div>
       <!--Requirements-->
@@ -44,16 +44,8 @@
       <hr>
 
       <!--Project-->
-      <h2 id="Projects">Setup to run source code</h2>
-      <p>The program is set up for running source code by creating a "project". This
-         is initially just a working directory which distinguishes "project files"
-         from "non-project files" and which defines the directory where commands are
-         executed. The required and optional settings for a project depend on the
-         <a href="#Categories">category</a>.
-      </p>
-      <br>
-      
-      <h4>Setting up a project</h4>
+      <h2 id="Projects">Setup to run source code</h2>      
+      <h4>Setting a project</h4>
       <ol>
       <li>Open a file from or save a new file to the directory that is the presumed root
           directory of the project. The file may also be saved in a sub-directory or a
@@ -62,13 +54,12 @@
           is in the selected tab if multiple files are open.</li>
       <li>Open the project settings by selecting 'Settings for...' in the 'Project' menu
           and choosing a category to open the project settings.</li>
-      <li>The required entries in the settings window are the name of the project
-          directory and, in the case that a main source file/script is used to run the
-          project, the name of this "main" source file. Make the required entries and
-          click ok. Settings may by viewed or changed anytime by selecting 'Settings...'
-          or also 'Settings for...' and selecting the given category in the 'Project'
-          menu. The category may also be changed by selecting another category in the
-          'Settings for...' menu.</li>
+      <li>The input options for setting a project depend on the
+          <a href="#Categories">category</a>. The required entries are the name of the
+          project directory and, in the case that a main source file/script is used to run
+          the project, the name of this "main" source file. Click ok. If the input was
+          correct the files of the project can be viewed in the 'Project explorer' which
+          is opened from the 'View' menu.</li>
       </ol>
       <br>
 
@@ -143,11 +134,12 @@
       <ul>
       <li>To run a Java program first compile the source file(s) by selecting 'Save
           and compile' in the 'Project' menu (or clicking the corresponding button
-          in the toolbar). If it is specified directory to save compiled class files
-          in a separate sub-directory of the project directory this folder may be
-          deleted using project explorer for a renewed compilation. If the compilation
-          was successful the Java program is started by selecting 'Run' in the 'Project'
-          menu (or by clicking the corresponding button in the toolbar.</li>
+          in the toolbar). If the compilation was successful the Java program is
+          started by clicking 'Run' in the 'Project' menu or the corresponding button
+          in the toolbar.
+          NOTE: If it is specified to save compiled class files in a separate sub-directory
+          (an executables directory) this folder may be deleted using the project explorer
+          for a renewed compilation. </li>
       <li>An executable java archive (jar) may be created by selecting 'Create
           executable jar' in the 'Project' menu. A name for the jar file can be
           specified in the tab 'Compilation and build' in the project settings. The
@@ -159,7 +151,7 @@
           beginning period in the input field 'Extensions of included non-Java files'
           which is found in the tab 'Compilation and build' in the project settings.</li>
       <li>Libraries may be specified in the tab 'Libraries' in the project settings.
-          These are added in classpath and can be jar files or folders containing class
+          These are added to classpath and can be jar files or folders containing class
           files. Classpath can be a path relative to the project directory (e.g.
           libs/some.jar given this file exists in the project directory) but also an
           absolute path. When the program is packaged in a jar the paths are added to
@@ -184,7 +176,9 @@
           the corresponding button in the toolbar).</li>
       <li>NOTE: For correct output of a Python program to the console window it may be
           necessary to specify a command option that turns off buffering of the standard
-          output and standerd error (-u).</li>
+          output and standerd error (-u). This switch can be entered in the project
+          settings in the field 'command options' which can be found in the 'run' tab.
+          </li>
       </ul>
       <br>
       <h4 id="RProject">R</h4>
