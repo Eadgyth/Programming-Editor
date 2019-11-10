@@ -22,32 +22,85 @@ README</a> for requirements.
 
 <hr>
 <h3>How to set up the editor to run code?</h3>
-The program is set up for running source code by creating a "project". This is initially just
-a working directory which distinguishes "project files" from "non-project files" and which
-defines the directory where commands (built-in or self defined) are executed.
+The program is set up for running source code by creating a "project". This is initially
+just a working directory which distinguishes "project files" from "non-project files" and
+which defines the directory where commands (built-in or self defined) are executed. Setting
+a project (or changing to another project, see below) requires that a file that is
+part of the project is open and also in the selected tab if multiple files are open. This
+can be any file and does not even have to be a source file. It may also be found in a
+sub-directory path relative to the project directory.
 
-Here is an example for a 'Hello World' program in Java: The 'Hello World' program was saved as
+Here is an example for a 'Hello World' program in Java. The 'Hello World' program was saved as
 HelloWorld.java in a directory named helloworld. The project settings are opened by selecting
 'Open settings for...' and choosing the category Java:
 <br><br>
 <img src="images/opensettings.png" width="600"/>
-<br><br>
+
+
 In the project settings the name of the project directory and the name of the Java file had
 to be entered. The other two fields remained emtpy because HelloWorld.java was not saved in
 separate sub-directory for sources and the distination for the compiled class file (next step)
 was just the project directory:
-<br><br>
+
 <img src="images/projectsettings.png" width="600"/>
-<br><br>
+
+
 After setting the project files can be viewed in the 'Project explorer'. It was also checked
 to save the configuration to be able to reload the project when a project file is opened after
 newly starting the editor. Then it was tried to compile the program. However, the console panel
 that opened showed errors:
-<br><br>
+
 <img src="images/compile.png" width="600"/>
-<br><br>
+
+
 After correcting the code a new compilation generated the class file HelloWorld.class and the
 program could be run:
-<br><br>
+
 <img src="images/run.png" width="600"/>
-<br><br>
+
+
+
+<h3>Overwiew of project categories</h3>
+<table>
+<tr>
+  <th>Category</th>
+      <th>Supported actions</th>
+         </tr>
+         <tr>
+            <td>Java</td>
+            <td><a href="#JavaProject">Compile and run Java code; create an executable
+                jar file</a></td>
+         </tr>
+         <tr>
+            <td>Perl</td>
+            <td><a href="#PerlProject">Run a Perl script; check syntax without running
+            </a></td>
+         </tr>
+         <tr>
+            <td>Python</td>
+            <td><a href="#PythonProject">Run a Python script</a></td>
+         </tr>
+         <tr>
+            <td>R</td>
+            <td><a href="#RProject">Run an R script</a></td>
+         </tr>
+         <tr>
+            <td>HTML</td>
+            <td><a href="#HtmlProject">View HTML code in the default browser</a></td>
+         </tr>
+      <tr>
+      <td>Custom cmd</td>
+      <td>Specify a system command to run</td>
+   </tr>
+</table>
+
+
+<h3>How to add and change between projects</h3>
+Additional projects maybe set and changed between. To set up an additional project 'Settings
+for...' in the 'Project' is selected while a file that is found in the directory of the new
+project is currently open and also in the selected tab if multiple files are open.
+
+Changing between already set projects is done by selecting, opening or saving a file that is
+part of the project to be changed to and then selecting 'Change project' in the 'Project' menu
+or clicking the corresponding button in the toolbar.
+
