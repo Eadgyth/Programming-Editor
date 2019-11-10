@@ -2,7 +2,7 @@ I started to make a text editor when I started to learn Java for myself and wish
 had a compile and a run button. I knew that really versatile code editors and IDEs exist but
 those were too big for me. I am still learning and struggling …
 
-A goal is that it is as simple as possible to set up the editor to try out code (my "Hello
+A goal is that it is as simple as possible to set up the editor to try out code (a "Hello
 World" program) by using built-in functions and provide at the same time some flexibility to run
 a real little coding project. The editor is written using itself, for example. The number of
 languages for which a ‘run’ function is built-in is limited so far (Java, Perl, R, Python and
