@@ -30,8 +30,8 @@ realized too.
 <li>Retrieval of projects after newly starting the program.</li>
 </ul>
 <p>
-A little more about it and an example to set up the editor for running a program code
-is found <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
+A little more about it and an example to set up the editor for running code is found
+<a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 To try the program the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
 <br>
