@@ -58,6 +58,6 @@ program could be run:
 
 <hr>
 Some more detailed info is accessible on the
-<a href="https://eadgyth.github.io/Programming-Editor/docs/help/help.html">help site</a> which
+<a href="help/help.html">help site</a> which
 is also accessible from the '?' menu.
 
