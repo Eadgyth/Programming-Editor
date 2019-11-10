@@ -6,7 +6,7 @@ HTML. Extending the code to add support for other langauages can be reasonably e
 realized too. 
 <br>
 <p>
-<h2>Some features for editing text are ...</h2>
+<h4>Some features for editing text are ...</h4>
 <ul>
 <li>A basic find and find/replace function.</li>
 <li>Clearing end-of-line (trailing) white spaces.</li>
@@ -18,7 +18,7 @@ realized too.
 <li>Block-wise increase or decrease of the indentation.</li>
 </ul>
 <p>
-<h2>Features for running source code are ...</h2>
+<h4>Features for running source code are ...</h4>
 <ul>
 <li>A basic console for showing output/error during running (or compiling) a program.</li>
 <li>Run a program by pre-defined functions or run self-chosen system commands.</li>
@@ -38,22 +38,24 @@ To try the program the executable jar file in a
 <h4>REQUIREMENTS</h4>
 <p>
 Running and compiling the program requires Java 8 or higher. Building an executable jar
-file can be done, for example, after creating a Java project with existing sources in
-Netbeans using the src folder from the repository as sources directory.
+file of the editor can be done, for example, after creating a Java project with existing
+sources in Netbeans using the src folder from the repository as sources directory.
 <p>
 If this editor shall be used for compiling Java code by the built-in compile option it must
-be made sure that it is run using the JRE contained in the JDK (and not the public JRE).
+be made sure that it is run using the JRE contained in a JDK (and not the public JRE).
 <p>
 For using the built-in function to run code the path variables that point to the executables
 of a programming language may have to be set in the OS (they have to under Windows).
 <br>
 <h4>LIMITATIONS</h4>
 <p>
-Output to the console does not work as expected if a run process buffers its output
-until completion in the case that the output is not to the terminal of the OS (this is the
-case for Perl, for example). To display output correctly block-buffering would have to be
-disabled if this option is available for a language (by a corresponding command option which
-can be entered in the project settings or by a switch in a script itself).
+Countless...
+<p>
+Output to the console panel does not work as expected in cases where a run process buffers
+its output until completion if the output is not to the terminal of the OS. To display output
+correctly such block-buffering would have to be disabled by a corrsponding command-line switch
+or by switch in a script itself. Commnd options can be entered in the project settings of the
+editor.
 <br>
 <h4>ACKLOWLEDGEMENT</h4>
 <p>
@@ -64,7 +66,9 @@ The program uses icons from
 <p>
 MIT, see LICENSE<br>
 <p>
-The image below shows an example Java "project" run in the editor.
+<h4>SCREENSHOT</h4>
+<p>
+An example Java "project" run in the editor:
 <br>
 <br>
 <img src="docs/images/ExampleProject.png" width="600"/><br><br>
