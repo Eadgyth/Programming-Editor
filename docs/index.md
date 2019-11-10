@@ -56,46 +56,8 @@ program could be run:
 
 <img src="images/run.png" width="600"/>
 
-<br><br>
-<h3>Overwiew of project categories</h3>
-<table>
-<tr>
-  <th>Category</th>
-      <th>Supported actions</th>
-         </tr>
-         <tr>
-            <td>Java</td>
-            <td>Compile and run Java code; create an executable
-                jar file</td>
-         </tr>
-         <tr>
-            <td>Perl</td>
-            <td>Run a Perl script; check syntax without running</td>
-         </tr>
-         <tr>
-            <td>Python</td>
-            <td>Run a Python script</td>
-         </tr>
-         <tr>
-            <td>R</td>
-            <td>Run an R script</td>
-         </tr>
-         <tr>
-            <td>HTML</td>
-            <td>View HTML code in the default browser</td>
-         </tr>
-      <tr>
-      <td>Custom cmd</td>
-      <td>Specify a system command to run</td>
-   </tr>
-</table>
-<br><br>
-<h3>How to add and change between projects</h3>
-Additional projects maybe set and changed between. To set up an additional project 'Settings
-for...' in the 'Project' is selected while a file that is found in the directory of the new
-project is currently open and also in the selected tab if multiple files are open.
-
-Changing between already set projects is done by selecting, opening or saving a file that is
-part of the project to be changed to and then selecting 'Change project' in the 'Project' menu
-or clicking the corresponding button in the toolbar.
+<hr>
+Some more detailed info is accessible on the
+<a href="https://eadgyth.github.io/Programming-Editor/docs/help/help.html">help site</a> which
+is also accessible from the '?' menu.
 
