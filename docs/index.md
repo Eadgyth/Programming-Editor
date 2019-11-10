@@ -33,7 +33,7 @@ HelloWorld.java in a directory named helloworld. The project settings are opened
 'Open settings for...' and choosing the category Java:
 
 <img src="images/opensettings.png" width="600"/>
-<br><br>
+
 
 In the project settings the name of the project directory and the name of the Java file had
 to be entered. The other two fields remained emtpy because HelloWorld.java was not saved in
