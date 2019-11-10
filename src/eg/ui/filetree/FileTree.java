@@ -89,7 +89,7 @@ public class FileTree {
       if (projRoot.length() == 0) {
          throw new IllegalStateException("No project root has been set");
       }
-      if (deletableDirName == null || deletableDirName.length() == 0) {
+      if (deletableDirName == null || deletableDirName.isEmpty()) {
          deletableDir = null;
       }
       else {
@@ -123,7 +123,7 @@ public class FileTree {
    //
    //--private--/
    //
-   
+
    private void setNewTree(String path) {
       if (path.isEmpty()) {
          return;
@@ -140,33 +140,33 @@ public class FileTree {
          setTree();
       }
    }
-   
+
    private class TreeSetter extends SwingWorker {
-      
+
       File rootFile;
-      
+
       private TreeSetter(File rootFile) {
          this.rootFile = rootFile;
       }
-      
+
       @Override
-      protected Void doInBackground() {      
+      protected Void doInBackground() {
          setModel(rootFile);
          return null;
       }
-      
+
       @Override
       protected void done() {
          setTree();
       }
    }
-   
+
    private void setModel(File f) {
       root = new DefaultMutableTreeNode(f);
       model = new DefaultTreeModel(root);
       getFiles(root, f);
    }
-   
+
    private void setTree() {
       if (tree == null) {
          tree = new JTree(model);

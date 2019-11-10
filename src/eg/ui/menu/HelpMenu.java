@@ -31,7 +31,7 @@ class HelpMenu {
    }
 
    private void showHelpSite() {
-      openWebSite("https://eadgyth.github.io/Programming-Editor/docs/help/help.html");
+      openWebSite("https://eadgyth.github.io/Programming-Editor/help/help.html");
    }
 
    private void openWebSite(String url) {

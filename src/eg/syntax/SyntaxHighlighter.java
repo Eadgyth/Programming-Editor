@@ -127,8 +127,8 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Sets the section that comprises semicolon separated
-       * statements which may be multiline.<br>
+       * Sets the section that comprises semicolon separated statements
+       * which may be multiline.
        * Calls {@link Highlighter#isValid} for semicolons. If a
        * semicolon following a change is not valid the section is
        * extended to the text end
@@ -205,7 +205,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights keywords.<br>
+       * Searches and highlights keywords.
        * Calls {@link Highlighter#isValid}.
        *
        * @param keys  the array of keywords
@@ -225,7 +225,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights keywords without case sensitivity.<br>
+       * Searches and highlights keywords without case sensitivity.
        * Calls {@link Highlighter#isValid}.
        *
        * @param keys  the array of keywords
@@ -246,7 +246,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights an extensible keyword.<br>
+       * Searches and highlights an extensible keyword.
        * Calls {@link Highlighter#isValid}.
        *
        * @param base  the base keyword
@@ -280,7 +280,7 @@ public class SyntaxHighlighter {
 
       /**
        * Searches and highlights variables that one of the specified signs
-       * precedes.<br>
+       * precedes.
        * Calls {@link Highlighter#isValid}.
        *
        * @param signs  the signs for the start of the variables
@@ -299,7 +299,7 @@ public class SyntaxHighlighter {
 
       /**
        * Searches and highlights a variable that the specified sign
-       * precedes.<br>
+       * precedes.
        * Calls {@link Highlighter#isValid}.
        *
        * @param sign  the sign for the start of the variable
@@ -332,7 +332,7 @@ public class SyntaxHighlighter {
 
       /**
        * Searches and highlights opening and closing braces in blue and
-       * bold.<br>
+       * bold.
        * Calls {@link Highlighter#isValid}.
        */
       public void braces() {
@@ -342,7 +342,7 @@ public class SyntaxHighlighter {
 
       /**
        * Searches and highlights opening and closing brackets in blue and
-       * bold.<br>
+       * bold.
        * Calls {@link Highlighter#isValid}.
        */
       public void brackets() {
@@ -352,7 +352,7 @@ public class SyntaxHighlighter {
 
       /**
        * Searches and highlights quoted text in single or double
-       * quotation marks in orange.<br>
+       * quotation marks in orange.
        * Calls {@link Highlighter#isValid}.
        */
       public void quote() {
@@ -363,7 +363,7 @@ public class SyntaxHighlighter {
       /**
        * Searches and highlights quoted text in single or double
        * quotation marks in orange whereby a quotation must be found
-       * inside a line.<br>
+       * inside a line.
        * Calls {@link Highlighter#isValid}.
        */
       public void quoteInLine() {
@@ -527,9 +527,9 @@ public class SyntaxHighlighter {
          }
       }
 
-       /**
+      /**
        * Searches and highlights text blocks surrounded by the specified
-       * delimiter in orange.<br>
+       * delimiter in orange.
        * Calls {@link Highlighter#isValid}.
        *
        * @param del  the delimiter
@@ -561,7 +561,7 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights line comments in green.<br>
+       * Searches and highlights line comments in green.
        * Calls {@link Highlighter#isValid}.
        *
        * @param lineCmntStart  the line comment start
@@ -769,6 +769,7 @@ public class SyntaxHighlighter {
                if (length == 0) {
                   boolean ok = !SyntaxUtils.isQuoted(scn, start, altQuoteMark)
                         && isValid(start + scnPos, 1);
+
                   if (ok) {
                      count++;
                   }

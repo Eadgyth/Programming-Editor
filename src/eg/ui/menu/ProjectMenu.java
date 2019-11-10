@@ -20,7 +20,7 @@ import eg.ui.IconFiles;
 public class ProjectMenu {
 
    private final JMenu menu = new JMenu("Project");
-   private final JMenu assignProjMenu = new JMenu("Setting for...");
+   private final JMenu assignProjMenu = new JMenu("Settings for...");
    private final ButtonGroup group = new ButtonGroup();
    private final JRadioButtonMenuItem[] assignProjItm
          = new JRadioButtonMenuItem[ProjectTypes.values().length];

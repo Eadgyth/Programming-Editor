@@ -189,7 +189,7 @@ public class Edit {
       if (sel == null) {
          boolean isIndented
                = start - indentLength
-                     > LinesFinder.lastNewline(edtDoc.text(), start);
+               > LinesFinder.lastNewline(edtDoc.text(), start);
 
          if (isIndented) {
             if (indentUnit.equals(edtDoc.text().substring(

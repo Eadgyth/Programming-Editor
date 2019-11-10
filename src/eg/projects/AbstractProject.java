@@ -81,6 +81,9 @@ public abstract class AbstractProject implements Configurable {
       if (projectRoot.isEmpty()) {
          sw.setDirectory(dir);
       }
+      else {
+         sw.setDirectory(projectRoot);
+      }
       sw.setVisible(true);
    }
 
@@ -708,7 +711,7 @@ public abstract class AbstractProject implements Configurable {
          + " in the project. The currently set file is:\n."
          + F_SEP
          + relMainFilePath
-         + "\n\nTo use another file a relative pathname/r"
+         + "\n\nTo use another file a relative pathname"
          + " and/or a sources directory maybe specified.";
    }
 }
