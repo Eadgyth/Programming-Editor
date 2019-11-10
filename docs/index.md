@@ -19,8 +19,6 @@ See also <a href="https://github.com/Eadgyth/Programming-Editor/blob/master/READ
 README</a> for requirements.
 
 <hr>
-
-<hr>
 <h3>How to set up the editor to run code?</h3>
 The program is set up for running source code by creating a "project". This is initially
 just a working directory which distinguishes "project files" from "non-project files" and
