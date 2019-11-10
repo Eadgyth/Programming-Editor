@@ -57,8 +57,7 @@ program could be run:
 
 <img src="images/run.png" width="600"/>
 
-
-
+<br><br>
 <h3>Overwiew of project categories</h3>
 <table>
 <tr>
@@ -67,33 +66,31 @@ program could be run:
          </tr>
          <tr>
             <td>Java</td>
-            <td><a href="#JavaProject">Compile and run Java code; create an executable
-                jar file</a></td>
+            <td>Compile and run Java code; create an executable
+                jar file</td>
          </tr>
          <tr>
             <td>Perl</td>
-            <td><a href="#PerlProject">Run a Perl script; check syntax without running
-            </a></td>
+            <td>Run a Perl script; check syntax without running</td>
          </tr>
          <tr>
             <td>Python</td>
-            <td><a href="#PythonProject">Run a Python script</a></td>
+            <td>Run a Python script</td>
          </tr>
          <tr>
             <td>R</td>
-            <td><a href="#RProject">Run an R script</a></td>
+            <td>Run an R script</td>
          </tr>
          <tr>
             <td>HTML</td>
-            <td><a href="#HtmlProject">View HTML code in the default browser</a></td>
+            <td>View HTML code in the default browser</td>
          </tr>
       <tr>
       <td>Custom cmd</td>
       <td>Specify a system command to run</td>
    </tr>
 </table>
-
-
+<br><br>
 <h3>How to add and change between projects</h3>
 Additional projects maybe set and changed between. To set up an additional project 'Settings
 for...' in the 'Project' is selected while a file that is found in the directory of the new
