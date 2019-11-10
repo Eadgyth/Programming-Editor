@@ -56,8 +56,3 @@ program could be run:
 
 <img src="images/run.png" width="600"/>
 
-<hr>
-Some more detailed info is accessible on the
-<a href="help/help.html">help site</a> which
-is also accessible from the '?' menu.
-
