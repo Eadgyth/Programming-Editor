@@ -7,23 +7,23 @@ World" program) by using built-in functions and provide at the same time some fl
 a real little coding project. The number of languages for which a ‘run’ function is built-in
 is limited so far (Java, Perl, R, Python and HTML) but the code for the program is somewhat
 easily extensible to add support for other languages. A "generic" project may be set as well.
-Here a system command can be specified, for example to run a batch file in a given project directory.
+Here a system command can be specified, for example to run a batch file in a given project
+directory.
 
-The github repository for the program also contains, well ... "releases". Anyway, these include
-an executable jar file of the program which can be run by double clicking. The jar file is
-named after the user name of the repo because that's for me a name for the program. So, I did
-the naming of the repo wrong.
+The github repository for the program also contains, well ... "releases" (a record of my
+attempts to reduce mistakes). Anyway, these include an executable jar file of the program
+for trying it.
 
 See also <a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
 README</a> for requirements.
 
 <hr>
 <h3>How to set up the editor to run code?</h3>
-The program is set up for running source code by creating a "project". This is initially
+The program is set up for running source code by setting a "project". This is initially
 just a working directory which distinguishes "project files" from "non-project files" and
 which defines the directory where commands (built-in or self defined) are executed. Setting
 a project (or changing to another already set project) requires that any file that is
-part of the project is open and also in the selected tab if multiple files are open. The
+part of the project is open and also in the selected tab if multiple files are open. This
 file may also be found in a sub-directory path relative to the project directory.
 <br><br>
 Here is an example for a 'Hello World' program in Java. The 'Hello World' program was saved as
