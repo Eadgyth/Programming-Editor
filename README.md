@@ -72,4 +72,4 @@ MIT, see LICENSE<br>
 An example Java "project" run in the editor:
 <br>
 <br>
-<img src="docs/images/ExampleProject.png" width="600"/><br><br>
+<img src="docs/images/ExampleProject.png" width="800"/><br><br>
