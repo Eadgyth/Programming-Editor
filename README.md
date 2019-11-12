@@ -54,11 +54,11 @@ Countless...
 <p>
 Output to the console panel does not work as expected in cases where a run process buffers
 its output until completion if the output is not to the terminal of the OS. To display output
-correctly such block-buffering would have to be disabled by a corrsponding command-line switch
+correctly such block-buffering would have to be disabled by a corresponding command-line switch
 or by switch in a script itself. Commnd options can be entered in the project settings of the
 editor.
 <br>
-<h4>ACKLOWLEDGEMENT</h4>
+<h4>References</h4>
 <p>
 The program uses icons from
 <a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.
