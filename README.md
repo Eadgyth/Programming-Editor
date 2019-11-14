@@ -58,7 +58,7 @@ correctly such block-buffering would have to be disabled by a corresponding comm
 or by switch in a script itself. Commnd options can be entered in the project settings of the
 editor.
 <br>
-<h4>References</h4>
+<h4>REFERENCES</h4>
 <p>
 The program uses icons from
 <a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.
