@@ -1,6 +1,6 @@
 I started to make a text editor when I started to learn Java for myself and wished that NotePad
 had a compile and a run button. I knew that really versatile code editors and IDEs exist but
-those were too big for me. I am still learning and struggling …
+those were too big for me …
 
 A goal is that it is as simple as possible to set up the editor to try out code (a "Hello
 World" program) by using built-in functions and provide at the same time some flexibility to run
