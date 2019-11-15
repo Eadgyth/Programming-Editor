@@ -1,4 +1,4 @@
-<h3>Programming Editor</h3>
+<h3>Eadgyth Programming Editor</h3>
 <p>
 A text editor which can be easily set up to run source code. So far, built-in
 functions to run a program are available for code written in Java, Perl, Python, R and
@@ -6,21 +6,22 @@ HTML. Extending the code to add support for other langauages can be reasonably e
 realized too. 
 <br>
 <p>
-<h4>Some features for editing text are ...</h4>
+<h4>Features for editing text are ...</h4>
 <ul>
-<li>A basic find and find/replace function.</li>
+<li>A basic find and find/replace function including undoable 'replace all'.</li>
+<li>Line by line undo/redo</li>
 <li>Clearing end-of-line (trailing) white spaces.</li>
-<li>An "exchange editor" pane to edit text in a separate view and to facilitate
-    the exchange of text within a file or between files.</li>
+<li>An "exchange editor" as an "intermediate store" to exchange text with the main
+    editor.</li>
 <li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
     Javascript, PHP).</li>
-<li>A basic auto-indentation which distinguishes "curly-bracket-indentation".</li>
+<li>Auto-indentation which distinguishes "curly-bracket-indentation".</li>
 <li>Block-wise increase or decrease of the indentation.</li>
 </ul>
 <p>
 <h4>Features for running source code are ...</h4>
 <ul>
-<li>A basic console for showing output/error during running (or compiling) a program.</li>
+<li>A console for showing output/error during running (or compiling) a program.</li>
 <li>Run a program by pre-defined functions or run self-chosen system commands.</li>
 <li>Specify additional command options/arguments for running a program</li>
 <li>Compile and run Java code that is organized in packages and create an executabe jar
@@ -30,7 +31,7 @@ realized too.
 <li>Retrieval of projects after newly starting the program.</li>
 </ul>
 <p>
-A little more about it and an example to set up the editor for running code is found
+A little more about it and an example how to set up the editor for running code is found
 <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 To try the program the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
@@ -53,11 +54,11 @@ Countless...
 <p>
 Output to the console panel does not work as expected in cases where a run process buffers
 its output until completion if the output is not to the terminal of the OS. To display output
-correctly such block-buffering would have to be disabled by a corrsponding command-line switch
+correctly such block-buffering would have to be disabled by a corresponding command-line switch
 or by switch in a script itself. Commnd options can be entered in the project settings of the
 editor.
 <br>
-<h4>ACKLOWLEDGEMENT</h4>
+<h4>REFERENCES</h4>
 <p>
 The program uses icons from
 <a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.
@@ -71,4 +72,4 @@ MIT, see LICENSE<br>
 An example Java "project" run in the editor:
 <br>
 <br>
-<img src="docs/images/ExampleProject.png" width="600"/><br><br>
+<img src="docs/images/ExampleProject.png" width="800"/><br><br>
