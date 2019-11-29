@@ -45,7 +45,7 @@ public final class PythonProject extends AbstractProject implements ProjectComma
 
    @Override
    protected void setCommandParameters() {
-      StringBuilder sb = new StringBuilder("python ");
+      StringBuilder sb = new StringBuilder("python -u ");
       if (!cmdOptions().isEmpty()) {
          sb.append(cmdOptions()).append(" ");
       }
