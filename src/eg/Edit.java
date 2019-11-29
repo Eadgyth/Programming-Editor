@@ -19,7 +19,7 @@ import eg.utils.LinesFinder;
 import eg.document.EditableDocument;
 
 /**
- * The editing of text in an <code>EditableDocument</code>
+ * The editing of text that can be performed by menu or toolbar selections
  */
 public class Edit {
 
@@ -136,7 +136,7 @@ public class Edit {
          setIndentUnit(unit);
       }
    }
-   
+
    /**
     * Sets the indent length. Calling this method is not necessary if
     * a document is set by {@link #setDocument}
@@ -276,7 +276,7 @@ public class Edit {
       }
       return i + 1;
    }
-   
+
    private void setIndentUnitSelection(String indentUnit) {
       this.indentUnit = indentUnit;
       indentLength = indentUnit.length();

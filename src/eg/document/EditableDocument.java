@@ -43,7 +43,7 @@ public final class EditableDocument {
    public EditableDocument(EditArea editArea, File f) {
       this(editArea);
       setFileParams(f);
-      displayFileContent(f);
+      displayFileContent(f, true);
       savedContent = txt.text();
    }
 
@@ -58,17 +58,6 @@ public final class EditableDocument {
       this(editArea);
       currLang.setLanguage(lang);
       setEditingMode();
-   }
-
-   /**
-    * Creates a blank <code>EditableDocument</code>
-    *
-    * @param editArea  the {@link EditArea}
-    */
-   public EditableDocument(EditArea editArea) {
-      txt = new EditableText(editArea.textArea());
-      LineNumbers lineNum = new LineNumbers(editArea.lineNrArea());
-      type = new TypingEdit(txt, lineNum);
    }
 
    /**
@@ -204,24 +193,20 @@ public final class EditableDocument {
     * Displays the content of the specified file but does not set the file
     *
     * @param f  the file
+    * @param languageByFile  true to use the language based on the extension
+    * of the file; false otherwise
     */
-   public void displayFileContent(File f) {
-      displayFileContentIgnoreLang(f);
-      setEditingMode(f);
-   }
-
-   /**
-    * Displays the content of the specified file but does not set the file
-    * and also does not set the language that would correspond to the
-    * file type
-    *
-    * @param f  the file
-    */
-   public void displayFileContentIgnoreLang(File f) {
+   public void displayFileContent(File f, boolean languageByFile) {
       type.enableDocUpdate(false);
       displayFileContentImpl(f);
       type.enableDocUpdate(true);
       textArea().setCaretPosition(0);
+      if (languageByFile) {
+         setEditingMode(f);
+      }
+      else {
+         setEditingMode();
+      }
    }
 
    /**
@@ -242,7 +227,7 @@ public final class EditableDocument {
     */
    public void changeLanguage(Languages lang) {
       currLang.setLanguage(lang);
-      EventQueue.invokeLater(() -> setEditingMode());
+      setEditingMode();
    }
 
    /**
@@ -371,6 +356,12 @@ public final class EditableDocument {
    //
    //--private--/
    //
+
+   private EditableDocument(EditArea editArea) {
+      txt = new EditableText(editArea.textArea());
+      LineNumbers lineNum = new LineNumbers(editArea.lineNrArea());
+      type = new TypingEdit(txt, lineNum);
+   }
 
    private void setFileParams(File f) {
       file = f;

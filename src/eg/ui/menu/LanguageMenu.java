@@ -2,8 +2,9 @@ package eg.ui.menu;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
-import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 
 //--Eadgyth--/
 import eg.Languages;
@@ -15,8 +16,9 @@ import eg.LanguageChanger;
 public class LanguageMenu {
 
    private final JMenu menu = new JMenu("Language");
-   private final JCheckBoxMenuItem[] itm
-         = new JCheckBoxMenuItem[Languages.values().length];
+   private final ButtonGroup group = new ButtonGroup();
+   private final JRadioButtonMenuItem[] itm
+         = new JRadioButtonMenuItem[Languages.values().length];
 
    public LanguageMenu() {
       init();
@@ -32,19 +34,19 @@ public class LanguageMenu {
    }
 
    /**
-    * Sets a <code>LanguageSetter</code> to the elements in the array of
+    * Sets a <code>LanguageChanger</code> to the elements in the array of
     * items for actions to select the language
     *
     * @param lc  the {@link LanguageChanger}
     */
    public void setChangeLanguageActions(LanguageChanger lc) {
-      for (JCheckBoxMenuItem item : itm) {
+      for (JRadioButtonMenuItem item : itm) {
          item.addActionListener(e -> setLanguage(e, lc));
       }
    }
 
-    /**
-    * Selects and disables the item for the specified language
+   /**
+    * Selects the item for the specified language
     *
     * @param lang  the language
     */
@@ -52,11 +54,6 @@ public class LanguageMenu {
       for (int i = 0; i < itm.length; i++) {
          if (lang == Languages.values()[i]) {
             itm[i].setSelected(true);
-            itm[i].setEnabled(false);
-         }
-         else {
-            itm[i].setSelected(false);
-            itm[i].setEnabled(true);
          }
       }
    }
@@ -69,18 +66,14 @@ public class LanguageMenu {
       for (int i = 0; i < itm.length; i++) {
          if (e.getSource() == itm[i]) {
             lc.change(Languages.values()[i]);
-            itm[i].setEnabled(false);
-         }
-         else {
-            itm[i].setSelected(false);
-            itm[i].setEnabled(true);
          }
       }
    }
 
    private void init() {
       for (int i = 0; i < itm.length; i++) {
-         itm[i] = new JCheckBoxMenuItem(Languages.values()[i].display());
+         itm[i] = new JRadioButtonMenuItem(Languages.values()[i].display());
+         group.add(itm[i]);
          menu.add(itm[i]);
       }
    }

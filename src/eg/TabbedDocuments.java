@@ -41,8 +41,8 @@ public class TabbedDocuments {
    private final Formatter format;
    private final Edit edit;
    private final Projects proj;
-
-   private EditArea[] editArea = null;
+   private final EditArea[] editArea;
+   
    private int iTab = -1;
    private Languages lang;
 
@@ -72,11 +72,10 @@ public class TabbedDocuments {
       mw.setEditActions(edit, (l) -> changeLanguage(l));
 
       FileTree ft = new FileTree(mw.treePanel(), (f) -> open(f));
-      proj = new Projects(mw, ft, edtDoc);
-      mw.setProjectActions(proj);
-
       String projectRoot = prefs.property("ProjectRoot");
       ft.setProjectTree(projectRoot);
+      proj = new Projects(mw, ft, edtDoc);
+      mw.setProjectActions(proj);
 
       String recentDir = prefs.property(Prefs.RECENT_DIR_KEY);
       chOpen = new FileChooser(recentDir);
@@ -201,12 +200,15 @@ public class TabbedDocuments {
       if (f == null || !exists(f) || isFileOpen(f) || isMaxTabNumber()) {
          return;
       }
-      if (isOnlyUnnamedBlank()) {
-         removeTab();
-      }
-      if (isTabOpenable()) {
-         mw.busyFunction().execute(() -> createDocument(f));
-      }
+      Runnable r = () -> {
+         if (isOnlyUnnamedBlank()) {
+            removeTab();
+         }
+         if (isTabOpenable()) {
+            createDocument(f);
+         }
+      };
+      mw.busyFunction().execute(r);
    }
 
    private static boolean exists(File f) {
@@ -272,7 +274,7 @@ public class TabbedDocuments {
       edtDoc[n] = new EditableDocument(editArea[n], f);
       setupDocument(n);
       tabPane.addTab(edtDoc[n].filename(), editArea[n].content(), closeAct());
-      mw.busyFunction().executeLater(() -> proj.retrieve());
+      proj.retrieve();
    }
 
    private void setupDocument(int index) {
@@ -489,8 +491,11 @@ public class TabbedDocuments {
 
    private void changeLanguage(Languages lang) {
       this.lang = lang;
-      edtDoc[iTab].changeLanguage(lang);
-      mw.displayLanguage(lang);
+      Runnable r = (() -> {
+         edtDoc[iTab].changeLanguage(lang);
+         mw.displayLanguage(lang);
+      });
+      mw.busyFunction().execute(r);
    }
 
    private final EditingStateReadable editState = new EditingStateReadable() {

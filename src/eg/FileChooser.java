@@ -21,11 +21,11 @@ public class FileChooser {
    private final JFrame frame = new JFrame();
    private JFileChooser ch = null;
    private File currentDir;
-   
+
    public FileChooser() {
       ch = new JFileChooser();
    }
-   
+
    /**
     * @param startingDir  the directory initialliy shown
     */
@@ -33,7 +33,7 @@ public class FileChooser {
       currentDir = new File(startingDir);
       ch = new JFileChooser(currentDir);
    }
-   
+
    /**
     * Initializes a chooser to open a file
     */
@@ -44,7 +44,7 @@ public class FileChooser {
       ch.setFileSelectionMode(JFileChooser.FILES_ONLY);
       setIcons(ch);
    }
-   
+
    /**
     * Initializes a chooser to save a file
     */
@@ -53,7 +53,7 @@ public class FileChooser {
       ch.setAcceptAllFileFilterUsed(true);
       setIcons(ch);
    }
-   
+
    /**
     * Initializes a chooser to select a file or directory
     */
@@ -65,9 +65,9 @@ public class FileChooser {
    }
 
    /**
-    * Returns a selected file
+    * Oopens a chooser to open a file and returns a file
     *
-    * @return  the file or null if cancel was clicked or the chooser
+    * @return  the file; null if cancel was clicked or the chooser
     * window was closed
     */
    public File selectedFile() {
@@ -82,11 +82,11 @@ public class FileChooser {
    }
 
    /**
-    * Returns a selected file to save
+    * Opens a chooser to save a file and returns a file
     *
     * @param presetFile  the filename that is shown in the text field
     * to specify a file. Can be Null or the empty string
-    * @return  the file or null if cancel was clicked or the chooser
+    * @return  the file; null if cancel was clicked or the chooser
     * window was closed
     */
    public File selectedFileToSave(String presetFile) {
@@ -103,11 +103,12 @@ public class FileChooser {
       }
       return f;
    }
-   
+
    /**
-    * Returns a selected directory
+    * Opens a chooser to select a file or directory and returns a file
+    * or directory
     *
-    * @return  the directory or null if cancel was clicked or the chooser
+    * @return  the file or directory; null if cancel was clicked or the chooser
     * window was closed
     */
    public File selectedFileOrDirectory() {
@@ -125,7 +126,7 @@ public class FileChooser {
       }
       return f;
    }
-   
+
    /**
     * Sets the directory for the chooser
     *
@@ -149,7 +150,7 @@ public class FileChooser {
    public String currentDir() {
       return currentDir.toString();
    }
-   
+
    //
    //--private--/
    //

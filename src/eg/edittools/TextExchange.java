@@ -11,6 +11,7 @@ import eg.Languages;
 import eg.document.EditableDocument;
 import eg.utils.Dialogs;
 import eg.utils.SystemParams;
+import eg.ui.menu.LanguageMenu;
 
 /**
  * The exchange of text between an <code>EditableDocument</code> set
@@ -24,7 +25,9 @@ public class TextExchange {
    private final EditableDocument exchangeDoc;
    private final FileChooser fc;
    private final File exchFile;
-
+   
+   private JFrame frame;
+   private BusyFunction bf;
    private EditableDocument sourceDoc;
 
    /**
@@ -39,7 +42,7 @@ public class TextExchange {
       fc.initOpenFileChooser();
       exchFile = new File(SystemParams.EADGYTH_DATA_DIR + "/exchgContent.txt");
       if (exchFile.exists()) {
-          exchangeDoc.displayFileContentIgnoreLang(exchFile);
+          exchangeDoc.displayFileContent(exchFile, false);
       }
    }
 
@@ -50,7 +53,7 @@ public class TextExchange {
     * @param sourceDoc  the <code>EditableDocument</code>
     */
    public void setSourceDocument(EditableDocument sourceDoc) {
-      this.sourceDoc  = sourceDoc;
+      this.sourceDoc = sourceDoc;
    }
 
    /**
@@ -87,8 +90,11 @@ public class TextExchange {
 
    /**
     * Loads the content of a file that is selected in the file chooser
+    *
+    * @param lm  the langauge menu in which the item for the language
+    * which is determined by file extension will be selected
     */
-   public void loadFile() {
+   public void loadFile(LanguageMenu lm) {
       File f = fc.selectedFile();
       if (f == null) {
          return;
@@ -105,7 +111,11 @@ public class TextExchange {
       }
       if (res == 0) {
          clear();
-         loadFile(f);
+         Runnable r = () -> {
+            exchangeDoc.displayFileContent(f, true);
+            lm.selectLanguageItm(exchangeDoc.language());
+         };
+         busyFunction().execute(r);
       }
    }
 
@@ -115,19 +125,22 @@ public class TextExchange {
     * @param lang  the language to change to
     */
    public void changeLanguage(Languages lang) {
-      exchangeDoc.changeLanguage(lang);
+      busyFunction().execute(() -> exchangeDoc.changeLanguage(lang));
    }
 
    /**
-    * Sets in this exchange document the language of the source
-    * document
+    * Adopts the language of the source document
     *
-    * @return  the adopted language
+    * @param lm  the langauge menu in which the item for the adopted
+    * language will selected
     */
-   public Languages adoptedLanguage() {
-      Languages lang = sourceDoc.language();
-      exchangeDoc.changeLanguage(lang);
-      return lang;
+   public void adoptLanguage(LanguageMenu lm) {
+      Runnable r = () -> {
+         Languages lang = sourceDoc.language();
+         exchangeDoc.changeLanguage(lang);
+         lm.selectLanguageItm(lang);
+      };
+      busyFunction().execute(r);
    }
 
    /**
@@ -169,17 +182,19 @@ public class TextExchange {
    //
    //--private--/
    //
-   private void loadFile(File f) {
-      JFrame frame = ((JFrame) exchangeDoc.textArea()
+   
+   private BusyFunction busyFunction() {
+      if (bf == null) {
+         frame = ((JFrame) exchangeDoc.textArea()
             .getTopLevelAncestor());
-
-      new BusyFunction(frame).executeLater(
-           () -> exchangeDoc.displayFileContent(f));
+            
+         bf = new BusyFunction(frame);
+      }
+      return bf;
    }
 
    private void copy(EditableDocument destination, String text) {
       destination.textArea().requestFocusInWindow();
-      String toReplace = destination.textArea().getSelectedText();
       int pos = destination.textArea().getSelectionStart();
       int end = destination.textArea().getSelectionEnd();
       int length = end - pos;

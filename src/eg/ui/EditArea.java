@@ -1,6 +1,7 @@
 package eg.ui;
 
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.Font;
 
 import java.awt.event.FocusAdapter;
@@ -24,7 +25,7 @@ import eg.utils.ScreenParams;
  * Defines the panel that contains the area for editing text and the
  * area that displays line numbers.
  * <p>
- * The usual shortcuts for cut, copy, paste and select actions are
+ * The pre-defined shortcuts for cut, copy, paste and select actions are
  * disabled in the text area
  */
 public final class EditArea {
@@ -165,8 +166,8 @@ public final class EditArea {
    private void showLineNumbersImpl(boolean show) {
       int pos;
       if (isWordwrap) {
+         pos = wordwrapScroll.getVerticalScrollBar().getValue();
          content.remove(wordwrapScroll);
-         pos = 0;
       }
       else {
          pos = nonWordwrapScroll.getVerticalScrollBar().getValue();
@@ -174,39 +175,39 @@ public final class EditArea {
       if (show) {
          lineNrScroll.setViewportView(lineNrArea);
          content.add(lineNrScroll, BorderLayout.WEST);
-
       }
       else {
          lineNrScroll.getViewport().remove(lineNrArea());
          content.remove(lineNrScroll);
       }
       nonWordwrapPnl.add(textArea, BorderLayout.CENTER);
-      nonWordwrapScroll.setViewportView(nonWordwrapPnl);
       content.add(nonWordwrapScroll);
-      setScrollPos(nonWordwrapScroll, pos);
-      textArea.requestFocusInWindow();
-      revalidate();
+      nonWordwrapScroll.setViewportView(nonWordwrapPnl);
       isWordwrap = false;
+      setScrollPos(nonWordwrapScroll, pos);
    }
 
    private void enableWordwrapImpl() {
+      int pos = nonWordwrapScroll.getVerticalScrollBar().getValue();
       content.remove(lineNrScroll);
       content.remove(nonWordwrapScroll);
       content.add(wordwrapScroll, BorderLayout.CENTER);
       wordwrapScroll.setViewportView(textArea);
-      textArea.requestFocusInWindow();
-      revalidate();
       isWordwrap = true;
-   }
-
-   private void revalidate() {
-      content.revalidate();
-      content.repaint();
+      setScrollPos(wordwrapScroll, pos);
    }
 
    private void setScrollPos(JScrollPane scroll, int pos) {
       JScrollBar bar = scroll.getVerticalScrollBar();
-      bar.setValue(pos);
+      EventQueue.invokeLater(() -> {
+         bar.setValue(pos);
+         revalidate();
+      });
+   }
+   
+   private void revalidate() {
+      content.revalidate();
+      content.repaint();
    }
 
    private void initTextArea() {

@@ -40,7 +40,7 @@ public class SettingsWindow {
    private final static Dimension DIM_SPACER = ScreenParams.scaledDimension(0, 14);
 
    private final JFrame frame = new JFrame("Project settings");
-   private final BusyFunction bf = new BusyFunction(frame);
+   private final BusyFunction bf;
 
    private final JTextField projDirTf        = new JTextField();
    private final JTextField fileTf           = new JTextField();
@@ -82,6 +82,7 @@ public class SettingsWindow {
       }
       cancelBt.setFocusable(false);
       okBt.setFocusable(false);
+      bf = new BusyFunction(frame);
    }
 
    /**
@@ -107,7 +108,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Sets the listener to this ok button
+    * Registers the listener on this ok button
     *
     * @param r  the Runnable invoked by the action
     */
@@ -116,7 +117,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Sets the listener to this cancel button
+    * Registers the listener on this cancel button
     *
     * @param al  the ActionListener
     */
@@ -125,7 +126,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Sets the listener to close button of this window
+    * Registers the listener on the close button of this window
     *
     * @param wa  the <code>WindowAdapter</code>
     */
@@ -280,7 +281,7 @@ public class SettingsWindow {
    public void displayFile(String s) {
       fileTf.setText(s);
    }
-   
+
    /**
     * Displays in the corresponding text field a custom commannd
     *

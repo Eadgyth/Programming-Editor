@@ -19,7 +19,7 @@ import eg.utils.ScreenParams;
 
 /**
  * Contains the main method
- * <p>
+ *
  * @author Malte Bussiek, m.bussiek@web.de
  */
 public class Eadgyth {

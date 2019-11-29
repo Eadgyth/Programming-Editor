@@ -61,26 +61,21 @@ public class ExchangeEditor implements AddableEditTool {
    private final Edit edit = new Edit();
 
    public ExchangeEditor() {
-      //format.showLineNumbers(true);
       EditArea ea = format.editArea();
       editorPnl = ea.content();
-      formatMenu.selectWordWrapItm(ea.isWordwrap());
-
-      EditableDocument edtDoc = new EditableDocument(ea);
+      initContentPnl();   
+      formatMenu.selectWordWrapItm(ea.isWordwrap());   
+      Languages lang = Languages.valueOf(
+            prefs.property(Prefs.EXCHG_PREFIX + Prefs.LANG_KEY));
+      
+      languageMenu.selectLanguageItm(lang);          
+      EditableDocument edtDoc = new EditableDocument(ea, lang);
       edtDoc.setEditingStateReadable(editReadable);
       String indentUnit = prefs.property(Prefs.INDENT_UNIT_KEY);
       edtDoc.setIndentUnit(indentUnit);
       edit.setDocument(edtDoc);
-
       String recentDir = prefs.property(Prefs.RECENT_DIR_KEY);
       exch = new TextExchange(edtDoc, recentDir);
-
-      Languages lang = Languages.valueOf(
-            prefs.property(Prefs.EXCHG_PREFIX + Prefs.LANG_KEY));
-            
-      edtDoc.changeLanguage(lang);
-      initContentPnl();
-      languageMenu.selectLanguageItm(lang);
    }
 
    @Override
@@ -194,7 +189,7 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    private void setActions() {
-      loadItm.addActionListener(e -> loadFile());
+      loadItm.addActionListener(e -> exch.loadFile(languageMenu));
 
       copyFromItm.setAction(new FunctionalAction("Copy selection from main editor",
            null, e -> exch.copyTextFromSource()));
@@ -210,7 +205,7 @@ public class ExchangeEditor implements AddableEditTool {
             e -> edit.setIndentUnit(exch.sourceDocIndentUnit()));
 
       adoptLangItm.setAction(new FunctionalAction("Language", null,
-           e -> adoptLanguage()));
+           e -> exch.adoptLanguage(languageMenu)));
       setKeyBinding(adoptLangItm, KeyStroke.getKeyStroke(
             KeyEvent.VK_G, ActionEvent.CTRL_MASK), "G_pressed");
 
@@ -263,16 +258,6 @@ public class ExchangeEditor implements AddableEditTool {
       int isInput = JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
       content.getInputMap(isInput).put(ks, key);
       content.getActionMap().put(key, itm.getAction());
-   }
-
-   private void loadFile() {
-      exch.loadFile();
-      languageMenu.selectLanguageItm(exch.language());
-   }
-
-   private void adoptLanguage() {
-      Languages lang = exch.adoptedLanguage();
-      languageMenu.selectLanguageItm(exch.language());
    }
 
    private final EditingStateReadable editReadable = new EditingStateReadable() {

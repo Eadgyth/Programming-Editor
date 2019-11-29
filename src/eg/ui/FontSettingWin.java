@@ -71,7 +71,7 @@ public class FontSettingWin {
    }
 
    /**
-    * Adds an action listener to this ok button
+    * Registers the listener on this ok button
     *
     * @param al  the {@code ActionListener}
     */

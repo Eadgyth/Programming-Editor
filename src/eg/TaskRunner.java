@@ -71,7 +71,7 @@ public class TaskRunner {
          r.run();
          EventQueue.invokeLater(() -> {
             if (toTop) {
-              cons.setCaret(0);
+               cons.setCaret(0);
             }
             cons.setLocked();
          });
@@ -86,7 +86,7 @@ public class TaskRunner {
     * @param r  the Runnable
     */
    public void runBusy(Runnable r) {
-      mw.busyFunction().executeLater(r);
+      mw.busyFunction().execute(r);
       EventQueue.invokeLater(fileTreeUpdate);
    }
 

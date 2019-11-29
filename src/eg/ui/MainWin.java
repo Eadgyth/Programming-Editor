@@ -51,7 +51,7 @@ public class MainWin {
    private final ConsolePanel consPnl = new ConsolePanel();
    private final EditToolPanel edToolPnl = new EditToolPanel();
    private final List<AddableEditTool> editTools = new ArrayList<>();
-   private final BusyFunction bf = new BusyFunction(frame);
+   private final BusyFunction bf;
    private final Prefs prefs = new Prefs();
 
    private JSplitPane splitHor;
@@ -67,6 +67,7 @@ public class MainWin {
       dividerLocHor =  (int)(frame.getWidth() * 0.25);
       initShowTabbar();
       initShowFileView();
+      bf = new BusyFunction(frame);
    }
 
    /**
@@ -351,7 +352,7 @@ public class MainWin {
    public void setEditActions(Edit edit, LanguageChanger lc) {
       toolBar.setEditActions(edit);
       Runnable clearSpaces = () -> edit.clearTrailingSpaces();
-      menuBar.editMenu().setEditActions(edit, e -> bf.executeLater(clearSpaces));
+      menuBar.editMenu().setEditActions(edit, e -> bf.execute(clearSpaces));
       menuBar.languageMenu().setChangeLanguageActions(lc);
    }
 
@@ -389,7 +390,6 @@ public class MainWin {
    public void setProjectActions(Projects p) {
       menuBar.projectMenu().setActions(p);
       toolBar.setProjectActions(p);
-
       frame.addWindowListener(new WindowAdapter() {
 
          @Override

@@ -217,12 +217,9 @@ public abstract class AbstractProject implements Configurable {
 
    /**
     * Returns if the main project file can be located based on the
-    * last successful configuration or, if not, after re-configuring
-    * the project because the location of the file may have been
-    * changed.
-    * A dialog which asks to open the settings window is shown
-    * if the file cannot be located based on the recent entries in
-    * the settings window
+    * last successful configuration or, if not, after a try to
+    * re-configure the project since the location of the project
+    * file may have been changed
     *
     * @return  true if the main can be located
     */
