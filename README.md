@@ -2,8 +2,8 @@
 <p>
 A text editor which can be easily set up to run source code. So far, built-in
 functions to run a program are available for code written in Java, Perl, Python, R and
-HTML. Extending the code to add support for other langauages can be reasonably easily
-realized too. 
+HTML. Extending the source code of the editor to add support for other langauages can
+be reasonably easily realized too. 
 <br>
 <p>
 <h4>Features for editing text are ...</h4>
