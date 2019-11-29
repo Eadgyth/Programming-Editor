@@ -8,8 +8,7 @@ be reasonably easily realized too.
 <p>
 <h4>Features for editing text are ...</h4>
 <ul>
-<li>A basic find and find/replace function including undoable 'replace all'.</li>
-<li>Line by line undo/redo</li>
+<li>Find and find/replace in a dockable panel; undoable 'replace all'.</li>
 <li>Clearing end-of-line (trailing) white spaces.</li>
 <li>An "exchange editor" as an "intermediate store" to exchange text with the main
     editor.</li>
@@ -21,7 +20,7 @@ be reasonably easily realized too.
 <p>
 <h4>Features for running source code are ...</h4>
 <ul>
-<li>A console for showing output/error during running (or compiling) a program.</li>
+<li>A console panel for showing output/error during running (or compiling) a program.</li>
 <li>Run a program by pre-defined functions or run self-chosen system commands.</li>
 <li>Specify additional command options/arguments for running a program</li>
 <li>Compile and run Java code that is organized in packages and create an executabe jar
@@ -53,10 +52,10 @@ of a programming language may have to be set in the OS (they have to under Windo
 Countless...
 <p>
 Output to the console panel does not work as expected in cases where a run process buffers
-its output until completion if the output is not to the terminal of the OS. To display output
-correctly such block-buffering would have to be disabled by a corresponding command-line switch
-or by switch in a script itself. Commnd options can be entered in the project settings of the
-editor.
+its output if it is not sent to the standard output. To display output correctly buffering
+would have to be disabled by a corresponding command-line switch or by switch in a script
+itself. Currently, this limitation applies to interactive Perl scripts and may apply to
+custom commands.
 <br>
 <h4>REFERENCES</h4>
 <p>
