@@ -57,11 +57,13 @@ public final class EditArea {
    public EditArea(boolean wordwrap, boolean lineNumbers,
          String font, int fontSize) {
 
+      this.isWordwrap = wordwrap;
       removeShortCuts();
       content.setLayout(new BorderLayout());
       initTextArea();
       initLineNrArea();
       initLineNrScrollPane();
+      nonWordwrapScroll.setViewportView(nonWordwrapPnl);
       setFont(font, fontSize);
       if (wordwrap) {
          enableWordwrap();
@@ -173,26 +175,24 @@ public final class EditArea {
          pos = nonWordwrapScroll.getVerticalScrollBar().getValue();
       }
       if (show) {
-         lineNrScroll.setViewportView(lineNrArea);
+         lineNrScroll.getVerticalScrollBar().setValue(pos);
          content.add(lineNrScroll, BorderLayout.WEST);
       }
       else {
-         lineNrScroll.getViewport().remove(lineNrArea());
          content.remove(lineNrScroll);
       }
       nonWordwrapPnl.add(textArea, BorderLayout.CENTER);
-      content.add(nonWordwrapScroll);
-      nonWordwrapScroll.setViewportView(nonWordwrapPnl);
+      content.add(nonWordwrapScroll, BorderLayout.CENTER);
       isWordwrap = false;
       setScrollPos(nonWordwrapScroll, pos);
    }
 
    private void enableWordwrapImpl() {
       int pos = nonWordwrapScroll.getVerticalScrollBar().getValue();
-      content.remove(lineNrScroll);
       content.remove(nonWordwrapScroll);
-      content.add(wordwrapScroll, BorderLayout.CENTER);
+      content.remove(lineNrScroll);
       wordwrapScroll.setViewportView(textArea);
+      content.add(wordwrapScroll, BorderLayout.CENTER);
       isWordwrap = true;
       setScrollPos(wordwrapScroll, pos);
    }
@@ -204,7 +204,7 @@ public final class EditArea {
          revalidate();
       });
    }
-   
+
    private void revalidate() {
       content.revalidate();
       content.repaint();
@@ -229,6 +229,7 @@ public final class EditArea {
 
    private void initLineNrScrollPane() {
       lineNrScroll.setBorder(UIComponents.grayMatteBorder(0, 0, 0, 1));
+      lineNrScroll.setViewportView(lineNrArea);
       lineNrScroll.getVerticalScrollBar().setModel(
             nonWordwrapScroll.getVerticalScrollBar().getModel());
    }
