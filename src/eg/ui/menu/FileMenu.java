@@ -19,7 +19,7 @@ public class FileMenu {
 
    private final JMenu     menu        = new JMenu("File");
    private final JMenuItem newFileItm  = new JMenuItem("New" );
-   private final JMenuItem openItm     = new JMenuItem("Open...",
+   private final JMenuItem openItm     = new JMenuItem("Open ...",
                                          IconFiles.OPEN_ICON);
    private final JMenuItem closeItm    = new JMenuItem("Close",
                                          IconFiles.CLOSE_ICON);
@@ -29,6 +29,7 @@ public class FileMenu {
    private final JMenuItem saveAllItm  = new JMenuItem("Save all");
    private final JMenuItem saveAsItm   = new JMenuItem("Save as ...");
    private final JMenuItem saveCopyItm = new JMenuItem("Save copy as ...");
+   private final JMenuItem renameItm   = new JMenuItem("Rename ...");
    private final JMenuItem printItm    = new JMenuItem("Print...");
    private final JMenuItem exitItm     = new JMenuItem("Exit");
 
@@ -61,6 +62,7 @@ public class FileMenu {
       saveAllItm.addActionListener(e -> td.saveAll());
       saveAsItm.addActionListener(e -> td.saveAs());
       saveCopyItm.addActionListener(e -> td.saveCopy());
+      renameItm.addActionListener(e -> td.rename());
       printItm.addActionListener(e -> td.print());
    }
 
@@ -82,6 +84,15 @@ public class FileMenu {
       saveItm.setEnabled(b);
    }
 
+   /**
+    * Enables or disables the item for rename actions
+    *
+    * @param b  true to enable, false to disable
+    */
+   public void enableRenameItm(boolean b) {
+      renameItm.setEnabled(b);
+   }
+
    //
    //--private--/
    //
@@ -96,6 +107,7 @@ public class FileMenu {
       menu.add(saveAllItm);
       menu.add(saveAsItm);
       menu.add(saveCopyItm);
+      menu.add(renameItm);
       menu.addSeparator();
       menu.add(printItm);
       menu.addSeparator();

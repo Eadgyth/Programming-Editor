@@ -59,8 +59,7 @@ public class FileTree {
 
    /**
     * Sets the project's root directory and displays the file system at
-    * this root if the same root is not aready set or updates the
-    * the tree otherwise
+    * this root
     *
     * @param projectRoot  the project's root directory
     */
@@ -68,11 +67,6 @@ public class FileTree {
       if (!projRoot.equals(projectRoot)) {
          projRoot = projectRoot;
          setNewTree(projRoot);
-      }
-      else {
-         if (tree != null) {
-            updateTree();
-         }
       }
    }
 
@@ -244,7 +238,8 @@ public class FileTree {
    }
 
    private void openFile() {
-      EventQueue.invokeLater(() -> opener.open(selectedFile));
+      opener.open(selectedFile);
+      tree.clearSelection();
    }
 
    private void deleteFile() {
@@ -278,6 +273,9 @@ public class FileTree {
                   + " failed", null);
          }
       }
+      else {
+         tree.clearSelection();
+      }
    }
 
    private boolean deleteFolder(File dir) {
@@ -295,6 +293,7 @@ public class FileTree {
             "Enter a name for the new folder", "New folder", "");
 
       if (newFolder == null || newFolder.isEmpty()) {
+         tree.clearSelection();
          return;
       }
       File newDir = new File(selectedFile.getPath(), newFolder);
@@ -304,6 +303,7 @@ public class FileTree {
                + " already exists.",
                null);
 
+          tree.clearSelection();
           return;
       }
       boolean succes = newDir.mkdirs();
@@ -311,6 +311,7 @@ public class FileTree {
          DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(newDir);
          model.insertNodeInto(newNode, selectedNode, 0);
          tree.expandPath(tree.getSelectionPath());
+         tree.clearSelection();
       }
       else {
          Dialogs.errorMessage(

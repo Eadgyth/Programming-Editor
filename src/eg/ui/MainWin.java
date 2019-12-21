@@ -184,6 +184,15 @@ public class MainWin {
    }
 
    /**
+    * Enables or disables to rename a file
+    *
+    * @param b  true to enable, false to disable
+    */
+   public void enableRename(boolean b) {
+      menuBar.fileMenu().enableRenameItm(b);
+   }
+
+   /**
     * Enables or disables undo/redo. The specified booleans each are
     * true to enable, false to disable
     *

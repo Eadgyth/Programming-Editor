@@ -19,6 +19,7 @@ import eg.ui.EditArea;
 import eg.ui.tabpane.ExtTabbedPane;
 import eg.ui.filetree.FileTree;
 import eg.utils.Dialogs;
+import eg.utils.FileUtils;
 
 /**
  * The documents in the tabs.
@@ -42,7 +43,7 @@ public class TabbedDocuments {
    private final Edit edit;
    private final Projects proj;
    private final EditArea[] editArea;
-   
+
    private int iTab = -1;
    private Languages lang;
 
@@ -149,6 +150,48 @@ public class TabbedDocuments {
     */
    public void saveCopy() {
       saveAs(false);
+   }
+
+   /**
+    * Renames the file of the currently selected document with a name that
+    * is specified in the file chooser
+    */
+   public void rename() {
+      if (edtDoc[iTab].hasFile() && !edtDoc[iTab].file().exists()) {
+         int res = Dialogs.warnConfirmYesNo(
+               edtDoc[iTab].filename()
+               + " could not be found anymore.\nSave as new file?");
+
+         if (res == JOptionPane.YES_OPTION) {
+            saveAs(true);
+            return;
+         }
+      }
+      chSave.setDirectory(edtDoc[iTab].fileParent());
+      File f = chSave.selectedFileToSave(displayFilename());
+      if (f == null) {
+         return;
+      }
+      if (!FileUtils.isWriteable(edtDoc[iTab].file())) {
+         return;
+      }
+      if (!replaceExistingFile(f)) {
+         return;
+      }
+      if (edtDoc[iTab].file().delete()) {
+         boolean b = edtDoc[iTab].setFile(f);
+         if (b) {
+            changeFile();
+            proj.updateFileTree();
+         }
+      }
+      else {
+         Dialogs.errorMessage(
+               "Renaming "
+               + edtDoc[iTab].file()
+               + " failed",
+               null);
+      }
    }
 
    /**
@@ -305,18 +348,14 @@ public class TabbedDocuments {
       if (f == null) {
          return false;
       }
-      if (f.exists() && JOptionPane.YES_OPTION != Dialogs.warnConfirmYesNo(
-            f.getName() + " already exists.\nReplace file?")) {
-
+      if (!replaceExistingFile(f)) {
          return false;
       }
       boolean b;
       if (setFile) {
          b = edtDoc[iTab].setFile(f);
          if (b) {
-            changedFileUpdate(edtDoc[iTab]);
-            tabPane.setTitle(iTab, edtDoc[iTab].filename());
-            EventQueue.invokeLater(() -> proj.retrieve());
+            changeFile();
          }
       }
       else {
@@ -326,6 +365,11 @@ public class TabbedDocuments {
          proj.updateFileTree(f.toString());
       }
       return b;
+   }
+
+   private boolean replaceExistingFile(File f) {
+      return !f.exists() || JOptionPane.YES_OPTION == Dialogs.warnConfirmYesNo(
+            f.getName() + " already exists.\nReplace file?");
    }
 
    private void close(boolean createBlankDoc) {
@@ -468,6 +512,12 @@ public class TabbedDocuments {
       return tabPane.getTabCount();
    }
 
+   private void changeFile() {
+      changedFileUpdate(edtDoc[iTab]);
+      tabPane.setTitle(iTab, edtDoc[iTab].filename());
+      EventQueue.invokeLater(() -> proj.retrieve());
+   }
+
    private void changedTabUpdate() {
       EditableDocument doc = edtDoc[iTab];
       doc.setFocused();
@@ -485,6 +535,7 @@ public class TabbedDocuments {
 
    private void changedFileUpdate(EditableDocument doc) {
       proj.changedDocumentUpdate();
+      mw.enableRename(doc.hasFile());
       mw.setLanguageSelected(doc.language());
       mw.displayFrameTitle(doc.filepath());
    }

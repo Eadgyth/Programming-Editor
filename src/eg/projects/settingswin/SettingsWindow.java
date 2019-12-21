@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
 
@@ -104,7 +105,7 @@ public class SettingsWindow {
     * @param dir  the directory
     */
    public void setDirectory(String dir) {
-      CHOOSER.setDirectory(dir);
+      EventQueue.invokeLater(() -> CHOOSER.setDirectory(dir));
    }
 
    /**

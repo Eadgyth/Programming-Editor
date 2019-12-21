@@ -332,6 +332,8 @@ public class Projects {
          if (toConfig != currentProject) {
             projects.add(toConfig);
          }
+         //
+         // Another tab may have been selected after opening the settings
          ProjectCommands inList = null;
          if (edtDoc[iDoc].hasFile()) {
             inList = selectFromList(edtDoc[iDoc].fileParent(), false);
@@ -343,6 +345,7 @@ public class Projects {
             toConfig.storeConfiguration();
             currentProject = toConfig;
             updateProjectSetting();
+            fileTree.updateTree();
          }
       }
       else {

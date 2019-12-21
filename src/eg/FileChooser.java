@@ -1,7 +1,5 @@
 package eg;
 
-import java.awt.EventQueue;
-
 import javax.swing.UIManager;
 import javax.swing.JFrame;
 import javax.swing.JFileChooser;
@@ -134,12 +132,10 @@ public class FileChooser {
     */
    public void setDirectory(String dir) {
       currentDir = new File(dir);
-      EventQueue.invokeLater(() -> {
-         ch.setCurrentDirectory(currentDir);
-         if (ch.getFileSelectionMode() == JFileChooser.FILES_AND_DIRECTORIES) {
-            ch.setSelectedFile(currentDir);
-         }
-      });
+      ch.setCurrentDirectory(currentDir);
+      if (ch.getFileSelectionMode() == JFileChooser.FILES_AND_DIRECTORIES) {
+         ch.setSelectedFile(currentDir);
+      }
    }
 
    /**
