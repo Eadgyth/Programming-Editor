@@ -17,7 +17,7 @@ public class SystemParams {
    public final static boolean IS_JAVA_9_OR_HIGHER;
    /**
     * True if the java version is 13 */
-   public final static boolean IS_JAVA_13;
+   public final static boolean IS_JAVA_13_OR_HIGHER;
    /**
     * The path of the '.eadgyth' folder where data are saved */
    public final static String EADGYTH_DATA_DIR;
@@ -29,7 +29,7 @@ public class SystemParams {
       EADGYTH_DATA_DIR = userHome + File.separator + ".eadgyth";
       JAVA_VERSION = System.getProperty("java.version");
       IS_JAVA_9_OR_HIGHER = !JAVA_VERSION.startsWith("1.8");
-      IS_JAVA_13 = JAVA_VERSION.startsWith("13");
+      IS_JAVA_13_OR_HIGHER = IS_JAVA_9_OR_HIGHER && "13".compareTo(JAVA_VERSION) <= 0;
    }
 
    /**

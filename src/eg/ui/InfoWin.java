@@ -22,7 +22,7 @@ public class InfoWin {
 
    private final static String INFO
          = "<html>"
-         + "Version with changes since 1.1.1<br>"
+         + "Version 1.1.2<br>"
          + "Malte Bussiek<br>"
          + "https://eadgyth.github.io/Programming-Editor/"
          + "</html>";
@@ -33,7 +33,7 @@ public class InfoWin {
    private final JPanel  textPnl  = new JPanel();
    private final JPanel  holdTextPnl = UIComponents.grayBorderedPanel();
    private final JPanel  combine  = new JPanel(new BorderLayout());
-   private final JLabel  titleLb  = new JLabel("Eadgyth Programming-Editor");
+   private final JLabel  titleLb  = new JLabel("Eadgyth Programming Editor");
    private final JLabel  infoLb   = new JLabel(INFO);
    private final JPanel  okButton = new JPanel(new FlowLayout());
    private final JButton okBt     = new JButton("OK");

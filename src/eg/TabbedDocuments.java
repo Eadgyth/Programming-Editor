@@ -158,10 +158,7 @@ public class TabbedDocuments {
     */
    public void rename() {
       if (edtDoc[iTab].hasFile() && !edtDoc[iTab].file().exists()) {
-         int res = Dialogs.warnConfirmYesNo(
-               edtDoc[iTab].filename()
-               + " could not be found anymore.\nSave as new file?");
-
+         int res = saveDeletedRes();
          if (res == JOptionPane.YES_OPTION) {
             saveAs(true);
             return;
@@ -467,13 +464,9 @@ public class TabbedDocuments {
    }
 
    private boolean canCloseDeletedFile(int i) {
-      tabPane.setSelectedIndex(i);
-      int res = Dialogs.confirmYesNoCancel(
-            edtDoc[i].filename()
-            + " could not be found anymore."
-            + " Save as new file?");
-
-      boolean b;
+      tabPane.setSelectedIndex(i);            
+      int res = saveDeletedRes();
+      boolean b = false;
       if (JOptionPane.YES_OPTION == res) {
          b = saveAs(false);
       }
@@ -481,6 +474,13 @@ public class TabbedDocuments {
          b = JOptionPane.NO_OPTION == res;
       }
       return b;
+   }
+   
+   private int saveDeletedRes() {
+      return Dialogs.confirmYesNoCancel(
+            edtDoc[iTab].filename()
+            + " could not be found anymore."
+            + " Save as new file?");
    }
 
    private void removeTab() {

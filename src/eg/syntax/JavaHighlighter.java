@@ -49,12 +49,12 @@ public class JavaHighlighter implements Highlighter {
          s.keywords(JAVA_KEYWORDS, true, null, attr.redPlain);
          s.brackets();
          s.braces();
-         if (SystemParams.IS_JAVA_13) {
+         if (SystemParams.IS_JAVA_13_OR_HIGHER) {
             s.setCondition(TEXT_BLOCK_COND);
          }
          s.quoteInLine();
          s.lineComments(SyntaxConstants.DOUBLE_SLASH, SyntaxUtils.LINE_QUOTED);
-         if (SystemParams.IS_JAVA_13) {
+         if (SystemParams.IS_JAVA_13_OR_HIGHER) {
             s.setCondition(VALID_TEXT_BLOCK_COND);
             s.textBlock(SyntaxConstants.TRI_DOUBLE_QUOTE);
          }
