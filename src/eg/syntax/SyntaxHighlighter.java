@@ -805,7 +805,7 @@ public class SyntaxHighlighter {
          return length;
       }
 
-       private void quoteChange(String quoteMark, int count) {
+      private void quoteChange(String quoteMark, int count) {
          if (isRepairBlock || !isTypeMode) {
             return;
          }

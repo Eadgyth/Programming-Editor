@@ -63,7 +63,7 @@ public class FileChooser {
    }
 
    /**
-    * Oopens a chooser to open a file and returns a file
+    * Opens a chooser to open a file and returns a file
     *
     * @return  the file; null if cancel was clicked or the chooser
     * window was closed

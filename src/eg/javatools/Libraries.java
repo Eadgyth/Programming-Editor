@@ -116,7 +116,7 @@ public class Libraries {
 
    /**
     * Gets the list that contains the libraries as absolute paths
-    * including those that were given as paths relative to to the
+    * including those that were given as paths relative to the
     * project directory
     *
     * @return  the list

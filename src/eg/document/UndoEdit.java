@@ -94,7 +94,7 @@ public class UndoEdit {
                }
             }
             else if (change.length() > 1) {
-                addBreakpoint();
+               addBreakpoint();
             }
          }
       }

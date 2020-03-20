@@ -6,8 +6,6 @@ import javax.swing.UIManager;
 
 import javax.swing.border.EmptyBorder;
 
-import eg.utils.ScreenParams;
-
 /**
  * The menu bar that has the menus.<br>
  * Created in {@link eg.ui.MainWin}

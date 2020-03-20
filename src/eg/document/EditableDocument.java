@@ -1,7 +1,5 @@
 package eg.document;
 
-import java.awt.EventQueue;
-
 import javax.swing.JTextPane;
 
 import java.io.File;

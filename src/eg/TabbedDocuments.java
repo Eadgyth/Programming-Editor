@@ -466,7 +466,7 @@ public class TabbedDocuments {
    private boolean canCloseDeletedFile(int i) {
       tabPane.setSelectedIndex(i);            
       int res = saveDeletedRes();
-      boolean b = false;
+      boolean b;
       if (JOptionPane.YES_OPTION == res) {
          b = saveAs(false);
       }

@@ -196,8 +196,8 @@ public class SyntaxUtils {
    public static int lastBlockStart(String text, int pos, String blockStart,
          String blockEnd, int quoteOpt) {
 
-      int lastStart = -1;
-      int lastEnd = -1;
+      int lastStart;
+      int lastEnd;
       if (quoteOpt == IGNORE_QUOTED) {
          lastStart = text.lastIndexOf(blockStart, pos);
          lastEnd = text.lastIndexOf(blockEnd, pos);
@@ -228,8 +228,8 @@ public class SyntaxUtils {
    public static int nextBlockStart(String text, int pos, String blockStart,
          String blockEnd, int quoteOpt) {
 
-      int nextStart = -1;
-      int nextEnd = -1;
+      int nextStart;
+      int nextEnd;
       if (quoteOpt == IGNORE_QUOTED) {
          nextStart = text.indexOf(blockStart, pos);
          nextEnd = text.indexOf(blockEnd, pos);
@@ -260,8 +260,8 @@ public class SyntaxUtils {
    public static int nextBlockEnd(String text, int pos, String blockStart,
          String blockEnd, int quoteOpt) {
 
-      int nextEnd = -1;
-      int nextStart = -1;
+      int nextEnd;
+      int nextStart;
       if (quoteOpt == IGNORE_QUOTED) {
          nextEnd = text.indexOf(blockEnd, pos);
          nextStart = text.indexOf(blockStart, pos);
