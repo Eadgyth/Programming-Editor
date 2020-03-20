@@ -161,7 +161,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    private void setQualifiedMain() {
       StringBuilder sb = new StringBuilder();
       if (!namespace().isEmpty()) {
-         sb.append(namespace().replaceAll("/\\\\", ".")).append(".");
+         sb.append(namespace().replaceAll("[/\\\\]", ".")).append(".");
       }
       sb.append(mainFileName());
       qualifiedMain = sb.toString();
