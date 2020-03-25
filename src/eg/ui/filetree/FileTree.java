@@ -95,7 +95,7 @@ public class FileTree {
     * Updates the tree at the currently shown root
     */
    public void updateTree() {
-      if (currentRoot.isEmpty()) {
+      if (currentRoot.isEmpty() || tree == null) {
          return;
       }
       EventQueue.invokeLater(() -> {
