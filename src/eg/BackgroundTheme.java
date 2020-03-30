@@ -49,7 +49,7 @@ public class BackgroundTheme {
    }
 
    /**
-    * Returns the foreground for normal text
+    * Returns the color for normal text
     *
     * @return  the color
     */
@@ -58,7 +58,7 @@ public class BackgroundTheme {
    }
 
    /**
-    * Returns the foreground for accented normal text
+    * Returns the color for accented normal text
     *
     * @return  the color
     */
@@ -67,7 +67,7 @@ public class BackgroundTheme {
    }
 
    /**
-    * Returns the foreground for blue text
+    * Returns the color for blue text
     *
     * @return  the color
     */
@@ -76,7 +76,7 @@ public class BackgroundTheme {
    }
 
    /**
-    * Returns the foreground for red text
+    * Returns the color for red text
     *
     * @return  the color
     */
@@ -85,7 +85,7 @@ public class BackgroundTheme {
    }
 
    /**
-    * Returns the foreground for orange text
+    * Returns the color for orange text
     *
     * @return  the color
     */
@@ -103,7 +103,7 @@ public class BackgroundTheme {
    }
 
    /**
-    * Returns the selection background color
+    * Returns the color for the selection background
     *
     * @return the color
     */
