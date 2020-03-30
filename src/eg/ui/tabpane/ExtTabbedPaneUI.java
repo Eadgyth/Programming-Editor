@@ -23,8 +23,8 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
  */
 public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
 
-   private final static Color BORDER_BLUE = new Color(150, 150, 150);
-   private final static Color SEL_TAB_YELLOW = new Color(245, 245, 190);
+   private final static Color BORDER_GRAY = new Color(150, 150, 150);
+   private final static Color SEL_TAB_YELLOW = new Color(250, 250, 170);
    private final static Insets TAB_INSETS_BOTTOM = new Insets(0, 0, 0, 0);
    private final static Insets TAB_INSETS_ZERO = new Insets(0, 0, 0, 0);
    private final static Insets CONTENT_INSETS = new Insets(0, 0, 0, 0);
@@ -73,7 +73,7 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
          w = w + x;
          x = 0;
       }
-      g.setColor(BORDER_BLUE);
+      g.setColor(BORDER_GRAY);
       g.drawLine(x, y , x + w, y);
       g.drawLine(x, y, x, y + h);
       g.drawLine(x + w, y, x + w, y + h);
@@ -99,6 +99,7 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
       shape.addPoint(x + w, y);
       if (isSelected) {
          g.setColor(SEL_TAB_YELLOW);
+         //g.setColor(Color.WHITE);
       }
       else {
          g.setColor(UIManager.getColor("Panel.background"));

@@ -35,7 +35,7 @@ public interface ProjectCommands extends Configurable {
    /**
     * Runs the project using the specified file.
     * Method is called when the project does not use a main source
-    * file that is executed
+    * file that is executed.
     *
     * @param  filepath  the full filepath
     */
@@ -46,7 +46,7 @@ public interface ProjectCommands extends Configurable {
 
    /**
     * Creates a build of the project.
-    * It is not defined what a "Build" is
+    * It is not defined what a "build" is
     */
    public default void build() {
       throw new UnsupportedOperationException(

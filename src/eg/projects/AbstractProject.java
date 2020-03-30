@@ -352,7 +352,7 @@ public abstract class AbstractProject implements Configurable {
     * Creates an array of file extensions from the text field input
     * in this settings window
     *
-    * @return  the array; null if no extensions are given
+    * @return  the array; the empty array if no extensions are given
     */
    protected String[] fileExtensions() {
       if (extensions.isEmpty()) {

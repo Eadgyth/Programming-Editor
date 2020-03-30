@@ -270,9 +270,9 @@ public class Projects {
    }
 
    /**
-    * Runs the current project and saves the open project files
-    * first if required by the project.
-    * Saving is set by a project in {@link ProjectCommands#enable}
+    * Saves the open project files if required by the project and runs
+    * the project.
+    * Saving is set in {@link ProjectCommands#enable}
     */
    public void run() {
       if (isSaveAndRun && !save()) {

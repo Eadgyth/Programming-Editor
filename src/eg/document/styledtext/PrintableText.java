@@ -28,7 +28,7 @@ public class PrintableText extends StyledText {
    private final String text;
 
    static {
-      StyleConstants.setForeground(SET, THEME.normalForeground());
+      StyleConstants.setForeground(SET, THEME.normalText());
       StyleConstants.setBold(SET, false);
       StyleConstants.setLineSpacing(SET, 0.25f);
    }

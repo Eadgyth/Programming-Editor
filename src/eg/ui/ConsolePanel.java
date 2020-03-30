@@ -45,9 +45,9 @@ public class ConsolePanel {
       area.setFocusable(false);
       BackgroundTheme theme = BackgroundTheme.givenTheme();
       area.setBackground(theme.background());
-      area.setForeground(theme.normalForeground());
+      area.setForeground(theme.normalText());
       area.setBorder(new LineBorder(theme.background(), 5));
-      area.setCaretColor(theme.normalForeground());
+      area.setCaretColor(theme.normalText());
    }
 
    /**

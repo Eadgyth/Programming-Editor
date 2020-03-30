@@ -25,7 +25,7 @@ import eg.utils.SystemParams;
  */
 public class ViewSettingWin {
 
-   public final static String[] THEME_OPT = {"White", "Dark"};
+   public final static String[] THEME_OPT = {"White", "Blue", "Gray", "Black"};
    public final static String[] ICON_SIZES = {"Small", "Large"};
    public final static String[] LAF_OPT = {"System", "Java default"};
 

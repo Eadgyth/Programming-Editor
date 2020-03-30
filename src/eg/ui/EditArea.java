@@ -213,9 +213,9 @@ public final class EditArea {
    private void initTextArea() {
       textArea.setBorder(AREA_BORDER);
       textArea.setBackground(THEME.background());
-      textArea.setCaretColor(THEME.normalForeground());
+      textArea.setCaretColor(THEME.normalText());
       textArea.setSelectionColor(THEME.selectionBackground());
-      textArea.setSelectedTextColor(THEME.normalForeground());
+      textArea.setSelectedTextColor(THEME.normalText());
    }
 
    private void initLineNrArea() {

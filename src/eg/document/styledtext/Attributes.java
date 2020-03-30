@@ -16,42 +16,40 @@ import eg.BackgroundTheme;
 public final class Attributes {
 
    public final SimpleAttributeSet redPlain     = new SimpleAttributeSet();
+   public final SimpleAttributeSet bracketsBold = new SimpleAttributeSet();
    public final SimpleAttributeSet bluePlain    = new SimpleAttributeSet();
    public final SimpleAttributeSet blueBold     = new SimpleAttributeSet();
    public final SimpleAttributeSet greenPlain   = new SimpleAttributeSet();
    public final SimpleAttributeSet orangePlain  = new SimpleAttributeSet();
    public final SimpleAttributeSet purplePlain  = new SimpleAttributeSet();
-   public final SimpleAttributeSet bracketsBold = new SimpleAttributeSet();
 
    private final static Color GREEN  = new Color(80, 190, 80);
-   private final static Color RED    = new Color(255, 20, 20);
-   private final static Color ORANGE = new Color(255, 128, 0);
-   private final static Color PURPLE = new Color(230, 0, 255);
+   private final static Color PURPLE = new Color(200, 0, 255);
 
    /**
     * @param theme  the BackgroundTheme
     */
    public Attributes(BackgroundTheme theme) {
 
-      StyleConstants.setForeground(redPlain, RED);
+      StyleConstants.setForeground(redPlain, theme.redText());
       StyleConstants.setBold(redPlain, false);
 
-      StyleConstants.setForeground(bluePlain, theme.blueForeground());
+      StyleConstants.setForeground(bluePlain, theme.blueText());
       StyleConstants.setBold(bluePlain, false);
 
-      StyleConstants.setForeground(blueBold, theme.blueForeground());
+      StyleConstants.setForeground(blueBold, theme.blueText());
       StyleConstants.setBold(blueBold, true);
 
       StyleConstants.setForeground(greenPlain, GREEN);
       StyleConstants.setBold(greenPlain, false);
 
-      StyleConstants.setForeground(orangePlain, ORANGE);
+      StyleConstants.setForeground(orangePlain, theme.orangeText());
       StyleConstants.setBold(orangePlain, false);
 
-      StyleConstants.setForeground(purplePlain, PURPLE);
+      StyleConstants.setForeground(purplePlain, theme.purpleText());
       StyleConstants.setBold(purplePlain, false);
 
-      StyleConstants.setForeground(bracketsBold, theme.accentedNormalForeground());
+      StyleConstants.setForeground(bracketsBold, theme.accentedNormalText());
       StyleConstants.setBold(bracketsBold, true);
    }
 }

@@ -159,7 +159,7 @@ public class FontSettingWin {
       return pnl;
    }
 
-    private JPanel buttonPnl() {
+   private JPanel buttonPnl() {
       JPanel pnl = new JPanel(new FlowLayout());
       pnl.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       pnl.add(okBt);
