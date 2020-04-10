@@ -1,7 +1,7 @@
 package eg.utils;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.io.IOException;
 
 import java.util.Date;
@@ -12,8 +12,6 @@ import java.text.SimpleDateFormat;
  * Static methods for file operations
  */
 public class FileUtils {
-   
-   private final static String LINE_SEP = System.lineSeparator();
 
    /**
     * Adds the specified extension to the string if it does not end with
@@ -51,7 +49,7 @@ public class FileUtils {
       }
       return isWriteable;
    }
-
+   
    /**
     * Appends to the file 'log.txt' in the '.eadgyth' folder the date,
     * message and stack trace of an exception
@@ -61,26 +59,24 @@ public class FileUtils {
    public static void log(Exception e) {
       File f = new File(SystemParams.EADGYTH_DATA_DIR + "/log.txt");
       String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-      try (FileWriter writer = new FileWriter(f, false)) {
-         writer.write(" " + date + "\n");
-         writer.write(e.getMessage() + LINE_SEP);
-         for (StackTraceElement el : e.getStackTrace()) {
-            writer.write("   " + el.toString() + LINE_SEP);
-         }
-         writer.write("_________________" + LINE_SEP);
+      String msg = e.getCause().toString();
+      try (PrintWriter writer = new PrintWriter(f)) {
+         writer.println(date);
+         writer.println("_________________");
+         e.printStackTrace(writer);
          Dialogs.errorMessage(
                "Error: "
-               + e.getMessage()
-               + ".\nSee also "
+               + msg
+               + ".\nSee "
                + f.toString(),
                null);
       }
-      catch (IOException ioe) {
+      catch (IOException fne) {
          Dialogs.errorMessage(
-           "Error: "
-            + e.getMessage() // the message that could not be logged
-            + "\nNOTE: Could not write to log file",
-            null);
+              "Error: "
+               + msg // the message that could not be logged
+               + "\nNOTE: Could not write to log file",
+               null);
       }
    }
 

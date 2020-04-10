@@ -91,7 +91,7 @@ public class MainWin {
     *
     * @return  the {@link ConsolePanel}
     */
-   public ConsolePanel consolePnl() {
+   public ConsolePanel consolePanel() {
       return consPnl;
    }
 
@@ -224,7 +224,7 @@ public class MainWin {
    }
 
    /**
-    * Displays the project name and category in the status bar
+    * Displays the project name in the status bar
     *
     * @param projName  the name of the project
     */
@@ -233,7 +233,8 @@ public class MainWin {
    }
 
    /**
-    * Enables or disables to assign a project
+    * Enables or disables to open the project settings window
+    * of a project that is newly assigned
     *
     * @param b  true to enable, false disable
     * @param projType  the project type whose corresponding
@@ -244,7 +245,8 @@ public class MainWin {
    }
 
    /**
-    * Enables or disables to open the project settings window
+    * Enables or disables to open the project settings window of
+    * an active project
     *
     * @param b  true to enable, false to disable
     */

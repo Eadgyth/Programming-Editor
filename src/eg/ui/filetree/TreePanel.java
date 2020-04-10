@@ -142,6 +142,7 @@ public class TreePanel {
       return UIComponents.toolBar(bts, tooltips, closeBt);
    }
 
+   @SuppressWarnings("serial")
    private class TreeRenderer extends DefaultTreeCellRenderer {
 
       private final FileSystemView fsv = FileSystemView.getFileSystemView();

@@ -8,8 +8,7 @@ import eg.ui.MainWin;
 
 /**
  * The starting of tasks with certain predefined settings and behaviour
- * of the UI. All 'run...' methods update the file tree after completion
- * of a task.
+ * of the UI
  */
 public class TaskRunner {
 
@@ -36,8 +35,7 @@ public class TaskRunner {
    }
 
    /**
-    * Gets this <code>ConsolePrinter</code>. The print methods are only
-    * unlocked for a task that is run by {@link #runWithConsoleOutput}
+    * Gets this <code>ConsolePrinter</code>
     *
     * @return  the ConsolePrinter
     */

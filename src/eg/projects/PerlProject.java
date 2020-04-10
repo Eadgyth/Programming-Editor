@@ -24,8 +24,9 @@ public final class PerlProject extends AbstractProject implements ProjectCommand
 
    @Override
    public void buildSettingsWindow() {
-      inputOptions.addFileInput("Name of Perl script file")
+      inputOptions
             .addSourceDirInput()
+            .addFileInput(PERL_SCRIPT_LABEL)
             .addCmdOptionsInput()
             .addCmdArgsInput()
             .buildWindow();
@@ -83,4 +84,7 @@ public final class PerlProject extends AbstractProject implements ProjectCommand
       }
       compileCmd = sb.toString();
    }
+   
+   private final static String PERL_SCRIPT_LABEL =
+         "Name of Perl script file";
 }

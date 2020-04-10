@@ -10,7 +10,9 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTree;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -19,6 +21,7 @@ import javax.swing.tree.TreePath;
 import java.io.File;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 //--Eadgyth--/
@@ -35,6 +38,7 @@ public class FileTree {
    private final FileOpener opener;
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
    private final PopupMenu popupDir  = new PopupMenu(PopupMenu.FOLDER_OPT);
+   private final HashSet<String> fileSet = new HashSet<>();
 
    private JTree tree = null;
    private DefaultTreeModel model;
@@ -122,37 +126,12 @@ public class FileTree {
       if (path.isEmpty()) {
          return;
       }
+      fileSet.clear();
       currentRoot = path;
       treePnl.enableFolderUpAct(!path.equals(projRoot));
       File rootFile = new File(path);
-      if (SwingUtilities.isEventDispatchThread()) {
-         TreeSetter ts = new TreeSetter(rootFile);
-         ts.execute();
-      }
-      else {
-         setModel(rootFile);
-         setTree();
-      }
-   }
-
-   private class TreeSetter extends SwingWorker {
-
-      File rootFile;
-
-      private TreeSetter(File rootFile) {
-         this.rootFile = rootFile;
-      }
-
-      @Override
-      protected Void doInBackground() {
-         setModel(rootFile);
-         return null;
-      }
-
-      @Override
-      protected void done() {
-         setTree();
-      }
+      setModel(rootFile);
+      setTree();
    }
 
    private void setModel(File f) {
@@ -166,6 +145,7 @@ public class FileTree {
          tree = new JTree(model);
          tree.addMouseListener(mouseListener);
          treePnl.setTree(tree);
+         tree.addTreeExpansionListener(expansionListner);
       }
       else {
          tree.setModel(model);
@@ -178,10 +158,40 @@ public class FileTree {
       if (fList != null) {
          File fListSorted[] = sortedFiles(fList);
          for (File fs : fListSorted) {
+            if (!fileSet.contains(fs.getAbsolutePath())) {
+               fileSet.add(fs.getAbsolutePath());
+            }
+            else {
+               continue;
+            }
             DefaultMutableTreeNode child = new DefaultMutableTreeNode(fs);
             node.add(child);
-            if (fs.isDirectory()) {
+            if (fs.isDirectory() && node.getLevel() == 0) {
+               //if (fileSet.contains(fs.getAbsolutePath())) {
+               //   continue;
+               //}
                getFiles(child, fs);
+            }
+         }
+      }
+   }
+
+   private void addGrandchildren(DefaultMutableTreeNode node) {
+      int n = model.getChildCount(node);
+      for (int i = 0; i < n; i++) {
+         DefaultMutableTreeNode childNode
+               = (DefaultMutableTreeNode) model.getChild(node, i);
+
+         Object nodeInfo = childNode.getUserObject();
+         File f = (File) nodeInfo;
+         if (f.isDirectory() && childNode.isLeaf()) {
+            File fList[] = f.listFiles();
+            if (fList != null) {
+               File fListSorted[] = sortedFiles(fList);
+               for (File fs : fListSorted) {
+                  DefaultMutableTreeNode grandchild = new DefaultMutableTreeNode(fs);
+                  childNode.add(grandchild);
+               }
             }
          }
       }
@@ -360,6 +370,22 @@ public class FileTree {
       popupDir.setNewFolderAct(e -> newFolder());
       popupDir.setDeleteAct(e -> deleteFile());
    }
+
+   private final TreeExpansionListener expansionListner
+         = new TreeExpansionListener() {
+
+      @Override
+      public void treeExpanded(TreeExpansionEvent event) {
+         TreePath expPath = event.getPath();
+         DefaultMutableTreeNode expNode =
+               (DefaultMutableTreeNode) expPath.getLastPathComponent();
+
+         addGrandchildren(expNode);
+      }
+
+      @Override
+      public void treeCollapsed(TreeExpansionEvent event) {}
+   };
 
    private final MouseListener mouseListener = new MouseAdapter() {
 

@@ -23,8 +23,9 @@ public final class PythonProject extends AbstractProject implements ProjectComma
 
    @Override
    public void buildSettingsWindow() {
-      inputOptions.addFileInput("Name of Python script file")
+      inputOptions
             .addSourceDirInput()
+            .addFileInput("Name of Python script file")
             .addCmdOptionsInput()
             .addCmdArgsInput()
             .buildWindow();

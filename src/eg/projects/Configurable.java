@@ -1,7 +1,5 @@
 package eg.projects;
 
-import java.awt.event.ActionListener;
-
 /**
  * The interface that defines the configuration of a project.
  * <p>

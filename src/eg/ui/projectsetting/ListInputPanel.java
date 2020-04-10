@@ -1,4 +1,4 @@
-package eg.projects.settingswin;
+package eg.ui.projectsetting;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -37,12 +37,13 @@ public class ListInputPanel {
          JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
          JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-   private final JButton addBt = new JButton("add");
+   private final JButton addBt    = new JButton("add");
    private final JButton removeBt = new JButton("remove");
-   private final JButton upBt = new JButton("up");
-   private final JButton downBt = new JButton("down");
-   private final JPanel inScroll = new JPanel();
-   private final JPanel holder = new JPanel();
+   private final JButton upBt     = new JButton("up");
+   private final JButton downBt   = new JButton("down");
+   private final JPanel  inScroll = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+   private final JPanel  holder   = new JPanel();
+
    private final List<JTextField> tfList = new ArrayList<>(5);
    private final BackgroundTheme theme = BackgroundTheme.whiteTheme();
 
@@ -67,11 +68,11 @@ public class ListInputPanel {
    }
 
    /**
-    * Displays the strings in the specified list
+    * Displays the specified list in this list of text fields
     *
     * @param l  the list of strings
     */
-   public void displayText(List<String> l) {
+   public void displayList(List<String> l) {
       if (l.isEmpty()) {
          return;
       }
@@ -186,7 +187,7 @@ public class ListInputPanel {
       pnl.add(lb);
       return pnl;
    }
-
+   
    private JPanel buttonPanel() {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
       pnl.setBorder(new MatteBorder(1, 0, 0, 0, Color.WHITE));
@@ -194,14 +195,6 @@ public class ListInputPanel {
       pnl.add(removeBt);
       pnl.add(upBt);
       pnl.add(downBt);
-      return pnl;
-   }
-
-   private JPanel holdTf(JTextField tf) {
-      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-      tf.setFont(ScreenParams.scaledFontToPlain(tf.getFont(), 8));
-      tf.setPreferredSize(DIM_TF);
-      pnl.add(tf);
       return pnl;
    }
 

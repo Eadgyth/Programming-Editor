@@ -15,10 +15,6 @@ public class PerlHighlighter implements Highlighter {
       '@', '%'
    };
 
-   private final static char[] START_OF_SCALAR = {
-      '$'
-   };
-
    private final char[] SECOND_POS_SCALAR = {
       '\\', '(', ')', ';', '[', ']', '}', '.', ':', ',', '?',
       '=', '/', '+', '-', '*', '|', '&', '!', '%', '^', '<', '>', '~'
@@ -35,10 +31,6 @@ public class PerlHighlighter implements Highlighter {
 
    private final static char[] CLOSE_QW_DEL = {
       ')', '}', '>'
-   };
-
-   private final static char[] Q_ALT = {
-      'q', 'w', 'x'
    };
 
    private final static String[] SYNTAX_KEYWORDS = {

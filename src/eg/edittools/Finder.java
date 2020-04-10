@@ -91,7 +91,6 @@ public class Finder implements AddableEditTool {
    }
 
    private JToolBar toolbar() {
-      JButton bt = new JButton();
       JToolBar tb = UIComponents.toolBar(null, null, closeBt);
       return tb;
    }

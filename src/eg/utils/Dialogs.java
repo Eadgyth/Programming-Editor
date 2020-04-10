@@ -150,7 +150,6 @@ public class Dialogs {
       JPanel holdCBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
       holdCBox.add(cBox);
       pnl.add(holdCBox);
-      int messageType;
       int res;
       if (isWarning) {
          res = JOptionPane.showConfirmDialog(null, pnl, title,

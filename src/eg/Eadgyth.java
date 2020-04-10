@@ -25,6 +25,7 @@ import eg.utils.ScreenParams;
 public class Eadgyth {
 
    public static void main(String[] arg) {
+
       Locale.setDefault(Locale.US);
       uiManagerSettings();
       createEadgythDataDir();
@@ -88,7 +89,10 @@ public class Eadgyth {
    }
 
    private static void createEadgythDataDir() {
-      File newDir = new File(SystemParams.EADGYTH_DATA_DIR);
-      newDir.mkdir();
+      File dir = new File(SystemParams.EADGYTH_DATA_DIR);
+      boolean create = dir.mkdir();
+      if (create) {
+         System.out.println("created data folder " + SystemParams.EADGYTH_DATA_DIR);
+      }
    }
 }

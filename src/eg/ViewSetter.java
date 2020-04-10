@@ -44,7 +44,6 @@ public class ViewSetter {
     */
    public void applySettings() {
       boolean show;
-      String state;
       show = vsw.isShowLineNumbers();
       if (show != isShowLineNumbers) {
          f.showLineNumbers(show);

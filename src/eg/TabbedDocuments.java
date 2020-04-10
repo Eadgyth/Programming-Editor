@@ -29,20 +29,20 @@ import eg.utils.FileUtils;
  * {@link EditArea}.
  * <p>
  * If the tab bar is set invisible the single open document is also
- * referred to as the 'selected' document
+ * referred to as (and technically is) the 'selected' document.
  */
 public class TabbedDocuments {
 
    private final MainWin mw;
    private final ExtTabbedPane tabPane;
    private final EditableDocument[] edtDoc;
+   private final EditArea[] editArea;
    private final Prefs prefs = new Prefs();
    private final FileChooser chOpen;
    private final FileChooser chSave;
    private final Formatter format;
    private final Edit edit;
    private final Projects proj;
-   private final EditArea[] editArea;
 
    private int iTab = -1;
    private Languages lang;
@@ -153,7 +153,7 @@ public class TabbedDocuments {
    }
 
    /**
-    * Renames the file of the currently selected document with a name that
+    * Renames the file of the selected document with a name that
     * is specified in the file chooser
     */
    public void rename() {
@@ -464,7 +464,7 @@ public class TabbedDocuments {
    }
 
    private boolean canCloseDeletedFile(int i) {
-      tabPane.setSelectedIndex(i);            
+      tabPane.setSelectedIndex(i);
       int res = saveDeletedRes();
       boolean b;
       if (JOptionPane.YES_OPTION == res) {
@@ -475,7 +475,7 @@ public class TabbedDocuments {
       }
       return b;
    }
-   
+
    private int saveDeletedRes() {
       return Dialogs.confirmYesNoCancel(
             edtDoc[iTab].filename()

@@ -10,6 +10,7 @@ import javax.swing.Icon;
  * The action whose <code>actionPerformed</code> method uses
  * the <code>ActionListener</code> specified in the constructor
  */
+@SuppressWarnings("serial")
 public class FunctionalAction extends AbstractAction {
 
    private final ActionListener al;

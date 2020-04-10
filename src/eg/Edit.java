@@ -102,7 +102,6 @@ public class Edit {
       if (clipboard.length() == 0) {
          return;
       }
-      String sel = textArea.getSelectedText();
       int pos = textArea.getSelectionStart();
       int end = textArea.getSelectionEnd();
       int length = end - pos;

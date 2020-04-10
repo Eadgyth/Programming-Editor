@@ -122,6 +122,7 @@ public class CurrentLanguage {
          case XML:
             hl = new XMLHighlighter();
             break;
+         case NORMAL_TEXT:
        }
        return hl;
    }

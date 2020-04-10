@@ -14,13 +14,8 @@ import eg.document.EditableDocument;
 import eg.utils.Dialogs;
 
 /**
- * The assigned projects
- * <p>
- * Projets are represented by objects of {@link ProjectCommands}. The
- * assignment of projects, the changing between assigned projects and
- * the update of project UI controls depend on the document that is
- * selected and on the file that is set in a document. Documents are
- * represented by objects of {@link EditableDocument}.
+ * The processing of coding projects and updating of project UI
+ * controls
  */
 public class Projects {
 
@@ -46,7 +41,7 @@ public class Projects {
       this.mw = mw;
       this.fileTree = fileTree;
       this.edtDoc = edtDoc;
-      Console cons = new Console(mw.consolePnl());
+      Console cons = new Console(mw.consolePanel());
       Runnable fileTreeUpdate = () -> fileTree.updateTree();
       proc = new ProcessStarter(cons, fileTreeUpdate);
       TaskRunner runner = new TaskRunner(mw, cons, proc, fileTreeUpdate);
@@ -65,7 +60,7 @@ public class Projects {
 
    /**
     * Updates the project UI controls depending on the selected
-    * document and the file that is set in a document
+    * document and/or the file of the document
     */
    public void changedDocumentUpdate() {
       if (currentProject == null) {
@@ -113,9 +108,7 @@ public class Projects {
    }
 
    /**
-    * Assigns a new project that the file of the selected document
-    * belongs to or opens the settings window if the file already
-    * belongs to the current project of the specified type
+    * Opens the project settings to assign a new project
     *
     * @param projType  the project type
     */
@@ -160,7 +153,6 @@ public class Projects {
       boolean isFound = false;
       for (ProjectTypes t : ProjectTypes.values()) {
          projToFind = selector.createProject(t);
-         projToFind.buildSettingsWindow();
          isFound = projToFind.retrieve(dir);
          if (isFound) {
             break;
@@ -168,6 +160,9 @@ public class Projects {
       }
       if (isFound) {
          projects.add(projToFind);
+         projToFind.buildSettingsWindow();
+         ProjectCommands projFin = projToFind;
+         projFin.setConfiguringAction(() -> configure(projFin));
          if (currentProject == null) {
             currentProject = projToFind;
             currentProject.storeConfiguration();
@@ -175,9 +170,7 @@ public class Projects {
          }
          else {
             change(projToFind);
-         }
-         ProjectCommands projFin = projToFind;
-         projFin.setConfiguringAction(() -> configure(projFin));
+         }        
       }
    }
 
@@ -193,8 +186,7 @@ public class Projects {
    }
 
    /**
-    * Changes to the project that the file of the selected document
-    * belongs to
+    * Changes to the project that the selected document belongs to
     */
    public void change() {
       ProjectCommands inList = selectFromList(edtDoc[iDoc].fileParent(), true);
@@ -230,7 +222,7 @@ public class Projects {
        */
       public void enableRun(boolean save) {
          isRun = true;
-         isSaveAndRun = save; // in outer class
+         isSaveAndRun = save; // isSaveAnsRun in outer class
       }
 
       /**
@@ -270,9 +262,9 @@ public class Projects {
    }
 
    /**
-    * Saves the open project files if required by the project and runs
-    * the project.
-    * Saving is set in {@link ProjectCommands#enable}
+    * Saves open files of the current project if saving is enabled
+    * and runs the project.
+    * Saving is enabled in {@link ProjectCommands#enable}
     */
    public void run() {
       if (isSaveAndRun && !save()) {

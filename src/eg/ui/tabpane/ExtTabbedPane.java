@@ -1,7 +1,6 @@
 package eg.ui.tabpane;
 
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseMotionAdapter;
@@ -23,10 +22,8 @@ import eg.utils.ScreenParams;
  * <p>
  * Uses {@link ExtTabbedPaneUI} for the tabbar appearance
  */
+@SuppressWarnings("serial")
 public final class ExtTabbedPane extends JTabbedPane {
-
-   private final static FlowLayout FLOW_LAYOUT_LEFT
-         = new FlowLayout(FlowLayout.LEFT, 0, 0);
 
    private final ExtTabbedPaneUI tui = new ExtTabbedPaneUI();
 

@@ -39,14 +39,15 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
 
    @Override
    public void buildSettingsWindow() {
-      inputOptions.addFileInput("Name of main class file")
+      inputOptions
             .addSourceDirInput()
-            .addExecDirInput()
+            .addFileInput(MAIN_FILE_LABEL)
+            .addExecDirInput(CLASS_DIR_LABEL)
             .addLibrariesInput(LIB_LABEL)
             .addCmdOptionsInput()
             .addCmdArgsInput()
-            .addCompileOptionInput("Compiler options")
-            .addExtensionsInput("Extensions of included non-Java files")
+            .addCompileOptionInput()
+            .addExtensionsInput(INCLUDED_FILES_LABEL)
             .addBuildNameInput(JAR_NAME_LABEL)
             .buildWindow();
    }
@@ -263,9 +264,18 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          + "An extension must begin with a period.";
    }
 
+   private final String MAIN_FILE_LABEL =
+         "Name of main Java file";
+
+   private final String CLASS_DIR_LABEL =
+         "Name of destination directory for class files";
+
    private final String JAR_NAME_LABEL =
-         "Name or pathname for jar file (relative to project or absolute)";
+         "Name or pathname for jar file (relative or absolute)";
 
    private final String LIB_LABEL =
-         "Folder or jar file (path relative to project or absolute):";
+         "Directory or jar file (relative or absolute):";
+
+   private final String INCLUDED_FILES_LABEL =
+         "Extensions of included non-Java files";
 }

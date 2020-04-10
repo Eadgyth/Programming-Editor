@@ -10,21 +10,19 @@ import eg.BackgroundTheme;
 
 /**
  * Defines character attributes, each with a foreground color and a weight.
- * The shade of the blue foreground and the foreground for brackets depend
- * on the background theme.
+ * The shade of colors depend on the background theme.
  */
 public final class Attributes {
 
    public final SimpleAttributeSet redPlain     = new SimpleAttributeSet();
-   public final SimpleAttributeSet bracketsBold = new SimpleAttributeSet();
    public final SimpleAttributeSet bluePlain    = new SimpleAttributeSet();
    public final SimpleAttributeSet blueBold     = new SimpleAttributeSet();
    public final SimpleAttributeSet greenPlain   = new SimpleAttributeSet();
    public final SimpleAttributeSet orangePlain  = new SimpleAttributeSet();
    public final SimpleAttributeSet purplePlain  = new SimpleAttributeSet();
+   public final SimpleAttributeSet bracketsBold = new SimpleAttributeSet();
 
    private final static Color GREEN  = new Color(80, 190, 80);
-   private final static Color PURPLE = new Color(200, 0, 255);
 
    /**
     * @param theme  the BackgroundTheme

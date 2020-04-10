@@ -13,7 +13,7 @@ import java.util.Arrays;
 import eg.Prefs;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
-import eg.projects.settingswin.SettingsWindow;
+import eg.ui.projectsetting.SettingsWindow;
 
 /**
  * The configuration of a project
@@ -38,15 +38,17 @@ public abstract class AbstractProject implements Configurable {
    private final ProjectTypes projType;
    private final String sourceExtension;
    private final boolean useMainFile;
+   private final String namespaceSep;
    private final SettingsWindow sw;
+   private final List<String> libraries = new ArrayList<>();
    //
    // Variables that correspond to or depend on input in the settings window
-   private final List<String> libraries = new ArrayList<>();
    private String projectRoot = "";
    private String mainFileName = "";
    private String customCmd = "";
    private String relMainFilePath = "";
    private String namespace = "";
+   private String namespaceDisplay = "";
    private String execDirName = "";
    private String sourceDirName = "";
    private String cmdOptions = "";
@@ -62,6 +64,7 @@ public abstract class AbstractProject implements Configurable {
    private boolean isPathname = false;
    private boolean isNameConflict = false;
    private boolean showNameConflictMsg = true;
+   private String sourceDir = "";
    //
    // The Prefs object that reads from and writes to a ProjConfig file
    // in a project directory
@@ -91,13 +94,11 @@ public abstract class AbstractProject implements Configurable {
    public final boolean configure() {
       String rootName = sw.projDirNameInput();
       String root = "";
-      boolean isRootFound = false;
       if (!rootName.isEmpty()) {
          root = rootByName(dirToTest, rootName);
-         isRootFound = !root.isEmpty();
       }
       boolean success = false;
-      if (!isRootFound) {
+      if (root.isEmpty()) {
          Dialogs.warnMessageOnTop(projRootInputWarning());
          if (!projectRoot.isEmpty()) {
             sw.displayProjDirName(projectName());
@@ -106,7 +107,9 @@ public abstract class AbstractProject implements Configurable {
       else {
          if (!useMainFile) {
             success = true;
-            customCmd = sw.customCmdInput();
+            if (projType == ProjectTypes.GENERIC) {
+               customCmd = sw.customCmdInput();
+            }
          }
          else {
             success = configForMainFile(root);
@@ -204,6 +207,12 @@ public abstract class AbstractProject implements Configurable {
       this.projType = projType;
       this.sourceExtension = "." + sourceExtension;
       this.useMainFile = useMainFile;
+      if (projType == ProjectTypes.JAVA) {
+         namespaceSep = ".";
+      }
+      else {
+         namespaceSep = F_SEP;
+      }
       sw = new SettingsWindow();
       inputOptions = sw.inputOptionsBuilder();
       sw.setCancelAct(e -> undoSettings());
@@ -404,9 +413,16 @@ public abstract class AbstractProject implements Configurable {
       }
       return "";
    }
-
+   
    private boolean configForMainFile(String root) {
       sourceDirName = sw.sourcesDirNameInput();
+      sourceDir = "";
+      if (!sourceDirName.isEmpty()) {
+         setSourceDir(root, sourceDirName);
+         if (!sourceDir.isEmpty()) {
+            sourceDirName = sourceDir.substring(root.length() + 1);
+         }
+      }
       execDirName = sw.execDirNameInput();
       sw.assignLibrariesInput(libraries);
       cmdOptions = sw.cmdOptionsInput();
@@ -414,9 +430,9 @@ public abstract class AbstractProject implements Configurable {
       compileOptions = sw.compileOptionsInput();
       extensions = sw.extensionsInput();
       buildName = sw.buildNameInput().replace("/", F_SEP);
-      boolean success = false;
       absNamespace = "";
       namespace = "";
+      namespaceDisplay = "";
       isNameConflict = false;
       splitMainFileInput(sw.fileNameInput());
       if (!isPathname) {
@@ -428,6 +444,7 @@ public abstract class AbstractProject implements Configurable {
          if (!absNamespace.isEmpty()) {
             if (absNamespace.length() > sourceRoot.length()) {
                namespace = absNamespace.substring(sourceRoot.length() + 1);
+               namespaceDisplay = namespace.replace(F_SEP, namespaceSep);
             }
             else {
                namespace = ""; // no subdir in source root
@@ -448,6 +465,43 @@ public abstract class AbstractProject implements Configurable {
             Dialogs.warnMessageOnTop(mainFileInputWarning());
          }
          return false;
+      }
+   }
+   
+   private void setSourceDir(String root, String sourceDirInput) {
+      File fRoot = new File(root);
+      File[] files = fRoot.listFiles();      
+      if (files != null) {
+         for (File f : files) {
+            if (f.isDirectory()) {
+               if (f.getName().equals(sourceDirInput)) {
+                  sourceDir = f.getPath();
+                  break;
+               }
+               else {
+                  setSourceDir(f.getPath(), sourceDirInput);
+               }
+            }
+         }
+      }
+   }
+   
+   private void splitMainFileInput(String mainFileInput) {
+      String formatted = mainFileInput.replace("\\", "/");
+      if (formatted.endsWith(sourceExtension)) {
+         int l = formatted.length() - sourceExtension.length();
+         formatted = formatted.substring(0, l);
+      }
+      formatted = formatted.replace(namespaceSep, "/");
+      int lastSepPos = formatted.lastIndexOf("/", formatted.length() - 1);
+      isPathname = lastSepPos != -1;
+      if (isPathname) {
+         namespace = formatted.replace("/", F_SEP).substring(0, lastSepPos);
+         namespaceDisplay = namespace.replace(F_SEP, namespaceSep);
+         mainFileName = formatted.substring(lastSepPos + 1);
+      }
+      else {
+         mainFileName = formatted;
       }
    }
 
@@ -487,14 +541,15 @@ public abstract class AbstractProject implements Configurable {
       boolean success;
       if (!useMainFile) {
          File toTest = new File(root);
-         customCmd = pr.property("Command");
+         if (projType == ProjectTypes.GENERIC) {
+            customCmd = pr.property("Command");
+         }
          success = toTest.exists() && toTest.isDirectory();
       }
       else {
-         splitMainFileInput(pr.property("MainProjectFile"));
-         if (!isPathname) {
-            namespace = pr.property("Namespace");
-         }
+         mainFileName = pr.property("MainProjectFile");
+         namespace = pr.property("Namespace");
+         namespaceDisplay = namespace.replace(F_SEP, namespaceSep);
          sourceDirName = pr.property("SourceDir");
          execDirName = pr.property("ExecDir");
          String libInput = pr.property("Libraries");
@@ -513,23 +568,6 @@ public abstract class AbstractProject implements Configurable {
          displaySettings();
       }
       return success;
-   }
-
-   private void splitMainFileInput(String mainFileInput) {
-      String formatted = mainFileInput.replace("\\", "/");
-      if (formatted.endsWith(sourceExtension)) {
-         int l = formatted.length() - sourceExtension.length();
-         formatted = formatted.substring(0, l);
-      }
-      int lastSepPos = formatted.lastIndexOf("/", mainFileInput.length());
-      isPathname = lastSepPos != -1;
-      if (isPathname) {
-         namespace = formatted.replace("/", F_SEP).substring(0, lastSepPos);
-         mainFileName = formatted.substring(lastSepPos + 1);
-      }
-      else {
-         mainFileName = formatted;
-      }
    }
 
    private void setRelMainFilePath() {
@@ -558,8 +596,8 @@ public abstract class AbstractProject implements Configurable {
 
    private void displaySettings() {
       sw.displayProjDirName(projectName());
-      if (isPathname) {
-         sw.displayFile(namespace + F_SEP + mainFileName);
+      if (!namespaceDisplay.isEmpty()) {
+         sw.displayFile(namespaceDisplay + namespaceSep + mainFileName);
       }
       else {
          sw.displayFile(mainFileName);
@@ -609,14 +647,8 @@ public abstract class AbstractProject implements Configurable {
       pr.setProperty("IncludedFiles", extensions);
       pr.setProperty("BuildName", buildName);
       pr.setProperty("ProjectType", projType.toString());
-      if (isPathname) {
-         pr.setProperty("MainProjectFile", namespace + F_SEP + mainFileName);
-         pr.setProperty("Namespace", "");
-      }
-      else {
-         pr.setProperty("MainProjectFile", mainFileName);
-         pr.setProperty("Namespace", namespace);
-      }
+      pr.setProperty("MainProjectFile", mainFileName);
+      pr.setProperty("Namespace", namespace);
       StringBuilder libOut = new StringBuilder("");
       libraries.forEach((s) -> {
          libOut.append(s.replace("/", F_SEP)).append(File.pathSeparator);
@@ -694,7 +726,7 @@ public abstract class AbstractProject implements Configurable {
             .append(" file cannot be found");
       }
       if (!mainFileName.isEmpty() && !sourceDirName.isEmpty()) {
-         sb.append(" in the sources directory ")
+         sb.append(" in the source folder ")
             .append(sourceDirName);
       }
       sb.append(".");
@@ -704,11 +736,13 @@ public abstract class AbstractProject implements Configurable {
    private String nameConflictMsg() {
       return
          mainFileName
+         + sourceExtension
          + "\nMore than one file with this name seems to exist"
-         + " in the project. The currently set file is:\n."
+         + " in the project. The currently set file is:\n.."
          + F_SEP
          + relMainFilePath
          + "\n\nTo use another file a relative pathname"
-         + " and/or a sources directory maybe specified.";
+         + " and/or a relative path of a source folder"
+         + " can be entered.";
    }
 }

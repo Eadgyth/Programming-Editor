@@ -56,7 +56,7 @@ public class SyntaxHighlighter {
     * <code>isNewline</code> is true.
     *
     * @param chgPos  the position where a change happened
-    * @param isNewline  if the change is a newline
+    * @param isNewline  true if the change is a newline
     */
    public void highlight(int chgPos, boolean isNewline) {
       int lineStart = LinesFinder.lastNewline(txt.text(), chgPos);
@@ -75,7 +75,7 @@ public class SyntaxHighlighter {
    /**
     * Highlights text elements in a section that may be multiline. The
     * section initially consists of the completed lines that contain
-    * <code>change</code> and it begins with the line that contains
+    * <code>change</code> and begins with the line that contains
     * <code>chgPos</code>.
     *
     * @param change  the change to the text
@@ -103,13 +103,11 @@ public class SyntaxHighlighter {
       private boolean isMultiline = true;
       private boolean isRepairBlock = false;
       private boolean isRepairInnerBlock = false;
-      private int textBlockCount;
       boolean isQuoteInSection;
       private int nDoubleQuote;
       private int nSingleQuote;
       private int nTriDoubleQuote;
       private int nTriSingleQuote;
-      private Highlighter hlSection;
       private int innerStart = 0;
       private int innerEnd = 0;
       private int condition = 0;
@@ -117,8 +115,7 @@ public class SyntaxHighlighter {
       /**
        * Sets a condition for validating found text elements. The
        * condition is passed to {@link Highlighter#isValid} by this
-       * search methods (where indicated) each time a text element
-       * is found.
+       * search methods (where indicated) if a text element is found.
        *
        * @param condition  a freely chosen integer. Default is 0
        */
@@ -234,8 +231,8 @@ public class SyntaxHighlighter {
        * the keyword. Can be null and is ignored if reqWord is false
        * @param set  the SimpleAttributeSet set on the keywords
        */
-      public void keywordsIgnoreCase(String[] keys, boolean reqWord, char[] nonWordStart,
-            SimpleAttributeSet set) {
+      public void keywordsIgnoreCase(String[] keys, boolean reqWord,
+            char[] nonWordStart, SimpleAttributeSet set) {
 
          String scn = section;
          section = section.toLowerCase();
@@ -733,9 +730,6 @@ public class SyntaxHighlighter {
 
       private void xmlAttributes(String tag, int tagStart, int pos) {
          int offset = pos;
-         int length = SyntaxUtils.sectionLength(tag, offset,
-               SyntaxConstants.XML_TAG_ENDS, null);
-
          int i = offset;
          while (i < tag.length()) {
             if (!SyntaxUtils.isQuoted(tag, i)
