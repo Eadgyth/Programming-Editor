@@ -78,7 +78,9 @@ public class Finder implements AddableEditTool {
     * Does nothing in this class
     */
    @Override
-   public void end() {}
+   public void end() {
+	  // not used
+   }
 
    //
    //--private--//
@@ -91,8 +93,7 @@ public class Finder implements AddableEditTool {
    }
 
    private JToolBar toolbar() {
-      JToolBar tb = UIComponents.toolBar(null, null, closeBt);
-      return tb;
+      return UIComponents.toolBar(null, null, closeBt);
    }
 
    private JPanel controlsPnl() {
@@ -209,12 +210,12 @@ public class Finder implements AddableEditTool {
 
       @Override
       public void changedUpdate(DocumentEvent documentEvent) {
+    	 // not used
       }
 
       @Override
       public void insertUpdate(DocumentEvent documentEvent) {
-         boolean enable = inputTf.getText().length() > 0;
-         enableButtons(enable);
+         enableButtons(true);
       }
 
       @Override

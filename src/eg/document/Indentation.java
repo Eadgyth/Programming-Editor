@@ -111,14 +111,14 @@ public class Indentation {
    }
 
    private String currentIndentAt(int pos) {
-      String currIndent = "";
+      StringBuilder currIndent = new StringBuilder();
       if (pos > 1) {
          char[] line = lineAt(pos);
          for (int i = 0; i < line.length && line[i] == ' '; i++) {
-            currIndent += " ";
+            currIndent.append(" ");
          }
       }
-      return currIndent;
+      return currIndent.toString();
    }
 
    private int currentIndentLengthAt(int pos) {
@@ -133,8 +133,7 @@ public class Indentation {
    }
 
    private char[] lineAt(int pos) {
-      int lineStart = txt.text().lastIndexOf("\n", pos - 1) + 1;
-      char[] line = txt.text().substring(lineStart, pos).toCharArray();
-      return line;
+      int lineStart = txt.text().lastIndexOf('\n', pos - 1) + 1;
+      return txt.text().substring(lineStart, pos).toCharArray();
    }
 }

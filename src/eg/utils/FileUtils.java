@@ -59,7 +59,10 @@ public class FileUtils {
    public static void log(Exception e) {
       File f = new File(SystemParams.EADGYTH_DATA_DIR + "/log.txt");
       String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-      String msg = e.getCause().toString();
+      String msg = "";
+      if (e.getCause() != null) {
+         msg = e.getCause().toString();
+      }
       try (PrintWriter writer = new PrintWriter(f)) {
          writer.println(date);
          writer.println("_________________");

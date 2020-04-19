@@ -20,9 +20,9 @@ import eg.utils.ScreenParams;
  */
 public class PrintableText extends StyledText {
 
-   private final static BackgroundTheme THEME = BackgroundTheme.whiteTheme();
-   private final static Attributes ATTR = new Attributes(THEME);
-   private final static SimpleAttributeSet SET = new SimpleAttributeSet();
+   private static final BackgroundTheme THEME = BackgroundTheme.whiteTheme();
+   private static final Attributes ATTR = new Attributes(THEME);
+   private static final SimpleAttributeSet SET = new SimpleAttributeSet();
    
    private final JTextPane printArea;
    private final String text;

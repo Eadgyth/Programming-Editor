@@ -5,6 +5,8 @@ import java.awt.FlowLayout;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import javax.swing.border.EmptyBorder;
 
 //--Eadgyth--/
@@ -18,7 +20,7 @@ import eg.Edit;
 public class ToolBar {
 
    private final JPanel content = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-   private final JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
+   private final JToolBar tb = new JToolBar(SwingConstants.HORIZONTAL);
 
    private final JButton openBt       = new JButton(IconFiles.OPEN_ICON);
    private final JButton saveBt       = new JButton(IconFiles.SAVE_ICON);
@@ -147,9 +149,9 @@ public class ToolBar {
    //
 
    private void init() {
-      toolBar.setOpaque(false);
-      toolBar.setBorder(null);
-      toolBar.setFloatable(false);
+      tb.setOpaque(false);
+      tb.setBorder(null);
+      tb.setFloatable(false);
       compileBt.setEnabled(false);
       runBt.setEnabled(false);
       changeProjBt.setEnabled(false);
@@ -168,12 +170,12 @@ public class ToolBar {
          "", "Change Project"
       };
       for (int i = 0; i < bts.length; i++) {
-         toolBar.add(bts[i]);
+         tb.add(bts[i]);
          bts[i].setBorder(new EmptyBorder(8, 8, 8, 8));
          bts[i].setToolTipText(toolTips[i]);
          bts[i].setFocusable(false);
          bts[i].setFocusPainted(false);
       }
-      content.add(toolBar);
+      content.add(tb);
    }
 }

@@ -159,7 +159,7 @@ public class TextSearch {
                + count + " times.", null);
       }
       else {
-         Dialogs.infoMessage("\"" + searchTerm + "\" was not found.", null);
+         Dialogs.infoMessage(notFoundMsg(searchTerm), null);
       }
       textArea.requestFocusInWindow();
    }
@@ -179,7 +179,7 @@ public class TextSearch {
          textArea.select(pos, pos + searchTerm.length());
       }
       else {
-         Dialogs.infoMessage("\"" + searchTerm + "\" was not found.", null);
+         Dialogs.infoMessage(notFoundMsg(searchTerm), null);
          textArea.requestFocusInWindow();
       }
    }
@@ -205,7 +205,7 @@ public class TextSearch {
          textArea.select(pos, pos + searchTerm.length());
       }
       else {
-         Dialogs.infoMessage("\"" + searchTerm + "\" was not found.", null);
+         Dialogs.infoMessage(notFoundMsg(searchTerm), null);
          textArea.requestFocusInWindow();
       }
    }
@@ -231,5 +231,9 @@ public class TextSearch {
       else {
          pos = 0;
       }
+   }
+   
+   private String notFoundMsg(String searchTerm) {
+	  return "The " + searchTerm + " was not found";
    }
 }

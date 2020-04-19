@@ -8,7 +8,7 @@ import eg.document.styledtext.Attributes;
 public class JavascriptHighlighter implements Highlighter {
 
    // incomplete
-   private final static String[] JS_KEYWORDS = {
+   private static final String[] JS_KEYWORDS = {
       "abstract",
       "boolean", "break", "byte",
       "case", "catch", "char", "class", "const", "continue",

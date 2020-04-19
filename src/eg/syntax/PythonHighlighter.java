@@ -7,7 +7,7 @@ import eg.document.styledtext.Attributes;
  */
 public class PythonHighlighter implements Highlighter {
 
-   private final static String[] KEYWORDS = {
+   private static final String[] KEYWORDS = {
       "and", "as", "assert",
       "break",
       "class", "continue",
@@ -26,10 +26,10 @@ public class PythonHighlighter implements Highlighter {
       "yield"
    };
 
-   private final static int IGNORE_COND = 0;
-   private final static int TEXT_BLOCK_COND = 1;
-   private final static int SINGLE_QUOTE_TEXT_BLOCK_COND = 2;
-   private final static int DOUBLE_QUOTE_TEXT_BLOCK_COND = 3;
+   private static final int IGNORE_COND = 0;
+   private static final int TEXT_BLOCK_COND = 1;
+   private static final int SINGLE_QUOTE_TEXT_BLOCK_COND = 2;
+   private static final int DOUBLE_QUOTE_TEXT_BLOCK_COND = 3;
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {

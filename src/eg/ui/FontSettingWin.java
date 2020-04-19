@@ -15,6 +15,7 @@ import javax.swing.BoxLayout;
 import javax.swing.Box;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.WindowConstants;
 
 import eg.utils.ScreenParams;
 
@@ -23,7 +24,7 @@ import eg.utils.ScreenParams;
  */
 public class FontSettingWin {
 
-   private final static String[] FONT_SIZES = {
+   private static final String[] FONT_SIZES = {
      "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"
    };
 
@@ -111,7 +112,7 @@ public class FontSettingWin {
    }
 
    private void initFrame(String font, int size) {
-      frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+      frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       frame.setResizable(false);
       frame.setLocation(550, 100);
       frame.setContentPane(combinedPnl(font, size));

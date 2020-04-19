@@ -26,7 +26,6 @@ public class TextExchange {
    private final FileChooser fc;
    private final File exchFile;
    
-   private JFrame frame;
    private BusyFunction bf;
    private EditableDocument sourceDoc;
 
@@ -185,7 +184,7 @@ public class TextExchange {
    
    private BusyFunction busyFunction() {
       if (bf == null) {
-         frame = ((JFrame) exchangeDoc.textArea()
+         JFrame frame = ((JFrame) exchangeDoc.textArea()
             .getTopLevelAncestor());
             
          bf = new BusyFunction(frame);

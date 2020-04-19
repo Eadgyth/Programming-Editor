@@ -30,7 +30,7 @@ public final class EditableDocument {
    private String filename = "";
    private String filepath = "";
    private String fileParent = "";
-   String savedContent = "";
+   private String savedContent = "";
 
    /**
     * Creates an <code>EditableDocument</code> with the specified file

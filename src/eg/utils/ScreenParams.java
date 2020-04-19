@@ -9,15 +9,17 @@ import java.awt.Toolkit;
  */
 public class ScreenParams {
 
-   private final static int SCREEN_RES
-         = Toolkit.getDefaultToolkit().getScreenResolution();
-
-   private final static double SCREEN_RES_RATIO = SCREEN_RES / 72.0;
-
   /**
    * The screen size */
-   public final static Dimension SCREEN_SIZE
+   public static final Dimension SCREEN_SIZE
         = Toolkit.getDefaultToolkit().getScreenSize();
+   
+   private static final int SCREEN_RES
+   = Toolkit.getDefaultToolkit().getScreenResolution();
+
+   private static final double SCREEN_RES_RATIO = SCREEN_RES / 72.0;
+   
+   private static final String SANS_SERIF = "SansSerif";
 
    /**
     * Returns a new <code>Dimension</code> which may be scaled
@@ -35,23 +37,23 @@ public class ScreenParams {
    
     /**
     * Scaled sans-serif, plain; unscaled size 8 pt */
-   public final static Font SANSSERIF_PLAIN_8
-         = new Font("SansSerif", Font.PLAIN, scaledSize(8));
+   public static final Font SANSSERIF_PLAIN_8
+         = new Font(SANS_SERIF, Font.PLAIN, scaledSize(8));
 
    /**
     * Scaled sans-serif, plain; unscaled size 9 pt */
-   public final static Font SANSSERIF_PLAIN_9
-         = new Font("SansSerif", Font.PLAIN, scaledSize(9));
+   public static final Font SANSSERIF_PLAIN_9
+         = new Font(SANS_SERIF, Font.PLAIN, scaledSize(9));
 
    /**
     * Scaled sans-serif, bold; unscaled size 9 pt */
-   public final static Font SANSSERIF_BOLD_9
-         = new Font("SansSerif", Font.BOLD, scaledSize(9));
+   public static final Font SANSSERIF_BOLD_9
+         = new Font(SANS_SERIF, Font.BOLD, scaledSize(9));
 
    /**
     * Scaled sans-serif, bold; unscaled size 11 pt */
-   public final static Font SANSSERIF_BOLD_11
-         = new Font("SansSerif", Font.BOLD, scaledSize(11));
+   public static final Font SANSSERIF_BOLD_11
+         = new Font(SANS_SERIF, Font.BOLD, scaledSize(11));
    
    /**
     * Returns the specified font with a scaled size and type plain
@@ -62,8 +64,7 @@ public class ScreenParams {
     */ 
    public static Font scaledFontToPlain(Font f, int unscaledSize) {
       float s = (float) scaledSize(unscaledSize);
-      Font fNew = f.deriveFont(Font.PLAIN, s);
-      return fNew;
+      return f.deriveFont(Font.PLAIN, s);
    }
    
    /**
@@ -75,8 +76,7 @@ public class ScreenParams {
     */
    public static Font scaledFontToBold(Font f, int unscaledSize) {
       float s = (float) scaledSize(unscaledSize);
-      Font fNew = f.deriveFont(Font.BOLD, s);
-      return fNew;
+      return f.deriveFont(Font.BOLD, s);
    }
    
    /**

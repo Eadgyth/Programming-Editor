@@ -21,7 +21,7 @@ import eg.ui.IconFiles;
  */
 public class Dialogs {
    
-   private final static Border EMPTY_BORDER = new EmptyBorder(5, 5, 5, 5);
+   private static final Border EMPTY_BORDER = new EmptyBorder(5, 5, 5, 5);
 
    /**
     * Shows an information message
@@ -75,10 +75,8 @@ public class Dialogs {
     * <code>JOptionPane</code>
     */
    public static int confirmYesNoCancel(String message) {
-      int result = JOptionPane.showConfirmDialog(null, message, null,
+      return JOptionPane.showConfirmDialog(null, message, null,
             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-      return result;
    }
    
    /**
@@ -88,10 +86,8 @@ public class Dialogs {
     * @return  the Yes or No option specified in <code>JOptionPane</code>
     */
    public static int confirmYesNo(String message) {
-      int result = JOptionPane.showConfirmDialog(null, message, null,
+      return JOptionPane.showConfirmDialog(null, message, null,
             JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-      return result;
    }
    
    /**
@@ -101,11 +97,9 @@ public class Dialogs {
     * @return  the Yes or No option specified in <code>JOptionPane</code>
     */
    public static int infoConfirmYesNo(String message) {
-      int result = JOptionPane.showConfirmDialog(null, message, null,
+      return JOptionPane.showConfirmDialog(null, message, null,
             JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
             IconFiles.INFO_ICON);
-
-      return result;
    }
 
     /**
@@ -115,11 +109,9 @@ public class Dialogs {
     * @return  the Yes or No option specified in <code>JOptionPane</code>
     */
    public static int warnConfirmYesNo(String message) {
-      int res = JOptionPane.showConfirmDialog(null, message, null,
+      return JOptionPane.showConfirmDialog(null, message, null,
                 JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
                 IconFiles.WARNING_ICON);
-
-      return res;
    }
 
    /**

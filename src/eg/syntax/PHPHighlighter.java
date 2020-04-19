@@ -7,7 +7,7 @@ import eg.document.styledtext.Attributes;
  */
 public class PHPHighlighter implements Highlighter {
 
-   private final static String[] PHP_KEYWORDS = {
+   private static final String[] PHP_KEYWORDS = {
       "abstract", "and", "as",
       "break",
       "callable", "case", "catch", "class", "clone", "const", "continue",
@@ -31,7 +31,7 @@ public class PHPHighlighter implements Highlighter {
       "yield",
    };
 
-   private final static char[] END_OF_VAR = {
+   private static final char[] END_OF_VAR = {
       ' ', '\n', '{', '}', '?', '!', '[', ']', ';', '.', ':', '\\', '#',
       '&', '|', '=', '+', '-', '*', '/'
    };

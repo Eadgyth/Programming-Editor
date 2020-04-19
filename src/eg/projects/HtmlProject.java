@@ -16,7 +16,7 @@ import eg.Projects.ProjectActionsUpdate;
 public final class HtmlProject extends AbstractProject implements ProjectCommands {
 
    public HtmlProject() {
-      super(ProjectTypes.HTML, false, null);
+      super(ProjectTypes.HTML, null, null);
    }
 
    @Override
@@ -58,5 +58,7 @@ public final class HtmlProject extends AbstractProject implements ProjectCommand
     * Not implemented
     */
    @Override
-   protected void setCommandParameters() {}
+   protected void setCommandParameters() {
+	  // not used
+   }
 }

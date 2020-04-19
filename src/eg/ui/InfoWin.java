@@ -1,13 +1,15 @@
 package eg.ui;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JButton;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.Color;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.WindowConstants;
 
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -20,14 +22,14 @@ import eg.utils.ScreenParams;
  */
 public class InfoWin {
 
-   private final static String INFO
+   private static final String INFO
          = "<html>"
          + "Version: prepare for 1.1.4<br>"
          + "Malte Bussiek<br>"
          + "https://eadgyth.github.io/Programming-Editor/"
          + "</html>";
 
-   private final static Border EMPTY_BORDER = new EmptyBorder(10, 10, 10, 10);
+   private static final Border EMPTY_BORDER = new EmptyBorder(10, 10, 10, 10);
 
    private final JFrame  frame    = new JFrame();
    private final JPanel  textPnl  = new JPanel();
@@ -54,7 +56,7 @@ public class InfoWin {
       combine.add(holdTextPnl, BorderLayout.CENTER);
       combine.add(okButton, BorderLayout.SOUTH);
 
-      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
       frame.setLocation(650, 100);
       frame.setTitle("About");

@@ -9,15 +9,18 @@ public class SyntaxUtils {
 
    /**
     * Option for no effect if a text element is in quotes */
-   public static int IGNORE_QUOTED = 0;
+   public static final int IGNORE_QUOTED = 0;
    /**
     * Option for searching quoted text elements in which the quotation
     * may be multiline */
-   public static int BLOCK_QUOTED = 1;
+   public static final int BLOCK_QUOTED = 1;
    /**
     * Option for searching quoted text elements in which the quotation
     * must be found within line */
-   public static int LINE_QUOTED = 2;
+   public static final int LINE_QUOTED = 2;
+   
+   private static final String QUOTE_OPT_ERR
+         = "The value of 'quoteOpt' is not allowed";
 
    /**
     * Returns if a section with the specified length is a word
@@ -97,10 +100,10 @@ public class SyntaxUtils {
       boolean found = false;
       int start = pos + 1;
       int offset = 0;
-      if (successors != null && text.length() > start) {
-         if (isCharEqualTo(text, successors, start)) {
+      if (successors != null && text.length() > start
+            && isCharEqualTo(text, successors, start)) {
+
             offset = 1;
-         }
       }
       int i;
       for (i = start + offset; i < text.length() && !found; i++) {
@@ -334,8 +337,7 @@ public class SyntaxUtils {
          return isQuotedInLine(text, pos);
       }
       else {
-         throw new IllegalArgumentException(
-               "The value of 'quoteOpt' is not allowed");
+         throw new IllegalArgumentException(QUOTE_OPT_ERR);
       }
    }
 
@@ -481,12 +483,12 @@ public class SyntaxUtils {
 
    private SyntaxUtils() {}
 
-   private static int countBefore (String text, String str, int pos,
+   private static int countBefore(String text, String str, int pos,
          String lineCmntStart) {
 
       int count = 0;
       int i = 0;
-      while (i != -1) {
+      while (i != -1 && i < pos) {
          i = text.indexOf(str, i);
          if (i != -1) {
             if (lineCmntStart != null
@@ -494,9 +496,6 @@ public class SyntaxUtils {
 
                i+= str.length();
                continue;
-            }
-             if (i >= pos) {
-               break;
             }
             count++;
             i+= str.length();
@@ -536,8 +535,7 @@ public class SyntaxUtils {
          return nextUnquotedInLine(text, toSearch, pos);
       }
       else {
-         throw new IllegalArgumentException(
-               "The value of 'quoteOpt' is not allowed");
+         throw new IllegalArgumentException(QUOTE_OPT_ERR);
       }
    }
 
@@ -551,8 +549,7 @@ public class SyntaxUtils {
          return lastUnquotedInLine(text, pos, toSearch);
       }
       else {
-         throw new IllegalArgumentException(
-               "The value of 'quoteOpt' is not allowed");
+         throw new IllegalArgumentException(QUOTE_OPT_ERR);
       }
    }
 

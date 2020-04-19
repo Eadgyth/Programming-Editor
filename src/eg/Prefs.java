@@ -19,61 +19,61 @@ import eg.ui.ViewSettingWin;
 public final class Prefs {
    /**
     * Key for the indent unit which is a certain number of spaces */
-   public final static String INDENT_UNIT_KEY = "IndentUnit";
+   public static final String INDENT_UNIT_KEY = "IndentUnit";
    /**
     * Key for the font name */
-   public final static String FONT_KEY = "Font";
+   public static final String FONT_KEY = "Font";
    /**
     * Key for the font size */
-   public final static String FONT_SIZE_KEY = "FontSize";
+   public static final String FONT_SIZE_KEY = "FontSize";
    /**
     * Key for showing line numbers; a 'Yes-No' property */
-   public final static String LINE_NR_KEY = "LineNumbers";
+   public static final String LINE_NR_KEY = "LineNumbers";
    /**
     * Key for enabling wordwrap; a 'Yes-No' property */
-   public final static String WORDWRAP_KEY = "Wordwrap";
+   public static final String WORDWRAP_KEY = "Wordwrap";
    /**
     * Key for showing the toolbar; a 'Yes-No' property */
-   public final static String TOOLBAR_KEY = "Toolbar";
+   public static final String TOOLBAR_KEY = "Toolbar";
    /**
     * Key for showing the status bar; a 'Yes-No' property */
-   public final static String STATUSBAR_KEY = "Statusbar";
+   public static final String STATUSBAR_KEY = "Statusbar";
    /**
     * Key for showing the tabbar; a 'Yes-No' property */
-   public final static String TABBAR_KEY = "Tabbar";
+   public static final String TABBAR_KEY = "Tabbar";
    /**
     * Key for showing the file view; a 'Yes-No' property */
-   public final static String FILE_VIEW_KEY = "FileView";
+   public static final String FILE_VIEW_KEY = "FileView";
    /**
     * Key for the icon size which is 'Small' or 'Large' */
-   public final static String ICON_SIZE_KEY = "IconSize";
+   public static final String ICON_SIZE_KEY = "IconSize";
    /**
-    * Key for the background theme which is 'White' or 'Dark' */
-   public final static String THEME_KEY = "Theme";
+    * Key for the background theme which is 'White', 'Blue',
+    * 'Gray' or 'Black' */
+   public static final String THEME_KEY = "Theme";
    /**
     * Key for the LaF which is 'System' or 'Java default' */
-   public final static String LAF_KEY = "LaF";
+   public static final String LAF_KEY = "LaF";
    /**
-    * Key for the language which is a constant in {@link Languages}
-    * as String */
-   public final static String LANG_KEY = "Language";
+    * Key for the language which is a constant in
+    * {@link Languages} as String */
+   public static final String LANG_KEY = "Language";
    /**
     * Key for the last used directory to save or open a file */
-   public final static String RECENT_DIR_KEY = "RecentDir";
+   public static final String RECENT_DIR_KEY = "RecentDir";
    /**
     * Prefix for keys of properties of the exchange editor */
-   public final static String EXCHG_PREFIX = "Exchg";
+   public static final String EXCHG_PREFIX = "Exchg";
    /**
     * The name of the properties file to store the configuration
     * of a project */
-   public final static String PROJ_CONFIG_FILE = "ProjConfig.properties";
+   public static final String PROJ_CONFIG_FILE = "ProjConfig.properties";
 
-   private final static String PREFS_FILE
-         = SystemParams.EADGYTH_DATA_DIR + "/Prefs.properties";
+   private static final String PREFS_FILE
+         = SystemParams.EADGYTH_DATA_DIR + File.separator + "Prefs.properties";
 
-   private final static Properties PREF_PROP = new Properties();
+   private static final Properties PREFS_FILE_PROP = new Properties();
 
-   private final Properties projConfigProp = new Properties();
    private final Properties prop;
    private final File file;
 
@@ -89,7 +89,7 @@ public final class Prefs {
    * file does not (yet) exist the editor properties are pre-set.
    */
    public Prefs() {
-      prop = PREF_PROP;
+      prop = PREFS_FILE_PROP;
       file = new File(PREFS_FILE);
       if (file.exists()) {
          if (prop.isEmpty()) {
@@ -126,8 +126,8 @@ public final class Prefs {
     * @param projectDir  the directory
     */
    public Prefs(String projectDir) {
-      prop = projConfigProp;
-      file = new File(projectDir + "/" + PROJ_CONFIG_FILE);
+      prop = new Properties();
+      file = new File(projectDir + File.separator + PROJ_CONFIG_FILE);
       load();
    }
 
@@ -169,7 +169,7 @@ public final class Prefs {
 
    /**
     * Returns if the value of the 'Yes-No' property that corresponds
-    * to the specified key is 'Yes'
+    * to the specified key
     *
     * @param key  the property key
     * @return  true if the value is 'Yes', false otherwise

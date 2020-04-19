@@ -7,7 +7,7 @@ import java.awt.Color;
  */
 public class BackgroundTheme {
 
-   private final static Prefs PREFS = new Prefs();
+   private static final Prefs PREFS = new Prefs();
 
    private final Color background;
    private final Color normalText;

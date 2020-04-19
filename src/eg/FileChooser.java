@@ -33,7 +33,7 @@ public class FileChooser {
    }
 
    /**
-    * Initializes a chooser to open a file
+    * Initializes the chooser to open a file
     */
    public void initOpenFileChooser() {
       ch.setDialogTitle("Open");
@@ -44,7 +44,7 @@ public class FileChooser {
    }
 
    /**
-    * Initializes a chooser to save a file
+    * Initializes the chooser to save a file
     */
    public void initSaveFileChooser() {
       ch.setDialogTitle("Save file");
@@ -53,7 +53,7 @@ public class FileChooser {
    }
 
    /**
-    * Initializes a chooser to select a file or directory
+    * Initializes the chooser to select a file or directory
     */
    public void initSelectFileOrDirectoryChooser() {
       ch.setDialogTitle("Select file/directory");
@@ -63,7 +63,7 @@ public class FileChooser {
    }
 
    /**
-    * Opens a chooser to open a file and returns a file
+    * Opens the chooser to select a file to open
     *
     * @return  the file; null if cancel was clicked or the chooser
     * window was closed
@@ -80,7 +80,7 @@ public class FileChooser {
    }
 
    /**
-    * Opens a chooser to save a file and returns a file
+    * Opens the chooser to select a file to save
     *
     * @param presetFile  the filename that is shown in the text field
     * to specify a file. Can be Null or the empty string
@@ -103,8 +103,7 @@ public class FileChooser {
    }
 
    /**
-    * Opens a chooser to select a file or directory and returns a file
-    * or directory
+    * Opens the chooser to select a file or directory
     *
     * @return  the file or directory; null if cancel was clicked or the chooser
     * window was closed

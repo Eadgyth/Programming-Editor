@@ -66,10 +66,10 @@ public class FilesFinder {
       File[] targets  = f.listFiles(filter);
       resultList.addAll(Arrays.asList(targets));
       for (File fInList : list) {
-         if (fInList.isDirectory()) {
-            if (exclDir.isEmpty() || !fInList.getPath().equals(exclDir)) {
-               setFilteredFiles(fInList, extension, exclDir, exclFileName);
-            }
+         if (fInList.isDirectory()
+        	   && (exclDir.isEmpty() || !fInList.getPath().equals(exclDir))) {
+        	
+            setFilteredFiles(fInList, extension, exclDir, exclFileName);
          }
       }
    }

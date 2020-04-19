@@ -35,7 +35,7 @@ public class ViewSetter {
       this.f = f;
       initSettings();
       vsw.setCancelAct(e -> undoSettings());
-      vsw.setDefaultCloseAction(DefaultClosing);
+      vsw.setDefaultCloseAction(defaultClosing);
    }
 
    /**
@@ -117,7 +117,7 @@ public class ViewSetter {
       vsw.setVisible(false);
    }
 
-   private final WindowAdapter DefaultClosing = new WindowAdapter() {
+   private final WindowAdapter defaultClosing = new WindowAdapter() {
 
       @Override
       public void windowClosing(WindowEvent we) {

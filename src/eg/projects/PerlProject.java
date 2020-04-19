@@ -18,7 +18,7 @@ public final class PerlProject extends AbstractProject implements ProjectCommand
     * @param runner  the reference to TaskRunner
     */
    public PerlProject(TaskRunner runner) {
-      super(ProjectTypes.PERL, true, "pl");
+      super(ProjectTypes.PERL, "pl", null);
       this.runner = runner;
    }
 
@@ -40,7 +40,7 @@ public final class PerlProject extends AbstractProject implements ProjectCommand
 
    @Override
    public void compile() {
-      if (!locateMainFile()) {
+      if (!locateSourceFile()) {
          return;
       }
       runner.runSystemCommand(compileCmd);
@@ -48,7 +48,7 @@ public final class PerlProject extends AbstractProject implements ProjectCommand
 
    @Override
    public void run() {
-      if (!locateMainFile()) {
+      if (!locateSourceFile()) {
          return;
       }
       runner.runSystemCommand(runCmd);
@@ -69,7 +69,7 @@ public final class PerlProject extends AbstractProject implements ProjectCommand
       if (!cmdOptions().isEmpty()) {
          sb.append(cmdOptions()).append(" ");
       }
-      sb.append(relMainFilePath());
+      sb.append(relativeSourceFile());
       if (!cmdArgs().isEmpty()) {
          sb.append(" ").append(cmdArgs());
       }
@@ -78,13 +78,13 @@ public final class PerlProject extends AbstractProject implements ProjectCommand
 
    private void setCompileCmd() {
       StringBuilder sb = new StringBuilder("perl -c ");
-      sb.append(relMainFilePath());
+      sb.append(relativeSourceFile());
       if (!cmdArgs().isEmpty()) {
          sb.append(" ").append(cmdArgs());
       }
       compileCmd = sb.toString();
    }
    
-   private final static String PERL_SCRIPT_LABEL =
+   private static final String PERL_SCRIPT_LABEL =
          "Name of Perl script file";
 }

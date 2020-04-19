@@ -153,7 +153,7 @@ public class CurrentLanguage {
    //
 
    private String fileExtension(String file) {
-      int i = file.lastIndexOf(".") + 1;
+      int i = file.lastIndexOf('.') + 1;
       int j = file.lastIndexOf(File.separator);
       if (i > j) {
          return file.substring(i);

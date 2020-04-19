@@ -12,6 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JTabbedPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -29,18 +31,18 @@ import eg.ui.tabpane.ExtTabbedPane;
  */
 public class UIComponents {
 
-   private final static int BAR_HEIGHT = ScreenParams.scaledSize(17);
-   private final static Color GRAY = new Color(150, 150, 150);
-   private final static Color LIGHT_GRAY = new Color(170, 170, 170);
-   private final static Border GRAY_LINE_BORDER = new LineBorder(GRAY, 1);
+   private static final int BAR_HEIGHT = ScreenParams.scaledSize(17);
+   private static final Color GRAY = new Color(150, 150, 150);
+   private static final Color LIGHT_GRAY = new Color(170, 170, 170);
+   private static final Border GRAY_LINE_BORDER = new LineBorder(GRAY, 1);
 
-   private final static Border LIGHT_GRAY_LINE_BORDER
+   private static final Border LIGHT_GRAY_LINE_BORDER
          = new LineBorder(LIGHT_GRAY, 1);
 
-   private final static EmptyBorder BAR_BUTTON_BORDER
+   private static final EmptyBorder BAR_BUTTON_BORDER
          = new EmptyBorder(BAR_HEIGHT/2, 8, BAR_HEIGHT/2, 8);
 
-   private final static Border MATTE_BOTTOM_GRAY
+   private static final Border MATTE_BOTTOM_GRAY
          = new MatteBorder(0, 0, 1, 0, GRAY);
 
    /**
@@ -115,7 +117,7 @@ public class UIComponents {
    public static JToolBar toolBar(JButton[] bts, String[] tooltips,
          JButton rightBt) {
 
-      JToolBar tb = new JToolBar(JToolBar.HORIZONTAL);
+      JToolBar tb = new JToolBar(SwingConstants.HORIZONTAL);
       tb.setOpaque(false);
       tb.setPreferredSize(new Dimension(0, BAR_HEIGHT));
       tb.setBorder(MATTE_BOTTOM_GRAY);
@@ -188,8 +190,8 @@ public class UIComponents {
     */
    public static JScrollPane scrollPane() {
       JScrollPane sp = new JScrollPane(
-            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
       sp.setBorder(null);
       sp.getVerticalScrollBar().setUnitIncrement(15);

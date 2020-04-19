@@ -10,6 +10,8 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 //--Eadgyth--/
 import eg.document.EditableDocument;
@@ -70,9 +72,9 @@ public class TabbedDocuments {
 
       String indentUnit = prefs.property("IndentUnit");
       edit = new Edit(indentUnit);
-      mw.setEditActions(edit, (l) -> changeLanguage(l));
+      mw.setEditActions(edit, this::changeLanguage);
 
-      FileTree ft = new FileTree(mw.treePanel(), (f) -> open(f));
+      FileTree ft = new FileTree(mw.treePanel(), this::open);
       String projectRoot = prefs.property("ProjectRoot");
       ft.setProjectTree(projectRoot);
       proj = new Projects(mw, ft, edtDoc);
@@ -175,19 +177,15 @@ public class TabbedDocuments {
       if (!replaceExistingFile(f)) {
          return;
       }
-      if (edtDoc[iTab].file().delete()) {
-         boolean b = edtDoc[iTab].setFile(f);
-         if (b) {
+      try {
+    	 Files.delete(edtDoc[iTab].file().toPath());
+         if (edtDoc[iTab].setFile(f)) {
             changeFile();
             proj.updateFileTree();
          }
       }
-      else {
-         Dialogs.errorMessage(
-               "Renaming "
-               + edtDoc[iTab].file()
-               + " failed",
-               null);
+      catch (IOException e) {
+         FileUtils.log(e);
       }
    }
 
@@ -229,7 +227,7 @@ public class TabbedDocuments {
     * Prints the text content of the selected document to a printer
     */
    public void print() {
-      mw.busyFunction().execute(() -> edtDoc[iTab].print());
+      mw.busyFunction().execute(edtDoc[iTab]::print);
    }
 
    //
@@ -414,10 +412,8 @@ public class TabbedDocuments {
          if (iDeleted != nTabs()) {
             b = canCloseDeletedFile(iDeleted);
          }
-         else {
-            if (iUnsaved != nTabs()) {
-               b = canCloseUnsavedFile(iUnsaved);
-            }
+         else if (iUnsaved != nTabs()) {
+            b = canCloseUnsavedFile(iUnsaved);
          }
          if (b) {
             removeTab();
@@ -515,7 +511,7 @@ public class TabbedDocuments {
    private void changeFile() {
       changedFileUpdate(edtDoc[iTab]);
       tabPane.setTitle(iTab, edtDoc[iTab].filename());
-      EventQueue.invokeLater(() -> proj.retrieve());
+      EventQueue.invokeLater(proj::retrieve);
    }
 
    private void changedTabUpdate() {
@@ -525,9 +521,7 @@ public class TabbedDocuments {
       format.setIndex(iTab);
       proj.setDocumentAt(iTab);
       edit.setDocument(doc);
-      mw.editTools().forEach((t) -> {
-         t.setDocument(doc);
-      });
+      mw.editTools().forEach(t -> t.setDocument(doc));
       mw.displayWordWrapState(editArea[iTab].isWordwrap());
       mw.enableHideTabbar(nTabs() == 1);
       changedFileUpdate(doc);

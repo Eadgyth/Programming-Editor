@@ -7,76 +7,76 @@ public class SyntaxConstants {
 
    /**
     * The single quote character */
-   public final static char SINGLE_QUOTE = '\'';
+   public static final char SINGLE_QUOTE = '\'';
 
    /**
     * The double quote character */
-   public  final static char DOUBLE_QUOTE = '\"';
+   public static final char DOUBLE_QUOTE = '\"';
 
    /**
     * The single quote*/
-   public final static String SINGLE_QUOTE_STR = "\'";
+   public static final String SINGLE_QUOTE_STR = "\'";
 
    /**
     * The double quote */
-   public  final static String DOUBLE_QUOTE_STR = "\"";
+   public static final String DOUBLE_QUOTE_STR = "\"";
 
    /**
     * The triple double quotes*/
-   public final static String TRI_DOUBLE_QUOTE = "\"\"\"";
+   public static final String TRI_DOUBLE_QUOTE = "\"\"\"";
 
    /**
     * The triple single quotes*/
-   public final static String TRI_SINGLE_QUOTE = "\'\'\'";
+   public static final String TRI_SINGLE_QUOTE = "\'\'\'";
 
    /**
     * The slash-star block comment start */
-   public final static String SLASH_STAR = "/*";
+   public static final String SLASH_STAR = "/*";
 
    /**
     * The star-slash block comment end */
-   public final static String STAR_SLASH = "*/";
+   public static final String STAR_SLASH = "*/";
 
    /**
     * The double slash line comment start */
-   public final static String DOUBLE_SLASH = "//";
+   public static final String DOUBLE_SLASH = "//";
 
    /**
     * The hash sign line comment start */
-   public final static String HASH = "#";
+   public static final String HASH = "#";
 
    /**
     * The markup block comment start */
-   public final static String HTML_BLOCK_CMNT_START = "<!--";
+   public static final String HTML_BLOCK_CMNT_START = "<!--";
 
    /**
     * The markup block comment end */
-   public final static String HTML_BLOCK_CMNT_END = "-->";
+   public static final String HTML_BLOCK_CMNT_END = "-->";
 
    /**
     * The markup CDATA block start */
-   public final static String CDATA_BLOCK_START = "<![CDATA[";
+   public static final String CDATA_BLOCK_START = "<![CDATA[";
 
    /**
     * The markup CDATA block end */
-   public final static String CDATA_BLOCK_END = "]]>";
+   public static final String CDATA_BLOCK_END = "]]>";
 
    /**
     * The characters that end an XML tag */
-   public final static char[] XML_TAG_ENDS = {
+   public static final char[] XML_TAG_ENDS = {
       '<', '>'
    };
    
    /**
     * The characters that are reserved in XML */
-   public final static char[] RESERVED_XML_CHARS = {
+   public static final char[] RESERVED_XML_CHARS = {
       '>', '<', '/', ' ', '\n',  '&', '\"', '\'', '%', '=', '+', ';', ',', '\\'
    };
 
    /**
     * The HTML tag names
     */
-   public final static String[] HTML_TAGS = {
+   public static final String[] HTML_TAGS = {
       "a", "abbr", "address", "applet", "area", "article", "aside", "audio",
       "b", "base", "bdi", "bdo", "blockquote", "bold", "body", "br", "button",
       "canvas", "caption", "code", "col", "colgroup", "command",
@@ -103,7 +103,7 @@ public class SyntaxConstants {
    };
    /**
     * The html attribute keywords */
-   public final static String[] HTML_ATTR = {
+   public static final String[] HTML_ATTR = {
       "accesskey", "abbr", "accept", "accept-charset", "action", "align", "alt",
       "archive", "axis",
       "bgcolor", "border",

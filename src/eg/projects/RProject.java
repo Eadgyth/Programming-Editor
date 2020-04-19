@@ -17,7 +17,7 @@ public final class RProject extends AbstractProject implements ProjectCommands {
     * @param runner  the reference to TaskRunner
     */
    public RProject(TaskRunner runner) {
-      super(ProjectTypes.R, true, "R");
+      super(ProjectTypes.R, "R", null);
       this.runner = runner;
    }
 
@@ -36,7 +36,7 @@ public final class RProject extends AbstractProject implements ProjectCommands {
 
    @Override
    public void run() {
-      if (!locateMainFile()) {
+      if (!locateSourceFile()) {
          return;
       }
       runner.runSystemCommand(startCmd);
@@ -48,7 +48,7 @@ public final class RProject extends AbstractProject implements ProjectCommands {
       if (!cmdOptions().isEmpty()) {
          sb.append(cmdOptions()).append(" ");
       }
-      sb.append(relMainFilePath());
+      sb.append(relativeSourceFile());
       if (!cmdArgs().isEmpty()) {
          sb.append(" ").append(cmdArgs());
       }

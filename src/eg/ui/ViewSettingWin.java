@@ -15,6 +15,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
 import javax.swing.BorderFactory;
+import javax.swing.WindowConstants;
 
 //--Eadgyth--/
 import eg.utils.ScreenParams;
@@ -25,9 +26,9 @@ import eg.utils.SystemParams;
  */
 public class ViewSettingWin {
 
-   public final static String[] THEME_OPT = {"White", "Blue", "Gray", "Black"};
-   public final static String[] ICON_SIZES = {"Small", "Large"};
-   public final static String[] LAF_OPT = {"System", "Java default"};
+   public static final String[] THEME_OPT = {"White", "Blue", "Gray", "Black"};
+   public static final String[] ICON_SIZES = {"Small", "Large"};
+   public static final String[] LAF_OPT = {"System", "Java default"};
 
    private final JFrame frame = new JFrame("View preferences");
    private final JCheckBox lineNumbersChBx = new JCheckBox();
@@ -221,7 +222,7 @@ public class ViewSettingWin {
    //
 
    private void initFrame() {
-      frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+      frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       frame.setResizable(false);
       frame.setContentPane(combinedPnl());
       frame.getRootPane().setDefaultButton(okBt);

@@ -1,5 +1,7 @@
 package eg.ui.projectsetting;
 
+import java.io.File;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import javax.swing.border.MatteBorder;
 
@@ -21,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 //--Eadgyth--/
-import eg.BackgroundTheme;
 import eg.utils.ScreenParams;
 
 /**
@@ -30,12 +32,13 @@ import eg.utils.ScreenParams;
  */
 public class ListInputPanel {
 
-   private final static Dimension DIM_TF = ScreenParams.scaledDimension(350, 14);
+   private static final Dimension DIM_TF = ScreenParams.scaledDimension(350, 14);
+   private static final Color SEL_TF_YELLOW = new Color(250, 250, 170);
 
    private final JPanel content = new JPanel(new BorderLayout());
    private final JScrollPane scroll = new JScrollPane(
-         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-         JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+         ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+         ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
    private final JButton addBt    = new JButton("add");
    private final JButton removeBt = new JButton("remove");
@@ -45,7 +48,6 @@ public class ListInputPanel {
    private final JPanel  holder   = new JPanel();
 
    private final List<JTextField> tfList = new ArrayList<>(5);
-   private final BackgroundTheme theme = BackgroundTheme.whiteTheme();
 
    private int tfIndex = 0;
 
@@ -95,7 +97,7 @@ public class ListInputPanel {
       for (int i = 0; i < tfList.size(); i++) {
          String in = tfList.get(i).getText().trim();
          if (!in.isEmpty()) {
-            l.add(tfList.get(i).getText().trim());
+            l.add(tfList.get(i).getText().trim().replace("/", File.separator));
          }
       }
    }
@@ -104,7 +106,7 @@ public class ListInputPanel {
     * Sets the focus in the text field selected previously
     */
    public void setLastFocus() {
-      if (tfList.size() > 0) {
+      if (!tfList.isEmpty()) {
          tfList.get(tfIndex).requestFocusInWindow();
       }
    }
@@ -138,7 +140,7 @@ public class ListInputPanel {
       tfList.remove(tfIndex);
       holder.revalidate();
       holder.repaint();
-      if (tfList.size() > 0) {
+      if (!tfList.isEmpty()) {
          tfList.get(tfList.size() - 1).requestFocusInWindow();
       }
       else {
@@ -224,7 +226,7 @@ public class ListInputPanel {
       @Override
       public void focusGained(FocusEvent e) {
          tfIndex = tfList.indexOf(e.getComponent());
-         tfList.get(tfIndex).setBackground(theme.selectionBackground());
+         tfList.get(tfIndex).setBackground(SEL_TF_YELLOW);
          removeBt.setEnabled(true);
          upBt.setEnabled(tfIndex > 0);
          downBt.setEnabled(tfIndex < tfList.size() - 1);

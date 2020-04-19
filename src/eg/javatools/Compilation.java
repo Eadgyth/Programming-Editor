@@ -236,7 +236,7 @@ public class Compilation {
       if (success) {
          pr.printBr("Compilation successful");
       }
-      if (diagnostics.getDiagnostics().size() > 0) {
+      if (!diagnostics.getDiagnostics().isEmpty()) {
          for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
             pr.print(diagnostic.getKind().toString() + ":\n");
             pr.print(diagnostic.getCode() + ":\n   ");

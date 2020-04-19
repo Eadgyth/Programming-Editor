@@ -45,6 +45,7 @@ public class BusyFunction {
          }
          catch (InterruptedException | InvocationTargetException e) {
             FileUtils.log(e);
+            Thread.currentThread().interrupt();
          }
          finally {
             EventQueue.invokeLater(() -> glass.setVisible(false));

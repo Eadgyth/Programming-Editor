@@ -23,6 +23,8 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    private String startCommand = "";
    private String qualifiedMain = "";
    private File mainClassFile = null;
+   private String classDir = "";
+   private String relClassDir = "";
    private String jarName = "";
    private String[] nonJavaExt = null;
    private String inclExtErrMsg = "";
@@ -32,7 +34,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
     * @param runner  the reference to TaskRunner
     */
    public JavaProject(TaskRunner runner) {
-      super(ProjectTypes.JAVA, true, "java");
+      super(ProjectTypes.JAVA, "java", ".");
       this.runner = runner;
       comp = new Compilation(runner.consolePrinter());
    }
@@ -47,7 +49,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
             .addCmdOptionsInput()
             .addCmdArgsInput()
             .addCompileOptionInput()
-            .addExtensionsInput(INCLUDED_FILES_LABEL)
+            .addFileExtensionsInput(INCLUDED_FILES_LABEL)
             .addBuildNameInput(JAR_NAME_LABEL)
             .buildWindow();
    }
@@ -61,7 +63,10 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
 
    @Override
    public void compile() {
-      if (!locateMainFile()) {
+      if (!locateSourceFile()) {
+         return;
+      }
+      if (!createClassDir()) {
          return;
       }
       if (!libs.errorMessage().isEmpty()) {
@@ -72,14 +77,9 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          Dialogs.errorMessage(inclExtErrMsg, "Included non-java files");
          return;
       }
-      String sourceDir = inProjectDir(sourceDirName());
-      String classDir = inProjectDir(executableDirName());
-      if (!executableDirName().isEmpty()) {
-         new File(classDir).mkdirs();
-      }
       Runnable compile = () -> comp.compile(
             classDir,
-            sourceDir,
+            sourceDir(),
             nonJavaExt,
             libs.joinedAbsPaths(),
             compileOptions());
@@ -117,14 +117,12 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          return;
       }
       runner.runBusy(() -> {
-         String classDir = inProjectDir(executableDirName());
-         String sourceDir = inProjectDir(sourceDirName());
          if (!libs.forJar().isEmpty()) {
             jar.createClasspathInfo(classDir, libs.forJar());
          }
          try {
             boolean created = jar.createJar(jarName, qualifiedMain, classDir,
-                  sourceDir, nonJavaExt);
+                  sourceDir(), nonJavaExt);
 
             StringBuilder msg = new StringBuilder();
             if (created) {
@@ -141,6 +139,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          }
          catch (IOException | InterruptedException e) {
             FileUtils.log(e);
+            Thread.currentThread().interrupt();
          }
       });
    }
@@ -149,7 +148,8 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    protected void setCommandParameters() {
       setQualifiedMain();
       setNonJavaExtensions();
-      libs.configureLibraries(libraries(), projectPath());
+      libs.configureLibraries(libraries(), projectDir());
+      setClassDir();
       setStartCommand();
       setMainClassFile();
       setJarName();
@@ -162,21 +162,27 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    private void setQualifiedMain() {
       StringBuilder sb = new StringBuilder();
       if (!namespace().isEmpty()) {
-         sb.append(namespace().replaceAll("[/\\\\]", ".")).append(".");
+         sb.append(namespace()).append(".");
       }
-      sb.append(mainFileName());
+      sb.append(sourceFileName());
       qualifiedMain = sb.toString();
+   }
+
+   private void setClassDir() {
+      relClassDir = executableDir();
+      classDir = relClassDir.isEmpty() ?
+            projectDir() : projectDir() + File.separator + relClassDir;
    }
 
    private void setStartCommand() {
       StringBuilder sb = new StringBuilder("java");
-      if (!executableDirName().isEmpty() || !libs.joined().isEmpty()) {
+      if (!relClassDir.isEmpty() || !libs.joined().isEmpty()) {
          sb.append(" -cp \"");
-         if (!executableDirName().isEmpty()) {
-            sb.append(executableDirName());
+         if (!relClassDir.isEmpty()) {
+            sb.append(relClassDir);
          }
          if (!libs.joined().isEmpty()) {
-            if (executableDirName().isEmpty()) {
+            if (relClassDir.isEmpty()) {
                 sb.append(".");
              }
              sb.append(File.pathSeparator);
@@ -195,15 +201,32 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    }
 
    private void setMainClassFile() {
-      StringBuilder sb = new StringBuilder(projectPath() + "/");
-      if (!executableDirName().isEmpty()) {
-         sb.append(executableDirName()).append("/");
+      StringBuilder sb = new StringBuilder(projectDir() + "/");
+      if (!relClassDir.isEmpty()) {
+         sb.append(relClassDir).append("/");
       }
-      if (!namespace().isEmpty()) {
-         sb.append(namespace()).append("/");
+      if (!namespaceDir().isEmpty()) {
+         sb.append(namespaceDir()).append("/");
       }
-      sb.append(mainFileName()).append(".class");
+      sb.append(sourceFileName()).append(".class");
       mainClassFile = new File(sb.toString());
+   }
+
+   private boolean createClassDir() {
+      boolean b = true;
+      if (classDir.length() > projectDir().length()) {
+         File f = new File(classDir);
+         f.mkdirs();
+         if (!f.exists() || !f.isDirectory()) {
+            b = false;
+            Dialogs.errorMessage(
+                 relClassDir
+                 + "\nCould not create the destination directory"
+                 + " for class files in the project directory.",
+                 "Classes directory");
+         }
+      }
+      return b;
    }
 
    private void setJarName() {
@@ -211,7 +234,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
       String name = buildName();
       File f = new File(name);
       if (!f.isAbsolute()) {
-         name = inProjectDir(name);
+         name = projectDir() + File.separator + name;
          f = new File(name);
       }
       if (f.isDirectory()) {
@@ -246,14 +269,10 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
       if (!exists) {
          Dialogs.warnMessage(
             "A compiled main class file \'"
-            + mainFileName()
+            + qualifiedMain
             + ".class\' could not be found");
       }
       return exists;
-   }
-
-   private String inProjectDir(String subDir) {
-      return (subDir.isEmpty()) ? projectPath() : projectPath() + "/" + subDir;
    }
 
    private String wrongExtMessage(String ext) {
@@ -264,18 +283,18 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          + "An extension must begin with a period.";
    }
 
-   private final String MAIN_FILE_LABEL =
+   private static final String MAIN_FILE_LABEL =
          "Name of main Java file";
 
-   private final String CLASS_DIR_LABEL =
-         "Name of destination directory for class files";
+   private static final String CLASS_DIR_LABEL =
+         "Destination directory for class files (relative to project)";
 
-   private final String JAR_NAME_LABEL =
-         "Name or pathname for jar file (relative or absolute)";
+   private static final String JAR_NAME_LABEL =
+         "Name or pathname for jar file (relative to project or absolute)";
 
-   private final String LIB_LABEL =
-         "Directory or jar file (relative or absolute):";
+   private static final String LIB_LABEL =
+         "Directory or jar file (relative to project or absolute):";
 
-   private final String INCLUDED_FILES_LABEL =
+   private static final String INCLUDED_FILES_LABEL =
          "Extensions of included non-Java files";
 }

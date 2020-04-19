@@ -22,15 +22,15 @@ public interface ProjectCommands extends Configurable {
    public default void compile() {
       throw new UnsupportedOperationException(
             "Compiling source files is not supported");
-   };
+   }
 
    /**
-    * Runs the project using a main file defined by the project
+    * Runs the project using a source file set in the project
     */
    public default void run() {
       throw new UnsupportedOperationException(
             "Running the project is not supported");
-   };
+   }
 
    /**
     * Runs the project using the specified file.
@@ -42,7 +42,7 @@ public interface ProjectCommands extends Configurable {
    public default void run(String filepath) {
       throw new UnsupportedOperationException(
             "Running the project is not supported");
-   };
+   }
 
    /**
     * Creates a build of the project.
@@ -51,5 +51,5 @@ public interface ProjectCommands extends Configurable {
    public default void build() {
       throw new UnsupportedOperationException(
             "Creating a build is not supported");
-   };
+   }
 }

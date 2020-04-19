@@ -7,7 +7,7 @@ import eg.document.styledtext.Attributes;
  */
 public class RHighlighter implements Highlighter {
 
-   final static String[] KEYWORDS = {
+   private static final String[] KEYWORDS = {
       "break",
       "else",
       "FALSE", "for", "function",

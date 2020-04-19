@@ -138,11 +138,9 @@ public class UndoEdit {
             txt.insert(pos(iEd), edit(iEd));
          }
          iEd--;
-         if (iBr > -1) {
-            if (iEd == breakPt(iBr)) {
-               iBr--;
-               break;
-            }
+         if (iBr > -1 && iEd == breakPt(iBr)) {
+            iBr--;
+            break;
          }
       }
       if (iEd == -1) {
@@ -169,11 +167,9 @@ public class UndoEdit {
          }
          iEd++;
          int iBrAhead = iBr + 2;
-         if (iBrAhead < breakpoints.size()) {
-            if (iNext == breakPt(iBrAhead)) {
-               iBr++;
-               break;
-            }
+         if (iBrAhead < breakpoints.size() && iNext == breakPt(iBrAhead)) {
+            iBr++;
+            break;
          }
       }
       if (iEd == edits.size() - 1) {
@@ -187,7 +183,7 @@ public class UndoEdit {
     * added
     */
    public void markBreakpoint() {
-      if (edits.size() > 0) {
+      if (!edits.isEmpty()) {
          isMark = true;
       }
    }

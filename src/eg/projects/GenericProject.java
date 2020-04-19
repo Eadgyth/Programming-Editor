@@ -15,7 +15,7 @@ public final class GenericProject extends AbstractProject implements ProjectComm
    boolean isCmd;
 
    public GenericProject(TaskRunner runner) {
-      super(ProjectTypes.GENERIC, false, null);
+      super(ProjectTypes.GENERIC, null, null);
       this.runner = runner;
    }
 
@@ -47,11 +47,11 @@ public final class GenericProject extends AbstractProject implements ProjectComm
    //
 
    private boolean isCmdDefined() {
-      boolean isCmd = !customRunCmd().isEmpty();
-      if (!isCmd) {
+      boolean b = !customRunCmd().isEmpty();
+      if (!b) {
          Dialogs.errorMessage(
             "A system command is not specified.", null);
       }
-      return isCmd;
+      return b;
    }
 }

@@ -7,33 +7,33 @@ import eg.document.styledtext.Attributes;
  */
 public class PerlHighlighter implements Highlighter {
 
-   private final static char[] START_OF_VAR = {
+   private static final char[] START_OF_VAR = {
       '$', '@', '%'
    };
 
-   private final static char[] START_OF_ARR_HASH = {
+   private static final char[] START_OF_ARR_HASH = {
       '@', '%'
    };
 
-   private final char[] SECOND_POS_SCALAR = {
+   private static final char[] SECOND_POS_SCALAR = {
       '\\', '(', ')', ';', '[', ']', '}', '.', ':', ',', '?',
       '=', '/', '+', '-', '*', '|', '&', '!', '%', '^', '<', '>', '~'
    };
 
-   private final static char[] END_OF_VAR = {
+   private static final char[] END_OF_VAR = {
       ' ', '\\', '(', ')', ';', '[', ']', '{', '}', '.', ':', ',', '?', '\n',
       '=', '/', '+', '-', '*', '|', '&', '!', '%', '^', '<', '>', '~',
    };
 
-   private final static char[] OPEN_QW_DEL = {
+   private static final char[] OPEN_QW_DEL = {
       '(', '{', '<'
    };
 
-   private final static char[] CLOSE_QW_DEL = {
+   private static final char[] CLOSE_QW_DEL = {
       ')', '}', '>'
    };
 
-   private final static String[] SYNTAX_KEYWORDS = {
+   private static final String[] SYNTAX_KEYWORDS = {
       "and",
       "cmp", "continue", "CORE", "do",
       "else", "elsif", "eq", "exp",
@@ -54,9 +54,9 @@ public class PerlHighlighter implements Highlighter {
       "y"
    };
 
-   private final static int IGNORE_COND = 0;
-   private final static int QW_COND = 1;
-   private final static int LINE_CMNT_COND = 2;
+   private static final int IGNORE_COND = 0;
+   private static final int QW_COND = 1;
+   private static final int LINE_CMNT_COND = 2;
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
@@ -139,12 +139,7 @@ public class PerlHighlighter implements Highlighter {
          if (valid) {
             if (searchStart == 0 && text.length() > qPos + 2) {
                char c = text.charAt(qPos + 1);
-               if (c == 'x' || c == 'w') {
-                  searchStart = qPos + 2;
-               }
-               else {
-                  searchStart = qPos + 1;
-               }
+               searchStart = (c == 'x' || c == 'w') ? qPos + 2 : qPos + 1;
             }
             valid = SyntaxUtils.isWordEnd(text, searchStart);
             int d = -1;
@@ -155,13 +150,12 @@ public class PerlHighlighter implements Highlighter {
                }
                valid = SyntaxUtils.isWordStart(text, d + 1, CLOSE_QW_DEL);
             }
-
             if (valid) {
                del = d;
             }
          }
          if (!valid) {
-             return qDelStart(text, qPos - 1);
+            return qDelStart(text, qPos - 1);
          }
       }
       return del;

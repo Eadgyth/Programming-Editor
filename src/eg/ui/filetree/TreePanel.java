@@ -145,7 +145,7 @@ public class TreePanel {
    @SuppressWarnings("serial")
    private class TreeRenderer extends DefaultTreeCellRenderer {
 
-      private final FileSystemView fsv = FileSystemView.getFileSystemView();
+	  private final transient FileSystemView fsv = FileSystemView.getFileSystemView();
 
       @Override
       public Color getBackgroundNonSelectionColor() {

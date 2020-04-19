@@ -19,6 +19,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import java.io.File;
+import java.io.IOException;
+
+import java.nio.file.Files;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -75,23 +78,30 @@ public class FileTree {
    }
 
    /**
-    * Sets the directory that may be deleted (by using this popup
-    * menu) although it is not empty. Usually, non-empty folders
-    * are protected against deletion.
+    * Sets the directory that may be deleted by this popup menu
+    * although it is not empty. Other, non-empty folders are
+    * protected against deletion. The specified directory is
+    * relative to the project root but does not have to exist
+    * initially. Any absolute directory path is ignored.
     *
-    * @param deletableDirName  the name of the directory that is
-    * deletable. Null or the empty string to not set a deletable
-    * directory
+    * @param dir  the directory. Null or the empty string to not
+    * set a deletable directory
     */
-   public void setDeletableDir(String deletableDirName) {
+   public void setDeletableDir(String dir) {
       if (projRoot.length() == 0) {
          throw new IllegalStateException("No project root has been set");
       }
-      if (deletableDirName == null || deletableDirName.isEmpty()) {
+      if (dir == null || dir.isEmpty() || new File(dir).isAbsolute()) {
          deletableDir = null;
+         return;
       }
-      else {
-         deletableDir = projRoot + File.separator + deletableDirName;
+      File f = new File(projRoot + File.separator + dir);
+      while (f.getParent() != null) {
+         if (f.getParent().equals(projRoot)) {
+            deletableDir = f.getPath();
+            break;
+         }
+         f = f.getParentFile();
       }
    }
 
@@ -154,9 +164,9 @@ public class FileTree {
    }
 
    private void getFiles(DefaultMutableTreeNode node, File f) {
-      File fList[] = f.listFiles();
+      File[] fList = f.listFiles();
       if (fList != null) {
-         File fListSorted[] = sortedFiles(fList);
+         File[] fListSorted = sortedFiles(fList);
          for (File fs : fListSorted) {
             if (!fileSet.contains(fs.getAbsolutePath())) {
                fileSet.add(fs.getAbsolutePath());
@@ -167,31 +177,7 @@ public class FileTree {
             DefaultMutableTreeNode child = new DefaultMutableTreeNode(fs);
             node.add(child);
             if (fs.isDirectory() && node.getLevel() == 0) {
-               //if (fileSet.contains(fs.getAbsolutePath())) {
-               //   continue;
-               //}
                getFiles(child, fs);
-            }
-         }
-      }
-   }
-
-   private void addGrandchildren(DefaultMutableTreeNode node) {
-      int n = model.getChildCount(node);
-      for (int i = 0; i < n; i++) {
-         DefaultMutableTreeNode childNode
-               = (DefaultMutableTreeNode) model.getChild(node, i);
-
-         Object nodeInfo = childNode.getUserObject();
-         File f = (File) nodeInfo;
-         if (f.isDirectory() && childNode.isLeaf()) {
-            File fList[] = f.listFiles();
-            if (fList != null) {
-               File fListSorted[] = sortedFiles(fList);
-               for (File fs : fListSorted) {
-                  DefaultMutableTreeNode grandchild = new DefaultMutableTreeNode(fs);
-                  childNode.add(grandchild);
-               }
             }
          }
       }
@@ -208,13 +194,7 @@ public class FileTree {
          }
       }
       all.addAll(files);
-      File[] sortedList = all.toArray(new File[toSort.length]);
-      return sortedList;
-   }
-
-   private void folderDown() {
-      setNewTree(selectedFile.toString());
-      tree.expandRow(0);
+      return all.toArray(new File[toSort.length]);
    }
 
    private void folderUp() {
@@ -261,14 +241,13 @@ public class FileTree {
             + " will be permanently deleted!\nContinue?");
 
       if (res == JOptionPane.YES_OPTION) {
-         boolean success;
-         if (selectedFile.isFile()) {
-            success = selectedFile.delete();
-         }
-         else {
-            success = deleteFolder(selectedFile);
-         }
-         if (success) {
+         try {
+            if (selectedFile.isFile()) {
+               Files.delete(selectedFile.toPath());
+            }
+            else {
+               deleteFolder(selectedFile);
+            }
             if (selectedNode == root) {
                folderUp();
             }
@@ -276,11 +255,8 @@ public class FileTree {
                model.removeNodeFromParent(selectedNode);
             }
          }
-         else {
-            Dialogs.errorMessage(
-                  "Deleting "
-                  + selectedFile.getName()
-                  + " failed", null);
+         catch (IOException e) {
+            FileUtils.log(e);
          }
       }
       else {
@@ -288,14 +264,13 @@ public class FileTree {
       }
    }
 
-   private boolean deleteFolder(File dir) {
-      boolean b = true;
+   private void deleteFolder(File dir) throws IOException {
       if (dir.isDirectory()) {
          for (File f : dir.listFiles()) {
-            b = b && deleteFolder(f);
+            deleteFolder(f);
          }
       }
-      return b && dir.delete();
+      Files.delete(dir.toPath());
    }
 
    private void newFolder() {
@@ -353,7 +328,7 @@ public class FileTree {
    }
 
    private void expand() {
-      expandedNodes.forEach((treePath) -> {
+      expandedNodes.forEach(treePath -> {
          for (int i = 0; i < tree.getRowCount(); i++) {
             if (treePath.toString().equals(tree.getPathForRow(i).toString())) {
                tree.expandRow(i);
@@ -377,14 +352,33 @@ public class FileTree {
       @Override
       public void treeExpanded(TreeExpansionEvent event) {
          TreePath expPath = event.getPath();
-         DefaultMutableTreeNode expNode =
+         DefaultMutableTreeNode node =
                (DefaultMutableTreeNode) expPath.getLastPathComponent();
 
-         addGrandchildren(expNode);
+         int n = model.getChildCount(node);
+         for (int i = 0; i < n; i++) {
+            DefaultMutableTreeNode childNode
+                  = (DefaultMutableTreeNode) model.getChild(node, i);
+
+            Object nodeInfo = childNode.getUserObject();
+            File f = (File) nodeInfo;
+            if (f.isDirectory() && childNode.isLeaf()) {
+               File[] fList = f.listFiles();
+               if (fList != null) {
+                  File[] fListSorted = sortedFiles(fList);
+                  for (File fs : fListSorted) {
+                     DefaultMutableTreeNode grandchild = new DefaultMutableTreeNode(fs);
+                     childNode.add(grandchild);
+                  }
+               }
+            }
+         }
       }
 
       @Override
-      public void treeCollapsed(TreeExpansionEvent event) {}
+      public void treeCollapsed(TreeExpansionEvent event) {
+    	 // not used
+      }
    };
 
    private final MouseListener mouseListener = new MouseAdapter() {
@@ -408,7 +402,8 @@ public class FileTree {
                      openFile();
                   }
                   else {
-                     folderDown();
+                	   setNewTree(selectedFile.toString());
+                     tree.expandRow(0);
                   }
                }
             }

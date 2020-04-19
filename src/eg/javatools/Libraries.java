@@ -14,6 +14,8 @@ import eg.utils.FileUtils;
  * Stores libraries in different configurations
  */
 public class Libraries {
+   
+   private static final String F_SEP = File.separator;
 
    private final List<String> libs = new ArrayList<>();
    private final List<String> libsAbs = new ArrayList<>();
@@ -51,12 +53,12 @@ public class Libraries {
                }
             }
             else {
-               String absInProject = projectDir + "/" + s;
+               String absInProject = projectDir + F_SEP + s;
                f = new File(absInProject);
                if (f.exists()) {
                   libs.add(s);
                   libsAbs.add(absInProject);
-                  String forJar = s.replace("\\", "/");
+                  String forJar = s.replace(F_SEP, "/");
                   if (f.isFile()) {
                      libsForJar.add(forJar);
                   }

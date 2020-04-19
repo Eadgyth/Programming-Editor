@@ -1,6 +1,9 @@
 package eg.projects;
 
 import java.io.File;
+import java.io.IOException;
+
+import java.nio.file.Files;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -28,7 +31,7 @@ public abstract class AbstractProject implements Configurable {
     */
    protected final SettingsWindow.InputOptionsBuilder inputOptions;
 
-   private final static String F_SEP = File.separator;
+   private static final String F_SEP = File.separator;
    //
    // The Prefs object that reads from and writes to the Prefs file in
    // the program folder
@@ -36,38 +39,38 @@ public abstract class AbstractProject implements Configurable {
    //
    // Set in constructor
    private final ProjectTypes projType;
-   private final String sourceExtension;
-   private final boolean useMainFile;
-   private final String namespaceSep;
    private final SettingsWindow sw;
-   private final List<String> libraries = new ArrayList<>();
+   private final String sourceExt;
+   private final boolean hasSetSourceFile;
+   private final String namespaceSep;
    //
-   // Variables that correspond to or depend on input in the settings window
-   private String projectRoot = "";
-   private String mainFileName = "";
-   private String customCmd = "";
-   private String relMainFilePath = "";
+   // Variables that depend on user settings
+   private final List<String> libraries = new ArrayList<>();
+   private String projectDir = "";
+   private String projectName = "";
+   private String sourceFileName = "";
+   private String relSourceFilePath = "";
+   private String sourceDir = "";
+   private String relSourceDir = "";
    private String namespace = "";
-   private String namespaceDisplay = "";
-   private String execDirName = "";
-   private String sourceDirName = "";
+   private String namespaceDir = "";
+   private String customCmd = "";
    private String cmdOptions = "";
    private String cmdArgs = "";
+   private String execDir = "";
    private String compileOptions = "";
    private String extensions = "";
    private String buildName = "";
    //
    // Variables to control the configuration
    private String dirToTest = null;
-   private File mainFilePath = null;
+   private File sourceFile = null;
    private String absNamespace = "";
-   private boolean isPathname = false;
    private boolean isNameConflict = false;
-   private boolean showNameConflictMsg = true;
-   private String sourceDir = "";
+   private boolean ignoreNameConflict = false;
    //
-   // The Prefs object that reads from and writes to a ProjConfig file
-   // in a project directory
+   // The Prefs object that reads from and writes to a ProjConfig
+   // file in a project directory
    private Prefs conf;
 
    @Override
@@ -81,43 +84,37 @@ public abstract class AbstractProject implements Configurable {
          throw new IllegalArgumentException("dir cannot be null or empty");
       }
       dirToTest = dir;
-      if (projectRoot.isEmpty()) {
+      if (projectDir.isEmpty()) {
          sw.setDirectory(dir);
       }
       else {
-         sw.setDirectory(projectRoot);
+         sw.setDirectory(projectDir);
       }
       sw.setVisible(true);
    }
 
    @Override
    public final boolean configure() {
-      String rootName = sw.projDirNameInput();
+      String rootName = sw.projDirInput();
       String root = "";
       if (!rootName.isEmpty()) {
          root = rootByName(dirToTest, rootName);
       }
       boolean success = false;
       if (root.isEmpty()) {
-         Dialogs.warnMessageOnTop(projRootInputWarning());
-         if (!projectRoot.isEmpty()) {
-            sw.displayProjDirName(projectName());
+         Dialogs.warnMessageOnTop(projDirInputWarning());
+         if (!projectDir.isEmpty()) {
+            sw.displayProjDir(projectName);
          }
       }
       else {
-         if (!useMainFile) {
-            success = true;
-            if (projType == ProjectTypes.GENERIC) {
-               customCmd = sw.customCmdInput();
-            }
-         }
-         else {
-            success = configForMainFile(root);
-         }
+         success = !hasSetSourceFile || configForSourceFile(root);
       }
       if (success) {
-         projectRoot = root;
-         if (!isShowNameConflictMsg()) {
+         projectDir = root;
+         projectName = new File(root).getName();
+         fetchOptionalSettings();
+         if (!isNameConflictWarning()) {
             setCommandParameters();
             sw.setVisible(false);
          }
@@ -128,10 +125,11 @@ public abstract class AbstractProject implements Configurable {
    /**
     * {@inheritDoc}.
     * <p>
-    * First, a 'ProjConfig' file is searched in the specified directory
-    * or further upward the directory path. If this is not found, it is
-    * tested if the directory is contained in the project directory saved
-    * in the Prefs file in the program folder.
+    * It is first checked if a 'ProjConfig' file is found in the
+    * specified directory or further upward the directory path.
+    * If this is not the case it is checked if the directory is
+    * identical to or contained in the project directory saved
+    * lastly in the 'Prefs' file for the editor settings.
     */
    @Override
    public final boolean retrieve(String dir) {
@@ -140,18 +138,17 @@ public abstract class AbstractProject implements Configurable {
       if (!root.isEmpty()) {
          sw.setSaveProjConfigSelected(true);
          conf = new Prefs(root);
-         success = configByPrefs(root, conf);
+         success = configFromPrefs(root, conf);
       }
       else {
          sw.setSaveProjConfigSelected(false);
          root = prefs.property("ProjectRoot");
-         if (root != null && isInProject(dir, root)) {
-             success = configByPrefs(root, prefs);
+         if (root != null && dir.startsWith(root)) {
+             success = configFromPrefs(root, prefs);
          }
       }
       if (success) {
-         sw.setDirectory(projectRoot);
-         showNameConflictMsg = false;
+         sw.setDirectory(projectDir);
          setCommandParameters();
       }
       return success;
@@ -163,29 +160,28 @@ public abstract class AbstractProject implements Configurable {
    }
 
    @Override
-   public final boolean usesMainFile() {
-      return useMainFile;
+   public final boolean hasSetSourceFile() {
+      return hasSetSourceFile;
    }
 
    @Override
    public final boolean isInProject(String dir) {
-      return isInProject(dir, projectRoot);
+      return dir.startsWith(projectDir);
    }
 
    @Override
-   public final String projectPath() {
-      return projectRoot;
+   public final String projectDir() {
+      return projectDir;
    }
 
    @Override
    public final String projectName() {
-      File f = new File(projectRoot);
-      return f.getName();
+      return projectName;
    }
 
    @Override
-   public final String executableDirName() {
-      return execDirName;
+   public final String executableDir() {
+      return execDir;
    }
 
    @Override
@@ -194,29 +190,32 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * @param projType  the project type which has a valaue in
-    * {@link ProjectTypes}
-    * @param useMainFile  true to indicate that the project uses a main
-    * file which is executed when the project is run
-    * @param sourceExtension  the extension of source files (or of the
-    * main file if extensions differ) without the period
+    * @param projType  the project type
+    * @param sourceExt  the extension of the (main) source file
+    * to be set in this {@link SettingsWindow}. Null means no
+    * configuation for a particular source file
+    * @param namespaceSep  the separator for the namespace of the
+    * set source file (see {@link #namespace()}). Null to not
+    * take into account a namespace. Is ignored if sourceExt is
+    * null
     */
-   protected AbstractProject(ProjectTypes projType, boolean useMainFile,
-         String sourceExtension) {
+   protected AbstractProject(ProjectTypes projType, String sourceExt,
+         String namespaceSep) {
 
       this.projType = projType;
-      this.sourceExtension = "." + sourceExtension;
-      this.useMainFile = useMainFile;
-      if (projType == ProjectTypes.JAVA) {
-         namespaceSep = ".";
+      hasSetSourceFile = sourceExt != null;
+      if (hasSetSourceFile) {
+         this.sourceExt = "." + sourceExt;
+         this.namespaceSep = (namespaceSep != null) ? namespaceSep : null;
       }
       else {
-         namespaceSep = F_SEP;
+         this.sourceExt = null;
+         this.namespaceSep = null;
       }
       sw = new SettingsWindow();
       inputOptions = sw.inputOptionsBuilder();
       sw.setCancelAct(e -> undoSettings());
-      sw.setDefaultCloseAct(DefaultClosing);
+      sw.setDefaultCloseAct(defaultClosing);
    }
 
    /**
@@ -225,100 +224,102 @@ public abstract class AbstractProject implements Configurable {
    protected abstract void setCommandParameters();
 
    /**
-    * Returns if the main project file can be located based on the
-    * last successful configuration or, if not, after a try to
-    * re-configure the project since the location of the project
-    * file may have been changed
+    * Returns the name of the set source file without extension
     *
-    * @return  true if the main can be located
+    * @return  the name, the empty string if the project doesn't
+    * use a set source file
     */
-   protected boolean locateMainFile() {
-      boolean locate = mainFilePath.exists();
-      int openSettings = -1;
-      if (!locate) {
-         locate = configForMainFile(projectRoot);
-         if (locate) {
-            setCommandParameters();
-            storeConfiguration();
-            if (isNameConflict) {
-               locate = false;
-               openSettings = Dialogs.warnConfirmYesNo(
-                     nameConflictMsg()
-                     + "\n\nOpen the project settings?");
+   protected String sourceFileName() {
+      return sourceFileName;
+   }
 
-               showNameConflictMsg = false;
-            }
+   /**
+    * Returns the pathname of the set source file relative
+    * to the project directory
+    *
+    * @return  the relative pathname, the empty string if the
+    * project doesn't use a set source file
+    */
+   protected String relativeSourceFile() {
+      return relSourceFilePath;
+   }
+
+    /**
+    * Returns if the set source file can be located based on
+    * the last successful configuration and, if not, asks in
+    * a dialog to open the project settings
+    *
+    * @return  true if the file can be located, false otherwise
+    */
+   protected boolean locateSourceFile() {
+      boolean locate = sourceFile.exists();
+      if (!locate) {
+         ignoreNameConflict = false;
+         if (0 == Dialogs.warnConfirmYesNo(
+                  fileInputWarning() + "\n\nOpen the project settings?")) {
+
+            openSettingsWindow(projectDir);
          }
-         else {
-            openSettings = Dialogs.warnConfirmYesNo(
-                  mainFileInputWarning()
-                  + "\n\nOpen the project settings?");
-         }
-      }
-      if (openSettings == 0) {
-         sw.setVisible(true);
       }
       return locate;
    }
 
    /**
-    * Returns the name of main project file without extension
+    * Returns the namespace of the set source file with the
+    * given namespace separator. Otherwise namespace is
+    * defined as in {@link #namespaceDir()}
     *
-    * @return  the name
-    */
-   protected String mainFileName() {
-      return mainFileName;
-   }
-
-   /**
-    * Returns the pathname of the main project file relative to the
-    * project root
-    *
-    * @return  the filepath
-    */
-   protected String relMainFilePath() {
-      return relMainFilePath;
-   }
-
-   /**
-    * Returns the custom command
-    *
-    * @return  the custom command; the empty string if no custom
-    * command is given
-    */
-   protected String customRunCmd() {
-      return customCmd;
-   }
-
-   /**
-    * Returns the 'namespace' of the main file.
-    * Here namespace is defined as the relative directory or directory
-    * path based at the sources directory if given or at the project
-    * root directory.
-    *
-    * @return  the namespace; the empty string if no namespace is given
+    * @return  the namespace; the empty string if none is given
+    * or if no namespace separator is set in the constructor
     */
    protected String namespace() {
       return namespace;
    }
 
    /**
-    * Returns the name or the relative path of the sources directory
+    * Returns the namespace of the set source file with the
+    * system dependent file separator. Namespace is the path
+    * of the source file relative to the source root
+    * (see {@link #sourceDir()}). It is derived either from the
+    * entry of a qualified filename in the settings window
+    * or from a file search if no qualified name is entered.
     *
-    * @return  the name; the empty string if no source directory is given
+    * @see  #namespace()
+    * @return  the namespace; the empty string if none is given
+    * or if no namespace separator is set in the constructor
     */
-   protected String sourceDirName() {
-      return sourceDirName;
+   protected String namespaceDir() {
+      return namespaceDir;
    }
 
    /**
-    * Returns the extension of source files (or of the main file if
-    * extensions differ) with the beginning period
+    * Returns the source directory. It equals the project directory
+    * if no separate source directory inside the project is given
     *
-    * @return  the extension; null if no source extension is given
+    * @return  the directory
+    */
+   protected String sourceDir() {
+      return sourceDir;
+   }
+
+   /**
+    * Returns the source directory relative to the project
+    * directory
+    *
+    * @return  the directory; the empty string if none is given
+    */
+   public String relativeSourceDir() {
+      return relSourceDir;
+   }
+
+   /**
+    * Returns the extension of the set source file with the
+    * beginning period
+    *
+    * @return  the extension
     */
    protected String sourceExtension() {
-      return sourceExtension;
+      return sourceExt;
    }
 
    /**
@@ -331,9 +332,18 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
+    * Returns the custom command
+    *
+    * @return  the custom command; the empty string if none is given
+    */
+   protected String customRunCmd() {
+      return customCmd;
+   }
+
+   /**
     * Returns command options
     *
-    * @return  the options; the empty string if no options are given
+    * @return  the options; the empty string if none given
     */
    protected String cmdOptions() {
       return cmdOptions;
@@ -342,26 +352,28 @@ public abstract class AbstractProject implements Configurable {
    /**
     * Returns command arguments
     *
-    * @return  the arguments; the empty string if no arguments are given
+    * @return  the arguments; the empty string if none is given
     */
    protected String cmdArgs() {
       return cmdArgs;
    }
 
    /**
-    * Returns compile options
+    * Returns compiler options
     *
-    * @return  the options; the empty string if no options are given
+    * @return  the options; the empty string if none is given
     */
    protected String compileOptions() {
       return compileOptions;
    }
 
    /**
-    * Creates an array of file extensions from the text field input
-    * in this settings window
+    * Returns the array of extensions of files that can be
+    * included in a compilation/build in addition to source
+    * files
     *
-    * @return  the array; the empty array if no extensions are given
+    * @return  the array; the empty array if no extension is
+    * given
     */
    protected String[] fileExtensions() {
       if (extensions.isEmpty()) {
@@ -373,11 +385,9 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns the name for a build. If no input is present
-    * in the text field for the build name a default name
-    * is returned.
+    * Returns the name for a build
     *
-    * @return  the name
+    * @return  the name; default is '[projectName]Project'
     */
    protected String buildName() {
       return buildName;
@@ -387,12 +397,14 @@ public abstract class AbstractProject implements Configurable {
    //--private--/
    //
 
-   private String rootByName(String dir, String name) {
+   private String rootByName(String dir, String rootName) {
+      File f = new File(rootName);
+      if (f.isAbsolute() && f.exists() && f.isDirectory()) {
+         rootName = f.getName();
+      }
       File root = new File(dir);
-      String existingName;
       while (root != null) {
-         existingName = root.getName();
-         if (name.equals(existingName) && root.exists()) {
+         if (rootName.equals(root.getName()) && root.exists()) {
             return root.getPath();
          }
          root = root.getParentFile();
@@ -402,75 +414,51 @@ public abstract class AbstractProject implements Configurable {
 
    private String rootByContainedFile(String dir, String file) {
       File root = new File(dir);
-      String relToRoot = F_SEP + file;
-      String existingPath;
       while (root != null) {
-         existingPath = root.getPath() + relToRoot;
-         if (new File(existingPath).exists()) {
+         if (new File(root, file).exists()) {
             return root.getPath();
          }
          root = root.getParentFile();
       }
       return "";
    }
-   
-   private boolean configForMainFile(String root) {
-      sourceDirName = sw.sourcesDirNameInput();
-      sourceDir = "";
-      if (!sourceDirName.isEmpty()) {
-         setSourceDir(root, sourceDirName);
-         if (!sourceDir.isEmpty()) {
-            sourceDirName = sourceDir.substring(root.length() + 1);
-         }
-      }
-      execDirName = sw.execDirNameInput();
-      sw.assignLibrariesInput(libraries);
-      cmdOptions = sw.cmdOptionsInput();
-      cmdArgs = sw.cmdArgsInput();
-      compileOptions = sw.compileOptionsInput();
-      extensions = sw.extensionsInput();
-      buildName = sw.buildNameInput().replace("/", F_SEP);
-      absNamespace = "";
-      namespace = "";
-      namespaceDisplay = "";
-      isNameConflict = false;
-      splitMainFileInput(sw.fileNameInput());
-      if (!isPathname) {
-         String sourceRoot = root;
-         if (!sourceDirName.isEmpty()) {
-            sourceRoot = sourceRoot + "/" + sourceDirName;
-         }
-         setNamespace(sourceRoot, mainFileName + sourceExtension);
-         if (!absNamespace.isEmpty()) {
-            if (absNamespace.length() > sourceRoot.length()) {
-               namespace = absNamespace.substring(sourceRoot.length() + 1);
-               namespaceDisplay = namespace.replace(F_SEP, namespaceSep);
-            }
-            else {
-               namespace = ""; // no subdir in source root
-            }
-         }
-      }
-      setRelMainFilePath();
-      mainFilePath = new File(root + F_SEP + relMainFilePath);
-      if (mainFilePath.exists()) {
-         if (buildName.isEmpty()) {
-            buildName = new File(root).getName() + "Project";
-            sw.displayBuildName(buildName);
-         }
+
+   private boolean configForSourceFile(String root) {
+      setSourceDir(root);
+      setSourceFileLocation();
+      setRelSourceFile();
+      sourceFile = new File(root + F_SEP + relSourceFilePath);
+      if (sourceFile.exists()) {
          return true;
       }
       else {
          if (sw.isVisible()) {
-            Dialogs.warnMessageOnTop(mainFileInputWarning());
+            Dialogs.warnMessageOnTop(fileInputWarning());
          }
          return false;
       }
    }
-   
-   private void setSourceDir(String root, String sourceDirInput) {
+
+   private void setSourceDir(String root) {
+      relSourceDir = sw.sourcesDirInput().replace("/", F_SEP);
+      sourceDir = root;
+      if (!relSourceDir.isEmpty()) {
+         File dir = new File(root, relSourceDir);
+         if (dir.exists()) {
+            sourceDir = dir.getPath();
+         }
+         else {
+            findSourceDir(root, relSourceDir);
+            if (sourceDir.length() > root.length()) {
+               relSourceDir = sourceDir.substring(root.length() + 1);
+            }
+         }
+      }
+   }
+
+   private void findSourceDir(String root, String sourceDirInput) {
       File fRoot = new File(root);
-      File[] files = fRoot.listFiles();      
+      File[] files = fRoot.listFiles();
       if (files != null) {
          for (File f : files) {
             if (f.isDirectory()) {
@@ -479,157 +467,201 @@ public abstract class AbstractProject implements Configurable {
                   break;
                }
                else {
-                  setSourceDir(f.getPath(), sourceDirInput);
+                  findSourceDir(f.getPath(), sourceDirInput);
                }
             }
          }
       }
    }
-   
-   private void splitMainFileInput(String mainFileInput) {
-      String formatted = mainFileInput.replace("\\", "/");
-      if (formatted.endsWith(sourceExtension)) {
-         int l = formatted.length() - sourceExtension.length();
-         formatted = formatted.substring(0, l);
-      }
-      formatted = formatted.replace(namespaceSep, "/");
-      int lastSepPos = formatted.lastIndexOf("/", formatted.length() - 1);
-      isPathname = lastSepPos != -1;
-      if (isPathname) {
-         namespace = formatted.replace("/", F_SEP).substring(0, lastSepPos);
-         namespaceDisplay = namespace.replace(F_SEP, namespaceSep);
-         mainFileName = formatted.substring(lastSepPos + 1);
-      }
-      else {
-         mainFileName = formatted;
-      }
-   }
 
-   private void setNamespace(String root, String name) {
-      File fRoot = new File(root);
-      File[] files = fRoot.listFiles();
-      List<File> dirs = new ArrayList<>(10);
-      if (files != null) {
-         for (File f : files) {
-            if (f.isFile()) {
-               if (f.getName().equals(name)) {
-                  if (absNamespace.length() > 0) {
-                     isNameConflict = true;
-                  }
-                  else {
-                     absNamespace = f.getParent();
-                  }
-               }
+   private void setSourceFileLocation() {
+      absNamespace = "";
+      namespace = "";
+      namespaceDir = "";
+      isNameConflict = false;
+      splitFilenameInput();
+      if (namespaceSep != null && namespaceDir.isEmpty()) {
+         findNamespace(sourceDir, sourceFileName + sourceExt);
+         if (!absNamespace.isEmpty()) {
+            if (absNamespace.length() > sourceDir.length()) {
+               namespaceDir = absNamespace.substring(sourceDir.length() + 1);
+               namespace = namespaceDir.replace(F_SEP, namespaceSep);
             }
             else {
-               dirs.add(f);
+               namespaceDir = "";
+               namespace = "";
             }
          }
       }
-      if (dirs.size() > 0) {
-         dirs.forEach((File f) -> {
-             setNamespace(f.getPath(), name);
-         });
-      }
    }
 
-   private boolean configByPrefs(String root, Prefs pr) {
-      String projTypeToTest = pr.property("ProjectType");
-      if (!projTypeToTest.equals(projType.toString())) {
-         return false;
+   private void splitFilenameInput() {
+      String input = sw.filenameInput();
+      String formatted = input.replace("\\", "/");
+      if (formatted.endsWith(sourceExt)) {
+         int extPos = formatted.length() - sourceExt.length();
+         formatted = formatted.substring(0, extPos);
       }
-      boolean success;
-      if (!useMainFile) {
-         File toTest = new File(root);
-         if (projType == ProjectTypes.GENERIC) {
-            customCmd = pr.property("Command");
+      if (namespaceSep != null) {
+         formatted = formatted.replace(namespaceSep, "/");
+         int lastSepPos = formatted.lastIndexOf('/', formatted.length() - 1);
+         if (lastSepPos != -1) {
+            namespaceDir = formatted.replace("/", F_SEP).substring(0, lastSepPos);
+            namespace = namespaceDir.replace(F_SEP, namespaceSep);
+            sourceFileName = formatted.substring(lastSepPos + 1);
          }
-         success = toTest.exists() && toTest.isDirectory();
+         else {
+            sourceFileName = formatted;
+         }
       }
       else {
-         mainFileName = pr.property("MainProjectFile");
-         namespace = pr.property("Namespace");
-         namespaceDisplay = namespace.replace(F_SEP, namespaceSep);
-         sourceDirName = pr.property("SourceDir");
-         execDirName = pr.property("ExecDir");
-         String libInput = pr.property("Libraries");
-         if (!libInput.isEmpty()) {
-            String[] libInputArr = libInput.split(File.pathSeparator);
-            libraries.addAll(Arrays.asList(libInputArr));
+         sourceFileName = formatted.replace("/", F_SEP);
+      }
+   }
+
+   private void findNamespace(String root, String name) {
+      File[] files = new File(root).listFiles();
+      if (files == null) {
+    	 return;
+      }
+      List<File> dirs = new ArrayList<>(10);
+      for (File f : files) {
+         if (f.isFile()) {
+            if (f.getName().equals(name)) {
+               if (absNamespace.isEmpty()) {
+                  absNamespace = f.getParent();
+               }
+               else {
+                  isNameConflict = true;
+               }
+            }
          }
-         extensions = pr.property("IncludedFiles");
-         buildName = pr.property("BuildName");
-         setRelMainFilePath();
-         mainFilePath = new File(root + F_SEP + relMainFilePath);
-         success = mainFilePath.exists() && mainFilePath.isFile();
-      }
-      if (success) {
-         projectRoot = root;
-         displaySettings();
-      }
-      return success;
-   }
-
-   private void setRelMainFilePath() {
-      StringBuilder sb = new StringBuilder();
-      if (!sourceDirName.isEmpty()) {
-         sb.append(sourceDirName.replace("/", F_SEP)).append(F_SEP);
-      }
-      if (!namespace.isEmpty()) {
-         sb.append(namespace).append(F_SEP);
-      }
-      sb.append(FileUtils.addExtension(mainFileName, sourceExtension));
-      relMainFilePath = sb.toString();
-   }
-
-   private boolean isInProject(String dir, String projRoot) {
-      File child = new File(dir);
-      File root = new File(projRoot);
-      while(child != null) {
-         if (child.equals(root)) {
-            return true;
+         else {
+            dirs.add(f);
          }
-         child = child.getParentFile();
       }
-      return false;
+      if (!dirs.isEmpty()) {
+         dirs.forEach((File f) -> findNamespace(f.getPath(), name));
+      }
    }
 
-   private void displaySettings() {
-      sw.displayProjDirName(projectName());
-      if (!namespaceDisplay.isEmpty()) {
-         sw.displayFile(namespaceDisplay + namespaceSep + mainFileName);
-      }
-      else {
-         sw.displayFile(mainFileName);
-      }
-      sw.displayCustomCmd(customCmd);
-      sw.displaySourcesDir(sourceDirName);
-      sw.displayExecDir(execDirName);
-      sw.displayLibraries(libraries);
-      sw.displayExtensions(extensions);
-      sw.displayBuildName(buildName);
-      sw.displayCmdOptions(cmdOptions);
-      sw.displayCmdArgs(cmdArgs);
-      sw.displayCompileOptions(compileOptions);
-   }
-
-   private boolean isShowNameConflictMsg() {
-      if (isNameConflict && showNameConflictMsg) {
+   private boolean isNameConflictWarning() {
+      if (isNameConflict && !ignoreNameConflict) {
          Dialogs.warnMessageOnTop(nameConflictMsg());
-         showNameConflictMsg = false;
+         ignoreNameConflict = true;
          return true;
       }
       return false;
    }
 
+   private void fetchOptionalSettings() {
+      if (hasSetSourceFile) {
+         sw.assignLibrariesInput(libraries);
+         cmdOptions = sw.cmdOptionsInput();
+         cmdArgs = sw.cmdArgsInput();
+         execDir = sw.execDirInput().replace("/", F_SEP);
+         compileOptions = sw.compileOptionsInput();
+         extensions = sw.fileExtensionsInput();
+         buildName = sw.buildNameInput();
+         if (buildName.isEmpty()) {
+            buildName = projectName + "Project";
+            sw.displayBuildName(buildName);
+         }
+      }
+      else {
+         customCmd = sw.customCmdInput();
+      }
+   }
+
+   private boolean configFromPrefs(String root, Prefs pr) {
+      String projTypeToTest = pr.property("ProjectType");
+      if (!projTypeToTest.equals(projType.toString())) {
+         return false;
+      }
+      boolean success;
+      if (!hasSetSourceFile) {
+         File f = new File(root);
+         success = f.exists() && f.isDirectory();
+      }
+      else {
+         sourceFileName = pr.property("MainProjectFile");
+         if (namespaceSep != null) {
+            namespaceDir = pr.property("Namespace");
+            namespace = namespaceDir.replace(F_SEP, namespaceSep);
+         }
+         relSourceDir = pr.property("SourceDir");
+         sourceDir = root;
+         if (!relSourceDir.isEmpty()) {
+            sourceDir += F_SEP + relSourceDir;
+         }
+         setRelSourceFile();
+         sourceFile = new File(root + F_SEP + relSourceFilePath);
+         success = sourceFile.exists() && sourceFile.isFile();
+      }
+      if (success) {
+         fetchOptionalPrefs(pr);
+         projectDir = root;
+         projectName = new File(projectDir).getName();
+         displaySettings();
+      }
+      return success;
+   }
+
+   private void fetchOptionalPrefs(Prefs pr) {
+      if (hasSetSourceFile) {
+         String libInput = pr.property("Libraries");
+         if (!libInput.isEmpty()) {
+            String[] libInputArr = libInput.split(File.pathSeparator);
+            libraries.addAll(Arrays.asList(libInputArr));
+         }
+         execDir = pr.property("ExecDir");
+         extensions = pr.property("IncludedFiles");
+         buildName = pr.property("BuildName");
+      }
+      else {
+         customCmd = pr.property("Command");
+      }
+   }
+
+   private void setRelSourceFile() {
+      StringBuilder sb = new StringBuilder();
+      if (!relSourceDir.isEmpty()) {
+         sb.append(relSourceDir).append(F_SEP);
+      }
+      if (!namespaceDir.isEmpty()) {
+         sb.append(namespaceDir).append(F_SEP);
+      }
+      sb.append(FileUtils.addExtension(sourceFileName, sourceExt));
+      relSourceFilePath = sb.toString();
+   }
+
+   private void displaySettings() {
+      sw.displayProjDir(projectName);
+      sw.displaySourcesDir(relSourceDir);
+      if (!namespace.isEmpty()) {
+         sw.displayFilename(namespace + namespaceSep + sourceFileName);
+      }
+      else {
+         sw.displayFilename(sourceFileName);
+      }
+      sw.displayLibraries(libraries);
+      sw.displayCmdOptions(cmdOptions);
+      sw.displayCmdArgs(cmdArgs);
+      sw.displayExecDir(execDir);
+      sw.displayCustomCmd(customCmd);
+      sw.displayFileExtensions(extensions);
+      sw.displayBuildName(buildName);
+      sw.displayCompileOptions(compileOptions);
+   }
+
    private void storeConfigurationImpl() {
-      if (projectRoot.isEmpty()) {
+      if (projectDir.isEmpty()) {
          throw new IllegalStateException("The project is not configured");
       }
       store(prefs);
       if (sw.isSaveToProjConfig()) {
          if (conf == null) {
-            conf = new Prefs(projectRoot);
+            conf = new Prefs(projectDir);
          }
          store(conf);
       }
@@ -640,38 +672,39 @@ public abstract class AbstractProject implements Configurable {
 
    private void store(Prefs pr) {
       if (pr == prefs) {
-         pr.setProperty("ProjectRoot", projectRoot);
+         pr.setProperty("ProjectRoot", projectDir);
       }
-      pr.setProperty("SourceDir", sourceDirName);
-      pr.setProperty("ExecDir", execDirName);
+      pr.setProperty("MainProjectFile", sourceFileName);
+      pr.setProperty("Namespace", namespaceDir);
+      pr.setProperty("SourceDir", relSourceDir);
+      pr.setProperty("ExecDir", execDir);
+      StringBuilder libOut = new StringBuilder("");
+      libraries.forEach(s -> libOut.append(s.replace("/", F_SEP))
+    		  .append(File.pathSeparator));
+      pr.setProperty("Libraries", libOut.toString());
       pr.setProperty("IncludedFiles", extensions);
       pr.setProperty("BuildName", buildName);
       pr.setProperty("ProjectType", projType.toString());
-      pr.setProperty("MainProjectFile", mainFileName);
-      pr.setProperty("Namespace", namespace);
-      StringBuilder libOut = new StringBuilder("");
-      libraries.forEach((s) -> {
-         libOut.append(s.replace("/", F_SEP)).append(File.pathSeparator);
-      });
-      pr.setProperty("Libraries", libOut.toString());
       pr.setProperty("Command", customCmd);
       pr.store();
    }
 
    private void deleteProjConfigFile() {
-      File configFile = new File(projectRoot + "/" + Prefs.PROJ_CONFIG_FILE);
+      File configFile = new File(projectDir + F_SEP + Prefs.PROJ_CONFIG_FILE);
       if (configFile.exists()) {
          int res = Dialogs.warnConfirmYesNo(DELETE_CONF_OPT);
          if (res == 0) {
-            boolean success = configFile.delete();
-            if (!success) {
-               Dialogs.warnMessage("Deleting the ProgConfig file failed");
+            try {
+               Files.delete(configFile.toPath());
+            }
+            catch (IOException e) {
+               FileUtils.log(e);
             }
          }
          else {
             sw.setSaveProjConfigSelected(true);
             if (conf == null) {
-               conf = new Prefs(projectRoot);
+               conf = new Prefs(projectDir);
             }
             store(conf);
          }
@@ -683,7 +716,7 @@ public abstract class AbstractProject implements Configurable {
       sw.setVisible(false);
    }
 
-   private final WindowAdapter DefaultClosing = new WindowAdapter() {
+   private final WindowAdapter defaultClosing = new WindowAdapter() {
 
       @Override
       public void windowClosing(WindowEvent we) {
@@ -691,20 +724,20 @@ public abstract class AbstractProject implements Configurable {
       }
    };
 
-   private final static String DELETE_CONF_OPT
+   private static final String DELETE_CONF_OPT
          = "Saving the \'ProjConfig\' file is no more selected.\n"
          + "Remove the file?";
 
-   private String projRootInputWarning() {
+   private String projDirInputWarning() {
       StringBuilder sb = new StringBuilder();
-      if (sw.projDirNameInput().isEmpty()) {
+      if (sw.projDirInput().isEmpty()) {
          sb.append("A project directory is not specified.");
       }
       else {
-         sb.append(sw.projDirNameInput())
+         sb.append(sw.projDirInput())
             .append("\nThe directory cannot be found.");
       }
-      if (!projectRoot.isEmpty()) {
+      if (!projectDir.isEmpty()) {
          sb.append("\n\nThe previous directory '")
             .append(projectName())
             .append("' will be kept.");
@@ -712,22 +745,23 @@ public abstract class AbstractProject implements Configurable {
       return sb.toString();
    }
 
-   private String mainFileInputWarning() {
+   private String fileInputWarning() {
       StringBuilder sb = new StringBuilder();
-      if (mainFileName.isEmpty()) {
+      if (sourceFileName.isEmpty()) {
          sb.append("The name of a ")
             .append(projType.display())
             .append(" file is not specified");
       }
       else {
-         sb.append(mainFileName)
+         sb.append(sw.filenameInput())
             .append("\nThe ")
             .append(projType.display())
             .append(" file cannot be found");
-      }
-      if (!mainFileName.isEmpty() && !sourceDirName.isEmpty()) {
-         sb.append(" in the source folder ")
-            .append(sourceDirName);
+
+         if (!relSourceDir.isEmpty()) {
+            sb.append(" in the source directory ")
+               .append(relSourceDir);
+         }
       }
       sb.append(".");
       return sb.toString();
@@ -735,14 +769,14 @@ public abstract class AbstractProject implements Configurable {
 
    private String nameConflictMsg() {
       return
-         mainFileName
-         + sourceExtension
-         + "\nMore than one file with this name seems to exist"
-         + " in the project. The currently set file is:\n.."
+         sourceFileName
+         + sourceExt
+         + "\nMore than one file with this name seems to exist in"
+         + " the project directory.\nThe currently set file is:\n\n"
          + F_SEP
-         + relMainFilePath
-         + "\n\nTo use another file a relative pathname"
-         + " and/or a relative path of a source folder"
-         + " can be entered.";
+         + relSourceFilePath
+         + "\n\nTo use another file a relative pathname for the"
+         + " source file\n"
+         + "or a relative path of a source directory can be entered.";
    }
 }

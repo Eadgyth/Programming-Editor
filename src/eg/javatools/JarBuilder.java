@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class JarBuilder {
 
-   private final static String MANIFEST_INFO_FILE = "ManifestInfo.txt";
-   private final static String F_SEP = File.separator;
+   private static final String MANIFEST_INFO_FILE = "ManifestInfo.txt";
+   private static final String F_SEP = File.separator;
    private final FilesFinder fFind = new FilesFinder();
 
    private boolean isManifestInfo;
@@ -31,7 +31,7 @@ public class JarBuilder {
     */
    public void createClasspathInfo(String dir, List<String> classpaths) {
       isManifestInfo = true;
-      File f = new File(dir + "/" + MANIFEST_INFO_FILE);
+      File f = new File(dir + File.separator + MANIFEST_INFO_FILE);
       try (FileWriter writer = new FileWriter(f)) {
          writer.write("Class-Path:");
          for (String s : classpaths) {
@@ -157,9 +157,7 @@ public class JarBuilder {
       List<File> relativeClassFilePaths
             = relativePaths(classDir, classes);
 
-      relativeClassFilePaths.forEach((i) -> {
-          cmd.add(i.toString());
-      });
+      relativeClassFilePaths.forEach(i -> cmd.add(i.toString()));
       if (nonClassExt.length > 0) {
          for (String ext : nonClassExt) {
             List<File> toInclude = fFind.filteredFiles(classDir, ext, sourceDir,
@@ -178,9 +176,7 @@ public class JarBuilder {
                List<File> relativeInclFilePaths
                      = relativePaths(classDir, toInclude);
 
-               relativeInclFilePaths.forEach((f) -> {
-                  cmd.add(f.toString());
-               });
+               relativeInclFilePaths.forEach(f -> cmd.add(f.toString()));
             }
          }
       }

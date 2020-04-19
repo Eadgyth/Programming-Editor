@@ -19,7 +19,7 @@ public class SystemParams {
     * True if the java version is 13 */
    public final static boolean IS_JAVA_13_OR_HIGHER;
    /**
-    * The path of the '.eadgyth' folder where data are saved */
+    * The path of the '.eadgyth' folder in user home direcory */
    public final static String EADGYTH_DATA_DIR;
 
    static {

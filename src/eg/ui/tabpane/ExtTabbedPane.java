@@ -25,7 +25,7 @@ import eg.utils.ScreenParams;
 @SuppressWarnings("serial")
 public final class ExtTabbedPane extends JTabbedPane {
 
-   private final ExtTabbedPaneUI tui = new ExtTabbedPaneUI();
+   private final transient ExtTabbedPaneUI tui = new ExtTabbedPaneUI();
 
    private int iTabMouseOver = -1;
    private boolean isShowTabbar;
@@ -120,17 +120,19 @@ public final class ExtTabbedPane extends JTabbedPane {
 
    @Override
    public void setUI(TabbedPaneUI ui) {
+	  // not used
    }
 
    @Override
    public void setTabPlacement(int tabPlacement) {
+	  // not used
    }
 
    //
    //--private--/
    //
 
-   private final MouseMotionListener mml = new MouseMotionAdapter() {
+   private final transient MouseMotionListener mml = new MouseMotionAdapter() {
 
       @Override
       public void mouseMoved(MouseEvent e) {

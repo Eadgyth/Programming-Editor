@@ -17,8 +17,8 @@ public interface Configurable {
    /**
     * Opens the settings window
     *
-    * @param dir  the directory that maybe or be contained in the
-    * project directory
+    * @param dir  the directory that may be identical to or
+    * contained in the (presumed) project directory
     */
    public void openSettingsWindow(String dir);
 
@@ -39,10 +39,11 @@ public interface Configurable {
    public boolean configure();
 
    /**
-    * Tries to retrieve a project stored in a preferences file
+    * Tries to retrieve a stored project
     *
-    * @param dir  the directory that may be or be contained in a
-    * stored project
+    * @param dir  the directory that may be identical to or
+    * contained in the directory of a stored project
+    *
     * @return  true if a stored project could be retrieved, false
     * otherwise
     */
@@ -56,28 +57,28 @@ public interface Configurable {
    public ProjectTypes projectType();
 
    /**
-    * Returns if the project uses a main source file that is executed
-    * when the project is run
+    * Returns if the project uses a (main) source file that is
+    * specified in the settings window
     *
-    * @return  true if a main file is used, false otherwise
+    * @return  true if a set file is used, false otherwise
     */
-   public boolean usesMainFile();
+   public boolean hasSetSourceFile();
 
    /**
-    * Returns if the specified directory is or is contained in the
-    * project root directory
+    * Returns if the specified directory is identical to or contained
+    * in the project directory
     *
     * @param dir  the directory
-    * @return  true if the directory is in the project, false otherwise
+    * @return  true if in the project, false otherwise
     */
    public boolean isInProject(String dir);
 
    /**
-    * Returns the path of the project directory
+    * Returns the project directory
     *
     * @return  the directory
     */
-   public String projectPath();
+   public String projectDir();
 
    /**
     * Returns the last name of the project directory
@@ -87,16 +88,18 @@ public interface Configurable {
    public String projectName();
 
    /**
-    * Returns the last name of the directory where executable files are
-    * saved. This directory, if given, is deletable in the project
-    * explorer.
+    * Returns the directory where executable files are saved.
+    * This directory is deletable in the project explorer if
+    * given as relative directory that is creatable in the
+    * project directory. Initially, the directory does not
+    * have to exist
     *
-    * @return  the name, the empty string if no such directory is given
+    * @return  the directory, the empty string if none is given
     */
-   public String executableDirName();
+   public String executableDir();
 
    /**
-    * Stores the configuration in a preferences file
+    * Stores the configuration of the project
     */
    public void storeConfiguration();
 }

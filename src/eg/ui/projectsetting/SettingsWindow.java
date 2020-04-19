@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
+import javax.swing.WindowConstants;
 
 import java.awt.Component;
 import java.awt.EventQueue;
@@ -38,12 +39,12 @@ import eg.utils.ScreenParams;
  */
 public class SettingsWindow {
 
-   private final static Dimension DIM_TF = ScreenParams.scaledDimension(200, 14);
-   private final static Dimension DIM_TF_LONG = ScreenParams.scaledDimension(300, 14);
-   private final static Dimension DIM_VERT_SPACER = ScreenParams.scaledDimension(0, 14);
-   private final static Dimension DIM_RIGHT_SPACER = ScreenParams.scaledDimension(28, 14);
+   private static final Dimension DIM_TF = ScreenParams.scaledDimension(200, 14);
+   private static final Dimension DIM_TF_LONG = ScreenParams.scaledDimension(300, 14);
+   private static final Dimension DIM_VERT_SPACER = ScreenParams.scaledDimension(0, 14);
+   private static final Dimension DIM_RIGHT_SPACER = ScreenParams.scaledDimension(28, 14);
 
-   private static FileChooser CHOOSER = null;
+   private static FileChooser chooser = new FileChooser();
 
    private final JFrame     frame            = new JFrame("Project settings");
    private final JTextField projDirTf        = new JTextField();
@@ -72,10 +73,7 @@ public class SettingsWindow {
    private Component focusedComponent = projDirTf;
 
    public SettingsWindow() {
-      if (CHOOSER == null) {
-         CHOOSER = new FileChooser();
-         CHOOSER.initSelectFileOrDirectoryChooser();
-      }
+      chooser.initSelectFileOrDirectoryChooser();
       structurePnl = vertBoxPnl();
       addStructureSetting("Name of project directory:", projDirTf, true);
       cancelBt.setFocusable(false);
@@ -90,20 +88,7 @@ public class SettingsWindow {
     * @return  the {@link SettingsWindow.InputOptionsBuilder}
     */
    public InputOptionsBuilder inputOptionsBuilder() {
-      SettingsWindow.InputOptionsBuilder optBuilder
-            = new SettingsWindow.InputOptionsBuilder(this);
-
-      return optBuilder;
-   }
-
-   /**
-    * Sets the current directory for the file chooser used by
-    * <code>SettingsWindow</code>.
-    *
-    * @param dir  the directory
-    */
-   public void setDirectory(String dir) {
-      EventQueue.invokeLater(() -> CHOOSER.setDirectory(dir));
+      return new SettingsWindow.InputOptionsBuilder(this);
    }
 
    /**
@@ -132,6 +117,16 @@ public class SettingsWindow {
    public void setDefaultCloseAct(WindowAdapter wa) {
       frame.addWindowListener(wa);
    }
+   
+   /**
+    * Sets the current directory for the file chooser used by
+    * <code>SettingsWindow</code>.
+    *
+    * @param dir  the directory
+    */
+   public void setDirectory(String dir) {
+      EventQueue.invokeLater(() -> chooser.setDirectory(dir));
+   }
 
    /**
     * Makes this frame visible or invisible
@@ -145,7 +140,7 @@ public class SettingsWindow {
       else {
          focusedComponent = frame.getFocusOwner();
       }
-      frame.setVisible(b);
+      EventQueue.invokeLater(() -> frame.setVisible(b));
    }
 
    /**
@@ -162,7 +157,7 @@ public class SettingsWindow {
     *
     * @return  the input
     */
-   public String projDirNameInput() {
+   public String projDirInput() {
       return projDirTf.getText().trim();
    }
 
@@ -171,7 +166,7 @@ public class SettingsWindow {
     *
     * @return  the input
     */
-   public String fileNameInput() {
+   public String filenameInput() {
       return fileTf.getText().trim();
    }
 
@@ -180,7 +175,7 @@ public class SettingsWindow {
     *
     * @return  the input
     */
-   public String sourcesDirNameInput() {
+   public String sourcesDirInput() {
       return sourcesDirTf.getText().trim();
    }
 
@@ -189,7 +184,7 @@ public class SettingsWindow {
     *
     * @return  the input
     */
-   public String execDirNameInput() {
+   public String execDirInput() {
       return execDirTf.getText().trim();
    }
 
@@ -204,7 +199,7 @@ public class SettingsWindow {
          librariesPnl.assignListInput(l);
       }
    }
-   
+
    /**
     * Returns the input for a custom command
     *
@@ -242,14 +237,15 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input for file extensions.
+    * Returns the input for extensions of files that can be used for a
+    * compilation/build in addition to source files
     * <p>
     * Extensions may be entered as comma, semicolon or space separated
-    * but the returnd string is formatted as comma separated
+    * but the returned string is formatted as comma separated
     *
     * @return  the input
     */
-    public String extensionsInput() {
+    public String fileExtensionsInput() {
        return extensionsTf.getText().trim().replaceAll("[\\s,;]+", ",");
     }
 
@@ -268,7 +264,7 @@ public class SettingsWindow {
     *
     * @param s  the name
     */
-   public void displayProjDirName(String s) {
+   public void displayProjDir(String s) {
       projDirTf.setText(s);
    }
 
@@ -277,17 +273,8 @@ public class SettingsWindow {
     *
     * @param s  the name
     */
-   public void displayFile(String s) {
+   public void displayFilename(String s) {
       fileTf.setText(s);
-   }
-
-   /**
-    * Displays in the corresponding text field a custom commannd
-    *
-    * @param s  the custom command
-    */
-   public void displayCustomCmd(String s) {
-      customCmdTf.setText(s);
    }
 
    /**
@@ -323,6 +310,15 @@ public class SettingsWindow {
    }
 
    /**
+    * Displays in the corresponding text field a custom commannd
+    *
+    * @param s  the custom command
+    */
+   public void displayCustomCmd(String s) {
+      customCmdTf.setText(s);
+   }
+
+   /**
     * Shows in the corresponding text field the command arguments
     *
     * @param s  the name
@@ -351,11 +347,12 @@ public class SettingsWindow {
 
    /**
     * Shows in the corresponding text field the string that contains
-    * file extensions
+    * extensions of files that can be used for a compilation/build in
+    * addition to source files
     *
     * @param s  the file extensions
     */
-   public void displayExtensions(String s) {
+   public void displayFileExtensions(String s) {
       extensionsTf.setText(s);
    }
 
@@ -424,8 +421,7 @@ public class SettingsWindow {
        * @return  this
        */
       public InputOptionsBuilder addSourceDirInput() {
-         String s = "Name of source directory:";
- 
+         String s = "Source directory (relative to project):";
          sw.addStructureSetting(s, sw.sourcesDirTf, true);
          return  this;
       }
@@ -442,13 +438,12 @@ public class SettingsWindow {
       }
 
       /**
-       * Adds the option to enter a custom commnd in the 'Source'
-       * panel
+       * Adds the option to enter a custom commnd in the 'Run' panel
        *
        * @return  this
        */
       public InputOptionsBuilder addCustomCommandInput() {
-         String s = "System command to run:";
+         String s = "System command:";
          sw.addRunSetting(s, sw.customCmdTf, false);
          useCustomCmd = true;
          return this;
@@ -502,13 +497,13 @@ public class SettingsWindow {
       }
 
       /**
-       * Adds the option to enter extensions of included files in the
-       * 'Compile/build' panel
+       * Adds the option to enter extensions of files that can be used
+       * for compiling/build in addition to source files
        *
        * @param label  the label for the input option
        * @return  this
        */
-       public InputOptionsBuilder addExtensionsInput(String label) {
+       public InputOptionsBuilder addFileExtensionsInput(String label) {
           String s = label + ":";
           sw.addBuildSetting(s, sw.extensionsTf, false);
           return this;
@@ -543,7 +538,7 @@ public class SettingsWindow {
                   "The project settings window has been"
                   + "built already by the same project.");
          }
-         if (useMainFile == true & useCustomCmd == true) {
+         if (useMainFile && useCustomCmd) {
             throw new IllegalStateException(
                   "Input options for both file and custom "
                   + "command are not permitted");
@@ -608,8 +603,8 @@ public class SettingsWindow {
    }
 
    private void setText(JTextField tf) {
-      File file = CHOOSER.selectedFileOrDirectory();
-      if (file != null) {  
+      File file = chooser.selectedFileOrDirectory();
+      if (file != null) {
          String text = file.getName();
          tf.setText(text);
          tf.requestFocusInWindow();
@@ -617,7 +612,7 @@ public class SettingsWindow {
    }
 
    private void initWindow() {
-      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       frame.setResizable(false);
       frame.setLocation(550, 100);
       frame.setVisible(false);
@@ -629,7 +624,7 @@ public class SettingsWindow {
    private JPanel contentPnl() {
       JPanel pnl = vertBoxPnl();
       pnl.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-      if (useLibs | useRunSettings | useBuildSettings) {
+      if (useLibs || useRunSettings || useBuildSettings) {
          pnl.add(tabPane());
       }
       else {
@@ -650,10 +645,8 @@ public class SettingsWindow {
          tb.addChangeListener((ChangeEvent e) -> {
             JTabbedPane sourceTb = (JTabbedPane) e.getSource();
             int i = sourceTb.getSelectedIndex();
-            if (i == 1) {
-               if (!sourceTb.hasFocus()) {
-                  librariesPnl.setLastFocus();
-               }
+            if (i == 1 && !sourceTb.hasFocus()) {
+               librariesPnl.setLastFocus();
             }
          });
          tb.addFocusListener(new FocusAdapter() {

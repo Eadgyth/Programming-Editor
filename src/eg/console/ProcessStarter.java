@@ -58,8 +58,8 @@ public class ProcessStarter {
       cons.setEnterCmdAct(e -> startNewCmd());
       cons.setRunAct(e -> startPreviousCmd());
       cons.setStopAct(e -> endProcess());
-      cons.addKeyListener(Output);
-      cons.addCaretListener(CaretCorrection);
+      cons.addKeyListener(sendOutput);
+      cons.addCaretListener(caretCorrection);
    }
 
    /**
@@ -118,6 +118,8 @@ public class ProcessStarter {
                cons.appendTextBr(cmdNotFoundMsg(cmd));
                lockConsole();
             });
+            System.out.println(e.getCause());
+            Thread.currentThread().interrupt();
          }
          finally {
             if (out != null) {
@@ -198,13 +200,35 @@ public class ProcessStarter {
 
       @Override
       protected void done() {
-         setEndingMsg(exitVal);
+    	if (exitVal == 0) {
+            cons.appendText("\n");
+            cons.appendTextBr(
+                  "Process ended normally (exit value = "
+                  + exitVal
+                  + ")");
+         }
+         else {
+            if (isAborted) {
+               cons.appendText("\n");
+               cons.appendTextBr(
+                     "Process aborted (exit value = "
+                     + exitVal
+                     + ")");
+            }
+            else {
+               cons.appendText("\n");
+               cons.appendTextBr(
+                     "Process ended with error (exit value = "
+                     + exitVal
+                     + ")");
+            }
+         }
          lockConsole();
          fileTreeUpdate.run();
       }
    }
 
-   private final KeyListener Output = new KeyAdapter() {
+   private final KeyListener sendOutput = new KeyAdapter() {
 
       @Override
       public void keyPressed(KeyEvent e) {
@@ -224,7 +248,7 @@ public class ProcessStarter {
       }
    };
 
-   private final CaretListener CaretCorrection = new CaretListener() {
+   private final CaretListener caretCorrection = new CaretListener() {
 
       @Override
       public void caretUpdate(CaretEvent e) {
@@ -234,38 +258,10 @@ public class ProcessStarter {
          if (e.getDot() < consoleText.length()
                || e.getMark() < consoleText.length()) {
 
-            EventQueue.invokeLater(() -> {
-               cons.setCaret(cons.getText().length());
-            });
+            EventQueue.invokeLater(() -> cons.setCaret(cons.getText().length()));
          }
       }
    };
-
-   private void setEndingMsg(int exitVal) {
-      if (exitVal == 0) {
-         cons.appendText("\n");
-         cons.appendTextBr(
-               "Process ended normally (exit value = "
-               + exitVal
-               + ")");
-      }
-      else {
-         if (isAborted) {
-            cons.appendText("\n");
-            cons.appendTextBr(
-                  "Process aborted (exit value = "
-                  + exitVal
-                  + ")");
-         }
-         else {
-            cons.appendText("\n");
-            cons.appendTextBr(
-                  "Process ended with error (exit value = "
-                  + exitVal
-                  + ")");
-         }
-      }
-   }
 
    private void lockConsole() {
       cons.setLocked();
@@ -281,8 +277,8 @@ public class ProcessStarter {
 
    private String enterCmdMsg() {
       return
-         "Enter a system command which is executed in the current"
-         + " working directory ("
+         "Enter a system command to run in the current"
+         + " project directory ("
          + workingDirName
          + ")";
    }

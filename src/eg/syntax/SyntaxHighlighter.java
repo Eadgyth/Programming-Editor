@@ -142,31 +142,11 @@ public class SyntaxHighlighter {
          boolean valid = true;
          int next = SyntaxUtils.nextUnquoted(txt.text(), ";", start);
          while (next != -1 && valid) {
-            if (!isValid(next, 0)) {
-               valid = false;
-            }
-            else {
-               next = SyntaxUtils.nextUnquoted(txt.text(), ";", next + 1);
-            }
+            valid = isValid(next, 0);
+            next = SyntaxUtils.nextUnquoted(txt.text(), ";", next + 1);
          }
-         if (prev != -1) {
-            start = prev + 1;
-         }
-         else {
-            start = 0;
-         }
-         int end;
-         if (next != -1) {
-            if (valid) {
-               end = next;
-            }
-            else {
-               end = txt.text().length();
-            }
-         }
-         else {
-            end = txt.text().length();
-         }
+         start = prev != -1 ? prev + 1 : 0;
+         int end = next != -1 && valid ? next : txt.text().length();
          end = LinesFinder.nextNewline(txt.text(), end);
          scnStart = start;
          section = txt.text().substring(scnStart, end);
@@ -179,7 +159,7 @@ public class SyntaxHighlighter {
          if (!isTypeMode || isRepairBlock) {
             return;
          }
-         int start = txt.text().lastIndexOf("<", chgPos);
+         int start = txt.text().lastIndexOf('<', chgPos);
          if (start == -1) {
             start = 0;
          }
@@ -410,34 +390,20 @@ public class SyntaxHighlighter {
                   isTagName = Character.isLetter(test) || (!html & test == '_');
                }
                if (isTagName) {
-                  int nameLength;
                   if (html) {
-                    nameLength = SyntaxUtils.sectionLength(scn, offset,
+                     length = SyntaxUtils.sectionLength(scn, offset,
                            SyntaxConstants.HTML_TAGS);
                   }
                   else {
-                     nameLength = SyntaxUtils.sectionLength(scn, offset,
+                     length = SyntaxUtils.sectionLength(scn, offset,
                            SyntaxConstants.RESERVED_XML_CHARS, null);
                   }
-                  length = nameLength;
-                  int endPos = offset + length;
-                  if (SyntaxUtils.isWordEnd(scn, endPos)) {
+                  if (SyntaxUtils.isWordEnd(scn, offset + length)) {
                      if (!isEndTag) {
-                        int absStart = start + scnStart;
-                        int tagEnd = markupTagEnd(absStart + 1);
-                        String tag = t.substring(absStart, tagEnd);
-                        if (html) {
-                           for (String s : SyntaxConstants.HTML_ATTR) {
-                               htmlAttributes(s, tag, absStart);
-                           }
-                        }
-                        else {
-                           xmlAttributes(tag, absStart, nameLength);
-                        }
-                        quote(tag, absStart, attr.purplePlain);
+                    	markupAttributes(t, start, length, html);
                      }
                      int colorStart = offset + scnStart;
-                     txt.setAttributes(colorStart, nameLength, attr.bluePlain);
+                     txt.setAttributes(colorStart, length, attr.bluePlain);
                   }
                }
                start += length + 1;
@@ -577,7 +543,7 @@ public class SyntaxHighlighter {
                      && isValid(absStart, lineCmntStart.length())) {
 
                   lineCmntStarts.add(absStart);
-                  int lineEnd = section.indexOf("\n", start);
+                  int lineEnd = section.indexOf('\n', start);
                   if (lineEnd != -1) {
                      length = lineEnd - start;
                   }
@@ -636,25 +602,23 @@ public class SyntaxHighlighter {
             if (innerEnd > 0 && start >= innerEnd - blockStart.length()) {
                start = -1;
             }
-            if (start != -1) {
-               if (quoteOpt == SyntaxUtils.IGNORE_QUOTED
-                     || !SyntaxUtils.isQuoted(txt.text(), start, quoteOpt)) {
+            if (start != -1 && (quoteOpt == SyntaxUtils.IGNORE_QUOTED
+                     || !SyntaxUtils.isQuoted(txt.text(), start, quoteOpt))) {
 
-                  int end = SyntaxUtils.nextBlockEnd(txt.text(), start + 1,
-                        blockStart, blockEnd, quoteOpt);
+               int end = SyntaxUtils.nextBlockEnd(txt.text(), start + 1,
+                     blockStart, blockEnd, quoteOpt);
 
-                  if (innerEnd > 0 && end >= innerEnd - blockEnd.length()) {
-                     end = -1;
-                  }
-                  if (end != -1) {
-                     length = end - start + blockEnd.length();
-                     txt.setAttributes(start, length, attr.greenPlain);
-                     removedBlockStart(end + blockEnd.length(), blockStart,
-                           blockEnd, quoteOpt);
-                  }
-                  else {
-                     removedBlockEnd(start, blockStart, blockEnd, quoteOpt);
-                  }
+               if (innerEnd > 0 && end >= innerEnd - blockEnd.length()) {
+                  end = -1;
+               }
+               if (end != -1) {
+                  length = end - start + blockEnd.length();
+                  txt.setAttributes(start, length, attr.greenPlain);
+                  removedBlockStart(end + blockEnd.length(), blockStart,
+                        blockEnd, quoteOpt);
+               }
+               else {
+                  removedBlockEnd(start, blockStart, blockEnd, quoteOpt);
                }
                start += length;
             }
@@ -691,10 +655,8 @@ public class SyntaxHighlighter {
             boolean found = extStart == section.indexOf(s, extStart)
                   && SyntaxUtils.isWordEnd(section, extStart + s.length());
 
-            if (found) {
-               if (s.length() > length) {
-                  length = s.length();
-               }
+            if (found && s.length() > length) {
+               length = s.length();
             }
          }
          return length;
@@ -705,12 +667,27 @@ public class SyntaxHighlighter {
                SyntaxUtils.IGNORE_QUOTED);
 
          if (end == -1) {
-            end = txt.text().indexOf("<", pos);
+            end = txt.text().indexOf('<', pos);
             if (end == -1) {
                end = txt.text().length();
             }
          }
          return end;
+      }
+      
+      private void markupAttributes(String text, int pos, int length, boolean html) {
+    	 int absStart = pos + scnStart;
+         int tagEnd = markupTagEnd(absStart + 1);
+         String tag = text.substring(absStart, tagEnd);
+         if (html) {
+            for (String s : SyntaxConstants.HTML_ATTR) {
+                htmlAttributes(s, tag, absStart);
+            }
+         }
+         else {
+            xmlAttributes(tag, absStart, length);
+         }
+         quote(tag, absStart, attr.purplePlain);
       }
 
       private void htmlAttributes(String keyword, String tag, int tagStart) {
@@ -804,16 +781,13 @@ public class SyntaxHighlighter {
             return;
          }
          boolean b = false;
-         switch(quoteMark) {
-            case SyntaxConstants.DOUBLE_QUOTE_STR:
-               b = nDoubleQuote != count;
-               nDoubleQuote = count;
-               break;
-
-            case SyntaxConstants.SINGLE_QUOTE_STR:
-               b = nSingleQuote != count;
-               nSingleQuote = count;
-               break;
+         if (SyntaxConstants.DOUBLE_QUOTE_STR.equals(quoteMark)) {
+            b = nDoubleQuote != count;
+            nDoubleQuote = count;
+         }
+         else if (SyntaxConstants.SINGLE_QUOTE_STR.equals(quoteMark)) {
+            b = nSingleQuote != count;
+            nSingleQuote = count;
          }
          if (b) {
             repair(txt.text(), 0);
@@ -825,16 +799,13 @@ public class SyntaxHighlighter {
             return;
          }
          boolean b = false;
-         switch(del) {
-            case SyntaxConstants.TRI_DOUBLE_QUOTE:
-               b = nTriDoubleQuote != count;
-               nTriDoubleQuote = count;
-               break;
-
-            case SyntaxConstants.TRI_SINGLE_QUOTE:
-               b = nTriSingleQuote != count;
-               nTriSingleQuote = count;
-               break;
+         if (SyntaxConstants.TRI_DOUBLE_QUOTE.equals(del)) {
+            b = nTriDoubleQuote != count;
+            nTriDoubleQuote = count;
+         }
+         else if (SyntaxConstants.TRI_SINGLE_QUOTE.equals(del)) {
+            b = nTriSingleQuote != count;
+            nTriSingleQuote = count;
          }
          if (b) {
             repair(txt.text(), 0);

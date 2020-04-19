@@ -17,7 +17,7 @@ public final class PythonProject extends AbstractProject implements ProjectComma
     * @param runner  the reference to TaskRunner
     */
    public PythonProject(TaskRunner runner) {
-      super(ProjectTypes.PYTHON, true, "py");
+      super(ProjectTypes.PYTHON, "py", null);
       this.runner = runner;
    }
 
@@ -38,7 +38,7 @@ public final class PythonProject extends AbstractProject implements ProjectComma
 
    @Override
    public void run() {
-      if (!locateMainFile()) {
+      if (!locateSourceFile()) {
          return;
       }
       runner.runSystemCommand(startCmd);
@@ -50,7 +50,7 @@ public final class PythonProject extends AbstractProject implements ProjectComma
       if (!cmdOptions().isEmpty()) {
          sb.append(cmdOptions()).append(" ");
       }
-      sb.append(relMainFilePath());
+      sb.append(relativeSourceFile());
       if (!cmdArgs().isEmpty()) {
          sb.append(" ").append(cmdArgs());
       }

@@ -24,7 +24,7 @@ public class Projects {
    private final ProjectSelector selector;
    private final ProcessStarter proc;
    private final EditableDocument[] edtDoc;
-   private final List<ProjectCommands> projects = new ArrayList<>();
+   private final List<ProjectCommands> projCmnds = new ArrayList<>();
    private final ProjectActionsUpdate pau = new ProjectActionsUpdate();
 
    private ProjectCommands currentProject;
@@ -42,7 +42,7 @@ public class Projects {
       this.fileTree = fileTree;
       this.edtDoc = edtDoc;
       Console cons = new Console(mw.consolePanel());
-      Runnable fileTreeUpdate = () -> fileTree.updateTree();
+      Runnable fileTreeUpdate = (fileTree::updateTree);
       proc = new ProcessStarter(cons, fileTreeUpdate);
       TaskRunner runner = new TaskRunner(mw, cons, proc, fileTreeUpdate);
       selector = new ProjectSelector(runner);
@@ -153,14 +153,14 @@ public class Projects {
       boolean isFound = false;
       for (ProjectTypes t : ProjectTypes.values()) {
          projToFind = selector.createProject(t);
+         projToFind.buildSettingsWindow();
          isFound = projToFind.retrieve(dir);
          if (isFound) {
             break;
          }
       }
       if (isFound) {
-         projects.add(projToFind);
-         projToFind.buildSettingsWindow();
+    	projCmnds.add(projToFind);
          ProjectCommands projFin = projToFind;
          projFin.setConfiguringAction(() -> configure(projFin));
          if (currentProject == null) {
@@ -170,7 +170,7 @@ public class Projects {
          }
          else {
             change(projToFind);
-         }        
+         }
       }
    }
 
@@ -198,9 +198,9 @@ public class Projects {
     */
    public final class ProjectActionsUpdate {
 
-      private final static String SAVE_AND_RUN_LB = "Save and run";
-      private final static String RUN_LB = "Run";
-      private final static String DEF_BUILD_LB = "Build";
+      private static final String SAVE_AND_RUN_LB = "Save and run";
+      private static final String RUN_LB = "Run";
+      private static final String DEF_BUILD_LB = "Build";
 
       private boolean isRun;
       private boolean isCompile;
@@ -270,7 +270,7 @@ public class Projects {
       if (isSaveAndRun && !save()) {
          return;
       }
-      if (currentProject.usesMainFile()
+      if (currentProject.hasSetSourceFile()
             || currentProject.projectType() == ProjectTypes.GENERIC) {
 
          currentProject.run();
@@ -305,7 +305,7 @@ public class Projects {
 
    private ProjectCommands selectFromList(String dir, boolean excludeCurrent) {
       ProjectCommands inList = null;
-      for (ProjectCommands p : projects) {
+      for (ProjectCommands p : projCmnds) {
          if (p.isInProject(dir) && (!excludeCurrent || p != currentProject)) {
             inList = p;
             break;
@@ -317,10 +317,10 @@ public class Projects {
    private void configure(ProjectCommands toConfig) {
       if (toConfig.configure()) {
          if (replace) {
-            projects.remove(currentProject);
+        	projCmnds.remove(currentProject);
          }
          if (toConfig != currentProject) {
-            projects.add(toConfig);
+        	projCmnds.add(toConfig);
          }
          //
          // Another tab may have been selected after opening the settings
@@ -346,11 +346,11 @@ public class Projects {
 
    private void updateProjectSetting() {
       enableProjectCommands(true);
-      proc.setWorkingDir(currentProject.projectPath());
+      proc.setWorkingDir(currentProject.projectDir());
       mw.displayProjectName(currentProject.projectName());
       changedDocumentUpdate();
-      fileTree.setProjectTree(currentProject.projectPath());
-      fileTree.setDeletableDir(currentProject.executableDirName());
+      fileTree.setProjectTree(currentProject.projectDir());
+      fileTree.setDeletableDir(currentProject.executableDir());
    }
 
    private void enableProjectCommands(boolean enable) {

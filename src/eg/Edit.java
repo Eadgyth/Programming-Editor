@@ -23,7 +23,7 @@ import eg.document.EditableDocument;
  */
 public class Edit {
 
-   private final static Clipboard CLIPBOARD
+   private static final Clipboard CLIPBOARD
          = Toolkit.getDefaultToolkit().getSystemClipboard();
 
    private static final String[] SPACE_NUMBER
@@ -126,13 +126,13 @@ public class Edit {
             String.valueOf(indentLength),
             false);
 
-      String unit = "";
+      StringBuilder unit = new StringBuilder();
       if (number != null) {
          int length = Integer.parseInt(number);
          for (int i = 0; i < length; i++) {
-            unit += " ";
+            unit.append(" ");
          }
-         setIndentUnit(unit);
+         setIndentUnit(unit.toString());
       }
    }
 
@@ -186,48 +186,10 @@ public class Edit {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
       if (sel == null) {
-         boolean isIndented
-               = start - indentLength
-               > LinesFinder.lastNewline(edtDoc.text(), start);
-
-         if (isIndented) {
-            if (indentUnit.equals(edtDoc.text().substring(
-                  start - indentLength, start))) {
-
-               edtDoc.remove(start - indentLength, indentLength, true);
-            }
-            else {
-               textArea.setCaretPosition(start - indentLength);
-            }
-         }
+         outdentUnselected(start);
       }
       else {
-         String[] selArr = sel.split("\n");
-         if (!selArr[0].startsWith(indentUnit)) {
-            int nSpaces = 0;
-            while (selArr[0].charAt(nSpaces) == ' ') {
-               nSpaces++;
-            }
-            int diff = indentLength - nSpaces;
-            start -= diff;
-            if (start >= 0) {
-               selArr[0] = edtDoc.text().substring(
-                     start, start + selArr[0].length() + diff);
-            }
-         }
-         if (selArr[0].startsWith(" ") && isIndentConsistent(selArr)) {
-            edtDoc.enableUndoMerging(true);
-            int sum = 0;
-            for (String s : selArr) {
-               if (s.startsWith(indentUnit)) {
-                  edtDoc.remove(start + sum, indentLength, true);
-                  sum += (s.length() - indentLength) + 1;
-               } else {
-                  sum += s.length() + 1;
-               }
-            }
-            edtDoc.enableUndoMerging(false);
-         }
+         outdentSelection(sel, start);
       }
    }
 
@@ -274,6 +236,52 @@ public class Edit {
          }
       }
       return i + 1;
+   }
+   
+   private void outdentUnselected(int pos) {
+	  boolean isIndented
+            = pos - indentLength
+            > LinesFinder.lastNewline(edtDoc.text(), pos);
+
+      if (isIndented) {
+         if (indentUnit.equals(edtDoc.text().substring(
+               pos - indentLength, pos))) {
+
+            edtDoc.remove(pos - indentLength, indentLength, true);
+         }
+         else {
+            textArea.setCaretPosition(pos - indentLength);
+         }
+      }
+   }
+   
+   private void outdentSelection(String sel, int pos) {
+	  String[] selArr = sel.split("\n");
+      if (!selArr[0].startsWith(indentUnit)) {
+         int nSpaces = 0;
+         while (selArr[0].charAt(nSpaces) == ' ') {
+            nSpaces++;
+         }
+         int diff = indentLength - nSpaces;
+         pos -= diff;
+         if (pos >= 0) {
+            selArr[0] = edtDoc.text().substring(
+                  pos, pos + selArr[0].length() + diff);
+         }
+      }
+      if (selArr[0].startsWith(" ") && isIndentConsistent(selArr)) {
+         edtDoc.enableUndoMerging(true);
+         int sum = 0;
+         for (String s : selArr) {
+            if (s.startsWith(indentUnit)) {
+               edtDoc.remove(pos + sum, indentLength, true);
+               sum += (s.length() - indentLength) + 1;
+            } else {
+               sum += s.length() + 1;
+            }
+         }
+         edtDoc.enableUndoMerging(false);
+      }
    }
 
    private void setIndentUnitSelection(String indentUnit) {

@@ -10,6 +10,7 @@ import java.awt.event.FocusEvent;
 import javax.swing.JTextPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
 
@@ -30,10 +31,12 @@ import eg.utils.ScreenParams;
  */
 public final class EditArea {
 
-   private final static BackgroundTheme THEME = BackgroundTheme.givenTheme();
+   private static final BackgroundTheme THEME = BackgroundTheme.givenTheme();
 
-   private final static LineBorder AREA_BORDER
+   private static final LineBorder AREA_BORDER
          = new LineBorder(THEME.background(), 5);
+   
+   private static final String DUMMY = "dummy";
 
    private final JPanel content = UIComponents.grayBorderedPanel();
    private final JTextPane textArea = new JTextPane();
@@ -42,8 +45,8 @@ public final class EditArea {
    private final JScrollPane nonWordwrapScroll = UIComponents.scrollPane();
    private final JScrollPane wordwrapScroll = UIComponents.scrollPane();
    private final JScrollPane lineNrScroll = new JScrollPane(
-            JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		 ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
+		 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
    private boolean isWordwrap;
 
@@ -236,12 +239,12 @@ public final class EditArea {
 
    private void removeShortCuts() {
       KeyStroke ksSelAll = KeyStroke.getKeyStroke("control pressed A");
-      textArea.getInputMap().put(ksSelAll, "dummy");
+      textArea.getInputMap().put(ksSelAll, DUMMY);
       KeyStroke ksCut = KeyStroke.getKeyStroke("control pressed X");
-      textArea.getInputMap().put(ksCut, "dummy");
+      textArea.getInputMap().put(ksCut, DUMMY);
       KeyStroke ksCopy = KeyStroke.getKeyStroke("control pressed C");
-      textArea.getInputMap().put(ksCopy, "dummy");
+      textArea.getInputMap().put(ksCopy, DUMMY);
       KeyStroke ksPaste = KeyStroke.getKeyStroke("control pressed V");
-      textArea.getInputMap().put(ksPaste, "dummy");
+      textArea.getInputMap().put(ksPaste, DUMMY);
    }
 }

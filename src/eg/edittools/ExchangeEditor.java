@@ -62,8 +62,7 @@ public class ExchangeEditor implements AddableEditTool {
 
    public ExchangeEditor() {
       EditArea ea = format.editArea();
-      editorPnl = ea.content();
-      initContentPnl();   
+      editorPnl = ea.content();  
       formatMenu.selectWordWrapItm(ea.isWordwrap());   
       Languages lang = Languages.valueOf(
             prefs.property(Prefs.EXCHG_PREFIX + Prefs.LANG_KEY));
@@ -76,6 +75,7 @@ public class ExchangeEditor implements AddableEditTool {
       edit.setDocument(edtDoc);
       String recentDir = prefs.property(Prefs.RECENT_DIR_KEY);
       exch = new TextExchange(edtDoc, recentDir);
+      initContentPnl();
    }
 
    @Override
@@ -246,7 +246,7 @@ public class ExchangeEditor implements AddableEditTool {
 
       clearItm.addActionListener(e -> exch.clear());
 
-      languageMenu.setChangeLanguageActions((l) -> exch.changeLanguage(l));
+      languageMenu.setChangeLanguageActions(exch::changeLanguage);
 
       formatMenu.setFontAction(e -> format.openSetFontDialog());
       formatMenu.setChangeWordWrapAct(
@@ -263,7 +263,9 @@ public class ExchangeEditor implements AddableEditTool {
    private final EditingStateReadable editReadable = new EditingStateReadable() {
 
       @Override
-      public void updateInChangeState(boolean isChange) {}
+      public void updateInChangeState(boolean isChange) {
+    	 // not used
+      }
 
       @Override
       public void updateUndoableState(boolean canUndo, boolean canRedo) {
@@ -276,6 +278,8 @@ public class ExchangeEditor implements AddableEditTool {
       }
 
       @Override
-      public void updateCursorState(int line, int col) {}
+      public void updateCursorState(int line, int col) {
+    	 // not used
+      }
    };
 }

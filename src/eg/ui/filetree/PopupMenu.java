@@ -16,10 +16,10 @@ public class PopupMenu {
 
    /**
     * The constant for indicating that items for file operations are shown */
-   public final static int FILE_OPT = 0;
+   public static final int FILE_OPT = 0;
    /**
     * The constant for indicating that items for folder operations are shown */
-   public final static int FOLDER_OPT = 1;
+   public static final int FOLDER_OPT = 1;
 
    private final JPopupMenu popMenu = new JPopupMenu();
    private final JMenuItem openItm = new JMenuItem("Open");

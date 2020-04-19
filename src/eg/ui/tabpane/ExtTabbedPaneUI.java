@@ -23,11 +23,11 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
  */
 public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
 
-   private final static Color BORDER_GRAY = new Color(150, 150, 150);
-   private final static Color SEL_TAB_YELLOW = new Color(250, 250, 170);
-   private final static Insets TAB_INSETS_BOTTOM = new Insets(0, 0, 0, 0);
-   private final static Insets TAB_INSETS_ZERO = new Insets(0, 0, 0, 0);
-   private final static Insets CONTENT_INSETS = new Insets(0, 0, 0, 0);
+   private static final Color BORDER_GRAY = new Color(150, 150, 150);
+   private static final Color SEL_TAB_YELLOW = new Color(250, 250, 170);
+   private static final Insets TAB_INSETS_BOTTOM = new Insets(0, 0, 0, 0);
+   private static final Insets TAB_INSETS_ZERO = new Insets(0, 0, 0, 0);
+   private static final Insets CONTENT_INSETS = new Insets(0, 0, 0, 0);
 
    private boolean isShowTabs = true;
    private int tabHeight;
@@ -68,15 +68,15 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
          return;
       }
 
-      y = 0;
+      int yy = 0;
       if (tabIndex == 0 && x != 0) {
          w = w + x;
          x = 0;
       }
       g.setColor(BORDER_GRAY);
-      g.drawLine(x, y , x + w, y);
-      g.drawLine(x, y, x, y + h);
-      g.drawLine(x + w, y, x + w, y + h);
+      g.drawLine(x, yy , x + w, yy);
+      g.drawLine(x, yy, x, yy + h);
+      g.drawLine(x + w, yy, x + w, yy + h);
    }
 
    @Override
@@ -87,19 +87,18 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
          return;
       }
 
-      y = 0;
+      int yy = 0;
       if (tabIndex == 0 && x != 0) {
          w = w + x;
          x = 0;
       }
       Polygon shape = new Polygon();
-      shape.addPoint(x, y);
-      shape.addPoint(x, y + h);
-      shape.addPoint(x + w, y + h);
-      shape.addPoint(x + w, y);
+      shape.addPoint(x, yy);
+      shape.addPoint(x, yy + h);
+      shape.addPoint(x + w, yy + h);
+      shape.addPoint(x + w, yy);
       if (isSelected) {
          g.setColor(SEL_TAB_YELLOW);
-         //g.setColor(Color.WHITE);
       }
       else {
          g.setColor(UIManager.getColor("Panel.background"));
@@ -117,6 +116,8 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
    @Override
    protected void paintContentBorder(Graphics g, int tabPlacement,
          int selectedIndex) {
+	  
+	  // should not point
    }
 
    @Override

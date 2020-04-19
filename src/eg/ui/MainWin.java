@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
+import javax.swing.WindowConstants;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ import eg.projects.ProjectTypes;
  */
 public class MainWin {
 
-   private final static int DIVIDER_SIZE = 6;
+   private static final int DIVIDER_SIZE = 6;
 
    private final JFrame frame = new JFrame();
    private final MenuBar menuBar = new MenuBar();
@@ -362,7 +363,7 @@ public class MainWin {
     */
    public void setEditActions(Edit edit, LanguageChanger lc) {
       toolBar.setEditActions(edit);
-      Runnable clearSpaces = () -> edit.clearTrailingSpaces();
+      Runnable clearSpaces = edit::clearTrailingSpaces;
       menuBar.editMenu().setEditActions(edit, e -> bf.execute(clearSpaces));
       menuBar.languageMenu().setChangeLanguageActions(lc);
    }
@@ -504,9 +505,7 @@ public class MainWin {
 
    private void exit(TabbedDocuments td) {
       if (td.closeAllForExit()) {
-         editTools.forEach((t) -> {
-            t.end();
-         });
+         editTools.forEach(AddableEditTool::end);
          ViewMenu vm = menuBar.viewMenu();
          prefs.setYesNoProperty(Prefs.TABBAR_KEY, vm.isTabItmSelected());
          prefs.setYesNoProperty(Prefs.FILE_VIEW_KEY, vm.isFileViewItmSelected());
@@ -519,7 +518,7 @@ public class MainWin {
       initSplitPane();
       frame.setJMenuBar(menuBar.menuBar());
       frame.add(splitHor, BorderLayout.CENTER);
-      frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+      frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
       frame.setLocation(5, 5);
       Dimension screen = ScreenParams.SCREEN_SIZE;

@@ -5,7 +5,7 @@ package eg.utils;
  */
 public class LinesFinder {
 
-   private final static char NEW_LINE = '\n';
+   private static final char NEW_LINE = '\n';
 
    /**
     * Returns the content of the line that contains the specified
@@ -141,4 +141,10 @@ public class LinesFinder {
    public static boolean isMultiline(String text) {
       return text.length() > 1 && text.indexOf(NEW_LINE) > -1;
    }
+   
+   //
+   //--private--/
+   //
+   
+   private LinesFinder() {}
 }

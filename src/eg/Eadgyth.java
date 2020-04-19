@@ -46,9 +46,7 @@ public class Eadgyth {
          viewSet.applySettings();
          viewSetWin.setVisible(false);
       });
-      EventQueue.invokeLater(() -> {
-         mw.makeVisible();
-      });
+      EventQueue.invokeLater(mw::makeVisible);
    }
 
    private static void uiManagerSettings() {
@@ -90,9 +88,6 @@ public class Eadgyth {
 
    private static void createEadgythDataDir() {
       File dir = new File(SystemParams.EADGYTH_DATA_DIR);
-      boolean create = dir.mkdir();
-      if (create) {
-         System.out.println("created data folder " + SystemParams.EADGYTH_DATA_DIR);
-      }
+      dir.mkdir();
    }
 }

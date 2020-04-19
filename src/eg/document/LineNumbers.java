@@ -19,8 +19,8 @@ import eg.utils.LinesFinder;
  */
 public class LineNumbers {
 
-   private final static Color GRAY = new Color(170, 170, 170);
-   private final static SimpleAttributeSet SET = new SimpleAttributeSet();
+   private static final Color GRAY = new Color(170, 170, 170);
+   private static final SimpleAttributeSet SET = new SimpleAttributeSet();
 
    private final StyledDocument doc;
    private final StringBuilder lineNrBuilder = new StringBuilder();

@@ -17,9 +17,9 @@ import eg.utils.FileUtils;
  */
 public class EditableText extends StyledText {
    
-   private final static BackgroundTheme THEME = BackgroundTheme.givenTheme();
-   private final static Attributes ATTR = new Attributes(THEME);
-   private final static SimpleAttributeSet SET = new SimpleAttributeSet();
+   private static final BackgroundTheme THEME = BackgroundTheme.givenTheme();
+   private static final Attributes ATTR = new Attributes(THEME);
+   private static final SimpleAttributeSet SET = new SimpleAttributeSet();
 
    private final JTextPane textArea;
    

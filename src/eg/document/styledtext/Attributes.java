@@ -22,7 +22,7 @@ public final class Attributes {
    public final SimpleAttributeSet purplePlain  = new SimpleAttributeSet();
    public final SimpleAttributeSet bracketsBold = new SimpleAttributeSet();
 
-   private final static Color GREEN  = new Color(80, 190, 80);
+   private static final Color GREEN  = new Color(80, 190, 80);
 
    /**
     * @param theme  the BackgroundTheme
