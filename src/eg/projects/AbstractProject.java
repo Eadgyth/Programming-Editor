@@ -84,12 +84,8 @@ public abstract class AbstractProject implements Configurable {
          throw new IllegalArgumentException("dir cannot be null or empty");
       }
       dirToTest = dir;
-      if (projectDir.isEmpty()) {
-         sw.setDirectory(dir);
-      }
-      else {
-         sw.setDirectory(projectDir);
-      }
+      String chooserDir = projectDir.isEmpty() ? dir : projectDir;
+      sw.setDirectory(chooserDir);
       sw.setVisible(true);
    }
 
@@ -148,7 +144,6 @@ public abstract class AbstractProject implements Configurable {
          }
       }
       if (success) {
-         sw.setDirectory(projectDir);
          setCommandParameters();
       }
       return success;
@@ -432,9 +427,7 @@ public abstract class AbstractProject implements Configurable {
          return true;
       }
       else {
-         if (sw.isVisible()) {
-            Dialogs.warnMessageOnTop(fileInputWarning());
-         }
+         Dialogs.warnMessageOnTop(fileInputWarning());
          return false;
       }
    }

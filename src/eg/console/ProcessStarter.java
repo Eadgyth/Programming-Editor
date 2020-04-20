@@ -118,7 +118,6 @@ public class ProcessStarter {
                cons.appendTextBr(cmdNotFoundMsg(cmd));
                lockConsole();
             });
-            System.out.println(e.getCause());
             Thread.currentThread().interrupt();
          }
          finally {

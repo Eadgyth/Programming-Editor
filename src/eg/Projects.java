@@ -75,7 +75,7 @@ public class Projects {
          if (edtDoc[iDoc].hasFile()) {
             inList = selectFromList(edtDoc[iDoc].fileParent(), false);
             isProject = inList != null;
-            isCurrentProject = inList == currentProject;
+            isCurrentProject = isProject && inList == currentProject;
             isAssignProject = !isProject || isCurrentProject;
             if (isCurrentProject) {
                projType = currentProject.projectType();
@@ -118,7 +118,7 @@ public class Projects {
       boolean assign = inList == null;
       if (!assign) {
          if (currentProject.projectType() == projType) {
-            currentProject.openSettingsWindow(dir);
+            openSettingsWindow(currentProject, dir);
          }
          else {
             int res = replaceRes(projType, inList.projectType());
@@ -131,7 +131,7 @@ public class Projects {
       if (assign) {
          ProjectCommands toAssign = selector.createProject(projType);
          toAssign.buildSettingsWindow();
-         toAssign.openSettingsWindow(dir);
+         openSettingsWindow(toAssign, dir);
          toAssign.setConfiguringAction(() -> configure(toAssign));
       }
       changedDocumentUpdate();
@@ -181,7 +181,7 @@ public class Projects {
       String dir = edtDoc[iDoc].fileParent();
       ProjectCommands inList = selectFromList(dir, false);
       if (inList != null && inList == currentProject) {
-         currentProject.openSettingsWindow(dir);
+         openSettingsWindow(currentProject, dir);
       }
    }
 
@@ -190,7 +190,9 @@ public class Projects {
     */
    public void change() {
       ProjectCommands inList = selectFromList(edtDoc[iDoc].fileParent(), true);
-      change(inList);
+      if (inList != null) {
+         change(inList);
+      }
    }
 
    /**
@@ -290,6 +292,10 @@ public class Projects {
    //
    //--private--/
    //
+   
+   private void openSettingsWindow(ProjectCommands toSet, String dir) {
+      mw.busyFunction().execute(() -> toSet.openSettingsWindow(dir));
+   }
 
    private void change(ProjectCommands toChangeTo) {
       int res = changeRes(toChangeTo.projectName());
@@ -317,10 +323,10 @@ public class Projects {
    private void configure(ProjectCommands toConfig) {
       if (toConfig.configure()) {
          if (replace) {
-        	projCmnds.remove(currentProject);
+        	   projCmnds.remove(currentProject);
          }
          if (toConfig != currentProject) {
-        	projCmnds.add(toConfig);
+        	   projCmnds.add(toConfig);
          }
          //
          // Another tab may have been selected after opening the settings

@@ -41,7 +41,7 @@ public class FileTree {
    private final FileOpener opener;
    private final PopupMenu popupFile = new PopupMenu(PopupMenu.FILE_OPT);
    private final PopupMenu popupDir  = new PopupMenu(PopupMenu.FOLDER_OPT);
-   private final HashSet<String> fileSet = new HashSet<>();
+   private final HashSet<String> checkDupl = new HashSet<>();
 
    private JTree tree = null;
    private DefaultTreeModel model;
@@ -79,7 +79,7 @@ public class FileTree {
 
    /**
     * Sets the directory that may be deleted by this popup menu
-    * although it is not empty. Other, non-empty folders are
+    * although it is not empty. Other non-empty folders are
     * protected against deletion. The specified directory is
     * relative to the project root but does not have to exist
     * initially. Any absolute directory path is ignored.
@@ -136,7 +136,7 @@ public class FileTree {
       if (path.isEmpty()) {
          return;
       }
-      fileSet.clear();
+      checkDupl.clear();
       currentRoot = path;
       treePnl.enableFolderUpAct(!path.equals(projRoot));
       File rootFile = new File(path);
@@ -168,8 +168,8 @@ public class FileTree {
       if (fList != null) {
          File[] fListSorted = sortedFiles(fList);
          for (File fs : fListSorted) {
-            if (!fileSet.contains(fs.getAbsolutePath())) {
-               fileSet.add(fs.getAbsolutePath());
+            if (!checkDupl.contains(fs.getAbsolutePath())) {
+               checkDupl.add(fs.getAbsolutePath());
             }
             else {
                continue;
@@ -203,28 +203,6 @@ public class FileTree {
          setNewTree(parent);
          tree.expandRow(0);
       }
-   }
-
-   private void showMenu(Component c, int x, int y) {
-      if (selectedFile != null) {
-         if (selectedFile.isFile()) {
-            popupFile.showMenu(c, x, y);
-         }
-         else {
-            boolean deletable
-                  = isFolderEmpty(selectedFile)
-                  || (deletableDir != null
-                  && selectedFile.toString().startsWith(deletableDir));
-
-            popupDir.enableDelete(deletable);
-            popupDir.showMenu(c, x, y);
-         }
-      }
-   }
-
-   private boolean isFolderEmpty(File dir) {
-      File[] content = dir.listFiles();
-      return content.length == 0;
    }
 
    private void openFile() {
@@ -304,17 +282,6 @@ public class FileTree {
                + newDir.getName()
                + " failed.",
                null);
-      }
-   }
-
-   private void setSelection() {
-      selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-      if (selectedNode != null) {
-         Object nodeInfo = selectedNode.getUserObject();
-         selectedFile = (File) nodeInfo;
-      }
-      else {
-         selectedFile = null;
       }
    }
 
@@ -408,6 +375,36 @@ public class FileTree {
                }
             }
          }
+      }
+
+      private void setSelection() {
+         selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+         if (selectedNode != null) {
+            Object nodeInfo = selectedNode.getUserObject();
+            selectedFile = (File) nodeInfo;
+         }
+         else {
+            selectedFile = null;
+         }
+      }
+
+      private void showMenu(Component c, int x, int y) {
+         if (selectedFile != null) {
+            if (selectedFile.isFile()) {
+               popupFile.showMenu(c, x, y);
+            }
+            else {
+               popupDir.enableDelete(isFolderDeletable());
+               popupDir.showMenu(c, x, y);
+            }
+         }
+      }
+
+      private boolean isFolderDeletable() {
+    	 File[] content = selectedFile.listFiles();
+    	 return content.length == 0
+                || (deletableDir != null
+                      && selectedFile.toString().startsWith(deletableDir));
       }
    };
 }

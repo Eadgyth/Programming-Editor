@@ -16,7 +16,6 @@ import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
-
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -119,13 +118,13 @@ public class SettingsWindow {
    }
    
    /**
-    * Sets the current directory for the file chooser used by
-    * <code>SettingsWindow</code>.
+    * Sets the directory for the file chooser used by objects
+    * of <code>SettingsWindow</code>.
     *
     * @param dir  the directory
     */
    public void setDirectory(String dir) {
-      EventQueue.invokeLater(() -> chooser.setDirectory(dir));
+      chooser.setDirectory(dir);
    }
 
    /**
@@ -141,15 +140,6 @@ public class SettingsWindow {
          focusedComponent = frame.getFocusOwner();
       }
       EventQueue.invokeLater(() -> frame.setVisible(b));
-   }
-
-   /**
-    * Returns if this frame is visible
-    *
-    * @return  true if visible, false otherwise
-    */
-   public boolean isVisible() {
-      return frame.isVisible();
    }
 
    /**
@@ -490,7 +480,7 @@ public class SettingsWindow {
        *
        * @return  this
        */
-      public InputOptionsBuilder addCompileOptionInput() {
+      public InputOptionsBuilder addCompileOptionsInput() {
          String s = "Compiler options:";
          sw.addBuildSetting(s, sw.compileOptionsTf, false);
          return this;

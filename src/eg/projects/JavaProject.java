@@ -48,7 +48,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
             .addLibrariesInput(LIB_LABEL)
             .addCmdOptionsInput()
             .addCmdArgsInput()
-            .addCompileOptionInput()
+            .addCompileOptionsInput()
             .addFileExtensionsInput(INCLUDED_FILES_LABEL)
             .addBuildNameInput(JAR_NAME_LABEL)
             .buildWindow();
