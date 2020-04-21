@@ -38,7 +38,7 @@ import eg.utils.ScreenParams;
  */
 public class SettingsWindow {
 
-   private static final Dimension DIM_TF = ScreenParams.scaledDimension(200, 14);
+   private static final Dimension DIM_TF = ScreenParams.scaledDimension(220, 14);
    private static final Dimension DIM_TF_LONG = ScreenParams.scaledDimension(300, 14);
    private static final Dimension DIM_VERT_SPACER = ScreenParams.scaledDimension(0, 14);
    private static final Dimension DIM_RIGHT_SPACER = ScreenParams.scaledDimension(28, 14);
