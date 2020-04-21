@@ -292,7 +292,7 @@ public class Projects {
    //
    //--private--/
    //
-   
+
    private void openSettingsWindow(ProjectCommands toSet, String dir) {
       mw.busyFunction().execute(() -> toSet.openSettingsWindow(dir));
    }

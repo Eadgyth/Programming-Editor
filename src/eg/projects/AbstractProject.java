@@ -68,8 +68,9 @@ public abstract class AbstractProject implements Configurable {
    private String absNamespace = "";
    private boolean isNameConflict = false;
    private boolean ignoreNameConflict = false;
+   private String prevProjConfigDir = "";
    //
-   // The Prefs object that reads from and writes to a ProjConfig
+   // The Prefs created to read from and write to a ProjConfig
    // file in a project directory
    private Prefs conf;
 
@@ -653,14 +654,18 @@ public abstract class AbstractProject implements Configurable {
       }
       store(prefs);
       if (sw.isSaveToProjConfig()) {
-         if (conf == null) {
-            conf = new Prefs(projectDir);
-         }
+         conf = new Prefs(projectDir);
          store(conf);
       }
       else {
-         deleteProjConfigFile();
+         deleteCurrentProjConfigFile();
       }
+      if (!prevProjConfigDir.isEmpty()
+            && !prevProjConfigDir.equals(projectDir)) {
+
+         deleteProjConfigFile(prevProjConfigDir);
+      }
+      prevProjConfigDir = projectDir;
    }
 
    private void store(Prefs pr) {
@@ -671,10 +676,11 @@ public abstract class AbstractProject implements Configurable {
       pr.setProperty("Namespace", namespaceDir);
       pr.setProperty("SourceDir", relSourceDir);
       pr.setProperty("ExecDir", execDir);
-      StringBuilder libOut = new StringBuilder("");
-      libraries.forEach(s -> libOut.append(s.replace("/", F_SEP))
+      StringBuilder libs = new StringBuilder();
+      libraries.forEach(s -> libs.append(s.replace("/", F_SEP))
     		  .append(File.pathSeparator));
-      pr.setProperty("Libraries", libOut.toString());
+
+      pr.setProperty("Libraries", libs.toString());
       pr.setProperty("IncludedFiles", extensions);
       pr.setProperty("BuildName", buildName);
       pr.setProperty("ProjectType", projType.toString());
@@ -682,17 +688,12 @@ public abstract class AbstractProject implements Configurable {
       pr.store();
    }
 
-   private void deleteProjConfigFile() {
+   private void deleteCurrentProjConfigFile() {
       File configFile = new File(projectDir + F_SEP + Prefs.PROJ_CONFIG_FILE);
       if (configFile.exists()) {
          int res = Dialogs.warnConfirmYesNo(DELETE_CONF_OPT);
          if (res == 0) {
-            try {
-               Files.delete(configFile.toPath());
-            }
-            catch (IOException e) {
-               FileUtils.log(e);
-            }
+            deleteProjConfigFile(projectDir);
          }
          else {
             sw.setSaveProjConfigSelected(true);
@@ -700,6 +701,18 @@ public abstract class AbstractProject implements Configurable {
                conf = new Prefs(projectDir);
             }
             store(conf);
+         }
+      }
+   }
+
+   private void deleteProjConfigFile(String dir) {
+      File configFile = new File(dir + F_SEP + Prefs.PROJ_CONFIG_FILE);
+      if (configFile.exists()) {
+         try {
+            Files.delete(configFile.toPath());
+         }
+         catch (IOException e) {
+            FileUtils.log(e);
          }
       }
    }

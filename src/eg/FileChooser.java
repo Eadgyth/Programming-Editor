@@ -130,7 +130,11 @@ public class FileChooser {
     * @param dir  the directory
     */
    public void setDirectory(String dir) {
-      currentDir = new File(dir);
+      File f = new File(dir);
+      if (currentDir != null && f.equals(currentDir)) {
+         return;
+      }
+      currentDir = f;
       ch.setCurrentDirectory(currentDir);
       if (ch.getFileSelectionMode() == JFileChooser.FILES_AND_DIRECTORIES) {
          ch.setSelectedFile(currentDir);
