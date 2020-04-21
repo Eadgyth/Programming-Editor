@@ -145,6 +145,7 @@ public abstract class AbstractProject implements Configurable {
          }
       }
       if (success) {
+         ignoreNameConflict = true;
          setCommandParameters();
       }
       return success;
@@ -182,7 +183,23 @@ public abstract class AbstractProject implements Configurable {
 
    @Override
    public final void storeConfiguration() {
-      storeConfigurationImpl();
+      if (projectDir.isEmpty()) {
+         throw new IllegalStateException("The project is not configured");
+      }
+      store(prefs);
+      if (sw.isSaveToProjConfig()) {
+         conf = new Prefs(projectDir);
+         store(conf);
+      }
+      else {
+         deleteCurrentProjConfigFile();
+      }
+      if (!prevProjConfigDir.isEmpty()
+            && !prevProjConfigDir.equals(projectDir)) {
+
+         deleteProjConfigFile(prevProjConfigDir);
+      }
+      prevProjConfigDir = projectDir;
    }
 
    /**
@@ -469,27 +486,23 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private void setSourceFileLocation() {
-      absNamespace = "";
-      namespace = "";
-      namespaceDir = "";
       isNameConflict = false;
+      absNamespace = "";
       splitFilenameInput();
       if (namespaceSep != null && namespaceDir.isEmpty()) {
          findNamespace(sourceDir, sourceFileName + sourceExt);
-         if (!absNamespace.isEmpty()) {
-            if (absNamespace.length() > sourceDir.length()) {
-               namespaceDir = absNamespace.substring(sourceDir.length() + 1);
-               namespace = namespaceDir.replace(F_SEP, namespaceSep);
-            }
-            else {
-               namespaceDir = "";
-               namespace = "";
-            }
+         if (!absNamespace.isEmpty()
+               && (absNamespace.length() > sourceDir.length())) {
+
+            namespaceDir = absNamespace.substring(sourceDir.length() + 1);
+            namespace = namespaceDir.replace(F_SEP, namespaceSep);
          }
       }
    }
 
    private void splitFilenameInput() {
+      namespace = "";
+      namespaceDir = "";
       String input = sw.filenameInput();
       String formatted = input.replace("\\", "/");
       if (formatted.endsWith(sourceExt)) {
@@ -584,18 +597,15 @@ public abstract class AbstractProject implements Configurable {
             namespace = namespaceDir.replace(F_SEP, namespaceSep);
          }
          relSourceDir = pr.property("SourceDir");
-         sourceDir = root;
-         if (!relSourceDir.isEmpty()) {
-            sourceDir += F_SEP + relSourceDir;
-         }
+         sourceDir = relSourceDir.isEmpty() ? root : root + F_SEP + relSourceDir;
          setRelSourceFile();
          sourceFile = new File(root + F_SEP + relSourceFilePath);
          success = sourceFile.exists() && sourceFile.isFile();
       }
       if (success) {
-         fetchOptionalPrefs(pr);
          projectDir = root;
          projectName = new File(projectDir).getName();
+         fetchOptionalPrefs(pr);
          displaySettings();
       }
       return success;
@@ -648,26 +658,6 @@ public abstract class AbstractProject implements Configurable {
       sw.displayCompileOptions(compileOptions);
    }
 
-   private void storeConfigurationImpl() {
-      if (projectDir.isEmpty()) {
-         throw new IllegalStateException("The project is not configured");
-      }
-      store(prefs);
-      if (sw.isSaveToProjConfig()) {
-         conf = new Prefs(projectDir);
-         store(conf);
-      }
-      else {
-         deleteCurrentProjConfigFile();
-      }
-      if (!prevProjConfigDir.isEmpty()
-            && !prevProjConfigDir.equals(projectDir)) {
-
-         deleteProjConfigFile(prevProjConfigDir);
-      }
-      prevProjConfigDir = projectDir;
-   }
-
    private void store(Prefs pr) {
       if (pr == prefs) {
          pr.setProperty("ProjectRoot", projectDir);
@@ -691,7 +681,10 @@ public abstract class AbstractProject implements Configurable {
    private void deleteCurrentProjConfigFile() {
       File configFile = new File(projectDir + F_SEP + Prefs.PROJ_CONFIG_FILE);
       if (configFile.exists()) {
-         int res = Dialogs.warnConfirmYesNo(DELETE_CONF_OPT);
+         int res = Dialogs.warnConfirmYesNo(
+               "Saving the \'ProjConfig\' file is no more selected.\n"
+               + "Remove the file?");
+
          if (res == 0) {
             deleteProjConfigFile(projectDir);
          }
@@ -729,10 +722,6 @@ public abstract class AbstractProject implements Configurable {
          undoSettings();
       }
    };
-
-   private static final String DELETE_CONF_OPT
-         = "Saving the \'ProjConfig\' file is no more selected.\n"
-         + "Remove the file?";
 
    private String projDirInputWarning() {
       StringBuilder sb = new StringBuilder();
@@ -774,15 +763,19 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private String nameConflictMsg() {
-      return
-         sourceFileName
-         + sourceExt
-         + "\nMore than one file with this name seems to exist in"
-         + " the project directory.\nThe currently set file is:\n\n"
-         + F_SEP
-         + relSourceFilePath
-         + "\n\nTo use another file a relative pathname for the"
-         + " source file\n"
-         + "or a relative path of a source directory can be entered.";
+      String name = namespace.isEmpty() ?
+            "" : namespace + namespaceSep + sourceFileName + sourceExt;
+
+      StringBuilder msg = new StringBuilder();
+      msg.append(sourceFileName).append(sourceExt)
+            .append("\nMore than one file with this name seems to exist.");
+
+      if (!name.isEmpty()) {
+         msg.append("\nThe currently set file is:\n\n").append(name);
+      }
+      msg.append("\n\nA file can be entered as qualified name or pathname")
+            .append(" relative to the source root.");
+
+      return msg.toString();
    }
 }
