@@ -34,7 +34,7 @@ public abstract class AbstractProject implements Configurable {
    private static final String F_SEP = File.separator;
    //
    // The Prefs object that reads from and writes to the Prefs file in
-   // the program folder
+   // in the '.eadgyth' directory in the user home directory
    private final Prefs prefs = new Prefs();
    //
    // Set in constructor
