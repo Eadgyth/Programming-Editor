@@ -7,12 +7,12 @@ import java.net.URL;
  * The creation of an icon
  */
 public class IconBuilder {
-   
+
    /**
     * Creates an <code>ImageIcon</code>
     *
     * @param path  the path of the file that contains the icon
-    * @return  the <code>ImageIcon</code> or null if no file can be found
+    * @return  ImageIcon
     */
    public ImageIcon createIcon(String path) {
       URL imgURL = getClass().getResource(path);
@@ -20,7 +20,8 @@ public class IconBuilder {
          return new ImageIcon(imgURL);
       }
       else {
-         return null;
+         throw new IllegalArgumentException(
+               "No image file was found in the specified path");
       }
    }
 }
