@@ -10,10 +10,10 @@ import eg.Prefs;
  */
 public class IconFiles {
 
-   private final static IconBuilder ICONS = new IconBuilder();
-   private final static String ICONS_DIR = "icons/";
-   private final static String TANGO_DIR;
-   private final static String EAD_DIR;
+   private static final IconBuilder ICONS = new IconBuilder();
+   private static final String ICONS_DIR = "icons/";
+   private static final String TANGO_DIR;
+   private static final String EAD_DIR;
 
    static {
       Prefs prefs = new Prefs();
