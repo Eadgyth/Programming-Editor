@@ -219,7 +219,7 @@ public abstract class AbstractProject implements Configurable {
       hasSetSourceFile = sourceExt != null;
       if (hasSetSourceFile) {
          this.sourceExt = "." + sourceExt;
-         this.namespaceSep = (namespaceSep != null) ? namespaceSep : null;
+         this.namespaceSep = namespaceSep != null ? namespaceSep : null;
       }
       else {
          this.sourceExt = null;
@@ -389,12 +389,7 @@ public abstract class AbstractProject implements Configurable {
     * given
     */
    protected String[] fileExtensions() {
-      if (extensions.isEmpty()) {
-         return new String[0];
-      }
-      else {
-         return extensions.split(",");
-      }
+      return extensions.isEmpty() ? new String[0] : extensions.split(",");
    }
 
    /**
