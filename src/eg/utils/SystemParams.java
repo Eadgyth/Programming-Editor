@@ -8,20 +8,20 @@ import java.io.File;
 public class SystemParams {
    /**
     * True if the OS is Windows, false otherwise */
-   public final static boolean IS_WINDOWS;
+   public static final boolean IS_WINDOWS;
    /**
     * The Java version */
-   public final static String JAVA_VERSION;
+   public static final String JAVA_VERSION;
    /**
     * True if the Java version is higher than 8 */
-   public final static boolean IS_JAVA_9_OR_HIGHER;
+   public static final boolean IS_JAVA_9_OR_HIGHER;
    /**
     * True if the java version is 13 */
-   public final static boolean IS_JAVA_13_OR_HIGHER;
+   public static final boolean IS_JAVA_13_OR_HIGHER;
    /**
     * The path of the '.eadgyth' directory in the user home
     * directory */
-   public final static String EADGYTH_DATA_DIR;
+   public static final String EADGYTH_DATA_DIR;
 
    static {
       String os = System.getProperty("os.name");

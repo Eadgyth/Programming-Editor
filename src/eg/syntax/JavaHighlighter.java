@@ -10,7 +10,7 @@ import eg.utils.SystemParams;
  */
 public class JavaHighlighter implements Highlighter {
 
-   private final static String[] JAVA_KEYWORDS = {
+   private static final String[] JAVA_KEYWORDS = {
      "abstract", "assert",
      "break", "boolean", "Boolean", "byte",
      "catch", "case","const","continue", "class", "char",
@@ -29,14 +29,14 @@ public class JavaHighlighter implements Highlighter {
      "while"
    };
 
-   private final static String[] JAVA_ANNOTATIONS = {
+   private static final String[] JAVA_ANNOTATIONS = {
       "@Override", "@Deprecated", "@SuppressWarnings", "@SafeVarargs",
       "@FunctionalInterface"
    };
 
-   private final int IGNORE_COND = 0;
-   private final static int TEXT_BLOCK_COND = 1;
-   private final static int VALID_TEXT_BLOCK_COND = 2;
+   private static	final int IGNORE_COND = 0;
+   private static final int TEXT_BLOCK_COND = 1;
+   private static final int VALID_TEXT_BLOCK_COND = 2;
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
