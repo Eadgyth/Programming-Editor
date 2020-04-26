@@ -57,6 +57,11 @@ would have to be disabled by a corresponding command-line switch or by switch in
 itself. Currently, this limitation applies to interactive Perl scripts and may apply to
 custom commands.
 <br>
+<h4>Acknowledgements</h4>
+<p>
+Special thanks go to <a href="https://github.com/wgilreath">William Gilreath</a> for his
+advice, comments and enthudiasm.
+<br>
 <h4>REFERENCES</h4>
 <p>
 The program uses icons from
