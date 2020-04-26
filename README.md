@@ -59,10 +59,8 @@ custom commands.
 <br>
 <h4>Acknowledgements</h4>
 <p>
-Special thanks go to <a href="https://github.com/wgilreath">William Gilreath</a> for his
-advice, corrections, comments and enthusiasm.
+Special thanks go to William Gilreath for his advice, comments and enthusiasm.
 <br>
-<h4>REFERENCES</h4>
 <p>
 The program uses icons from
 <a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.
