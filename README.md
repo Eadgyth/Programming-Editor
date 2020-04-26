@@ -60,7 +60,7 @@ custom commands.
 <h4>Acknowledgements</h4>
 <p>
 Special thanks go to <a href="https://github.com/wgilreath">William Gilreath</a> for his
-advice, comments and enthudiasm.
+advice, corrections, comments and enthusiasm.
 <br>
 <h4>REFERENCES</h4>
 <p>
