@@ -1,7 +1,6 @@
 package eg.ui;
 
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.Color;
 

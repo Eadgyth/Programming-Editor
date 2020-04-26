@@ -89,14 +89,11 @@ public class TaskRunner {
    }
 
    /**
-    * Runs a process by the specified system command. The
-    * process uses the console to show output/error and read
-    * input. If the conosle is blocked by another task a
-    * warning dialog is shown and the process is not
-    * started.
+    * Runs the specified system command in the current project
+    * directory.
+    * Method invokes {@link ProcessStarter#startProcess(String)}
     *
     * @param cmd  the system command
-    * @see ProcessStarter
     */
    public void runSystemCommand(String cmd) {
       mw.showConsole();

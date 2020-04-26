@@ -103,13 +103,11 @@ public class SyntaxHighlighter {
       private boolean isMultiline = true;
       private boolean isRepairBlock = false;
       private boolean isRepairInnerBlock = false;
-      private int textBlockCount;
       boolean isQuoteInSection;
       private int nDoubleQuote;
       private int nSingleQuote;
       private int nTriDoubleQuote;
       private int nTriSingleQuote;
-      private Highlighter hlSection;
       private int innerStart = 0;
       private int innerEnd = 0;
       private int condition = 0;
@@ -182,7 +180,7 @@ public class SyntaxHighlighter {
          if (!isTypeMode || isRepairBlock) {
             return;
          }
-         int start = txt.text().lastIndexOf("<", chgPos);
+         int start = txt.text().lastIndexOf('<', chgPos);
          if (start == -1) {
             start = 0;
          }
@@ -580,7 +578,7 @@ public class SyntaxHighlighter {
                      && isValid(absStart, lineCmntStart.length())) {
 
                   lineCmntStarts.add(absStart);
-                  int lineEnd = section.indexOf("\n", start);
+                  int lineEnd = section.indexOf('\n', start);
                   if (lineEnd != -1) {
                      length = lineEnd - start;
                   }
@@ -694,10 +692,8 @@ public class SyntaxHighlighter {
             boolean found = extStart == section.indexOf(s, extStart)
                   && SyntaxUtils.isWordEnd(section, extStart + s.length());
 
-            if (found) {
-               if (s.length() > length) {
-                  length = s.length();
-               }
+            if (found && s.length() > length) {
+               length = s.length();
             }
          }
          return length;
@@ -708,7 +704,7 @@ public class SyntaxHighlighter {
                SyntaxUtils.IGNORE_QUOTED);
 
          if (end == -1) {
-            end = txt.text().indexOf("<", pos);
+            end = txt.text().indexOf('<', pos);
             if (end == -1) {
                end = txt.text().length();
             }
@@ -733,9 +729,6 @@ public class SyntaxHighlighter {
 
       private void xmlAttributes(String tag, int tagStart, int pos) {
          int offset = pos;
-         int length = SyntaxUtils.sectionLength(tag, offset,
-               SyntaxConstants.XML_TAG_ENDS, null);
-
          int i = offset;
          while (i < tag.length()) {
             if (!SyntaxUtils.isQuoted(tag, i)
@@ -820,6 +813,8 @@ public class SyntaxHighlighter {
                b = nSingleQuote != count;
                nSingleQuote = count;
                break;
+            default:
+               break;
          }
          if (b) {
             repair(txt.text(), 0);
@@ -840,6 +835,8 @@ public class SyntaxHighlighter {
             case SyntaxConstants.TRI_SINGLE_QUOTE:
                b = nTriSingleQuote != count;
                nTriSingleQuote = count;
+               break;
+            default:
                break;
          }
          if (b) {

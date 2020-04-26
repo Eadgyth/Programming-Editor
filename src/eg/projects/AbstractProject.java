@@ -614,6 +614,9 @@ public abstract class AbstractProject implements Configurable {
             libraries.addAll(Arrays.asList(libInputArr));
          }
          execDir = pr.property("ExecDir");
+         cmdOptions = pr.property("CmdOptions");
+         cmdArgs = pr.property("CmdArgs");
+         compileOptions = pr.property("CompileOptions");
          extensions = pr.property("IncludedFiles");
          buildName = pr.property("BuildName");
       }
@@ -666,6 +669,9 @@ public abstract class AbstractProject implements Configurable {
     		  .append(File.pathSeparator));
 
       pr.setProperty("Libraries", libs.toString());
+      pr.setProperty("CmdOptions", cmdOptions);
+      pr.setProperty("CmdArgs", cmdArgs);
+      pr.setProperty("CompileOptions", compileOptions);
       pr.setProperty("IncludedFiles", extensions);
       pr.setProperty("BuildName", buildName);
       pr.setProperty("ProjectType", projType.toString());
@@ -728,9 +734,7 @@ public abstract class AbstractProject implements Configurable {
             .append("\nThe directory cannot be found.");
       }
       if (!projectDir.isEmpty()) {
-         sb.append("\n\nThe previous directory '")
-            .append(projectName())
-            .append("' will be kept.");
+         sb.append("\n\nThe previous directory name will be kept.");
       }
       return sb.toString();
    }
@@ -738,22 +742,12 @@ public abstract class AbstractProject implements Configurable {
    private String fileInputWarning() {
       StringBuilder sb = new StringBuilder();
       if (sourceFileName.isEmpty()) {
-         sb.append("The name of a ")
-            .append(projType.display())
-            .append(" file is not specified");
+         sb.append("A source file is not specified");
       }
       else {
          sb.append(sw.filenameInput())
-            .append("\nThe ")
-            .append(projType.display())
-            .append(" file cannot be found");
-
-         if (!relSourceDir.isEmpty()) {
-            sb.append(" in the source directory ")
-               .append(relSourceDir);
-         }
+               .append("\nThe file cannot be found.");
       }
-      sb.append(".");
       return sb.toString();
    }
 
@@ -761,16 +755,22 @@ public abstract class AbstractProject implements Configurable {
       String name = namespace.isEmpty() ?
             "" : namespace + namespaceSep + sourceFileName + sourceExt;
 
-      StringBuilder msg = new StringBuilder();
-      msg.append(sourceFileName).append(sourceExt)
-            .append("\nMore than one file with this name seems to exist.");
+      String sourceRoot = new File(sourceDir).getName();
+      StringBuilder sb = new StringBuilder();
+      sb.append(sourceFileName).append(sourceExt)
+            .append("\nMore than one file with this name seems to exist")
+            .append(" in the source root ")
+            .append(sourceRoot)
+            .append(".");
 
       if (!name.isEmpty()) {
-         msg.append("\nThe currently set file is:\n\n").append(name);
+         sb.append("\n\nThe currently set file is ")
+               .append(name)
+               .append(".");
       }
-      msg.append("\n\nA file can be entered as qualified name or pathname")
-            .append(" relative to the source root.");
+      sb.append("\n\nNOTE: A relative pathname or qualified name can be")
+            .append(" entered to select a particular file.");
 
-      return msg.toString();
+      return sb.toString();
    }
 }

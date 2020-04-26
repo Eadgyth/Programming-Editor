@@ -19,6 +19,8 @@ public class SyntaxUtils {
     * must be found within line */
    public static final int LINE_QUOTED = 2;
 
+   private static final String WRONG_QUOTE_OPT = "The value of 'quoteOpt' is not allowed";
+
    /**
     * Returns if a section with the specified length is a word
     *
@@ -334,8 +336,7 @@ public class SyntaxUtils {
          return isQuotedInLine(text, pos);
       }
       else {
-         throw new IllegalArgumentException(
-               "The value of 'quoteOpt' is not allowed");
+         throw new IllegalArgumentException(WRONG_QUOTE_OPT);
       }
    }
 
@@ -495,7 +496,7 @@ public class SyntaxUtils {
                i+= str.length();
                continue;
             }
-             if (i >= pos) {
+            if (i >= pos) {
                break;
             }
             count++;
@@ -536,8 +537,7 @@ public class SyntaxUtils {
          return nextUnquotedInLine(text, toSearch, pos);
       }
       else {
-         throw new IllegalArgumentException(
-               "The value of 'quoteOpt' is not allowed");
+         throw new IllegalArgumentException(WRONG_QUOTE_OPT);
       }
    }
 
@@ -551,8 +551,7 @@ public class SyntaxUtils {
          return lastUnquotedInLine(text, pos, toSearch);
       }
       else {
-         throw new IllegalArgumentException(
-               "The value of 'quoteOpt' is not allowed");
+         throw new IllegalArgumentException(WRONG_QUOTE_OPT);
       }
    }
 

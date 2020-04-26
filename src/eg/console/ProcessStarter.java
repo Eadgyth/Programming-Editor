@@ -82,14 +82,16 @@ public class ProcessStarter {
    }
 
    /**
-    * Starts a system process in this working directory. The console
-    * is used to show output/error from the process and to send input
-    * to it. The file tree is updated after the process has ended. If
-    * it is tried to start a process while another task uses the
-    * console a warning dialog is shown and the process is not started.
+    * Runs the specified system command in this working
+    * directory.
+    * {@link Console} is used to show output/error from the
+    * started process and to send input to it. The file tree
+    * is updated after the process has ended. If it is tried
+    * to start a process while another task uses the console a
+    * warning dialog is shown and the process is not started.
     *
-    * @param cmd  the start command in which arguments are separated by
-    * spaces
+    * @param cmd  the start command in which arguments are
+    * separated by spaces
     */
    public void startProcess(String cmd) {
       isAborted = false;
@@ -99,8 +101,8 @@ public class ProcessStarter {
       cons.enableRunBt(false);
       cons.focus();
       cons.setText("");
-      consoleText = "Run:";
-      cons.appendTextBr(consoleText);
+      cons.appendTextBr("Run:");
+      consoleText = cons.getText();
       new Thread(() -> {
          try {
             List<String> cmdList = Arrays.asList(cmd.split(" "));
@@ -270,7 +272,8 @@ public class ProcessStarter {
    private String cmdNotFoundMsg(String cmd) {
       return
          "Failed to run "
-         + cmd + " in the current working directory "
+         + cmd
+         + " in the current project directory "
          + workingDir;
    }
 

@@ -20,7 +20,7 @@ import eg.utils.Dialogs;
  * Class can have an unlocked, an unlocked active or a locked state.
  * Setting the 'unlocked' flag is required to use this methods that
  * access the text area. Otherwise these methods throw an exception.
- * Active means that the text area is additinally editable and
+ * Active means that the text area is additionally editable and
  * focusable and also that this button for stopping a process is
  * enabled.
  */

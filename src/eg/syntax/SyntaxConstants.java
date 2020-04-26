@@ -66,7 +66,7 @@ public class SyntaxConstants {
    public static final char[] XML_TAG_ENDS = {
       '<', '>'
    };
-   
+
    /**
     * The characters that are reserved in XML */
    public static final char[] RESERVED_XML_CHARS = {
@@ -129,4 +129,6 @@ public class SyntaxConstants {
       "width",
       "xml:lang", "xml:space", "xmlns",
    };
+
+   private SyntaxConstants() {}
 }

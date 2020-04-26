@@ -40,6 +40,7 @@ public class SettingsWindow {
 
    private static final Dimension DIM_TF = ScreenParams.scaledDimension(220, 14);
    private static final Dimension DIM_TF_LONG = ScreenParams.scaledDimension(300, 14);
+   private static final Dimension DIM_TF_SHORT = ScreenParams.scaledDimension(100, 14);
    private static final Dimension DIM_VERT_SPACER = ScreenParams.scaledDimension(0, 14);
    private static final Dimension DIM_RIGHT_SPACER = ScreenParams.scaledDimension(28, 14);
 
@@ -61,7 +62,7 @@ public class SettingsWindow {
    private final JCheckBox  saveConfigBx     = new JCheckBox();
 
    private final BusyFunction bf;
-   private final JPanel structurePnl;
+   private final JPanel sourcePnl;
 
    private ListInputPanel librariesPnl;
    private JPanel runSettingsPnl;
@@ -73,8 +74,8 @@ public class SettingsWindow {
 
    public SettingsWindow() {
       chooser.initSelectFileOrDirectoryChooser();
-      structurePnl = vertBoxPnl();
-      addStructureSetting("Name of project directory:", projDirTf, true);
+      sourcePnl = vertBoxPnl();
+      addSourceSetting("Name of project directory:", projDirTf, true);
       cancelBt.setFocusable(false);
       okBt.setFocusable(false);
       frame.getRootPane().setDefaultButton(okBt);
@@ -116,7 +117,7 @@ public class SettingsWindow {
    public void setDefaultCloseAct(WindowAdapter wa) {
       frame.addWindowListener(wa);
    }
-   
+
    /**
     * Sets the directory for the file chooser used by objects
     * of <code>SettingsWindow</code>.
@@ -399,7 +400,7 @@ public class SettingsWindow {
        */
       public InputOptionsBuilder addFileInput(String label) {
          String s = label + ":";
-         sw.addStructureSetting(s, sw.fileTf, true);
+         sw.addSourceSetting(s, sw.fileTf, true);
          useMainFile = true;
          return this;
       }
@@ -412,8 +413,23 @@ public class SettingsWindow {
        */
       public InputOptionsBuilder addSourceDirInput() {
          String s = "Source directory (relative to project):";
-         sw.addStructureSetting(s, sw.sourcesDirTf, true);
+         sw.addSourceSetting(s, sw.sourcesDirTf, true);
          return  this;
+      }
+
+      /**
+       * Adds the option to enter a name of a destination folder
+       * for compiled files in the 'Source' panel. The input field
+       * has a vertical distance to the previous one.
+       *
+       * @param label  the label for the input option
+       * @return  this
+       */
+      public InputOptionsBuilder addExecDirInput(String label) {
+         String s = label + ":";
+         sw.addSpacer(sw.sourcePnl);
+         sw.addSourceSetting(s, sw.execDirTf, false);
+         return this;
       }
 
       /**
@@ -458,19 +474,6 @@ public class SettingsWindow {
       public InputOptionsBuilder addCmdArgsInput() {
          String s = "Command arguments:";
          sw.addRunSetting(s, sw.cmdArgsTf, false);
-         return this;
-      }
-
-      /**
-       * Adds the option to enter a name of a destination folder
-       * for compiled files in the 'Compile/build' panel
-       *
-       * @param label  the label for the input option
-       * @return  this
-       */
-      public InputOptionsBuilder addExecDirInput(String label) {
-         String s = label + ":";
-         sw.addBuildSetting(s, sw.execDirTf, false);
          return this;
       }
 
@@ -541,8 +544,8 @@ public class SettingsWindow {
    //--private--/
    //
 
-   private void addStructureSetting(String label, JTextField tf, boolean useBrowser) {
-      structurePnl.add(singleTextfieldPnl(label, tf, useBrowser));
+   private void addSourceSetting(String label, JTextField tf, boolean useBrowser) {
+      sourcePnl.add(singleTextfieldPnl(label, tf, useBrowser));
    }
 
    private void addRunSetting(String label, JTextField tf, boolean useBrowser) {
@@ -566,6 +569,12 @@ public class SettingsWindow {
       useLibs = true;
    }
 
+   private void addSpacer(JPanel toAdd) {
+      JPanel spacer = new JPanel();
+      spacer.setPreferredSize(DIM_VERT_SPACER);
+      toAdd.add(spacer);
+   }
+
    private JPanel singleTextfieldPnl(String label, JTextField tf,
          boolean useBrowser) {
 
@@ -573,7 +582,16 @@ public class SettingsWindow {
       JLabel lb = new JLabel(label);
       lb.setFont(ScreenParams.scaledFontToBold(lb.getFont(), 8));
       tf.setFont(ScreenParams.scaledFontToPlain(tf.getFont(), 8));
-      Dimension d = tf == customCmdTf ? DIM_TF_LONG : DIM_TF;
+      Dimension d;
+      if (tf == customCmdTf) {
+         d = DIM_TF_LONG;
+      }
+      else if (tf == execDirTf) {
+         d = DIM_TF_SHORT;
+      }
+      else {
+         d = DIM_TF;
+      }
       tf.setPreferredSize(d);
       pnl.add(lb);
       pnl.add(tf);
@@ -618,7 +636,7 @@ public class SettingsWindow {
          pnl.add(tabPane());
       }
       else {
-         pnl.add(textfieldsHolderPnl(structurePnl));
+         pnl.add(textfieldsHolderPnl(sourcePnl));
       }
       pnl.add(checkBxPnl());
       pnl.add(Box.createRigidArea(DIM_VERT_SPACER));
@@ -629,7 +647,7 @@ public class SettingsWindow {
    private JTabbedPane tabPane() {
       JTabbedPane tb = new JTabbedPane();
       tb.setFont(ScreenParams.scaledFontToPlain(tb.getFont(), 8));
-      tb.add("Sources", textfieldsHolderPnl(structurePnl));
+      tb.add("Sources", textfieldsHolderPnl(sourcePnl));
       if (useLibs) {
          tb.add("Libraries", listHolderPnl(librariesPnl.content()));
          tb.addChangeListener((ChangeEvent e) -> {
