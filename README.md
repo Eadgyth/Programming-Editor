@@ -57,7 +57,10 @@ would have to be disabled by a corresponding command-line switch or by switch in
 itself. Currently, this limitation applies to interactive Perl scripts and may apply to
 custom commands.
 <br>
-<h4>REFERENCES</h4>
+<h4>ACKNOWLEDGEMENTS</h4>
+<p>
+Special thanks go to William Gilreath for his advice, comments and enthusiasm.
+<br>
 <p>
 The program uses icons from
 <a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.
