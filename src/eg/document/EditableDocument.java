@@ -8,6 +8,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+
 //--Eadgyth--/
 import eg.Languages;
 import eg.utils.FileUtils;
@@ -24,6 +27,7 @@ public final class EditableDocument {
 
    private final TypingEdit type;
    private final EditableText txt;
+   private final Indentation indent;
    private final CurrentLanguage currLang = new CurrentLanguage();
 
    private File file = null;
@@ -68,12 +72,14 @@ public final class EditableDocument {
    }
 
    /**
-    * Sets the indent unit which consists of spaces
+    * Sets the indentation mode
     *
-    * @param indentUnit  the indend unit
+    * @param indentUnit  the indent unit which consists of spaces
+    * @param indentTab  true to indent tabs, false to indent spaces
     */
-   public void setIndentUnit(String indentUnit) {
-      type.setIndentUnit(indentUnit);
+   public void setIndentationMode(String indentUnit, boolean indentTab) {
+      indent.setMode(indentUnit, indentTab);
+      txt.setTabLength(indent.indentUnit().length());
    }
 
    /**
@@ -93,7 +99,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Gets the text area that displays the text
+    * Returns the text area that displays the text
     *
     * @return  the text area
     */
@@ -111,32 +117,28 @@ public final class EditableDocument {
    }
 
    /**
-    * Gets this file or throws an exception if no file is set
+    * Returns this file or throws an exception if no file is set
     *
     * @return  the file
     */
    public File file() {
-      if (file == null) {
-         throw new IllegalStateException("No file has been set");
-      }
+      checkFileForNull();
       return file;
    }
 
    /**
-    * Gets the path of the parent directory of this file or throws
+    * Returns the path of the parent directory of this file or throws
     * an exception if no file is set
     *
     * @return  the parent directory
     */
    public String fileParent() {
-      if (file == null) {
-         throw new IllegalStateException("No file has been set");
-      }
+      checkFileForNull();
       return fileParent;
    }
 
    /**
-    * Gets the last name in the path of this file
+    * Returns the last name in the path of this file
     *
     * @return  the filename; the empty string of no file is set
     */
@@ -145,7 +147,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Gets the path of this file
+    * Returns the path of this file
     *
     * @return  the path; the empty String if no file is set
     */
@@ -161,9 +163,7 @@ public final class EditableDocument {
     * be saved
     */
    public boolean saveFile() {
-      if (file == null) {
-         throw new IllegalStateException("No file has been assigned");
-      }
+      checkFileForNull();
       boolean isWritten = writeToFile(file);
       if (isWritten) {
          savedContent = txt.text();
@@ -239,7 +239,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Gets the document text
+    * Returns the document text
     *
     * @return  the text
     */
@@ -248,7 +248,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Gets the length of the document text
+    * Returns the length of the document text
     *
     * @return  the length
     */
@@ -257,7 +257,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Gets the current language
+    * Returns the current language
     *
     * @return  the language
     */
@@ -266,12 +266,21 @@ public final class EditableDocument {
    }
 
    /**
-    * Gets the currently set indent unit
+    * Returns the current indent unit
     *
     * @return  the indent unit
     */
    public String indentUnit() {
-      return type.indentUnit();
+      return indent.indentUnit();
+   }
+
+   /**
+    * Returns if tabs are currently used for indentation
+    *
+    * @return  true if tabs, false if spaces are used
+    */
+   public boolean indentTab() {
+      return indent.indentTab();
    }
 
    /**
@@ -324,14 +333,14 @@ public final class EditableDocument {
    }
 
    /**
-    * Performs an undo action
+    * Undoes edits
     */
    public void undo() {
       type.undo();
    }
 
    /**
-    * Performs a redo action
+    * Redoes edits
     */
    public void redo() {
       type.redo();
@@ -358,7 +367,16 @@ public final class EditableDocument {
    private EditableDocument(EditArea editArea) {
       txt = new EditableText(editArea.textArea());
       LineNumbers lineNum = new LineNumbers(editArea.lineNrArea());
-      type = new TypingEdit(txt, lineNum);
+      indent = new Indentation(txt);
+      type = new TypingEdit(txt, lineNum, indent);
+      editArea.textArea()
+            .addPropertyChangeListener("font", new PropertyChangeListener() {
+
+         @Override
+         public void propertyChange(PropertyChangeEvent e) {
+            txt.setTabLength(indentUnit().length());
+         }
+      });
    }
 
    private void setFileParams(File f) {
@@ -413,7 +431,7 @@ public final class EditableDocument {
    private void removeImpl(int pos, int length, boolean highlight) {
       txt.remove(pos, length);
       if (highlight) {
-         type.highlightAtPos();
+         type.highlightAtPos();                                                                                       
       }
    }
 
@@ -431,5 +449,11 @@ public final class EditableDocument {
 
    private void setEditingMode() {
       type.setEditingMode(currLang);
+   }
+
+   private void checkFileForNull() {
+      if (file == null) {
+         throw new IllegalStateException("No file has been set");
+      }
    }
 }

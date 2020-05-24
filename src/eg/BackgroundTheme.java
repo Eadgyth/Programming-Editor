@@ -119,19 +119,22 @@ public class BackgroundTheme {
       boolean isDark = true;
       if ("Black".equals(theme)) {
          background = new Color(0, 0, 20);
+         normalText = new Color(210, 210, 210);
       }
       else if ("Blue".equals(theme)) {
          background = new Color(40, 40, 75);
+         normalText = new Color(228, 228, 228);
       }
       else if ("Gray".equals(theme)) {
          background = new Color(46, 46, 60);
+         normalText = new Color(228, 228, 228);
       }
       else {
          background = Color.WHITE;
+         normalText = Color.BLACK;
          isDark = false;
       }
       if (isDark) {
-         normalText = new Color(228, 228, 228);
          accentedNormalText = new Color(240, 240, 245);
          blueText = new Color(0, 150, 255);
          redText = new Color(255, 80, 0);
@@ -140,7 +143,7 @@ public class BackgroundTheme {
          selectionBackground = new Color(50, 50, 250);
       }
       else {
-         normalText = Color.BLACK;
+         //normalText = Color.BLACK;
          accentedNormalText = new Color(30, 30, 180);
          blueText = new Color(0, 20, 255);
          redText = new Color(255, 20, 20);

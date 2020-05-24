@@ -21,7 +21,8 @@ public class LinesFinder {
    }
 
    /**
-    * Returns the content of the line that follows <code>lastNewline</code>
+    * Returns the content of the line that follows
+    * <code>lastNewline</code>
     *
     * @param text  the text
     * @param lastNewline  the position of the last newline

@@ -70,8 +70,7 @@ public class TabbedDocuments {
 
       lang = Languages.valueOf(prefs.property(Prefs.LANG_KEY));
 
-      String indentUnit = prefs.property("IndentUnit");
-      edit = new Edit(indentUnit);
+      edit = new Edit(true);
       mw.setEditActions(edit, this::changeLanguage);
 
       FileTree ft = new FileTree(mw.treePanel(), this::open);
@@ -215,8 +214,8 @@ public class TabbedDocuments {
       closeAll(false);
       boolean b = iTab == -1;
       if (b) {
-         format.setProperties();
-         prefs.setProperty(Prefs.INDENT_UNIT_KEY, edit.indentUnitSelection());
+         format.storeProperties();
+         edit.storeIndentProperties();
          prefs.setProperty(Prefs.LANG_KEY, lang.toString());
          prefs.setProperty(Prefs.RECENT_DIR_KEY, chOpen.currentDir());
       }
@@ -302,7 +301,7 @@ public class TabbedDocuments {
       int n = nTabs();
       format.createEditAreaAt(n);
       edtDoc[n] = new EditableDocument(editArea[n], lang);
-      setupDocument(n);
+      edtDoc[n].setEditingStateReadable(editState);
       tabPane.addTab("unnamed", editArea[n].content(), closeAct());
    }
 
@@ -310,14 +309,9 @@ public class TabbedDocuments {
       int n = nTabs();
       format.createEditAreaAt(n);
       edtDoc[n] = new EditableDocument(editArea[n], f);
-      setupDocument(n);
+      edtDoc[n].setEditingStateReadable(editState);
       tabPane.addTab(edtDoc[n].filename(), editArea[n].content(), closeAct());
       proj.retrieve();
-   }
-
-   private void setupDocument(int index) {
-      edtDoc[index].setIndentUnit(edit.indentUnitSelection());
-      edtDoc[index].setEditingStateReadable(editState);
    }
 
    private FunctionalAction closeAct() {

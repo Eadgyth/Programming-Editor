@@ -182,4 +182,6 @@ public class Dialogs {
          return null;
       }
    }
+   
+   private Dialogs() {}
 }

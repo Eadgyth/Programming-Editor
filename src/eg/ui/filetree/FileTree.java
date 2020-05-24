@@ -306,7 +306,6 @@ public class FileTree {
 
    private void setActions() {
       treePnl.setFolderUpAction(e -> folderUp());
-      treePnl.setRenewTreeAction(e -> updateTree());
       popupFile.setOpenAction(e -> openFile());
       popupFile.setDeleteAct(e -> deleteFile());
       popupDir.setNewFolderAct(e -> newFolder());

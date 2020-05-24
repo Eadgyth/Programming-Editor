@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.Action;
@@ -30,6 +29,7 @@ import eg.ui.menu.LanguageMenu;
 import eg.document.EditableDocument;
 import eg.document.EditingStateReadable;
 import eg.utils.ScreenParams;
+import eg.utils.SystemParams;
 
 /**
  * An editor panel to edit and view text in a separate text area
@@ -37,11 +37,11 @@ import eg.utils.ScreenParams;
 public class ExchangeEditor implements AddableEditTool {
 
    private final JPanel content = new JPanel(new BorderLayout());
-   private final JMenuItem loadItm = new JMenuItem("Load file content...");
+   private final JMenuItem loadItm = new JMenuItem("Load file content ...");
    private final JMenuItem copyFromItm = new JMenuItem();
    private final JMenuItem copyToItm = new JMenuItem();
    private final JMenuItem adoptLangItm = new JMenuItem();
-   private final JMenuItem adoptIndentLenItm = new JMenuItem("Indent length");
+   private final JMenuItem adoptIndentLenItm = new JMenuItem("Indentation settings");
    private final JMenuItem undoItm = new JMenuItem();
    private final JMenuItem redoItm = new JMenuItem();
    private final JMenuItem cutItm = new JMenuItem();
@@ -58,20 +58,18 @@ public class ExchangeEditor implements AddableEditTool {
    private final Prefs prefs = new Prefs();
    private final JPanel editorPnl;
    private final TextExchange exch;
-   private final Edit edit = new Edit();
+   private final Edit edit = new Edit(false);
 
    public ExchangeEditor() {
       EditArea ea = format.editArea();
-      editorPnl = ea.content();  
-      formatMenu.selectWordWrapItm(ea.isWordwrap());   
+      editorPnl = ea.content();
+      formatMenu.selectWordWrapItm(ea.isWordwrap());
       Languages lang = Languages.valueOf(
             prefs.property(Prefs.EXCHG_PREFIX + Prefs.LANG_KEY));
-      
-      languageMenu.selectLanguageItm(lang);          
+
+      languageMenu.selectLanguageItm(lang);
       EditableDocument edtDoc = new EditableDocument(ea, lang);
       edtDoc.setEditingStateReadable(editReadable);
-      String indentUnit = prefs.property(Prefs.INDENT_UNIT_KEY);
-      edtDoc.setIndentUnit(indentUnit);
       edit.setDocument(edtDoc);
       String recentDir = prefs.property(Prefs.RECENT_DIR_KEY);
       exch = new TextExchange(edtDoc, recentDir);
@@ -115,7 +113,7 @@ public class ExchangeEditor implements AddableEditTool {
     */
    @Override
    public void end() {
-      format.setProperties();
+      format.storeProperties();
       prefs.setProperty(Prefs.EXCHG_PREFIX + Prefs.LANG_KEY,
             exch.language().toString());
 
@@ -170,8 +168,10 @@ public class ExchangeEditor implements AddableEditTool {
       menu.add(cutItm);
       menu.add(copyItm);
       menu.add(pasteItm);
-      menu.add(indentItm);
-      menu.add(outdentItm);
+      JMenu indentMenu = new JMenu("Indentation");
+      menu.add(indentMenu);
+      indentMenu.add(indentItm);
+      indentMenu.add(outdentItm);
       menu.add(clearItm);
       menu.addSeparator();
       menu.add(languageMenu.menu());
@@ -179,8 +179,8 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    private void enableUndoRedo(boolean isUndo, boolean isRedo) {
-      undoItm.setEnabled(isUndo);
-      redoItm.setEnabled(isRedo);
+      undoItm.getAction().setEnabled(isUndo);
+      redoItm.getAction().setEnabled(isRedo);
    }
 
    private void enableCutCopy(boolean b) {
@@ -194,60 +194,40 @@ public class ExchangeEditor implements AddableEditTool {
       copyFromItm.setAction(new FunctionalAction("Copy selection from main editor",
            null, e -> exch.copyTextFromSource()));
       setKeyBinding(copyFromItm, KeyStroke.getKeyStroke(
-            KeyEvent.VK_F, ActionEvent.CTRL_MASK), "F_pressed");
+            KeyEvent.VK_F, SystemParams.MODIFIER_MASK), "F_pressed");
 
       copyToItm.setAction(new FunctionalAction("Copy selection to main editor",
            null, e -> exch.copyTextToSource()));
       setKeyBinding(copyToItm, KeyStroke.getKeyStroke(
-            KeyEvent.VK_T, ActionEvent.CTRL_MASK), "T_pressed");
+            KeyEvent.VK_T, SystemParams.MODIFIER_MASK), "T_pressed");
 
       adoptIndentLenItm.addActionListener(
-            e -> edit.setIndentUnit(exch.sourceDocIndentUnit()));
+            e -> edit.changeIndentationMode(exch.sourceDocIndentUnit(),
+                  exch.sourceDocIndentTab()));
 
       adoptLangItm.setAction(new FunctionalAction("Language", null,
            e -> exch.adoptLanguage(languageMenu)));
       setKeyBinding(adoptLangItm, KeyStroke.getKeyStroke(
-            KeyEvent.VK_G, ActionEvent.CTRL_MASK), "G_pressed");
+            KeyEvent.VK_G, SystemParams.MODIFIER_MASK), "G_pressed");
 
-      undoItm.setAction(new FunctionalAction("Undo", null,
-            e -> edit.undo()));
-      setKeyBinding(undoItm, KeyStroke.getKeyStroke(
-            KeyEvent.VK_Z, ActionEvent.CTRL_MASK), "Z_pressed");
-
-      redoItm.setAction(new FunctionalAction("Redo", null,
-            e -> edit.redo()));
-      setKeyBinding(redoItm, KeyStroke.getKeyStroke(
-            KeyEvent.VK_Y, ActionEvent.CTRL_MASK), "Y_pressed");
+      undoItm.setAction(edit.undoAction());
+      redoItm.setAction(edit.redoAction());
 
       cutItm.setAction(new FunctionalAction("Cut", null,
             e -> edit.cut()));
       setKeyBinding(cutItm, KeyStroke.getKeyStroke(
-            KeyEvent.VK_X, ActionEvent.CTRL_MASK), "X_pressed");
+            KeyEvent.VK_X, SystemParams.MODIFIER_MASK), "X_pressed");
 
       copyItm.setAction(new FunctionalAction("Copy", null,
              e -> edit.setClipboard()));
       setKeyBinding(copyItm, KeyStroke.getKeyStroke(
-            KeyEvent.VK_C, ActionEvent.CTRL_MASK), "C_pressed");
+            KeyEvent.VK_C, SystemParams.MODIFIER_MASK), "C_pressed");
 
-      pasteItm.setAction(new FunctionalAction("Paste", null,
-            e -> edit.pasteText()));
-      setKeyBinding(pasteItm, KeyStroke.getKeyStroke(
-            KeyEvent.VK_V, ActionEvent.CTRL_MASK), "V_pressed");
-
-      indentItm.setAction(new FunctionalAction("Increase indentation", null,
-            e -> edit.indent()));
-      setKeyBinding(indentItm, KeyStroke.getKeyStroke(
-            KeyEvent.VK_M, ActionEvent.CTRL_MASK), "M_pressed");
-
-      outdentItm.setAction(new FunctionalAction("Reduce indentation", null,
-            e -> edit.outdent()));
-      setKeyBinding(outdentItm, KeyStroke.getKeyStroke(
-            KeyEvent.VK_L, ActionEvent.CTRL_MASK), "L_pressed");
-
+      pasteItm.setAction(edit.pasteAction());
+      indentItm.setAction(edit.indentAction());
+      outdentItm.setAction(edit.outdentAction());
       clearItm.addActionListener(e -> exch.clear());
-
       languageMenu.setChangeLanguageActions(exch::changeLanguage);
-
       formatMenu.setFontAction(e -> format.openSetFontDialog());
       formatMenu.setChangeWordWrapAct(
             e -> format.enableWordWrap(formatMenu.isWordWrapItmSelected()));
@@ -264,7 +244,7 @@ public class ExchangeEditor implements AddableEditTool {
 
       @Override
       public void updateInChangeState(boolean isChange) {
-    	 // not used
+    	   // not used
       }
 
       @Override
@@ -279,7 +259,7 @@ public class ExchangeEditor implements AddableEditTool {
 
       @Override
       public void updateCursorState(int line, int col) {
-    	 // not used
+    	   // not used
       }
    };
 }

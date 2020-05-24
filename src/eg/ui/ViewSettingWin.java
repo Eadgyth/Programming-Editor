@@ -252,8 +252,7 @@ public class ViewSettingWin {
       innerPnl.add(statusbarSettingPnl());
       pnl.add(innerPnl);
       return pnl;
-   }
-
+   }			
    private JPanel appearanceSettingsPnl() {
       JPanel pnl = new JPanel();
       pnl.setBorder(UIComponents.titledBorder("Appearance"));
@@ -307,12 +306,12 @@ public class ViewSettingWin {
    private JPanel comboBxPnl(JComboBox<String> comboBox, String title) {
       JLabel lb = new JLabel(title);
       lb.setFont(ScreenParams.scaledFontToBold(lb.getFont(), 8));
-      lb.setPreferredSize(ScreenParams.scaledDimension(75, 0));      
+      lb.setPreferredSize(ScreenParams.scaledDimension(75, 0));
       comboBox.setFont(ScreenParams.scaledFontToPlain(comboBox.getFont(), 8));
       JPanel pnl = new JPanel();
       pnl.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
-      pnl.add(lb);      
+      pnl.add(lb);
       pnl.add(comboBox);
       comboBox.setEnabled(SystemParams.existsEadgythDataDir());
       return pnl;

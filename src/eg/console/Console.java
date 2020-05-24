@@ -34,7 +34,9 @@ public class Console {
    private boolean unlocked = false;
 
    /**
-    * @param consPnl  the reference to ConsolePanel of MainWin
+    * @param consPnl  the reference to ConsolePanel which is contained
+    * in the main window and which the text area and the buttons are
+    * added to
     */
    public Console(ConsolePanel consPnl) {
       JButton[] bts = new JButton[] {

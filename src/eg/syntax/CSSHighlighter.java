@@ -7,7 +7,7 @@ import eg.document.styledtext.Attributes;
  */
 public class CSSHighlighter implements Highlighter {
 
-   private final static String[] PROPS = {
+   private static final String[] PROPS = {
       "all",
       "bottom", "box-shadow",
       "caption-side", "clear", "clip", "color", "content", "counter-increment",
@@ -31,12 +31,12 @@ public class CSSHighlighter implements Highlighter {
       "white-space", "widows", "width", "word-spacing",
       "z-index"
    };
-   private final static String[] BACKGROUND_PROPS = {
+   private static final String[] BACKGROUND_PROPS = {
       "-attachment", "-clip", "-color",
       "-image", "-origin", "-position",
       "-repreat", "-size"
    };
-   private final static String[] BORDER_PROPS = {
+   private static final String[] BORDER_PROPS = {
       "-bottom", "-bottom-color", "-bottom-left-radius",
       "-bottom-rigth-radius",  "-bottom-style", "-bottom-width",
       "-collapse", "-color", "-image",  "-image-outset",
@@ -48,31 +48,31 @@ public class CSSHighlighter implements Highlighter {
       "-top-right-radius", "-top-style", "-top-width",
       "-width"
    };
-   private final static String[] TOP_LEFT_RIGHT_BOTTOM = {
+   private static final String[] TOP_LEFT_RIGHT_BOTTOM = {
       "-bottom", "-left", "-right", "-top"
    };
-   private final static String[] FONT_PROPS = {
+   private static final String[] FONT_PROPS = {
       "-family", "-size", "-size-adjust", "-stretch", "-style",
       "-synthesis", "-variant", "-weight"
    };
-   private final static String[] LIST_PROPS = {
+   private static final String[] LIST_PROPS = {
       "-style", "-style-image", "-style-position", "-style-type"
    };
-   private final static String[] MARGIN_PROPS = TOP_LEFT_RIGHT_BOTTOM;
-   private final static String[] OUTLINE_PROPS = {
+   private static final String[] MARGIN_PROPS = TOP_LEFT_RIGHT_BOTTOM;
+   private static final String[] OUTLINE_PROPS = {
       "-color", "-style", "-width"
    };
-   private final static String[] PADDING_PROPS = TOP_LEFT_RIGHT_BOTTOM;
-   private final static String[] TRANSITION_PROPS = {
+   private static final String[] PADDING_PROPS = TOP_LEFT_RIGHT_BOTTOM;
+   private static final String[] TRANSITION_PROPS = {
       "-delay", "-duration", "-property", "-timing-function"
    };
 
-   private final static char[] CLASS_START = {'.', '#'};
-   private final static char[] CLASS_END = {' ', '{', ')'};
-   private final static char[] NON_PROP_START = {'-', '.'};
-   private final static int IGNORE_COND = 0;
-   private final static int OPEN_BRACE_AHEAD_COND = 1;
-   private final static int NO_OPEN_BRACE_AHEAD_COND = 2;
+   private static final char[] CLASS_START = {'.', '#'};
+   private static final char[] CLASS_END = {' ', '{', ')'};
+   private static final char[] NON_PROP_START = {'-', '.'};
+   private static final int IGNORE_COND = 0;
+   private static final int OPEN_BRACE_AHEAD_COND = 1;
+   private static final int NO_OPEN_BRACE_AHEAD_COND = 2;
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {

@@ -28,7 +28,7 @@ import eg.TaskRunner.ConsolePrinter;
  */
 public class Compilation {
 
-   private final static String DIVIDING_LINE
+   private static final String DIVIDING_LINE
          = new String(new char[90]).replace('\0', '_');
 
    private final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();

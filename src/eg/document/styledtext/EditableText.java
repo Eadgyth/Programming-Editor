@@ -1,5 +1,7 @@
 package eg.document.styledtext;
 
+import java.awt.FontMetrics;
+
 import javax.swing.JTextPane;
 
 import javax.swing.event.DocumentListener;
@@ -7,6 +9,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.TabSet;
+import javax.swing.text.TabStop;
 
 //--Eadgyth--/
 import eg.BackgroundTheme;
@@ -28,7 +32,7 @@ public class EditableText extends StyledText {
    static {
       StyleConstants.setForeground(SET, THEME.normalText());
       StyleConstants.setBold(SET, false);
-      StyleConstants.setLineSpacing(SET, 0.25f);
+		StyleConstants.setLineSpacing(SET, 0.14f);
    }
    
    /**
@@ -103,6 +107,27 @@ public class EditableText extends StyledText {
       catch (BadLocationException e) {
          FileUtils.log(e);
       }
+   }
+   
+   /**
+    * Sets the tab length
+    *
+    * @param nSpaces  the length in number of spaces; not 0
+    */
+   public final void setTabLength(int nSpaces) {
+      if (nSpaces == 0) {
+         throw new IllegalArgumentException(
+               "The number of spaces cannot not be 0");
+      }
+      FontMetrics fm = textArea.getFontMetrics(textArea.getFont());
+      int length = fm.charWidth(' ') * nSpaces;
+      TabStop[] ts = new TabStop[20];
+      for (int i = 0; i < ts.length; i++) {
+         ts[i] = new TabStop((i + 1) * length);
+      }
+      TabSet tabSet = new TabSet(ts);
+      StyleConstants.setTabSet(SET, tabSet);
+      doc().setParagraphAttributes(0, doc().getLength(), SET, false);
    }
    
    /**

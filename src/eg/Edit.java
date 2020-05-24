@@ -2,61 +2,118 @@ package eg;
 
 import java.awt.Toolkit;
 
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
+import javax.swing.Action;
 import javax.swing.JTextPane;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 import java.io.IOException;
 
 //--Eadgyth--/
-import eg.utils.Dialogs;
+import eg.ui.IndentSettingWin;
 import eg.utils.FileUtils;
 import eg.utils.LinesFinder;
+import eg.utils.SystemParams;
 import eg.document.EditableDocument;
 
 /**
- * The editing of text that can be performed by menu or toolbar selections
+ * The editing of text contained in a selected document
  */
 public class Edit {
+
+   private static final char TAB_CH = '\t';
+   private static final char SPACE_CH = ' ';
+   private static final String TAB_STR = "\t";
 
    private static final Clipboard CLIPBOARD
          = Toolkit.getDefaultToolkit().getSystemClipboard();
 
-   private static final String[] SPACE_NUMBER
-         = { "0", "1", "2", "3", "4", "5", "6" };
+   private static final Prefs PREFS = new Prefs();
+
+   private final IndentSettingWin indentSetWin;
+   private final FunctionalAction pasteAction;
+   private final FunctionalAction indentAction;
+   private final FunctionalAction outdentAction;
+   private final FunctionalAction undoAction;
+   private final FunctionalAction redoAction;
 
    private EditableDocument edtDoc;
    private JTextPane textArea;
    private String indentUnit;
    private int indentLength;
-   private String indentUnitSelection;
-
-   public Edit(){}
+   private boolean indentTab;
+   private String indentUnitPref;
+   private boolean indentTabPref;
 
    /**
-    * @param indentUnitSelection  the initial value for the selection
-    * of the indent unit. The value can only be changed in
-    * {@link #setIndentUnit()} and {@link #setIndentUnit(String)}
+    * @param useSetWin  true to use this {@link IndentSettingWin}
+    * to change the indentation mode, false to use the method
+    * {@link #changeIndentationMode(String,boolean)}
     */
-   public Edit(String indentUnitSelection) {
-      this.indentUnitSelection = indentUnitSelection;
+   public Edit(boolean useSetWin) {
+      indentUnitPref = PREFS.property("IndentUnit");
+      if (indentUnitPref.isEmpty() || !indentUnitPref.trim().isEmpty()
+            || indentUnitPref.length() > IndentSettingWin.N_SPACES.length) {
+
+         indentUnitPref = "   ";
+      }
+      indentTabPref = PREFS.yesNoProperty("IndentTab");
+      if (useSetWin) {
+         indentSetWin = new IndentSettingWin(indentUnitPref.length(), indentTabPref);
+         indentSetWin.okAct(e -> indentSettingInput());
+      }
+      else {
+         indentSetWin = null;
+      }
+      undoAction = new FunctionalAction("Undo", null, e -> undo());
+      redoAction = new FunctionalAction("Redo", null, e -> redo());
+      pasteAction = new FunctionalAction("Paste", null, e -> pasteText());
+      indentAction = new FunctionalAction("Increase indent", null, e -> indent());
+      outdentAction = new FunctionalAction("Decrease indent", null, e -> outdent());
+      setShortCuts();
    }
 
    /**
-    * Sets the <code>EditableDocument</code> that is edited and assigns
-    * its indent unit
+    * Sets the <code>EditableDocument</code> that is edited
     *
     * @param edtDoc  the EditableDocument
     */
    public void setDocument(EditableDocument edtDoc) {
       this.edtDoc  = edtDoc;
       this.textArea = edtDoc.textArea();
-      indentUnit = edtDoc.indentUnit();
-      indentLength = indentUnit.length();
+      setKeyBindings();
+      if (edtDoc.indentUnit().isEmpty()) {
+         changeIndentationModeImpl(indentUnitPref, indentTabPref);
+      }
+      else {
+         indentUnit = edtDoc.indentUnit();
+         indentLength = indentUnit.length();
+         indentTab = edtDoc.indentTab();
+         if (indentSetWin != null) {
+            indentSetWin.update(indentLength, indentTab);
+         }
+      }
+   }
+
+   /**
+    * Returns the <code>FunctionalAction</code> that undoes editss.
+    * The keyboard event 'modifier mask' + Z is set on the action
+    * and bound to the text area of the document that is edited
+    *
+    * @return  the FunctionalAction
+    * @see #undo
+    */
+   public FunctionalAction undoAction() {
+      return undoAction;
    }
 
    /**
@@ -67,7 +124,19 @@ public class Edit {
    }
 
    /**
-    * Performs a redo action
+    * Returns the <code>FunctionalAction</code> that redoes edits.
+    * The keyboard event 'modifier mask' + Y is set on the action
+    * and bound to the text area of the document that is edited
+    *
+    * @return  the FunctionalAction
+    * @see #redo
+    */
+   public FunctionalAction redoAction() {
+      return redoAction;
+   }
+
+   /**
+    * Redoes edits
     */
    public void redo() {
       edtDoc.redo();
@@ -95,7 +164,21 @@ public class Edit {
    }
 
    /**
-    * Pastes text stored in the clipboard and replaces selected text
+    * Returns the <code>FunctionalAction</code> that pastes text
+    * from the clipboard. The keyboard event 'modifier mask' + V is
+    * set on the action and bound to the text area of the document
+    * that is edited
+    *
+    * @return  the FunctionalAction
+    * @see #pasteText
+    */
+   public FunctionalAction pasteAction() {
+      return pasteAction;
+   }
+
+   /**
+    * Pastes text from the clipboard. Any selected text is
+    * replaced.
     */
    public void pasteText() {
       String clipboard = getClipboard();
@@ -116,95 +199,182 @@ public class Edit {
    }
 
    /**
-    * Sets the indent length from a selection dialog
+    * Selects the current line
     */
-   public void setIndentUnit() {
-      String number = Dialogs.comboBoxOpt(
-            "Select the number of spaces:",
-            "Indent length",
-            SPACE_NUMBER,
-            String.valueOf(indentLength),
-            false);
+   public void selectLine() {
+      int pos = textArea.getSelectionStart();
+      int lineStart = LinesFinder.lastNewline(edtDoc.text(), pos) + 1;
+      int lineEnd = LinesFinder.nextNewline(edtDoc.text(), pos);
+      textArea.select(lineStart, lineEnd);
+   }
 
-      StringBuilder unit = new StringBuilder();
-      if (number != null) {
-         int length = Integer.parseInt(number);
-         for (int i = 0; i < length; i++) {
-            unit.append(" ");
-         }
-         setIndentUnit(unit.toString());
+   /**
+    * Selects the current line from the beginning of text
+    */
+   public void selectLineText() {
+      int pos = textArea.getSelectionStart();
+      int lineStart = LinesFinder.lastNewline(edtDoc.text(), pos) + 1;
+      String line = LinesFinder.line(edtDoc.text(), lineStart - 1);
+      int lineEnd = LinesFinder.nextNewline(edtDoc.text(), pos);
+      int indentEnd = indentEnd(line);
+      textArea.select(lineStart + indentEnd, lineEnd);
+   }
+
+   /**
+    * Selects the current line from the current cursor position
+    */
+   public void selectLineFromCursor() {
+      int pos = textArea.getSelectionStart();
+      int lineEnd = LinesFinder.nextNewline(edtDoc.text(), pos);
+      textArea.select(pos, lineEnd);
+   }
+
+   /**
+    * Opens the window to set the indentation mode
+    */
+   public void openIndentSettingWin() {
+      checkIndentSetWinForNull();
+      indentSetWin.setVisible(true);
+   }
+
+   /**
+    * Stores the selected values for the indentation mode that
+    * were lastly selected in <code>IndentSettingWin</code>
+    * in <code>Prefs</code>
+    */
+   public void storeIndentProperties() {
+       checkIndentSetWinForNull();
+       PREFS.setProperty(Prefs.INDENT_UNIT_KEY, indentUnitPref);
+       PREFS.setYesNoProperty(Prefs.INDENT_TAB_KEY, indentTabPref);
+    }
+
+   /**
+    * Changes the indentation mode
+    *
+    * @param indentUnit  the indent unit which consists of white
+    * spaces
+    * @param indentTab  true to use tabs for indentation, false
+    * to use spaces
+    */
+   public void changeIndentationMode(String indentUnit, boolean indentTab) {
+      if (indentSetWin != null) {
+         throw new IllegalStateException(
+               "Edit uses IndentSettingWin to change the Indentation");
       }
+      changeIndentationModeImpl(indentUnit, indentTab);
    }
 
    /**
-    * Sets the indent length. Calling this method is not necessary if
-    * a document is set by {@link #setDocument}
+    * Returns the <code>FunctionalAction</code> that increases
+    * the indentation. The keyboard event 'Tab' is set on the
+    * action and bound to the text area of the document that is
+    * edited.
     *
-    * @param indentUnit  the indent unit which consists of a certain
-    * number of spaces from 0 to 6
+    * @return  the FunctionalAction
+    * @see #indent
     */
-   public void setIndentUnit(String indentUnit) {
-      setIndentUnitSelection(indentUnit);
+   public FunctionalAction indentAction() {
+      return indentAction;
    }
 
    /**
-    * Gets the lastly selected indent unit
-    *
-    * @see #setIndentUnit
-    * @return  the indent unit
-    */
-   public String indentUnitSelection() {
-      return indentUnitSelection;
-   }
-
-   /**
-    * Increases the indentation by one indent unit
+    * Increases the indentation
     */
    public void indent()  {
       String sel = textArea.getSelectedText();
       int start = textArea.getSelectionStart();
       if (sel == null) {
-         edtDoc.insert(start, indentUnit);
+         insertIndent(start);
       }
       else {
-         edtDoc.enableUndoMerging(true);
          String[] selArr = sel.split("\n");
-         int sum = 0;
-         for (String s : selArr) {
-            int lineLength = s.length() + indentLength;
-            edtDoc.insert(start + sum, indentUnit);
-            sum += lineLength + 1;
+         if (selArr.length == 1) {
+            edtDoc.remove(start, sel.length(), true);
+            insertIndent(start);
          }
+         else {
+            int lineStart = LinesFinder.lastNewline(edtDoc.text(), start) + 1;
+            String line = LinesFinder.line(edtDoc.text(), lineStart - 1);
+            selArr[0] = line;
+            edtDoc.enableUndoMerging(true);
+            int sum = 0;
+            for (String s : selArr) {
+               int indentEnd = indentEnd(s) + lineStart;
+               if (indentTab) {
+                  edtDoc.insert(indentEnd + sum, TAB_STR);
+                  sum += s.length() + 2; // 2 for newline + tab
+               }
+               else {
+                  edtDoc.insert(indentEnd + sum, indentUnit);
+                  sum += s.length() + indentLength + 1;
+               }
+            }
+            edtDoc.enableUndoMerging(false);
+         }
+      }
+   }
+
+   /**
+    * Returns the <code>FunctionalAction</code> that decreases
+    * the indentation. The keyboard event 'Shift+Tab' is set on
+    * the action and bound to the text area of the document that
+    * is edited.
+    *
+    * @return  the FunctionalAction
+    * @see #outdent
+    */
+   public FunctionalAction outdentAction() {
+      return outdentAction;
+   }
+
+   /**
+    * Decreases the indentation
+    */
+   public void outdent() {
+      if (edtDoc.textLength() == 0) {
+         return;
+      }
+      String sel = textArea.getSelectedText();
+      int pos = textArea.getSelectionStart();
+      int lineStart = LinesFinder.lastNewline(edtDoc.text(), pos) + 1;
+      String line = LinesFinder.line(edtDoc.text(), lineStart - 1);
+      if (sel == null) {
+         outdent(lineStart, line);
+      }
+      else {
+         String[] lines = sel.split("\n");
+         lines[0] = line;
+         edtDoc.enableUndoMerging(true);
+         outdent(lineStart, lines);
          edtDoc.enableUndoMerging(false);
       }
    }
 
    /**
-    * Reduces the indentation by one indent unit
+    * Clears trailing spaces of the entire text
     */
-   public void outdent() {
-      String sel = textArea.getSelectedText();
-      int start = textArea.getSelectionStart();
-      if (sel == null) {
-         outdentUnselected(start);
-      }
-      else {
-         outdentSelection(sel, start);
-      }
+   public void clearAllTrailingSpaces() {
+      String[] textArr = edtDoc.text().split("\n");
+      removeTrailingSpaces(textArr, 0);
    }
 
    /**
-    * Clears trailing spaces
+    * Clears trailing spaces of selected text or of the current
+    * line if no text is selected
     */
    public void clearTrailingSpaces() {
-      String[] textArr = edtDoc.text().split("\n");
-      int sum = 0;
-      for (String s : textArr) {
-         int startOfSpaces = startOfTrailingSpaces(s);
-         int spacesLength = s.length() - startOfSpaces;
-         edtDoc.remove(startOfSpaces + sum, spacesLength, false);
-         sum += startOfSpaces + 1;
+      String sel = textArea.getSelectedText();
+      int pos = textArea.getSelectionStart();
+      int lineStart = LinesFinder.lastNewline(edtDoc.text(), pos) + 1;
+      String lines;
+      if (sel == null) {
+         lines = LinesFinder.line(edtDoc.text(), lineStart - 1);
       }
+      else {
+         lines = LinesFinder.lines(edtDoc.text(), lineStart - 1, sel.length());
+      }
+      String[] textArr = lines.split("\n");
+      removeTrailingSpaces(textArr, lineStart);
    }
 
    //
@@ -227,85 +397,162 @@ public class Edit {
       return inClipboard;
    }
 
+   private void insertIndent(int pos) {
+      if (indentTab) {
+         edtDoc.insert(pos, TAB_STR);
+      }
+      else {
+         edtDoc.insert(pos, indentUnit);
+      }
+   }
+
+   private void outdent(int lineStart, String ... lines) {
+      int sum = 0;
+      for (String s : lines) {
+         int indentEnd = indentEnd(s);
+         if (s.startsWith(indentUnit, indentEnd - indentLength)) {
+            int removePos = sum + lineStart + indentEnd - indentLength;
+            edtDoc.remove(removePos, indentLength, true);
+            sum += (s.length() - indentLength) + 1;
+         }
+         else if (indentEnd > 0) {
+            int removePos = 0;
+            int lastTab = s.lastIndexOf(TAB_CH, indentEnd - 1);
+            if (lastTab != -1) {
+               removePos = lastTab;
+               indentEnd = lastTab + 1;
+               if (lastTab > 0) {
+                  removePos -= spacesBeforeNextStop(s, lastTab);
+               }
+            }
+            int removeLength = indentEnd - removePos;
+            removePos += (sum + lineStart);
+            edtDoc.remove(removePos, removeLength, true);
+            sum += (s.length() - removeLength) + 1;
+         }
+         else {
+            sum += s.length() + 1;
+         }
+      }
+   }
+
+   private int indentEnd(String line) {
+      char[] c = line.toCharArray();
+      int i;
+      for (i = 0; i < c.length; i++) {
+         if (c[i] != SPACE_CH && c[i] != TAB_CH) {
+            break;
+         }
+      }
+      return i;
+   }
+
+   private int spacesBeforeNextStop(String line, int pos) {
+      int count = 0;
+      for (int i = pos - 1; i >= 0 && line.charAt(i) != TAB_CH; i--) {
+         count++;
+         if (count == indentLength) {
+            count = 0;
+            break;
+         }
+      }
+      return count;
+   }
+
+   private void indentSettingInput() {
+      int n = indentSetWin.indentLength();
+      StringBuilder sb = new StringBuilder();
+      for (int i = 0; i < n; i++) {
+         sb.append(" ");
+      }
+      boolean b = indentSetWin.indentTab();
+      indentUnitPref = sb.toString();
+      indentTabPref = b;
+      changeIndentationModeImpl(indentUnitPref, b);
+      indentSetWin.setVisible(false);
+   }
+
+   private void changeIndentationModeImpl(String indentUnit, boolean indentTab) {
+      this.indentUnit = indentUnit;
+      this.indentTab = indentTab;
+      indentLength = indentUnit.length();
+      edtDoc.setIndentationMode(indentUnit, indentTab);
+   }
+
+   private void checkIndentSetWinForNull() {
+      if (indentSetWin == null) {
+         throw new IllegalStateException("This Edit does not use IndentSettingWin");
+      }
+   }
+
+   private void removeTrailingSpaces(String[] text, int start) {
+      int sum = start;
+      for (String s : text) {
+         int startOfSpaces = startOfTrailingSpaces(s);
+         int spacesLength = s.length() - startOfSpaces;
+         edtDoc.remove(startOfSpaces + sum, spacesLength, false);
+         sum += startOfSpaces + 1;
+      }
+   }
+
    private int startOfTrailingSpaces(String line) {
       char[] c = line.toCharArray();
       int i;
       for (i = c.length - 1; i >= 0; i--) {
-         if (c[i] != ' ') {
+         if (c[i] != SPACE_CH && c[i] != TAB_CH) {
             break;
          }
       }
       return i + 1;
    }
-   
-   private void outdentUnselected(int pos) {
-	  boolean isIndented
-            = pos - indentLength
-            > LinesFinder.lastNewline(edtDoc.text(), pos);
 
-      if (isIndented) {
-         if (indentUnit.equals(edtDoc.text().substring(
-               pos - indentLength, pos))) {
-
-            edtDoc.remove(pos - indentLength, indentLength, true);
-         }
-         else {
-            textArea.setCaretPosition(pos - indentLength);
-         }
-      }
-   }
-   
-   private void outdentSelection(String sel, int pos) {
-	  String[] selArr = sel.split("\n");
-      if (!selArr[0].startsWith(indentUnit)) {
-         int nSpaces = 0;
-         while (selArr[0].charAt(nSpaces) == ' ') {
-            nSpaces++;
-         }
-         int diff = indentLength - nSpaces;
-         pos -= diff;
-         if (pos >= 0) {
-            selArr[0] = edtDoc.text().substring(
-                  pos, pos + selArr[0].length() + diff);
-         }
-      }
-      if (selArr[0].startsWith(" ") && isIndentConsistent(selArr)) {
-         edtDoc.enableUndoMerging(true);
-         int sum = 0;
-         for (String s : selArr) {
-            if (s.startsWith(indentUnit)) {
-               edtDoc.remove(pos + sum, indentLength, true);
-               sum += (s.length() - indentLength) + 1;
-            } else {
-               sum += s.length() + 1;
-            }
-         }
-         edtDoc.enableUndoMerging(false);
-      }
+   private void setShortCuts() {
+      undoAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
+            KeyEvent.VK_Z, SystemParams.MODIFIER_MASK));
+      redoAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
+            KeyEvent.VK_Y, SystemParams.MODIFIER_MASK));
+      pasteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
+            KeyEvent.VK_V, SystemParams.MODIFIER_MASK));
+      indentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
+            KeyEvent.VK_TAB, 0));
+      outdentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
+            KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK));
    }
 
-   private void setIndentUnitSelection(String indentUnit) {
-      this.indentUnit = indentUnit;
-      indentLength = indentUnit.length();
-      edtDoc.setIndentUnit(indentUnit);
-      indentUnitSelection = indentUnit;
-   }
-
-   private boolean isIndentConsistent(String[] textArr) {
-      boolean isConsistent = true;
-      for (String s : textArr) {
-         if (!s.startsWith(indentUnit)
-                && s.length() > 0 && !s.matches("[\\s]+")) {
-
-            isConsistent = false;
-            break;
-         }
+   private void setKeyBindings() {
+      if (textArea == null) {
+         throw new IllegalStateException("No document has been set");
       }
-      if (!isConsistent) {
-         Dialogs.warnMessage(
-               "The selected text is not consistently"
-               + " indented by at least one indentation length");
+      if (textArea.getActionMap().keys() != null) {
+         return;
       }
-      return isConsistent;
+      String undoKey = "Z_pressed";
+      KeyStroke ksUndo = KeyStroke.getKeyStroke(
+            KeyEvent.VK_Z, SystemParams.MODIFIER_MASK);
+      textArea.getInputMap(JComponent.WHEN_FOCUSED).put(ksUndo, undoKey);
+      textArea.getActionMap().put(undoKey, undoAction);
+
+      String redoKey = "Y_pressed";
+      KeyStroke ksRedo = KeyStroke.getKeyStroke(
+            KeyEvent.VK_Y, SystemParams.MODIFIER_MASK);
+      textArea.getInputMap(JComponent.WHEN_FOCUSED).put(ksRedo, redoKey);
+      textArea.getActionMap().put(redoKey, redoAction);
+
+      String pasteKey = "V_pressed";
+      KeyStroke ksPaste = KeyStroke.getKeyStroke(
+            KeyEvent.VK_V, SystemParams.MODIFIER_MASK);
+      textArea.getInputMap(JComponent.WHEN_FOCUSED).put(ksPaste, pasteKey);
+      textArea.getActionMap().put(pasteKey, pasteAction);
+
+      String tabKey = "Tab_pressed";
+      KeyStroke ksTab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0);
+      textArea.getInputMap(JComponent.WHEN_FOCUSED).put(ksTab, tabKey);
+      textArea.getActionMap().put(tabKey, indentAction);
+
+      String shiftTabKey = "Shift_Tab_pressed";
+      KeyStroke ksShiftTab = KeyStroke.getKeyStroke(
+            KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK);
+      textArea.getInputMap(JComponent.WHEN_FOCUSED).put(ksShiftTab, shiftTabKey);
+      textArea.getActionMap().put(shiftTabKey, outdentAction);
    }
 }

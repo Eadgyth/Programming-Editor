@@ -127,6 +127,7 @@ public class FontSettingWin {
       twoComboBx.setLayout(new BoxLayout(twoComboBx, BoxLayout.LINE_AXIS));
       twoComboBx.add(fontPnl(font));
       twoComboBx.add(Box.createRigidArea(ScreenParams.scaledDimension(10, 0)));
+      twoComboBx.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       twoComboBx.add(sizePnl(size));
 
       JPanel combined = new JPanel();
@@ -150,7 +151,6 @@ public class FontSettingWin {
 
    private JPanel comboBoxPnl(JComboBox<String> comboBox, String title) {
       comboBox.setFocusable(false);
-      comboBox.setFont(ScreenParams.scaledFontToPlain(comboBox.getFont(), 8));
       JLabel titleLb = new JLabel(title);
       titleLb.setFont(ScreenParams.scaledFontToBold(titleLb.getFont(), 9));
       JPanel pnl = new JPanel();

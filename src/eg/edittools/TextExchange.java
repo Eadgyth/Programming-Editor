@@ -159,6 +159,10 @@ public class TextExchange {
    public String sourceDocIndentUnit() {
       return sourceDoc.indentUnit();
    }
+   
+   public boolean sourceDocIndentTab() {
+      return sourceDoc.indentTab();
+   }
 
    /**
     * Clears the exchange document

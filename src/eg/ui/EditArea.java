@@ -6,6 +6,7 @@ import java.awt.Font;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JTextPane;
 import javax.swing.JPanel;
@@ -21,6 +22,7 @@ import javax.swing.text.DefaultCaret;
 //--Eadgyth--//
 import eg.BackgroundTheme;
 import eg.utils.ScreenParams;
+import eg.utils.SystemParams;
 
 /**
  * Defines the panel that contains the area for editing text and the
@@ -35,7 +37,7 @@ public final class EditArea {
 
    private static final LineBorder AREA_BORDER
          = new LineBorder(THEME.background(), 5);
-   
+
    private static final String DUMMY = "dummy";
 
    private final JPanel content = UIComponents.grayBorderedPanel();
@@ -45,8 +47,8 @@ public final class EditArea {
    private final JScrollPane nonWordwrapScroll = UIComponents.scrollPane();
    private final JScrollPane wordwrapScroll = UIComponents.scrollPane();
    private final JScrollPane lineNrScroll = new JScrollPane(
-		 ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
-		 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+         ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
+         ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
    private boolean isWordwrap;
 
@@ -58,7 +60,7 @@ public final class EditArea {
     * @param fontSize  the font size
     */
    public EditArea(boolean wordwrap, boolean lineNumbers,
-         String font, int fontSize) {
+         String font, int fontSize) {                                                                                                                                          
 
       this.isWordwrap = wordwrap;
       removeShortCuts();
@@ -238,13 +240,20 @@ public final class EditArea {
    }
 
    private void removeShortCuts() {
-      KeyStroke ksSelAll = KeyStroke.getKeyStroke("control pressed A");
+      KeyStroke ksSelAll = KeyStroke.getKeyStroke(KeyEvent.VK_A,
+            SystemParams.MODIFIER_MASK);
       textArea.getInputMap().put(ksSelAll, DUMMY);
-      KeyStroke ksCut = KeyStroke.getKeyStroke("control pressed X");
+      
+      KeyStroke ksCut = KeyStroke.getKeyStroke(KeyEvent.VK_X,
+            SystemParams.MODIFIER_MASK);
       textArea.getInputMap().put(ksCut, DUMMY);
-      KeyStroke ksCopy = KeyStroke.getKeyStroke("control pressed C");
+
+      KeyStroke ksCopy = KeyStroke.getKeyStroke(KeyEvent.VK_C,
+            SystemParams.MODIFIER_MASK);
       textArea.getInputMap().put(ksCopy, DUMMY);
-      KeyStroke ksPaste = KeyStroke.getKeyStroke("control pressed V");
-      textArea.getInputMap().put(ksPaste, DUMMY);
+
+      KeyStroke ksPaste = KeyStroke.getKeyStroke(KeyEvent.VK_V,
+            SystemParams.MODIFIER_MASK);
+      textArea.getInputMap().put(ksPaste, DUMMY);      
    }
 }

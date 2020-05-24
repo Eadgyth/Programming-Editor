@@ -60,8 +60,14 @@ public class FileUtils {
       File f = new File(SystemParams.EADGYTH_DATA_DIR + "/log.txt");
       String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
       String msg = "";
-      if (e.getCause() != null) {
+      if (e.getMessage() != null) {
+         msg = e.getMessage();
+      }
+      else if (msg.isEmpty() && e.getCause() != null) {
          msg = e.getCause().toString();
+      }
+      else {
+         msg = "A problem occured";
       }
       try (PrintWriter writer = new PrintWriter(f)) {
          writer.println(date);

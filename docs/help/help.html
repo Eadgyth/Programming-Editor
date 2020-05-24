@@ -51,7 +51,7 @@
       <ol>
       <li>Open a file from or save a new file to the directory that is the presumed
           directory of the project. The file may also be saved in a sub-directory or a
-          sub-directory path contained in the project direcory. Assigning a project only
+          sub-directory path contained in the project directory. Assigning a project only
           requires that a (any) file that is contained in the project directory is open
           and also is in the selected tab if multiple files are open.</li>
       <li>Open the project settings by selecting 'Settings for...' in the 'Project' menu
@@ -138,20 +138,21 @@
           and compile' in the 'Project' menu (or clicking the corresponding button
           in the toolbar). If the compilation was successful the Java program is
           started by clicking 'Run' in the 'Project' menu or the corresponding button
-          in the toolbar.
-          NOTE: If it is specified to save compiled class files in a separate sub-directory
-          (an executables directory) this folder may be deleted using the project explorer
-          for a renewed compilation. </li>
+          in the toolbar.</li>
+       <li>A separate destination directory for compiled class files can be specified
+          in the 'sources' tab in the project settings. This directory is created when
+          Java files are compiled and can be deleted in the project explorer for a
+          renewed compilation. It is recommended to specify a destination directory if
+          Java files/packages are also stored in a separate sources directory.</li>
       <li>An executable java archive (jar) may be created by selecting 'Create
           executable jar' in the 'Project' menu. A name for the jar file can be
-          specified in the tab 'Compilation and build' in the project settings. The
-          jar is saved in the project directory unless a pathname is specified to save
-          it to another location. This path may be relative to the project directory or
-          also a full path to save the jar to a directory outside the project directory.</li>
-      <li>Files other than .java files and .class files can be included in a compilation
-          and a jar, resepctively. Extensions of included files are specified with the
-          beginning period in the input field 'Extensions of included non-Java files'
-          which is found in the tab 'Compilation and build' in the project settings.</li>
+          specified in the tab 'Compile/build' in the project settings. The jar is
+          saved in the project directory unless a pathname is specified to save it
+          to another location.</li>
+      <li>Files other than Java files can be included in a compilation and a jar.
+          Extensions of included files are specified with the beginning period in the
+          input field 'Extensions of included non-Java files' in the 'Compile/build
+          tab in the project settings.</li>
       <li>Libraries may be specified in the tab 'Libraries' in the project settings.
           These are added to classpath and can be jar files or folders containing class
           files. Classpath can be a path relative to the project directory (e.g.

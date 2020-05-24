@@ -31,9 +31,10 @@ public class FormatMenu {
    }
 
    /**
-    * Sets the listener for actions to set the font
+    * Sets the listener for actions to open the font
+    * settings
     *
-    * @param al  the <code>ActionListener</code>
+    * @param al  the ActionListener
     */
    public void setFontAction(ActionListener al) {
       fontItm.addActionListener(al);
@@ -42,7 +43,7 @@ public class FormatMenu {
    /**
     * Sets the listener for actions to enable or diable wordwrap
     *
-    * @param al  the <code>ActionListener</code>
+    * @param al  the ActionListener
     */
    public void setChangeWordWrapAct(ActionListener al) {
       wordWrapItm.addActionListener(al);

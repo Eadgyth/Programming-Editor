@@ -22,7 +22,7 @@ public class ViewMenu {
          = new JCheckBoxMenuItem("Files in tabs");
 
    private final JMenuItem openSettingsItm
-         = new JMenuItem("Other...");
+         = new JMenuItem("Preferences ...");
 
    public ViewMenu() {
       assembleMenu();

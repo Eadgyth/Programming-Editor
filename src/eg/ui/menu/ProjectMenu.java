@@ -13,6 +13,7 @@ import javax.swing.KeyStroke;
 import eg.Projects;
 import eg.projects.ProjectTypes;
 import eg.ui.IconFiles;
+import eg.utils.SystemParams;
 
 /**
  * The menu for project actions
@@ -20,12 +21,12 @@ import eg.ui.IconFiles;
 public class ProjectMenu {
 
    private final JMenu menu = new JMenu("Project");
-   private final JMenu assignProjMenu = new JMenu("Settings for...");
+   private final JMenu assignProjMenu = new JMenu("Settings for");
    private final ButtonGroup group = new ButtonGroup();
    private final JRadioButtonMenuItem[] assignProjItm
          = new JRadioButtonMenuItem[ProjectTypes.values().length];
 
-   private final JMenuItem openSetWinItm = new JMenuItem("Settings...");
+   private final JMenuItem openSetWinItm = new JMenuItem("Settings ...");
    private final JMenuItem changeProjItm
          = new JMenuItem("Change project", IconFiles.CHANGE_PROJ_ICON);
 
@@ -177,9 +178,9 @@ public class ProjectMenu {
 
    private void shortCuts() {
       compileItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,
-            ActionEvent.CTRL_MASK));
+            SystemParams.MODIFIER_MASK));
 
       runItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
-            ActionEvent.CTRL_MASK));
+            SystemParams.MODIFIER_MASK));
    }
 }

@@ -1,11 +1,12 @@
 package eg;
 
+//--Eadgyth--//
+
 import eg.ui.EditArea;
 import eg.ui.FontSettingWin;
 
 /**
- * The formatting of <code>EditArea</code> objects. The properties
- * 'Wordwrap', 'Font' and 'Font size' are initially read from {@link Prefs}.
+ * The formatting of <code>EditArea</code> objects
  *
  * @see EditArea
  */
@@ -158,10 +159,10 @@ public class Formatter {
    }
 
    /**
-    * Sets the current values for the properties wordwrap, font and
+    * Stores the current values for the properties wordwrap, font and
     * font size in <code>Prefs</code>
     */
-   public void setProperties() {
+   public void storeProperties() {
       prefs.setYesNoProperty(wordwrapKey, isWordwrap);
       prefs.setProperty(fontKey, font);
       prefs.setProperty(fontSizeKey, String.valueOf(fontSize));
@@ -174,7 +175,7 @@ public class Formatter {
    private EditArea formattedEditArea() {
       return new EditArea(isWordwrap, isShowLineNr, font, fontSize);
    }
-
+   
    private void setFont() {
       font = fontWin.font();
       fontSize = fontWin.size();

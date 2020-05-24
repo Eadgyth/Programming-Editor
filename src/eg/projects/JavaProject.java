@@ -42,7 +42,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    @Override
    public void buildSettingsWindow() {
       inputOptions
-            .addSourceDirInput()
+            .addSourceDirInput(SRC_DIR_LABEL)
             .addFileInput(MAIN_FILE_LABEL)
             .addExecDirInput(CLASS_DIR_LABEL)
             .addLibrariesInput(LIB_LABEL)
@@ -283,6 +283,9 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          + "An extension must begin with a period.";
    }
 
+  private static final String SRC_DIR_LABEL =
+         "Source directory (relative to project)";
+
    private static final String MAIN_FILE_LABEL =
          "Name of main Java file";
 
@@ -290,7 +293,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          "Destination directory for class files (relative to project)";
 
    private static final String JAR_NAME_LABEL =
-         "Name or pathname for jar file (relative to project or absolute)";
+         "Name or pathname for jar file";
 
    private static final String LIB_LABEL =
          "Directory or jar file (relative to project or absolute):";

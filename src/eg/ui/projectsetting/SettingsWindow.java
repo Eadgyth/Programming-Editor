@@ -76,8 +76,6 @@ public class SettingsWindow {
       chooser.initSelectFileOrDirectoryChooser();
       sourcePnl = vertBoxPnl();
       addSourceSetting("Name of project directory:", projDirTf, true);
-      cancelBt.setFocusable(false);
-      okBt.setFocusable(false);
       frame.getRootPane().setDefaultButton(okBt);
       bf = new BusyFunction(frame);
    }
@@ -390,6 +388,18 @@ public class SettingsWindow {
       private InputOptionsBuilder(SettingsWindow sw) {
          this.sw = sw;
       }
+      
+      /**
+       * Adds the option to enter a source directory in the
+       * 'Source' panel
+       * @param label  the label for the source directory input
+       * @return  this
+       */
+      public InputOptionsBuilder addSourceDirInput(String label) {
+         String s = label + ":";
+         sw.addSourceSetting(s, sw.sourcesDirTf, true);
+         return  this;
+      }
 
       /**
        * Adds the option to enter a name for a main project file in the
@@ -403,18 +413,6 @@ public class SettingsWindow {
          sw.addSourceSetting(s, sw.fileTf, true);
          useMainFile = true;
          return this;
-      }
-
-      /**
-       * Adds the option to enter a name for a source folder in the
-       * 'Source' panel
-       *
-       * @return  this
-       */
-      public InputOptionsBuilder addSourceDirInput() {
-         String s = "Source directory (relative to project):";
-         sw.addSourceSetting(s, sw.sourcesDirTf, true);
-         return  this;
       }
 
       /**

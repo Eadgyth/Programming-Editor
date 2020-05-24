@@ -99,10 +99,10 @@ public class SyntaxUtils {
       boolean found = false;
       int start = pos + 1;
       int offset = 0;
-      if (successors != null && text.length() > start) {
-         if (isCharEqualTo(text, successors, start)) {
-            offset = 1;
-         }
+      if (successors != null && text.length() > start
+            && isCharEqualTo(text, successors, start)) {
+
+         offset = 1;
       }
       int i;
       for (i = start + offset; i < text.length() && !found; i++) {

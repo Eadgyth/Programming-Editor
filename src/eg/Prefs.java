@@ -21,6 +21,9 @@ public final class Prefs {
     * Key for the indent unit which is a certain number of spaces */
    public static final String INDENT_UNIT_KEY = "IndentUnit";
    /**
+    * Key for indentation of tabs; a 'Yes-No' property */
+   public static final String INDENT_TAB_KEY = "IndentTab";
+   /**
     * Key for the font name */
    public static final String FONT_KEY = "Font";
    /**
@@ -98,6 +101,7 @@ public final class Prefs {
       }
       else {
          setProperty(INDENT_UNIT_KEY, "   ");
+         setProperty(INDENT_TAB_KEY, "No");
          setProperty(FONT_KEY, "Monospaced");
          setProperty(EXCHG_PREFIX + FONT_KEY, "Monospaced");
          setProperty(FONT_SIZE_KEY, "9");

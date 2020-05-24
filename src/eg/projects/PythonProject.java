@@ -1,5 +1,7 @@
 package eg.projects;
 
+import java.io.File;
+
 //--Eadgyth--/
 import eg.TaskRunner;
 import eg.Projects.ProjectActionsUpdate;
@@ -17,15 +19,15 @@ public final class PythonProject extends AbstractProject implements ProjectComma
     * @param runner  the reference to TaskRunner
     */
    public PythonProject(TaskRunner runner) {
-      super(ProjectTypes.PYTHON, "py", null);
+      super(ProjectTypes.PYTHON, "py", File.separator);
       this.runner = runner;
    }
 
    @Override
    public void buildSettingsWindow() {
       inputOptions
-            .addSourceDirInput()
-            .addFileInput("Name of Python script file")
+            .addSourceDirInput(SRC_DIR_LABEL)
+            .addFileInput(PY_SCRIPT_LABEL)
             .addCmdOptionsInput()
             .addCmdArgsInput()
             .buildWindow();
@@ -56,4 +58,10 @@ public final class PythonProject extends AbstractProject implements ProjectComma
       }
       startCmd = sb.toString();
    }
+   
+   private static final String SRC_DIR_LABEL =
+         "Location of Python script file within project";
+   
+   private static final String PY_SCRIPT_LABEL =
+         "Name of Python script file";
 }

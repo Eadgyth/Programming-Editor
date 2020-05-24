@@ -1,6 +1,5 @@
 package eg.ui.menu;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
@@ -11,6 +10,7 @@ import javax.swing.KeyStroke;
 //--Eadgyth--
 import eg.TabbedDocuments;
 import eg.ui.IconFiles;
+import eg.utils.SystemParams;
 
 /**
  * The menu for file actions
@@ -30,7 +30,7 @@ public class FileMenu {
    private final JMenuItem saveAsItm   = new JMenuItem("Save as ...");
    private final JMenuItem saveCopyItm = new JMenuItem("Save copy as ...");
    private final JMenuItem renameItm   = new JMenuItem("Rename ...");
-   private final JMenuItem printItm    = new JMenuItem("Print...");
+   private final JMenuItem printItm    = new JMenuItem("Print ...");
    private final JMenuItem exitItm     = new JMenuItem("Exit");
 
    public FileMenu() {
@@ -117,10 +117,10 @@ public class FileMenu {
 
    private void shortCuts() {
       newFileItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
-            ActionEvent.CTRL_MASK));
+            SystemParams.MODIFIER_MASK));
       openItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
-            ActionEvent.CTRL_MASK));
+            SystemParams.MODIFIER_MASK));
       saveItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-            ActionEvent.CTRL_MASK));
+            SystemParams.MODIFIER_MASK));
    }
 }

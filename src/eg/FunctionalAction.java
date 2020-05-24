@@ -13,7 +13,7 @@ import javax.swing.Icon;
 @SuppressWarnings("serial")
 public class FunctionalAction extends AbstractAction {
 
-   private final ActionListener al;
+   private final transient ActionListener al;
 
    /**
     * @param name  the name for the action, null to ignore

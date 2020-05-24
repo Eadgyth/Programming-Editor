@@ -30,7 +30,7 @@ public class LineNumbers {
    static {
       StyleConstants.setForeground(SET, GRAY);
       StyleConstants.setAlignment(SET, StyleConstants.ALIGN_RIGHT);
-      StyleConstants.setLineSpacing(SET, 0.25f);
+		StyleConstants.setLineSpacing(SET, 0.14f);
    }
 
    /**

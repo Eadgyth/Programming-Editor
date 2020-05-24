@@ -164,8 +164,7 @@ public class ToolBar {
       String[] toolTips = new String[] {
          "Open file", "Save file",
          "Undo", "Redo", "Cut selection", "Copy selection", "Paste",
-         "Increase indentation by the set indent length",
-         "Reduce indentation by the set indent length",
+         "Increase indentation (Tab)", "Decrease indentation (Shift+Tab)",
          "Save and compile project",
          "", "Change Project"
       };

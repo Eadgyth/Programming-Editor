@@ -42,10 +42,12 @@ public class TypingEdit {
    /**
     * @param txt  the {@link EditableText}
     * @param lineNum  the {@link LineNumbers}
+    * @param indent  the {@link Indentation}
     */
-   public TypingEdit(EditableText txt, LineNumbers lineNum) {
+   public TypingEdit(EditableText txt, LineNumbers lineNum, Indentation indent) {
       this.txt = txt;
       this.lineNum = lineNum;
+      this.indent = indent;
       syntax = new SyntaxHighlighter(txt);
       indent = new Indentation(txt);
       undo = new UndoEdit(txt);
@@ -86,7 +88,7 @@ public class TypingEdit {
     */
    public void setEditingMode(CurrentLanguage cl) {
       syntax.setHighlighter(cl.createHighlighter());
-      indent.setCurlyBracketMode(cl.curlyBracketMode());
+      indent.enableCurlyBracketMode(cl.curlyBracketMode());
       if (cl.lang() == Languages.NORMAL_TEXT) {
          isCodeUpdate = false;
       }
@@ -139,24 +141,6 @@ public class TypingEdit {
    }
 
    /**
-    * Sets the indent unit which consists of spaces
-    *
-    * @param indentUnit  the indend unit
-    */
-   public void setIndentUnit(String indentUnit) {
-      indent.setIndentUnit(indentUnit);
-   }
-
-   /**
-    * Gets the current indent unit
-    *
-    * @return  the indent unit
-    */
-   public String indentUnit() {
-      return indent.indentUnit();
-   }
-
-   /**
     * Disables or re-enables adding breakpoint to define undoable units
     *
     * @param b  true to disable, false to re-enable
@@ -182,7 +166,7 @@ public class TypingEdit {
    }
 
    /**
-    * Performs an undo action
+    * Undoes edits
     */
    public void undo() {
       isAddToUndo = false;
@@ -191,7 +175,7 @@ public class TypingEdit {
    }
 
    /**
-    * Performs a redo action
+    * Redoes edits
     */
    public void redo() {
       isAddToUndo = false;
@@ -320,7 +304,9 @@ public class TypingEdit {
       }
 
       @Override
-      public void changedUpdate(DocumentEvent de) {}
+      public void changedUpdate(DocumentEvent de) {
+         // not used
+      }
    };
 
    private final CaretListener caretListener = (CaretEvent ce) -> {

@@ -92,17 +92,17 @@ public class ScreenParams {
       // comment if-else statements and uncomment the last line if ui
       // scaling is set to 1 in main method in eg.Eadgyth
       //
-      /*if (SystemParams.IS_JAVA_9_OR_HIGHER) {
-         if (SystemParams.IS_WINDOWS) {
-            return Math.round(unscaledSize * 96 / 72);
-         }
-         else {
-            return unscaledSize;
-         }
-      }
-      else {
-         return (int) (Math.round(unscaledSize * SCREEN_RES_RATIO));
-      }*/
+      //if (SystemParams.IS_JAVA_9_OR_HIGHER) {
+      //   if (SystemParams.IS_WINDOWS) {
+      //      return Math.round(unscaledSize * 96 / 72);
+      //   }
+      //   else {
+      //      return unscaledSize;
+      //   }
+      //}
+      //else {
+      //   return (int) (Math.round(unscaledSize * SCREEN_RES_RATIO));
+      //}
       //
       // comment this line and uncomment if-else statements above if
       // ui scaling is not set to 1 in main method in eg.Eadgyth
@@ -122,17 +122,17 @@ public class ScreenParams {
       // comment if-else statements and uncomment last line if ui scaling
       // is set to 1 in main method in eg.Eadgyth
       //
-      /*if (SystemParams.IS_JAVA_9_OR_HIGHER) {
-         if (SystemParams.IS_WINDOWS) {
-            return Math.round(scaledSize / (96 / 72));
-         }
-         else {
-            return scaledSize;
-         }
-      }
-      else {
-         return (int) (Math.round(scaledSize / SCREEN_RES_RATIO));
-      }*/
+      //if (SystemParams.IS_JAVA_9_OR_HIGHER) {
+      //   if (SystemParams.IS_WINDOWS) {
+      //      return Math.round(scaledSize / (96 / 72));
+      //   }
+      //   else {
+      //      return scaledSize;
+      //   }
+      //}
+      //else {
+      //   return (int) (Math.round(scaledSize / SCREEN_RES_RATIO));
+      //}
       //
       // comment this line and uncomment if-else statements above if
       // ui scaling is not set to 1 in main method in eg.Eadgyth

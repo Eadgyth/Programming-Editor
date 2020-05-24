@@ -27,7 +27,6 @@ import java.io.File;
 import eg.BackgroundTheme;
 import eg.FunctionalAction;
 import eg.utils.ScreenParams;
-import eg.ui.IconFiles;
 import eg.ui.UIComponents;
 
 /**
@@ -43,7 +42,6 @@ public class TreePanel {
    private final JButton upBt = new JButton(UIManager.getIcon(
          "FileChooser.upFolderIcon"));
 
-   private final JButton renewBt = new JButton(IconFiles.REFRESH_ICON);
    private final JButton closeBt = UIComponents.undecoratedButton();
 
    public TreePanel() {
@@ -75,7 +73,6 @@ public class TreePanel {
 
       tree.setFocusable(false);
       tree.setBackground(theme.background());
-      renewBt.setEnabled(true);
       holdTree.add(tree);
       holdTree.revalidate();
    }
@@ -87,15 +84,6 @@ public class TreePanel {
     */
    public void setFolderUpAction(ActionListener al) {
       upBt.addActionListener(al);
-   }
-
-   /**
-    * Sets the listener for actions to renew the tree
-    *
-    * @param al  the <code>ActionListener</code>
-    */
-   public void setRenewTreeAction(ActionListener al) {
-      renewBt.addActionListener(al);
    }
 
    /**
@@ -127,17 +115,15 @@ public class TreePanel {
       holdTree.setBackground(theme.background());
       holdTree.setBorder(new LineBorder(theme.background(), 5));
       scroll.setViewportView(holdTree);
-      renewBt.setEnabled(false);
       enableFolderUpAct(false);
    }
 
    private JToolBar toolbar() {
       JButton[] bts = new JButton[] {
-         upBt, renewBt
+         upBt
       };
       String[] tooltips = new String[] {
-         "Folder up",
-         "Update tree",
+         "Folder up"
       };
       return UIComponents.toolBar(bts, tooltips, closeBt);
    }

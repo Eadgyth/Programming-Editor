@@ -29,6 +29,7 @@ import eg.BusyFunction;
 import eg.edittools.*;
 import eg.ui.menu.MenuBar;
 import eg.ui.menu.FormatMenu;
+import eg.ui.menu.EditMenu;
 import eg.ui.menu.ViewMenu;
 import eg.ui.filetree.TreePanel;
 import eg.ui.tabpane.ExtTabbedPane;
@@ -363,8 +364,8 @@ public class MainWin {
     */
    public void setEditActions(Edit edit, LanguageChanger lc) {
       toolBar.setEditActions(edit);
-      Runnable clearSpaces = edit::clearTrailingSpaces;
-      menuBar.editMenu().setEditActions(edit, e -> bf.execute(clearSpaces));
+      EditMenu em = menuBar.editMenu();
+      em.setEditActions(edit);
       menuBar.languageMenu().setChangeLanguageActions(lc);
    }
 
@@ -386,12 +387,12 @@ public class MainWin {
     */
    public void setFormatActions(Formatter format) {
       FormatMenu fm =  menuBar.formatMenu();
+      fm.setFontAction(e -> format.openSetFontDialog());
       fm.setChangeWordWrapAct(e -> {
          boolean isWordwrap = fm.isWordWrapItmSelected();
          format.enableWordWrap(isWordwrap);
          statusBar.displayWordwrapState(isWordwrap);
       });
-      fm.setFontAction(e -> format.openSetFontDialog());
    }
 
    /**

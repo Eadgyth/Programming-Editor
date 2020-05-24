@@ -50,10 +50,10 @@ public class SyntaxHighlighter {
    }
 
    /**
-    * Highlights text elements in a section around the position where a
-    * change happened. The section is initially the line that contains
-    * <code>chgPos</code> or the two lines around this position if
-    * <code>isNewline</code> is true.
+    * Highlights text elements in a section around the position
+    * where a change happened. The section is initially the line
+    * that contains <code>chgPos</code> or the two lines around
+    * this position if <code>isNewline</code> is true.
     *
     * @param chgPos  the position where a change happened
     * @param isNewline  if the change is a newline
@@ -73,10 +73,10 @@ public class SyntaxHighlighter {
    }
 
    /**
-    * Highlights text elements in a section that may be multiline. The
-    * section initially consists of the completed lines that contain
-    * <code>change</code> and it begins with the line that contains
-    * <code>chgPos</code>.
+    * Highlights text elements in a section that may be multiline.
+    * The section initially consists of the completed lines that
+    * contain <code>change</code> and it begins with the line that
+    * contains <code>chgPos</code>.
     *
     * @param change  the change to the text
     * @param chgPos  the position where the change starts
@@ -103,7 +103,7 @@ public class SyntaxHighlighter {
       private boolean isMultiline = true;
       private boolean isRepairBlock = false;
       private boolean isRepairInnerBlock = false;
-      boolean isQuoteInSection;
+      private boolean isQuoteInSection;
       private int nDoubleQuote;
       private int nSingleQuote;
       private int nTriDoubleQuote;
@@ -125,8 +125,8 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Sets the section that comprises semicolon separated statements
-       * which may be multiline.
+       * Sets the section that comprises semicolon separated
+       * statements which may be multiline.
        * Calls {@link Highlighter#isValid} for semicolons. If a
        * semicolon following a change is not valid the section is
        * extended to the text end
@@ -150,24 +150,8 @@ public class SyntaxHighlighter {
                next = SyntaxUtils.nextUnquoted(txt.text(), ";", next + 1);
             }
          }
-         if (prev != -1) {
-            start = prev + 1;
-         }
-         else {
-            start = 0;
-         }
-         int end;
-         if (next != -1) {
-            if (valid) {
-               end = next;
-            }
-            else {
-               end = txt.text().length();
-            }
-         }
-         else {
-            end = txt.text().length();
-         }
+         start = prev != -1 ? prev + 1 : 0;
+         int end = (next != -1 && valid) ? next : txt.text().length();
          end = LinesFinder.nextNewline(txt.text(), end);
          scnStart = start;
          section = txt.text().substring(scnStart, end);
@@ -184,19 +168,16 @@ public class SyntaxHighlighter {
          if (start == -1) {
             start = 0;
          }
-         int end;
-         if (isMultiline) {
-            end = markupTagEnd(scnStart + section.length() + 1);
-         }
-         else {
-            end = markupTagEnd(chgPos + 1);
-         }
+         int end = isMultiline ? markupTagEnd(scnStart + section.length() + 1)
+               : markupTagEnd(chgPos + 1);
+
          scnStart = start;
          section = txt.text().substring(start, end);
       }
 
       /**
-       * Resets the attributes in the section that is to be highlighted
+       * Resets the attributes in the section that is to be
+       * highlighted
        */
       public void resetAttributes() {
          txt.resetAttributes(scnStart, section.length());
@@ -207,11 +188,11 @@ public class SyntaxHighlighter {
        * Calls {@link Highlighter#isValid}.
        *
        * @param keys  the array of keywords
-       * @param reqWord  true to require that keywords are whole words,
-       * false otherwise
+       * @param reqWord  true to require that keywords are whole
+       * words, false otherwise
        * @param nonWordStart  the array of characters that must not
-       * precede the keyword. Can be null and is ignored if reqWord is
-       * false
+       * precede the keyword. Can be null and is ignored if reqWord
+       * is false
        * @param set  the SimpleAttributeSet set on the keywords
        */
       public void keywords(String[] keys, boolean reqWord, char[] nonWordStart,
@@ -401,10 +382,7 @@ public class SyntaxHighlighter {
                boolean isEndTag = scn.length() > start + 1
                      && scn.charAt(start + 1) == '/';
 
-               int offset = start + 1;
-               if (isEndTag) {
-                  offset++;
-               }
+               int offset = isEndTag ? start + 2 : start + 1;
                boolean isTagName = false;
                if (section.length() > offset) {
                   char test = section.charAt(offset);
@@ -513,11 +491,9 @@ public class SyntaxHighlighter {
                               endTag, SyntaxUtils.IGNORE_QUOTED);
                      }
                   }
-                  else {
-                     if (!isRepairBlock) {
-                        removedBlockEnd(start, startTag, endTag,
-                              SyntaxUtils.IGNORE_QUOTED);
-                     }
+                  else if (!isRepairBlock) {
+                     removedBlockEnd(start, startTag, endTag,
+                           SyntaxUtils.IGNORE_QUOTED);
                   }
                }
                start += length + 1;
