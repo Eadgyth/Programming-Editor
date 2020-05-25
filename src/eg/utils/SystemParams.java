@@ -31,7 +31,7 @@ public class SystemParams {
       String os = System.getProperty("os.name").toLowerCase();
       IS_WINDOWS = os.contains("win");
       String userHome = System.getProperty("user.home");
-      EADGYTH_DATA_DIR = userHome + File.separator + ".eadgythtest";
+      EADGYTH_DATA_DIR = userHome + File.separator + ".eadgyth";
       JAVA_VERSION = System.getProperty("java.version");
       IS_JAVA_9_OR_HIGHER = !JAVA_VERSION.startsWith("1.8");
       IS_JAVA_13_OR_HIGHER = IS_JAVA_9_OR_HIGHER
