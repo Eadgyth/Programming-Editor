@@ -122,7 +122,7 @@ public class BackgroundTheme {
          normalText = new Color(210, 210, 210);
       }
       else if ("Blue".equals(theme)) {
-         background = new Color(40, 40, 75);
+         background = new Color(40, 40, 85);
          normalText = new Color(228, 228, 228);
       }
       else if ("Gray".equals(theme)) {
@@ -143,7 +143,6 @@ public class BackgroundTheme {
          selectionBackground = new Color(50, 50, 250);
       }
       else {
-         //normalText = Color.BLACK;
          accentedNormalText = new Color(30, 30, 180);
          blueText = new Color(0, 20, 255);
          redText = new Color(255, 20, 20);

@@ -1,14 +1,15 @@
 package eg.utils;
 
-import java.awt.Font;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.BorderLayout;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JComboBox;
+import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+
+import javax.swing.event.AncestorListener;
+import javax.swing.event.AncestorEvent;
 
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -20,7 +21,7 @@ import eg.ui.IconFiles;
  * Static methods to show dialogs using <code>JOptionPane</code>
  */
 public class Dialogs {
-   
+
    private static final Border EMPTY_BORDER = new EmptyBorder(5, 5, 5, 5);
 
    /**
@@ -78,7 +79,7 @@ public class Dialogs {
       return JOptionPane.showConfirmDialog(null, message, null,
             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
    }
-   
+
    /**
     * Shows a confirmation dialog with Yes and No options
     *
@@ -89,7 +90,7 @@ public class Dialogs {
       return JOptionPane.showConfirmDialog(null, message, null,
             JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
    }
-   
+
    /**
     * Shows an info kind of confirmation dialog with Yes and No options
     *
@@ -114,74 +115,54 @@ public class Dialogs {
                 IconFiles.WARNING_ICON);
    }
 
-   /**
-    * Shows a dialog with options selectable in a JComboBox
-    *
-    * @param message  the message for the dialog
-    * @param title  the title for the dialog
-    * @param options  the array of options that are selectable
-    * @param preselected  the option that is preselected. Can be Null
-    * @param isWarning  true to show a warning icon, false to show no
-    * icon
-    * @return  the element selected from <code>options</code> if ok is
-    * clicked, null otherwise
-    */
-   public static String comboBoxOpt(String message, String title,
-         String[] options, String preselected, boolean isWarning) {
-
-      JComboBox<String> cBox = new JComboBox<>(options);
-      if (preselected != null) {
-         cBox.setSelectedItem(preselected);
-      }
-      cBox.setFont(ScreenParams.scaledFontToPlain(cBox.getFont(), 8));
-      JPanel pnl = new JPanel(new GridLayout(2, 1));
-      JLabel lb = new JLabel(message);
-      lb.setFont(new Font("Arial", Font.PLAIN, ScreenParams.scaledSize(9)));
-      lb.setBorder(EMPTY_BORDER);
-      pnl.add(lb);
-      JPanel holdCBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      holdCBox.add(cBox);
-      pnl.add(holdCBox);
-      int res;
-      if (isWarning) {
-         res = JOptionPane.showConfirmDialog(null, pnl, title,
-               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-               IconFiles.WARNING_ICON);
-      }
-      else {
-         res = JOptionPane.showConfirmDialog(null, pnl, title,
-               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-      }
-      if (JOptionPane.YES_OPTION == res) {
-         return options[cBox.getSelectedIndex()];
-      }
-      else {
-         return null;
-      }
-   }
-
-   /**
-    * Shows a dialog with the option to enter text in a text field
-    *
-    * @param message  the message for the dialog
-    * @param title  the title for the dialog
-    * @param initText  the text that is initially shown in the text field
-    * @return  the string entered in the text field if ok is clicked,
-    * null otherwise
-    */
-   public static String textFieldInput(String message, String title,
+  /**
+   * Shows a dialog with the option to enter text in a text field
+   *
+   * @param message  the message for the dialog
+   * @param title  the title for the dialog
+   * @param initText  the text that is initially shown in the text field
+   * @return  the string entered in the text field if ok is clicked,
+   * null otherwise
+   */
+  public static String textFieldInput(String message, String title,
          String initText) {
 
-      Object resObj = JOptionPane.showInputDialog(null, message, title,
-            JOptionPane.PLAIN_MESSAGE, null, null, initText);
+      JTextField tf = new JTextField();
+      tf.setFont(ScreenParams.scaledFontToPlain(tf.getFont(), 8));
+      tf.setText(initText);
+      tf.addAncestorListener(new AncestorListener() {
 
-      if (resObj != null) {
-         return resObj.toString();
+         @Override
+         public void ancestorRemoved(AncestorEvent e) {
+            // not used
+         }
+
+         @Override
+         public void ancestorMoved(AncestorEvent e) {
+            // not used
+         }
+
+         @Override
+         public void ancestorAdded(AncestorEvent e) {
+            tf.requestFocusInWindow();
+         }
+      });
+      JPanel pnl = new JPanel(new BorderLayout());
+      JLabel lb = new JLabel(message);
+      lb.setFont(ScreenParams.scaledFontToPlain(tf.getFont(), 9));
+      lb.setBorder(EMPTY_BORDER);
+      pnl.add(lb, BorderLayout.NORTH);
+      pnl.add(tf, BorderLayout.CENTER);
+      int res = JOptionPane.showConfirmDialog(null, pnl, title,
+               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+      if (JOptionPane.YES_OPTION == res) {
+         return tf.getText();
       }
       else {
          return null;
       }
    }
-   
+
    private Dialogs() {}
 }

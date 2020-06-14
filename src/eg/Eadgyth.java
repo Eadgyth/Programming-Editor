@@ -61,8 +61,9 @@ public class Eadgyth {
       //
       if (SystemParams.IS_JAVA_9_OR_HIGHER) {
          System.setProperty("sun.java2d.uiScale", "1.0");
-         UIManager.put("Button.font", ScreenParams.SANSSERIF_PLAIN_8);
+         UIManager.put("OptionPane.messageFont", ScreenParams.SANSSERIF_PLAIN_9);
          UIManager.put("OptionPane.font", ScreenParams.SANSSERIF_PLAIN_9);
+         UIManager.put("Button.font", ScreenParams.SANSSERIF_PLAIN_8);
          UIManager.put("ComboBox.font", ScreenParams.SANSSERIF_PLAIN_8);
       }
       UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);

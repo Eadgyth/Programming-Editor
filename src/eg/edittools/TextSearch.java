@@ -62,7 +62,7 @@ public class TextSearch {
     }
    
    /**
-    * Searches the next occurence of the search term and, if found,
+    * Searches the next occurrence of the search term and, if found,
     * selects it
     *
     * @param searchTerm  the search term
@@ -112,7 +112,7 @@ public class TextSearch {
             searchText(searchTerm);
          }
          else {
-            textArea.replaceSelection(replacement);
+            doc.replace(pos, searchTerm.length(), replacement, true);
             searchText(searchTerm);
          }
       }
@@ -142,15 +142,10 @@ public class TextSearch {
          ind = nextIndex(content, searchTerm, ind);
          if (ind != -1) {
             count++;
-            doc.replace(ind - sumDiff, searchTerm.length(), replacement);
+            doc.replace(ind - sumDiff, searchTerm.length(), replacement, false);
             sumDiff += diff;
             textArea.setCaretPosition(ind - sumDiff + diff + replacement.length());
-            if (replacement.length() == 0) {
-               ind++;
-            }
-            else {
-               ind += replacement.length();
-            }
+            ind++;
          }
       }
       doc.enableUndoMerging(false);      
@@ -161,7 +156,7 @@ public class TextSearch {
       else {
          Dialogs.infoMessage(notFoundMsg(searchTerm), null);
       }
-      textArea.requestFocusInWindow();
+      doc.setFocused();
    }
    
    //
@@ -225,15 +220,10 @@ public class TextSearch {
    }
    
    private void resetSearchStart() {
-      if (isUpward) {
-         pos = doc.textLength() - 1;
-      }
-      else {
-         pos = 0;
-      }
+      pos = isUpward ? doc.textLength() - 1 : 0;
    }
    
    private String notFoundMsg(String searchTerm) {
-	  return "The " + searchTerm + " was not found";
+	  return searchTerm + " was not found.";
    }
 }

@@ -101,6 +101,7 @@ public class Finder implements AddableEditTool {
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.PAGE_AXIS));
       pnl.add(labelPnl("Search for:"));
       setSize(inputTf);
+      inputTf.setFont(ScreenParams.scaledFontToPlain(inputTf.getFont(), 8));
       pnl.add(inputTf);
       pnl.add(Box.createVerticalStrut(10));
       pnl.add(radioBtPnl());
@@ -109,8 +110,9 @@ public class Finder implements AddableEditTool {
       pnl.add(Box.createVerticalStrut(10));
       pnl.add(buttonsPnl(searchBt));
       pnl.add(Box.createVerticalStrut(20));
-      pnl.add(labelPnl("Replace by:"));
+      pnl.add(labelPnl("Replace with:"));
       setSize(replaceTf);
+      replaceTf.setFont(ScreenParams.scaledFontToPlain(replaceTf.getFont(), 8));
       pnl.add(replaceTf);
       pnl.add(Box.createVerticalStrut(10));
       pnl.add(buttonsPnl(replaceBt, replaceAllBt));

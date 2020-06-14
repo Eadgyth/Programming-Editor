@@ -25,8 +25,9 @@ import eg.document.styledtext.PrintableText;
  */
 public final class EditableDocument {
 
-   private final TypingEdit type;
+   private final EditorUpdating update;
    private final EditableText txt;
+   private final UndoEditing undo;
    private final Indentation indent;
    private final CurrentLanguage currLang = new CurrentLanguage();
 
@@ -45,7 +46,8 @@ public final class EditableDocument {
    public EditableDocument(EditArea editArea, File f) {
       this(editArea);
       setFileParams(f);
-      displayFileContent(f, true);
+      setEditingMode(f);
+      update.editText(() -> displayFileContentImpl(f), EditorUpdating.ALL_TEXT);
       savedContent = txt.text();
    }
 
@@ -68,7 +70,7 @@ public final class EditableDocument {
     * @param esr  the {@link EditingStateReadable}
     */
    public void setEditingStateReadable(EditingStateReadable esr) {
-      type.setEditingStateReadable(esr);
+      update.setEditingStateReadable(esr);
    }
 
    /**
@@ -83,7 +85,8 @@ public final class EditableDocument {
    }
 
    /**
-    * Asks the text area that shows this document to gain focus
+    * Requests that the text area that shows this document gains
+    * focus
     */
    public void setFocused() {
       txt.textArea().requestFocusInWindow();
@@ -92,10 +95,10 @@ public final class EditableDocument {
    /**
     * Reads the current editing state
     *
-    * @see TypingEdit#readEditingState()
+    * @see EditorUpdating#readEditingState()
     */
    public void readEditingState() {
-      type.readEditingState();
+      update.readEditingState();
    }
 
    /**
@@ -117,7 +120,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Returns this file or throws an exception if no file is set
+    * Returns this file
     *
     * @return  the file
     */
@@ -127,8 +130,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Returns the path of the parent directory of this file or throws
-    * an exception if no file is set
+    * Returns the path of the parent directory of this file
     *
     * @return  the parent directory
     */
@@ -156,63 +158,44 @@ public final class EditableDocument {
     }
 
    /**
-    * Saves the text content to this file or throws an exception if
-    * no file is set
+    * Saves the text content to this file
     *
-    * @return  the boolen value that is true if the text content could
-    * be saved
+    * @return  the boolen value that is true if the text content
+    * could be saved
     */
    public boolean saveFile() {
       checkFileForNull();
       boolean isWritten = writeToFile(file);
       if (isWritten) {
          savedContent = txt.text();
-         type.resetInChangeState();
+         update.resetChangedState();
       }
       return isWritten;
    }
 
    /**
     * Sets the specified file and saves the text content to the file.
-    * A previously set file is replaced.
+    * Any previously set file is replaced.
     *
     * @param f  the file
     * @return  true if the text content could be saved, false otherwise
     */
    public boolean setFile(File f) {
       setFileParams(f);
-      setEditingMode(f);
       savedContent = txt.text();
-      type.resetInChangeState();
+      setEditingMode(f);
+      update.editText(() -> {}, EditorUpdating.ALL_TEXT);
+      update.resetChangedState();
       return writeToFile(f);
    }
 
    /**
-    * Displays the content of the specified file but does not set the file
+    * Saves the text content to the specified file but does not
+    * set the file
     *
     * @param f  the file
-    * @param languageByFile  true to use the language based on the extension
-    * of the file; false otherwise
-    */
-   public void displayFileContent(File f, boolean languageByFile) {
-      type.enableDocUpdate(false);
-      displayFileContentImpl(f);
-      type.enableDocUpdate(true);
-      textArea().setCaretPosition(0);
-      if (languageByFile) {
-         setEditingMode(f);
-      }
-      else {
-         setEditingMode();
-      }
-   }
-
-   /**
-    * Saves the text content to the specified file but does not set
-    * the file
-    *
-    * @param f  the file
-    * @return  true if the text content could be saved, false otherwise
+    * @return  true if the text content could be saved, false
+    * otherwise
     */
    public boolean saveCopy(File f) {
       return writeToFile(f);
@@ -226,6 +209,7 @@ public final class EditableDocument {
    public void changeLanguage(Languages lang) {
       currLang.setLanguage(lang);
       setEditingMode();
+      update.editText(() -> {}, EditorUpdating.ALL_TEXT);
    }
 
    /**
@@ -285,65 +269,127 @@ public final class EditableDocument {
 
    /**
     * Marks the beginning or the end of a merged undoable unit.
-    * Calls {@link TypingEdit#disableBreakpointAdding(boolean)}
     *
     * @param b  true to begin merging, false to end merging
+    * @see UndoEditing#disableBreakpointAdding
     */
    public void enableUndoMerging(boolean b) {
-      type.disableBreakpointAdding(b);
+      undo.disableBreakpointAdding(b);
    }
 
    /**
-    * Inserts the specified string at the specified position
+    * Displays the content of the specified file (provided that
+    * no file is set in this <code>EditableDocument</code> and
+    * the document has not been edited); does not set the file.
+    * The current language is used irrespectively of the file
+    * type and the text insertion is not undoable.
     *
-    * @param pos  the position
-    * @param s  the string
+    * @param f  the file
+    */
+   public void displayFileContent(File f) {
+      checkFileForNonNull();
+      update.editText(() -> displayFileContentImpl(f), EditorUpdating.ALL_TEXT);
+   }
+
+   /**
+    * Replaces the current text with the content of the
+    * specified file (provided that no file is set in this
+    * <code>EditableDocument</code>); does not set the file.
+    * The language is set according to the file type and the
+    * replacement is undoable.
+    *
+    * @param f  the file
+    */
+   public void replaceWithFileContent(File f) {
+      checkFileForNonNull();
+      setEditingMode(f);
+      TextChange tc = () -> {
+         txt.remove(0, textLength());
+         undo.disableBreakpointAdding(true);
+         readFileContent(f);
+         undo.disableBreakpointAdding(false);
+         txt.textArea().setCaretPosition(0);
+      };
+      update.editText(tc, EditorUpdating.ALL_TEXT);
+   }
+
+   /**
+    * Inserts text
+    *
+    * @param pos  the insert position
+    * @param s  the string containing the insertion
     */
    public void insert(int pos, String s) {
-      type.editText(b -> insertImpl(pos, s, b));
+      update.editText(() -> txt.insert(pos, s), EditorUpdating.INSERT);
    }
 
    /**
-    * Removes a section from the document
+    * Inserts text and ignores syntax highlighing
     *
-    * @param pos  the position where the section starts
-    * @param length  the length of the section
-    * @param highlight  true to update syntax highlighting after the
-    * removal, false otherwise. Is ignored if the language is normal
-    * text
+    * @param pos  the insert position
+    * @param s  the string containing the insertion
     */
-   public void remove(int pos, int length, boolean highlight) {
-      if (highlight) {
-         type.editText(b -> removeImpl(pos, length, b));
-      }
-      else {
-         txt.remove(pos, length);
-      }
+   public void insertIgnoreSyntax(int pos, String s) {
+      update.editText(() -> txt.insert(pos, s), EditorUpdating.OMIT);
    }
 
    /**
-    * Replaces a section with the specified string
+    * Removes text
     *
-    * @param pos  the position where the section to be replaced starts
-    * @param length  the length of the section
-    * @param s  the string
+    * @param pos  the start position of the removal
+    * @param length  the length of the removal
     */
-   public void replace(int pos, int length, String s) {
-      type.editText(b -> replaceImpl(pos, length, s, b));
+   public void remove(int pos, int length) {
+      txt.remove(pos, length);
+   }
+
+   /**
+    * Removes text and ignores syntax highlighting
+    *
+    * @param pos  the start position of the removal
+    * @param length  the length of the removal
+    */
+   public void removeIgnoreSyntax(int pos, int length) {
+      update.editText(() -> txt.remove(pos, length), EditorUpdating.OMIT);
+   }
+
+   /**
+    * Replaces text
+    *
+    * @param pos  the position of the replacement
+    * @param length  the length of the section to remove
+    * @param s  the string containing the replacement
+    * @param merge  true for merging into one undoable edit, false
+    * to treat removal and insertion as two separate edits
+    */
+   public void replace(int pos, int length, String s, boolean merge) {
+      TextChange tc = () -> {
+         if (merge) {
+            undo.disableBreakpointAdding(true);
+         }
+         if (length != 0) {
+            txt.remove(pos, length);
+         }
+         txt.insert(pos, s);
+         if (merge) {
+            undo.disableBreakpointAdding(false);
+         }
+      };
+      update.editText(tc, EditorUpdating.INSERT);
    }
 
    /**
     * Undoes edits
     */
    public void undo() {
-      type.undo();
+      update.updateUndoRedo(undo::undo);
    }
 
    /**
     * Redoes edits
     */
    public void redo() {
-      type.redo();
+      update.updateUndoRedo(undo::redo);
    }
 
    /**
@@ -366,9 +412,10 @@ public final class EditableDocument {
 
    private EditableDocument(EditArea editArea) {
       txt = new EditableText(editArea.textArea());
+      undo = new UndoEditing(txt);
       LineNumbers lineNum = new LineNumbers(editArea.lineNrArea());
       indent = new Indentation(txt);
-      type = new TypingEdit(txt, lineNum, indent);
+      update = new EditorUpdating(txt, undo, lineNum, indent);
       editArea.textArea()
             .addPropertyChangeListener("font", new PropertyChangeListener() {
 
@@ -387,15 +434,33 @@ public final class EditableDocument {
    }
 
    private void displayFileContentImpl(File f) {
+      update.disableUpdating(true);
+      readFileContent(f);
+      update.disableUpdating(false);
+      txt.textArea().setCaretPosition(0);
+   }
+
+   private void readFileContent(File f) {
       try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+         StringBuilder sb = new StringBuilder();
          String line;
-         while ((line = br.readLine()) != null ) {
-            txt.append(line + "\n");
+         while ((line = br.readLine()) != null) {
+            sb.append(line + "\n");
          }
+         txt.textArea().setText(sb.toString());
       }
       catch (IOException e) {
          FileUtils.log(e);
       }
+   }
+
+   private void setEditingMode(File f) {
+      currLang.setLanguage(f.toString());
+      setEditingMode();
+   }
+
+   private void setEditingMode() {
+      update.setEditingMode(currLang);
    }
 
    private boolean writeToFile(File f) {
@@ -421,39 +486,16 @@ public final class EditableDocument {
       return false;
    }
 
-   private void insertImpl(int pos, String s, boolean highlight) {
-      txt.insert(pos, s);
-      if (highlight) {
-         type.highlightInsertion();
-      }
-   }
-
-   private void removeImpl(int pos, int length, boolean highlight) {
-      txt.remove(pos, length);
-      if (highlight) {
-         type.highlightAtPos();                                                                                       
-      }
-   }
-
-   private void replaceImpl(int pos, int length, String s, boolean highlight) {
-      if (length != 0) {
-         removeImpl(pos, length, highlight);
-      }
-      insertImpl(pos, s, highlight);
-   }
-
-   private void setEditingMode(File f) {
-      currLang.setLanguage(f.toString());
-      setEditingMode();
-   }
-
-   private void setEditingMode() {
-      type.setEditingMode(currLang);
-   }
-
    private void checkFileForNull() {
       if (file == null) {
-         throw new IllegalStateException("No file has been set");
+         throw new IllegalStateException("No file has been set.");
+      }
+   }
+
+   private void checkFileForNonNull() {
+      if (file != null) {
+         throw new IllegalStateException(
+               "Cannot read a file in EditableDocument that has a file");
       }
    }
 }

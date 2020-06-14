@@ -142,8 +142,10 @@ public class ProcessStarter {
          cmd = cmd.trim();
          previousCmd = cmd;
          cmdMap.put(workingDir, cmd);
-         if (cmd.length() > 0) {
+         if (!cmd.isEmpty()) {
             startProcess(cmd);
+         } else {
+            cons.enableRunBt(false);
          }
       }
    }
@@ -266,7 +268,7 @@ public class ProcessStarter {
 
    private void lockConsole() {
       cons.setLocked();
-      cons.enableRunBt(previousCmd.length() > 0);
+      cons.enableRunBt(!previousCmd.isEmpty());
    }
 
    private String cmdNotFoundMsg(String cmd) {

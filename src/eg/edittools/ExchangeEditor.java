@@ -47,6 +47,10 @@ public class ExchangeEditor implements AddableEditTool {
    private final JMenuItem cutItm = new JMenuItem();
    private final JMenuItem copyItm = new JMenuItem();
    private final JMenuItem pasteItm = new JMenuItem();
+   private final JMenuItem selectAllItm = new JMenuItem();
+   private final JMenuItem selectLineItm = new JMenuItem();
+   private final JMenuItem selectLineTextItm = new JMenuItem();
+   private final JMenuItem selectLineFromCursorItm = new JMenuItem();
    private final JMenuItem indentItm = new JMenuItem();
    private final JMenuItem outdentItm = new JMenuItem();
    private final JMenuItem clearItm = new JMenuItem("Clear");
@@ -73,6 +77,7 @@ public class ExchangeEditor implements AddableEditTool {
       edit.setDocument(edtDoc);
       String recentDir = prefs.property(Prefs.RECENT_DIR_KEY);
       exch = new TextExchange(edtDoc, recentDir);
+      setActions();
       initContentPnl();
    }
 
@@ -98,6 +103,7 @@ public class ExchangeEditor implements AddableEditTool {
 
    @Override
    public Component content() {
+
       return content;
    }
 
@@ -129,7 +135,6 @@ public class ExchangeEditor implements AddableEditTool {
       content.add(menuBar(), BorderLayout.NORTH);
       content.add(editorPnl, BorderLayout.CENTER);
       content.setMinimumSize(new Dimension(ScreenParams.scaledSize(150), 0));
-      setActions();
       enableUndoRedo(false, false);
       enableCutCopy(false);
    }
@@ -162,12 +167,21 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    private JMenu editMenu() {
-      JMenu menu  = new JMenu("Edit");
+      JMenu menu = new JMenu("Edit");
       menu.add(undoItm);
       menu.add(redoItm);
+      menu.addSeparator();
       menu.add(cutItm);
       menu.add(copyItm);
       menu.add(pasteItm);
+      menu.addSeparator();
+      JMenu selectMenu = new JMenu("Select");
+      menu.add(selectMenu);
+      selectMenu.add(selectAllItm);
+      selectMenu.add(selectLineItm);
+      selectMenu.add(selectLineTextItm);
+      selectMenu.add(selectLineFromCursorItm);
+      menu.addSeparator();
       JMenu indentMenu = new JMenu("Indentation");
       menu.add(indentMenu);
       indentMenu.add(indentItm);
@@ -224,6 +238,27 @@ public class ExchangeEditor implements AddableEditTool {
             KeyEvent.VK_C, SystemParams.MODIFIER_MASK), "C_pressed");
 
       pasteItm.setAction(edit.pasteAction());
+
+      selectAllItm.setAction(new FunctionalAction("All", null,
+            e -> edit.selectAll()));
+      setKeyBinding(selectAllItm, KeyStroke.getKeyStroke(
+            KeyEvent.VK_A, SystemParams.MODIFIER_MASK), "A_pressed");
+
+      selectLineItm.setAction(new FunctionalAction("Line", null,
+            e -> edit.selectLine()));
+      setKeyBinding(selectLineItm, KeyStroke.getKeyStroke(
+            KeyEvent.VK_L, SystemParams.MODIFIER_MASK), "L_pressed");
+
+      selectLineTextItm.setAction(new FunctionalAction(
+            "Line from beginning of text", null, e -> edit.selectLineText()));
+      setKeyBinding(selectLineTextItm, KeyStroke.getKeyStroke(
+            KeyEvent.VK_B, SystemParams.MODIFIER_MASK), "B_pressed");
+
+      selectLineFromCursorItm.setAction(new FunctionalAction(
+            "Line from cursor postion", null, e -> edit.selectLineFromCursor()));
+      setKeyBinding(selectLineFromCursorItm, KeyStroke.getKeyStroke(
+            KeyEvent.VK_P, SystemParams.MODIFIER_MASK), "P_pressed");
+
       indentItm.setAction(edit.indentAction());
       outdentItm.setAction(edit.outdentAction());
       clearItm.addActionListener(e -> exch.clear());
@@ -243,7 +278,7 @@ public class ExchangeEditor implements AddableEditTool {
    private final EditingStateReadable editReadable = new EditingStateReadable() {
 
       @Override
-      public void updateInChangeState(boolean isChange) {
+      public void updateChangedState(boolean isChange) {
     	   // not used
       }
 

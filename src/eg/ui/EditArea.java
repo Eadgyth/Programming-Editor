@@ -48,8 +48,8 @@ public final class EditArea {
    private final JScrollPane wordwrapScroll = UIComponents.scrollPane();
    private final JScrollPane lineNrScroll = new JScrollPane(
          ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
-         ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
+         ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);  
+   
    private boolean isWordwrap;
 
    /**
@@ -64,7 +64,7 @@ public final class EditArea {
 
       this.isWordwrap = wordwrap;
       removeShortCuts();
-      content.setLayout(new BorderLayout());
+      content.setLayout(new BorderLayout());      
       initTextArea();
       initLineNrArea();
       initLineNrScrollPane();

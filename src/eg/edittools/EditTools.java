@@ -5,8 +5,8 @@ package eg.edittools;
  */
 public enum EditTools {
 
-   FINDER("Find/Replace panel", "Finder"),
-   EXCHANGE_EDITOR("Exchange Editor panel", "ExchangeEditor");
+   FINDER("Find/replace", "Finder"),
+   EXCHANGE_EDITOR("Exchange editor", "ExchangeEditor");
 
    private final String display;
    private final String className;

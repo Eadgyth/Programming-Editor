@@ -319,8 +319,7 @@ public class TabbedDocuments {
          iTab = tabPane.iTabMouseOver();
          close(true);
       };
-      return new FunctionalAction(
-            "", eg.ui.IconFiles.CLOSE_ICON, close);
+      return new FunctionalAction("", eg.ui.IconFiles.CLOSE_ICON, close);
    }
 
    private boolean save(boolean setFile) {
@@ -540,7 +539,7 @@ public class TabbedDocuments {
    private final EditingStateReadable editState = new EditingStateReadable() {
 
       @Override
-      public void updateInChangeState(boolean isSave) {
+      public void updateChangedState(boolean isSave) {
          mw.enableSave(isSave);
       }
 

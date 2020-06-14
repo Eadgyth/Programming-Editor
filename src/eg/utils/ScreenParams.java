@@ -35,7 +35,7 @@ public class ScreenParams {
       return new Dimension(width, height);
    }
 
-    /**
+   /**
     * Scaled sans-serif, plain; unscaled size 8 pt */
    public static final Font SANSSERIF_PLAIN_8
          = new Font(SANS_SERIF, Font.PLAIN, scaledSize(8));

@@ -25,7 +25,7 @@ public class TextExchange {
    private final EditableDocument exchangeDoc;
    private final FileChooser fc;
    private final File exchFile;
-   
+
    private BusyFunction bf;
    private EditableDocument sourceDoc;
 
@@ -41,7 +41,7 @@ public class TextExchange {
       fc.initOpenFileChooser();
       exchFile = new File(SystemParams.EADGYTH_DATA_DIR + "/exchgContent.txt");
       if (exchFile.exists()) {
-          exchangeDoc.displayFileContent(exchFile, false);
+         exchangeDoc.displayFileContent(exchFile);
       }
    }
 
@@ -109,9 +109,8 @@ public class TextExchange {
                + " Continue?");
       }
       if (res == 0) {
-         clear();
          Runnable r = () -> {
-            exchangeDoc.displayFileContent(f, true);
+            exchangeDoc.replaceWithFileContent(f);
             lm.selectLanguageItm(exchangeDoc.language());
          };
          busyFunction().execute(r);
@@ -152,14 +151,19 @@ public class TextExchange {
    }
 
    /**
-    * Gets the indent unit of the source document
+    * Returns the indent unit of the source document
     *
     * @return  the indent unit
     */
    public String sourceDocIndentUnit() {
       return sourceDoc.indentUnit();
    }
-   
+
+   /**
+    * Returns if tabs are used for indentation in the source
+    * document
+    * @return  true if tabs are used, false if spaces are used
+    */
    public boolean sourceDocIndentTab() {
       return sourceDoc.indentTab();
    }
@@ -168,8 +172,8 @@ public class TextExchange {
     * Clears the exchange document
     */
    public void clear() {
-      exchangeDoc.remove(0, exchangeDoc.textLength(), false);
-      exchangeDoc.textArea().setCaretPosition(0);
+      exchangeDoc.remove(0, exchangeDoc.textLength());
+      exchangeDoc.setFocused();
    }
 
    /**
@@ -185,22 +189,22 @@ public class TextExchange {
    //
    //--private--/
    //
-   
+
    private BusyFunction busyFunction() {
       if (bf == null) {
          JFrame frame = ((JFrame) exchangeDoc.textArea()
             .getTopLevelAncestor());
-            
+
          bf = new BusyFunction(frame);
       }
       return bf;
    }
 
    private void copy(EditableDocument destination, String text) {
-      destination.textArea().requestFocusInWindow();
+      destination.setFocused();
       int pos = destination.textArea().getSelectionStart();
       int end = destination.textArea().getSelectionEnd();
       int length = end - pos;
-      destination.replace(pos, length, text);
+      destination.replace(pos, length, text, true);
    }
 }

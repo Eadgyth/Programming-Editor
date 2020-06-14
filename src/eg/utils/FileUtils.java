@@ -76,7 +76,7 @@ public class FileUtils {
          Dialogs.errorMessage(
                "Error: "
                + msg
-               + ".\nSee "
+               + "\nSee "
                + f.toString(),
                null);
       }

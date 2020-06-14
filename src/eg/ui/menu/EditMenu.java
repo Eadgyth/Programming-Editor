@@ -25,7 +25,6 @@ public class EditMenu {
    private final JMenuItem cutItm = new JMenuItem("Cut", IconFiles.CUT_ICON);
    private final JMenuItem copyItm = new JMenuItem("Copy", IconFiles.COPY_ICON);
    private final JMenuItem pasteItm = new JMenuItem();
-   private final JMenu selectMenu = new JMenu("Select");
    private final JMenuItem selectAllItm = new JMenuItem("All");
    private final JMenuItem selectLineItm = new JMenuItem("Line");
    private final JMenuItem selectLineTextItm
@@ -38,7 +37,7 @@ public class EditMenu {
    private final JMenuItem outdentItm = new JMenuItem();
    private final JMenuItem setIndentItm = new JMenuItem("Indentation settings ...");
    private final JMenu clearSpacesMenu = new JMenu("Remove trailing spaces");
-   private final JMenuItem clearSpacesAllItm
+   private final JMenuItem clearSpacesTotalItm
          = new JMenuItem("Remove in entire text");
    private final JMenuItem clearSpacesItm
          = new JMenuItem("Remove in current line or selection");
@@ -83,8 +82,8 @@ public class EditMenu {
       outdentItm.setAction(edit.outdentAction());
       outdentItm.setIcon(IconFiles.OUTDENT_ICON);
       setIndentItm.addActionListener(e -> edit.openIndentSettingWin());
-      clearSpacesAllItm.addActionListener(e -> edit.clearAllTrailingSpaces());
-      clearSpacesItm.addActionListener(e -> edit.clearTrailingSpaces());
+      clearSpacesTotalItm.addActionListener(e -> edit.clearTrailingSpaces(true));
+      clearSpacesItm.addActionListener(e -> edit.clearTrailingSpaces(false));
    }
 
    /**
@@ -171,24 +170,25 @@ public class EditMenu {
       menu.add(copyItm);
       menu.add(pasteItm );
       menu.addSeparator();
-      for (int i = 0; i < editToolsItm.length; i++) {
-         editToolsItm[i] = new JCheckBoxMenuItem(EditTools.values()[i].display());
-         menu.add(editToolsItm[i]);
-      }
-      menu.addSeparator();
+      JMenu selectMenu = new JMenu("Select");
       menu.add(selectMenu);
       selectMenu.add(selectAllItm);
       selectMenu.add(selectLineItm);
       selectMenu.add(selectLineTextItm);
       selectMenu.add(selectLineFromCursorItm);
+      menu.addSeparator();
+      for (int i = 0; i < editToolsItm.length; i++) {
+         editToolsItm[i] = new JCheckBoxMenuItem(EditTools.values()[i].display());
+         menu.add(editToolsItm[i]);
+      }
+      menu.addSeparator();
       JMenu indentMenu = new JMenu("Indentation");
       menu.add(indentMenu);
       indentMenu.add(indentItm);
       indentMenu.add(outdentItm);
-      indentMenu.addSeparator();
-      indentMenu.add(setIndentItm);
+      menu.add(setIndentItm);
       menu.add(clearSpacesMenu);
-      clearSpacesMenu.add(clearSpacesAllItm);
+      clearSpacesMenu.add(clearSpacesTotalItm);
       clearSpacesMenu.add(clearSpacesItm);
       menu.addSeparator();
       menu.add(lm.menu());
@@ -207,6 +207,8 @@ public class EditMenu {
       selectLineTextItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B,
             SystemParams.MODIFIER_MASK));
       selectLineFromCursorItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
+            SystemParams.MODIFIER_MASK));
+      clearSpacesTotalItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
             SystemParams.MODIFIER_MASK));
       clearSpacesItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D,
             SystemParams.MODIFIER_MASK));

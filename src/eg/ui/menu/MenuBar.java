@@ -12,7 +12,7 @@ import javax.swing.border.EmptyBorder;
  */
 public class MenuBar {
 
-   private final JMenuBar menuBar = new JMenuBar();
+   private final JMenuBar mb = new JMenuBar();
    private final FileMenu fileMenu = new FileMenu();
    private final LanguageMenu languageMenu = new LanguageMenu();
    private final EditMenu editMenu = new EditMenu(languageMenu);
@@ -22,7 +22,7 @@ public class MenuBar {
    private final HelpMenu helpMenu = new HelpMenu();
 
    public MenuBar() {
-      menuBar.setBorder(new EmptyBorder(0, 0, 0, 0));
+      mb.setBorder(new EmptyBorder(0, 0, 0, 0));
       assembleMenu();
    }
 
@@ -32,7 +32,7 @@ public class MenuBar {
     * @return  this menu bar
     */
    public JMenuBar menuBar() {
-      return menuBar;
+      return mb;
    }
 
    /**
@@ -98,16 +98,16 @@ public class MenuBar {
       if ("Windows".equals(UIManager.getLookAndFeel().getName())) {
          strutSize = 5;
       }
-      menuBar.add(fileMenu.getMenu());
-      menuBar.add(Box.createHorizontalStrut(strutSize));
-      menuBar.add(editMenu.menu());
-      menuBar.add(Box.createHorizontalStrut(strutSize));
-      menuBar.add(formatMenu.getMenu());
-      menuBar.add(Box.createHorizontalStrut(strutSize));
-      menuBar.add(viewMenu.getMenu());
-      menuBar.add(Box.createHorizontalStrut(strutSize));
-      menuBar.add(projectMenu.getMenu());
-      menuBar.add(Box.createHorizontalStrut(strutSize));
-      menuBar.add(helpMenu.getMenu());
+      mb.add(fileMenu.getMenu());
+      mb.add(Box.createHorizontalStrut(strutSize));
+      mb.add(editMenu.menu());
+      mb.add(Box.createHorizontalStrut(strutSize));
+      mb.add(formatMenu.getMenu());
+      mb.add(Box.createHorizontalStrut(strutSize));
+      mb.add(viewMenu.getMenu());
+      mb.add(Box.createHorizontalStrut(strutSize));
+      mb.add(projectMenu.getMenu());
+      mb.add(Box.createHorizontalStrut(strutSize));
+      mb.add(helpMenu.getMenu());
    }
 }

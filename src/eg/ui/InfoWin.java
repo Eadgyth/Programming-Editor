@@ -32,8 +32,12 @@ public class InfoWin {
          = "<html>"
          + "Programming Editor<br><br>"
          + "Version: 1.1.5-pre<br>"
-         + "Written by Malte Bussiek<br>"
-         + "Contributions: William Gilreath<br><br>"
+         + "Author: Malte Bussiek<br><br>"
+         + "Credts:"
+         + "<blockquote>"
+         + "William Gilreath<br>"
+         + "Tango Desktop Project<br>"
+         + "</blockquote><br>"
          + "</html>";
 
    private static final String LINK
@@ -63,7 +67,7 @@ public class InfoWin {
       frame.setTitle("About");
       frame.setContentPane(content);
       frame.setResizable(false);
-      frame.setSize(eg.utils.ScreenParams.scaledDimension(250, 200));
+      frame.setSize(eg.utils.ScreenParams.scaledDimension(250, 230));
       frame.setVisible(true);
    }
 

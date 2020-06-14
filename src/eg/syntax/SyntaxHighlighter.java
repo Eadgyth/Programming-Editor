@@ -56,7 +56,7 @@ public class SyntaxHighlighter {
     * this position if <code>isNewline</code> is true.
     *
     * @param chgPos  the position where a change happened
-    * @param isNewline  if the change is a newline
+    * @param isNewline  if the change is a newline character
     */
    public void highlight(int chgPos, boolean isNewline) {
       int lineStart = LinesFinder.lastNewline(txt.text(), chgPos);
@@ -75,7 +75,7 @@ public class SyntaxHighlighter {
    /**
     * Highlights text elements in a section that may be multiline.
     * The section initially consists of the completed lines that
-    * contain <code>change</code> and it begins with the line that
+    * contain <code>change</code> and begins with the line that
     * contains <code>chgPos</code>.
     *
     * @param change  the change to the text
@@ -115,8 +115,8 @@ public class SyntaxHighlighter {
       /**
        * Sets a condition for validating found text elements. The
        * condition is passed to {@link Highlighter#isValid} by this
-       * search methods (where indicated) each time a text element
-       * is found.
+       * search methods (where indicated) if a text element is
+       * found.
        *
        * @param condition  a freely chosen integer. Default is 0
        */
@@ -125,40 +125,39 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Sets the section that comprises semicolon separated
-       * statements which may be multiline.
-       * Calls {@link Highlighter#isValid} for semicolons. If a
-       * semicolon following a change is not valid the section is
-       * extended to the text end
+       * Sets the section to update that comprises semicolon
+       * separated statements which may be multiline.
+       * Calls {@link Highlighter#isValid}: If the change position
+       * is in an invalid region for limiting the update to a
+       * semicolon separated region the section ranges from the
+       * nearest semicolon that is found in a valid region before
+       * the change to the text end
        */
       public void setStatementSection() {
          if (!isTypeMode || isRepairBlock) {
             return;
          }
-         int start = scnStart;
-         int prev = SyntaxUtils.lastUnquoted(txt.text(), ";", start);
-         while (prev != -1 && (start - prev < 1 || !isValid(prev, 0))) {
-            prev = SyntaxUtils.lastUnquoted(txt.text(), ";", prev - 1);
-         }
-         boolean valid = true;
-         int next = SyntaxUtils.nextUnquoted(txt.text(), ";", start);
-         while (next != -1 && valid) {
-            if (!isValid(next, 0)) {
-               valid = false;
-            }
-            else {
-               next = SyntaxUtils.nextUnquoted(txt.text(), ";", next + 1);
+         int start = SyntaxUtils.lastUnquoted(txt.text(), ";", scnStart);
+         int end = txt.text().length();
+         boolean extend = !isValid(chgPos, 0);
+         if (extend) {
+            while (start != -1 && (scnStart - start < 1 || !isValid(start, 0))) {
+               start = SyntaxUtils.lastUnquoted(txt.text(), ";", start - 1);
             }
          }
-         start = prev != -1 ? prev + 1 : 0;
-         int end = (next != -1 && valid) ? next : txt.text().length();
+         else {
+            int next = SyntaxUtils.nextUnquoted(txt.text(), ";", scnStart);
+            end = next != -1 ? next : end;
+         }
+         start = start != -1 ? start + 1 : 0;
          end = LinesFinder.nextNewline(txt.text(), end);
          scnStart = start;
          section = txt.text().substring(scnStart, end);
       }
 
       /**
-       * Sets the section that takes into account markup language tags
+       * Sets the section to update that takes into account
+       * markup language tags
        */
       public void setMarkupSection() {
          if (!isTypeMode || isRepairBlock) {
@@ -168,16 +167,18 @@ public class SyntaxHighlighter {
          if (start == -1) {
             start = 0;
          }
-         int end = isMultiline ? markupTagEnd(scnStart + section.length() + 1)
-               : markupTagEnd(chgPos + 1);
-
+         int end = markupTagEnd(scnStart + section.length() + 1);
          scnStart = start;
          section = txt.text().substring(start, end);
       }
 
       /**
-       * Resets the attributes in the section that is to be
-       * highlighted
+       * Resets the attributes in the section that is defined
+       * to be updated after a text change. By default this
+       * section is the line where a change happened.
+       *
+       * @see #setMarkupSection()
+       * @see #setStatementSection()
        */
       public void resetAttributes() {
          txt.resetAttributes(scnStart, section.length());
@@ -190,9 +191,9 @@ public class SyntaxHighlighter {
        * @param keys  the array of keywords
        * @param reqWord  true to require that keywords are whole
        * words, false otherwise
-       * @param nonWordStart  the array of characters that must not
-       * precede the keyword. Can be null and is ignored if reqWord
-       * is false
+       * @param nonWordStart  the array of characters that must
+       * not precede the keyword. Can be null and ignored if
+       * reqWord is false
        * @param set  the SimpleAttributeSet set on the keywords
        */
       public void keywords(String[] keys, boolean reqWord, char[] nonWordStart,
@@ -213,8 +214,8 @@ public class SyntaxHighlighter {
        * the keyword. Can be null and is ignored if reqWord is false
        * @param set  the SimpleAttributeSet set on the keywords
        */
-      public void keywordsIgnoreCase(String[] keys, boolean reqWord, char[] nonWordStart,
-            SimpleAttributeSet set) {
+      public void keywordsIgnoreCase(String[] keys, boolean reqWord,
+            char[] nonWordStart, SimpleAttributeSet set) {
 
          String scn = section;
          section = section.toLowerCase();
@@ -258,14 +259,14 @@ public class SyntaxHighlighter {
       }
 
       /**
-       * Searches and highlights variables that one of the specified signs
-       * precedes.
+       * Searches and highlights variables that one of the
+       * specified signs precedes.
        * Calls {@link Highlighter#isValid}.
        *
        * @param signs  the signs for the start of the variables
        * @param endMarks  the marks for the end of the variables
-       * @param successors  the characters that disable endMarks if they
-       * directly follow a sign
+       * @param successors  the characters that disable endMarks
+       * if they directly follow a sign
        * @param set  the SimpleAttributeSet set on the variables
        */
       public void signedVariables(char[] signs, char[] endMarks, char[] successors,
@@ -587,7 +588,7 @@ public class SyntaxHighlighter {
             return false;
          }
          else {
-            return SyntaxUtils.isInBlock(txt.text(),blockStart, blockEnd, chgPos,
+            return SyntaxUtils.isInBlock(txt.text(), blockStart, blockEnd, chgPos,
                   quoteOpt);
          }
       }

@@ -13,40 +13,38 @@ import eg.document.styledtext.EditableText;
 /**
  * The undo and redo editing.
  * <p>
- * An undoable change to the text (edit) is characterized by its text
- * content, type (insertion or removal) and position.
+ * An undoable edit is defined by the text content, the position
+ * and the type (insertion or removal). The sequence of edits is
+ * divided into undoable units by means of breakpoints. An undo
+ * action undoes the edits behind a breakpoint (or all if there
+ * is none) in reverse order. Accordingly, a redo action redoes
+ * the edits in front of a breakpoint (or all if there is none)
+ * in forward direction. The starting point of an action is
+ * always the edit were undoing or redoing has stopped before.
  * <p>
- * The sequence of edits is divided into larger undoable units by means
- * of breakpoints. A breakpoint may be added when a new edit is added
- * and its value then is the index of the edit that was added previously.
- * An undo action undoes the edits behind a breakpoint (or all if there
- * is none) in reverse order. Accordingly, a redo action redoes the edits
- * in front of a breakpoint (or all if there is none) in forward direction.
- * The starting point of an action is always the edit were undoing or
- * redoing has stopped before.
- * <p>
- * When a new edit is added also a breakpoint is added if
+ * When a new edit is added a breakpoint is set if:
  * <ul>
- * <li> The content of the previous edit is just a newline character.
+ * <li> The content of the previous edit is just a newline
+ *      character.
  * <li> The type of the new edit differs from the type of the
- *      previous edit. However, no breakpoint is added if an insertion
- *      follows a removal that was not triggerd by pressing the delete
- *      or backspace keys, since then a replace action is assumed.
- * <li> The content is longer than one character.
- * <li> A mark was set by {@link #markBreakpoint()}.
+ *      previous edit, if a selection is replaced the breakpoint
+ *      is the index of the next edit.
+ * <li> The edit is a removal and the content length is longer
+ *      than one character.
+ * <li> A mark was set by {@link #markBreakpoint()} during adding
+ *      the previous edit.
  * </ul>
  * <p>
- * An undoable unit may as well be formed by disabling breakpoint adding.
- * For this {@link #disableBreakpointAdding(boolean)} is invoked before
- * and after adding the edits to be included in the undoable unit.
+ * Adding breakpoints may be disabled to form a larger undoable
+ * unit (see {@link #disableBreakpointAdding(boolean)}).
  * <p>
- * Any undone edits are always removed when a new edit is added.
+ * Any undone edits are removed when a new edit is added.
  */
-public class UndoEdit {
+public class UndoEditing {
 
    private final EditableText txt;
 
-   private final List<String> edits = new ArrayList<>(1000);
+   private final List<String> contents = new ArrayList<>(1000);
    private final List<Integer> positions = new ArrayList<>(1000);
    private final List<Boolean> types = new ArrayList<>(1000);
    private final List<Integer> breakpoints = new ArrayList<>(500);
@@ -54,13 +52,13 @@ public class UndoEdit {
    private int iEd = -1;
    private int iBr = -1;
    private boolean isMark = false;
-   private boolean isMerge = false;
+   private boolean isMerging = false;
    private boolean isDeleteTyped = false;
 
    /**
     * @param txt  the {@link EditableText}
     */
-   public UndoEdit(EditableText txt) {
+   public UndoEditing(EditableText txt) {
       this.txt = txt;
       txt.textArea().addKeyListener(keyListener);
    }
@@ -68,34 +66,35 @@ public class UndoEdit {
    /**
     * Adds an edit
     *
-    * @param change  the text content of the edit
+    * @param content  the text content of the edit
     * @param pos  the position of the edit
-    * @param isInsert  true for an insertion, false for a removal
+    * @param isInsert  true for an insert, false for a removal
     */
-   public void addEdit(String change, int pos, boolean isInsert) {
+   public void addEdit(String content, int pos, boolean isInsert) {
       trim();
-      edits.add(change);
+      contents.add(content);
       positions.add(pos);
       types.add(isInsert);
-      iEd = edits.size() - 1;
+      iEd = contents.size() - 1;
       if (isMark) {
          addBreakpoint();
          isMark = false;
       }
-      if ("\n".equals(change)) {
+      if ("\n".equals(content)) {
          isMark = true;
       }
-      else {
-         if (iEd > 0) {
-            if (isInsert != isInsert(iEd - 1)) {
-               boolean isReplace = isInsert && !isDeleteTyped;
-               if (!isReplace) {
-                  addBreakpoint();
-               }
-            }
-            else if (change.length() > 1) {
+      else if (iEd > 0) {
+         if (isInsert != isInsert(iEd - 1)) {
+            boolean isReplace = isInsert && !isDeleteTyped;
+            if (!isReplace) {
                addBreakpoint();
             }
+            else {
+               isMark = true;
+            }
+         }
+         else if (!isInsert && content.length() > 1) {
+            addBreakpoint();
          }
       }
       if (isInsert) {
@@ -105,37 +104,37 @@ public class UndoEdit {
    }
 
    /**
-    * Returns if edits that can be undone are present
+    * Returns if contents that can be undone are present
     *
-    * @return  true if edits can be undone
+    * @return  true if contents can be undone
     */
    public boolean canUndo() {
       return iEd > -1;
    }
 
    /**
-    * Returns if edits that can be redone are present
+    * Returns if contents that can be redone are present
     *
-    * @return  true if edits can be redone
+    * @return  true if contents can be redone
     */
    public boolean canRedo() {
-      return iEd < edits.size() - 1;
+      return iEd < contents.size() - 1;
    }
 
    /**
-    * Undoes edits up to the next breakpoint that is located before the
-    * edits that are not yet undone
+    * Undoes contents up to the next breakpoint that is located
+    * before the contents that are not yet undone
     */
    public void undo() {
       int nextPos = 0;
       while (iEd > -1) {
          if (isInsert(iEd)) {
             nextPos = pos(iEd);
-            txt.remove(nextPos, edit(iEd).length());
+            txt.remove(nextPos, content(iEd).length());
          }
          else {
-            nextPos = pos(iEd) + edit(iEd).length();
-            txt.insert(pos(iEd), edit(iEd));
+            nextPos = pos(iEd) + content(iEd).length();
+            txt.insert(pos(iEd), content(iEd));
          }
          iEd--;
          if (iBr > -1 && iEd == breakPt(iBr)) {
@@ -146,24 +145,24 @@ public class UndoEdit {
       if (iEd == -1) {
          iBr--;
       }
-      txt.textArea().setCaretPosition(nextPos);
+      setCaretPosition(nextPos);
    }
 
    /**
-    * Redoes edits up to the next breakpoint that is located behind the
-    * edits that are undone and not yet redone
+    * Redoes contents up to the next breakpoint that is located
+    * behind the contents that are undone and not yet redone
     */
    public void redo() {
       int nextPos = 0;
-      while (iEd < edits.size() - 1) {
+      while (iEd < contents.size() - 1) {
          int iNext = iEd + 1;
          if (isInsert(iNext)) {
-            nextPos = pos(iNext) + edit(iNext).length();
-            txt.insert(pos(iNext), edit(iNext));
+            nextPos = pos(iNext) + content(iNext).length();
+            txt.insert(pos(iNext), content(iNext));
          }
          else {
             nextPos = pos(iNext);
-            txt.remove(nextPos, edit(iNext).length());
+            txt.remove(nextPos, content(iNext).length());
          }
          iEd++;
          int iBrAhead = iBr + 2;
@@ -172,10 +171,10 @@ public class UndoEdit {
             break;
          }
       }
-      if (iEd == edits.size() - 1) {
+      if (iEd == contents.size() - 1) {
          iBr++;
       }
-      txt.textArea().setCaretPosition(nextPos);
+      setCaretPosition(nextPos);
    }
 
    /**
@@ -183,25 +182,26 @@ public class UndoEdit {
     * added
     */
    public void markBreakpoint() {
-      if (!edits.isEmpty()) {
+      if (!contents.isEmpty()) {
          isMark = true;
       }
    }
-   
+
    /**
-    * Disables or re-enables adding breakpoints. Edits added
-    * after disabling until re-enabling are "framed" by breakpoints
+    * Disables or re-enables the usual adding of breakpoints.
+    * Edits added after disabling until re-enabling are "framed"
+    * by breakpoints
     *
     * @param b  true to disable, false to re-enable
     */
    public void disableBreakpointAdding(boolean b) {
-      if (b) {
+      if (b && !txt.text().isEmpty()) {
          addBreakpoint(iEd);
       }
       else {
          markBreakpoint();
       }
-      isMerge = b;
+      isMerging = b;
    }
 
    //
@@ -209,11 +209,11 @@ public class UndoEdit {
    //
 
    private void addBreakpoint() {
-      if (!isMerge) {
+      if (!isMerging) {
          addBreakpoint(iEd - 1);
       }
    }
-   
+
    private void addBreakpoint(int index) {
       int iLastBreak = breakpoints.size() - 1;
       if (iLastBreak == -1 || index != breakPt(iLastBreak)) {
@@ -223,11 +223,11 @@ public class UndoEdit {
    }
 
    private void trim() {
-      if (iEd == edits.size() - 1) {
-         return; // no edits are undone or all undone edits are redone
+      if (iEd == contents.size() - 1) {
+         return; // no contents are undone or all undone contents are redone
       }
-      for (int i = edits.size() - 1; i > iEd; i--) {
-         edits.remove(i);
+      for (int i = contents.size() - 1; i > iEd; i--) {
+         contents.remove(i);
          positions.remove(i);
          types.remove(i);
          int iLastBreak = breakpoints.size() - 1;
@@ -241,8 +241,8 @@ public class UndoEdit {
       return positions.get(i);
    }
 
-   private String edit(int i) {
-      return edits.get(i);
+   private String content(int i) {
+      return contents.get(i);
    }
 
    private boolean isInsert(int i) {
@@ -251,6 +251,13 @@ public class UndoEdit {
 
    private int breakPt(int i) {
       return breakpoints.get(i);
+   }
+
+   private void setCaretPosition(int pos) {
+      txt.textArea().setCaretPosition(pos);
+      if (!txt.textArea().hasFocus()) {
+         txt.textArea().requestFocusInWindow();
+      }
    }
 
    private final KeyListener keyListener = new KeyAdapter() {

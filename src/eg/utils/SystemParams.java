@@ -14,10 +14,10 @@ public class SystemParams {
     * The Java version */
    public static final String JAVA_VERSION;
    /**
-    * True if the Java version is higher than 8 */
+    * True if the Java version is higher than 8, false otherwise */
    public static final boolean IS_JAVA_9_OR_HIGHER;
    /**
-    * True if the java version is 13 */
+    * True if the Java version is 13 or higher, false otherwise */
    public static final boolean IS_JAVA_13_OR_HIGHER;
    /**
     * The modifier mask for menu shortcuts */
@@ -41,7 +41,7 @@ public class SystemParams {
       MODIFIER_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       //
       // as of Java 10:
-      // MODIFIER_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+      //MODIFIER_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
    }
 
    /**

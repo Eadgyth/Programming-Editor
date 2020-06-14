@@ -20,21 +20,21 @@ import eg.utils.FileUtils;
  * The styled text that is edited
  */
 public class EditableText extends StyledText {
-   
+
    private static final BackgroundTheme THEME = BackgroundTheme.givenTheme();
    private static final Attributes ATTR = new Attributes(THEME);
-   private static final SimpleAttributeSet SET = new SimpleAttributeSet();
+   public static final SimpleAttributeSet SET = new SimpleAttributeSet();
 
    private final JTextPane textArea;
-   
+
    private String text = "";
-   
+
    static {
       StyleConstants.setForeground(SET, THEME.normalText());
       StyleConstants.setBold(SET, false);
 		StyleConstants.setLineSpacing(SET, 0.14f);
    }
-   
+
    /**
     * @param textArea  the JTextPane that displays the text
     */
@@ -42,12 +42,12 @@ public class EditableText extends StyledText {
       super(textArea.getStyledDocument(), SET);
       this.textArea = textArea;
    }
-   
+
    @Override
    public final Attributes attributes() {
       return ATTR;
    }
-   
+
    /**
     * {@inheritDoc}.
     * This is always only the copy of the document text which is updated
@@ -69,21 +69,12 @@ public class EditableText extends StyledText {
          FileUtils.log(e);
       }
    }
-   
+
    /**
-    * Appends a string
+    * Inserts text
     *
-    * @param s  the string to append
-    */
-   public final void append(String s) {
-      insert(doc().getLength(), s);
-   }
-   
-   /**
-    * Inserts a string
-    *
-    * @param pos  the position where the string is inserted
-    * @param s  the string
+    * @param pos  the insert position
+    * @param s  the string that contains the text
     */
    public final void insert(int pos, String s) {
       try {
@@ -97,7 +88,7 @@ public class EditableText extends StyledText {
    /**
     * Removes text
     *
-    * @param pos  the position where the removed text starts
+    * @param pos  the start position of the removal
     * @param length  the length of the removed text
     */
    public final void remove(int pos, int length) {
@@ -108,7 +99,7 @@ public class EditableText extends StyledText {
          FileUtils.log(e);
       }
    }
-   
+
    /**
     * Sets the tab length
     *
@@ -129,7 +120,7 @@ public class EditableText extends StyledText {
       StyleConstants.setTabSet(SET, tabSet);
       doc().setParagraphAttributes(0, doc().getLength(), SET, false);
    }
-   
+
    /**
     * Adds a <code>DocumentListener</code>
     *
@@ -138,7 +129,7 @@ public class EditableText extends StyledText {
    public final void addDocumentListener(DocumentListener dl) {
       doc().addDocumentListener(dl);
    }
-   
+
    /**
     * Gets the text area that displays the text
     *

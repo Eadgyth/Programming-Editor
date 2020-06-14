@@ -18,7 +18,7 @@ import eg.utils.FileUtils;
  */
 public class BusyFunction {
 
-   private final JPanel glass = new JPanel();
+   private final JPanel glass = new JPanel(new java.awt.GridLayout(1,1));
 
    /**
     * @param f  the top level JFrame
@@ -26,7 +26,7 @@ public class BusyFunction {
    public BusyFunction(JFrame f) {
       glass.setOpaque(false);
       glass.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-      glass.addMouseListener(new MouseAdapter() {} );
+      glass.addMouseListener(new MouseAdapter() {});
       f.setGlassPane(glass);
    }
 

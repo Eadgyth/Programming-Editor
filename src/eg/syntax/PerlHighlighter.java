@@ -55,14 +55,16 @@ public class PerlHighlighter implements Highlighter {
    };
 
    private static final int IGNORE_COND = 0;
-   private static final int QW_COND = 1;
-   private static final int LINE_CMNT_COND = 2;
+   private static final int QW_START_COND = 1;
+   private static final int QW_COND = 2;
+   private static final int LINE_CMNT_COND = 3;
 
    @Override
    public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
-      s.setCondition(QW_COND);
+      s.setCondition(QW_START_COND);
       s.setStatementSection();
       s.resetAttributes();
+      s.setCondition(QW_COND);
       s.signedVariables(START_OF_ARR_HASH, END_OF_VAR, null,
             attr.purplePlain);
 
@@ -82,6 +84,9 @@ public class PerlHighlighter implements Highlighter {
    @Override
    public boolean isValid(String text, int pos, int length, int condition) {
       boolean ok = true;
+      if (condition == QW_START_COND) {
+         ok = !isQBefore(text, pos);
+      }
       if (condition == QW_COND) {
          ok = isNotQFunction(text, pos);
       }
@@ -94,6 +99,10 @@ public class PerlHighlighter implements Highlighter {
    //
    //--private--/
    //
+
+   private boolean isQBefore(String text, int pos) {
+      return text.length() > pos && SyntaxUtils.lastUnquoted(text, "q", pos) > -1;
+   }
 
    private boolean isNotQFunction(String text, int pos) {
       boolean ok = true;
@@ -108,7 +117,7 @@ public class PerlHighlighter implements Highlighter {
          char[] close;
          if (ithDel != -1) {
             if (ithDel != OPEN_QW_DEL.length) {
-               close = new char[] {CLOSE_QW_DEL[ithDel]};
+               close = new char[] { CLOSE_QW_DEL[ithDel] };
             }
             else {
                char c = text.charAt(delStart);
@@ -116,7 +125,7 @@ public class PerlHighlighter implements Highlighter {
             }
             int length = SyntaxUtils.sectionLength(text, delStart, close, null);
             ok = (pos <= delStart
-                  || (delStart + length == text.length() || pos > delStart + length));           
+                  || (delStart + length == text.length() || pos > delStart + length));
          }
       }
       return ok;
@@ -135,7 +144,7 @@ public class PerlHighlighter implements Highlighter {
          }
          valid = !SyntaxUtils.isLineCommented(text, SyntaxConstants.HASH, qPos,
                SyntaxUtils.BLOCK_QUOTED);
-               
+
          if (valid) {
             if (searchStart == 0 && text.length() > qPos + 2) {
                char c = text.charAt(qPos + 1);

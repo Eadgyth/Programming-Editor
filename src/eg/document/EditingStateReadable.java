@@ -11,8 +11,8 @@ public interface EditingStateReadable {
     *
     * @param b  true if in change, false otherwise
     */
-   public void updateInChangeState(boolean b);
-   
+   public void updateChangedState(boolean b);
+
    /**
     * Updates the state which indicates if edits can be redone and/or
     * undone
@@ -21,14 +21,14 @@ public interface EditingStateReadable {
     * @param canRedo  true if edits can be redone, false otherwise
     */
    public void updateUndoableState(boolean canUndo, boolean canRedo);
-   
+
    /**
     * Updates the state which indicates if text is selected
     *
-    * @param b  true if text is selected, false otherwise 
+    * @param b  true if text is selected, false otherwise
     */
    public void updateSelectionState(boolean b);
-   
+
    /**
     * Updates the number of the line and the column where the cursor is
     * located

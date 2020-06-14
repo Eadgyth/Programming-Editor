@@ -7,15 +7,14 @@ import eg.Languages;
 import eg.syntax.*;
 
 /**
- * The language that is used depending on the type of file or
- * user selection
+ * The language that is used for a ducument
  */
 public class CurrentLanguage {
 
    private Languages lang = Languages.NORMAL_TEXT;
 
    /**
-    * Sets the language
+    * Sets the specified language
     *
     * @param lang  the language
     */
@@ -72,9 +71,10 @@ public class CurrentLanguage {
    }
 
    /**
-    * Gets the language
+    * Returns this language
     *
-    * @return  the language
+    * @return  the language; default is
+    * {@link Languages#NORMAL_TEXT}
     */
    public Languages lang() {
       if (lang == null) {
@@ -86,8 +86,8 @@ public class CurrentLanguage {
    /**
     * Creates a <code>Highlighter</code> for this language
     *
-    * @return  the Highlighter; null if no Highlighter is available
-    * for the language
+    * @return  the Highlighter; null if no Highlighter is
+    * available for the language
     */
    public Highlighter createHighlighter() {
       Highlighter hl = null;
@@ -128,7 +128,8 @@ public class CurrentLanguage {
    }
 
    /**
-    * Returns if the curly-bracket indentation is used in this language
+    * Returns if curly-bracket indentation is used in this
+    * language
     *
     * @return  true for curly-bracket mode, false otherwise
     */
