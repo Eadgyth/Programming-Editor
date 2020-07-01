@@ -101,7 +101,8 @@ public class PerlHighlighter implements Highlighter {
    //
 
    private boolean isQBefore(String text, int pos) {
-      return text.length() > pos && SyntaxUtils.lastUnquoted(text, "q", pos) > -1;
+      return text.length() > pos
+            && qDelStart(text, pos) > -1;
    }
 
    private boolean isNotQFunction(String text, int pos) {
@@ -125,14 +126,15 @@ public class PerlHighlighter implements Highlighter {
             }
             int length = SyntaxUtils.sectionLength(text, delStart, close, null);
             ok = (pos <= delStart
-                  || (delStart + length == text.length() || pos > delStart + length));
+                  || (delStart + length == text.length()
+                  || pos > delStart + length));
          }
       }
       return ok;
    }
 
    private int qDelStart(String text, int pos) {
-      int qPos = SyntaxUtils.lastUnquoted(text, "q", pos);
+      int qPos = SyntaxUtils.lastUnquoted(text, pos, "q");
 
       boolean valid = true;
       int del = -1;
@@ -143,7 +145,8 @@ public class PerlHighlighter implements Highlighter {
             searchStart = qPos + 2;
          }
          valid = !SyntaxUtils.isLineCommented(text, SyntaxConstants.HASH, qPos,
-               SyntaxUtils.BLOCK_QUOTED);
+               SyntaxUtils.BLOCK_QUOTED)
+               && SyntaxUtils.isWordStart(text, qPos, null);
 
          if (valid) {
             if (searchStart == 0 && text.length() > qPos + 2) {

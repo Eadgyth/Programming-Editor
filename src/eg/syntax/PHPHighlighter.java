@@ -33,8 +33,10 @@ public class PHPHighlighter implements Highlighter {
 
    private static final char[] END_OF_VAR = {
       ' ', '\n', '{', '}', '?', '!', '[', ']', ';', '.', ':', '\\', '#',
-      '&', '|', '=', '+', '-', '*', '/'
+      '&', '|', '=', '+', '-', '*', '/', '!', '"', '\'', '§', '%', '$', 
    };
+   
+   private static final int VAR_COND = 1;
 
    private final boolean mixed;
 
@@ -55,7 +57,9 @@ public class PHPHighlighter implements Highlighter {
             s.setStatementSection();
          }
          s.resetAttributes();
+         s.setCondition(VAR_COND);
          s.signedVariable('$', END_OF_VAR, null, attr.bluePlain);
+         s.setCondition(0);
          s.keywordsIgnoreCase(PHP_KEYWORDS, true, null, attr.redPlain);
          s.lineComments(SyntaxConstants.DOUBLE_SLASH, SyntaxUtils.BLOCK_QUOTED);
          s.lineComments(SyntaxConstants.HASH, SyntaxUtils.BLOCK_QUOTED);
@@ -67,6 +71,10 @@ public class PHPHighlighter implements Highlighter {
 
    @Override
    public boolean isValid(String text, int pos, int length, int condition) {
+      if (condition == VAR_COND && text.length() - 1 > pos) {
+         char second = text.charAt(pos + 1);
+         return second == '_' || Character.isLetter(second);
+      }
       return true;
    }
 }

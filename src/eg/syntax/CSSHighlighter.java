@@ -114,6 +114,7 @@ public class CSSHighlighter implements Highlighter {
 
          s.keywords(PROPS, true, NON_PROP_START, attr.redPlain);
 
+         s.quoteInLine();
          s.setCondition(IGNORE_COND);
          s.braces();
       }
