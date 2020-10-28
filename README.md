@@ -14,6 +14,7 @@ be reasonably easily realized too.
     editor.</li>
 <li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
     Javascript, PHP).</li>
+<li>Choosing between spaces and tabs for indentation.</li>
 <li>Auto-indentation which distinguishes "curly-bracket-indentation".</li>
 <li>Block-wise increase or decrease of the indentation.</li>
 </ul>
