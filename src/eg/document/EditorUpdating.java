@@ -32,7 +32,7 @@ public class EditorUpdating {
    private final EditableText txt;
    private final LineNumbers lineNum;
    private final SyntaxHighlighter syntax;
-   private  Indentation indent;
+   private final Indentation indent;
    private final UndoEditing undo;
 
    private boolean isUpdate = true;

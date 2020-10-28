@@ -31,13 +31,13 @@ public class InfoWin {
    private static final String INFO
          = "<html>"
          + "Programming Editor<br><br>"
-         + "Version: 1.1.5-pre<br>"
+         + "Version: 1.1.5<br>"
          + "Author: Malte Bussiek<br><br>"
          + "Credts:"
-         + "<blockquote>"
-         + "William Gilreath<br>"
-         + "Tango Desktop Project<br>"
-         + "</blockquote><br>"
+         + "<ul>"
+         + "<li>William Gilreath</li>"
+         + "<li>Tango Desktop Project</li>"
+         + "</ul><br>"
          + "</html>";
 
    private static final String LINK

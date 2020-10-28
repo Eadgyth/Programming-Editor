@@ -495,7 +495,7 @@ public final class EditableDocument {
    private void checkFileForNonNull() {
       if (file != null) {
          throw new IllegalStateException(
-               "Cannot read a file in EditableDocument that has a file");
+               "Cannot read in a file in EditableDocument that has a file");
       }
    }
 }
