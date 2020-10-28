@@ -1,25 +1,24 @@
 I started to make a text editor when I started to learn Java for myself and wished that NotePad
 had a compile and a run button. I knew that really versatile code editors and IDEs exist but
-those were too big for me …
+using them seemed very complicated for me …
 
-A goal is that it is as simple as possible to set up the editor to try out code (a "Hello
-World" program) by using built-in functions and provide at the same time some flexibility to run
-a real little coding project. The number of languages for which a ‘run’ function is built-in
-is limited so far (Java, Perl, R, Python and HTML) but the code for the program is somewhat
-easily extensible to add support for other languages. A "generic" project may be set as well.
-Here a system command can be specified, for example to run a batch file in a given project
-directory.
+Therefore, a goal is that it is as simple as possible to set up the editor to try out code
+by using built-in functions and provide at the same time some flexibility to work on a real
+little coding project. The number of languages for which a ‘run’ function is built-in is
+limited so far (Java, Perl, R, Python and HTML) but the code for the editor is somewhat
+easily extensible to add support for other languages or even to simply replace the languages
+supported in the current version with a single desired one.
 
 The github repository for the program also contains, well ... "releases" (a record of my
-attempts to reduce mistakes). Anyway, these include an executable jar file of the program
-for trying it.
+attempts to fix bugs and add useful features). Anyway, there an executable jar file of the
+program can be found for trying it.
 
 See also <a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
 README</a> for requirements.
 
 <hr>
-<h3>How to set up the editor to run code?</h3>
-The program is set up for running source code by setting a "project". This is initially
+<h3>How to set up Eadgyth to run code?</h3>
+The program is set up for running source code by defining a "project". This is initially
 just a working directory which distinguishes "project files" from "non-project files" and
 which defines the directory where commands (built-in or self defined) are executed. Setting
 a project (or changing to another already set project) requires that any file that is
@@ -42,9 +41,10 @@ just the project directory:
 
 
 After setting the project files can be viewed in the 'Project explorer'. It is also checked
-to save the configuration to be able to reload the project when a project file is opened after
-newly starting the editor. Then it is tried to compile the program. However, the console panel
-that opened shows errors:
+to save the configuration to be able to reload the project when HelloWorld.java is opened after
+newly starting the editor (a project is reloaded after opening any file in a project directory
+that was specified previously). Then it is tried to compile the program. However, the console
+panel that opened shows errors:
 
 <img src="images/compile.png" width="600"/>
 
