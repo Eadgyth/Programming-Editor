@@ -42,7 +42,7 @@ initially:
 <img src="images/projectsettings.png" width="600"/>
 
 
-After setting the project can be viewed in the 'Project explorer'. It is also checked to
+After setting the project it can be viewed in the 'Project explorer'. It is also checked to
 save the configuration to be able to reload the project when HelloWorld.java is opened after
 newly starting the editor. Then it is tried to compile the program. However, the console
 panel that opened shows errors:
