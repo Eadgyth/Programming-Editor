@@ -20,10 +20,10 @@ README</a> for requirements.
 <h3>How to set up Eadgyth to run code?</h3>
 The program is set up for running source code by defining a "project". This is initially
 just a working directory which distinguishes "project files" from "non-project files" and
-where where commands (built-in or self defined) are executed. Setting a project (or
-changing to another already set project) requires that any file that is part of the project
-is open and also in the selected tab if multiple files are open. This file may also be
-found in a sub-directory path relative to the project directory.
+where commands (built-in or self defined) are executed. Setting a project (or changing
+to another already set project) requires that any file that is part of the project is
+open and also in the selected tab if multiple files are open. This file may also be found
+in a sub-directory path relative to the project directory.
 <br><br>
 Here is an example for a 'Hello World' program in Java. The 'Hello World' program was saved
 as HelloWorld.java in the directory named ..\helloworld\scr\hello. 'helloworld' is the project
