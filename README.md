@@ -8,9 +8,10 @@ be reasonably easily realized too.
 <p>
 <h4>Features for editing text are ...</h4>
 <ul>
-<li>Find/replace in a dockable panel; undoable 'replace all'.</li>
+<li>Find/replace in a dockable panel.</li>
 <li>Clearing end-of-line (trailing) white spaces.</li>
-<li>A dockable "exchange editor" view as a simple notepad and for exchanging text.</li>
+<li>A dockable "exchange editor" view as a simple notepad next to the main editor
+    and for exchanging text.</li>
 <li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
     Javascript, PHP).</li>
 <li>Choosing between spaces and tabs for indentation.</li>
