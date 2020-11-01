@@ -10,8 +10,8 @@ be reasonably easily realized too.
 <ul>
 <li>Find/replace in a dockable panel.</li>
 <li>Clearing end-of-line (trailing) white spaces.</li>
-<li>A dockable "exchange editor" view as a simple notepad next to the main editor
-    and for exchanging text.</li>
+<li>A dockable "exchange editor" view next to the main editor for notes, viewing text
+    and facilitated exchange of text.</li>
 <li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
     Javascript, PHP).</li>
 <li>Choosing between spaces and tabs for indentation.</li>
@@ -21,7 +21,8 @@ be reasonably easily realized too.
 <p>
 <h4>Features for running source code are ...</h4>
 <ul>
-<li>A console panel for showing output/error during running (or compiling) a program.</li>
+<li>A console for showing output/error during running (or compiling) a program and
+    entering input in interactive command-line programs.</li>
 <li>Run a program by pre-defined functions or run self-chosen system commands.</li>
 <li>Specify additional command options/arguments for running a program</li>
 <li>Compile and run Java code that is organized in packages and create an executabe jar
