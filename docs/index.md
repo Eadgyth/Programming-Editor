@@ -32,8 +32,8 @@ choosing the category Python:
 
 <img src="images/opensettingsPy.png" width="500"/>
 
-In the project settings the name of the project directory, or the project root,
-(helloworld) and the name of the script are entered:
+In the project settings the name of the project directory, or the project root
+(helloworld), and the name of the script are entered:
 
 <img src="images/projectsettingsPy.png" width="500"/>
 
@@ -45,28 +45,29 @@ in the 'Project' menu. This opens the console panel which shows the output:
 <br><br>
 <hr>
 <h4> Example for a Java program</h4>
-The next example is a 'Hello World' program in Java, but now a more advanced Java project
-with a typical directory structure is simulated. The 'Hello World' program was saved as
+The next example is a 'Hello World' program in Java, but now it is pretended that a Java
+project with a typical directory structure is run. The 'Hello World' program was saved as
 HelloWorld.java in the directory named ..\helloworld\scr\hello. 'helloworld' is the project
 directory. 'scr' is defined as the source root directory within the project and 'hello' is
 a package that contains the source file. It is declared at the top of the code that the
-file is part of this package. The project settings are opened by choosing the category Java:
+source file is part of this package. The project settings are opened by choosing the
+category Java:
 
 <img src="images/opensettings.png" width="500"/>
 
 
 In the project settings the name of the project directory, the name of the sources directory
-and the name of the Java file are entered. The filename may also be entered as the qualified
-name, hello.HelloWorld. Also the name for a distination directory for a compiled class file
-file (next step) is specified. This directory does not have to exists initially:
+and the name of the Java file are entered. Also the name for a distination directory for a
+compiled class file file (next step) is specified. This directory does not have to exists
+initially:
 
 <img src="images/projectsettings.png" width="500"/>
 
 
-After setting the project it can be viewed in the 'Project explorer'. It is also checked to
-save the configuration to be able to reload the project when HelloWorld.java is opened after
+A set project may be viewed in the 'Project explorer'. It is also checked to save the
+project configuration to be able to reload the project when HelloWorld.java is opened after
 newly starting the editor. Then it is tried to compile the program. However, the console
-panel that opened shows errors:
+panel that opened shows an error:
 
 <img src="images/compile.png" width="600"/>
 
