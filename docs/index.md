@@ -1,6 +1,6 @@
 I started to make a text editor when I started to learn Java for myself and wished that NotePad
 had a compile and a run button. I knew that really versatile code editors and IDEs exist but
-using them seemed very complicated for me …
+using them seemed very complicated to me …
 
 Therefore, a goal is that it is as simple as possible to set up the editor to try out code
 by using built-in functions and provide at the same time some flexibility to use it for a real
@@ -25,21 +25,42 @@ to another already set project) requires that any file that is part of the proje
 open and also in the selected tab if multiple files are open. This file may also be found
 in a sub-directory path relative to the project directory.
 <br><br>
-Here is an example for a 'Hello World' program in Java. The 'Hello World' program was saved
-as HelloWorld.java in the directory named ..\helloworld\scr\hello. 'helloworld' is the project
-directory, or the project root. 'scr' is defined as the sources directory which contains the
-package 'hello' with the source file. The project settings are opened by selecting
-'Settings for...' and choosing the category Java:
+<h4> Example for a 'Hello World' program in Python</h4>
+Here is an example for a 'Hello World' program in Python. The script was saved as hello_world.py
+in the directory helloworld. The project settings are opened by selecting 'Settings for...' and
+choosing the category Python:
 
-<img src="images/opensettings.png" width="600"/>
+<img src="images/opensettingsPy.png" width="500"/>
+
+In the project settings the name of the project directory, or the project root,
+(helloworld) and the name of the script are entered:
+
+<img src="images/projectsettingsPy.png" width="500"/>
+
+
+Then, after clicking OK, the script is run by selecting 'Save and run' in the toolbar or
+in the 'Project' menu. This opens the console panel which shows the output:
+
+<img src="images/runPy.png" width="500"/>
+<br><br>
+<hr>
+<h4> Example for a Java program</h4>
+The next example is a 'Hello World' program in Java, but now a more advanced Java project
+with a typical directory structure is simulated. The 'Hello World' program was saved as
+HelloWorld.java in the directory named ..\helloworld\scr\hello. 'helloworld' is the project
+directory. 'scr' is defined as the source root directory within the project and 'hello' is
+a package that contains the source file. It is declared at the top of the code that the
+file is part of this package. The project settings are opened by choosing the category Java:
+
+<img src="images/opensettings.png" width="500"/>
 
 
 In the project settings the name of the project directory, the name of the sources directory
-and the name of the Java file are entered. Also the name for a distination directory for a
-compiled class file (next step) is specified. This directory does not have to exists
-initially:
+and the name of the Java file are entered. The filename may also be entered as the qualified
+name, hello.HelloWorld. Also the name for a distination directory for a compiled class file
+file (next step) is specified. This directory does not have to exists initially:
 
-<img src="images/projectsettings.png" width="600"/>
+<img src="images/projectsettings.png" width="500"/>
 
 
 After setting the project it can be viewed in the 'Project explorer'. It is also checked to
@@ -53,7 +74,7 @@ panel that opened shows errors:
 After correcting the code a new compilation generates the class file hello\HelloWorld.class in
 the 'bin' directory and the program can be run:
 
-<img src="images/run.png" width="600"/>
+<img src="images/run.png" width="720"/>
 
 <hr>
 Some more detailed info is found at the
