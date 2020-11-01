@@ -8,10 +8,9 @@ be reasonably easily realized too.
 <p>
 <h4>Features for editing text are ...</h4>
 <ul>
-<li>Find and find/replace in a dockable panel; undoable 'replace all'.</li>
+<li>Find/replace in a dockable panel; undoable 'replace all'.</li>
 <li>Clearing end-of-line (trailing) white spaces.</li>
-<li>An "exchange editor" as an "intermediate store" to exchange text with the main
-    editor.</li>
+<li>A dockable "exchange editor" view as a simple notepad and for exchanging text.</li>
 <li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
     Javascript, PHP).</li>
 <li>Choosing between spaces and tabs for indentation.</li>
@@ -25,7 +24,7 @@ be reasonably easily realized too.
 <li>Run a program by pre-defined functions or run self-chosen system commands.</li>
 <li>Specify additional command options/arguments for running a program</li>
 <li>Compile and run Java code that is organized in packages and create an executabe jar
-    file of a Java program. A Java program may also use external Libraries.</li>
+    file of a Java program. Also, specify external Libraries.</li>
 <li>View HTML code in the default Browser.</li>
 <li>Set several coding projects which can be switched between.</li>
 <li>Retrieval of projects after newly starting the program.</li>
