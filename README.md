@@ -26,13 +26,13 @@ be reasonably easily realized too.
 <li>Run a program by pre-defined functions or run self-chosen system commands.</li>
 <li>Specify additional command options/arguments for running a program</li>
 <li>Compile and run Java code that is organized in packages and create an executabe jar
-    file of a Java program. Also, specify external Libraries.</li>
+    file of a Java program.</li>
 <li>View HTML code in the default Browser.</li>
 <li>Set several coding projects which can be switched between.</li>
 <li>Retrieval of projects after newly starting the program.</li>
 </ul>
 <p>
-A little more about it and an example how to set up the editor for running code is found
+A little more about it and examples how to use the editor is found
 <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 To try the program the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
