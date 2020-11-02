@@ -8,15 +8,15 @@ be reasonably easily realized too.
 <p>
 <h4>Features for editing text are ...</h4>
 <ul>
-<li>Find/replace in a dockable panel.</li>
+<li>Find/replace.</li>
 <li>Clearing end-of-line (trailing) white spaces.</li>
-<li>A dockable "exchange editor" view next to the main editor for notes, viewing text
-    and facilitated exchange of text.</li>
-<li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
-    Javascript, PHP).</li>
 <li>Choosing between spaces and tabs for indentation.</li>
 <li>Auto-indentation which distinguishes "curly-bracket-indentation".</li>
 <li>Block-wise increase or decrease of the indentation.</li>
+<li>An "exchange editor" view next to the main editor for notes, viewing text
+    and facilitated exchange of text.</li>
+<li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
+    Javascript, PHP).</li>
 </ul>
 <p>
 <h4>Features for running source code are ...</h4>
