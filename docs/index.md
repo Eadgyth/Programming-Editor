@@ -56,10 +56,12 @@ category Java:
 <img src="images/opensettings.png" width="500"/>
 
 
-In the project settings the name of the project directory, the name of the sources directory
-and the name of the Java file are entered. Also the name for a distination directory for a
-compiled class file file (next step) is specified. This directory does not have to exists
-initially:
+In the project settings for Java the name of the project directory, the name of the sources
+directory and the name of the Java file are entered. Note, that structuring a project in this
+way is not required to run a Java program in the editor. HelloWorld.java could have been
+saved in the directory helloworld and the input field for the source directory left blank.
+Finally, the name for a distination directory for a compiled class file (next step) is
+specified. This directory does not have to exists initially:
 
 <img src="images/projectsettings.png" width="500"/>
 
