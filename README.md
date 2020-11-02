@@ -43,7 +43,7 @@ Running and compiling the program requires Java 8 or higher. Building an executa
 file of the editor can be done, for example, after creating a Java project with existing
 sources in Netbeans using the src folder from the repository as sources directory.
 <p>
-If this editor shall be used for compiling Java code by the built-in compile option it must
+If this editor is used for compiling Java code by the built-in compile option it must
 be made sure that it is run using the JRE contained in a JDK (and not the public JRE).
 <p>
 For using the built-in function to run code the path variables that point to the executables
