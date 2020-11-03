@@ -45,23 +45,20 @@ in the 'Project' menu. This opens the console panel which shows the output:
 <br><br>
 <hr>
 <h4> Example for a Java program</h4>
-The next example is a 'Hello World' program in Java, but now it is pretended that a Java
-project with a typical directory structure is run. The 'Hello World' program was saved as
-HelloWorld.java in the directory named ..\helloworld\scr\hello. 'helloworld' is the project
-directory. 'scr' is defined as the source root directory within the project and 'hello' is
-a package that contains the source file. It is declared at the top of the code that the
-source file is part of this package. The project settings are opened by choosing the
-category Java:
+The next example simulates a Java project with a typical directory structure. The 'Hello World'
+program was saved as HelloWorld.java in the directory named ..\helloworld\scr\hello.
+'helloworld' is the project directory. 'src' is defined as the source root directory within
+the project and 'hello' is a package that contains the source file. It is declared at the
+top of the code that the source file is part of this package. The project settings are opened
+by choosing the category Java:
 
 <img src="images/opensettings.png" width="500"/>
 
 
-In the project settings for Java the name of the project directory, the name of the sources
-directory and the name of the Java file are entered. Note, that structuring a project in this
-way is not required to run a Java program in the editor. HelloWorld.java could have been
-saved in the directory helloworld and the input field for the source directory left blank.
-Finally, the name for a distination directory for a compiled class file (next step) is
-specified. This directory does not have to exists initially:
+In the project settings for Java the name of the project directory, the name of the source
+directory and the name of the Java file are entered (entering a name for a source directory is
+only necessary if one is present). Finally, the name for a distination directory for a compiled
+class file (next step) is specified. This directory does not have to exists initially:
 
 <img src="images/projectsettings.png" width="500"/>
 
