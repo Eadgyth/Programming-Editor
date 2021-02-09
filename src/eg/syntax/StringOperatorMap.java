@@ -82,7 +82,7 @@ public class StringOperatorMap {
                   heredocs.add(absTextStart, absEnd);
                   len = end - lineEnd;
                   if (scnStart == 0) { // for inner section entire text
-                     if (repairMode) { //    is updated anyway
+                     if (!repairMode) { //    is updated anyway
                         lengthChange = lengthChange(iLen, len, hLengths);
                      }
                      setLength(iLen, len, hLengths);
