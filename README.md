@@ -13,8 +13,8 @@ be reasonably easily realized too.
 <li>Choosing between spaces and tabs for indentation.</li>
 <li>Auto-indentation which distinguishes "curly-bracket-indentation".</li>
 <li>Block-wise increase or decrease of the indentation.</li>
-<li>An "exchange editor" view next to the main editor for notes, viewing text
-    and facilitated exchange of text.</li>
+<li>A 'notes' editor next to the main editor for notes, viewing text
+    or facilitated exchange of text.</li>
 <li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
     Javascript, PHP).</li>
 </ul>
@@ -51,13 +51,14 @@ of a programming language may have to be set in the OS (they have to under Windo
 <br>
 <h4>LIMITATIONS</h4>
 <p>
-Countless...
+There are countless limitations ... but one should be mentioned:
 <p>
-Output to the console panel does not work as expected in cases where a run process buffers
-its output if it is not sent to the standard output. To display output correctly buffering
-would have to be disabled by a corresponding command-line switch or by switch in a script
-itself. Currently, this limitation applies to interactive Perl scripts and may apply to
-custom commands.
+The editor includes a 'console' for showing output/error of a process started from within
+the editor. Also entries are possible. However, this console is not like the terminal/
+CMD of the OS. This can cause unexpected results, if the output of a process is buffered
+(because it does not go to the standard output). Among the project categories built-
+in so far, this limitation applies to interactive Perl scripts but may apply to custom
+commands unless a command-line switch that disables buffering is available.
 <br>
 <h4>ACKNOWLEDGEMENTS</h4>
 <p>
