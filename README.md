@@ -8,30 +8,31 @@ be reasonably easily realized too.
 <p>
 <h4>Features for editing text are ...</h4>
 <ul>
-<li>Find/replace in a dockable panel.</li>
+<li>Find/replace.</li>
 <li>Clearing end-of-line (trailing) white spaces.</li>
-<li>A dockable "exchange editor" view as a simple notepad next to the main editor
-    and for exchanging text.</li>
-<li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
-    Javascript, PHP).</li>
 <li>Choosing between spaces and tabs for indentation.</li>
 <li>Auto-indentation which distinguishes "curly-bracket-indentation".</li>
 <li>Block-wise increase or decrease of the indentation.</li>
+<li>An "exchange editor" view next to the main editor for notes, viewing text
+    and facilitated exchange of text.</li>
+<li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
+    Javascript, PHP).</li>
 </ul>
 <p>
 <h4>Features for running source code are ...</h4>
 <ul>
-<li>A console panel for showing output/error during running (or compiling) a program.</li>
+<li>A console for showing output/error during running (or compiling) a program and
+    entering input in interactive command-line programs.</li>
 <li>Run a program by pre-defined functions or run self-chosen system commands.</li>
 <li>Specify additional command options/arguments for running a program</li>
 <li>Compile and run Java code that is organized in packages and create an executabe jar
-    file of a Java program. Also, specify external Libraries.</li>
+    file of a Java program.</li>
 <li>View HTML code in the default Browser.</li>
 <li>Set several coding projects which can be switched between.</li>
 <li>Retrieval of projects after newly starting the program.</li>
 </ul>
 <p>
-A little more about it and an example how to set up the editor for running code is found
+A little more about it and examples how to use the editor is found
 <a href="https://eadgyth.github.io/Programming-Editor/">here</a>.
 To try the program the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> may be used.
@@ -42,7 +43,7 @@ Running and compiling the program requires Java 8 or higher. Building an executa
 file of the editor can be done, for example, after creating a Java project with existing
 sources in Netbeans using the src folder from the repository as sources directory.
 <p>
-If this editor shall be used for compiling Java code by the built-in compile option it must
+If this editor is used for compiling Java code by the built-in compile option it must
 be made sure that it is run using the JRE contained in a JDK (and not the public JRE).
 <p>
 For using the built-in function to run code the path variables that point to the executables
