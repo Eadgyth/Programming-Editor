@@ -31,11 +31,12 @@ public class Formatter {
     * <code>EditArea</code> objects. Only if <code>number</code> is
     * equal to 1 a formatted EditArea is created and accessed through
     * {@link #editArea()}. If <code>number</code> is minimum 2 an
-    * initially empty array of <code>EditArea</code> objects is created.
+    * initially empty array of type <code>EditArea</code> and size
+    * correposding to <code>number</code> is created.
     *
     * @param number  the number of EditArea objects
-    * @param keyPrefix  A prefix for the keys for the format properties
-    * set in {@link Prefs}. Can be the empty string
+    * @param keyPrefix  A prefix for the keys that are used for the
+    * format properties set in {@link Prefs}. Can be the empty string
     */
    public Formatter (int number, String keyPrefix) {
       setPropertyKeys(keyPrefix);
@@ -49,9 +50,9 @@ public class Formatter {
    }
 
    /**
-    * Gets this single formatted <code>EditArea</code>
+    * Returns this single formatted <code>EditArea</code>
     *
-    * @return  this {@link EditArea}
+    * @return  this EditArea
     */
    public EditArea editArea() {
       if (editArea.length > 1) {
@@ -62,9 +63,9 @@ public class Formatter {
    }
 
    /**
-    * Gets this <code>EditArea</code> array
+    * Returns this <code>EditArea</code> array
     *
-    * @return  this {@link EditArea} array
+    * @return  this EditArea array
     */
    public EditArea[] editAreaArray() {
       if (editArea.length < 2) {
@@ -76,7 +77,7 @@ public class Formatter {
 
    /**
     * Assigns a new formatted <code>EditArea</code> to this EditArea
-    * array at the specified position
+    * array at the specified index
     *
     * @param i  the index of the array element
     */
@@ -111,7 +112,7 @@ public class Formatter {
    }
 
    /**
-    * Makes the dialog for setting the font and font size visible
+    * Makes the dialog for setting the font visible
     */
    public void openSetFontDialog() {
       fontWin.setVisible(true);
@@ -122,9 +123,6 @@ public class Formatter {
     * wordwrap also hides line numbers whereas disabling wordwrap shows
     * line numbers if the corresponding boolean is set to true in
     * {@link #showLineNumbers(boolean)}.
-    * <p>
-    * The wordwrap state is changed only in the element specified in
-    * {@link #setIndex(int)}
     *
     * @param wordwrap  true to enable, false to disable
     */
@@ -175,7 +173,7 @@ public class Formatter {
    private EditArea formattedEditArea() {
       return new EditArea(isWordwrap, isShowLineNr, font, fontSize);
    }
-   
+
    private void setFont() {
       font = fontWin.font();
       fontSize = fontWin.size();

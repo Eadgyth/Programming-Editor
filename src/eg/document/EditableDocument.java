@@ -41,10 +41,12 @@ public final class EditableDocument {
     * Creates an <code>EditableDocument</code> with the specified file
     *
     * @param editArea  the {@link EditArea}
+    * @param prevLang  the language set previously
     * @param f  the file
     */
-   public EditableDocument(EditArea editArea, File f) {
+   public EditableDocument(EditArea editArea, File f, Languages prevLang) {
       this(editArea);
+      currLang.setLanguage(prevLang);
       setFileParams(f);
       setEditingMode(f);
       update.editText(() -> displayFileContentImpl(f), EditorUpdating.ALL_TEXT);

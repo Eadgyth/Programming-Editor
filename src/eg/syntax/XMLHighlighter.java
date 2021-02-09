@@ -8,26 +8,24 @@ import eg.document.styledtext.Attributes;
 public class XMLHighlighter implements Highlighter {
 
    @Override
-   public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
-      if (!s.isInBlock(SyntaxConstants.HTML_BLOCK_CMNT_START,
-            SyntaxConstants.HTML_BLOCK_CMNT_END, SyntaxUtils.IGNORE_QUOTED)
-
-            && !s.isInBlock(SyntaxConstants.CDATA_BLOCK_START,
-                  SyntaxConstants.CDATA_BLOCK_END, SyntaxUtils.IGNORE_QUOTED)) {
-
-         s.setMarkupSection();
-         s.resetAttributes();
-         s.markup(false);
-      }
-      s.block(SyntaxConstants.HTML_BLOCK_CMNT_START,
-            SyntaxConstants.HTML_BLOCK_CMNT_END, SyntaxUtils.IGNORE_QUOTED);
-
-      s.block(SyntaxConstants.CDATA_BLOCK_START,
-            SyntaxConstants.CDATA_BLOCK_END, SyntaxUtils.IGNORE_QUOTED);
+   public void highlight(SyntaxSearcher s, Attributes attr) {
+      s.setMarkupSection();
+      s.resetAttributes();
+      s.markup(false);
    }
 
    @Override
-   public boolean isValid(String text, int pos, int length, int condition) {
+   public boolean isValid(String text, int pos, int condition) {
       return true;
+   }
+   
+   @Override
+   public int behindLineCmntMark(String text, int pos) {
+      return -1;
+   }
+   
+   @Override
+   public int inBlockCmntMarks(String text, int pos) {
+      return -1;
    }
 }

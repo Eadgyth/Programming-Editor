@@ -308,7 +308,7 @@ public class TabbedDocuments {
    private void createDocument(File f) {
       int n = nTabs();
       format.createEditAreaAt(n);
-      edtDoc[n] = new EditableDocument(editArea[n], f);
+      edtDoc[n] = new EditableDocument(editArea[n], f, lang);
       edtDoc[n].setEditingStateReadable(editState);
       tabPane.addTab(edtDoc[n].filename(), editArea[n].content(), closeAct());
       proj.retrieve();
@@ -350,7 +350,7 @@ public class TabbedDocuments {
          b = edtDoc[iTab].saveCopy(f);
       }
       if (b) {
-         proj.updateFileTree(f.toString());
+         proj.updateFileTree(f.getParent());
       }
       return b;
    }

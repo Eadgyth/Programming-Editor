@@ -8,9 +8,9 @@ import eg.document.EditableDocument;
 
 /**
  * The interface that defines an "edit tool" whose graphical view can
- * be added to the <code>EditToolPanel</code>. This  panel is positioned
- * on the right of the splite pane in the main window. The graphical view
- * of the edit tool is represented by a <code>Component</code> object.
+ * be added to the <code>EditToolPanel</code> on the right of the
+ * splite pane in the main window. The graphical view of the edit tool
+ * is represented by a <code>Component</code> object.
  *
  * @see eg.ui.EditToolPanel
  */
@@ -51,7 +51,7 @@ public interface AddableEditTool {
 
    /**
     * Sets the <code>EditableDocument</code> that is currently viewed in
-    * the editor
+    * the main editor
     *
     * @param edtDoc  the {@link EditableDocument}
     */

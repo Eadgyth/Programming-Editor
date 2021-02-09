@@ -25,7 +25,7 @@ public class FilesFinder {
     * @param dir  the directory
     * @param extension  the file extension which starts with a period.
     * @param excludedDir  the directory that is excluded from the search.
-    * Ignored if eqaul to dir
+    * Ignored if equal to dir
     * @param excludedFileName  the name of a file to be excluded
     * @return  the List of the files
     */
@@ -64,6 +64,10 @@ public class FilesFinder {
 
       File[] list = f.listFiles();
       File[] targets  = f.listFiles(filter);
+      if (list == null || targets == null) {
+         throw new IllegalArgumentException(
+               f + " is not a directory");
+      }
       resultList.addAll(Arrays.asList(targets));
       for (File fInList : list) {
          if (fInList.isDirectory()

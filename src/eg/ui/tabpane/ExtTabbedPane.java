@@ -138,7 +138,7 @@ public final class ExtTabbedPane extends JTabbedPane {
       public void mouseMoved(MouseEvent e) {
          JTabbedPane sourceTb = (JTabbedPane) e.getSource();
          int x = sourceTb.indexAtLocation(e.getX(), e.getY());
-         if (x != -1 & x != iTabMouseOver) {
+         if (x != -1 && x != iTabMouseOver) {
             iTabMouseOver = x;
          }
       }

@@ -43,16 +43,13 @@ public class CurrentLanguage {
             lang = Languages.CSS;
             break;
          case "php":
-             if (lang == Languages.PHP_PURE) {
-                break;
-             }
-             else if (lang == Languages.PHP_MIXED) {
-                break;
-             }
-             else {
-                lang = Languages.PHP_MIXED;
-                break;
-             }
+            if (lang == Languages.PHP_PURE) {
+               break;
+            }
+            else {
+               lang = Languages.PHP_MIXED;
+               break;
+            }
          case "pl": case "pm":
             lang = Languages.PERL;
             break;
@@ -111,7 +108,7 @@ public class CurrentLanguage {
             hl = new HTMLHighlighter();
             break;
          case PHP_PURE:
-            hl = new PHPHighlighter(false);
+            hl = new PHPHighlighter();
             break;
          case PYTHON:
             hl = new PythonHighlighter();

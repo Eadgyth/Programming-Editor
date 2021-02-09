@@ -29,7 +29,6 @@ import eg.BusyFunction;
 import eg.edittools.*;
 import eg.ui.menu.MenuBar;
 import eg.ui.menu.FormatMenu;
-import eg.ui.menu.EditMenu;
 import eg.ui.menu.ViewMenu;
 import eg.ui.filetree.TreePanel;
 import eg.ui.tabpane.ExtTabbedPane;
@@ -364,8 +363,7 @@ public class MainWin {
     */
    public void setEditActions(Edit edit, LanguageChanger lc) {
       toolBar.setEditActions(edit);
-      EditMenu em = menuBar.editMenu();
-      em.setEditActions(edit);
+      menuBar.editMenu().setEditActions(edit);
       menuBar.languageMenu().setChangeLanguageActions(lc);
    }
 

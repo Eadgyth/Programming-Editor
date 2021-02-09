@@ -5,10 +5,15 @@ import eg.document.styledtext.Attributes;
 /**
  * Syntax highlighting for Perl
  */
-public class PerlHighlighter implements Highlighter {
+public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
+      HeredocSearch {
 
    private static final char[] START_OF_VAR = {
       '$', '@', '%'
+   };
+
+   private static final char[] START_OF_SCALAR = {
+      '$'
    };
 
    private static final char[] START_OF_ARR_HASH = {
@@ -22,15 +27,19 @@ public class PerlHighlighter implements Highlighter {
 
    private static final char[] END_OF_VAR = {
       ' ', '\\', '(', ')', ';', '[', ']', '{', '}', '.', ':', ',', '?', '\n',
-      '=', '/', '+', '-', '*', '|', '&', '!', '%', '^', '<', '>', '~',
+      '=', '/', '+', '-', '*', '|', '&', '!', '%', '^', '<', '>', '~', '"', '\''
    };
 
-   private static final char[] OPEN_QW_DEL = {
-      '(', '{', '<'
+   private static final char[] PERL_NON_OP_START = {
+      '§', '%', '&', '@', '$', '/'
    };
 
-   private static final char[] CLOSE_QW_DEL = {
-      ')', '}', '>'
+   private static final char[] PERL_Q_KEYWORD_SEC = {
+      'q', 'r', 'w', 'x'
+   };
+
+   private static final char[] NON_KEY_WORD_START = {
+      '§', '$', '%', '_', '°'
    };
 
    private static final String[] SYNTAX_KEYWORDS = {
@@ -54,136 +63,184 @@ public class PerlHighlighter implements Highlighter {
       "y"
    };
 
+   private static final String[] LINE_CMNT_MARKS = {
+      SyntaxConstants.HASH
+   };
+
+   private static final String POD_START = "\n=";
+   private static final String POD_END = "\n=cut";
+   private static final String HEREDOC_SYMBOL = "<<";
+
    private static final int IGNORE_COND = 0;
-   private static final int QW_START_COND = 1;
-   private static final int QW_COND = 2;
-   private static final int LINE_CMNT_COND = 3;
+   private static final int LINE_CMNT_COND = 1;
+
 
    @Override
-   public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
-      s.setCondition(QW_START_COND);
-      s.setStatementSection();
+   public void highlight(SyntaxSearcher s, Attributes attr) {
       s.resetAttributes();
-      s.setCondition(QW_COND);
+      s.mapHeredocs(this);
+      s.mapQuoteOperators(this);
+      s.quote(false);
+      s.setCondition(LINE_CMNT_COND);
+      s.lineComments(LINE_CMNT_MARKS);
+      s.setCondition(IGNORE_COND);
+      s.keywords(SYNTAX_KEYWORDS, NON_KEY_WORD_START, attr.redPlain);
       s.signedVariables(START_OF_ARR_HASH, END_OF_VAR, null,
             attr.purplePlain);
 
-      s.signedVariable('$', END_OF_VAR, SECOND_POS_SCALAR,
+      s.signedVariables(START_OF_SCALAR, END_OF_VAR, SECOND_POS_SCALAR,
             attr.bluePlain);
 
-      s.keywords(SYNTAX_KEYWORDS, true, START_OF_VAR, attr.redPlain);
-      s.setCondition(IGNORE_COND);
       s.brackets();
       s.braces();
-      s.setCondition(LINE_CMNT_COND);
-      s.lineComments(SyntaxConstants.HASH, SyntaxUtils.BLOCK_QUOTED);
-      s.setCondition(QW_COND);
-      s.quote();
    }
 
    @Override
-   public boolean isValid(String text, int pos, int length, int condition) {
-      boolean ok = true;
-      if (condition == QW_START_COND) {
-         ok = !isQBefore(text, pos);
+   public boolean isValid(String text, int pos, int condition) {
+      if (condition == LINE_CMNT_COND) {
+         return isLineCmntStart(text, pos);
       }
-      if (condition == QW_COND) {
-         ok = isNotQFunction(text, pos);
+      return true;
+   }
+
+   @Override
+   public int behindLineCmntMark(String text, int pos) {
+      int i = SyntaxUtils.behindMark(text, SyntaxConstants.HASH, pos);
+      if (i != -1 && !isLineCmntStart(text, i)) {
+         i = -1;
       }
-      else if (condition == LINE_CMNT_COND) {
-         ok = isLineCmnt(text, pos) && isNotQFunction(text, pos);
+      return i;
+   }
+
+   @Override
+   public int inBlockCmntMarks(String text, int pos) {
+      int start = -1;
+      int end = text.indexOf(POD_END, pos);
+      if (end != -1) {
+         int lastEnd = text.lastIndexOf(POD_END, end - 1);
+         lastEnd = lastEnd == -1 ? 0 : lastEnd + POD_END.length();
+         int startTest = text.indexOf(POD_START, lastEnd);
+         if (startTest < pos && pos < end
+               && startTest != text.indexOf(POD_END, startTest)) {
+
+            start = startTest;
+         }
       }
-      return ok;
+      return start;
+   }
+
+   @Override
+   public int nextQuoteKeyword(String text, int start) {
+      return text.indexOf('q', start);
+   }
+
+   @Override
+   public int quoteKeywordLength(String text, int pos) {
+      int length = 1;
+      if (text.length() - 1 > pos
+            && SyntaxUtils.isCharEqualTo(text, pos + 1, PERL_Q_KEYWORD_SEC)) {
+
+         length = 2;
+      }
+      return SyntaxUtils.isWord(text, pos, length, PERL_NON_OP_START) ? length : 0;
+   }
+
+   @Override
+   public int quoteLength(String text, int pos) {
+      int length = 0;
+      int d = SyntaxUtils.nextNonSpace(text, pos, false);
+      if (d < text.length()) {
+         char c = text.charAt(d);
+         if (!Character.isLetter(c)) {
+            int iDel = -1;
+            for (iDel = 0; iDel < SyntaxConstants.OPEN_BRACKETS.length; iDel++) {
+               if (SyntaxConstants.OPEN_BRACKETS[iDel] == c) {
+                  break;
+               }
+            }
+            int offset = 0;
+            if (iDel != SyntaxConstants.OPEN_BRACKETS.length) {
+               offset = SyntaxUtils.sectionLengthSkipEscaped(text, d,
+                     SyntaxConstants.CLOSE_BRACKETS[iDel]);
+            }
+            else {
+               offset = SyntaxUtils.sectionLengthSkipEscaped(text, d, c);
+           }
+           if (d + offset < text.length()) {
+              length = offset + (d - pos) + 1;
+           }
+         }
+      }
+      return length;
+   }
+
+   @Override
+   public int nextHeredoc(String text, int start) {
+      return text.indexOf(HEREDOC_SYMBOL, start);
+   }
+
+   @Override
+   public String heredocTag(String text, int pos, int lineEnd) {
+      int start = pos + HEREDOC_SYMBOL.length();
+      if (start == lineEnd) {
+         return "";
+      }
+      int length = 0;
+      boolean quoted = false;
+      char s = text.charAt(start);
+      if (s == '\'' || s == '\"') {
+         start++;
+         quoted = true;
+      }
+      for (int i = start; i < lineEnd; i++) {
+         char c = text.charAt(i);
+         if (i == start) {
+            if (Character.isLetter(c) || c == '_' || (quoted && c == ' ')) {
+               length++;
+            }
+         }
+         else {
+            if (SyntaxUtils.isLetterOrDigit(c) || c == '_' || (quoted && c == ' ')) {
+               length++;
+            }
+            else if (i > start && (c == '\'' || c == '\"')) {
+               break;
+            }
+            else {
+               quoted = false;
+               break;
+            }
+         }
+      }
+      return text.substring(start, start + length);
+   }
+
+   @Override
+   public boolean validHeredocEnd(String text, int end, int tagLength) {
+      if (text.charAt(end - 1) != '\n') {
+         return false;
+      }
+      int idEnd = end + tagLength;
+      boolean b = text.length() == idEnd;
+      if (text.length() - 1 >= idEnd) {
+         b = text.charAt(idEnd) == '\n';
+      }
+      return b;
    }
 
    //
    //--private--/
    //
 
-   private boolean isQBefore(String text, int pos) {
-      return text.length() > pos
-            && qDelStart(text, pos) > -1;
-   }
-
-   private boolean isNotQFunction(String text, int pos) {
-      boolean ok = true;
-      int delStart = qDelStart(text, pos);
-      if (delStart != -1) {
-         int ithDel = -1;
-         for (ithDel = 0; ithDel < OPEN_QW_DEL.length; ithDel++) {
-            if (OPEN_QW_DEL[ithDel] == text.charAt(delStart)) {
-               break;
-            }
-         }
-         char[] close;
-         if (ithDel != -1) {
-            if (ithDel != OPEN_QW_DEL.length) {
-               close = new char[] { CLOSE_QW_DEL[ithDel] };
-            }
-            else {
-               char c = text.charAt(delStart);
-               close = new char[] {c};
-            }
-            int length = SyntaxUtils.sectionLength(text, delStart, close, null);
-            ok = (pos <= delStart
-                  || (delStart + length == text.length()
-                  || pos > delStart + length));
-         }
-      }
-      return ok;
-   }
-
-   private int qDelStart(String text, int pos) {
-      int qPos = SyntaxUtils.lastUnquoted(text, pos, "q");
-
-      boolean valid = true;
-      int del = -1;
-      if (qPos != -1) {
-         int searchStart = 0;
-         if (qPos > 0 && text.charAt(qPos - 1) == 'q') {
-            qPos--;
-            searchStart = qPos + 2;
-         }
-         valid = !SyntaxUtils.isLineCommented(text, SyntaxConstants.HASH, qPos,
-               SyntaxUtils.BLOCK_QUOTED)
-               && SyntaxUtils.isWordStart(text, qPos, null);
-
-         if (valid) {
-            if (searchStart == 0 && text.length() > qPos + 2) {
-               char c = text.charAt(qPos + 1);
-               searchStart = (c == 'x' || c == 'w') ? qPos + 2 : qPos + 1;
-            }
-            valid = SyntaxUtils.isWordEnd(text, searchStart);
-            int d = -1;
-            if (valid) {
-               d = SyntaxUtils.nextNonSpace(text, searchStart);
-               while (text.charAt(d) == '\n') {
-                  d = SyntaxUtils.nextNonSpace(text, d + 1);
-               }
-               valid = SyntaxUtils.isWordStart(text, d + 1, CLOSE_QW_DEL);
-            }
-            if (valid) {
-               del = d;
-            }
-         }
-         if (!valid) {
-            return qDelStart(text, qPos - 1);
-         }
-      }
-      return del;
-   }
-
-   private boolean isLineCmnt(String text, int pos) {
-      boolean ok = true;
+   private boolean isLineCmntStart(String text, int pos) {
       if (pos > 0) {
          char c = text.charAt(pos - 1);
          for (char non : START_OF_VAR) {
-            ok = c != non;
-            if (!ok) {
-               break;
+            if (c == non) {
+               return false;
             }
          }
       }
-      return ok;
+      return true;
    }
 }

@@ -8,7 +8,7 @@ import eg.document.styledtext.Attributes;
 public class PythonHighlighter implements Highlighter {
 
    private static final String[] KEYWORDS = {
-      "and", "as", "assert",
+      "and", "as", "assert", "async", "await",
       "break",
       "class", "continue",
       "def", "del",
@@ -26,46 +26,33 @@ public class PythonHighlighter implements Highlighter {
       "yield"
    };
 
-   private static final int IGNORE_COND = 0;
-   private static final int TEXT_BLOCK_COND = 1;
-   private static final int SINGLE_QUOTE_TEXT_BLOCK_COND = 2;
-   private static final int DOUBLE_QUOTE_TEXT_BLOCK_COND = 3;
+   private static final String[] LINE_CMNT_MARKS = {
+      SyntaxConstants.HASH
+   };
 
    @Override
-   public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
-      s.setCondition(IGNORE_COND);
+   public void highlight(SyntaxSearcher s, Attributes attr) {
       s.resetAttributes();
-      s.keywords(KEYWORDS, true, null, attr.redPlain);
+      s.tripleQuoteTextBlocks(true);
+      s.quote(true);
+      s.lineComments(LINE_CMNT_MARKS);
+      s.keywords(KEYWORDS, null, attr.redPlain);
       s.brackets();
       s.braces();
-      s.setCondition(TEXT_BLOCK_COND);
-      s.lineComments(SyntaxConstants.HASH, SyntaxUtils.BLOCK_QUOTED);
-      s.quoteInLine();
-      s.setCondition(DOUBLE_QUOTE_TEXT_BLOCK_COND);
-      s.textBlock(SyntaxConstants.TRI_DOUBLE_QUOTE);
-      s.setCondition(SINGLE_QUOTE_TEXT_BLOCK_COND);
-      s.textBlock(SyntaxConstants.TRI_SINGLE_QUOTE);
    }
 
    @Override
-   public boolean isValid(String text, int pos, int length, int condition) {
-      switch (condition) {
-         case IGNORE_COND:
-            return true;
+   public boolean isValid(String text, int pos, int condition) {
+      return true;
+   }
 
-         case TEXT_BLOCK_COND:
-            return !SyntaxUtils.isInTextBlock(
-                    text, SyntaxConstants.TRI_SINGLE_QUOTE, pos, SyntaxConstants.HASH)
-                    && !SyntaxUtils.isInTextBlock(
-                            text, SyntaxConstants.TRI_DOUBLE_QUOTE, pos,
-                            SyntaxConstants.HASH);
+   @Override
+   public int behindLineCmntMark(String text, int pos) {
+      return SyntaxUtils.behindMark(text, SyntaxConstants.HASH, pos);
+   }
 
-         default:
-            String altDel = condition == DOUBLE_QUOTE_TEXT_BLOCK_COND ?
-                    SyntaxConstants.TRI_SINGLE_QUOTE : SyntaxConstants.TRI_DOUBLE_QUOTE;
-
-            return length == 0
-                  || !SyntaxUtils.isInTextBlock(text, altDel, pos, SyntaxConstants.HASH);
-      }
+   @Override
+   public int inBlockCmntMarks(String text, int pos) {
+      return -1;
    }
 }

@@ -7,6 +7,11 @@ import eg.document.styledtext.Attributes;
  */
 public class JavascriptHighlighter implements Highlighter {
 
+   private static final String[] LINE_CMNT_MARKS = {
+      SyntaxConstants.HTML_BLOCK_CMNT_START, SyntaxConstants.HTML_BLOCK_CMNT_END,
+               SyntaxConstants.DOUBLE_SLASH
+   };
+
    // incomplete
    private static final String[] JS_KEYWORDS = {
       "abstract",
@@ -28,25 +33,39 @@ public class JavascriptHighlighter implements Highlighter {
    };
 
    @Override
-   public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
-      if (!s.isInBlock(SyntaxConstants.SLASH_STAR,
-            SyntaxConstants.STAR_SLASH, SyntaxUtils.LINE_QUOTED)) {
-
-         s.resetAttributes();
-         s.keywords(JS_KEYWORDS, true, null, attr.redPlain);
-         s.brackets();
-         s.braces();
-         s.quoteInLine();
-         s.lineComments(SyntaxConstants.DOUBLE_SLASH, SyntaxUtils.LINE_QUOTED);
-         s.lineComments(SyntaxConstants.HTML_BLOCK_CMNT_START, SyntaxUtils.LINE_QUOTED);
-         s.lineComments(SyntaxConstants.HTML_BLOCK_CMNT_END, SyntaxUtils.LINE_QUOTED);
-      }
-      s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
-            SyntaxUtils.LINE_QUOTED);
+   public void highlight(SyntaxSearcher s, Attributes attr) {
+      s.resetAttributes();
+      s.quote(true);
+      s.lineComments(LINE_CMNT_MARKS);
+      s.keywords(JS_KEYWORDS, null, attr.redPlain);
+      s.brackets();
+      s.braces();
+      s.blockComments(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH, false);
    }
 
    @Override
-   public boolean isValid(String text, int pos, int length, int condition) {
+   public boolean isValid(String text, int pos, int condition) {
       return true;
+   }
+
+   @Override
+   public int behindLineCmntMark(String text, int pos) {
+      int res = -1;
+      int slash = SyntaxUtils.behindMark(text, SyntaxConstants.DOUBLE_SLASH, pos);
+      int htmlStartMark = SyntaxUtils.behindMark(text,
+            SyntaxConstants.HTML_BLOCK_CMNT_START, pos);
+
+      res = htmlStartMark > slash ? htmlStartMark : slash;
+      int htmlEndMark = SyntaxUtils.behindMark(text,
+            SyntaxConstants.HTML_BLOCK_CMNT_END, pos);
+
+      res = htmlEndMark > res ? htmlEndMark : res;
+      return res;
+   }
+
+   @Override
+   public int inBlockCmntMarks(String text, int pos) {
+      return SyntaxUtils.inBlock(text, SyntaxConstants.SLASH_STAR,
+            SyntaxConstants.STAR_SLASH, pos);
    }
 }

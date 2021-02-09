@@ -250,8 +250,7 @@ public class Edit {
     * doesn't use <code>IndentSettingWin</code> to change the
     * indentation mode
     *
-    * @param indentUnit  the indent unit which consists of white
-    * spaces
+    * @param indentUnit  the indent length in number of spaces
     * @param indentTab  true to use tabs for indentation, false
     * to use spaces
     */
@@ -426,7 +425,7 @@ public class Edit {
          int indentEnd = indentEnd(s);
          if (s.startsWith(indentUnit, indentEnd - indentLength)) {
             int removePos = sum + lineStart + indentEnd - indentLength;
-            edtDoc.removeIgnoreSyntax(removePos, indentLength);
+            edtDoc.remove(removePos, indentLength);
             sum += (s.length() - indentLength) + 1;
          }
          else if (indentEnd > 0) {
@@ -441,7 +440,7 @@ public class Edit {
             }
             int removeLength = indentEnd - removePos;
             removePos += (sum + lineStart);
-            edtDoc.removeIgnoreSyntax(removePos, removeLength);
+            edtDoc.remove(removePos, removeLength);
             sum += (s.length() - removeLength) + 1;
          }
          else {

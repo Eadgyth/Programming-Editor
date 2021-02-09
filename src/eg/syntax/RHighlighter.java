@@ -19,18 +19,32 @@ public class RHighlighter implements Highlighter {
       "while"
    };
 
+   private static final String[] LINE_CMNT_MARKS = {
+      SyntaxConstants.HASH
+   };
+
    @Override
-   public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
+   public void highlight(SyntaxSearcher s, Attributes attr) {
       s.resetAttributes();
-      s.keywords(KEYWORDS, true, null, attr.redPlain);
+      s.quote(false);
+      s.lineComments(LINE_CMNT_MARKS);
+      s.keywords(KEYWORDS, null, attr.redPlain);
       s.braces();
       s.brackets();
-      s.lineComments(SyntaxConstants.HASH, SyntaxUtils.BLOCK_QUOTED);
-      s.quote();
    }
 
    @Override
-   public boolean isValid(String text, int pos, int length, int condition) {
+   public boolean isValid(String text, int pos, int condition) {
       return true;
+   }
+
+   @Override
+   public int behindLineCmntMark(String text, int pos) {
+      return SyntaxUtils.behindMark(text, SyntaxConstants.HASH, pos);
+   }
+
+   @Override
+   public int inBlockCmntMarks(String text, int pos) {
+      return -1;
    }
 }

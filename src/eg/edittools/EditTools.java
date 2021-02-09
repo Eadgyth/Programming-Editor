@@ -6,15 +6,10 @@ package eg.edittools;
 public enum EditTools {
 
    FINDER("Find/replace", "Finder"),
-   EXCHANGE_EDITOR("Exchange editor", "ExchangeEditor");
+   EXCHANGE_EDITOR("Notes", "ExchangeEditor");
 
    private final String display;
    private final String className;
-
-   private EditTools(String display, String className) {
-      this.display = display;
-      this.className = className;
-   }
 
    /**
     * Returns the display value associated with this constants
@@ -33,5 +28,14 @@ public enum EditTools {
     */
    public String className() {
       return className;
+   }
+
+   //
+   //--private--/
+   //
+
+   private EditTools(String display, String className) {
+      this.display = display;
+      this.className = className;
    }
 }

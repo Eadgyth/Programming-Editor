@@ -6,6 +6,20 @@ package eg.syntax;
 public class SyntaxConstants {
 
    /**
+    * The opening bracket characters (parenthesis, braces, angle,
+    * square) */
+   public static final char[] OPEN_BRACKETS = {
+      '(', '{', '<', '['
+   };
+
+   /**
+    * The closing bracket characteres (parenthesis, braces, angle, square;
+    * same order as in {@link #OPEN_BRACKETS}) */
+   public static final char[] CLOSE_BRACKETS = {
+      ')', '}', '>', ']'
+   };
+
+   /**
     * The single quote character */
    public static final char SINGLE_QUOTE = '\'';
 
@@ -26,12 +40,12 @@ public class SyntaxConstants {
    public static final String TRI_DOUBLE_QUOTE = "\"\"\"";
 
    /**
-    * The triple single quotes*/
+    * The triple single quotes */
    public static final String TRI_SINGLE_QUOTE = "\'\'\'";
 
    /**
     * The slash-star block comment start */
-   public static final String SLASH_STAR = "/*";
+   public static final  String SLASH_STAR = "/*";
 
    /**
     * The star-slash block comment end */
@@ -69,7 +83,7 @@ public class SyntaxConstants {
 
    /**
     * The characters that are reserved in XML */
-   public static final char[] RESERVED_XML_CHARS = {
+   public static final char[] RES_XML_CHARS = {
       '>', '<', '/', ' ', '\n',  '&', '\"', '\'', '%', '=', '+', ';', ',', '\\'
    };
 
@@ -101,6 +115,7 @@ public class SyntaxConstants {
       "video",
       "wbr",
    };
+
    /**
     * The html attribute keywords */
    public static final String[] HTML_ATTR = {

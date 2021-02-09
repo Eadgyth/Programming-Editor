@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 public class FileUtils {
 
    /**
-    * Adds the specified extension to the string if it does not end with
+    * Adds the specified extension to the string if it does not end
     * with this extension already
     *
     * @param file  the string that represents a file

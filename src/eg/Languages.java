@@ -11,14 +11,14 @@ public enum Languages {
    JAVA("Java"),
    JAVASCRIPT("Javascript"),
    PERL("Perl"),
-   PHP_MIXED("PHP (mixed)"),
+   PHP_MIXED("PHP (embedded)"),
    PHP_PURE("PHP (pure)"),
    PYTHON("Python"),
    R("R"),
    XML("XML");
-   
+
    private final String display;
-   
+
    /**
     * Returns the display value associated with a language
     * constant
@@ -28,7 +28,7 @@ public enum Languages {
    public String display() {
       return display;
    }
-   
+
    private Languages(String display) {
       this.display = display;
    }

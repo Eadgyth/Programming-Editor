@@ -244,8 +244,11 @@ public class FileTree {
 
    private void deleteFolder(File dir) throws IOException {
       if (dir.isDirectory()) {
-         for (File f : dir.listFiles()) {
-            deleteFolder(f);
+         File[] list = dir.listFiles();
+         if (list != null) {
+            for (File f : list) {
+               deleteFolder(f);
+            }
          }
       }
       Files.delete(dir.toPath());
@@ -400,10 +403,15 @@ public class FileTree {
       }
 
       private boolean isFolderDeletable() {
-    	 File[] content = selectedFile.listFiles();
-    	 return content.length == 0
+         File[] content = selectedFile.listFiles();
+         if (content == null) {
+            return false;
+         }
+         else {
+    	      return content.length == 0
                 || (deletableDir != null
-                      && selectedFile.toString().startsWith(deletableDir));
+                 && selectedFile.toString().startsWith(deletableDir));
+         }
       }
    };
 }

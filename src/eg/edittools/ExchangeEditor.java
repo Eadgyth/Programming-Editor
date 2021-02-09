@@ -42,7 +42,7 @@ public class ExchangeEditor implements AddableEditTool {
    private final JMenuItem copyToItm = new JMenuItem();
    private final JMenuItem adoptLangItm = new JMenuItem();
    private final JMenuItem adoptIndentLenItm = new JMenuItem("Indentation settings");
-   private final JMenuItem undoItm = new JMenuItem();
+   private final JMenuItem undoItm = new JMenuItem("Undo");
    private final JMenuItem redoItm = new JMenuItem();
    private final JMenuItem cutItm = new JMenuItem();
    private final JMenuItem copyItm = new JMenuItem();

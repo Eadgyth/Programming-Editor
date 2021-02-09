@@ -142,10 +142,10 @@ public class LinesFinder {
    public static boolean isMultiline(String text) {
       return text.length() > 1 && text.indexOf(NEW_LINE) > -1;
    }
-   
+
    //
    //--private--/
    //
-   
+
    private LinesFinder() {}
 }

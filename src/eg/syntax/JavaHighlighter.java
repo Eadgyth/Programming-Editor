@@ -34,74 +34,47 @@ public class JavaHighlighter implements Highlighter {
       "@FunctionalInterface"
    };
 
+   private static final String[] LINE_CMNT_MARK = {
+      SyntaxConstants.DOUBLE_SLASH
+   };
+
    private static	final int IGNORE_COND = 0;
-   private static final int TEXT_BLOCK_COND = 1;
-   private static final int VALID_TEXT_BLOCK_COND = 2;
+   private static final int VALID_TEXT_BLOCK_COND = 1;
 
    @Override
-   public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
-      if (!s.isInBlock(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
-            SyntaxUtils.LINE_QUOTED)) {
-
+   public void highlight(SyntaxSearcher s, Attributes attr) {
+      s.resetAttributes();
+      if (SystemParams.IS_JAVA_13_OR_HIGHER) {
+         s.setCondition(VALID_TEXT_BLOCK_COND);
+         s.tripleQuoteTextBlocks(false);
          s.setCondition(IGNORE_COND);
-         s.resetAttributes();
-         s.keywords(JAVA_ANNOTATIONS, true, null, attr.bluePlain);
-         s.keywords(JAVA_KEYWORDS, true, null, attr.redPlain);
-         s.brackets();
-         s.braces();
-         if (SystemParams.IS_JAVA_13_OR_HIGHER) {
-            s.setCondition(TEXT_BLOCK_COND);
-         }
-         s.quoteInLine();
-         s.lineComments(SyntaxConstants.DOUBLE_SLASH, SyntaxUtils.LINE_QUOTED);
-         if (SystemParams.IS_JAVA_13_OR_HIGHER) {
-            s.setCondition(VALID_TEXT_BLOCK_COND);
-            s.textBlock(SyntaxConstants.TRI_DOUBLE_QUOTE);
-         }
       }
-      s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
-           SyntaxUtils.LINE_QUOTED);
+      s.quote(true);
+      s.lineComments(LINE_CMNT_MARK);
+      s.brackets();
+      s.braces();
+      s.keywords(JAVA_ANNOTATIONS, null, attr.bluePlain);
+      s.keywords(JAVA_KEYWORDS, null, attr.redPlain);
+      s.blockComments(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH, false);
    }
 
    @Override
-   public boolean isValid(String text, int pos, int length, int condition) {
-      switch (condition) {
-         case IGNORE_COND:
-            return true;
-
-         case TEXT_BLOCK_COND:
-            return !SyntaxUtils.isInTextBlock(
-                    text, SyntaxConstants.TRI_DOUBLE_QUOTE, pos, SyntaxConstants.HASH);
-
-         case VALID_TEXT_BLOCK_COND:
-            if (text.length() > pos + 3) {
-               int nextNonSpace = SyntaxUtils.nextNonSpace(text, pos + 3);
-               boolean isStart = text.charAt(nextNonSpace) == '\n';
-               boolean isStartInBlockCnmt =
-                       SyntaxUtils.isInBlock(
-                               text,
-                               SyntaxConstants.SLASH_STAR,
-                               SyntaxConstants.STAR_SLASH, pos,
-                               SyntaxUtils.IGNORE_QUOTED);
-
-               boolean isEndInBlockCmnt =
-                       SyntaxUtils.isInBlock(
-                               text,
-                               SyntaxConstants.SLASH_STAR,
-                               SyntaxConstants.STAR_SLASH,
-                               pos + length,
-                               SyntaxUtils.IGNORE_QUOTED);
-
-               boolean isBlockCmnt = isStartInBlockCnmt || isEndInBlockCmnt;
-               return isStart && !isBlockCmnt;
-            }
-            else {
-               return false;
-            }
-
-         default:
-            break;
+   public boolean isValid(String text, int pos, int condition) {
+      if (condition == VALID_TEXT_BLOCK_COND && text.length() > pos + 3) {
+            int nextNonSpace = SyntaxUtils.nextNonSpace(text, pos + 3, true);
+            return text.charAt(nextNonSpace) == '\n';
       }
-      return false;
+      return true;
+   }
+
+   @Override
+   public int behindLineCmntMark(String text, int pos) {
+      return SyntaxUtils.behindMark(text, SyntaxConstants.DOUBLE_SLASH, pos);
+   }
+
+   @Override
+   public int inBlockCmntMarks(String text, int pos) {
+      return SyntaxUtils.inBlock(text, SyntaxConstants.SLASH_STAR,
+            SyntaxConstants.STAR_SLASH, pos);
    }
 }

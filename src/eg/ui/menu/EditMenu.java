@@ -65,7 +65,7 @@ public class EditMenu {
     * @param edit  the reference to Edit
     */
    public void setEditActions(Edit edit) {
-      undoItm.setAction(edit.undoAction());
+      undoItm.addActionListener(e -> edit.undo());
       undoItm.setIcon(IconFiles.UNDO_ICON);
       redoItm.setAction(edit.redoAction());
       redoItm.setIcon(IconFiles.REDO_ICON);
@@ -143,7 +143,7 @@ public class EditMenu {
     * @param isRedo  the boolean for redo actions
     */
    public void enableUndoRedoItms(boolean isUndo, boolean isRedo) {
-      undoItm.getAction().setEnabled(isUndo);
+      undoItm.setEnabled(isUndo);
       redoItm.getAction().setEnabled(isRedo);
    }
 

@@ -8,13 +8,13 @@ import eg.document.styledtext.Attributes;
 public class CSSHighlighter implements Highlighter {
 
    private static final String[] PROPS = {
-      "all",
+      "align", "all", "animation", "appearance",
       "bottom", "box-shadow",
       "caption-side", "clear", "clip", "color", "content", "counter-increment",
       "counter-reset", "cursor",
       "direction", "display",
       "empty-cells",
-      "float",
+      "filer", "float",
       "height",
       "left", "letter-spacing", "line-height",
       "max-height", "max-width", "min-height", "min-width",
@@ -34,7 +34,7 @@ public class CSSHighlighter implements Highlighter {
    private static final String[] BACKGROUND_PROPS = {
       "-attachment", "-clip", "-color",
       "-image", "-origin", "-position",
-      "-repreat", "-size"
+      "-repeat", "-size"
    };
    private static final String[] BORDER_PROPS = {
       "-bottom", "-bottom-color", "-bottom-left-radius",
@@ -75,63 +75,77 @@ public class CSSHighlighter implements Highlighter {
    private static final int NO_OPEN_BRACE_AHEAD_COND = 2;
 
    @Override
-   public void highlight(SyntaxHighlighter.SyntaxSearcher s, Attributes attr) {
-      if (!s.isInBlock(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
-            SyntaxUtils.IGNORE_QUOTED)) {
+   public void highlight(SyntaxSearcher s, Attributes attr) {
+      s.setBlockSection("}");
+      s.resetAttributes();
+      s.setCondition(NO_OPEN_BRACE_AHEAD_COND);
+      s.keywords(SyntaxConstants.HTML_TAGS, CLASS_START,
+            attr.bluePlain);
 
-         s.resetAttributes();
+      s.signedVariables(CLASS_START, CLASS_END, null, attr.bluePlain);
 
-         s.setCondition(NO_OPEN_BRACE_AHEAD_COND);
-         s.keywords(SyntaxConstants.HTML_TAGS, true, CLASS_START,
-               attr.bluePlain);
+      s.setCondition(OPEN_BRACE_AHEAD_COND);
+      s.extensibleKeyword("background", BACKGROUND_PROPS, NON_PROP_START,
+            attr.redPlain);
 
-         s.signedVariables(CLASS_START, CLASS_END, null, attr.bluePlain);
+      s.extensibleKeyword("border", BORDER_PROPS, NON_PROP_START,
+            attr.redPlain);
 
-         s.setCondition(OPEN_BRACE_AHEAD_COND);
-         s.extensibleKeyword("background", BACKGROUND_PROPS, NON_PROP_START,
-               attr.redPlain);
+      s.extensibleKeyword("font", FONT_PROPS, NON_PROP_START,
+            attr.redPlain);
 
-         s.extensibleKeyword("border", BORDER_PROPS, NON_PROP_START,
-               attr.redPlain);
+      s.extensibleKeyword("list", LIST_PROPS, NON_PROP_START,
+            attr.redPlain);
 
-         s.extensibleKeyword("font", FONT_PROPS, NON_PROP_START,
-               attr.redPlain);
+      s.extensibleKeyword("margin", MARGIN_PROPS, NON_PROP_START,
+            attr.redPlain);
 
-         s.extensibleKeyword("list", LIST_PROPS, NON_PROP_START,
-               attr.redPlain);
+      s.extensibleKeyword("outline", OUTLINE_PROPS, NON_PROP_START,
+            attr.redPlain);
 
-         s.extensibleKeyword("margin", MARGIN_PROPS, NON_PROP_START,
-               attr.redPlain);
+      s.extensibleKeyword("padding", PADDING_PROPS, NON_PROP_START,
+            attr.redPlain);
 
-         s.extensibleKeyword("outline", OUTLINE_PROPS, NON_PROP_START,
-               attr.redPlain);
+      s.extensibleKeyword("transition", TRANSITION_PROPS, NON_PROP_START,
+            attr.redPlain);
 
-         s.extensibleKeyword("padding", PADDING_PROPS, NON_PROP_START,
-               attr.redPlain);
-
-         s.extensibleKeyword("transition", TRANSITION_PROPS, NON_PROP_START,
-               attr.redPlain);
-
-         s.keywords(PROPS, true, NON_PROP_START, attr.redPlain);
-
-         s.quoteInLine();
-         s.setCondition(IGNORE_COND);
-         s.braces();
-      }
-      s.block(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH,
-            SyntaxUtils.IGNORE_QUOTED);
+      s.keywords(PROPS, NON_PROP_START, attr.redPlain);
+      s.setCondition(IGNORE_COND);
+      s.braces();
+      s.setCondition(OPEN_BRACE_AHEAD_COND);
+      s.quote(true);
+      s.setCondition(IGNORE_COND);
+      s.blockComments(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH, false);
    }
 
    @Override
-   public boolean isValid(String text, int pos, int length, int condition) {
+   public boolean isValid(String text, int pos, int condition) {
       if (condition == IGNORE_COND) {
          return true;
       }
       int lastOpenBrace
-            = SyntaxUtils.lastBlockStart(text, pos, "{", "}",
-                  SyntaxUtils.IGNORE_QUOTED);
+            = SyntaxUtils.lastBlockStart(text, pos, "{", "}");
+
+      while (lastOpenBrace != -1
+            && -1 != SyntaxUtils.inBlock(text, SyntaxConstants.SLASH_STAR,
+                  SyntaxConstants.STAR_SLASH, lastOpenBrace)) {
+
+         lastOpenBrace
+            = SyntaxUtils.lastBlockStart(text, lastOpenBrace - 1, "{", "}");
+      }
 
       return (condition == OPEN_BRACE_AHEAD_COND && lastOpenBrace != -1)
             || (condition == NO_OPEN_BRACE_AHEAD_COND && lastOpenBrace == -1);
+   }
+
+   @Override
+   public int behindLineCmntMark(String text, int pos) {
+      return -1;
+   }
+
+   @Override
+   public int inBlockCmntMarks(String text, int pos) {
+      return SyntaxUtils.inBlock(text, SyntaxConstants.SLASH_STAR,
+            SyntaxConstants.STAR_SLASH, pos);
    }
 }

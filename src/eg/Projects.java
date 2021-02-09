@@ -1,5 +1,7 @@
 package eg;
 
+import java.io.File;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -96,14 +98,20 @@ public class Projects {
    }
 
    /**
-    * Updates the file tree if <code>file</code> is contained in the
-    * currently shown directory
+    * Updates the file tree if the specified directory is or
+    * is contained in the currently shown directory
     *
-    * @param file  the file
+    * @param dir  the directory
     */
-   public void updateFileTree(String file) {
-      if (file.startsWith(fileTree.currentRoot())) {
-         fileTree.updateTree();
+   public void updateFileTree(String dir) {
+      File f = new File(dir);
+      File treeRoot = new File(fileTree.currentRoot());
+      while (f != null) {
+         if (f.equals(treeRoot)) {
+            fileTree.updateTree();
+            break;
+         }
+         f = f.getParentFile();
       }
    }
 
@@ -160,7 +168,7 @@ public class Projects {
          }
       }
       if (isFound) {
-    	projCmnds.add(projToFind);
+    	   projCmnds.add(projToFind);
          ProjectCommands projFin = projToFind;
          projFin.setConfiguringAction(() -> configure(projFin));
          if (currentProject == null) {

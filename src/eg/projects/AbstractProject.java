@@ -140,7 +140,7 @@ public abstract class AbstractProject implements Configurable {
       else {
          sw.setSaveProjConfigSelected(false);
          root = prefs.property("ProjectRoot");
-         if (root != null && dir.startsWith(root)) {
+         if (root != null && rootByName(dir, root).equals(root)) {
              success = configFromPrefs(root, prefs);
          }
       }
@@ -163,7 +163,7 @@ public abstract class AbstractProject implements Configurable {
 
    @Override
    public final boolean isInProject(String dir) {
-      return dir.startsWith(projectDir);
+      return rootByName(dir, projectDir).equals(projectDir);
    }
 
    @Override
@@ -194,9 +194,7 @@ public abstract class AbstractProject implements Configurable {
       else {
          deleteCurrentProjConfigFile();
       }
-      if (!prevProjConfigDir.isEmpty()
-            && !prevProjConfigDir.equals(projectDir)) {
-
+      if (!prevProjConfigDir.isEmpty() && !prevProjConfigDir.equals(projectDir)) {
          deleteProjConfigFile(prevProjConfigDir);
       }
       prevProjConfigDir = projectDir;
