@@ -13,7 +13,7 @@ be reasonably easily realized too.
 <li>Choosing between spaces and tabs for indentation.</li>
 <li>Auto-indentation which distinguishes "curly-bracket-indentation".</li>
 <li>Block-wise increase or decrease of the indentation.</li>
-<li>An 'notes' editor next to the main editor for notes, viewing text
+<li>A 'notes' editor next to the main editor for notes, viewing text
     or facilitated exchange of text.</li>
 <li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
     Javascript, PHP).</li>
