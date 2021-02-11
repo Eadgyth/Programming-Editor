@@ -30,12 +30,12 @@ Here is an example for a 'Hello World' program in Python. The script was saved a
 in the directory helloworld. The project settings are opened by selecting 'Settings for...' and
 choosing the category Python:
 
-<img src="images/opensettingsPy.png" width="500"/>
+<img src="images/opensettingsPy.png" width="600"/>
 
 In the project settings the name of the project directory, or the project root
 (helloworld), and the name of the script are entered:
 
-<img src="images/projectsettingsPy.png" width="500"/>
+<img src="images/projectsettingsPy.png" width="600"/>
 
 
 Then, after clicking OK, the script is run by selecting 'Save and run' in the toolbar or
