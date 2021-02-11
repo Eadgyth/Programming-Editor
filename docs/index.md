@@ -1,6 +1,6 @@
-I started to make a text editor when I started to learn Java for myself and wished that NotePad
-had a compile and a run button. I knew that really versatile code editors and IDEs exist but
-using them seemed very complicated to me …
+I (Malte) started to make a text editor when I started to learn Java for myself and wished
+that NotePad had a compile and a run button. I knew that really versatile code editors and
+IDEs exist but using them seemed very complicated to me …
 
 Therefore, a goal is that it is as simple as possible to set up the editor to try out code
 by using built-in functions and provide at the same time some flexibility to use it for a real
@@ -41,7 +41,7 @@ In the project settings the name of the project directory, or the project root
 Then, after clicking OK, the script is run by selecting 'Save and run' in the toolbar or
 in the 'Project' menu. This opens the console panel which shows the output:
 
-<img src="images/runPy.png" width="500"/>
+<img src="images/runPy.png" width="600"/>
 <br><br>
 <hr>
 <h4> Example for a Java program</h4>
@@ -52,7 +52,7 @@ the project and 'hello' is a package that contains the source file. It is declar
 top of the code that the source file is part of this package. The project settings are opened
 by choosing the category Java:
 
-<img src="images/opensettings.png" width="500"/>
+<img src="images/opensettings.png" width="600"/>
 
 
 In the project settings for Java the name of the project directory, the name of the source
@@ -60,7 +60,7 @@ directory and the name of the Java file are entered (entering a name for a sourc
 only necessary if one is present). Finally, the name for a distination directory for a compiled
 class file (next step) is specified. This directory does not have to exists initially:
 
-<img src="images/projectsettings.png" width="500"/>
+<img src="images/projectsettings.png" width="600"/>
 
 
 A set project may be viewed in the 'Project explorer'. It is also checked to save the
@@ -74,7 +74,7 @@ panel that opened shows an error:
 After correcting the code a new compilation generates the class file hello\HelloWorld.class in
 the 'bin' directory and the program can be run:
 
-<img src="images/run.png" width="720"/>
+<img src="images/run.png" width="600"/>
 
 <hr>
 Some more detailed info is found at the
