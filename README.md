@@ -3,7 +3,7 @@ first of all for Java. Additional project categories are Python, R, Perl and
 HTML as well as 'Custom commands' to define own commands. Extending the source
 code of the editor to add support for other languages can be reasonably easily
 realized too.
-<br>
+<br><br>
 The editor may be useful for writing applications for own use, learning or quickly
 trying out code in case that a more advanced code editor or IDE is not necessary
 (examples for project settings can be found
