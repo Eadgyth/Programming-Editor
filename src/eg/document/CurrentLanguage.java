@@ -42,6 +42,9 @@ public class CurrentLanguage {
          case "css":
             lang = Languages.CSS;
             break;
+         case "cs":
+            lang = Languages.C_SHARP;
+            break;
          case "php":
             if (lang == Languages.PHP_PURE) {
                break;
@@ -70,8 +73,7 @@ public class CurrentLanguage {
    /**
     * Returns this language
     *
-    * @return  the language; default is
-    * {@link Languages#NORMAL_TEXT}
+    * @return  the language; default is {@link Languages#NORMAL_TEXT}
     */
    public Languages lang() {
       if (lang == null) {
@@ -91,6 +93,9 @@ public class CurrentLanguage {
       switch(lang) {
          case CSS:
             hl = new CSSHighlighter();
+            break;
+         case C_SHARP:
+            hl = new CSharpHighlighter();
             break;
          case HTML:
             hl = new HTMLHighlighter();
@@ -138,6 +143,7 @@ public class CurrentLanguage {
          case PERL:
          case PHP_PURE:
          case CSS:
+         case C_SHARP:
             b = true;
             break;
          default:

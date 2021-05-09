@@ -20,15 +20,15 @@ public class SyntaxSearcher {
 
    private final StringMap quotes = new StringMap();
    private final StringMap triQuotes = new StringMap();
-   private final StringOperatorMap stringOp = new StringOperatorMap();
    private final StringMap cData = new StringMap();
+   private final StringOperatorMap stringOp = new StringOperatorMap();
    private final List<Integer> lineCmnts = new ArrayList<>();
 
    private Highlighter hl;
    private String section = "";
    private int chgPos;
    private int scnStart;
-   private String lCaseText;
+   private String lowerCaseText;
    private boolean isTypeMode = false;
    private boolean isRepair = false;
    private boolean isInnerSection = false;
@@ -78,6 +78,7 @@ public class SyntaxSearcher {
       this.chgPos = chgPos;
       this.scnStart = scnStart;
       isTypeMode = txt.text().length() > section.length();
+      condition = 0;
       lineCmnts.clear();
       triQuotes.reset();
       stringOp.reset();
@@ -103,8 +104,8 @@ public class SyntaxSearcher {
 
    /**
     * Expands the section to update to a block ranging from the
-    * last to the next <code>mark</code>. Any occurence of the
-    * mark in quotes is ignored, however,
+    * last to the next <code>mark</code>. Any occurrence of the
+    * mark in quotes is ignored, however.
     *
     * @param mark  the mark
     */
@@ -123,8 +124,9 @@ public class SyntaxSearcher {
    }
 
    /**
-    * Sets a condition for validating found text elements. The
-    * condition is passed to {@link Highlighter#isValid} by this
+    * Sets a condition for validating found text elements in
+    * addition to the condition(s) defined in this search methods.
+    * The condition is passed to {@link Highlighter#isValid} by the
     * search methods (where indicated) if a text element is found.
     *
     * @param condition  a freely chosen integer. Default is 0 at the
@@ -274,7 +276,7 @@ public class SyntaxSearcher {
             }
          }
       }
-      if (!quoteInSection && nLineCmnt != count) {
+      if (nLineCmnt != count && (!quoteInSection || !stringOp.isQuoteOperatorEmpty())) {
          repair(txt.text(), 0);
       }
       if (!isInnerSection) {
@@ -324,7 +326,7 @@ public class SyntaxSearcher {
     * @param base  the base keyword
     * @param extensions  the array of keywords that may extend base
     * @param nonStart  the characters that must not precede the
-    * keyword. Can be null and is ignored if word is false
+    * keyword. Can be null.
     * @param set  the SimpleAttributeSet set on the keywords
     */
    public void extensibleKeyword(String base, String[] extensions, char[] nonStart,
@@ -350,7 +352,7 @@ public class SyntaxSearcher {
     * in the specified signs. Calls {@link Highlighter#isValid}.
     *
     * @param signs  the start signs
-    * @param endMarks  the marks for the end of the vatiable
+    * @param endMarks  the marks for the end of the variable
     * @param successors  the characters that disable endMarks if they
     * directly follow a sign
     * @param set  the SimpleAttributeSet set on the variables
@@ -436,7 +438,7 @@ public class SyntaxSearcher {
    public void markup(boolean html) {
       quoteInSection = true;
       String scn = html ? section.toLowerCase() : section;
-      lCaseText = html ? txt.text().toLowerCase() : txt.text();
+      lowerCaseText = html ? txt.text().toLowerCase() : txt.text();
       int start = 0;
       while (start != -1) {
          start = scn.indexOf('<', start);
@@ -455,7 +457,7 @@ public class SyntaxSearcher {
                   if (!isEndTag) {
                      int absStart = start + scnStart;
                      int tagEnd = markupTagEnd(absStart + 1);
-                     String tag = lCaseText.substring(absStart, tagEnd);
+                     String tag = lowerCaseText.substring(absStart, tagEnd);
                      quote(tag, absStart, attr.purplePlain);
                      if (html) {
                         htmlAttributes(tag, absStart);
@@ -480,10 +482,10 @@ public class SyntaxSearcher {
    /**
     * Searches and highlights sections embedded in HTML
     *
-    * @param startTag  the start tag without closing bracket
+    * @param startTag  the start tag without a closing bracket
     * @param endTag  the end tag
-    * @param reqClosingBracket  true if the start tag needs a
-    * closing bracket; false otherwise
+    * @param reqClosingBracket  true if the start tag needs a closing
+    * bracket; false otherwise
     * @param hlSection  the Highlighter for the section
     */
    public void innerSections(String startTag, String endTag,
@@ -491,7 +493,7 @@ public class SyntaxSearcher {
 
       int start = 0;
       while (start != -1) {
-         start = lCaseText.indexOf(startTag, start);
+         start = lowerCaseText.indexOf(startTag, start);
          int len = 0;
          if (start != -1) {
             if (-1 == SyntaxUtils.inBlock(txt.text(),
@@ -721,16 +723,16 @@ public class SyntaxSearcher {
       if (i != -1) {
          i += diff;
       }
-      if (i == -1) {
-         i = stringOp.inEitherString(pos);
-      }
+      int strOp = stringOp.inEitherString(pos); //doesn't need diff!
+      i = strOp != -1 ? strOp : i;
       if (i != -1) {
-         int lc = hl.behindLineCmntMark(text, i - diff);
-         i = (lc == -1 || inQuotes(lc + diff )) ? i : -1;
+         int iInLineCmnt = hl.behindLineCmntMark(text, i - diff);
+         i = (iInLineCmnt == -1 || inQuotes(iInLineCmnt + diff )) ? i : -1;
       }
       if (i == -1) {
-         int lc = hl.behindLineCmntMark(text, pos - diff);
-         i = (lc != -1 && -1 == stringOp.inQuoteOperator(lc)) ? lc + diff : -1;
+         int lineCmnt = hl.behindLineCmntMark(text, pos - diff);
+         i = (lineCmnt != -1 && -1 == stringOp.inQuoteOperator(lineCmnt))
+               ? lineCmnt + diff : -1;
       }
       if (i != -1 && quoteInSection) {
          i = inQuotes(i) ? -1 : i;
@@ -782,15 +784,13 @@ public class SyntaxSearcher {
    private boolean inString(int pos, boolean ignoreQuotes) {
       boolean b = !ignoreQuotes && inQuotes(pos);
       if (!b) {
-         if (!quoteInSection) {
-            int inStrOp = stringOp.inEitherString(pos);
-            b = (inStrOp != -1 && !inQuotesOrLineCmnt(inStrOp));
-         }
-         else {
+         int inStrOp = stringOp.inEitherString(pos);
+         b = (inStrOp != -1 && !inQuotesOrLineCmnt(inStrOp));
+         if (quoteInSection && !b) {
             int inTriQuote = triQuotes.inString(pos);
             b = (inTriQuote != -1 && !inLineCmnt(inTriQuote))
                   || -1 != cData.inString(pos); // both is n/a
-         }
+        }
       }
       return b;
    }

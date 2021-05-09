@@ -12,13 +12,10 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
-import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 
 import javax.swing.event.ChangeEvent;
@@ -27,14 +24,18 @@ import java.io.File;
 
 import java.util.List;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.BusyFunction;
 import eg.FileChooser;
 import eg.ui.IconFiles;
+import eg.ui.UIComponents;
 import eg.utils.ScreenParams;
 
 /**
- * The window with input options to configure a programming project
+ * The window with input options to configure a programming project.
+ * <p>
+ * Input read from text fields is returned with leading and trailing
+ * spaces removed.
  */
 public class SettingsWindow {
 
@@ -44,44 +45,52 @@ public class SettingsWindow {
    private static final Dimension DIM_VERT_SPACER = ScreenParams.scaledDimension(0, 14);
    private static final Dimension DIM_RIGHT_SPACER = ScreenParams.scaledDimension(28, 14);
 
-   private static FileChooser chooser = new FileChooser();
+   private static final FileChooser chooser = new FileChooser();
 
-   private final JFrame     frame            = new JFrame("Project settings");
-   private final JTextField projDirTf        = new JTextField();
-   private final JTextField fileTf           = new JTextField();
-   private final JTextField customCmdTf      = new JTextField();
-   private final JTextField sourcesDirTf     = new JTextField();
-   private final JTextField execDirTf        = new JTextField();
-   private final JTextField cmdArgsTf        = new JTextField();
-   private final JTextField cmdOptionsTf     = new JTextField();
-   private final JTextField compileOptionsTf = new JTextField();
-   private final JTextField extensionsTf     = new JTextField();
-   private final JTextField buildNameTf      = new JTextField();
-   private final JButton    okBt             = new JButton("   OK   ");
-   private final JButton    cancelBt         = new JButton("Cancel");
-   private final JCheckBox  saveConfigBx     = new JCheckBox();
+   private final JFrame     frame              = new JFrame("Project settings");
+   private final JTextField projDirTf          = new JTextField();
+   private final JTextField fileTf             = new JTextField();
+   private final JTextField moduleTf           = new JTextField();
+   private final JTextField sourcesDirTf       = new JTextField();
+   private final JTextField execDirTf          = new JTextField();
+   private final JTextField cmdArgsTf          = new JTextField();
+   private final JTextField cmdOptionsTf       = new JTextField();
+   private final JTextField compileOptionsTf   = new JTextField();
+   private final JTextField extensionsTf       = new JTextField();
+   private final JTextField buildNameTf        = new JTextField();
+   private final JTextField customRunCmdTf     = new JTextField();
+   private final JTextField customCompileCmdTf = new JTextField();
+   private final JTextField customBuildCmdTf   = new JTextField();
+   private final JButton    okBt               = new JButton("   OK   ");
+   private final JButton    cancelBt           = new JButton("Cancel");
+   private final JCheckBox  saveConfigBx       = new JCheckBox();
+
+   private JTabbedPane tb;
 
    private final BusyFunction bf;
    private final JPanel sourcePnl;
 
    private ListInputPanel librariesPnl;
+   private ListInputPanel libModulesPnl;
    private JPanel runSettingsPnl;
    private JPanel buildSettingsPnl;
+   private JPanel customCmdSettingsPnl;
    private boolean useLibs = false;
+   private boolean useMods = false;
    private boolean useRunSettings = false;
    private boolean useBuildSettings = false;
-   private Component focusedComponent = projDirTf;
+   private boolean useCustomCmds = false;
 
    public SettingsWindow() {
       chooser.initSelectFileOrDirectoryChooser();
       sourcePnl = vertBoxPnl();
-      addSourceSetting("Name of project directory:", projDirTf, true);
+      addSourceSetting("Name of project directory:", projDirTf, DIM_TF, true);
       frame.getRootPane().setDefaultButton(okBt);
       bf = new BusyFunction(frame);
    }
 
    /**
-    * Gets a new <code>InputOptionsBuilder</code>
+    * Returns a new <code>InputOptionsBuilder</code>
     *
     * @return  the {@link SettingsWindow.InputOptionsBuilder}
     */
@@ -117,12 +126,20 @@ public class SettingsWindow {
    }
 
    /**
-    * Sets the directory for the file chooser used by objects
-    * of <code>SettingsWindow</code>.
+    * Sets the directory that is or is contained in the putative
+    * project directory or is already the known project directory
     *
     * @param dir  the directory
     */
    public void setDirectory(String dir) {
+      if (useLibs) {
+         librariesPnl.setDirectory(dir);
+         librariesPnl.trySetProjectDir(projDirTf.getText().trim());
+      }
+      if (useMods) {
+         libModulesPnl.setDirectory(dir);
+         libModulesPnl.trySetProjectDir(projDirTf.getText().trim());
+      }
       chooser.setDirectory(dir);
    }
 
@@ -132,13 +149,12 @@ public class SettingsWindow {
     * @param b  true for visible, false for invisible
     */
    public void setVisible(boolean b) {
-      if (b) {
-         focusedComponent.requestFocusInWindow();
-      }
-      else {
-         focusedComponent = frame.getFocusOwner();
-      }
-      EventQueue.invokeLater(() -> frame.setVisible(b));
+      EventQueue.invokeLater(() -> {
+         frame.setVisible(b);
+         if (tb != null && b) {
+            tb.requestFocusInWindow();
+         }
+      });
    }
 
    /**
@@ -157,6 +173,15 @@ public class SettingsWindow {
     */
    public String filenameInput() {
       return fileTf.getText().trim();
+   }
+
+   /**
+    * Returns the input for a module name
+    *
+    * @return  the input
+    */
+   public String moduleInput() {
+      return moduleTf.getText().trim();
    }
 
    /**
@@ -179,7 +204,7 @@ public class SettingsWindow {
 
    /**
     * Assigns the input for libraries to the specified list if the
-    * option to set libraries is added
+    * option to set libraries is added by a project
     *
     * @param l  the list
     */
@@ -190,12 +215,42 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input for a custom command
+    * Assigns the input for library modules to the specified list if
+    * this option is added by a project
+    *
+    * @param l  the list
+    */
+   public void assignLibModulesInput(List<String> l) {
+      if (useMods) {
+         libModulesPnl.assignListInput(l);
+      }
+   }
+
+   /**
+    * Returns the input for a custom run command
     *
     * @return  the input
     */
-   public String customCmdInput() {
-      return customCmdTf.getText().trim();
+   public String customRunCmdInput() {
+      return customRunCmdTf.getText().trim();
+   }
+
+   /**
+    * Returns the input for a custom compile command
+    *
+    * @return  the input
+    */
+   public String customCompileCmdInput() {
+      return customCompileCmdTf.getText().trim();
+   }
+
+   /**
+    * Returns the input for a custom build command
+    *
+    * @return  the input
+    */
+   public String customBuildCmdInput() {
+      return customBuildCmdTf.getText().trim();
    }
 
    /**
@@ -226,8 +281,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns the input for extensions of files that can be used for a
-    * compilation/build in addition to source files
+    * Returns the input for file extensions
     * <p>
     * Extensions may be entered as comma, semicolon or space separated
     * but the returned string is formatted as comma separated
@@ -267,8 +321,16 @@ public class SettingsWindow {
    }
 
    /**
-    * Shows in the corresponding text field the name of the sources
-    * directory
+    * Shows in the corresponding text field the name of module
+    *
+    * @param s  the name
+    */
+   public void displayModule(String s) {
+      moduleTf.setText(s);
+   }
+
+   /**
+    * Shows in the corresponding text field the sources directory
     *
     * @param s  the name
     */
@@ -299,12 +361,42 @@ public class SettingsWindow {
    }
 
    /**
-    * Displays in the corresponding text field a custom commannd
+    * Shows in the corresponding text fields the library modules
+    * if this option is added by a project
+    *
+    * @param l  the list of libraries
+    */
+   public void displayLibModules(List<String> l) {
+      if (useMods) {
+         libModulesPnl.displayList(l);
+      }
+   }
+
+   /**
+    * Shows in the corresponding text field a custom run command
     *
     * @param s  the custom command
     */
-   public void displayCustomCmd(String s) {
-      customCmdTf.setText(s);
+   public void displayCustomRunCmd(String s) {
+      customRunCmdTf.setText(s);
+   }
+
+   /**
+    * Shows in the corresponding text field a custom compile command
+    *
+    * @param s  the custom command
+    */
+   public void displayCustomCompileCmd(String s) {
+      customCompileCmdTf.setText(s);
+   }
+
+   /**
+    * Shows in the corresponding text field a custom build command
+    *
+    * @param s  the custom command
+    */
+   public void displayCustomBuildCmd(String s) {
+      customBuildCmdTf.setText(s);
    }
 
    /**
@@ -326,9 +418,9 @@ public class SettingsWindow {
    }
 
    /**
-    * Shows in the corresponding text field the compile option
+    * Shows in the corresponding text field the compile options
     *
-    * @param s  the compile option
+    * @param s  the compile options
     */
    public void displayCompileOptions(String s) {
       compileOptionsTf.setText(s);
@@ -336,8 +428,7 @@ public class SettingsWindow {
 
    /**
     * Shows in the corresponding text field the string that contains
-    * extensions of files that can be used for a compilation/build in
-    * addition to source files
+    * file extensions
     *
     * @param s  the file extensions
     */
@@ -355,7 +446,7 @@ public class SettingsWindow {
    }
 
    /**
-    * Returns if the option to save project parameters to an
+    * Returns if the option to save project parameters to a
     * "ProjConfig" file is selected in the correponding checkbox
     *
     * @return  true if selected
@@ -366,7 +457,7 @@ public class SettingsWindow {
 
    /**
     * Selects or unselects the checkbox for setting if project
-    * parameters are saved in an "ProjConfig" file
+    * parameters are saved in a "ProjConfig" file
     *
     * @param isSelected  true to select
     */
@@ -374,9 +465,12 @@ public class SettingsWindow {
       saveConfigBx.setSelected(isSelected);
    }
 
-    /**
+   /**
     * The building of the content of <code>SettingsWindow</code> with
-    * selectable input options
+    * selectable input options.
+    * <p>
+    * The field in which the name of a project directory is entered is
+    * fixed and also is the topmost field in the 'Source' panel (or tab).
     */
    public static class InputOptionsBuilder {
 
@@ -385,48 +479,58 @@ public class SettingsWindow {
       private boolean useCustomCmd = false;
       private boolean useMainFile = false;
 
-      private InputOptionsBuilder(SettingsWindow sw) {
-         this.sw = sw;
-      }
-      
-      /**
-       * Adds the option to enter a source directory in the
-       * 'Source' panel
-       * @param label  the label for the source directory input
-       * @return  this
-       */
-      public InputOptionsBuilder addSourceDirInput(String label) {
-         String s = label + ":";
-         sw.addSourceSetting(s, sw.sourcesDirTf, true);
-         return  this;
-      }
-
       /**
        * Adds the option to enter a name for a main project file in the
        * 'Source' panel
        *
-       * @param label  the label for the file input
+       * @param label  the label for the file input  option
+       * @param browse true to add a 'browser' button
        * @return  this
        */
-      public InputOptionsBuilder addFileInput(String label) {
+      public InputOptionsBuilder addFileInput(String label, boolean browse) {
          String s = label + ":";
-         sw.addSourceSetting(s, sw.fileTf, true);
+         sw.addSourceSetting(s, sw.fileTf, DIM_TF, browse);
          useMainFile = true;
          return this;
       }
 
       /**
-       * Adds the option to enter a name of a destination folder
-       * for compiled files in the 'Source' panel. The input field
-       * has a vertical distance to the previous one.
+       * Adds the option to enter a source directory in the 'Source'
+       * panel
+       *
+       * @param label  the label for input option
+       * @return  this
+       */
+      public InputOptionsBuilder addSourceDirInput(String label) {
+         String s = label + ":";
+         sw.addSourceSetting(s, sw.sourcesDirTf, DIM_TF, true);
+         return  this;
+      }
+
+      /**
+       * Adds the option to enter a module name in the 'Source' panel.
+       *
+       * @param label  the label for the input option
+       * @return  this
+       */
+      public InputOptionsBuilder addModuleNameInput(String label) {
+         String s = label + ":";
+         sw.addSpacer(sw.sourcePnl, SettingsWindow.DIM_VERT_SPACER);
+         sw.addSourceSetting(s, sw.moduleTf, DIM_TF_SHORT, false);
+         return this;
+      }
+
+      /**
+       * Adds the option to enter a destination directory for compiled
+       * files in the 'Source' panel
        *
        * @param label  the label for the input option
        * @return  this
        */
       public InputOptionsBuilder addExecDirInput(String label) {
          String s = label + ":";
-         sw.addSpacer(sw.sourcePnl);
-         sw.addSourceSetting(s, sw.execDirTf, false);
+         sw.addSpacer(sw.sourcePnl, SettingsWindow.DIM_VERT_SPACER);
+         sw.addSourceSetting(s, sw.execDirTf, DIM_TF_SHORT, false);
          return this;
       }
 
@@ -442,13 +546,26 @@ public class SettingsWindow {
       }
 
       /**
-       * Adds the option to enter a custom commnd in the 'Run' panel
+       * Adds the option to enter library modules in the 'Library
+       * modules' panel
+       *
+       * @param label  the label for the input option
+       * @return  this
+       */
+      public InputOptionsBuilder addLibModulesInput(String label) {
+         sw.addLibModulesSetting(label);
+         return this;
+      }
+
+      /**
+       * Adds the option to enter custom commnds labeled with 'Compile',
+       * 'Run' and 'Build' in the 'Commands' panel. This option cannot
+       * be combined with the option to enter a main project file.
        *
        * @return  this
        */
       public InputOptionsBuilder addCustomCommandInput() {
-         String s = "System command:";
-         sw.addRunSetting(s, sw.customCmdTf, false);
+         sw.addCustomCmdSetting();
          useCustomCmd = true;
          return this;
       }
@@ -488,8 +605,7 @@ public class SettingsWindow {
       }
 
       /**
-       * Adds the option to enter extensions of files that can be used
-       * for compiling/build in addition to source files
+       * Adds the option to enter file extensions
        *
        * @param label  the label for the input option
        * @return  this
@@ -515,13 +631,10 @@ public class SettingsWindow {
 
       /**
        * Builds the content of <code>SettingsWindow</code>.
-       * If none of the methods to add input options is invoked before
-       * only the field to enter the name of the project directory
-       * is shown.
        *
        * @throws IllegalStateException  if the window has been built
-       * by the same project or if a project adds the options file
-       * input and custom command
+       * by the same project or if the options 'file inout' and
+       * 'custom commands' are added.
        */
       public void buildWindow() {
          if (sw.frame.getContentPane().getComponentCount() > 0) {
@@ -536,14 +649,38 @@ public class SettingsWindow {
          }
          sw.initWindow();
       }
+
+      //
+      //--private--/
+      //
+
+      private InputOptionsBuilder(SettingsWindow sw) {
+         this.sw = sw;
+      }
    }
 
    //
    //--private--/
    //
 
-   private void addSourceSetting(String label, JTextField tf, boolean useBrowser) {
-      sourcePnl.add(singleTextfieldPnl(label, tf, useBrowser));
+   private void addSourceSetting(String label, JTextField tf, Dimension tfDim,
+         boolean useBrowser) {
+
+      sourcePnl.add(singleTextfieldPnl(label, tf, tfDim, useBrowser));
+   }
+
+   private void addCustomCmdSetting() {
+      useCustomCmds = true;
+      customCmdSettingsPnl = vertBoxPnl();
+      customCmdSettingsPnl.add(UIComponents.labelPanel(
+            "Enter a system command in the fields where needed:"));
+
+      customCmdSettingsPnl.add(
+            singleTextfieldPnl("Compile:", customCompileCmdTf, DIM_TF_LONG, false));
+      customCmdSettingsPnl.add(
+            singleTextfieldPnl("Run:", customRunCmdTf, DIM_TF_LONG, false));
+      customCmdSettingsPnl.add(
+            singleTextfieldPnl("Build:", customBuildCmdTf, DIM_TF_LONG, false));
    }
 
    private void addRunSetting(String label, JTextField tf, boolean useBrowser) {
@@ -551,7 +688,7 @@ public class SettingsWindow {
          runSettingsPnl = vertBoxPnl();
          useRunSettings = true;
       }
-      runSettingsPnl.add(singleTextfieldPnl(label, tf, useBrowser));
+      runSettingsPnl.add(singleTextfieldPnl(label, tf,  DIM_TF, useBrowser));
    }
 
    private void addBuildSetting(String label, JTextField tf, boolean useBrowser) {
@@ -559,38 +696,27 @@ public class SettingsWindow {
          buildSettingsPnl = vertBoxPnl();
          useBuildSettings = true;
       }
-      buildSettingsPnl.add(singleTextfieldPnl(label, tf, useBrowser));
+      buildSettingsPnl.add(singleTextfieldPnl(label, tf, DIM_TF, useBrowser));
    }
 
    private void addLibrariesSetting(String label) {
-      librariesPnl = new ListInputPanel(label);
+      librariesPnl = new ListInputPanel(label, chooser);
       useLibs = true;
    }
 
-   private void addSpacer(JPanel toAdd) {
-      JPanel spacer = new JPanel();
-      spacer.setPreferredSize(DIM_VERT_SPACER);
-      toAdd.add(spacer);
+   private void addLibModulesSetting(String label) {
+      libModulesPnl = new ListInputPanel(label, chooser);
+      useMods = true;
    }
 
-   private JPanel singleTextfieldPnl(String label, JTextField tf,
+   private JPanel singleTextfieldPnl(String label, JTextField tf, Dimension tfDim,
          boolean useBrowser) {
 
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       JLabel lb = new JLabel(label);
       lb.setFont(ScreenParams.scaledFontToBold(lb.getFont(), 8));
       tf.setFont(ScreenParams.scaledFontToPlain(tf.getFont(), 8));
-      Dimension d;
-      if (tf == customCmdTf) {
-         d = DIM_TF_LONG;
-      }
-      else if (tf == execDirTf) {
-         d = DIM_TF_SHORT;
-      }
-      else {
-         d = DIM_TF;
-      }
-      tf.setPreferredSize(d);
+      tf.setPreferredSize(tfDim);
       pnl.add(lb);
       pnl.add(tf);
       if (useBrowser) {
@@ -601,11 +727,15 @@ public class SettingsWindow {
          pnl.add(bt);
       }
       else {
-         JPanel spacer = new JPanel();
-         spacer.setPreferredSize(DIM_RIGHT_SPACER);
-         pnl.add(spacer);
+         addSpacer(pnl, DIM_RIGHT_SPACER);
       }
       return pnl;
+   }
+
+   private void addSpacer(JPanel toAdd, Dimension d) {
+      JPanel spacer = new JPanel();
+      spacer.setPreferredSize(d);
+      toAdd.add(spacer);
    }
 
    private void setText(JTextField tf) {
@@ -630,7 +760,7 @@ public class SettingsWindow {
    private JPanel contentPnl() {
       JPanel pnl = vertBoxPnl();
       pnl.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-      if (useLibs || useRunSettings || useBuildSettings) {
+      if (useLibs || useRunSettings || useBuildSettings || useCustomCmds) {
          pnl.add(tabPane());
       }
       else {
@@ -643,44 +773,52 @@ public class SettingsWindow {
    }
 
    private JTabbedPane tabPane() {
-      JTabbedPane tb = new JTabbedPane();
+      tb = new JTabbedPane();
       tb.setFont(ScreenParams.scaledFontToPlain(tb.getFont(), 8));
       tb.add("Sources", textfieldsHolderPnl(sourcePnl));
-      if (useLibs) {
-         tb.add("Libraries", listHolderPnl(librariesPnl.content()));
-         tb.addChangeListener((ChangeEvent e) -> {
-            JTabbedPane sourceTb = (JTabbedPane) e.getSource();
-            int i = sourceTb.getSelectedIndex();
-            if (i == 1 && !sourceTb.hasFocus()) {
-               librariesPnl.setLastFocus();
-            }
-         });
-         tb.addFocusListener(new FocusAdapter() {
-
-            @Override
-            public void focusGained(FocusEvent e) {
-               librariesPnl.disableButtons();
-            }
-         });
-      }
+      addListInputTabs(tb);
       if (useRunSettings) {
          tb.add("Run", textfieldsHolderPnl(runSettingsPnl));
       }
       if (useBuildSettings) {
          tb.add("Compile/build", textfieldsHolderPnl(buildSettingsPnl));
       }
+      if (useCustomCmds) {
+         tb.add("Commands", textfieldsHolderPnl(customCmdSettingsPnl));
+      }
       tb.setSelectedIndex(0);
       return tb;
    }
 
-   private JPanel textfieldsHolderPnl(JPanel content) {
-      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-      pnl.add(content);
-      return pnl;
+   private void addListInputTabs(JTabbedPane tb) {
+      int i = 0;
+      if (useLibs) {
+         i = 1;
+         tb.add("Libraries", librariesPnl.content());
+      }
+      if (useMods) {
+         i = 2;
+         tb.add("Library modules", libModulesPnl.content());
+      }
+      if (i > 0) {
+         int iFin = i;
+         tb.addChangeListener((ChangeEvent e) -> {
+            JTabbedPane sourceTb = (JTabbedPane) e.getSource();
+            int iSel = sourceTb.getSelectedIndex();
+            if (iSel == 1) {
+               librariesPnl.updateWhenSetVisible();
+               librariesPnl.trySetProjectDir(projDirTf.getText().trim());
+            }
+            else if (iFin == 2 && iSel == 2) {
+               libModulesPnl.updateWhenSetVisible();
+               libModulesPnl.trySetProjectDir(projDirTf.getText().trim());
+            }
+         });
+      }
    }
 
-   private JPanel listHolderPnl(JPanel content) {
-      JPanel pnl = vertBoxPnl();
+   private JPanel textfieldsHolderPnl(JPanel content) {
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       pnl.add(content);
       return pnl;
    }

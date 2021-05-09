@@ -103,7 +103,6 @@ public class ExchangeEditor implements AddableEditTool {
 
    @Override
    public Component content() {
-
       return content;
    }
 

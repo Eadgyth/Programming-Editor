@@ -8,6 +8,7 @@ import eg.TaskRunner;
 import eg.javatools.*;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
+import eg.utils.SystemParams;
 import eg.Projects.ProjectActionsUpdate;
 
 /**
@@ -19,12 +20,14 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    private final Compilation comp;
    private final JarBuilder jar = new JarBuilder();
    private final Libraries libs = new Libraries();
+   private final LibModules libMods = new LibModules();
 
-   private String startCommand = "";
    private String qualifiedMain = "";
    private File mainClassFile = null;
+   private String module = "";
    private String classDir = "";
    private String relClassDir = "";
+   private String startCmd = "";
    private String jarName = "";
    private String[] nonJavaExt = null;
    private String inclExtErrMsg = "";
@@ -36,22 +39,25 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    public JavaProject(TaskRunner runner) {
       super(ProjectTypes.JAVA, "java", ".");
       this.runner = runner;
-      comp = new Compilation(runner.consolePrinter());
+      comp = new Compilation(runner.consolePrinter(), libs, libMods);
    }
 
    @Override
    public void buildSettingsWindow() {
-      inputOptions
-            .addSourceDirInput(SRC_DIR_LABEL)
-            .addFileInput(MAIN_FILE_LABEL)
-            .addExecDirInput(CLASS_DIR_LABEL)
-            .addLibrariesInput(LIB_LABEL)
-            .addCmdOptionsInput()
-            .addCmdArgsInput()
-            .addCompileOptionsInput()
-            .addFileExtensionsInput(INCLUDED_FILES_LABEL)
-            .addBuildNameInput(JAR_NAME_LABEL)
-            .buildWindow();
+      inputOptions.addSourceDirInput(SRC_DIR_LABEL);
+      inputOptions.addFileInput(MAIN_FILE_LABEL, false);
+      if (SystemParams.IS_JAVA_9_OR_HIGHER) {
+         inputOptions.addLibModulesInput(LIB_LABEL)
+            .addModuleNameInput(MODULE_LABEL);
+      }
+      inputOptions.addExecDirInput(CLASS_DIR_LABEL)
+         .addLibrariesInput(LIB_LABEL)
+         .addCmdOptionsInput()
+         .addCmdArgsInput()
+         .addCompileOptionsInput()
+         .addFileExtensionsInput(INCLUDED_FILES_LABEL)
+         .addBuildNameInput(JAR_NAME_LABEL)
+         .buildWindow();
    }
 
    @Override
@@ -73,6 +79,10 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          Dialogs.errorMessage(libs.errorMessage(), "Libraries");
          return;
       }
+      if (!libMods.errorMessage().isEmpty()) {
+         Dialogs.errorMessage(libMods.errorMessage(), "Modules");
+         return;
+      }
       if (!inclExtErrMsg.isEmpty()) {
          Dialogs.errorMessage(inclExtErrMsg, "Included non-java files");
          return;
@@ -81,7 +91,6 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
             classDir,
             sourceDir(),
             nonJavaExt,
-            libs.joinedAbsPaths(),
             compileOptions());
 
       String initialMsg = "Compile:";
@@ -93,7 +102,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
       if (!existsMainClassFile()) {
          return;
       }
-      runner.runSystemCommand(startCommand);
+      runner.runSystemCommand(startCmd);
    }
 
    /**
@@ -117,16 +126,14 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          return;
       }
       runner.runBusy(() -> {
-         if (!libs.forJar().isEmpty()) {
-            jar.createClasspathInfo(classDir, libs.forJar());
-         }
          try {
+            jar.createClasspathInfo(classDir, libs.forJar());
             boolean created = jar.createJar(jarName, qualifiedMain, classDir,
                   sourceDir(), nonJavaExt);
 
             StringBuilder msg = new StringBuilder();
             if (created) {
-               msg.append(jar.successMessage()).append("\n");
+               msg.append(jar.successMessage());
                if (!jar.incudedFilesErr().isEmpty()) {
                   msg.append(jar.incudedFilesErr()).append(".");
                }
@@ -148,9 +155,18 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    protected void setCommandParameters() {
       setQualifiedMain();
       setNonJavaExtensions();
-      libs.configureLibraries(libraries(), projectDir());
+      libs.configure(libraries(), projectDir());
+      if (SystemParams.IS_JAVA_9_OR_HIGHER) {
+         libMods.configure(libModules(), projectDir());
+         module = module();
+      }
       setClassDir();
-      setStartCommand();
+      if (module.isEmpty()) {
+         setCpStartCmd();
+      }
+      else {
+         setModStartCmd();
+      }
       setMainClassFile();
       setJarName();
    }
@@ -174,7 +190,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
             projectDir() : projectDir() + File.separator + relClassDir;
    }
 
-   private void setStartCommand() {
+   private void setCpStartCmd() {
       StringBuilder sb = new StringBuilder("java");
       if (!relClassDir.isEmpty() || !libs.joined().isEmpty()) {
          sb.append(" -cp \"");
@@ -185,10 +201,14 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
             if (relClassDir.isEmpty()) {
                 sb.append(".");
              }
-             sb.append(File.pathSeparator);
-             sb.append(libs.joined());
+             sb.append(File.pathSeparator).append(libs.joined());
          }
          sb.append("\"");
+      }
+      if (!libMods.joinedNames().isEmpty()) {
+         sb.append(" -p ")
+            .append("\"" + libMods.joinedParents() + "\"")
+            .append(" --add-modules ").append(libMods.joinedNames());
       }
       if (!cmdOptions().isEmpty()) {
          sb.append(" ").append(cmdOptions());
@@ -197,16 +217,41 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
       if (!cmdArgs().isEmpty()) {
          sb.append(" ").append(cmdArgs());
       }
-      startCommand = sb.toString();
+      startCmd = sb.toString();
+   }
+
+   private void setModStartCmd() {
+      StringBuilder sb = new StringBuilder("java");
+      if (!relClassDir.isEmpty() || !libMods.joinedNames().isEmpty()) {
+         sb.append(" -p \"");
+         if (!relClassDir.isEmpty()) {
+            sb.append(relClassDir);
+         }
+         if (!libMods.joinedNames().isEmpty()) {
+            if (!relClassDir.isEmpty()) {
+                sb.append(File.pathSeparator);
+            }
+            sb.append(libMods.joinedParents());
+         }
+         sb.append("\"");
+      }
+      if (!cmdOptions().isEmpty()) {
+         sb.append(" ").append(cmdOptions());
+      }
+      sb.append(" -m ").append(module).append("/").append(qualifiedMain);
+      if (!cmdArgs().isEmpty()) {
+         sb.append(" ").append(cmdArgs());
+      }
+      startCmd = sb.toString();
    }
 
    private void setMainClassFile() {
       StringBuilder sb = new StringBuilder(projectDir() + "/");
       if (!relClassDir.isEmpty()) {
-         sb.append(relClassDir).append("/");
+         sb.append(relClassDir).append(File.separator);
       }
       if (!namespaceDir().isEmpty()) {
-         sb.append(namespaceDir()).append("/");
+         sb.append(namespaceDir()).append(File.separator);
       }
       sb.append(sourceFileName()).append(".class");
       mainClassFile = new File(sb.toString());
@@ -219,11 +264,13 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          f.mkdirs();
          if (!f.exists() || !f.isDirectory()) {
             b = false;
+            StringBuilder sb = new StringBuilder();
+            sb.append(relClassDir)
+               .append("\nCould not create the destination directory")
+               .append(" for class files in the project directory.");
+
             Dialogs.errorMessage(
-                 relClassDir
-                 + "\nCould not create the destination directory"
-                 + " for class files in the project directory.",
-                 "Classes directory");
+                 sb.toString(), "Classes directory");
          }
       }
       return b;
@@ -238,17 +285,28 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          f = new File(name);
       }
       if (f.isDirectory()) {
-         jarNameErr
-                = f.getPath()
-                + "\n\nA directory cannot be used as name for the jar file.";
+         jarNameErr = f.getPath()
+               + "\n\nA directory cannot be used as name for the jar file.";
       }
       if (!f.getParentFile().isDirectory()) {
-          jarNameErr
-                = f.getParentFile()
-                + "\n\nThe location for the jar file cannot be found.";
+          jarNameErr = f.getParentFile()
+                + "\n\nThe destination directory for the jar file cannot be found.";
       }
       name = FileUtils.addExtension(f.getPath(), ".jar");
       jarName = name;
+   }
+
+   private boolean existsMainClassFile() {
+      boolean exists = mainClassFile.exists();
+      if (!exists) {
+         StringBuilder sb = new StringBuilder();
+         sb.append(qualifiedMain).append(".class ")
+            .append("\nA compiled main class with this (qualified) name ")
+            .append("cannot be found.");
+
+         Dialogs.warnMessage(sb.toString());
+      }
+      return exists;
    }
 
    private void setNonJavaExtensions() {
@@ -264,33 +322,25 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
       }
    }
 
-   private boolean existsMainClassFile() {
-      boolean exists = mainClassFile.exists();
-      if (!exists) {
-         Dialogs.warnMessage(
-            "A compiled main class file \'"
-            + qualifiedMain
-            + ".class\' could not be found");
-      }
-      return exists;
-   }
-
    private String wrongExtMessage(String ext) {
-      return
-         "\'"
-         + ext
-         + "\' cannot be used as extension for included files.\n"
-         + "An extension must begin with a period.";
+      StringBuilder sb = new StringBuilder();
+      sb.append(ext).append(" cannot be used as extension for included files.\n")
+         .append("An extension must begin with a period.");
+
+      return sb.toString();
    }
 
-  private static final String SRC_DIR_LABEL =
-         "Source directory (relative to project)";
+   private static final String SRC_DIR_LABEL =
+         "Source subdirectory (if present)";
 
    private static final String MAIN_FILE_LABEL =
-         "Name of main Java file";
+         "Name of main Java file (maybe qualified)";
+
+   private static final String MODULE_LABEL =
+         "Module name (if used)";
 
    private static final String CLASS_DIR_LABEL =
-         "Destination directory for class files (relative to project)";
+         "Destination subdirectory for class files";
 
    private static final String JAR_NAME_LABEL =
          "Name or pathname for jar file";

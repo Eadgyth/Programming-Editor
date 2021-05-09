@@ -71,9 +71,9 @@ public class FileMenu {
     *
     * @param al  the <code>ActionListener</code>
     */
-   public void setExitActions(ActionListener al) {
+   public void setExitAction(ActionListener al) {
       exitItm.addActionListener(al);
-   }
+   }    
 
    /**
     * Enables or disables the item for save actions

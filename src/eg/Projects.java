@@ -232,7 +232,7 @@ public class Projects {
        */
       public void enableRun(boolean save) {
          isRun = true;
-         isSaveAndRun = save; // isSaveAnsRun in outer class
+         isSaveAndRun = save; // isSaveAndRun in outer class
       }
 
       /**

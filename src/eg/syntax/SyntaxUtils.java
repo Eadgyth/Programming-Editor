@@ -276,7 +276,7 @@ public class SyntaxUtils {
       int relStart;
       line = LinesFinder.lineAtPos(text, pos);
       relStart = pos - LinesFinder.lastNewline(text, pos);
-      return isQuoted(line, relStart);
+      return isQuoted(line, relStart - 1); // <--here changed to -1
    }
 
    /**

@@ -35,7 +35,7 @@ public class Eadgyth {
 
       MainWin mw = new MainWin();
       ViewSettingWin viewSetWin = new ViewSettingWin();
-      Formatter f = new Formatter(15, "");
+      Formatter f = new Formatter(TabbedDocuments.MAX_TABS, "");
       ViewSetter viewSet = new ViewSetter(mw, viewSetWin, f);
       TabbedDocuments tabDocs = new TabbedDocuments(mw, f);
 

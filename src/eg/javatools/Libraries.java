@@ -11,10 +11,10 @@ import java.util.List;
 import eg.utils.FileUtils;
 
 /**
- * Stores libraries in different configurations
+ * Stores configured libraries that can be added to the classpath
  */
 public class Libraries {
-   
+
    private static final String F_SEP = File.separator;
 
    private final List<String> libs = new ArrayList<>();
@@ -23,18 +23,18 @@ public class Libraries {
    private final StringBuilder notFound = new StringBuilder();
 
    private String joined = "";
-   private String joinedAbsPath = "";
+   private String joinedAbs = "";
+
    private String errMsg = "";
 
    /**
-    * Configures the libraries. Entries may be existing absolute paths
-    * or paths that exist in the specified poject directory. Invalid
-    * entries can be retrieved by {@link #errorMessage}.
+    * Configures the libraries
     *
-    * @param libraries  the list of (putative) libraries
-    * @param projectDir  the directory of the project
+    * @param libraries  the list of paths of (putative) libraries
+    * which may be relative to the project directory or absolute
+    * @param projectDir  the project directory
     */
-   public void configureLibraries(List<String> libraries, String projectDir) {
+   public void configure(List<String> libraries, String projectDir) {
       notFound.setLength(0);
       libs.clear();
       libsAbs.clear();
@@ -43,33 +43,17 @@ public class Libraries {
          for (String s : libraries) {
             File f = new File(s);
             if (f.exists() && f.isAbsolute()) {
-               libs.add(s);
                libsAbs.add(s);
-               try {
-                  libsForJar.add(f.toURI().toURL().toString());
-               }
-               catch (MalformedURLException e) {
-                  FileUtils.log(e);
-               }
+               libs.add(s);
+               addAbsForJar(f);
             }
             else {
-               String absInProject = projectDir + F_SEP + s;
-               f = new File(absInProject);
+               String absInProj = projectDir + F_SEP + s;
+               f = new File(absInProj);
                if (f.exists()) {
                   libs.add(s);
-                  libsAbs.add(absInProject);
-                  String forJar = s.replace(F_SEP, "/");
-                  if (f.isFile()) {
-                     libsForJar.add(forJar);
-                  }
-                  else {
-                     if (forJar.endsWith("/")) {
-                        libsForJar.add(forJar);
-                     }
-                     else {
-                        libsForJar.add(forJar + "/");
-                     }
-                  }
+                  libsAbs.add(absInProj);
+                  addRelForJar(f, s);
                }
                else {
                   notFound.append("\n").append(s);
@@ -78,61 +62,50 @@ public class Libraries {
          }
       }
       joined = joinedLibs(libs);
-      joinedAbsPath = joinedLibs(libsAbs);
+      joinedAbs = joinedLibs(libsAbs);
       errMsg = notFound.length() == 0 ? "" :
             "The following libraries cannot be found:" + notFound.toString();
    }
 
    /**
-    * Gets the message that contains libraries that could not
-    * be found
+    * Returns the message that indicates invalid entries
     *
-    * @return  the message, the empty string if all libraries are
-    * found
+    * @return  the message; the empty string if no invalid entries
+    * are present
     */
    public String errorMessage() {
       return errMsg;
    }
 
    /**
-    * Gets a string in which the libraries are joined with
-    * the system's path separator
+    * Returns a string in which the libraries are joined with the
+    * system's path separator
     *
-    * @return  the joined libraries
+    * @return  the joined libraries; the empty string if none are
+    * given
     */
    public String joined() {
       return joined;
    }
 
    /**
-    * Gets a string in which the libraries are joined with the
-    * system's path separator and libraries that were given as
-    * paths relative to the project directory are converted to
-    * absolute paths
+    * Returns a string in which the libraries are joined with the
+    * system's path separator and relative paths converted to
+    * absolute paths.
     *
-    * @return  the joined libraries
+    * @return  the joined libraries; the empty string if none are
+    * given
     */
-   public String joinedAbsPaths() {
-      return joinedAbsPath;
+   public String joinedAbs() {
+      return joinedAbs;
    }
 
    /**
-    * Gets the list that contains the libraries as absolute paths
-    * including those that were given as paths relative to the
-    * project directory
+    * Returns the list that contains the libraries formatted for the
+    * classpath entry in a manifest file. Relative and absolute paths
+    * remain unchanged
     *
-    * @return  the list
-    */
-   public List<String> absPaths() {
-      return libsAbs;
-   }
-
-   /**
-    * Gets the list that contains the libraries formatttted for
-    * the classpath entry in a manifest file. Absolute paths are
-    * converted to URLs and folders end with a slash.
-    *
-    * @return  the list
+    * @return  the list; the empty list if no libraries are given
     */
    public List<String> forJar() {
       return libsForJar;
@@ -148,6 +121,30 @@ public class Libraries {
       }
       else {
          return String.join(File.pathSeparator, l);
+      }
+   }
+
+   private void addRelForJar(File f, String path) {
+      String s = path.replace(F_SEP, "/");
+      if (f.isFile()) {
+         libsForJar.add(s);
+      }
+      else {
+         if (s.endsWith("/")) {
+            libsForJar.add(s);
+         }
+         else {
+            libsForJar.add(s + "/");
+         }
+      }
+   }
+
+   private void addAbsForJar(File f) {
+      try {
+         libsForJar.add(f.toURI().toURL().toString());
+      }
+      catch (MalformedURLException e) {
+         FileUtils.log(e);
       }
    }
 }

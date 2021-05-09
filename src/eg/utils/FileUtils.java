@@ -14,14 +14,14 @@ import java.text.SimpleDateFormat;
 public class FileUtils {
 
    /**
-    * Adds the specified extension to the string if it does not end
-    * with this extension already
+    * Adds the specified extension to the specified string if it does
+    * not end with this extension already
     *
     * @param file  the string that represents a file
     * @param ext  the extension
     * @return  the string with the extension
     */
-   public static String addExtension (String file, String ext) {
+   public static String addExtension(String file, String ext) {
       if (file.endsWith(ext)) {
          return file;
       }
@@ -31,8 +31,7 @@ public class FileUtils {
    }
 
    /**
-    * Returns if a file is writeable and shows a message dialog
-    * if not
+    * Returns if a file is writeable and shows a message dialog if not
     *
     * @param f  the file
     * @return  true if writeable
@@ -49,9 +48,9 @@ public class FileUtils {
       }
       return isWriteable;
    }
-   
+
    /**
-    * Appends to the file 'log.txt' in the '.eadgyth' folder the date,
+    * Writes to the file 'log.txt' in the '.eadgyth' folder the date,
     * message and stack trace of an exception
     *
     * @param e  the Exception

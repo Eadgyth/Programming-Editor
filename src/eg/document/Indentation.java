@@ -15,25 +15,24 @@ public class Indentation {
 
    private String indentUnit = "";
    private int indentLength = 0;
-   private boolean indentTab;
+   private boolean useTabs;
    private boolean curlyBracketMode;
 
    /**
-    * @param txt  the {@link EditableText}
+    * @param txt  the EditableText
     */
    public Indentation(EditableText txt) {
       this.txt = txt;
    }
 
    /**
-    * Sets the indent unit which consists of a certain number of
-    * spaces
+    * Sets the indentation mode
     *
     * @param indentUnit  the indent unit which consists of spaces
-    * @param indentTab  true to indent tabs, false to indent spaces
-    * false otherwise
+    * @param useTabs  true to use tabs; false to use spaces for
+    * indentation
     */
-   public void setMode(String indentUnit, boolean indentTab) {
+   public void setMode(String indentUnit, boolean useTabs) {
       if (indentUnit == null || indentUnit.isEmpty()
             || !indentUnit.trim().isEmpty()) {
 
@@ -41,7 +40,7 @@ public class Indentation {
                "The indent unit does not consist of white spaces");
       }
       this.indentUnit = indentUnit;
-      this.indentTab = indentTab;
+      this.useTabs = useTabs;
       indentLength = indentUnit.length();
    }
 
@@ -68,12 +67,12 @@ public class Indentation {
     *
     * @return  true if tabs, false if spaces are used
     */
-   public boolean indentTab() {
-      return indentTab;
+   public boolean useTabs() {
+      return useTabs;
    }
 
    /**
-    * Maintains or adjusts the indentation
+    * Maintains or adjusts (with curly baracket mode) the indentation
     *
     * @param pos  the position
     */
@@ -95,7 +94,7 @@ public class Indentation {
       indent.setLength(0);
       int length = indentLengthAt(pos);
       int remainder = 0;
-      if (indentTab) {
+      if (useTabs) {
          remainder = length % indentLength;
          length = length / indentLength;
          indent.append(joinTabs(length));
@@ -104,7 +103,7 @@ public class Indentation {
          indent.append(joinSpaces(length));
       }
       if (curlyBracketMode && pos >= 1 && '{' == txt.text().charAt(pos - 1)) {
-         if (indentTab) {
+         if (useTabs) {
             indent.append('\t');
          }
          else {
@@ -134,7 +133,7 @@ public class Indentation {
       }
       indent.setLength(0);
       int remainder = 0;
-      if (indentTab) {
+      if (useTabs) {
          remainder = length % indentLength;
          length = length / indentLength;
          indent.append(joinTabs(length));

@@ -4,9 +4,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import java.nio.file.Files;
+
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
+
+//--Eadgyth--/
+import eg.utils.FileUtils;
 
 /**
  * The creation of an executable jar file
@@ -24,32 +29,41 @@ public class JarBuilder {
 
    /**
     * Creates the file 'ManifestInfo.txt" that contains the classpaths
-    * added to the Class-Path header in the manifest of the jar
+    * added to the Class-Path header in the manifest of the jar. If the
+    * specified <code>classpaths</code> is empty an 'info' file is not
+    * created or deleted if it exists.
     *
     * @param dir  the directory where the 'info'-file is saved
     * @param classpaths  the list of classpaths
+    * @throws  IOException  as specified in java.io.FileWriter
     */
-   public void createClasspathInfo(String dir, List<String> classpaths) {
-      isManifestInfo = true;
+   public void createClasspathInfo(String dir, List<String> classpaths)
+         throws IOException {
+
+      isManifestInfo = !classpaths.isEmpty();
       File f = new File(dir + File.separator + MANIFEST_INFO_FILE);
-      try (FileWriter writer = new FileWriter(f)) {
+      if (isManifestInfo) {
+         FileWriter writer = new FileWriter(f);
          writer.write("Class-Path:");
          for (String s : classpaths) {
             writer.write(" ");
             writer.write(s);
          }
          writer.write("\n");
+         writer.close();
       }
-      catch (IOException e) {
-         eg.utils.FileUtils.log(e);
+      else {
+         if (f.exists() && FileUtils.isWriteable(f)) {
+            Files.delete(f.toPath());
+         }
       }
    }
 
    /**
     * Creates an executable jar file
     *
-    * @param jarName  the name or pathname for the jar file. If not
-    * a pathname the location of the jar file is classDir
+    * @param jarName  the name or pathname for the jar file. If not a
+    * pathname the location of the jar file is classDir
     * @param qualifiedMain  the fully qualified name of the main class
     * @param classDir  the directory that contains class files
     * @param sourceDir  the directory that contains source files
@@ -57,9 +71,9 @@ public class JarBuilder {
     * included in the jar file. May be the zero length array
     * @return  true if the process that creates the jar terminates
     * normally
-    * @throws IOException  if an IO error occurs
-    * @throws InterruptedException  if the process that creates the
-    * jar file is interupted by another thread
+    * @throws IOException  as specified in java.lang.ProcessBuilder
+    * @throws InterruptedException  as specified in
+    * java.lang.ProcessBuilder
     */
    public boolean createJar(
             String jarName,
@@ -86,11 +100,7 @@ public class JarBuilder {
       Process p = pb.start();
       if (0 == p.waitFor()) {
          File f = new File(jarName);
-         msg.append("Saved jar file named ")
-               .append(f.getName())
-               .append(".\n\nThe location is:\n")
-               .append(f.getParent());
-
+         msg.append("Saved jar file as:\n").append(f.getPath());
          successMsg = msg.toString();
          return true;
       }
@@ -106,7 +116,7 @@ public class JarBuilder {
    /**
     * Returns the message that is set if the jar was created
     *
-    * @return  the message or the empty empty string if there is none
+    * @return  the message; the empty empty string none is given
     */
     public String successMessage() {
        return successMsg;
@@ -116,7 +126,7 @@ public class JarBuilder {
     * Returns the error message that indicates that non-Java files
     * for inclusion in the jar are not found
     *
-    * @return  the message; the empty empty string if there is none
+    * @return  the message; the empty empty string none is given
     */
    public String incudedFilesErr() {
       return includedFilesErr;
@@ -126,7 +136,7 @@ public class JarBuilder {
     * Returns the error message that indicates that the jar file
     * could not be created
     *
-    * @return  the message; the empty empty string if there is none
+    * @return  the message; the empty empty none is given
     */
    public String errorMessage() {
       return errorMsg;
@@ -154,9 +164,7 @@ public class JarBuilder {
       List<File> classes
             = fFind.filteredFiles(classDir, ".class", sourceDir, "");
 
-      List<File> relativeClassFilePaths
-            = relativePaths(classDir, classes);
-
+      List<File> relativeClassFilePaths = relativePaths(classDir, classes);
       relativeClassFilePaths.forEach(i -> cmd.add(i.toString()));
       if (nonClassExt.length > 0) {
          for (String ext : nonClassExt) {
@@ -173,9 +181,7 @@ public class JarBuilder {
                includedFilesErr = msg.toString();
             }
             else {
-               List<File> relativeInclFilePaths
-                     = relativePaths(classDir, toInclude);
-
+               List<File> relativeInclFilePaths = relativePaths(classDir, toInclude);
                relativeInclFilePaths.forEach(f -> cmd.add(f.toString()));
             }
          }

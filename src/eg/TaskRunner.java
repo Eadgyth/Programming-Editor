@@ -19,9 +19,9 @@ public class TaskRunner {
    private final TaskRunner.ConsolePrinter printer;
 
    /**
-    * @param mw  the reference to MainWin
-    * @param cons  the reference to Console
-    * @param proc  the reference to ProcessStarter
+    * @param mw  the MainWin
+    * @param cons  the Console
+    * @param proc  the ProcessStarter
     * @param fileTreeUpdate  the updating of the file tree
     */
    public TaskRunner(MainWin mw, Console cons, ProcessStarter proc,
@@ -31,7 +31,7 @@ public class TaskRunner {
       this.proc = proc;
       this.fileTreeUpdate = fileTreeUpdate;
       this.cons = cons;
-      printer = new TaskRunner.ConsolePrinter();
+      printer = new TaskRunner.ConsolePrinter(cons);
    }
 
    /**
@@ -103,7 +103,9 @@ public class TaskRunner {
    /**
     * The printing of output to the console
     */
-   public final class ConsolePrinter {
+   public static class ConsolePrinter {
+
+       private final Console cons;
 
       /**
        * Prints the specified text without appending a line separator
@@ -134,6 +136,12 @@ public class TaskRunner {
          EventQueue.invokeLater(() -> cons.appendTextBr(text));
       }
 
-      private ConsolePrinter() {}
+      //
+      //--private--/
+      //
+
+      private ConsolePrinter(Console cons) {
+         this.cons = cons;
+      }
    }
 }

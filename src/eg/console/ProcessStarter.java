@@ -8,7 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 
 import java.util.List;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import java.awt.EventQueue;
@@ -23,6 +23,7 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 
 //--Eadgyth--/
+import eg.syntax.SyntaxUtils;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 
@@ -82,16 +83,16 @@ public class ProcessStarter {
    }
 
    /**
-    * Runs the specified system command in this working
-    * directory.
-    * {@link Console} is used to show output/error from the
-    * started process and to send input to it. The file tree
-    * is updated after the process has ended. If it is tried
-    * to start a process while another task uses the console a
-    * warning dialog is shown and the process is not started.
+    * Runs the specified system command in this working directory.
+    * <p>
+    * {@link Console} is used to show output/error from the started
+    * started process and to send input to it. The file tree is
+    * updated after the process has ended. If it is tried to start a
+    * process while another task uses the console a warning dialog is
+    * shown and the process is not started.
     *
-    * @param cmd  the start command in which arguments are
-    * separated by spaces
+    * @param cmd  the start command in which arguments are separated
+    * by spaces an arguments with spaces are quoted
     */
    public void startProcess(String cmd) {
       isAborted = false;
@@ -105,7 +106,7 @@ public class ProcessStarter {
       consoleText = cons.getText();
       new Thread(() -> {
          try {
-            List<String> cmdList = Arrays.asList(cmd.split(" "));
+            List<String> cmdList = cmdList(cmd);
             ProcessBuilder pb
                   = new ProcessBuilder(cmdList).redirectErrorStream(true);
 
@@ -152,6 +153,26 @@ public class ProcessStarter {
 
    private void startPreviousCmd() {
       startProcess(previousCmd);
+   }
+
+   private List<String> cmdList(String cmd) {
+      List<String> l = new ArrayList<>();
+      int i = 0;
+      int prev = 0;
+      while (i != -1) {
+         i = cmd.indexOf(' ', i);
+         if (i != -1) {
+            if (!SyntaxUtils.isQuoted(cmd, i)) {
+               l.add(cmd.substring(prev, i).trim());
+               prev = i;
+            }
+            i++;
+         }
+      }
+      if (i == -1) {
+         l.add(cmd.substring(prev).trim());
+      }
+      return l;
    }
 
    private void endProcess() {

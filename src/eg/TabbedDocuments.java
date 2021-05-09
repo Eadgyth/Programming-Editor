@@ -35,6 +35,10 @@ import eg.utils.FileUtils;
  */
 public class TabbedDocuments {
 
+   /**
+    * The maximum number of tabs */
+   public static final int MAX_TABS = 15;
+
    private final MainWin mw;
    private final ExtTabbedPane tabPane;
    private final EditableDocument[] edtDoc;
@@ -147,7 +151,7 @@ public class TabbedDocuments {
    /**
     * Saves a copy of the text content of the selected document as new
     * file that is specified in the file chooser; the file is not set in
-    * the document
+    * the document.
     */
    public void saveCopy() {
       saveAs(false);
@@ -440,7 +444,7 @@ public class TabbedDocuments {
       int res = Dialogs.confirmYesNoCancel(
             "Save changes in "
             + displayFilename()
-            + " ?");
+            + "?");
 
       boolean b;
       if (JOptionPane.YES_OPTION == res) {

@@ -19,7 +19,7 @@
          </ul>
       </nav>
    </div>
-   <div>   
+   <div>
       <article class="right">
       <a id="top"></a>
       <div class="top">
@@ -32,36 +32,43 @@
          <a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
          README</a>
       </p>
-      <p>For running source code (and maybe compiling) the computer must be set up in the
-         same way as if any text editor (like Notepad) is used for coding and the code
-         would be run from the command-line interface of the OS. This may also mean
-         to set environment variables that point to the executables of a used programming
-         language.
+      <p>For running source code (and maybe compiling/building) by using the built-in
+         functions the computer must be set up in the same way as if any text editor
+         (like Notepad) is used for coding and the code would be run from the command-line
+         interface of the OS. This means to make sure that environment variables
+         that point to the executables of a used programming language are set in the OS.
       </p>
-      <p>To compile Java files by the pre-defined compile option (as opposed to using the
-         command-line interface of the OS or the option to start system commands in the
-         console of Eadgyth) it must be made sure that Eadgyth is run using the Java
-         Runtime environment (JRE) contained in a Java Development Kit (JDK).
+      <p>To compile Java files by the built-in compile option it must be made sure that
+         Eadgyth is run using the Java Runtime Environment (JRE) contained in a Java
+         Development Kit (JDK). The target version for compiled java code corrsponds
+         to the Java version Eadgyth is run on.
       </p>
       <hr>
 
       <!--Project-->
-      <h2 id="Projects">Setup to run source code</h2>      
+      <h2 id="Projects">Setup to run source code</h2>
       <h4>Setting a project</h4>
       <ol>
-      <li>Open a file from or save a new file to the directory that is the presumed
-          directory of the project. The file may also be saved in a sub-directory or a
-          sub-directory path contained in the project directory. Assigning a project only
-          requires that a (any) file that is contained in the project directory is open
-          and also is in the selected tab if multiple files are open.</li>
-      <li>Open the project settings by selecting 'Settings for...' in the 'Project' menu
-          and choosing a category to open the project settings.</li>
-      <li>The input options for setting a project depend on the
-          <a href="#Categories">category</a>. The required entries are the name of the
-          project directory and, in the case that a main source file/script is used to run
-          the project, the name of this "main" source file. Click ok. If the input was
-          correct the files of the project can be viewed in the 'Project explorer' which
-          is opened from the 'View' menu.</li>
+      <li>Open a file from or save a new file to the directory that is the indended
+          root directory of the project. The file may also be saved in a subdirectory
+          or a subdirectory path contained in the project directory. Assigning a project
+          only requires that a (any) file that is contained in the project directory
+          is open or in the selected tab if multiple files are open. The project
+          directory is the working directory where commands (built-in or custom) are
+          executed.</li>
+      <li>Open the project settings by selecting 'Settings for...' in the 'Project'
+          menu and choosing a <a href="#Categories">category</a> to open the project
+          settings.
+          </li>
+      <li>The input options for setting a project depend on the category. The required
+          entries are the name of the project directory and the name of the "main"
+          source file to run (no name is asked for in the categories 'HTML' and 'Custom
+          commands'). If the source file (or package in the case of Java) is saved in
+          a separate subdirectory inside the project (a source directory) the name of
+          this subdirectory would have to be entered in the corresponding text field below
+          the field for the project directory. Click ok. If the input was correct the
+          project is set "active" and also the project files can be viewed in the
+          'Project explorer' which is opened from the 'View' menu.</li>
       </ol>
       <br>
 
@@ -71,8 +78,8 @@
           in the 'Project' is selected while a file that is found in the directory of the
           new project is currently open and also in the selected tab if multiple files
           are open.</li>
-      <li>Changing between already set projects is done by selecting, opening or saving a
-          file that is part of the project to be changed to and then selecting 'Change
+      <li>Changing between already set projects is done by selecting, opening or saving
+          a file that is part of the project to be changed to and then selecting 'Change
           project' in the 'Project' menu or clicking the corresponding button in the
           toolbar.</li>
       </ul>
@@ -127,8 +134,8 @@
             <td><a href="#HtmlProject">View HTML code in the default browser</a></td>
          </tr>
          <tr>
-            <td>Custom cmd</td>
-            <td>Specify a system command to run</td>
+            <td>Custom commands</td>
+            <td><a href="#CustomCmd">Specify own system commands (run, compile, build)</td>
          </tr>
       </table>
       <nav>
@@ -139,26 +146,35 @@
           in the toolbar). If the compilation was successful the Java program is
           started by clicking 'Run' in the 'Project' menu or the corresponding button
           in the toolbar.</li>
-       <li>A separate destination directory for compiled class files can be specified
-          in the 'sources' tab in the project settings. This directory is created when
-          Java files are compiled and can be deleted in the project explorer for a
-          renewed compilation. It is recommended to specify a destination directory if
-          Java files/packages are also stored in a separate sources directory.</li>
+      <li>If the Editor is run on Java 9 or higher a Java program may be run on the
+          module path by specifying a module name in the 'Source' tab in the project
+          settings. Running a module in Eadgyth requires that the module directory
+          is the source directory. Multi-module mode is not built in.
+      <li>A separate destination directory for compiled class files can be specified
+          in the 'sources' tab in the project settings. This directory is created in
+          the project directory when Java files are compiled and can be deleted in the
+          project explorer for a renewed compilation. It is recommended to specify a
+          destination directory if Java files/packages are also stored in a separate
+          source directory.</li>
       <li>An executable java archive (jar) may be created by selecting 'Create
           executable jar' in the 'Project' menu. A name for the jar file can be
           specified in the tab 'Compile/build' in the project settings. The jar is
           saved in the project directory unless a pathname is specified to save it
           to another location.</li>
-      <li>Files other than Java files can be included in a compilation and a jar.
-          Extensions of included files are specified with the beginning period in the
-          input field 'Extensions of included non-Java files' in the 'Compile/build
+      <li>Files other than Java files can be included in a compilation and a jar if
+          separate source and destination directories are present. Extensions of
+          included files are specified with the beginning period in the input field
+          'Extensions of included non-Java files' in the 'Compile/build
           tab in the project settings.</li>
       <li>Libraries may be specified in the tab 'Libraries' in the project settings.
           These are added to classpath and can be jar files or folders containing class
           files. Classpath can be a path relative to the project directory (e.g.
           libs/some.jar given this file exists in the project directory) but also an
           absolute path. When the program is packaged in a jar the paths are added to
-          the CLASS-PATH header in the manifest file as specified.</li>          
+          the CLASS-PATH header in the manifest file as specified.</li>
+      <li>If the Editor is run on Java 9 or higher Library modules may be specified
+          in the 'Library modules' tab. A library module may be given as an absolute
+          path or as a path relative to the project directory.</li>
       </ul>
       <br>
       <h4 id="PerlProject">Perl</h4>
@@ -167,7 +183,7 @@
           the corresponding button in the toolbar).</li>
       <li>The Perl script may be checked for correct syntax without running it by
           by selecting 'Save and compile' (this starts the script with the -c
-          option).</li>  
+          option).</li>
       <li>NOTE: For correct output of a Perl program to the console window it may be
           necessary to turn of buffering of the standard output in the script (e.g. by
           adding $| = 1 at the beginning of the script).</li>
@@ -177,24 +193,32 @@
       <ul>
       <li>A Python script is started by selecting 'Save and run' (or by clicking
           the corresponding button in the toolbar).</li>
-      <li>NOTE: The script is run with the -u command-line switch to disable output
-          buffering.</li>
+      <li>The script is internally run by the 'python [script_name.py] command and
+          additionally uses the -u command-line switch to disable output buffering.</li>
       </ul>
       <br>
       <h4 id="RProject">R</h4>
       <ul>
       <li>An R script is started by selecting 'Save and run' (or by clicking the
-          corresponding button in the toolbar). The script is internally run by
-          the Rscript command.</li>
+          corresponding button in the toolbar).</li>
+      <li>The script is internally run by the Rscript [scriptname.R] command.</li>
       </ul>
       <br>
       <h4 id="HtmlProject">HTML</h4>
       <ul>
       <li>An HTML file is viewed in the default browser by selecting 'Save and run'
-          (or by clicking the corresponding button in the toolbar).
-          Any HTML file that is located in the project directory can be viewed. The
+          (or by clicking the corresponding button in the toolbar).</li>
+      <li>Any HTML file that is located in the project directory can be viewed. The
           viewed file is the currently open file or the file in the selected tab if
           multiple files are open.</li>
+      </ul>
+      <br>
+      <h4 id="CustomCmd">Custom commands</h4>
+      <ul>
+      <li>Enter system commands in 'Commands' tab where needed. The UI controls
+          'Save and Compile', 'Run' and/or 'Build' are active upon filling-in
+          fields labeled accordingly. The intention for this category is to run
+          batch files/shell scripts.</li>
       </ul>
       <br>
       <p><a href="#top">Back to top</a></p>
@@ -204,13 +228,14 @@
       <h2 id="Console">Using the console</h2>
       <p>The console shows messages after compiling a project (applies to Java) and
          the (error) output of a program that is tested.</p>
-      <p>In addition, self-chosen system commands entered in a dialog can be run in the
-         current working directory (the project directory). The dialog is opened by
-         selecting the 'cmd...' button in the toolbar of th console panel.</p>
+      <p>An own system command entered in a dialog can be run in the current working
+         directory (the project directory) in addition to the commands defined in a
+         project (built-in or custom). The dialog is opened by selecting the 'cmd...'
+         button in the toolbar of the console panel.</p>
       <p>A started process can be forcibly quit by clicking the 'stop' symbol.</p>
       <p>NOTE: The console does not emulate the terminal of the operating system!
          However, it is possible (or rather not prohibited) to run the system's terminal
-         in the console by running the command that starts the terminal (e.g., cmd.exe in
+         in the console by running the command that starts it (e.g., cmd.exe in
          Windows). It is important to note that a tested program thereupon started from
          this terminal CANNOT be forcibly quit by clicking the 'stop' symbol as this
          would only end the terminal.</p>
@@ -228,9 +253,9 @@
       <li>Using the command to start "THE" terminal window (in Windows this would be
           cmd.exe /c start) presets the working directory for the terminal to the
           project directory. To run a program in the CMD (again Windows) and keep the
-          CMD open the command would be cmd.exe /c start cmd /k [command].</li>
-      <li>The option to enter commands may be used to run batch files saved in the
-          working directory (in Windows the command would be cmd.exe /c [BatchFile.bat]).
+          CMD open the command would be cmd /c start cmd /k [command].</li>
+      <li>The option to enter commands may be used to run a batch file/shell script saved
+          in the working directory (in Windows the command would be cmd.exe /c [BatchFile.bat]).
       </li>
       </ul>
       <br>

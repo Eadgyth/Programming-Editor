@@ -28,29 +28,28 @@ public class Formatter {
 
    /**
     * Creates a <code>Formatter</code> for a given number of
-    * <code>EditArea</code> objects. Only if <code>number</code> is
-    * equal to 1 a formatted EditArea is created and accessed through
-    * {@link #editArea()}. If <code>number</code> is minimum 2 an
-    * initially empty array of type <code>EditArea</code> and size
-    * correposding to <code>number</code> is created.
+    * <code>EditArea</code> objects
     *
-    * @param number  the number of EditArea objects
+    * @param n  the number of EditArea objects
     * @param keyPrefix  A prefix for the keys that are used for the
     * format properties set in {@link Prefs}. Can be the empty string
     */
-   public Formatter (int number, String keyPrefix) {
+   public Formatter (int n, String keyPrefix) {
       setPropertyKeys(keyPrefix);
       getFormatProperties();
       fontWin = new FontSettingWin(font, fontSize);
       fontWin.okAct(e -> setFont());
-      editArea = new EditArea[number];
-      if (number == 1) {
+      editArea = new EditArea[n];
+      if (n == 1) {
          editArea[0] = formattedEditArea();
       }
    }
 
    /**
-    * Returns this single formatted <code>EditArea</code>
+    * Returns this single formatted <code>EditArea</code>.
+    * <p>
+    * Throws an exception if the specified number of EditArea objects
+    * is larger than one.
     *
     * @return  this EditArea
     */
@@ -63,7 +62,10 @@ public class Formatter {
    }
 
    /**
-    * Returns this <code>EditArea</code> array
+    * Returns this <code>EditArea</code> array.
+    * <p>
+    * Throws an exception if the specified number of EditArea objects
+    * is not minimum two.
     *
     * @return  this EditArea array
     */
@@ -77,7 +79,10 @@ public class Formatter {
 
    /**
     * Assigns a new formatted <code>EditArea</code> to this EditArea
-    * array at the specified index
+    * array at the specified index.
+    * <p>
+    * Throws an exception if the specified number of EditArea objects
+    * is not minimum two or if the specified index is too large.
     *
     * @param i  the index of the array element
     */
@@ -97,6 +102,9 @@ public class Formatter {
     * Selects the element in this <code>EditArea</code> array in which
     * the wordwrap state may be changed.
     *
+    * Throws an exception if the array element at the specified index
+    * is null or if the index is too large.
+    *
     * @param i  the index of the array element
     */
    public void setIndex(int i) {
@@ -112,18 +120,23 @@ public class Formatter {
    }
 
    /**
-    * Makes the dialog for setting the font visible
+    * Makes the dialog for setting the font visible and applies
+    * the selected font and font size to all <code>EditArea</code>
+    * objects
     */
    public void openSetFontDialog() {
       fontWin.setVisible(true);
    }
 
    /**
-    * Sets the boolean that specifies if wordwrap is enabled. Enabling
-    * wordwrap also hides line numbers whereas disabling wordwrap shows
-    * line numbers if the corresponding boolean is set to true in
-    * {@link #showLineNumbers(boolean)}.
+    * Sets the boolean that specifies if wordwrap is enabled and
+    * applies the wordwrap state to the selected or the single
+    * <code>EditArea</code>.
+    * <p>
+    * Enabling also hides line numbers whereas disabling shows line
+    * numbers depending on the previous selection.
     *
+    * @see #showLineNumbers(boolean)
     * @param wordwrap  true to enable, false to disable
     */
    public void enableWordWrap(boolean wordwrap) {
@@ -137,10 +150,9 @@ public class Formatter {
    }
 
    /**
-    * Sets the boolean that specifies if line numbers are shown.
-    * <p>
-    * Line numbers are not shown in {@link EditArea} objects in which
-    * wordwrap is enabled.
+    * Sets the boolean that specifies if line numbers are shown and
+    * applies showing line numbers to objects of <code>EditArea</code>
+    * in which wordwrap is disabled.
     *
     * @param b  true to show, false to hide line numbers
     */

@@ -23,7 +23,8 @@ public final class RProject extends AbstractProject implements ProjectCommands {
 
    @Override
    public void buildSettingsWindow() {
-      inputOptions.addFileInput("Name of R script file")
+      inputOptions.addSourceDirInput(SRC_DIR_LABEL)
+         .addFileInput(R_SCRIPT_LABEL, true)
          .addCmdOptionsInput()
          .addCmdArgsInput()
          .buildWindow();
@@ -54,4 +55,10 @@ public final class RProject extends AbstractProject implements ProjectCommands {
       }
       startCmd = sb.toString();
    }
+
+   private static final String R_SCRIPT_LABEL =
+         "Name of R script file";
+
+   private static final String SRC_DIR_LABEL =
+         "Subdirectory containing R script (if present)";
 }

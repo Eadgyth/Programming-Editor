@@ -24,14 +24,14 @@ import java.net.URISyntaxException;
 import eg.utils.ScreenParams;
 
 /**
- * The window that shows info about Eadgyth
+ * The window that shows info about Eadgyth Programming Editor
  */
 public class InfoWin {
 
    private static final String INFO
          = "<html>"
          + "Programming Editor<br><br>"
-         + "Version: 1.1.6<br>"
+         + "Version: 1.1.7<br>"
          + "Author: Malte Bussiek<br><br>"
          + "Credts:"
          + "<ul>"
@@ -45,9 +45,9 @@ public class InfoWin {
 
    private static final Border EMPTY_BORDER = new EmptyBorder(10, 10, 10, 10);
 
-   private final JFrame  frame    = new JFrame();
-   private final JButton okBt     = new JButton("OK");
-   private final JButton linkBt   = UIComponents.undecoratedButton();
+   private final JFrame  frame  = new JFrame();
+   private final JButton okBt   = new JButton("OK");
+   private final JButton linkBt = UIComponents.undecoratedButton();
 
    public InfoWin() {
       okBt.setFocusPainted(false);

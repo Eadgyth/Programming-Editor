@@ -23,7 +23,7 @@ public class SystemParams {
     * The modifier mask for menu shortcuts */
    public static final int MODIFIER_MASK;
    /**
-    * The path of the '.eadgyth' directory in the user home
+    * The path to the '.eadgyth' directory in the user home
     * directory */
    public static final String EADGYTH_DATA_DIR;
 

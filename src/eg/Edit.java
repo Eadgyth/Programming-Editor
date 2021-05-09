@@ -50,7 +50,7 @@ public class Edit {
    private JTextPane textArea;
    private String indentUnit;
    private int indentLength;
-   private boolean indentTab;
+   private boolean useTabs;
    private String indentUnitPref;
    private boolean indentTabPref;
 
@@ -97,16 +97,17 @@ public class Edit {
       else {
          indentUnit = edtDoc.indentUnit();
          indentLength = indentUnit.length();
-         indentTab = edtDoc.indentTab();
+         useTabs = edtDoc.useTabs();
          if (indentSetWin != null) {
-            indentSetWin.update(indentLength, indentTab);
+            indentSetWin.update(indentLength, useTabs);
          }
       }
    }
 
    /**
     * Returns the <code>FunctionalAction</code> that undoes edits.
-    * The keyboard event 'modifier mask' + Z is set on the action.
+    * The keyboard event 'modifier mask' + Z is set on the action and
+    * a label is set.
     *
     * @return  the FunctionalAction
     * @see #undo
@@ -124,7 +125,8 @@ public class Edit {
 
    /**
     * Returns the <code>FunctionalAction</code> that redoes edits.
-    * The keyboard event 'modifier mask' + Y is set on the action.
+    * The keyboard event 'modifier mask' + Y is set on the action
+    * and a label is set.
     *
     * @return  the FunctionalAction
     * @see #redo
@@ -164,7 +166,7 @@ public class Edit {
    /**
     * Returns the <code>FunctionalAction</code> that pastes text
     * from the clipboard. The keyboard event 'modifier mask' + V is
-    * set on the action.
+    * set on the action and a label is set.
     *
     * @return  the FunctionalAction
     * @see #pasteText
@@ -174,8 +176,7 @@ public class Edit {
    }
 
    /**
-    * Pastes text from the clipboard. Any selected text is
-    * replaced.
+    * Pastes text from the clipboard. Any selected text is replaced.
     */
    public void pasteText() {
       String clipboard = getClipboard();
@@ -250,7 +251,7 @@ public class Edit {
     * doesn't use <code>IndentSettingWin</code> to change the
     * indentation mode
     *
-    * @param indentUnit  the indent length in number of spaces
+    * @param indentUnit  the indent unit which consists of empty spaces
     * @param indentTab  true to use tabs for indentation, false
     * to use spaces
     */
@@ -265,7 +266,7 @@ public class Edit {
    /**
     * Returns the <code>FunctionalAction</code> that increases
     * the indentation. The keyboard event 'Tab' is set on the
-    * action.
+    * action and a label is set.
     *
     * @return  the FunctionalAction
     * @see #indent
@@ -297,7 +298,7 @@ public class Edit {
             int sum = 0;
             for (String s : selArr) {
                int indentEnd = indentEnd(s) + lineStart;
-               if (indentTab) {
+               if (useTabs) {
                   edtDoc.insertIgnoreSyntax(indentEnd + sum, TAB_STR);
                   sum += s.length() + 2; // 2 for newline + tab
                }
@@ -314,7 +315,7 @@ public class Edit {
    /**
     * Returns the <code>FunctionalAction</code> that decreases
     * the indentation. The keyboard event 'Shift+Tab' is set on
-    * the action.
+    * the action and a label is set.
     *
     * @return  the FunctionalAction
     * @see #outdent
@@ -384,7 +385,7 @@ public class Edit {
       for (String s : textArr) {
          int startOfSpaces = startOfTrailingSpaces(s);
          int spacesLength = s.length() - startOfSpaces;
-         edtDoc.remove(startOfSpaces + lineStart, spacesLength);
+         edtDoc.removeIgnoreSyntax(startOfSpaces + lineStart, spacesLength);
          lineStart += startOfSpaces + 1;
       }
       edtDoc.enableUndoMerging(false);
@@ -411,7 +412,7 @@ public class Edit {
    }
 
    private void insertIndent(int pos) {
-      if (indentTab) {
+      if (useTabs) {
          edtDoc.insert(pos, TAB_STR);
       }
       else {
@@ -478,18 +479,18 @@ public class Edit {
       for (int i = 0; i < n; i++) {
          sb.append(" ");
       }
-      boolean b = indentSetWin.indentTab();
+      boolean b = indentSetWin.useTabs();
       indentUnitPref = sb.toString();
       indentTabPref = b;
       changeIndentationModeImpl(indentUnitPref, b);
       indentSetWin.setVisible(false);
    }
 
-   private void changeIndentationModeImpl(String indentUnit, boolean indentTab) {
+   private void changeIndentationModeImpl(String indentUnit, boolean useTabs) {
       this.indentUnit = indentUnit;
-      this.indentTab = indentTab;
+      this.useTabs = useTabs;
       indentLength = indentUnit.length();
-      edtDoc.setIndentationMode(indentUnit, indentTab);
+      edtDoc.setIndentationMode(indentUnit, useTabs);
    }
 
    private void checkIndentSetWinForNull() {

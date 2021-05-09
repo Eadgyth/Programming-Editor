@@ -24,9 +24,8 @@ public final class PerlProject extends AbstractProject implements ProjectCommand
 
    @Override
    public void buildSettingsWindow() {
-      inputOptions
-            .addSourceDirInput(SRC_DIR_LABEL)
-            .addFileInput(PERL_SCRIPT_LABEL)
+      inputOptions.addSourceDirInput(SRC_DIR_LABEL)
+            .addFileInput(PERL_SCRIPT_LABEL, true)
             .addCmdOptionsInput()
             .addCmdArgsInput()
             .buildWindow();
@@ -84,10 +83,10 @@ public final class PerlProject extends AbstractProject implements ProjectCommand
       }
       compileCmd = sb.toString();
    }
-   
-   private static final String SRC_DIR_LABEL =
-         "Location of Perl script file within project";
-   
+
    private static final String PERL_SCRIPT_LABEL =
          "Name of Perl script file";
+
+   private static final String SRC_DIR_LABEL =
+         "Subdirectory containing Perl script (if present)";
 }

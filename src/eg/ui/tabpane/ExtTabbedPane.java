@@ -6,6 +6,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -74,8 +76,7 @@ public final class ExtTabbedPane extends JTabbedPane {
       titleLb.setFont(ScreenParams.scaledFontToPlain(f, 8));
       JButton closeBt = UIComponents.undecoratedButton();
       closeBt.setAction(closeAct);
-      JPanel pnl = UIComponents.labeledPanel(titleLb, closeBt);
-      setTabComponentAt(index, pnl);
+      setTabComponentAt(index, tabComponent(titleLb, closeBt));
       setSelectedIndex(index);
    }
 
@@ -131,6 +132,16 @@ public final class ExtTabbedPane extends JTabbedPane {
    //
    //--private--/
    //
+   
+   private static JPanel tabComponent(JLabel lb, JButton bt) {
+      JPanel pnl = new JPanel();
+      pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
+      pnl.setOpaque(false);
+      pnl.add(lb);
+      pnl.add(Box.createRigidArea(ScreenParams.scaledDimension(5, 0)));
+      pnl.add(bt);
+      return pnl;
+   }
 
    private final transient MouseMotionListener mml = new MouseMotionAdapter() {
 

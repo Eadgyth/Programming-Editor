@@ -8,7 +8,7 @@ import eg.utils.LinesFinder;
 
 /**
  * The mapping of strings defined by operators, i.e. here doc and
- * 'q operator'
+ * "quote operator"
  */
 public class StringOperatorMap {
 
@@ -28,12 +28,12 @@ public class StringOperatorMap {
     */
    public void reset() {
       if (hLengths.size() > heredocs.size()) {
-         for (int i = heredocs.size(); i < hLengths.size(); i++) {
+         for (int i = hLengths.size() - 1; i >= heredocs.size(); i--) {
             hLengths.remove(i);
          }
       }
       if (qLengths.size() > quoteOprs.size()) {
-         for (int i = quoteOprs.size(); i < qLengths.size(); i++) {
+         for (int i = qLengths.size() - 1; i >= quoteOprs.size(); i--) {
             qLengths.remove(i);
          }
       }
@@ -42,7 +42,7 @@ public class StringOperatorMap {
    }
 
    /**
-    * Searches and adds all string starts and ends defined by here docs
+    * Searches and adds all string starts and ends defined by heredocs
     *
     * @param hds  the HeredocSearch
     * @param text  the text
@@ -97,15 +97,15 @@ public class StringOperatorMap {
    }
 
    /**
-    * Searches and adds all string starts and ends defined by quote
-    * operators
+    * Searches and adds all string starts and ends defined by a quote
+    * operator
     *
     * @param qos  the QuoteOperatorSearch
     * @param text  the text
     * @param repairMode  true to indicate that the search takes place
     * in repairMode
     * @return  true if a change (number of quotes, length
-    * change in a quote) occured that requires a renewed highlighting;
+    * change in a quote) occurred that requires a renewed highlighting;
     * false otherwise
     */
    public boolean addQuoteOperators(QuoteOperatorSearch qos, String text,
@@ -117,11 +117,11 @@ public class StringOperatorMap {
       boolean lengthChange = false;
       int start = 0;
       while (start != -1 && !lengthChange) {
-         start = qos.nextQuoteKeyword(text, start);
+         start = qos.nextQuoteOperator(text, start);
          int keyLength = 1;
          int len = 1;
          if (start != -1) {
-            keyLength = qos.quoteKeywordLength(text, start);
+            keyLength = qos.quoteIdentifierLength(text, start);
             if (keyLength != 0) {
                count++;
                int qStart = start + keyLength;
@@ -144,12 +144,12 @@ public class StringOperatorMap {
    }
 
    /**
-    * Returns if the specified position is inside a string
-    * defined by either here doc or quote operator
+    * Returns if the specified position is inside a string defined by
+    * either heredoc or quote operator
     *
     * @param pos  the position
-    * @return  the start position of the string; -1 if not in
-    * a string
+    * @return  the start position of the string; -1 if not in a
+    * string
     */
    public int inEitherString(int pos) {
       int q = quoteOprs.inString(pos);
@@ -168,8 +168,8 @@ public class StringOperatorMap {
    }
 
    /**
-    * Returns if the specified position is inside a string
-    * defined by a quote operator only
+    * Returns if the specified position is inside a string defined by
+    * a quote operator only
     *
     * @param pos  the posiition
     * @return  the start position of the string; -1 if not in
@@ -177,6 +177,16 @@ public class StringOperatorMap {
     */
    public int inQuoteOperator(int pos) {
       return quoteOprs.inString(pos);
+   }
+
+   /**
+    * Retuns if no strings are defined by quote operators were added
+    *
+    * @return true if the list of strings defined by quote operators
+    * is empty; false otherwise
+    */
+   public boolean isQuoteOperatorEmpty() {
+      return quoteOprs.size() == 0;
    }
 
    //
@@ -193,6 +203,7 @@ public class StringOperatorMap {
       if (b) {
          int len = l.get(i);
          b = (length - len) * (length - len) >= 4;
+         l.set(i, length);
       }
       return b;
    }

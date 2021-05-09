@@ -19,7 +19,7 @@ public class StringMap {
     */
    public void reset() {
       if (marks.size() > starts.size()) {
-         for (int i = starts.size(); i < marks.size(); i++) {
+         for (int i = marks.size() - 1; i >= starts.size(); i--) {
             marks.remove(i);
          }
       }
@@ -118,7 +118,6 @@ public class StringMap {
       if (marks.isEmpty() || i >= marks.size()) {
          return false;
       }
-      //System.out.println(marks.size());
       return marks.get(i) != doubleQuote;
    }
 }

@@ -72,7 +72,7 @@ public class FilesFinder {
       for (File fInList : list) {
          if (fInList.isDirectory()
         	   && (exclDir.isEmpty() || !fInList.getPath().equals(exclDir))) {
-        	
+
             setFilteredFiles(fInList, extension, exclDir, exclFileName);
          }
       }

@@ -17,7 +17,8 @@ import eg.BackgroundTheme;
 import eg.utils.FileUtils;
 
 /**
- * The styled text that is edited
+ * The editable styled text contained in the <code>StyledDocument</code>
+ * that is displayed in a <code>JTextPane</code>
  */
 public class EditableText extends StyledText {
 
@@ -50,7 +51,7 @@ public class EditableText extends StyledText {
 
    /**
     * {@inheritDoc}.
-    * This is always only the copy of the document text which is updated
+    * This is always the copy of the document text which is updated
     * by {@link #updateTextCopy}
     */
    @Override
@@ -131,7 +132,7 @@ public class EditableText extends StyledText {
    }
 
    /**
-    * Gets the text area that displays the text
+    * Returns the text area that displays the text
     *
     * @return  the text area
     */

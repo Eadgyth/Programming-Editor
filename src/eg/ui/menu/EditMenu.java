@@ -65,7 +65,7 @@ public class EditMenu {
     * @param edit  the reference to Edit
     */
    public void setEditActions(Edit edit) {
-      undoItm.addActionListener(e -> edit.undo());
+      undoItm.setAction(edit.undoAction());
       undoItm.setIcon(IconFiles.UNDO_ICON);
       redoItm.setAction(edit.redoAction());
       redoItm.setIcon(IconFiles.REDO_ICON);

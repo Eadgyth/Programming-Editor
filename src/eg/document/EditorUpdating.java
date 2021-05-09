@@ -22,8 +22,8 @@ public class EditorUpdating {
     * Value for syntax highlighting of the entire text */
    public static final int ALL_TEXT = 0;
    /**
-    * Value for syntax highlighting after a possibly
-    * multiline insertion or replacement */
+    * Value for syntax highlighting after a possibly multiline
+    * insertion or replacement */
    public static final int INSERT = 1;
    /**
     * Value for omitting syntax highlighting */
@@ -50,10 +50,10 @@ public class EditorUpdating {
    private int colNr = 1;
 
    /**
-    * @param txt  the reference to EditableText
-    * @param undo  the reference to UndoEditing
-    * @param lineNum  the reference to LineNumbers
-    * @param indent  the reference to Indentation
+    * @param txt  the EditableText
+    * @param undo  the UndoEditing
+    * @param lineNum  the LineNumbers
+    * @param indent  the Indentation
     */
    public EditorUpdating(EditableText txt, UndoEditing undo,
          LineNumbers lineNum, Indentation indent) {
@@ -81,9 +81,9 @@ public class EditorUpdating {
    }
 
    /**
-    * Disables or re-enables the updating provided that no
-    * editing has happened before. Disabled updating is used
-    * for loading a file which isn't undoable.
+    * Disables or re-enables the updating provided that no editing has
+    * happened before. Disabled updating is used for loading a file
+    * which isn't undoable.
     *
     * @param b  true to enable, false to disable
     */
@@ -138,10 +138,9 @@ public class EditorUpdating {
    }
 
    /**
-    * Makes the specified <code>TextChange</code> that undoes
-    * or redoes edits and updates the undoable/redoable state
-    * as well as syntax highlighting if source code editing
-    * is enabled
+    * Makes the specified <code>TextChange</code> that undoes or
+    * redoes edits and updates the undoable/redoable state as well
+    * as syntax highlighting if source code editing is enabled
     *
     * @param undoRedo  the TextChange
     */
@@ -168,8 +167,7 @@ public class EditorUpdating {
    }
 
    /**
-    * Resets the state which indicates that the text has been
-    * changed
+    * Resets the state which indicates that the text has been changed
     */
    public void resetChangedState() {
       changedState = false;
@@ -177,8 +175,7 @@ public class EditorUpdating {
    }
 
    /**
-    * Reads the current editing state by calling the methods
-    * defined in <code>EditingStateReadable</code>
+    * Reads the current editing state
     *
     * @see EditingStateReadable
     */

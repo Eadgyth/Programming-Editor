@@ -4,14 +4,14 @@ import eg.TaskRunner;
 
 /**
  * The selection and creation of a <code>ProjectCommands</code>
- * based on the project type
+ * object based on the project type
  */
 public class ProjectSelector {
-   
+
    private final TaskRunner runner;
 
    /**
-    * @param runner  the reference to Task
+    * @param runner  the reference to TaskRunner
     */
    public ProjectSelector(TaskRunner runner) {
       this.runner = runner;
@@ -21,7 +21,7 @@ public class ProjectSelector {
     * Returns a new <code>ProjectCommands</code>
     *
     * @param projType  the project type
-    * @return  the ProjectActions
+    * @return  the ProjectCommands
     */
    public ProjectCommands createProject(ProjectTypes projType) {
       ProjectCommands newProj = null;

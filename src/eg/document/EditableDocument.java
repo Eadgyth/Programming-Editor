@@ -8,9 +8,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-
 //--Eadgyth--/
 import eg.Languages;
 import eg.utils.FileUtils;
@@ -78,11 +75,11 @@ public final class EditableDocument {
    /**
     * Sets the indentation mode
     *
-    * @param indentUnit  the indent unit which consists of spaces
-    * @param indentTab  true to indent tabs, false to indent spaces
+    * @param indentUnit  the indent unit which consists of empty spaces
+    * @param useTabs  true to indent tabs; false to indent spaces
     */
-   public void setIndentationMode(String indentUnit, boolean indentTab) {
-      indent.setMode(indentUnit, indentTab);
+   public void setIndentationMode(String indentUnit, boolean useTabs) {
+      indent.setMode(indentUnit, useTabs);
       txt.setTabLength(indent.indentUnit().length());
    }
 
@@ -162,8 +159,8 @@ public final class EditableDocument {
    /**
     * Saves the text content to this file
     *
-    * @return  the boolen value that is true if the text content
-    * could be saved
+    * @return  true if the text content could be saved; false
+    * otherwise
     */
    public boolean saveFile() {
       checkFileForNull();
@@ -180,7 +177,7 @@ public final class EditableDocument {
     * Any previously set file is replaced.
     *
     * @param f  the file
-    * @return  true if the text content could be saved, false otherwise
+    * @return  true if the text content could be saved; false otherwise
     */
    public boolean setFile(File f) {
       setFileParams(f);
@@ -265,12 +262,12 @@ public final class EditableDocument {
     *
     * @return  true if tabs, false if spaces are used
     */
-   public boolean indentTab() {
-      return indent.indentTab();
+   public boolean useTabs() {
+      return indent.useTabs();
    }
 
    /**
-    * Marks the beginning or the end of a merged undoable unit.
+    * Marks the beginning or the end of a merged undoable unit
     *
     * @param b  true to begin merging, false to end merging
     * @see UndoEditing#disableBreakpointAdding
@@ -280,11 +277,12 @@ public final class EditableDocument {
    }
 
    /**
-    * Displays the content of the specified file (provided that
-    * no file is set in this <code>EditableDocument</code> and
-    * the document has not been edited); does not set the file.
-    * The current language is used irrespectively of the file
-    * type and the text insertion is not undoable.
+    * Displays the content of the specified file if no file is set
+    * and the document has not been edited.
+    * <p>
+    * The file is not set either, the current language is used
+    * irrespectively of the file type and the text insertion is not
+    * undoable.
     *
     * @param f  the file
     */
@@ -294,11 +292,11 @@ public final class EditableDocument {
    }
 
    /**
-    * Replaces the current text with the content of the
-    * specified file (provided that no file is set in this
-    * <code>EditableDocument</code>); does not set the file.
-    * The language is set according to the file type and the
-    * replacement is undoable.
+    * Replaces the current text with the content of the specified
+    * if no file is set.
+    * <p>
+    * The file is not set either and the language is set according to
+    * the file type
     *
     * @param f  the file
     */
@@ -418,14 +416,9 @@ public final class EditableDocument {
       LineNumbers lineNum = new LineNumbers(editArea.lineNrArea());
       indent = new Indentation(txt);
       update = new EditorUpdating(txt, undo, lineNum, indent);
-      editArea.textArea()
-            .addPropertyChangeListener("font", new PropertyChangeListener() {
-
-         @Override
-         public void propertyChange(PropertyChangeEvent e) {
-            txt.setTabLength(indentUnit().length());
-         }
-      });
+      editArea.textArea().addPropertyChangeListener("font", e ->
+         txt.setTabLength(indentUnit().length())
+      );
    }
 
    private void setFileParams(File f) {

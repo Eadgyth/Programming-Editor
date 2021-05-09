@@ -5,7 +5,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 
 /**
- * The styled text
+ * The styling of the text contained in a <code>StyledDocument</code>
  */
 public abstract class StyledText {
 
@@ -14,7 +14,7 @@ public abstract class StyledText {
 
    /**
     * @param doc  the document that contains the text
-    * @param normal  the SimpleAttributeSet for normal text
+    * @param normal  the SimpleAttributeSet for normal text style
     */
    protected StyledText(StyledDocument doc, SimpleAttributeSet normal) {
       this.doc = doc;
@@ -24,14 +24,14 @@ public abstract class StyledText {
    }
 
    /**
-    * Gets this <code>Attributes</code>
+    * Returns this <code>Attributes</code>
     *
     * @return  the Attributes
     */
    public abstract Attributes attributes();
 
    /**
-    * Gets the text
+    * Returns the text
     *
     * @return  the text
     */
@@ -39,7 +39,7 @@ public abstract class StyledText {
 
    /**
     * Resets character attributes to the attributes for normal text
-    * in the entire in entire text
+    * in the entire text
     */
    public void resetAttributes() {
       setAttributes(0, doc.getLength(), normal);
@@ -61,7 +61,8 @@ public abstract class StyledText {
     *
     * @param pos  the position where the section starts
     * @param length  the length of the section
-    * @param set  the attributes applied to the section
+    * @param set  the attributes applied to the section; expected
+    * to be selected from {@link Attributes}
     */
    public void setAttributes(int pos, int length, SimpleAttributeSet set) {
       doc.setCharacterAttributes(pos, length, set, false);

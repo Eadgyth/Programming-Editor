@@ -82,6 +82,10 @@ public class ViewSetter {
       }
    }
 
+   //
+   //--private--/
+   //
+
    private void initSettings() {
       isShowLineNumbers = prefs.yesNoProperty(Prefs.LINE_NR_KEY);
       vsw.setShowLineNumbers(isShowLineNumbers);

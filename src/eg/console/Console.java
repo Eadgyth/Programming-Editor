@@ -14,8 +14,7 @@ import eg.ui.IconFiles;
 import eg.utils.Dialogs;
 
 /**
- * Represents the console with a text area and buttons for adding
- * actions to run commands.
+ * Represents the console with a text area and buttons.
  * <p>
  * Class can have an unlocked, an unlocked active or a locked state.
  * Setting the 'unlocked' flag is required to use this methods that
@@ -48,6 +47,8 @@ public class Console {
          "Forcibly quit the current process"
       };
       consPnl.initContent(area, bts, tooltips);
+      area.setEditable(false);
+      area.setFocusable(false);
       runBt.setEnabled(false);
       enterCmdBt.setEnabled(false);
       stopBt.setEnabled(false);

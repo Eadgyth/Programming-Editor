@@ -2,17 +2,15 @@ package eg.projects;
 
 //--Eadgyth--/
 import eg.TaskRunner;
-import eg.utils.Dialogs;
 import eg.Projects.ProjectActionsUpdate;
 
 /**
- * Represents a project to run a custom system command
+ * Represents a project to define custom system commands to
+ * compile, run or build a project
  */
 public final class GenericProject extends AbstractProject implements ProjectCommands {
 
    private final TaskRunner runner;
-
-   boolean isCmd;
 
    public GenericProject(TaskRunner runner) {
       super(ProjectTypes.GENERIC, null, null);
@@ -27,31 +25,34 @@ public final class GenericProject extends AbstractProject implements ProjectComm
 
    @Override
    public void enable(ProjectActionsUpdate update) {
-      update.enableRun(false);
+      if (!customCompileCmd().isEmpty()) {
+         update.enableCompile();
+      }
+      if (!customRunCmd().isEmpty()) {
+         update.enableRun(false);
+      }
+      if (!customBuildCmd().isEmpty()) {
+         update.enableBuild(null);
+      }
    }
 
    @Override
    protected void setCommandParameters() {
-      isCmd = !customRunCmd().isEmpty();
+      // not used
+   }
+
+   @Override
+   public void compile() {
+      runner.runSystemCommand(customCompileCmd());
    }
 
    @Override
    public void run() {
-     if (isCmdDefined()) {
-         runner.runSystemCommand(customRunCmd());
-      }
+      runner.runSystemCommand(customRunCmd());
    }
 
-   //
-   //--private--/
-   //
-
-   private boolean isCmdDefined() {
-      boolean b = !customRunCmd().isEmpty();
-      if (!b) {
-         Dialogs.errorMessage(
-            "A system command is not specified.", null);
-      }
-      return b;
+   @Override
+   public void build() {
+      runner.runSystemCommand(customBuildCmd());
    }
 }

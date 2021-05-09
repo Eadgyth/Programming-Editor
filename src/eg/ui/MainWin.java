@@ -343,7 +343,7 @@ public class MainWin {
     */
    public void setFileActions(TabbedDocuments td) {
       menuBar.fileMenu().setActions(td);
-      menuBar.fileMenu().setExitActions(e -> exit(td));
+      menuBar.fileMenu().setExitAction(e -> exit(td));
       toolBar.setFileActions(td);
 
       frame.addWindowListener(new WindowAdapter() {
@@ -508,7 +508,7 @@ public class MainWin {
          ViewMenu vm = menuBar.viewMenu();
          prefs.setYesNoProperty(Prefs.TABBAR_KEY, vm.isTabItmSelected());
          prefs.setYesNoProperty(Prefs.FILE_VIEW_KEY, vm.isFileViewItmSelected());
-         prefs.store();
+         prefs.store();       
          System.exit(0);
       }
    }

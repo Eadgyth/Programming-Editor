@@ -41,8 +41,6 @@ public class ConsolePanel {
       content.add(scroll, BorderLayout.CENTER);
 
       area.setFont(ScreenParams.SANSSERIF_PLAIN_8);
-      area.setEditable(false);
-      area.setFocusable(false);
       BackgroundTheme theme = BackgroundTheme.givenTheme();
       area.setBackground(theme.background());
       area.setForeground(theme.normalText());

@@ -6,6 +6,7 @@ package eg;
 public enum Languages {
 
    NORMAL_TEXT("Normal text"),
+   C_SHARP("C#"),
    CSS("CSS"),
    HTML("HTML"),
    JAVA("Java"),

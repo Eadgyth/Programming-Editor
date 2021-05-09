@@ -165,7 +165,7 @@ public class TextExchange {
     * @return  true if tabs are used, false if spaces are used
     */
    public boolean sourceDocIndentTab() {
-      return sourceDoc.indentTab();
+      return sourceDoc.useTabs();
    }
 
    /**

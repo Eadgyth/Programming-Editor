@@ -165,7 +165,8 @@ public final class Prefs {
     * specified key
     *
     * @param key  the property key
-    * @return  the value; the empty String if the property could not be found
+    * @return  the value; the empty String if the property could not
+    * be found
     */
    public String property(String key) {
       return prop.getProperty(key, "");

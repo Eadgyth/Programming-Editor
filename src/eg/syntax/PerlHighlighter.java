@@ -74,7 +74,6 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
    private static final int IGNORE_COND = 0;
    private static final int LINE_CMNT_COND = 1;
 
-
    @Override
    public void highlight(SyntaxSearcher s, Attributes attr) {
       s.resetAttributes();
@@ -130,12 +129,12 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
    }
 
    @Override
-   public int nextQuoteKeyword(String text, int start) {
+   public int nextQuoteOperator(String text, int start) {
       return text.indexOf('q', start);
    }
 
    @Override
-   public int quoteKeywordLength(String text, int pos) {
+   public int quoteIdentifierLength(String text, int pos) {
       int length = 1;
       if (text.length() - 1 > pos
             && SyntaxUtils.isCharEqualTo(text, pos + 1, PERL_Q_KEYWORD_SEC)) {
@@ -165,10 +164,10 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
             }
             else {
                offset = SyntaxUtils.sectionLengthSkipEscaped(text, d, c);
-           }
-           if (d + offset < text.length()) {
+            }
+            if (d + offset < text.length()) {
               length = offset + (d - pos) + 1;
-           }
+            }
          }
       }
       return length;
@@ -203,11 +202,11 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
             if (SyntaxUtils.isLetterOrDigit(c) || c == '_' || (quoted && c == ' ')) {
                length++;
             }
-            else if (i > start && (c == '\'' || c == '\"')) {
+            else if (quoted && c == s) {
                break;
             }
             else {
-               quoted = false;
+               length = 0;
                break;
             }
          }

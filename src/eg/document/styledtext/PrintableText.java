@@ -16,14 +16,14 @@ import eg.utils.FileUtils;
 import eg.utils.ScreenParams;
 
 /**
- * The styled text for printing to a printer
+ * The printable styled text
  */
 public class PrintableText extends StyledText {
 
    private static final BackgroundTheme THEME = BackgroundTheme.whiteTheme();
    private static final Attributes ATTR = new Attributes(THEME);
    private static final SimpleAttributeSet SET = new SimpleAttributeSet();
-   
+
    private final JTextPane printArea;
    private final String text;
 
@@ -52,12 +52,12 @@ public class PrintableText extends StyledText {
    public final Attributes attributes() {
       return ATTR;
    }
-   
+
    @Override
    public final String text() {
       return text;
-   }      
-   
+   }
+
    /**
     * Prints this styled text
     */
@@ -68,5 +68,5 @@ public class PrintableText extends StyledText {
       catch(PrinterException e) {
          FileUtils.log(e);
       }
-   }      
+   }
 }

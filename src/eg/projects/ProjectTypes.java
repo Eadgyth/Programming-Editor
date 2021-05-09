@@ -27,8 +27,8 @@ public enum ProjectTypes {
    R("R"),
    /**
     * Constant for a generic project;
-    * value returned by {@link display()} is Custom cmd */
-   GENERIC("Custom cmd");
+    * value returned by {@link display()} is Custom */
+   GENERIC("Custom commands");
 
    /**
     * Returns the display value associated with a project category

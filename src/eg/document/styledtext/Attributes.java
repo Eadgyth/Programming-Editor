@@ -9,14 +9,13 @@ import java.awt.Color;
 import eg.BackgroundTheme;
 
 /**
- * Defines character attributes, each with a foreground color and a weight.
- * The shade of colors depend on the background theme.
+ * Holds character attributes, each with a foreground color and a
+ * weight. The shade of colors depend on the background theme.
  */
 public final class Attributes {
 
    public final SimpleAttributeSet redPlain     = new SimpleAttributeSet();
    public final SimpleAttributeSet bluePlain    = new SimpleAttributeSet();
-   public final SimpleAttributeSet blueBold     = new SimpleAttributeSet();
    public final SimpleAttributeSet greenPlain   = new SimpleAttributeSet();
    public final SimpleAttributeSet orangePlain  = new SimpleAttributeSet();
    public final SimpleAttributeSet purplePlain  = new SimpleAttributeSet();
@@ -34,9 +33,6 @@ public final class Attributes {
 
       StyleConstants.setForeground(bluePlain, theme.blueText());
       StyleConstants.setBold(bluePlain, false);
-
-      StyleConstants.setForeground(blueBold, theme.blueText());
-      StyleConstants.setBold(blueBold, true);
 
       StyleConstants.setForeground(greenPlain, GREEN);
       StyleConstants.setBold(greenPlain, false);

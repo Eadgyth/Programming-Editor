@@ -2,9 +2,9 @@ package eg.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
@@ -84,30 +84,27 @@ public class UIComponents {
    }
 
    /**
-    * Creates a <code>JPanel</code> that contains the specified
-    * <code>JLabel</code> and <code>JButton</code> with a scaled gap
-    * in between
+    * Creates a <code>JPanel</code> with a left aligned
+    * <code>JLabel</code> that displays the specified string in
+    * bold and scaled font size based on 8 pt.
     *
-    * @param lb  the JLabel
-    * @param bt  the JButton
-    * @return  the JPanel
+    * @param label  the label
+    * @return the JPanel
     */
-   public static JPanel labeledPanel(JLabel lb, JButton bt) {
-      JPanel pnl = new JPanel();
-      pnl.setLayout(new BoxLayout(pnl, BoxLayout.LINE_AXIS));
-      pnl.setOpaque(false);
+   public static JPanel labelPanel(String label) {
+      JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      JLabel lb = new JLabel(label);
+      lb.setFont(ScreenParams.scaledFontToBold(lb.getFont(), 8));
       pnl.add(lb);
-      pnl.add(Box.createRigidArea(ScreenParams.scaledDimension(5, 0)));
-      pnl.add(bt);
       return pnl;
    }
 
    /**
     * Creates a <code>JToolBar</code> that has the bar height and a
     * border in the gray color with a weight of one pixel at the bottom.
-    * <P>
-    * The toolbar is not opaque and not floatable. The buttons in
-    * <code>bts</code> are not focusable.
+    * <p>
+    * The toolbar is not opaque and not floatable. The specified buttons
+    * are not focusable.
     *
     * @param bts  the array of JButtons. Can be null
     * @param tooltips  the array of tooltips for bts. Can be null
