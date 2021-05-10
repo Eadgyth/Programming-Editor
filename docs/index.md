@@ -3,7 +3,7 @@ that Notepad had a compile and a run button. I knew that really versatile code e
 IDEs exist but using them seemed very complicated to me.
 
 Therefore, a goal is that it is as simple as possible to set up the editor to try out code
-from within the editor and provide at the same time some flexibility to use it for a real
+from within it and provide at the same time some flexibility to use it for a real
 coding project.
 
 The github repository for the program also contains, well ... "releases" (a record of my
@@ -21,7 +21,7 @@ where commands (built-in or custom) are executed. Setting a project only require
 file that is found in the indended project directory is open and in the selected tab
 if multiple files are open. This file may also be found in a sub-directory path relative
 to the project directory and does not have to be the "main" source file. The same is true
-for running a project: it is not neccessary that the "main" source file is selected (it
+for running a project: it is not necessary that the "main" source file is selected (it
 does not even have to be open) but it is necessary that any file of the project is open
 (and selected).
 
@@ -49,9 +49,11 @@ in the 'Project' menu. This opens the console panel which shows the output:
 
 <hr>
 <h4> Example for a Java program</h4>
-This example simulates a Java project with a directory structure that includes a source
-directory, an output directory and a main class file that is part of a package: The 'Hello
-World' program was saved as HelloWorld.java in the directory ..\helloworld\scr\hello
+For Java the settings could be as simple as in the example for Python above: Just have a
+Java file with a main method in any direcory which is set as the project directory.
+However, this example simulates a Java project with a directory structure that includes a
+source directory, an output directory and a main class that belongs to a package: The
+'Hello World' program was saved as HelloWorld.java in the directory ..\helloworld\scr\hello
 where 'helloworld' is the indended project directory. 'src' is defined as the source root
 directory inside the project and 'hello' is a directory that corresponds to the package
 which the source file belongs to. The package name is declared at the top of the code. The
@@ -67,12 +69,13 @@ does not have to exists initially.
 
 <img src="images/projectsettings.png" width="600"/>
 
+
 <blockquote>NOTE: If a main Java source file is part of a package but is not saved in a
 subdirectory (path) that corresponds to the package the qualified name (e.g.
 my.package.myprogram.java) must be specified to be able to run the program.</blockquote>
 <br>
-A project may be viewed in the 'Project explorer'. After a try to compile the program and
-the console shows the error in the code:
+A project may be viewed in the 'Project explorer'. After a try to compile the program the
+console shows the error in the code:
 
 <img src="images/compile.png" width="600"/>
 
