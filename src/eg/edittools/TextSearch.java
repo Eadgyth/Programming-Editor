@@ -12,7 +12,7 @@ import eg.document.EditableDocument;
  * editor area
  */
 public class TextSearch {
-   
+
    private boolean isUpward = false;
    private boolean reqWord = false;
    private boolean isCaseSensitive = false;
@@ -20,7 +20,7 @@ public class TextSearch {
 
    private EditableDocument doc;
    private JTextPane textArea;
-   
+
    /**
     * Sets the <code>EditableDocument</code> which text is searched in
     *
@@ -30,7 +30,7 @@ public class TextSearch {
       this.doc = doc;
       this.textArea = doc.textArea();
    }
-   
+
    /**
     * Sets the boolean that indicates if the search is restricted to a word;
     * default is not restricted
@@ -40,7 +40,7 @@ public class TextSearch {
    public void setRequireWord(boolean b) {
       reqWord = b;
    }
-   
+
    /**
     * Sets the boolean that indicates the search direction. True for
     * upward and false for downward. Default is downward.
@@ -50,7 +50,7 @@ public class TextSearch {
     public void setUpwardSearch(boolean b) {
        isUpward = b;
     }
-    
+
     /**
      * Sets the boolean that indicates if the text search is case
      * sensitive. Default is insensitive.
@@ -60,7 +60,7 @@ public class TextSearch {
     public void setCaseSensitivity(boolean b) {
        isCaseSensitive = b;
     }
-   
+
    /**
     * Searches the next occurrence of the search term and, if found,
     * selects it
@@ -82,7 +82,7 @@ public class TextSearch {
          searchTextDown(content, searchTerm);
       }
    }
-   
+
    /**
     * Replaces a selected search term or searches the next occurrence
     * of the search term and, if found, selects it
@@ -112,12 +112,13 @@ public class TextSearch {
             searchText(searchTerm);
          }
          else {
+            pos = textArea.getSelectionStart();
             doc.replace(pos, searchTerm.length(), replacement, true);
             searchText(searchTerm);
          }
       }
    }
-   
+
    /**
     * Replaces all occurrences of the search term
     *
@@ -148,7 +149,7 @@ public class TextSearch {
             ind++;
          }
       }
-      doc.enableUndoMerging(false);      
+      doc.enableUndoMerging(false);
       if (count > 0) {
          Dialogs.infoMessage("\"" + searchTerm + "\" was replaced "
                + count + " times.", null);
@@ -158,11 +159,11 @@ public class TextSearch {
       }
       doc.setFocused();
    }
-   
+
    //
    //--private--/
-   //       
-   
+   //
+
    private void searchTextDown(String content, String searchTerm) {
       int ind = nextIndex(content, searchTerm, pos);
       if (ind == -1 & pos > 0) {
@@ -188,7 +189,7 @@ public class TextSearch {
       }
       return index;
    }
-   
+
    private void searchTextUp(String content, String searchTerm) {
       int ind = lastIndex(content, searchTerm, pos);
       if (ind == -1 & pos < content.length() - 1) {
@@ -218,11 +219,11 @@ public class TextSearch {
    private boolean isWord(String content, String searchTerm, int pos) {
       return eg.syntax.SyntaxUtils.isWord(content, pos, searchTerm.length(), null);
    }
-   
+
    private void resetSearchStart() {
       pos = isUpward ? doc.textLength() - 1 : 0;
    }
-   
+
    private String notFoundMsg(String searchTerm) {
 	  return searchTerm + " was not found.";
    }
