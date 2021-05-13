@@ -1,3 +1,4 @@
+<h3>Eadgyth Programming Editor</h3>
 A text and code editor with the possibility to easily set up coding projects,
 first of all for Java. Additional project categories are Python, R, Perl and
 HTML as well as 'Custom commands' to define own commands. Extending the source
