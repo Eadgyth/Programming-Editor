@@ -1,5 +1,6 @@
 package eg.ui;
 
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
 
@@ -35,7 +36,8 @@ public class IndentSettingWin {
    };
 
    private final JFrame frame = new JFrame("Indentation");
-   private final JComboBox<String> selectSpacesCBx;
+   private final JComboBox<String> selectSpacesCBx = new JComboBox<>(N_SPACES);
+   private final ButtonGroup indentBtGroup = new ButtonGroup();
    private final JRadioButton useSpacesBt = new JRadioButton("Spaces");
    private final JRadioButton useTabsBt = new JRadioButton("Tabs");
    private final JButton okBt = new JButton("OK");
@@ -53,8 +55,8 @@ public class IndentSettingWin {
    public IndentSettingWin(int indentLength, boolean useTabs) {
       this.indentLength = indentLength;
       this.useTabs = useTabs;
-      selectSpacesCBx = new JComboBox<>(N_SPACES);
       initFrame();
+      setSelections();
       cancelBt.addActionListener(e -> undoSettings());
       frame.addWindowListener(new WindowAdapter() {
 
@@ -71,7 +73,7 @@ public class IndentSettingWin {
     * @param b  true to set visible, false set invisible
     */
    public void setVisible(boolean b) {
-      frame.setVisible(b);
+     frame.setVisible(b);
    }
 
    /**
@@ -89,31 +91,31 @@ public class IndentSettingWin {
     * @return  the number
     */
    public int indentLength() {
-      return selectSpacesCBx.getSelectedIndex() + 1;
+      indentLength = selectSpacesCBx.getSelectedIndex() + 1;
+      return indentLength;
    }
 
    /**
-    * Returns if it is selected to use tabs for indentation
+    * Returns if it is selected to use tabs
     *
     * @return  true for using tabs, false for spaces
     */
    public boolean useTabs() {
-      return useTabsBt.isSelected();
+      useTabs = useTabsBt.isSelected();
+      return useTabs;
    }
 
    /**
-    * Updates the selections for the indentation mode
+    * Updates the settings according to the current indentation mode
     *
-    * @param indentLength  the selection for the indent length
-    * @param useTabs  the selection for the options to use tabs or
-    * spaces: true for tabs; false for spaces
+    * @param indentLength  the current indent length
+    * @param useTabs  the current boolean that is true for tabs and
+    * false for spaces
     */
    public void update(int indentLength, boolean useTabs) {
       this.indentLength = indentLength;
       this.useTabs = useTabs;
-      selectSpacesCBx.setSelectedIndex(indentLength - 1);
-      useTabsBt.setSelected(useTabs);
-      useSpacesBt.setSelected(!useTabs);
+      setSelections();
    }
 
    //
@@ -121,9 +123,15 @@ public class IndentSettingWin {
    //
 
    private void undoSettings() {
+      setSelections();
+      EventQueue.invokeLater(() -> setVisible(false));
+   }
+
+   private void setSelections() {
       selectSpacesCBx.setSelectedIndex(indentLength - 1);
+      indentBtGroup.clearSelection();
       useTabsBt.setSelected(useTabs);
-      setVisible(false);
+      useSpacesBt.setSelected(!useTabs);
    }
 
    private void initFrame() {
@@ -145,7 +153,6 @@ public class IndentSettingWin {
       pnl.add(Box.createRigidArea(ScreenParams.scaledDimension(20, 0)));
       pnl.add(buttonGroupPnl());
       pnl.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
       JPanel combined = new JPanel(new BorderLayout());
       combined.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       combined.add(pnl, BorderLayout.CENTER);
@@ -154,7 +161,6 @@ public class IndentSettingWin {
    }
 
    private JPanel comboBoxPnl() {
-      selectSpacesCBx.setSelectedIndex(indentLength - 1);
       JLabel titleLb = new JLabel("Number of spaces:  ");
       titleLb.setFont(ScreenParams.scaledFontToBold(titleLb.getFont(), 8));
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -171,12 +177,8 @@ public class IndentSettingWin {
       useTabsBt.setFont(
             ScreenParams.scaledFontToBold(useTabsBt.getFont(), 8));
 
-      ButtonGroup indentBtGroup = new ButtonGroup();
       indentBtGroup.add(useSpacesBt);
       indentBtGroup.add(useTabsBt);
-      useTabsBt.setSelected(useTabs);
-      useSpacesBt.setSelected(!useTabs);
-
       JPanel pnl = new JPanel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
       JPanel holder1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
