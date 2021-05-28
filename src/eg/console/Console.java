@@ -6,22 +6,18 @@ import java.awt.event.KeyListener;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 
-import javax.swing.event.CaretListener;
-
 //--Eadgyth--/
 import eg.ui.ConsolePanel;
 import eg.ui.IconFiles;
 import eg.utils.Dialogs;
 
 /**
- * Represents the console with a text area and buttons.
+ * Represents the console which consists of a text area and buttons
+ * for running and terminating commands.
  * <p>
- * Class can have an unlocked, an unlocked active or a locked state.
- * Setting the 'unlocked' flag is required to use this methods that
- * access the text area. Otherwise these methods throw an exception.
- * Active means that the text area is additionally editable and
- * focusable and also that this button for stopping a process is
- * enabled.
+ * The console can be locked, unlocked or unlocked active. Active
+ * means that the text area is additionally editable and the 'stop'
+ * button enabled.
  */
 public class Console {
 
@@ -29,37 +25,37 @@ public class Console {
    private final JButton enterCmdBt = new JButton("Cmd...");
    private final JButton runBt = new JButton(IconFiles.RUN_CMD_ICON);
    private final JButton stopBt = new JButton(IconFiles.STOP_PROCESS_ICON);
+   private final JButton[] bts = new JButton[] {
+      enterCmdBt, runBt, stopBt
+   };
+   private final String[] tooltips = new String[] {
+      "Enter and run a system command",
+      "Run a previous system command",
+      "Quit the current process"
+   };
 
    private boolean unlocked = false;
+   private boolean active = false;
 
    /**
-    * @param consPnl  the reference to ConsolePanel which is contained
-    * in the main window and which the text area and the buttons are
-    * added to
+    * @param consPnl  the ConsolePanel in the main window which this
+    * text area and buttons are added to
     */
    public Console(ConsolePanel consPnl) {
-      JButton[] bts = new JButton[] {
-         enterCmdBt, runBt, stopBt
-      };
-      String[] tooltips = new String[] {
-         "Enter and run a system command",
-         "Run a previous system command",
-         "Forcibly quit the current process"
-      };
       consPnl.initContent(area, bts, tooltips);
       area.setEditable(false);
-      area.setFocusable(false);
+      area.setLineWrap(true);
       runBt.setEnabled(false);
       enterCmdBt.setEnabled(false);
       stopBt.setEnabled(false);
    }
 
    /**
-    * Sets the unlocked state. If the unlocked state is already set a
+    * Sets the unlocked state. If the console is already unlocked a
     * warning dialog is shown.
     *
-    * @return  true if the unlocked state is not set already, false
-    * otherwise
+    * @return  true if the unlocked state can be set; false if
+    * already set
     */
    public boolean setUnlocked() {
       if (!isLocked()) {
@@ -70,54 +66,62 @@ public class Console {
    }
 
    /**
-    * Sets the unlocked and active state
+    * Sets the unlocked active state. If the console is already
+    * unlocked a warning dialog is shown.
     *
-    * @return  true if the unlocked state is not set already, false
-    * otherwise
-    * @see #setUnlocked
+    * @return  true if the unlocked state can be set; false if
+    * already set
     */
-   public boolean setUnlockedAndActive() {
-      if (!setUnlocked()) {
+   public boolean setUnlockedActive() {
+      if (!isLocked()) {
          return false;
       }
-      setActive(true);
+      unlocked = true;
+      active = true;
+      stopBt.setEnabled(true);
+      area.setEditable(true);
+      area.getCaret().setVisible(true);
+      area.requestFocusInWindow();
       return true;
    }
 
    /**
-    * Keeps or ends the active state but does not change the
-    * unlocked state.
-    *
-    * @param b  true to keep, false to end the active state
+    * Sets the inactive but not locked state
+    * @throws  IllegalStateException  if the console is not set active
     */
-   public void keepActive(boolean b) {
-      if (b) {
-         checkWritePermission();
+   public void setInactive() {
+      if (!active) {
+         throw new IllegalStateException("The console is not set active");
       }
-      setActive(b);
+      active = false;
+      stopBt.setEnabled(false);
+      area.setEditable(false);
+      area.getCaret().setVisible(false);
    }
 
    /**
-    * Sets the locked (and inactive) state
+    * Returns if the console is unlocked active
+    *
+    * @return  true if unlocked active; false otherwise
+    */
+   public boolean isUnlockedActive() {
+      return active && unlocked;
+   }
+
+   /**
+    * Sets the locked state
+    * @throws  IllegalStateException  if the console is not unlocked
     */
    public void setLocked() {
       checkWritePermission();
       unlocked = false;
-      setActive(false);
-   }
-
-   /**
-    * Sets the focus in this text area
-    */
-   public void focus() {
-      checkWritePermission();
-      area.requestFocusInWindow();
    }
 
    /**
     * Sets the cursor position
     *
     * @param pos  the position
+    * @throws  IllegalStateException  if the console is not unlocked
     */
    public void setCaret(int pos) {
       checkWritePermission();
@@ -125,9 +129,21 @@ public class Console {
    }
 
    /**
+    * Returns the caret or selection start position
+    *
+    * @return  the position
+    * @throws  IllegalStateException  if the console is not unlocked
+    */
+   public int caretPosition() {
+      checkWritePermission();
+      return area.getSelectionStart();
+   }
+
+   /**
     * Sets the specified text
     *
     * @param text  the text
+    * @throws  IllegalStateException  if the console is not unlocked
     */
    public void setText(String text) {
       checkWritePermission();
@@ -138,6 +154,7 @@ public class Console {
     * Appends the specified text
     *
     * @param text  the text
+    * @throws  IllegalStateException  if the console is not unlocked
     */
    public void appendText(String text) {
       checkWritePermission();
@@ -151,6 +168,7 @@ public class Console {
     * messages.
     *
     * @param text  the text
+    * @throws  IllegalStateException  if the console is not unlocked
     */
    public void appendTextBr(String text) {
       checkWritePermission();
@@ -158,9 +176,10 @@ public class Console {
    }
 
    /**
-    * Gets the current text
+    * Returns the current text
     *
     * @return  the text
+    * @throws  IllegalStateException  if the console is not unlocked
     */
    public String getText() {
       checkWritePermission();
@@ -177,7 +196,7 @@ public class Console {
    /**
     * Enables or disables actions to run a command
     *
-    * @param b  true to enable, fasle to disable
+    * @param b  true to enable, false to disable
     */
    public void enableRunBt(boolean b) {
       runBt.setEnabled(b);
@@ -186,25 +205,16 @@ public class Console {
    /**
     * Adds a <code>KeyListener</code> to this text area
     *
-    * @param keyListener  the <code>KeyListener</code>
+    * @param keyListener  the KeyListener
     */
    public void addKeyListener(KeyListener keyListener) {
       area.addKeyListener(keyListener);
    }
 
    /**
-    * Adds a <code>CaretListener</code> to this text area
-    *
-    * @param caretListener  the <code>CaretListener</code>
-    */
-   public void addCaretListener(CaretListener caretListener) {
-      area.addCaretListener(caretListener);
-   }
-
-   /**
     * Sets the listener for actions to enter and run a new command
     *
-    * @param al  the {@code ActionListener}
+    * @param al  the ActionListener
     */
    public void setEnterCmdAct(ActionListener al) {
       enterCmdBt.addActionListener(al);
@@ -213,7 +223,7 @@ public class Console {
    /**
     * Sets the listener for actions to run a previous command
     *
-    * @param al  the {@code ActionListener}
+    * @param al  the ActionListener
     */
    public void setRunAct(ActionListener al) {
       runBt.addActionListener(al);
@@ -244,11 +254,5 @@ public class Console {
       if (!unlocked) {
          throw new IllegalStateException("The console is not unlocked");
       }
-   }
-
-   private void setActive(boolean b) {
-      area.setEditable(b);
-      area.setFocusable(b);
-      stopBt.setEnabled(b);
    }
 }
