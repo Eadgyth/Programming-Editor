@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Font;
 
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
@@ -17,16 +19,13 @@ import javax.swing.border.LineBorder;
 
 import javax.swing.text.DefaultCaret;
 
-//--Eadgyth--//
+//--Eadgyth--/
 import eg.BackgroundTheme;
 import eg.utils.ScreenParams;
 
 /**
  * Defines the panel that contains the area for editing text and the
- * area that displays line numbers.
- * <p>
- * The pre-defined shortcuts for cut, copy, paste and select actions are
- * disabled in the text area
+ * area that displays line numbers
  */
 public final class EditArea {
 
@@ -71,12 +70,13 @@ public final class EditArea {
          disableWordwrap(lineNumbers);
       }
       textArea.addFocusListener(new FocusAdapter() {
-         
+
          @Override
          public void focusLost(FocusEvent e) {
             textArea.getCaret().setSelectionVisible(true);
          }
       });
+      lineNrArea.getStyledDocument().addDocumentListener(lineNrChange);
    }
 
    /**
@@ -203,6 +203,24 @@ public final class EditArea {
          revalidate();
       });
    }
+
+   private final DocumentListener lineNrChange = new DocumentListener() {
+
+      @Override
+      public void insertUpdate(DocumentEvent de) {
+         revalidate();
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent de) {
+         revalidate();
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent de) {
+         //not used
+      }
+   };
 
    private void revalidate() {
       content.revalidate();
