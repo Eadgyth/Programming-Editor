@@ -5,7 +5,6 @@ import java.awt.Color;
 import javax.swing.JTextPane;
 
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants;
@@ -20,7 +19,7 @@ import eg.utils.LinesFinder;
 public class LineNumbers {
 
    private static final Color GRAY = new Color(170, 170, 170);
-   public static final SimpleAttributeSet SET = new SimpleAttributeSet();
+   private static final SimpleAttributeSet SET = new SimpleAttributeSet();
 
    private final StyledDocument doc;
    private final StringBuilder lineNrBuilder = new StringBuilder();
@@ -39,8 +38,7 @@ public class LineNumbers {
     */
    public LineNumbers(JTextPane lineNrArea) {
       this.doc = lineNrArea.getStyledDocument();
-      Element el = doc.getParagraphElement(0);
-      doc.setParagraphAttributes(0, el.getEndOffset(), SET, false);
+      doc.setParagraphAttributes(0, doc.getLength(), SET, false);
       appendLineNumbers(0, nOld);
    }
 
