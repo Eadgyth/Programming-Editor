@@ -92,7 +92,7 @@ public class EditMenu {
     * <code>AddableEditTool</code>
     *
     * @param al  the ActionListener
-    * @param i  the index of the array element
+    * @param i  the index
     */
    public void setEditToolsActionsAt(ActionListener al, int i) {
       editToolsItm[i].addActionListener(al);
@@ -128,7 +128,7 @@ public class EditMenu {
     * of check boxes for actions to open an <code>AddableEditTool</code>
     * is selected
     *
-    * @param i  the index of the array element
+    * @param i  the index
     * @return  true if selected, false otherwise
     */
    public boolean isEditToolItmSelected(int i) {
@@ -143,7 +143,7 @@ public class EditMenu {
     * @param isRedo  the boolean for redo actions
     */
    public void enableUndoRedoItms(boolean isUndo, boolean isRedo) {
-      undoItm.setEnabled(isUndo);
+      undoItm.getAction().setEnabled(isUndo);
       redoItm.getAction().setEnabled(isRedo);
    }
 
