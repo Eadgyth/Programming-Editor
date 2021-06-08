@@ -72,7 +72,7 @@ public class Indentation {
    }
 
    /**
-    * Maintains or adjusts (with curly baracket mode) the indentation
+    * Maintains or adjusts (with curly bracket mode) the indentation
     *
     * @param pos  the position
     */
@@ -117,13 +117,14 @@ public class Indentation {
    }
 
    private void outdent(int pos) {
-      int lineStart = txt.text().lastIndexOf('\n', pos - 1) + 1;
+      int lineStart = lineStart(pos - 1);
       if (pos == lineStart) {
          return;
       }
-      char[] line = lineUpTo(pos);
-      for (int i = 0; i < line.length; i++) {
-         if (line[i] != '\t' && line[i] != ' ') {
+      String line = line(lineStart, pos);
+      for (int i = 0; i < line.length(); i++) {
+         char c = line.charAt(i);
+         if (c != '\t' && c != ' ') {
             return;
          }
       }
@@ -148,7 +149,7 @@ public class Indentation {
       txt.insert(lineStart, indent.toString());
    }
 
-    private int outdentPos(int pos) {
+   private int outdentPos(int pos) {
       int outdentPos = 0;
       int lastOpeningPos = txt.text().lastIndexOf('{', pos - 1);
       int lastClosingPos = txt.text().lastIndexOf('}', pos - 1);
@@ -168,12 +169,13 @@ public class Indentation {
       int countTabs = 0;
       int countSpaces = 0;
       if (pos > 1) {
-         char[] line = lineUpTo(pos);
-         for (int i = 0; i < line.length; i++) {
-            if (line[i] == ' ') {
+         String prevLine = line(lineStart(pos - 1), pos);
+         for (int i = 0; i < prevLine.length(); i++) {
+            char c = prevLine.charAt(i);
+            if (c == ' ') {
                countSpaces++;
             }
-            else if (line[i] == '\t') {
+            else if (c == '\t') {
                countTabs++;
                if (countSpaces < indentLength) {
                   countSpaces = 0;
@@ -187,9 +189,12 @@ public class Indentation {
       return countTabs * indentLength + countSpaces;
    }
 
-   private char[] lineUpTo(int pos) {
-      int lineStart = txt.text().lastIndexOf('\n', pos - 1) + 1;
-      return txt.text().substring(lineStart, pos).toCharArray();
+   private int lineStart(int pos) {
+      return txt.text().lastIndexOf('\n', pos) + 1;
+   }
+
+   private String line(int lineStart, int pos) {
+       return txt.text().substring(lineStart, pos);
    }
 
    private String joinTabs(int length) {
