@@ -18,7 +18,8 @@ import eg.document.styledtext.EditableText;
 import eg.document.styledtext.PrintableText;
 
 /**
- * Represents the document that is edited
+ * Represents the editable document with a language and possibly a
+ * file
  */
 public final class EditableDocument {
 
@@ -32,7 +33,6 @@ public final class EditableDocument {
    private String filename = "";
    private String filepath = "";
    private String fileParent = "";
-   private String savedContent = "";
 
    /**
     * Creates an <code>EditableDocument</code> with the specified file
@@ -47,7 +47,6 @@ public final class EditableDocument {
       setFileParams(f);
       setEditingMode(f);
       update.editText(() -> displayFileContentImpl(f), EditorUpdating.ALL_TEXT);
-      savedContent = txt.text();
    }
 
    /**
@@ -92,9 +91,9 @@ public final class EditableDocument {
    }
 
    /**
-    * Reads the current editing state
+    * Reads the parameters for the current editing state by
+    * invoking all methods in {@link EditingStateReadable}
     *
-    * @see EditorUpdating#readEditingState()
     */
    public void readEditingState() {
       update.readEditingState();
@@ -141,7 +140,7 @@ public final class EditableDocument {
    /**
     * Returns the last name in the path of this file
     *
-    * @return  the filename; the empty string of no file is set
+    * @return  the filename; the empty string if no file is set
     */
    public String filename() {
       return filename;
@@ -157,16 +156,19 @@ public final class EditableDocument {
     }
 
    /**
-    * Saves the text content to this file
+    * Saves the text content to this file if the file has been
+    * changed
     *
     * @return  true if the text content could be saved; false
     * otherwise
     */
    public boolean saveFile() {
+      if (!update.isChanged()) {
+         return false;
+      }
       checkFileForNull();
       boolean isWritten = writeToFile(file);
       if (isWritten) {
-         savedContent = txt.text();
          update.resetChangedState();
       }
       return isWritten;
@@ -181,7 +183,6 @@ public final class EditableDocument {
     */
    public boolean setFile(File f) {
       setFileParams(f);
-      savedContent = txt.text();
       setEditingMode(f);
       update.editText(() -> {}, EditorUpdating.ALL_TEXT);
       update.resetChangedState();
@@ -212,13 +213,13 @@ public final class EditableDocument {
    }
 
    /**
-    * Returns if the text content equals the text stored at the
-    * last saving point
+    * Returns if the text has not been changed since the last saving
+    * point
     *
-    * @return  true if saved, false otherwise
+    * @return  true not changed, false otherwise
     */
    public boolean isSaved() {
-      return txt.text().equals(savedContent);
+      return !update.isChanged();
    }
 
    /**
@@ -396,7 +397,7 @@ public final class EditableDocument {
     * Prints the document text to a printer
     */
     public void print() {
-      PrintableText printTxt = new PrintableText(text(), textArea().getFont());
+      PrintableText printTxt = new PrintableText(txt.text(), textArea().getFont());
       if (currLang.lang() != Languages.NORMAL_TEXT) {
          Highlighter hl = currLang.createHighlighter();
          SyntaxHighlighter sh = new SyntaxHighlighter(printTxt);
@@ -417,7 +418,7 @@ public final class EditableDocument {
       indent = new Indentation(txt);
       update = new EditorUpdating(txt, undo, lineNum, indent);
       editArea.textArea().addPropertyChangeListener("font", e ->
-         txt.setTabLength(indentUnit().length())
+         txt.setTabLength(indent.indentUnit().length())
       );
    }
 
@@ -432,7 +433,6 @@ public final class EditableDocument {
       update.disableUpdating(true);
       readFileContent(f);
       update.disableUpdating(false);
-      txt.textArea().setCaretPosition(0);
    }
 
    private void readFileContent(File f) {
@@ -490,7 +490,7 @@ public final class EditableDocument {
    private void checkFileForNonNull() {
       if (file != null) {
          throw new IllegalStateException(
-               "Cannot read in a file in EditableDocument that has a file");
+               "Cannot read in a file in EditableDocument that already has a file");
       }
    }
 }

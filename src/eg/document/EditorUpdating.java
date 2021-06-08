@@ -81,11 +81,11 @@ public class EditorUpdating {
    }
 
    /**
-    * Disables or re-enables the updating provided that no editing has
-    * happened before. Disabled updating is used for loading a file
-    * which isn't undoable.
+    * Disables or re-enables the updating provided that no editing
+    * has happened before. Disabled updating is intended for loading
+    * a file after which the editor should be in an unchanged state.
     *
-    * @param b  true to enable, false to disable
+    * @param b  true to disable; false to enable
     */
    public void disableUpdating(boolean b) {
       if (undo.canUndo() || undo.canRedo() || !txt.text().isEmpty()) {
@@ -96,6 +96,7 @@ public class EditorUpdating {
       isUpdate = !b;
       if (!b) {
          updateText();
+         txt.textArea().setCaretPosition(0);
       }
    }
 
@@ -117,14 +118,15 @@ public class EditorUpdating {
     * (or omits) syntax highlighting if source code editing is
     * enabled
     *
-    * @param tc  the TextChange
+    * @param tc  the TextChange which may be empty to only
+    * update syntax highlighting
     * @param editValue  the value that indicates the type of
     * syntax highlighting required: {@link #ALL_TEXT},
     * {@link #INSERT} or {@link #OMIT}.
     */
    public void editText(TextChange tc, int editValue) {
       boolean isCodeEditingHelper = isCodeEditing;
-      isCodeEditing = false;
+      isCodeEditing = false; // disable highlighting from DocumentListener
       tc.edit();
       if (isCodeEditingHelper && editValue != EditorUpdating.OMIT) {
          if (editValue == EditorUpdating.ALL_TEXT && !txt.text().isEmpty()) {
@@ -139,8 +141,9 @@ public class EditorUpdating {
 
    /**
     * Makes the specified <code>TextChange</code> that undoes or
-    * redoes edits and updates the undoable/redoable state as well
-    * as syntax highlighting if source code editing is enabled
+    * redoes edits and updates the undoable/redoable/changed state
+    * as well as syntax highlighting if source code editing is
+    * enabled
     *
     * @param undoRedo  the TextChange
     */
@@ -148,6 +151,7 @@ public class EditorUpdating {
       isUndoRedo = true;
       undoRedo.edit();
       updateUndoableState();
+      updateChangedState();
       if (isCodeEditing) {
          if (isInsert) {
             //
@@ -168,19 +172,31 @@ public class EditorUpdating {
 
    /**
     * Resets the state which indicates that the text has been changed
+    * and marks a saving point. Method calls
+    * {@link EditingStateReadable#updateChangedState}
     */
    public void resetChangedState() {
       changedState = false;
+      undo.markSavingPoint();
       esr.updateChangedState(changedState);
    }
 
    /**
-    * Reads the current editing state
+    * Returns if text has been changed
     *
-    * @see EditingStateReadable
+    * @return  true if changed; false otherwise
+    */
+   public boolean isChanged() {
+      return changedState;
+   }
+
+   /**
+    * Reads the parameters for the current editing state by
+    * invoking all methods in this {@link EditingStateReadable}
     */
    public void readEditingState() {
       if (esr != null) {
+         System.out.println(colNr);
          esr.updateChangedState(changedState);
          esr.updateUndoableState(undo.canUndo(), undo.canRedo());
          esr.updateSelectionState(selectionState);
@@ -202,8 +218,15 @@ public class EditorUpdating {
       if (esr == null) {
          return;
       }
-      if (!changedState) {
-         changedState = true;
+      boolean b;
+      if (isUndoRedo) {
+         b = !undo.isAtSavingPoint();
+      }
+      else {
+         b = true;
+      }
+      if (b != changedState) {
+         changedState = b;
          esr.updateChangedState(changedState);
       }
    }
@@ -225,17 +248,17 @@ public class EditorUpdating {
       }
    }
 
-   private void updateCursorState(int caret) {
+   private void updateCursorState(int dot) {
       if (esr == null) {
          return;
       }
-      int lastNewLine = LinesFinder.lastNewline(txt.text(), caret);
-      lineNr = LinesFinder.lineNrAtPos(txt.text(), caret);
+      int lastNewLine = LinesFinder.lastNewline(txt.text(), dot);
+      lineNr = LinesFinder.lineNrAtPos(txt.text(), dot);
       if (lastNewLine == -1) {
-         colNr = caret + 1;
+         colNr = dot + 1;
       }
       else {
-         colNr = caret - lastNewLine;
+         colNr = dot - lastNewLine;
       }
       esr.updateCursorState(lineNr, colNr);
    }

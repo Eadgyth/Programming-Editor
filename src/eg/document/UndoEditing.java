@@ -17,40 +17,45 @@ import eg.document.styledtext.EditableText;
  * and the type (insertion or removal). The sequence of edits is
  * divided into undoable units by means of breakpoints. An undo
  * action undoes the edits behind a breakpoint (or all if there
- * is none) in reverse order. Accordingly, a redo action redoes
- * the edits in front of a breakpoint (or all if there is none)
- * in forward direction. The starting point of an action is
- * always the edit were undoing or redoing has stopped before.
+ * is none) in reverse order. Accordingly, a redo action redoes the
+ * edits in front of a breakpoint (or all if there is none) in
+ * forward direction. The starting point of an action is always
+ * the edit were undoing or redoing has stopped before.
  * <p>
  * When a new edit is added a breakpoint is set if:
  * <ul>
  * <li> The content of the previous edit is just a newline
  *      character.
  * <li> The type of the new edit differs from the type of the
- *      previous edit, if a selection is replaced the breakpoint
+ *      previous edit; if a selection is replaced the breakpoint
  *      is the index of the next edit.
- * <li> The edit is a removal and the content length is longer
- *      than one character.
- * <li> A mark was set by {@link #markBreakpoint()} during adding
- *      the previous edit.
+ * <li> The edit is a removal and the content is longer than one
+ *      character.
+ * <li> A mark was set by {@link #markBreakpoint()} or
+        {@link #markSavingPoint} after the previous edit.
  * </ul>
  * <p>
  * Adding breakpoints may be disabled to form a larger undoable
  * unit (see {@link #disableBreakpointAdding(boolean)}).
  * <p>
+ * If the number of breakpoints exceeds 50 the edits up this
+ * breakpoint are removed.
+ * <p>
  * Any undone edits are removed when a new edit is added.
  */
 public class UndoEditing {
 
-   private final EditableText txt;
+   private static final int LIMIT = 50;
 
-   private final List<String> contents = new ArrayList<>(1000);
-   private final List<Integer> positions = new ArrayList<>(1000);
-   private final List<Boolean> types = new ArrayList<>(1000);
-   private final List<Integer> breakpoints = new ArrayList<>(500);
+   private final EditableText txt;
+   private final List<String> contents = new ArrayList<>(360);
+   private final List<Integer> positions = new ArrayList<>(360);
+   private final List<Boolean> types = new ArrayList<>(360);
+   private final List<Integer> breakpoints = new ArrayList<>(60);
 
    private int iEd = -1;
    private int iBr = -1;
+   private int iSaved = -1;
    private boolean isMark = false;
    private boolean isMerging = false;
    private boolean isDeleteTyped = false;
@@ -68,10 +73,12 @@ public class UndoEditing {
     *
     * @param content  the text content of the edit
     * @param pos  the position of the edit
-    * @param isInsert  true for an insert, false for a removal
+    * @param isInsert  the type of the edit: true for an insert,
+    * false for a removal
     */
    public void addEdit(String content, int pos, boolean isInsert) {
-      trim();
+      trimEnd();
+      trimStart();
       contents.add(content);
       positions.add(pos);
       types.add(isInsert);
@@ -122,10 +129,13 @@ public class UndoEditing {
    }
 
    /**
-    * Undoes contents up to the next breakpoint that is located
-    * before the contents that are not yet undone
+    * Undoes edits up to the next breakpoint that is located
+    * before the edits that are not yet undone
     */
    public void undo() {
+      if (!canUndo()) {
+         return;
+      }
       int nextPos = 0;
       while (iEd > -1) {
          if (isInsert(iEd)) {
@@ -149,10 +159,13 @@ public class UndoEditing {
    }
 
    /**
-    * Redoes contents up to the next breakpoint that is located
-    * behind the contents that are undone and not yet redone
+    * Redoes edits up to the next breakpoint that is located
+    * behind the edits that are undone and not yet redone
     */
    public void redo() {
+      if (!canRedo()) {
+         return;
+      }
       int nextPos = 0;
       while (iEd < contents.size() - 1) {
          int iNext = iEd + 1;
@@ -178,8 +191,28 @@ public class UndoEditing {
    }
 
    /**
-    * Marks that a breakpoint will be added as soon as another edit is
-    * added
+    * Marks the current edit as saving point and also as breakpoint
+    * which is set as soon as another edit is added.
+    *
+    */
+   public void markSavingPoint() {
+      iSaved = iEd;
+      markBreakpoint();
+   }
+
+   /**
+    * Returns if undoing or redoing has reached the saving point
+    *
+    * @return  true if the saving point has been reached; false
+    * otherwise
+    */
+   public boolean isAtSavingPoint() {
+      return iEd == iSaved;
+   }
+
+   /**
+    * Marks the current edit as breakpoint which is set as soon as
+    * another edit is added
     */
    public void markBreakpoint() {
       if (!contents.isEmpty()) {
@@ -215,14 +248,30 @@ public class UndoEditing {
    }
 
    private void addBreakpoint(int index) {
-      int iLastBreak = breakpoints.size() - 1;
-      if (iLastBreak == -1 || index != breakPt(iLastBreak)) {
+      if (index != -1 && !breakpoints.contains(index)) {
          breakpoints.add(index);
          iBr = breakpoints.size() - 1;
       }
    }
 
-   private void trim() {
+   private void trimStart() {
+      if (breakpoints.size() <= LIMIT) {
+         return;
+      }
+      int iCut = breakPt(0);
+      int cutLength = iCut + 1;
+      breakpoints.remove(0);
+      for (int i = 0; i < breakpoints.size(); i++) {
+         int prevBreakPt = breakPt(i);
+         breakpoints.set(i, prevBreakPt - cutLength);
+      }
+      iSaved = iSaved > -1 && iSaved >= iCut ? iSaved - cutLength : -2;
+      contents.subList(0, cutLength).clear();
+      positions.subList(0, cutLength).clear();
+      types.subList(0, cutLength).clear();
+   }
+
+   private void trimEnd() {
       if (iEd == contents.size() - 1) {
          return; // no contents are undone or all undone contents are redone
       }
@@ -234,6 +283,9 @@ public class UndoEditing {
          if (iLastBreak > -1 && i == breakPt(iLastBreak)) {
             breakpoints.remove(iLastBreak);
          }
+      }
+      if (iEd < iSaved) {
+         iSaved = -2; // remove saving point
       }
    }
 
