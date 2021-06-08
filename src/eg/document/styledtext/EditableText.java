@@ -7,7 +7,6 @@ import javax.swing.JTextPane;
 import javax.swing.event.DocumentListener;
 
 import javax.swing.text.BadLocationException;
-import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.TabSet;
 import javax.swing.text.TabStop;
@@ -24,23 +23,16 @@ public class EditableText extends StyledText {
 
    private static final BackgroundTheme THEME = BackgroundTheme.givenTheme();
    private static final Attributes ATTR = new Attributes(THEME);
-   public static final SimpleAttributeSet SET = new SimpleAttributeSet();
 
    private final JTextPane textArea;
 
    private String text = "";
 
-   static {
-      StyleConstants.setForeground(SET, THEME.normalText());
-      StyleConstants.setBold(SET, false);
-		StyleConstants.setLineSpacing(SET, 0.14f);
-   }
-
    /**
     * @param textArea  the JTextPane that displays the text
     */
    public EditableText(JTextPane textArea) {
-      super(textArea.getStyledDocument(), SET);
+      super(textArea.getStyledDocument(), THEME.normalText());
       this.textArea = textArea;
    }
 
@@ -49,11 +41,6 @@ public class EditableText extends StyledText {
       return ATTR;
    }
 
-   /**
-    * {@inheritDoc}.
-    * This is always the copy of the document text which is updated
-    * by {@link #updateTextCopy}
-    */
    @Override
    public final String text() {
       return text;
@@ -64,7 +51,7 @@ public class EditableText extends StyledText {
     */
    public final void updateTextCopy() {
       try {
-         text = doc().getText(0, doc().getLength());
+         text = doc.getText(0, doc.getLength());
       }
       catch (BadLocationException e) {
          FileUtils.log(e);
@@ -79,7 +66,7 @@ public class EditableText extends StyledText {
     */
    public final void insert(int pos, String s) {
       try {
-         doc().insertString(pos, s, null);
+         doc.insertString(pos, s, null);
       }
       catch (BadLocationException e) {
          FileUtils.log(e);
@@ -94,7 +81,7 @@ public class EditableText extends StyledText {
     */
    public final void remove(int pos, int length) {
       try {
-         doc().remove(pos, length);
+         doc.remove(pos, length);
       }
       catch (BadLocationException e) {
          FileUtils.log(e);
@@ -118,8 +105,8 @@ public class EditableText extends StyledText {
          ts[i] = new TabStop((i + 1) * length);
       }
       TabSet tabSet = new TabSet(ts);
-      StyleConstants.setTabSet(SET, tabSet);
-      doc().setParagraphAttributes(0, doc().getLength(), SET, false);
+      StyleConstants.setTabSet(NORMAL, tabSet);
+      doc.setParagraphAttributes(0, doc.getLength(), NORMAL, false);
    }
 
    /**
@@ -128,7 +115,7 @@ public class EditableText extends StyledText {
     * @param dl  the DocumentListener
     */
    public final void addDocumentListener(DocumentListener dl) {
-      doc().addDocumentListener(dl);
+      doc.addDocumentListener(dl);
    }
 
    /**

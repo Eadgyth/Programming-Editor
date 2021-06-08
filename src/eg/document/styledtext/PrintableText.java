@@ -6,8 +6,6 @@ import java.awt.print.PrinterException;
 
 import javax.swing.JTextPane;
 
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 import javax.swing.text.DefaultStyledDocument;
 
 //--Eadgyth--/
@@ -22,26 +20,18 @@ public class PrintableText extends StyledText {
 
    private static final BackgroundTheme THEME = BackgroundTheme.whiteTheme();
    private static final Attributes ATTR = new Attributes(THEME);
-   private static final SimpleAttributeSet SET = new SimpleAttributeSet();
 
    private final JTextPane printArea;
    private final String text;
-
-   static {
-      StyleConstants.setForeground(SET, THEME.normalText());
-      StyleConstants.setBold(SET, false);
-      StyleConstants.setLineSpacing(SET, 0.25f);
-   }
 
    /**
     * @param text  the text to style and to print
     * @param font  the font
     */
    public PrintableText(String text, Font font) {
-      super(new DefaultStyledDocument(), SET);
+      super(new DefaultStyledDocument(), THEME.normalText());
       this.text = text;
-      printArea = new JTextPane();
-      printArea.setDocument(doc());
+      printArea = new JTextPane(doc);
       int size = ScreenParams.invertedScaledSize(font.getSize());
       Font printFont = font.deriveFont((float) size);
       printArea.setFont(printFont);

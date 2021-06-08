@@ -1,26 +1,36 @@
 package eg.document.styledtext;
 
-import javax.swing.text.Element;
+import java.awt.Color;
+
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 /**
- * The styling of the text contained in a <code>StyledDocument</code>
+ * The styling of the text in a <code>StyledDocument</code>
  */
 public abstract class StyledText {
 
-   private final StyledDocument doc;
-   private final SimpleAttributeSet normal;
+   /**
+    * The <code>SimpleAttributeSte</code> for normal text */
+   protected static final SimpleAttributeSet NORMAL = new SimpleAttributeSet();
+   /**
+    * The <code>StyledDocument</code> that contains the text */
+   protected final StyledDocument doc;
+
+   static {
+      StyleConstants.setBold(NORMAL, false);
+		StyleConstants.setLineSpacing(NORMAL, 0.14f);
+   }
 
    /**
     * @param doc  the document that contains the text
-    * @param normal  the SimpleAttributeSet for normal text style
+    * @param normalText  the color for normal text
     */
-   protected StyledText(StyledDocument doc, SimpleAttributeSet normal) {
+   protected StyledText(StyledDocument doc, Color normalText) {
       this.doc = doc;
-      this.normal = normal;
-      Element el = doc.getParagraphElement(0);
-      doc.setParagraphAttributes(0, el.getEndOffset(), normal, false);
+      StyleConstants.setForeground(NORMAL, normalText);
+      doc.setParagraphAttributes(0, doc.getLength(), NORMAL, false);
    }
 
    /**
@@ -42,7 +52,7 @@ public abstract class StyledText {
     * in the entire text
     */
    public void resetAttributes() {
-      setAttributes(0, doc.getLength(), normal);
+      setAttributes(0, doc.getLength(), NORMAL);
    }
 
    /**
@@ -53,7 +63,7 @@ public abstract class StyledText {
     * @param length  the length of the section
     */
    public void resetAttributes(int pos, int length) {
-      setAttributes(pos, length, normal);
+      setAttributes(pos, length, NORMAL);
    }
 
    /**
@@ -66,14 +76,5 @@ public abstract class StyledText {
     */
    public void setAttributes(int pos, int length, SimpleAttributeSet set) {
       doc.setCharacterAttributes(pos, length, set, false);
-   }
-
-   /**
-    * Gets this document
-    *
-    * @return this document
-    */
-   protected final StyledDocument doc() {
-      return doc;
    }
 }
