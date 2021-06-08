@@ -166,8 +166,8 @@ public class SyntaxUtils {
    /**
     * Returns if a text element A occurs before a text element B.
     *
-    * @param posA  the position of A, -1 means that A is not found
-    * @param posB  the position of B, -1 means that B is not found
+    * @param posA  the position of A, -1 means that A was not found
+    * @param posB  the position of B, -1 means that B was not found
     * @return  true if A occurs first, false if B occurs first or if
     * both are not found
     */
@@ -178,7 +178,7 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns if the specified position is found inside a block, where
+    * Returns if the specified position is found inside a block where
     * the specified blockStart and blockEnd must differ
     *
     * @param text  the text
@@ -204,7 +204,7 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the position of the last block start, where the specified
+    * Returns the position of the last block start where the specified
     * blockStart and blockEnd must differ
     *
     * @param text  the text
@@ -226,7 +226,8 @@ public class SyntaxUtils {
    }
 
    /**
-    * Returns the position of the next block end
+    * Returns the position of the next block end where the specified
+    * blockStart and blockEnd must differ
     *
     * @param text  the text
     * @param pos  the position where the search starts
@@ -264,8 +265,8 @@ public class SyntaxUtils {
 
    /**
     * Returns if the specified position is found in a section that
-    * is enclosed with with single or double quote marks within the
-    * line where the position is found
+    * is enclosed with single or double quote marks within the line
+    * where the position is found
     *
     * @param text  the text
     * @param pos  the position

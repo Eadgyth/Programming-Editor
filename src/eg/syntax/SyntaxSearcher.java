@@ -44,7 +44,7 @@ public class SyntaxSearcher {
     * Creates a <code>SyntaxSearcher</code>. Not meant to be used by
     * a Highlighter.
     *
-    * @param txt  the reference to styled text
+    * @param txt  the StyledText
     */
    public SyntaxSearcher(StyledText txt) {
       this.txt = txt;

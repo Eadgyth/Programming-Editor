@@ -153,15 +153,11 @@ public class Compilation {
          return;
       }
       String[] test = options.split("\\s+");
-      int iErr = -1;
       for (int i = 0; i < test.length; i++) {
          if (test[i].startsWith("-") && -1 == compiler.isSupportedOption(test[i])) {
             pr.printBr("NOTE: " + test[i] + " is invalid or cannot be used");
          }
          optList.add(test[i]);
-      }
-      if (iErr > - 1) {
-         //pr.printBr("NOTE: " + test[iErr] + " is invalid or cannot be used");
       }
    }
 

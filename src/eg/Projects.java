@@ -380,11 +380,11 @@ public class Projects {
          if (d != null && d.hasFile()) {
             boolean isProjFile = currentProject.isInProject(d.fileParent());
             if (isProjFile) {
-                if (d.file().exists()) {
-                   d.saveFile();
-                } else {
-                   missingFiles.append("\n").append(d.filename());
-                }
+               if (d.file().exists()) {
+                  d.saveFile();
+               } else {
+                  missingFiles.append("\n").append(d.filename());
+               }
             }
          }
       }

@@ -25,7 +25,7 @@ public class FileChooser {
    }
 
    /**
-    * @param startingDir  the directory initialliy shown
+    * @param startingDir  the directory initially shown
     */
    public FileChooser(String startingDir) {
       currentDir = new File(startingDir);

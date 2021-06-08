@@ -54,10 +54,10 @@ public class Eadgyth {
       // The dpi scaling is disabled when the Java version is 9+
       // because the positioning of the caret in the text with the
       // mouse is not working properly on a high dpi screen. The
-      // following 'if' statement may be commented out for testing.
-      // Then, the methods 'scaledSize' and 'invertedScaledSize'
-      // in eg.utils.ScreenParams should be modified as mentioned
-      // in the comments there.
+      // following 'if' statement may be commented out to verify
+      // the problem. Then, the methods 'scaledSize' and
+      // 'invertedScaledSize' in eg.utils.ScreenParams should be
+      // modified as mentioned in the comments there.
       //
       if (SystemParams.IS_JAVA_9_OR_HIGHER) {
          System.setProperty("sun.java2d.uiScale", "1.0");

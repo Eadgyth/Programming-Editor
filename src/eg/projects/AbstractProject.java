@@ -135,7 +135,7 @@ public abstract class AbstractProject implements Configurable {
     */
    @Override
    public final boolean retrieve(String dir) {
-      boolean success = false;
+      boolean success;
       String root = rootByContainedFile(dir, Prefs.PROJ_CONFIG_FILE);
       if (!root.isEmpty()) {
          sw.setSaveProjConfigSelected(true);

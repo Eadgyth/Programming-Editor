@@ -164,9 +164,9 @@ public class Edit {
    }
 
    /**
-    * Returns the <code>FunctionalAction</code> that pastes text
-    * from the clipboard. The keyboard event 'modifier mask' + V is
-    * set on the action and a label is set.
+    * Returns the <code>FunctionalAction</code> that pastes text from
+    * the clipboard. The keyboard event 'modifier mask' + V is set on
+    * the action and a label is set.
     *
     * @return  the FunctionalAction
     * @see #pasteText
@@ -236,9 +236,8 @@ public class Edit {
    }
 
    /**
-    * Stores the values for the indentation mode that were
-    * lastly selected in <code>IndentSettingWin</code> in
-    * <code>Prefs</code>
+    * Stores the values for the indentation mode that were lastly
+    * selected in <code>IndentSettingWin</code> in <code>Prefs</code>
     */
    public void storeIndentProperties() {
        checkIndentSetWinForNull();
@@ -247,11 +246,12 @@ public class Edit {
     }
 
    /**
-    * Changes the indentation mode if this <code>Edit</code>
-    * doesn't use <code>IndentSettingWin</code> to change the
-    * indentation mode
+    * Changes the indentation mode if this <code>Edit</code> doesn't
+    * use <code>IndentSettingWin</code> to change the indentation
+    * mode
     *
-    * @param indentUnit  the indent unit which consists of empty spaces
+    * @param indentUnit  the indent unit which consists of empty
+    * spaces
     * @param indentTab  true to use tabs for indentation, false
     * to use spaces
     */
@@ -264,9 +264,9 @@ public class Edit {
    }
 
    /**
-    * Returns the <code>FunctionalAction</code> that increases
-    * the indentation. The keyboard event 'Tab' is set on the
-    * action and a label is set.
+    * Returns the <code>FunctionalAction</code> that increases the
+    * indentation. The keyboard event 'Tab' is set on the action and
+    * a label is set.
     *
     * @return  the FunctionalAction
     * @see #indent

@@ -67,7 +67,7 @@ public class TextExchange {
          if (filename.isEmpty()) {
             filename = "unnamed";
          }
-         Dialogs.warnMessage("No text is selected in \"" + filename + "\"");
+         Dialogs.warnMessage("No text is selected in " + filename + ".");
          return;
       }
       copy(exchangeDoc, text);
@@ -81,7 +81,7 @@ public class TextExchange {
    public void copyTextToSource() {
       String text = exchangeDoc.textArea().getSelectedText();
       if (text == null) {
-         Dialogs.warnMessage("No text is selected in the exchange editor");
+         Dialogs.warnMessage("No text is selected in Notes.");
          return;
       }
       copy(sourceDoc, text);
@@ -91,7 +91,7 @@ public class TextExchange {
     * Loads the content of a file that is selected in the file chooser
     *
     * @param lm  the langauge menu in which the item for the language
-    * which is determined by file extension will be selected
+    * determined by the file extension will be selected
     */
    public void loadFile(LanguageMenu lm) {
       File f = fc.selectedFile();

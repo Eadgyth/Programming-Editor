@@ -32,7 +32,7 @@ public interface Highlighter {
     * Defines the syntax highlighting
     *
     * @param s  the SyntaxSearcher
-    * @param attr  the Attributes
+    * @param attr  the Attributes that may be set on text elements
     */
    public void highlight(SyntaxSearcher s, Attributes attr);
 
@@ -43,7 +43,7 @@ public interface Highlighter {
     * @param text  the text
     * @param pos  the position
     * @param condition  the condition for validating a text element.
-    * @return  true if valid (or no additoinal validation is
+    * @return  true if valid (or no additional validation is
     * necessary); false otherwise
     */
    public boolean isValid(String text, int pos, int condition);

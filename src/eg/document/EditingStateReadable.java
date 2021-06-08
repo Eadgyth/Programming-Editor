@@ -7,10 +7,10 @@ package eg.document;
 public interface EditingStateReadable {
 
    /**
-    * Updates the state which indicates that the document is being
+    * Updates the state which indicates that the document has been
     * changed
     *
-    * @param b  true if in change; false otherwise
+    * @param b  true if changed; false otherwise
     */
    public void updateChangedState(boolean b);
 

@@ -7,7 +7,7 @@ import eg.Languages;
 import eg.syntax.*;
 
 /**
- * The language that is used for a ducument
+ * The language that is used for a document
  */
 public class CurrentLanguage {
 

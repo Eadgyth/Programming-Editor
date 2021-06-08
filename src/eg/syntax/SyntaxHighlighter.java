@@ -17,7 +17,7 @@ public class SyntaxHighlighter {
    private Highlighter hl;
 
    /**
-    * @param txt  the reference to StyledText
+    * @param txt  the StyledText
     */
    public SyntaxHighlighter(StyledText txt) {
       this.txt = txt;
