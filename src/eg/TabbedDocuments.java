@@ -39,6 +39,8 @@ public class TabbedDocuments {
     * The maximum number of tabs */
    public static final int MAX_TABS = 15;
 
+   private static final String UNNAMED_LABEL = "unnamed";
+
    private final MainWin mw;
    private final ExtTabbedPane tabPane;
    private final EditableDocument[] edtDoc;
@@ -149,7 +151,7 @@ public class TabbedDocuments {
    }
 
    /**
-    * Saves a copy of the text content of the selected document as new
+    * Saves a copy of the text content of the selected document as a new
     * file that is specified in the file chooser; the file is not set in
     * the document.
     */
@@ -158,8 +160,8 @@ public class TabbedDocuments {
    }
 
    /**
-    * Renames the file of the selected document with a name that
-    * is specified in the file chooser
+    * Renames the file of the selected document with a name that is
+    * specified in the file chooser
     */
    public void rename() {
       if (edtDoc[iTab].hasFile() && !edtDoc[iTab].file().exists()) {
@@ -181,7 +183,7 @@ public class TabbedDocuments {
          return;
       }
       try {
-    	 Files.delete(edtDoc[iTab].file().toPath());
+         Files.delete(edtDoc[iTab].file().toPath());
          if (edtDoc[iTab].setFile(f)) {
             changeFile();
             proj.updateFileTree();
@@ -253,13 +255,11 @@ public class TabbedDocuments {
    }
 
    private static boolean exists(File f) {
-      if (f.exists()) {
-         return true;
-      }
-      else {
+      if (!f.exists()) {
          Dialogs.warnMessage(f.getName() + " was not found.");
          return false;
       }
+      return true;
    }
 
    private boolean isFileOpen(File f) {
@@ -289,7 +289,7 @@ public class TabbedDocuments {
    private boolean isOnlyUnnamedBlank() {
       return nTabs() == 1
             && !edtDoc[iTab].hasFile()
-            && edtDoc[iTab].textLength() == 0;
+            && edtDoc[iTab].isSaved();
    }
 
    private boolean isTabOpenable() {
@@ -306,7 +306,7 @@ public class TabbedDocuments {
       format.createEditAreaAt(n);
       edtDoc[n] = new EditableDocument(editArea[n], lang);
       edtDoc[n].setEditingStateReadable(editState);
-      tabPane.addTab("unnamed", editArea[n].content(), closeAct());
+      tabPane.addTab(UNNAMED_LABEL, editArea[n].content(), closeAct());
    }
 
    private void createDocument(File f) {
@@ -497,7 +497,7 @@ public class TabbedDocuments {
          return edtDoc[iTab].filename();
       }
       else {
-         return "unnamed";
+         return UNNAMED_LABEL;
       }
    }
 
@@ -528,7 +528,8 @@ public class TabbedDocuments {
       proj.changedDocumentUpdate();
       mw.enableRename(doc.hasFile());
       mw.setLanguageSelected(doc.language());
-      mw.displayFrameTitle(doc.filepath());
+      String title = doc.hasFile() ? doc.filepath() : UNNAMED_LABEL;
+      mw.displayFrameTitle(title);
    }
 
    private void changeLanguage(Languages lang) {
@@ -543,8 +544,8 @@ public class TabbedDocuments {
    private final EditingStateReadable editState = new EditingStateReadable() {
 
       @Override
-      public void updateChangedState(boolean isSave) {
-         mw.enableSave(isSave);
+      public void updateChangedState(boolean isChange) {
+         mw.enableSave(isChange);
       }
 
       @Override
