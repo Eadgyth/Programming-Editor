@@ -112,10 +112,8 @@ public class FileTree {
       if (currentRoot.isEmpty() || tree == null) {
          return;
       }
-      EventQueue.invokeLater(() -> {
-         setExpandedNodeList();
-         setNewTree(currentRoot);
-      });
+      setExpandedNodeList();
+      setNewTree(currentRoot);
    }
 
    /**
@@ -136,12 +134,14 @@ public class FileTree {
       if (path.isEmpty()) {
          return;
       }
-      checkDupl.clear();
-      currentRoot = path;
-      treePnl.enableFolderUpAct(!path.equals(projRoot));
-      File rootFile = new File(path);
-      setModel(rootFile);
-      setTree();
+      EventQueue.invokeLater(() -> {
+         checkDupl.clear();
+         currentRoot = path;
+         treePnl.enableFolderUpAct(!path.equals(projRoot));
+         File rootFile = new File(path);
+         setModel(rootFile);
+         setTree();
+      });
    }
 
    private void setModel(File f) {
