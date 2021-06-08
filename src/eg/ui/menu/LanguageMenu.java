@@ -34,8 +34,8 @@ public class LanguageMenu {
    }
 
    /**
-    * Sets a <code>LanguageChanger</code> to the elements in the array of
-    * items for actions to select the language
+    * Sets a <code>LanguageChanger</code> to the elements in the
+    * array of items for actions to select the language
     *
     * @param lc  the {@link LanguageChanger}
     */

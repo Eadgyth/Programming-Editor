@@ -252,7 +252,7 @@ public class ViewSettingWin {
       innerPnl.add(statusbarSettingPnl());
       pnl.add(innerPnl);
       return pnl;
-   }			
+   }
    private JPanel appearanceSettingsPnl() {
       JPanel pnl = new JPanel();
       pnl.setBorder(UIComponents.titledBorder("Appearance"));

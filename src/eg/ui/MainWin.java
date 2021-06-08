@@ -508,7 +508,7 @@ public class MainWin {
          ViewMenu vm = menuBar.viewMenu();
          prefs.setYesNoProperty(Prefs.TABBAR_KEY, vm.isTabItmSelected());
          prefs.setYesNoProperty(Prefs.FILE_VIEW_KEY, vm.isFileViewItmSelected());
-         prefs.store();       
+         prefs.store();
          System.exit(0);
       }
    }

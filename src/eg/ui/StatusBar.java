@@ -72,7 +72,7 @@ public class StatusBar {
    }
 
    /**
-    * Displays the project name and type
+    * Displays the project name
     *
     * @param projName  the name
     */
