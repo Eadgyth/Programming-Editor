@@ -196,7 +196,6 @@ public class EditorUpdating {
     */
    public void readEditingState() {
       if (esr != null) {
-         System.out.println(colNr);
          esr.updateChangedState(changedState);
          esr.updateUndoableState(undo.canUndo(), undo.canRedo());
          esr.updateSelectionState(selectionState);
