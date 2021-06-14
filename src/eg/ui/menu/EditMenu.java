@@ -1,9 +1,11 @@
 package eg.ui.menu;
 
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
@@ -37,8 +39,7 @@ public class EditMenu {
    private final JMenuItem outdentItm = new JMenuItem();
    private final JMenuItem setIndentItm = new JMenuItem("Indentation settings ...");
    private final JMenu clearSpacesMenu = new JMenu("Remove trailing spaces");
-   private final JMenuItem clearSpacesTotalItm
-         = new JMenuItem("Remove in entire text");
+   private final JMenuItem clearSpacesTotalItm = new JMenuItem("Remove in entire text");
    private final JMenuItem clearSpacesItm
          = new JMenuItem("Remove in current line or selection");
 
@@ -65,22 +66,40 @@ public class EditMenu {
     * @param edit  the reference to Edit
     */
    public void setEditActions(Edit edit) {
+      //
+      // Set actions attached to textarea in Edit class
       undoItm.setAction(edit.undoAction());
       undoItm.setIcon(IconFiles.UNDO_ICON);
+      pseudoShortCut(undoItm,
+            KeyStroke.getKeyStroke(KeyEvent.VK_Z, SystemParams.MODIFIER_MASK));
+
       redoItm.setAction(edit.redoAction());
       redoItm.setIcon(IconFiles.REDO_ICON);
-      cutItm.addActionListener(e -> edit.cut());
-      copyItm.addActionListener(e -> edit.setClipboard());
+      pseudoShortCut(redoItm,
+            KeyStroke.getKeyStroke(KeyEvent.VK_Y, SystemParams.MODIFIER_MASK));
+
       pasteItm.setAction(edit.pasteAction());
       pasteItm.setIcon(IconFiles.PASTE_ICON);
+      pseudoShortCut(pasteItm,
+            KeyStroke.getKeyStroke(KeyEvent.VK_V, SystemParams.MODIFIER_MASK));
+
+      indentItm.setAction(edit.indentAction());
+      indentItm.setIcon(IconFiles.INDENT_ICON);
+      pseudoShortCut(indentItm,
+            KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
+
+      outdentItm.setAction(edit.outdentAction());
+      outdentItm.setIcon(IconFiles.OUTDENT_ICON);
+      pseudoShortCut(outdentItm,
+            KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK));
+      //
+      // ActionListeners using methods in Edit class
+      cutItm.addActionListener(e -> edit.cut());
+      copyItm.addActionListener(e -> edit.setClipboard());
       selectAllItm.addActionListener(e -> edit.selectAll());
       selectLineItm.addActionListener(e -> edit.selectLine());
       selectLineTextItm.addActionListener(e -> edit.selectLineText());
       selectLineFromCursorItm.addActionListener(e -> edit.selectLineFromCursor());
-      indentItm.setAction(edit.indentAction());
-      indentItm.setIcon(IconFiles.INDENT_ICON);
-      outdentItm.setAction(edit.outdentAction());
-      outdentItm.setIcon(IconFiles.OUTDENT_ICON);
       setIndentItm.addActionListener(e -> edit.openIndentSettingWin());
       clearSpacesTotalItm.addActionListener(e -> edit.clearTrailingSpaces(true));
       clearSpacesItm.addActionListener(e -> edit.clearTrailingSpaces(false));
@@ -206,11 +225,16 @@ public class EditMenu {
             SystemParams.MODIFIER_MASK));
       selectLineTextItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B,
             SystemParams.MODIFIER_MASK));
-      selectLineFromCursorItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
+      selectLineFromCursorItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I,
             SystemParams.MODIFIER_MASK));
       clearSpacesTotalItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
             SystemParams.MODIFIER_MASK));
       clearSpacesItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D,
             SystemParams.MODIFIER_MASK));
+   }
+
+   private void pseudoShortCut(JMenuItem itm, KeyStroke ks) {
+      itm.setAccelerator(ks);
+      itm.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "none");
    }
 }

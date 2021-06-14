@@ -11,9 +11,10 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
-import javax.swing.Action;
-import javax.swing.JTextPane;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
 import javax.swing.JComponent;
+import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 
 import java.io.IOException;
@@ -26,7 +27,7 @@ import eg.utils.SystemParams;
 import eg.document.EditableDocument;
 
 /**
- * The editing of text by commands in the edit menu or the toolbar
+ * The editing of text by commands in an edit menu or toolbar
  */
 public class Edit {
 
@@ -40,11 +41,17 @@ public class Edit {
    private static final Prefs PREFS = new Prefs();
 
    private final IndentSettingWin indentSetWin;
-   private final FunctionalAction pasteAction;
-   private final FunctionalAction indentAction;
-   private final FunctionalAction outdentAction;
-   private final FunctionalAction undoAction;
-   private final FunctionalAction redoAction;
+
+   private final FunctionalAction pasteAction
+         = new FunctionalAction("Paste", null, e -> pasteText());
+   private final FunctionalAction undoAction
+         = new FunctionalAction("Undo", null, e -> undo());
+   private final FunctionalAction redoAction
+         = new FunctionalAction("Redo", null, e -> redo());
+   private final FunctionalAction indentAction
+         = new FunctionalAction("Increase indentation", null, e -> indent());
+   private final FunctionalAction outdentAction
+         = new FunctionalAction("Decrease indentation", null, e -> outdent());
 
    private EditableDocument edtDoc;
    private JTextPane textArea;
@@ -74,12 +81,6 @@ public class Edit {
       else {
          indentSetWin = null;
       }
-      undoAction = new FunctionalAction("Undo", null, e -> undo());
-      redoAction = new FunctionalAction("Redo", null, e -> redo());
-      pasteAction = new FunctionalAction("Paste", null, e -> pasteText());
-      indentAction = new FunctionalAction("Increase indent", null, e -> indent());
-      outdentAction = new FunctionalAction("Decrease indent", null, e -> outdent());
-      setShortCuts();
    }
 
    /**
@@ -105,18 +106,6 @@ public class Edit {
    }
 
    /**
-    * Returns the <code>FunctionalAction</code> that undoes edits.
-    * The keyboard event 'modifier mask' + Z is set on the action and
-    * a label is set.
-    *
-    * @return  the FunctionalAction
-    * @see #undo
-    */
-   public FunctionalAction undoAction() {
-      return undoAction;
-   }
-
-   /**
     * Undoes edits
     */
    public void undo() {
@@ -124,15 +113,15 @@ public class Edit {
    }
 
    /**
-    * Returns the <code>FunctionalAction</code> that redoes edits.
-    * The keyboard event 'modifier mask' + Y is set on the action
-    * and a label is set.
+    * Returns the <code>FunctionalAction</code> named "Undo" that is
+    * associated with the shortcut 'modifier mask' + Z and added to
+    * the text area of an <code>EditableDocument</code>
     *
-    * @return  the FunctionalAction
-    * @see #redo
+    * @return  the FunctionalAction that undoes edits
+    * @see #undo
     */
-   public FunctionalAction redoAction() {
-      return redoAction;
+   public FunctionalAction undoAction() {
+      return undoAction;
    }
 
    /**
@@ -143,7 +132,19 @@ public class Edit {
    }
 
    /**
-    * Cuts selected text and stores it in the system's clipboard
+    * Returns the <code>FunctionalAction</code> named "Redo" that is
+    * associated with the shortcut 'modifier mask' + Y and added to
+    * the text area of an <code>EditableDocument</code>
+    *
+    * @return  the FunctionalAction that redos edits
+    * @see #redo
+    */
+   public FunctionalAction redoAction() {
+      return redoAction;
+   }
+
+   /**
+    * Cuts selected text and stores it in the system clipboard
     */
    public void cut() {
       int start = textArea.getSelectionStart();
@@ -153,7 +154,7 @@ public class Edit {
    }
 
    /**
-    * Copies selected text to the system's clipboard
+    * Copies selected text to the system clipboard
     */
    public void setClipboard() {
       String str = textArea.getSelectedText();
@@ -164,19 +165,7 @@ public class Edit {
    }
 
    /**
-    * Returns the <code>FunctionalAction</code> that pastes text from
-    * the clipboard. The keyboard event 'modifier mask' + V is set on
-    * the action and a label is set.
-    *
-    * @return  the FunctionalAction
-    * @see #pasteText
-    */
-   public FunctionalAction pasteAction() {
-      return pasteAction;
-   }
-
-   /**
-    * Pastes text from the clipboard. Any selected text is replaced.
+    * Pastes text from the clipboard
     */
    public void pasteText() {
       String clipboard = getClipboard();
@@ -187,6 +176,18 @@ public class Edit {
       int end = textArea.getSelectionEnd();
       int length = end - pos;
       edtDoc.replace(pos, length, clipboard, true);
+   }
+
+   /**
+    * Returns the <code>FunctionalAction</code> named "Paste" that is
+    * associated with the shortcut 'modifier mask' + V and added to
+    * the text area of an <code>EditableDocument</code>
+    *
+    * @return  the FunctionalAction that pastes text
+    * @see #pasteText
+    */
+   public FunctionalAction pasteAction() {
+      return pasteAction;
    }
 
    /**
@@ -246,9 +247,7 @@ public class Edit {
     }
 
    /**
-    * Changes the indentation mode if this <code>Edit</code> doesn't
-    * use <code>IndentSettingWin</code> to change the indentation
-    * mode
+    * Changes the indentation mode
     *
     * @param indentUnit  the indent unit which consists of empty
     * spaces
@@ -261,18 +260,6 @@ public class Edit {
                "Edit uses IndentSettingWin to change the Indentation");
       }
       changeIndentationModeImpl(indentUnit, indentTab);
-   }
-
-   /**
-    * Returns the <code>FunctionalAction</code> that increases the
-    * indentation. The keyboard event 'Tab' is set on the action and
-    * a label is set.
-    *
-    * @return  the FunctionalAction
-    * @see #indent
-    */
-   public FunctionalAction indentAction() {
-      return indentAction;
    }
 
    /**
@@ -313,15 +300,15 @@ public class Edit {
    }
 
    /**
-    * Returns the <code>FunctionalAction</code> that decreases
-    * the indentation. The keyboard event 'Shift+Tab' is set on
-    * the action and a label is set.
+    * Returns the <code>FunctionalAction</code> named "Increase
+    * indentation" that is associated with the shortcut 'Tab' and
+    * added to the text area of an <code>EditableDocument</code>
     *
-    * @return  the FunctionalAction
-    * @see #outdent
+    * @return  the FunctionalAction that increases the indentation
+    * @see #indent
     */
-   public FunctionalAction outdentAction() {
-      return outdentAction;
+   public FunctionalAction indentAction() {
+      return indentAction;
    }
 
    /**
@@ -354,6 +341,19 @@ public class Edit {
          outdent(lineStart, lines);
          edtDoc.enableUndoMerging(false);
       }
+   }
+
+   /**
+    * Returns the <code>FunctionalAction</code> named "Decrease
+    * indentation" that is associated with the shortcut
+    * 'Shift + Tab' and added to the text area of an
+    * <code>EditableDocument</code>
+    *
+    * @return  the FunctionalAction
+    * @see #indent
+    */
+   public FunctionalAction outdentAction() {
+      return outdentAction;
    }
 
    /**
@@ -473,6 +473,17 @@ public class Edit {
       return count;
    }
 
+   private int startOfTrailingSpaces(String line) {
+      char[] c = line.toCharArray();
+      int i;
+      for (i = c.length - 1; i >= 0; i--) {
+         if (c[i] != SPACE_CH && c[i] != TAB_CH) {
+            break;
+         }
+      }
+      return i + 1;
+   }
+
    private void indentSettingInput() {
       int n = indentSetWin.indentLength();
       StringBuilder sb = new StringBuilder();
@@ -499,64 +510,44 @@ public class Edit {
       }
    }
 
-   private int startOfTrailingSpaces(String line) {
-      char[] c = line.toCharArray();
-      int i;
-      for (i = c.length - 1; i >= 0; i--) {
-         if (c[i] != SPACE_CH && c[i] != TAB_CH) {
-            break;
-         }
-      }
-      return i + 1;
-   }
-
-   private void setShortCuts() {
-      undoAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
-            KeyEvent.VK_Z, SystemParams.MODIFIER_MASK));
-      redoAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
-            KeyEvent.VK_Y, SystemParams.MODIFIER_MASK));
-      pasteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
-            KeyEvent.VK_V, SystemParams.MODIFIER_MASK));
-      indentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
-            KeyEvent.VK_TAB, 0));
-      outdentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
-            KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK));
-   }
-
    private void setKeyBindings() {
       if (textArea == null) {
-         throw new IllegalStateException("No document has been set");
+        throw new IllegalStateException("No document has been set");
       }
-      if (textArea.getActionMap().keys() != null) {
+      InputMap im = textArea.getInputMap(JComponent.WHEN_FOCUSED);
+      if (im.size() != 0) {
          return;
       }
+
+      ActionMap am = textArea.getActionMap();
+
       String undoKey = "Z_pressed";
       KeyStroke ksUndo = KeyStroke.getKeyStroke(
             KeyEvent.VK_Z, SystemParams.MODIFIER_MASK);
-      textArea.getInputMap(JComponent.WHEN_FOCUSED).put(ksUndo, undoKey);
-      textArea.getActionMap().put(undoKey, undoAction);
+      im.put(ksUndo, undoKey);
+      am.put(undoKey, undoAction);
 
       String redoKey = "Y_pressed";
       KeyStroke ksRedo = KeyStroke.getKeyStroke(
             KeyEvent.VK_Y, SystemParams.MODIFIER_MASK);
-      textArea.getInputMap(JComponent.WHEN_FOCUSED).put(ksRedo, redoKey);
-      textArea.getActionMap().put(redoKey, redoAction);
+      im.put(ksRedo, redoKey);
+      am.put(redoKey, redoAction);
 
       String pasteKey = "V_pressed";
       KeyStroke ksPaste = KeyStroke.getKeyStroke(
             KeyEvent.VK_V, SystemParams.MODIFIER_MASK);
-      textArea.getInputMap(JComponent.WHEN_FOCUSED).put(ksPaste, pasteKey);
-      textArea.getActionMap().put(pasteKey, pasteAction);
+      im.put(ksPaste, pasteKey);
+      am.put(pasteKey, pasteAction);
 
       String tabKey = "Tab_pressed";
       KeyStroke ksTab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0);
-      textArea.getInputMap(JComponent.WHEN_FOCUSED).put(ksTab, tabKey);
-      textArea.getActionMap().put(tabKey, indentAction);
+      im.put(ksTab, tabKey);
+      am.put(tabKey, indentAction);
 
       String shiftTabKey = "Shift_Tab_pressed";
       KeyStroke ksShiftTab = KeyStroke.getKeyStroke(
             KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK);
-      textArea.getInputMap(JComponent.WHEN_FOCUSED).put(ksShiftTab, shiftTabKey);
-      textArea.getActionMap().put(shiftTabKey, outdentAction);
+      im.put(ksShiftTab, shiftTabKey);
+      am.put(shiftTabKey, outdentAction);
    }
 }
