@@ -129,7 +129,7 @@ public class TabbedDocuments {
     */
    public void saveAll() {
       for (int i = 0; i < nTabs(); i++) {
-         if (edtDoc[i].isSaved()) {
+         if (!edtDoc[i].isChanged()) {
             continue;
          }
          if (edtDoc[i].hasFile() && edtDoc[i].file().exists()) {
@@ -289,7 +289,7 @@ public class TabbedDocuments {
    private boolean isOnlyUnnamedBlank() {
       return nTabs() == 1
             && !edtDoc[iTab].hasFile()
-            && edtDoc[iTab].isSaved();
+            && !edtDoc[iTab].isChanged();
    }
 
    private boolean isTabOpenable() {
@@ -370,7 +370,7 @@ public class TabbedDocuments {
       }
       boolean b;
       if (!edtDoc[iTab].hasFile() || edtDoc[iTab].file().exists()) {
-         b = edtDoc[iTab].isSaved();
+         b = !edtDoc[iTab].isChanged();
          if (!b) {
             b = canCloseUnsavedFile(iTab);
          }
@@ -422,7 +422,7 @@ public class TabbedDocuments {
    private int iUnsavedFile() {
       int i;
       for (i = 0; i < nTabs(); i++) {
-         if (!edtDoc[i].isSaved()) {
+         if (edtDoc[i].isChanged()) {
             break;
          }
       }
@@ -551,6 +551,7 @@ public class TabbedDocuments {
       @Override
       public void updateUndoableState(boolean canUndo, boolean canRedo) {
          mw.enableUndoRedo(canUndo, canRedo);
+         //edit.enableUndoRedoKeyBindings(canUndo, canRedo);
       }
 
       @Override

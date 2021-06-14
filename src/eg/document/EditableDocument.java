@@ -163,9 +163,6 @@ public final class EditableDocument {
     * otherwise
     */
    public boolean saveFile() {
-      if (!update.isChanged()) {
-         return false;
-      }
       checkFileForNull();
       boolean isWritten = writeToFile(file);
       if (isWritten) {
@@ -213,13 +210,13 @@ public final class EditableDocument {
    }
 
    /**
-    * Returns if the text has not been changed since the last saving
-    * point
+    * Returns if the text has been changed since creating the
+    * document or since the last saving point
     *
-    * @return  true not changed, false otherwise
+    * @return  true if not changed, false otherwise
     */
-   public boolean isSaved() {
-      return !update.isChanged();
+   public boolean isChanged() {
+      return update.isChanged();
    }
 
    /**

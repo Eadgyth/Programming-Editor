@@ -377,14 +377,14 @@ public class Projects {
    private boolean save() {
       StringBuilder missingFiles = new StringBuilder();
       for (EditableDocument d : edtDoc) {
-         if (d != null && d.hasFile()) {
-            boolean isProjFile = currentProject.isInProject(d.fileParent());
-            if (isProjFile) {
-               if (d.file().exists()) {
+         if (d != null && d.hasFile() && currentProject.isInProject(d.fileParent())) {
+            if (d.file().exists()) {
+               if (d.isChanged()) {
                   d.saveFile();
-               } else {
-                  missingFiles.append("\n").append(d.filename());
                }
+            }
+            else {
+               missingFiles.append("\n").append(d.filename());
             }
          }
       }
