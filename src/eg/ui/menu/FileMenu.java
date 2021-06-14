@@ -73,7 +73,7 @@ public class FileMenu {
     */
    public void setExitAction(ActionListener al) {
       exitItm.addActionListener(al);
-   }    
+   }
 
    /**
     * Enables or disables the item for save actions
@@ -121,6 +121,8 @@ public class FileMenu {
       openItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
             SystemParams.MODIFIER_MASK));
       saveItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+            SystemParams.MODIFIER_MASK));
+      printItm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
             SystemParams.MODIFIER_MASK));
    }
 }
