@@ -116,7 +116,7 @@ public final class ExtTabbedPane extends JTabbedPane {
     */
    @Override
    public void updateUI() {
-       super.setUI(tui);
+      super.setUI(tui);
    }
 
    @Override

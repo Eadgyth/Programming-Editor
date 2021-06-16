@@ -551,7 +551,6 @@ public class TabbedDocuments {
       @Override
       public void updateUndoableState(boolean canUndo, boolean canRedo) {
          mw.enableUndoRedo(canUndo, canRedo);
-         //edit.enableUndoRedoKeyBindings(canUndo, canRedo);
       }
 
       @Override

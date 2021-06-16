@@ -72,8 +72,8 @@ public class TaskRunner {
                cons.setCaret(0);
             }
             cons.setLocked();
+            fileTreeUpdate.run();
          });
-         EventQueue.invokeLater(fileTreeUpdate);
       }).start();
    }
 

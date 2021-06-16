@@ -108,7 +108,7 @@ public class Compilation {
          String msg = e.getMessage() != null
                ? "for the following reason:\n" + e.getMessage() : "";
 
-         pr.printLine(">>Unable to compile " + msg);
+         pr.printBr("Unable to compile " + msg);
       }
       catch (IOException | RuntimeException e) {
          FileUtils.log(e);

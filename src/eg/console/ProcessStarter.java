@@ -29,8 +29,8 @@ import eg.utils.FileUtils;
  */
 public class ProcessStarter {
 
-   private static final String START_MESSAGE = ">>Run:\n";
-   private static final String TRUNCATE_MESSAGE = ">>NOTE: The output was truncated\n";
+   private static final String START_MESSAGE = ">> Run:\n";
+   private static final String TRUNCATE_MESSAGE = ">> NOTE: The output was truncated\n";
 
    private final Console cons;
    private final Runnable fileTreeUpdate;
