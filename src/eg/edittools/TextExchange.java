@@ -60,14 +60,25 @@ public class TextExchange {
     * at the caret position in the exchange document. The text to copy
     * replaces any selected text
     */
+   public void copyAllTextFromSource() {
+      String text = sourceDoc.text();
+      if (text.isEmpty()) {
+         Dialogs.warnMessage(filename() + " does not contain any text.");
+         return;
+      }
+      copy(exchangeDoc, text);
+   }
+
+   /**
+    * Copies text selected in the source document and inserts the text
+    * at the caret position in the exchange document. The text to copy
+    * replaces any selected text
+    */
    public void copyTextFromSource() {
       String text = sourceDoc.textArea().getSelectedText();
       if (text == null) {
          String filename = sourceDoc.filename();
-         if (filename.isEmpty()) {
-            filename = "unnamed";
-         }
-         Dialogs.warnMessage("No text is selected in " + filename + ".");
+         Dialogs.warnMessage("No text is selected in " + filename() + ".");
          return;
       }
       copy(exchangeDoc, text);
@@ -206,5 +217,13 @@ public class TextExchange {
       int end = destination.textArea().getSelectionEnd();
       int length = end - pos;
       destination.replace(pos, length, text, true);
+   }
+
+   private String filename() {
+      String filename = sourceDoc.filename();
+      if (filename.isEmpty()) {
+         filename = "unnamed";
+      }
+      return filename;
    }
 }
