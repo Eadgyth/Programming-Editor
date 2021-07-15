@@ -36,7 +36,7 @@ public class Formatter {
     */
    public Formatter (int n, String keyPrefix) {
       setPropertyKeys(keyPrefix);
-      getFormatProperties();
+      setFormatProperties();
       fontWin = new FontSettingWin(font, fontSize);
       fontWin.okAct(e -> setFont());
       editArea = new EditArea[n];
@@ -203,7 +203,7 @@ public class Formatter {
       fontSizeKey = prefix + Prefs.FONT_SIZE_KEY;
    }
 
-   private void getFormatProperties() {
+   private void setFormatProperties() {
       isWordwrap = prefs.yesNoProperty(wordwrapKey);
       font = prefs.property(fontKey);
       try {

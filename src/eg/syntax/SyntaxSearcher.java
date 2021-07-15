@@ -37,7 +37,8 @@ public class SyntaxSearcher {
    private int nCData;
    private int nQuote;
    private int nLineCmnt;
-   private int nBlockCmnt;
+   private int nBlockCmntStarts;
+   private int nBlockCmntEnds;
    private int condition = 0;
 
    /**
@@ -394,36 +395,36 @@ public class SyntaxSearcher {
          boolean ignoreQuotes) {
 
       setBlockSection(blockEnd, ignoreQuotes);
-      int count = 0;
+      int countStarts = 0;
+      int countEnds = 0;
       int start = 0;
       while (start != -1) {
          start = nextBlockCmntStart(blockStart, start, ignoreQuotes);
          int len = 1;
          if (start != -1) {
-            count++;
+            countStarts++;
             int searchStart = start + blockStart.length();
             int end = section.indexOf(blockEnd, searchStart);
-            int nextStart = nextBlockCmntStart(blockStart, searchStart, ignoreQuotes);
-            if (end > nextStart && nextStart != -1) {
-               count++;
-            }
             if (end != -1) {
-               count++;
-               int nextEnd = section.indexOf(blockEnd, end + blockEnd.length());
-               if (nextEnd != -1 && (nextStart == -1 || nextEnd < nextStart)) {
-                  count++;
-               }
+               countEnds++;
                len = end - start + blockEnd.length();
                txt.setAttributes(start + scnStart, len, attr.greenPlain);
+               countStarts += countBlockCmntStartsBetween(blockStart, ignoreQuotes,
+                     searchStart, end);
+
+               if (section.indexOf(blockEnd, end + blockEnd.length()) != -1) {
+                  countEnds++;
+               }
             }
             start += len;
          }
       }
-      if (nBlockCmnt != count) {
+      if (nBlockCmntStarts != countStarts | nBlockCmntEnds != countEnds) {
          repair(section, scnStart);
       }
       if (!isInnerSection) {
-         nBlockCmnt = count;
+         nBlockCmntStarts = countStarts;
+         nBlockCmntEnds = countEnds;
       }
    }
 
@@ -771,6 +772,30 @@ public class SyntaxSearcher {
          absPos = i + scnStart;
       }
       return i;
+   }
+
+   private int countBlockCmntStartsBetween(String blockStart, boolean ignoreQuotes,
+         int start, int end) {
+
+      int count = 0;
+      int i = start;
+      int absPos = i + scnStart;
+      while (i != -1) {
+         i = section.indexOf(blockStart, i);
+         if (i >= end) {
+            break;
+         }
+         else if (i != -1) {
+            if ((!inString(absPos, ignoreQuotes)
+                  && !inLineCmnt(absPos))) {
+
+               count++;
+            }
+            absPos = i + scnStart;
+            i++;
+         }
+      }
+      return count;
    }
 
    private int lastBlockCmntEnd(String blockEnd, int pos, boolean ignoreQuotes) {

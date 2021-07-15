@@ -173,7 +173,7 @@ public final class Prefs {
    }
 
    /**
-    * Returns if the value of the 'Yes-No' property that corresponds
+    * Returns the value of the 'Yes-No' property that corresponds
     * to the specified key
     *
     * @param key  the property key

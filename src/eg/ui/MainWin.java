@@ -145,9 +145,9 @@ public class MainWin {
 
    /**
     * Selects or unselects the menu item for setting wordwrap
-    * and diplays in the status bar if wordwrap is switched on
+    * and displays in the status bar if wordwrap is choosen
     *
-    * @param b  true if wordwrap is switched on, false otherwise
+    * @param b  true if wordwrap is chosen; false otherwise
     */
    public void displayWordWrapState(boolean b) {
       menuBar.formatMenu().selectWordWrapItm(b);

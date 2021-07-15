@@ -156,8 +156,7 @@ public final class EditableDocument {
     }
 
    /**
-    * Saves the text content to this file if the file has been
-    * changed
+    * Saves the text content to this file
     *
     * @return  true if the text content could be saved; false
     * otherwise
@@ -172,8 +171,7 @@ public final class EditableDocument {
    }
 
    /**
-    * Sets the specified file and saves the text content to the file.
-    * Any previously set file is replaced.
+    * Sets the specified file and saves the text content to the file
     *
     * @param f  the file
     * @return  true if the text content could be saved; false otherwise
@@ -213,7 +211,7 @@ public final class EditableDocument {
     * Returns if the text has been changed since creating the
     * document or since the last saving point
     *
-    * @return  true if not changed, false otherwise
+    * @return  true if changed; false otherwise
     */
    public boolean isChanged() {
       return update.isChanged();

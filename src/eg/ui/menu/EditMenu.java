@@ -44,7 +44,7 @@ public class EditMenu {
          = new JMenuItem("Remove in current line or selection");
 
    /**
-    * @param languageMenu  the reference to <code>LangageMenu</code>
+    * @param languageMenu  the <code>LanguageMenu</code>
     */
    public EditMenu(LanguageMenu languageMenu) {
       assembleMenu(languageMenu);
@@ -52,7 +52,7 @@ public class EditMenu {
    }
 
    /**
-    * Gets this menu
+    * Returns this menu
     *
     * @return  the menu
     */
@@ -61,7 +61,7 @@ public class EditMenu {
    }
 
    /**
-    * Sets listeners for editing actions
+    * Sets editing actions and listeners
     *
     * @param edit  the reference to Edit
     */

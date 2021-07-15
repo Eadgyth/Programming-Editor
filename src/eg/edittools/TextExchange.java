@@ -77,7 +77,6 @@ public class TextExchange {
    public void copyTextFromSource() {
       String text = sourceDoc.textArea().getSelectedText();
       if (text == null) {
-         String filename = sourceDoc.filename();
          Dialogs.warnMessage("No text is selected in " + filename() + ".");
          return;
       }
