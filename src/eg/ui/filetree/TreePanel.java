@@ -4,14 +4,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.BorderLayout;
 
-import java.awt.event.ActionListener;
-
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
-import javax.swing.UIManager;
 
 import javax.swing.border.LineBorder;
 
@@ -39,9 +36,6 @@ public class TreePanel {
    private final JPanel content;
    private final JPanel holdTree = new JPanel(new BorderLayout());
    private final JScrollPane scroll = UIComponents.scrollPane();
-   private final JButton upBt = new JButton(UIManager.getIcon(
-         "FileChooser.upFolderIcon"));
-
    private final JButton closeBt = UIComponents.undecoratedButton();
 
    public TreePanel() {
@@ -78,30 +72,12 @@ public class TreePanel {
    }
 
    /**
-    * Sets the listener for folder up actions
-    *
-    * @param al  the <code>ActionListener</code>
-    */
-   public void setFolderUpAction(ActionListener al) {
-      upBt.addActionListener(al);
-   }
-
-   /**
     * Sets the action for closing the this panel to this closing button
     *
     * @param act  the closing action
     */
    public void setClosingAct(FunctionalAction act) {
       closeBt.setAction(act);
-   }
-
-   /**
-    * Enables or disables the button for folder up actions
-    *
-    * @param b  true to enable, false to disable
-    */
-   public void enableFolderUpAct(boolean b) {
-      upBt.setEnabled(b);
    }
 
    //
@@ -115,17 +91,13 @@ public class TreePanel {
       holdTree.setBackground(theme.background());
       holdTree.setBorder(new LineBorder(theme.background(), 5));
       scroll.setViewportView(holdTree);
-      enableFolderUpAct(false);
    }
 
    private JToolBar toolbar() {
-      JButton[] bts = new JButton[] {
-         upBt
-      };
       String[] tooltips = new String[] {
          "Folder up"
       };
-      return UIComponents.toolBar(bts, tooltips, closeBt);
+      return UIComponents.toolBar(null, tooltips, closeBt);
    }
 
    @SuppressWarnings("serial")

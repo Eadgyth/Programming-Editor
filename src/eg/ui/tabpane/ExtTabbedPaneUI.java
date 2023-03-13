@@ -117,7 +117,7 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
    protected void paintContentBorder(Graphics g, int tabPlacement,
          int selectedIndex) {
 	  
-	  // should not point
+	  // should not paint
    }
 
    @Override

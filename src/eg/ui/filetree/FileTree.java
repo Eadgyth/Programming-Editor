@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -45,12 +46,11 @@ public class FileTree {
 
    private JTree tree = null;
    private DefaultTreeModel model;
-   private DefaultMutableTreeNode root;
 
    private String projRoot = "";
-   private String currentRoot = "";
    private String deletableDir = null;
    private List<TreePath> expandedNodes = null;
+   private HashMap<String, List<TreePath>> prevExpandedNodes = new HashMap<>();
    private File selectedFile = null;
    private DefaultMutableTreeNode selectedNode = null;
 
@@ -71,10 +71,21 @@ public class FileTree {
     * @param projectRoot  the project's root directory
     */
    public void setProjectTree(String projectRoot) {
-      if (!projRoot.equals(projectRoot)) {
-         projRoot = projectRoot;
-         setNewTree(projRoot);
+      if (projectRoot == null) {
+         throw new IllegalArgumentException("projectRoot is null");
       }
+      if (projRoot.equals(projectRoot) || projectRoot.isEmpty()) {
+         return;
+      }
+      if (tree != null) {
+         setExpandedNodeList();
+         prevExpandedNodes.put(projRoot, expandedNodes);
+      }
+      if (prevExpandedNodes.containsKey(projectRoot)) {
+         expandedNodes = prevExpandedNodes.get(projectRoot);
+      }
+      projRoot = projectRoot;
+      setNewTree();
    }
 
    /**
@@ -88,7 +99,7 @@ public class FileTree {
     * set a deletable directory
     */
    public void setDeletableDir(String dir) {
-      if (projRoot.length() == 0) {
+      if (projRoot.isEmpty()) {
          throw new IllegalStateException("No project root has been set");
       }
       if (dir == null || dir.isEmpty() || new File(dir).isAbsolute()) {
@@ -106,46 +117,40 @@ public class FileTree {
    }
 
    /**
-    * Updates the tree at the currently shown root
+    * Updates the tree to display any possible changes
     */
    public void updateTree() {
-      if (currentRoot.isEmpty() || tree == null) {
+      if (projRoot.isEmpty() || tree == null) {
          return;
       }
       setExpandedNodeList();
-      setNewTree(currentRoot);
+      setNewTree();
    }
 
    /**
-    * Gets this currently shown root which may be a subdirectory
-    * of the initial project root
+    * Returns this currently shown project root
     *
     * @return  the root
     */
    public String currentRoot() {
-      return currentRoot;
+      return projRoot;
    }
 
    //
    //--private--/
    //
 
-   private void setNewTree(String path) {
-      if (path.isEmpty()) {
-         return;
-      }
+   private void setNewTree() {
       EventQueue.invokeLater(() -> {
          checkDupl.clear();
-         currentRoot = path;
-         treePnl.enableFolderUpAct(!path.equals(projRoot));
-         File rootFile = new File(path);
+         File rootFile = new File(projRoot);
          setModel(rootFile);
          setTree();
       });
    }
 
    private void setModel(File f) {
-      root = new DefaultMutableTreeNode(f);
+      DefaultMutableTreeNode root = new DefaultMutableTreeNode(f);
       model = new DefaultTreeModel(root);
       getFiles(root, f);
    }
@@ -197,20 +202,12 @@ public class FileTree {
       return all.toArray(new File[toSort.length]);
    }
 
-   private void folderUp() {
-      if (!projRoot.equals(currentRoot)) {
-         String parent = new File(currentRoot).getParent();
-         setNewTree(parent);
-         tree.expandRow(0);
-      }
-   }
-
    private void openFile() {
       opener.open(selectedFile);
       tree.clearSelection();
    }
 
-   private void deleteFile() {
+   private void delete() {
       if (!FileUtils.isWriteable(selectedFile)) {
          return;
       }
@@ -226,12 +223,7 @@ public class FileTree {
             else {
                deleteFolder(selectedFile);
             }
-            if (selectedNode == root) {
-               folderUp();
-            }
-            else {
-               model.removeNodeFromParent(selectedNode);
-            }
+            model.removeNodeFromParent(selectedNode);
          }
          catch (IOException e) {
             FileUtils.log(e);
@@ -308,11 +300,10 @@ public class FileTree {
    }
 
    private void setActions() {
-      treePnl.setFolderUpAction(e -> folderUp());
       popupFile.setOpenAction(e -> openFile());
-      popupFile.setDeleteAct(e -> deleteFile());
+      popupFile.setDeleteAct(e -> delete());
       popupDir.setNewFolderAct(e -> newFolder());
-      popupDir.setDeleteAct(e -> deleteFile());
+      popupDir.setDeleteAct(e -> delete());
    }
 
    private final TreeExpansionListener expansionListner
@@ -346,7 +337,7 @@ public class FileTree {
 
       @Override
       public void treeCollapsed(TreeExpansionEvent event) {
-    	 // not used
+    	   // not used
       }
    };
 
@@ -371,8 +362,7 @@ public class FileTree {
                      openFile();
                   }
                   else {
-                	   setNewTree(selectedFile.toString());
-                     tree.expandRow(0);
+                     tree.expandRow(row);
                   }
                }
             }
@@ -404,13 +394,13 @@ public class FileTree {
 
       private boolean isFolderDeletable() {
          File[] content = selectedFile.listFiles();
-         if (content == null) {
+         if (content == null || selectedFile.compareTo(new File(projRoot)) == 0) {
             return false;
          }
          else {
     	      return content.length == 0
                 || (deletableDir != null
-                 && selectedFile.toString().startsWith(deletableDir));
+                && selectedFile.toString().startsWith(deletableDir));
          }
       }
    };

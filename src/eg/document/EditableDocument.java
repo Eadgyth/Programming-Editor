@@ -186,7 +186,7 @@ public final class EditableDocument {
 
    /**
     * Saves the text content to the specified file but does not
-    * set the file
+    * set the file in this <code>EditableDocument</code>
     *
     * @param f  the file
     * @return  true if the text content could be saved, false
@@ -274,7 +274,8 @@ public final class EditableDocument {
 
    /**
     * Displays the content of the specified file if no file is set
-    * and the document has not been edited.
+    * in this <code>EditableDocument</code> and the document has not
+    * been edited.
     * <p>
     * The file is not set either, the current language is used
     * irrespectively of the file type and the text insertion is not
@@ -289,7 +290,7 @@ public final class EditableDocument {
 
    /**
     * Replaces the current text with the content of the specified
-    * if no file is set.
+    * if no file is set in this <code>EditableDocument</code>.
     * <p>
     * The file is not set either and the language is set according to
     * the file type

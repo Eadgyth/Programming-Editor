@@ -31,7 +31,6 @@ public class Projects {
 
    private ProjectCommands currentProject;
    private int iDoc;
-   private boolean replace = false;
    private boolean isSaveAndRun;
 
    /**
@@ -69,15 +68,15 @@ public class Projects {
          mw.enableAssignProject(edtDoc[iDoc].hasFile(), null);
       }
       else {
-         ProjectCommands inList;
+         ProjectCommands fromList;
          boolean isProject = false;
          boolean isCurrentProject = false;
          boolean isAssignProject = false;
          ProjectTypes projType = null;
          if (edtDoc[iDoc].hasFile()) {
-            inList = selectFromList(edtDoc[iDoc].fileParent(), false);
-            isProject = inList != null;
-            isCurrentProject = isProject && inList == currentProject;
+            fromList = selectFromList(edtDoc[iDoc].fileParent(), false);
+            isProject = fromList != null;
+            isCurrentProject = isProject && fromList == currentProject;
             isAssignProject = !isProject || isCurrentProject;
             if (isCurrentProject) {
                projType = currentProject.projectType();
@@ -116,27 +115,28 @@ public class Projects {
    }
 
    /**
-    * Opens the project settings to assign a new project
+    * Opens the project settings to assign a new project. If the
+    * selected file alreade belongs to project of the specified
+    * project type the project settings for this project are opened.
     *
     * @param projType  the project type
     */
    public void assign(ProjectTypes projType) {
       String dir = edtDoc[iDoc].fileParent();
-      ProjectCommands inList = selectFromList(dir, false);
-      boolean assign = inList == null;
-      if (!assign) {
+      ProjectCommands fromList = selectFromList(dir, false);
+      boolean isNewProject = fromList == null;
+      if (!isNewProject) {
          if (currentProject.projectType() == projType) {
             openSettingsWindow(currentProject, dir);
          }
          else {
-            int res = replaceRes(projType, inList.projectType());
+            int res = replaceRes(projType, fromList.projectType());
             if (0 == res) {
-               replace = true;
-               assign = true;
+               isNewProject = true;
             }
          }
       }
-      if (assign) {
+      if (isNewProject) {
          ProjectCommands toAssign = selector.createProject(projType);
          toAssign.buildSettingsWindow();
          openSettingsWindow(toAssign, dir);
@@ -153,8 +153,8 @@ public class Projects {
     */
    public void retrieve() {
       String dir = edtDoc[iDoc].fileParent();
-      ProjectCommands inList = selectFromList(dir, false);
-      if (currentProject != null && inList != null) {
+      ProjectCommands fromList = selectFromList(dir, false);
+      if (currentProject != null && fromList != null) {
          return;
       }
       ProjectCommands projToFind = null;
@@ -183,12 +183,12 @@ public class Projects {
    }
 
    /**
-    * Opens the project settings of the current project
+    * Opens the project settings window of the current project
     */
    public void openSettingsWindow() {
       String dir = edtDoc[iDoc].fileParent();
-      ProjectCommands inList = selectFromList(dir, false);
-      if (inList != null && inList == currentProject) {
+      ProjectCommands fromList = selectFromList(dir, false);
+      if (fromList != null && fromList == currentProject) {
          openSettingsWindow(currentProject, dir);
       }
    }
@@ -197,9 +197,9 @@ public class Projects {
     * Changes to the project that the selected document belongs to
     */
    public void change() {
-      ProjectCommands inList = selectFromList(edtDoc[iDoc].fileParent(), true);
-      if (inList != null) {
-         change(inList);
+      ProjectCommands fromList = selectFromList(edtDoc[iDoc].fileParent(), true);
+      if (fromList != null) {
+         change(fromList);
       }
    }
 
@@ -318,44 +318,45 @@ public class Projects {
    }
 
    private ProjectCommands selectFromList(String dir, boolean excludeCurrent) {
-      ProjectCommands inList = null;
+      ProjectCommands fromList = null;
       for (ProjectCommands p : projCmnds) {
          if (p.isInProject(dir) && (!excludeCurrent || p != currentProject)) {
-            inList = p;
+            fromList = p;
             break;
          }
       }
-      return inList;
+      return fromList;
    }
 
    private void configure(ProjectCommands toConfig) {
       if (toConfig.configure()) {
+         ProjectCommands compareType = selectFromList(toConfig.projectDir(), false);
+         boolean replace = compareType != null
+               && toConfig.projectType() != compareType.projectType();
+
          if (replace) {
-        	   projCmnds.remove(currentProject);
+            projCmnds.remove(compareType);
          }
-         if (toConfig != currentProject) {
+         if (!projCmnds.contains(toConfig)) {
         	   projCmnds.add(toConfig);
+            toConfig.storeConfiguration();
          }
          //
-         // Another tab may have been selected after opening the settings
-         ProjectCommands inList = null;
+         // a non-project tab may have been selected after opening
+         // the settings        
+         ProjectCommands fromList = null;
          if (edtDoc[iDoc].hasFile()) {
-            inList = selectFromList(edtDoc[iDoc].fileParent(), false);
+            fromList = selectFromList(edtDoc[iDoc].fileParent(), false);
          }
-         boolean apply = !edtDoc[iDoc].hasFile() || inList == null
-               || inList == toConfig;
-
+         boolean apply = fromList == null || fromList == toConfig;
          if (apply) {
-            toConfig.storeConfiguration();
             currentProject = toConfig;
             updateProjectSetting();
-            fileTree.updateTree();
          }
       }
       else {
          changedDocumentUpdate();
       }
-      replace = false;
    }
 
    private void updateProjectSetting() {

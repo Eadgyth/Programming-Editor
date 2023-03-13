@@ -98,6 +98,7 @@ public abstract class AbstractProject implements Configurable {
 
    @Override
    public final boolean configure() {
+      projectDir = "";
       boolean success = false;
       String root = "";
       if (!sw.projDirInput().isEmpty()) {

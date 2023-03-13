@@ -64,7 +64,7 @@ public class Libraries {
       joined = joinedLibs(libs);
       joinedAbs = joinedLibs(libsAbs);
       errMsg = notFound.length() == 0 ? "" :
-            "The following libraries cannot be found:" + notFound.toString();
+               "The following libraries cannot be found:" + notFound.toString();      
    }
 
    /**

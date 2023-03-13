@@ -64,8 +64,8 @@ public class Formatter {
    /**
     * Returns this <code>EditArea</code> array.
     * <p>
-    * Throws an exception if the specified number of EditArea objects
-    * is not minimum two.
+    * Throws an exception if the number of EditArea objects specified
+    * in the constructor is not minimum two.
     *
     * @return  this EditArea array
     */
@@ -81,8 +81,9 @@ public class Formatter {
     * Assigns a new formatted <code>EditArea</code> to this EditArea
     * array at the specified index.
     * <p>
-    * Throws an exception if the specified number of EditArea objects
-    * is not minimum two or if the specified index is too large.
+    * Throws an exception if the number of EditArea objects specified
+    * in the constructor is not minimum two or if the specified index
+    * is too large.
     *
     * @param i  the index of the array element
     */
@@ -134,7 +135,8 @@ public class Formatter {
     * <code>EditArea</code>.
     * <p>
     * Enabling also hides line numbers whereas disabling shows line
-    * numbers depending on the previous selection.
+    * numbers depending if showing line numbers was previously
+    * selected.
     *
     * @see #showLineNumbers(boolean)
     * @param wordwrap  true to enable, false to disable

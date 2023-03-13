@@ -15,11 +15,9 @@ public class StringOperatorMap {
    private final StringMap heredocs = new StringMap();
    private final StringMap quoteOprs = new StringMap();
    //
-   // to remember after a renewed mapping
+   // to remember after reset
    private final List<Integer> hLengths = new ArrayList<>();
    private final List<Integer> qLengths = new ArrayList<>();
-   //
-   // counting starts and ends during a renewed mapping
    private int nHeredoc;
    private int nQuoteOp;
 
@@ -78,8 +76,8 @@ public class StringOperatorMap {
                   count++;
                   iLen++;
                   int absEnd = end + scnStart;
-                  int absTextStart = lineEnd + scnStart + 1;
-                  heredocs.add(absTextStart, absEnd);
+                  int absStart = start + scnStart;
+                  heredocs.add(absStart, absEnd);
                   len = end - lineEnd;
                   if (scnStart == 0) { // for inner section entire text
                      if (!repairMode) { //    is updated anyway
@@ -180,7 +178,7 @@ public class StringOperatorMap {
    }
 
    /**
-    * Retuns if no strings are defined by quote operators were added
+    * Retuns if no strings defined by quote operators were added
     *
     * @return true if the list of strings defined by quote operators
     * is empty; false otherwise

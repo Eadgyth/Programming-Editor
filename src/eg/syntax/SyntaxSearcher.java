@@ -33,9 +33,7 @@ public class SyntaxSearcher {
    private boolean isRepair = false;
    private boolean isInnerSection = false;
    private boolean quoteInSection;
-   private int nTriQuote;
    private int nCData;
-   private int nQuote;
    private int nLineCmnt;
    private int nBlockCmntStarts;
    private int nBlockCmntEnds;
@@ -43,7 +41,7 @@ public class SyntaxSearcher {
 
    /**
     * Creates a <code>SyntaxSearcher</code>. Not meant to be used by
-    * a Highlighter.
+    * a {@link Highlighter}.
     *
     * @param txt  the StyledText
     */
@@ -139,17 +137,19 @@ public class SyntaxSearcher {
 
    /**
     * Searches text blocks in triple quotes and highlights in orange.
-    * Calls {@link Highlighter#isValid} for opening text block marks
+    * Calls {@link Highlighter#isValid} for opening text block marks.
     *
     * @param inclSingleQuotes  true to include triple quotes typed
-    * with single quotes; false for double quotes only
+    * with single quote marks; false for double quote marks only
     */
-   public void tripleQuoteTextBlocks(boolean inclSingleQuotes) {
-      int i = -1;
-      int count = 0;
+    public void tripleQuoteTextBlocks(boolean inclSingleQuotes) {
       int start = 0;
-      boolean change = false;
-      while (start != -1 && ! change) {
+      int nTested = 0;
+      int nChecked = 0;
+      int disabledStart = -1;
+      int i = -1;
+      boolean changedMark = false;
+      while (start != -1 && !changedMark) {
          int iDouble = txt.text().indexOf(SyntaxConstants.TRI_DOUBLE_QUOTE, start);
          String mark = SyntaxConstants.TRI_DOUBLE_QUOTE;
          boolean isDouble = true;
@@ -162,32 +162,31 @@ public class SyntaxSearcher {
          else {
             start = iDouble;
          }
+         int len = 3;
          if (start != -1) {
-            int len = 2;
-            int lc = hl.behindLineCmntMark(txt.text(), start);
-            int bc = hl.inBlockCmntMarks(txt.text(), start);
-            boolean inCmnt = (lc != -1 && !inQuotes(lc)) || (bc != -1 && !inQuotes(bc));
-            if (!inCmnt && isValid(start)) {
-               count++;
+            nTested++;
+            if (quotable(disabledStart, start) && isValid(start)
+                  && !SyntaxUtils.isClosingQuoteMarkInLine(txt.text(), start)) {
+
+               nChecked++;
                int end = txt.text().indexOf(mark, start + 3);
                if (end != -1) {
                   i++;
-                  count++;
+                  changedMark = isTypeMode && !isRepair && (inclSingleQuotes
+                        && triQuotes.quoteMarkChange(i, isDouble));
+
                   len = end - start + 3;
                   triQuotes.add(start, end);
-                  change = !isRepair && !inclSingleQuotes
-                        &&triQuotes.quoteMarkChange(i, isDouble);
-
+                  disabledStart = disabledStart(end);
                   txt.setAttributes(start, len, attr.orangePlain);
                }
             }
             start += len;
          }
       }
-      if (nTriQuote != count || change) {
+      if (triQuotes.sizeChange(nTested, nChecked) || changedMark) {
          repair(txt.text(), 0);
       }
-      nTriQuote = count;
    }
 
    /**
@@ -218,7 +217,8 @@ public class SyntaxSearcher {
 
    /**
     * Searches quoted text in single and double quotes and highlights
-    * in orange. Calls {@link Highlighter#isValid} for opening quotes.
+    * in orange. Calls {@link Highlighter#isValid} for opening quote
+    * marks.
     *
     * @param singleLine  true for quotations within lines only, false
     * to allow multiline quotations
@@ -277,7 +277,7 @@ public class SyntaxSearcher {
             }
          }
       }
-      if (nLineCmnt != count && (!quoteInSection || !stringOp.isQuoteOperatorEmpty())) {
+      if (nLineCmnt != count && (!quoteInSection ||!stringOp.isQuoteOperatorEmpty())) {
          repair(txt.text(), 0);
       }
       if (!isInnerSection) {
@@ -419,8 +419,13 @@ public class SyntaxSearcher {
             start += len;
          }
       }
-      if (nBlockCmntStarts != countStarts | nBlockCmntEnds != countEnds) {
-         repair(section, scnStart);
+      if (nBlockCmntStarts != countStarts || nBlockCmntEnds != countEnds) {
+         if (quoteInSection) {
+            repair(section, scnStart);
+         }
+         else {
+            repair(txt.text(), 0);
+         }
       }
       if (!isInnerSection) {
          nBlockCmntStarts = countStarts;
@@ -459,13 +464,13 @@ public class SyntaxSearcher {
                      int absStart = start + scnStart;
                      int tagEnd = markupTagEnd(absStart + 1);
                      String tag = lowerCaseText.substring(absStart, tagEnd);
-                     quote(tag, absStart, attr.purplePlain);
                      if (html) {
                         htmlAttributes(tag, absStart);
                      }
                      else {
                         xmlAttributes(tag, absStart, len);
                      }
+                     quote(tag, absStart, attr.purplePlain);
                   }
                   int colorStart = offset + scnStart;
                   txt.setAttributes(colorStart, len, attr.bluePlain);
@@ -664,12 +669,13 @@ public class SyntaxSearcher {
    }
 
    private void quote(String scn, int scnPos, SimpleAttributeSet set) {
-      int i = -1;
-      int count = 0;
-      int check = -1;
       int start = 0;
-      boolean change = false;
-      while (start != -1 && !change) {
+      int nTested = 0;
+      int nChecked = 0;
+      int disabledStart = -1;
+      int i = -1;
+      boolean changedMark = false;
+      while (start != -1 && !changedMark) {
          int iDouble = scn.indexOf(SyntaxConstants.DOUBLE_QUOTE, start);
          int iSingle = scn.indexOf(SyntaxConstants.SINGLE_QUOTE, start);
          boolean isDouble = SyntaxUtils.firstOccurence(iDouble, iSingle);
@@ -679,20 +685,20 @@ public class SyntaxSearcher {
 
          int absStart = start + scnPos;
          if (start != -1) {
+            nTested++;
             int len = 1;
-            if (quotable(check, absStart) && isValid(absStart)) {
-               count++;
+            if (quotable(disabledStart, absStart) && isValid(absStart)) {
+               nChecked++;
                int end = SyntaxUtils.nextNotEscaped(scn, mark, start + 1);
                if (end != -1) {
                   i++;
-                  count++;
+                  changedMark = isTypeMode && !isInnerSection
+                           && !isRepair && quotes.quoteMarkChange(i, isDouble);
+
                   int absEnd = end + scnPos;
                   len = absEnd - absStart + 1;
                   quotes.add(absStart, absEnd);
-                  change = isTypeMode && !isInnerSection
-                           && !isRepair && quotes.quoteMarkChange(i, isDouble);
-
-                  check = quotableStart(absEnd);
+                  disabledStart = disabledStart(absEnd);
                   int scnEnd = scnStart + section.length();
                   if (quoteInSection || isRepair
                         || ((absStart >= scnStart && scnEnd > absStart)
@@ -706,18 +712,19 @@ public class SyntaxSearcher {
             start += len;
          }
       }
-      if (!quoteInSection && (nQuote != count || change)) {
+      if (!quoteInSection && (quotes.sizeChange(nTested, nChecked)
+            || changedMark)) {
+
          repair(txt.text(), 0);
       }
-      nQuote = count;
    }
 
-   private boolean quotable(int prevMark, int pos) {
-      int nextMark = quotableStart(pos);
-      return -1 == nextMark || (nextMark != -1 && prevMark == nextMark);
+   private boolean quotable(int prevStart, int quoteMarkPos) {
+      int start = disabledStart(quoteMarkPos);
+      return start == -1 || (start != -1 && prevStart == start);
    }
 
-   private int quotableStart(int pos) {
+   private int disabledStart(int pos) {
       String text = isInnerSection ? section : txt.text();
       int diff = isInnerSection ? scnStart : 0;
       int i = hl.inBlockCmntMarks(text, pos - diff);

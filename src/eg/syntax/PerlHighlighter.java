@@ -166,7 +166,7 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
                offset = SyntaxUtils.sectionLengthSkipEscaped(text, d, c);
             }
             if (d + offset < text.length()) {
-              length = offset + (d - pos) + 1;
+               length = offset + (d - pos) + 1;
             }
          }
       }

@@ -268,15 +268,13 @@ public class SyntaxUtils {
     * is enclosed with single or double quote marks within the line
     * where the position is found
     *
-    * @param text  the text
+    * @param text  the entire text
     * @param pos  the position
     * @return  true if quoted
     */
    public static boolean isQuotedInLine(String text, int pos) {
-      String line;
-      int relStart;
-      line = LinesFinder.lineAtPos(text, pos);
-      relStart = pos - LinesFinder.lastNewline(text, pos);
+      String line = LinesFinder.lineAtPos(text, pos);
+      int relStart = pos - LinesFinder.lastNewline(text, pos);
       return isQuoted(line, relStart - 1); // <--here changed to -1
    }
 
@@ -310,6 +308,49 @@ public class SyntaxUtils {
                }
                else {
                  i = close + 1;
+               }
+            }
+            else {
+               i++;
+            }
+         }
+      }
+      return found;
+   }
+
+   /**
+    * Returns if the specified position is a closing quote position
+    * within the line where the position is found. Quote marks may
+    * be single or double quote marks
+    *
+    * @param text  the entire text
+    * @param pos  the position
+    * @return  true if quoted
+    */
+   public static boolean isClosingQuoteMarkInLine(String text, int pos) {
+      String line = LinesFinder.lineAtPos(text, pos);
+      int relStart = pos - LinesFinder.lastNewline(text, pos) - 1;
+      int i = 0;
+      boolean found = false;
+      while (i != -1 && !found) {
+         int startDouble = line.indexOf(SyntaxConstants.DOUBLE_QUOTE, i);
+         int startSingle = line.indexOf(SyntaxConstants.SINGLE_QUOTE, i);
+         boolean isDouble = SyntaxUtils.firstOccurence(startDouble, startSingle);
+         i = isDouble ? startDouble : startSingle;
+         char endMark = isDouble ?
+                  SyntaxConstants.DOUBLE_QUOTE : SyntaxConstants.SINGLE_QUOTE;
+
+         if (i != -1) {
+            if (i == relStart) {
+               break; // than it's an opening mark
+            }
+            int close = SyntaxUtils.nextNotEscaped(line, endMark, i + 1);
+            if (close != -1) {
+               if (close == relStart) {
+                  found = true;
+               }
+               else {
+                  i = close + 1;
                }
             }
             else {

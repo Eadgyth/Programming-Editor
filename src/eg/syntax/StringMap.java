@@ -11,16 +11,19 @@ public class StringMap {
    private final List<Integer> starts = new ArrayList<>();
    private final List<Integer> ends = new ArrayList<>();
    //
-   // to remember after a new mapping
-   private final List<Boolean> marks = new ArrayList<>();
+   // to remember after reset
+   private final List<Boolean> types = new ArrayList<>();
+   private int prevSize = 0;
+   private int prevNTested = 0;
+   private int prevNChecked = 0;
 
    /**
     * Clears the string map for a renewed mapping
     */
    public void reset() {
-      if (marks.size() > starts.size()) {
-         for (int i = marks.size() - 1; i >= starts.size(); i--) {
-            marks.remove(i);
+      if (types.size() > starts.size()) {
+         for (int i = types.size() - 1; i >= starts.size(); i--) {
+            types.remove(i);
          }
       }
       starts.clear();
@@ -38,8 +41,28 @@ public class StringMap {
    }
 
    /**
-    * Returns if the type of quote mark, i.e. double quotes versus
-    * single quotes, has changed at the ith string.
+    * Returns if the number of strings or one of the specified
+    * paramters has changed after the previous reset
+    *
+    * @param nTested  the nummber of quote marks tested for validity
+    * as opening quote marks
+    * @param nChecked  the nummber of valid opening quote marks
+    * (regardless if it equals the actual number of strings)
+    * @return  if a quote number change occurred
+    */
+   public boolean sizeChange(int nTested, int nChecked) {
+      boolean b = prevNTested != nTested || prevNChecked != nChecked
+            || starts.size() != prevSize;
+
+      prevNTested = nTested;
+      prevNChecked = nChecked;
+      prevSize = starts.size();
+      return b;
+   }
+
+   /**
+    * Returns if the type of quote mark, i.e. double quote versus
+    * single quote, has changed at the ith string.
     *
     * @param type  true for (consistently) one type of quote mark,
     * false for the other
@@ -48,17 +71,17 @@ public class StringMap {
     */
    public boolean quoteMarkChange(int i, boolean type) {
       boolean b = markChangeImpl(i, type);
-      if (i < marks.size()) {
-         marks.set(i, type);
+      if (i < types.size()) {
+         types.set(i, type);
       }
-      else if (i == marks.size()) {
-         marks.add(type);
+      else if (i == types.size()) {
+         types.add(type);
       }
       return b;
    }
 
    /**
-    * Returns the the current number of strings
+    * Returns the current number of strings
     *
     * @return  the size
     */
@@ -115,9 +138,9 @@ public class StringMap {
    }
 
    private boolean markChangeImpl(int i, boolean doubleQuote) {
-      if (marks.isEmpty() || i >= marks.size()) {
+      if (types.isEmpty() || i >= types.size()) {
          return false;
       }
-      return marks.get(i) != doubleQuote;
+      return types.get(i) != doubleQuote;
    }
 }

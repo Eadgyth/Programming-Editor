@@ -14,15 +14,18 @@ import eg.document.styledtext.Attributes;
  * {@link SyntaxSearcher#quote(boolean)}<br>
  * {@link SyntaxSearcher#lineComments(String[])}<br>
  * {@link SyntaxSearcher#keywords(String[],char[],SimpleAttributeSet)}<br>
+ * other highlighting of keywords, symbols ...<br>
  * {@link SyntaxSearcher#blockComments(String,String,boolean)}</blockquote>
  * For special validation of found text elements a 'condition' may be
  * set by calling {@link SyntaxSearcher#setCondition(int)} before one
  * or more search methods. The validation is implemented in
- * {@link #isValid(String, int, int)}.
+ * {@link #isValid(String, int, int)}. If changed, the 'condition' must be
+ * explicetely reset to the default (0) before calling methods that don't
+ * need any additional validation.
  * <p>
  * Implementations of {@link #behindLineCmntMark(String, int)} and/or
- * {@link #inBlockCmntMarks(String, int)} must ignore if comment marks
- * are quoted.
+ * {@link #inBlockCmntMarks(String, int)} must ignore if comment marks are
+ * quoted.
  * @see SyntaxUtils#behindMark(String,String,int)
  * @see SyntaxUtils#inBlock(String,String,String,int)
  */

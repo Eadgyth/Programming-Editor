@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Stores configured libraries that can be added the module path
+ * Stores configured libraries that can be added to the module path
  */
 public class LibModules {
 

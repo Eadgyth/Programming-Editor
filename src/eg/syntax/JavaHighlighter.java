@@ -61,8 +61,8 @@ public class JavaHighlighter implements Highlighter {
    @Override
    public boolean isValid(String text, int pos, int condition) {
       if (condition == VALID_TEXT_BLOCK_COND && text.length() > pos + 3) {
-            int nextNonSpace = SyntaxUtils.nextNonSpace(text, pos + 3, true);
-            return text.charAt(nextNonSpace) == '\n';
+         int nextNonSpace = SyntaxUtils.nextNonSpace(text, pos + 3, true);
+         return text.charAt(nextNonSpace) == '\n';
       }
       return true;
    }
