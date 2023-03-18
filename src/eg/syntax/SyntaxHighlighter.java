@@ -26,9 +26,10 @@ public class SyntaxHighlighter {
    }
 
     /**
-    * Sets a <code>Highlighter</code>. Null to reset to normal text
+    * Sets a <code>Highlighter</code>.
     *
-    * @param hl  the {@link Highlighter}
+    * @param hl  the Highlighter; null means that this
+    * SyntaxHighligher is not used (is not checked)
     */
    public void setHighlighter(Highlighter hl) {
       searcher.setHighlighter(hl);

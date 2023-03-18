@@ -104,13 +104,19 @@ public class EditorUpdating {
     * Sets the editing mode which enables source code editing
     * (syntax highlighting, auto indent) if the language in the
     * specified <code>CurrentLanguage</code> is not 'normal text'.
+    * Removes any highlighing if changed from a highlighted
+    * language to 'normal text'
     *
     * @param cl  the CurrentLanguage
     */
    public void setEditingMode(CurrentLanguage cl) {
+      boolean isNormalText = cl.lang() == Languages.NORMAL_TEXT;
+      if (isCodeEditing && isNormalText) {
+         txt.resetToNormalText();
+      }
       syntax.setHighlighter(cl.createHighlighter());
       indent.enableCurlyBracketMode(cl.curlyBracketMode());
-      isCodeEditing = cl.lang() != Languages.NORMAL_TEXT;
+      isCodeEditing = !isNormalText;
    }
 
    /**

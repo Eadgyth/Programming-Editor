@@ -49,14 +49,6 @@ public abstract class StyledText {
 
    /**
     * Resets character attributes to the attributes for normal text
-    * in the entire text
-    */
-   public void resetAttributes() {
-      setAttributes(0, doc.getLength(), NORMAL);
-   }
-
-   /**
-    * Resets character attributes to the attributes for normal text
     * in a section of text
     *
     * @param pos  the position where the section start

@@ -51,15 +51,12 @@ public class SyntaxSearcher {
    }
 
    /**
-    * Sets a Highlighter. Not meant to be used by a {@link Highlighter}.
+    * Sets a Highlighter. Not meant to be used by a
+    * {@link Highlighter}.
     *
-    * @param hl  the Highlighter; null resets any highligting to
-    * normal text
+    * @param hl  the Highlighter
     */
    public void setHighlighter(Highlighter hl) {
-      if (hl == null && this.hl != null) {
-         txt.resetAttributes();
-      }
       this.hl = hl;
    }
 
