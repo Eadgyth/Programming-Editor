@@ -362,7 +362,13 @@ public class FileTree {
                      openFile();
                   }
                   else {
-                     tree.expandRow(row);
+                     if (tree.isCollapsed(row)) {
+                        tree.expandRow(row);
+                     }
+                     else {
+                        tree.collapseRow(row);
+                     }
+
                   }
                }
             }
