@@ -106,8 +106,8 @@ public class ViewSetter {
       vsw.setLaf(laf);
       lafIndex = vsw.lafIndex();
 
-      String theme = prefs.property(Prefs.THEME_KEY);
-      vsw.setTheme(theme);
+      String themeKey = prefs.property(Prefs.THEME_KEY);
+      vsw.setTheme(themeKey);
       themeIndex = vsw.themeIndex();
    }
 

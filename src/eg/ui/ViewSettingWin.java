@@ -26,8 +26,18 @@ import eg.utils.SystemParams;
  */
 public class ViewSettingWin {
 
-   public static final String[] THEME_OPT = {"White", "Blue", "Gray", "Black"};
+   /**
+    * The display names for backround options, i.e. White, Dark Blue,
+    * Gray, Dark Gray and Black */
+   public static final String[] THEME_OPT
+            = {"White", "Dark Blue", "Gray", "Dark Gray", "Black"};
+   /**
+    * The display names for the icon size options, i.e. Small and
+    * Large */
    public static final String[] ICON_SIZES = {"Small", "Large"};
+   /**
+    * The display names for the LaF options, i.e. System and Java
+    * default */
    public static final String[] LAF_OPT = {"System", "Java default"};
 
    private final JFrame frame = new JFrame("View preferences");
@@ -40,6 +50,9 @@ public class ViewSettingWin {
    private final JButton okBt = new JButton("OK");
    private final JButton cancelBt = new JButton("Cancel");
 
+   /**
+    * Creates a <code>ViewSettingsWin</code>
+    */
    public ViewSettingWin() {
       initFrame();
    }
@@ -259,8 +272,8 @@ public class ViewSettingWin {
       JPanel innerPnl = new JPanel(new GridLayout(4, 1));
       JLabel lb = new JLabel("Selections take effect only after restart");
       lb.setFont(ScreenParams.scaledFontToPlain(lb.getFont(), 8));
-      innerPnl.add(backgroundSettingPnl());
       innerPnl.add(iconSizeSettingPnl());
+      innerPnl.add(backgroundSettingPnl());
       innerPnl.add(lafSettingPnl());
       innerPnl.add(lb);
       pnl.add(innerPnl);

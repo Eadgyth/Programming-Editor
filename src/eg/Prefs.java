@@ -51,8 +51,8 @@ public final class Prefs {
     * Key for the icon size which is 'Small' or 'Large' */
    public static final String ICON_SIZE_KEY = "IconSize";
    /**
-    * Key for the background theme which is 'White', 'Blue',
-    * 'Gray' or 'Black' */
+    * Key for the background theme which is 'White', 'Dark Blue',
+    * 'Gray', 'Dark Gray' or 'Black' */
    public static final String THEME_KEY = "Theme";
    /**
     * Key for the LaF which is 'System' or 'Java default' */

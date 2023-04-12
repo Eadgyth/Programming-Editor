@@ -12,6 +12,9 @@ public final class GenericProject extends AbstractProject implements ProjectComm
 
    private final TaskRunner runner;
 
+   /**
+    * @param runner  the TaskRunner
+    */
    public GenericProject(TaskRunner runner) {
       super(ProjectTypes.GENERIC, null, null);
       this.runner = runner;

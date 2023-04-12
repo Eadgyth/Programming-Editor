@@ -56,7 +56,7 @@ public class EditMenu {
     *
     * @return  the menu
     */
-   public JMenu menu() {
+   public JMenu getMenu() {
       return menu;
    }
 

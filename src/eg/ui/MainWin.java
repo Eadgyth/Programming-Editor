@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 //--Eadgyth--/
+import eg.BackgroundTheme;
 import eg.TabbedDocuments;
 import eg.Projects;
 import eg.Edit;
@@ -41,15 +42,17 @@ import eg.projects.ProjectTypes;
  */
 public class MainWin {
 
-   private static final int DIVIDER_SIZE = 6;
+   private static final int DIVIDER_SIZE = 4;
 
    private final JFrame frame = new JFrame();
+
+   private final BackgroundTheme theme = BackgroundTheme.givenTheme();
    private final MenuBar menuBar = new MenuBar();
    private final ToolBar toolBar = new ToolBar();
-   private final StatusBar statusBar = new StatusBar();
+   private final StatusBar statusBar = new StatusBar(theme);
    private final ExtTabbedPane tabPane = UIComponents.tabPane();
-   private final TreePanel treePnl = new TreePanel();
-   private final ConsolePanel consPnl = new ConsolePanel();
+   private final TreePanel treePnl = new TreePanel(theme);
+   private final ConsolePanel consPnl = new ConsolePanel(theme);
    private final EditToolPanel edToolPnl = new EditToolPanel();
    private final List<AddableEditTool> editTools = new ArrayList<>();
    private final BusyFunction bf;
@@ -304,10 +307,10 @@ public class MainWin {
     */
    public void showToolbar(boolean b) {
       if (b) {
-         frame.add(toolBar.content(), BorderLayout.NORTH);
+         frame.add(toolBar.toolBar(), BorderLayout.NORTH);
       }
       else {
-         frame.remove(toolBar.content());
+         frame.remove(toolBar.toolBar());
       }
       frame.revalidate();
    }

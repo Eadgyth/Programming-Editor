@@ -15,7 +15,7 @@ public class ScreenParams {
         = Toolkit.getDefaultToolkit().getScreenSize();
 
    private static final int SCREEN_RES
-   = Toolkit.getDefaultToolkit().getScreenResolution();
+         = Toolkit.getDefaultToolkit().getScreenResolution();
 
    private static final double SCREEN_RES_RATIO = SCREEN_RES / 72.0;
 

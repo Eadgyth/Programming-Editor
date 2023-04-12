@@ -267,7 +267,7 @@ public class SyntaxSearcher {
                   int lineEnd = scn.indexOf('\n', start);
                   len = lineEnd != -1 ? lineEnd - start : scn.length() - start;
                   if (scnStart <= absStart && absStart <= scnStart + section.length()) {
-                     txt.setAttributes(absStart, len, attr.greenPlain);
+                     txt.setAttributes(absStart, len, attr.comment);
                   }
                }
                start += len;
@@ -405,7 +405,7 @@ public class SyntaxSearcher {
             if (end != -1) {
                countEnds++;
                len = end - start + blockEnd.length();
-               txt.setAttributes(start + scnStart, len, attr.greenPlain);
+               txt.setAttributes(start + scnStart, len, attr.comment);
                countStarts += countBlockCmntStartsBetween(blockStart, ignoreQuotes,
                      searchStart, end);
 

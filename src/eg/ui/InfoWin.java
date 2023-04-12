@@ -33,10 +33,11 @@ public class InfoWin {
          + "Programming Editor<br><br>"
          + "Version: 1.1.9<br>"
          + "Author: Malte Bussiek<br><br>"
-         + "Credts:"
+         + "Credit and Acknowledgements:"
          + "<ul>"
-         + "<li>William Gilreath</li>"
          + "<li>Tango Desktop Project</li>"
+         + "<li>Dracula color palette</li>"
+         + "<li>William Gilreath</li>"
          + "</ul><br>"
          + "</html>";
 
@@ -47,7 +48,7 @@ public class InfoWin {
 
    private final JFrame  frame  = new JFrame();
    private final JButton okBt   = new JButton("OK");
-   private final JButton linkBt = UIComponents.undecoratedButton();
+   private final JButton linkBt = new JButton();
 
    public InfoWin() {
       okBt.setFocusPainted(false);
@@ -67,7 +68,7 @@ public class InfoWin {
       frame.setTitle("About");
       frame.setContentPane(content);
       frame.setResizable(false);
-      frame.setSize(eg.utils.ScreenParams.scaledDimension(250, 230));
+      frame.setSize(eg.utils.ScreenParams.scaledDimension(250, 240));
       frame.setVisible(true);
    }
 
@@ -89,6 +90,9 @@ public class InfoWin {
    }
 
    private void initLinkBt() {
+      linkBt.setBorder(null);
+      linkBt.setFocusable(false);
+      linkBt.setContentAreaFilled(false);
       linkBt.setText("<html><u>" + LINK + "</u></html>");
       linkBt.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
       linkBt.setFont(ScreenParams.SANSSERIF_PLAIN_9);

@@ -23,8 +23,19 @@ import eg.utils.ScreenParams;
 public class ConsolePanel {
 
    private final JPanel content = UIComponents.grayBorderedPanel();
-   private final JButton closeBt = UIComponents.undecoratedButton();
-
+   private final JButton closeBt = new JButton();
+   
+   private BackgroundTheme theme;
+   
+   /**
+    * Creates a <code>ConsolePanel</code>
+    *
+    * @param theme  the BackgroundTheme
+    */
+   public ConsolePanel(BackgroundTheme theme) {
+      this.theme = theme;
+   }
+   
    /**
     * Initializes the console content
     *
@@ -34,14 +45,13 @@ public class ConsolePanel {
     */
    public void initContent(JTextArea area, JButton[] bts, String[] tooltips) {
       content.setLayout(new BorderLayout());
-      JToolBar toolbar = UIComponents.toolBar(bts, tooltips, closeBt);
+      JToolBar toolbar = UIComponents.toolbar(bts, tooltips, closeBt);
       content.add(toolbar, BorderLayout.NORTH);
       JScrollPane scroll = UIComponents.scrollPane();
       scroll.setViewportView(area);
       content.add(scroll, BorderLayout.CENTER);
 
       area.setFont(ScreenParams.SANSSERIF_PLAIN_8);
-      BackgroundTheme theme = BackgroundTheme.givenTheme();
       area.setBackground(theme.background());
       area.setForeground(theme.normalText());
       area.setBorder(new LineBorder(theme.background(), 5));

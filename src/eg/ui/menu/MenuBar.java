@@ -1,18 +1,16 @@
 package eg.ui.menu;
 
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.Box;
-import javax.swing.UIManager;
 
-import javax.swing.border.EmptyBorder;
+//--Eadgyth--/
+import eg.ui.UIComponents;
 
 /**
- * The menu bar that has the menus.<br>
- * Created in {@link eg.ui.MainWin}
+ * The menu bar that also has the menus
  */
 public class MenuBar {
 
-   private final JMenuBar mb = new JMenuBar();
    private final FileMenu fileMenu = new FileMenu();
    private final LanguageMenu languageMenu = new LanguageMenu();
    private final EditMenu editMenu = new EditMenu(languageMenu);
@@ -20,10 +18,19 @@ public class MenuBar {
    private final ViewMenu viewMenu = new ViewMenu();
    private final ProjectMenu projectMenu = new ProjectMenu();
    private final HelpMenu helpMenu = new HelpMenu();
+   private final JMenuBar mb;
 
    public MenuBar() {
-      mb.setBorder(new EmptyBorder(0, 0, 0, 0));
-      assembleMenu();
+      JMenu[] menus = new JMenu[] {
+         fileMenu().getMenu(),
+         editMenu().getMenu(),
+         formatMenu().getMenu(),
+         viewMenu().getMenu(),
+         projectMenu().getMenu(),
+         helpMenu().getMenu()
+      };
+      mb = UIComponents.menuBar(menus);
+      mb.setBorderPainted(false);
    }
 
    /**
@@ -52,7 +59,7 @@ public class MenuBar {
    public EditMenu editMenu() {
       return editMenu;
    }
-   
+
    /**
     * Gets this language menu
     *
@@ -89,25 +96,12 @@ public class MenuBar {
       return projectMenu;
    }
 
-   //
-   //--private
-   //
-
-   private void assembleMenu() {
-      int strutSize = 0;
-      if ("Windows".equals(UIManager.getLookAndFeel().getName())) {
-         strutSize = 5;
-      }
-      mb.add(fileMenu.getMenu());
-      mb.add(Box.createHorizontalStrut(strutSize));
-      mb.add(editMenu.menu());
-      mb.add(Box.createHorizontalStrut(strutSize));
-      mb.add(formatMenu.getMenu());
-      mb.add(Box.createHorizontalStrut(strutSize));
-      mb.add(viewMenu.getMenu());
-      mb.add(Box.createHorizontalStrut(strutSize));
-      mb.add(projectMenu.getMenu());
-      mb.add(Box.createHorizontalStrut(strutSize));
-      mb.add(helpMenu.getMenu());
+   /**
+    * Gets this helpMenu
+    *
+    * @return this {@link HelpMenu}
+    */
+   public HelpMenu helpMenu() {
+      return helpMenu;
    }
 }

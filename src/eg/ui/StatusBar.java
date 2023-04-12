@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 //--Eadgyth---/
+import eg.BackgroundTheme;
 import eg.utils.ScreenParams;
 
 /**
@@ -22,9 +23,18 @@ public class StatusBar {
    private final JLabel languageLb = new JLabel();
    private final JLabel cursorPosLb = new JLabel();
    private final JLabel wordwrapLb = new JLabel();
+   
+   private BackgroundTheme theme;
 
-   public StatusBar() {
+   /**
+    * Creates a <code>StatusBar</code>
+    *
+    * @param theme  the BackgroundTheme
+    */
+   public StatusBar(BackgroundTheme theme) {
+      this.theme = theme;
       init();
+      setBackground();
    }
 
    /**
@@ -66,7 +76,12 @@ public class StatusBar {
          wordwrapLb.setText("Word-wrap ");
       }
       else {
-         cursorPosLb.setForeground(Color.BLACK);
+         if (theme == null) {
+            cursorPosLb.setForeground(Color.BLACK);
+         }
+         else {
+            cursorPosLb.setForeground(theme.normalText());
+         }
          wordwrapLb.setText("");
       }
    }
@@ -95,6 +110,7 @@ public class StatusBar {
       setLbWidth(projectLb, width200);
       setLbWidth(cursorPosLb, width150);
       content.setLayout(new BoxLayout(content, BoxLayout.LINE_AXIS));
+      content.setBorder(UIComponents.grayMatteBorder(0, 1, 1, 1));
       content.add(Box.createRigidArea(width5));
       content.add(languageLb);
       content.add(Box.createRigidArea(width20));
@@ -104,6 +120,16 @@ public class StatusBar {
       content.add(Box.createRigidArea(width5));
       content.add(cursorPosLb);
       projectLb.setText("Current project: none");
+   }
+   
+   private void setBackground() {
+      if (!theme.isDark()) {
+         return;
+      }
+      content.setBackground(theme.lightBackground());
+      projectLb.setForeground(theme.normalText());
+      languageLb.setForeground(theme.normalText());
+      wordwrapLb.setForeground(theme.normalText());
    }
 
    private void setLbFont(JLabel[] lb) {

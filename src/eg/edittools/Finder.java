@@ -17,6 +17,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 
 import javax.swing.border.EmptyBorder;
 
@@ -40,7 +41,7 @@ public class Finder implements AddableEditTool {
    private final JButton searchBt     = new JButton("Find");
    private final JButton replaceBt    = new JButton("Replace");
    private final JButton replaceAllBt = new JButton("Replace all");
-   private final JButton closeBt      = UIComponents.undecoratedButton();
+   private final JButton closeBt      = new JButton();
 
    private final TextSearch search = new TextSearch();
 
@@ -56,7 +57,12 @@ public class Finder implements AddableEditTool {
 
    @Override
    public int width() {
-      return content.getWidth();
+      if (content.getWidth() == 0) {
+         return ScreenParams.scaledSize(180); //180 is freely chosen
+      }
+      else {
+         return content.getWidth();
+      }
    }
 
    @Override
@@ -93,10 +99,10 @@ public class Finder implements AddableEditTool {
    }
 
    private JToolBar toolbar() {
-      return UIComponents.toolBar(null, null, closeBt);
+      return UIComponents.toolbar(null, null, closeBt);
    }
 
-   private JPanel controlsPnl() {
+   private JScrollPane controlsPnl() {
       JPanel pnl = new JPanel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.PAGE_AXIS));
       pnl.add(labelPnl("Search for:"));
@@ -118,7 +124,9 @@ public class Finder implements AddableEditTool {
       pnl.add(buttonsPnl(replaceBt, replaceAllBt));
       pnl.setBorder(new EmptyBorder(10, 10, 10, 10));
       inputTf.getDocument().addDocumentListener(docListener);
-      return pnl;
+      javax.swing.JScrollPane scroll = UIComponents.scrollPane();
+      scroll.setViewportView(pnl);
+      return scroll;
    }
 
    private JPanel labelPnl(String text) {
@@ -176,7 +184,7 @@ public class Finder implements AddableEditTool {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
       for (JButton bts : bt) {
          bts.setFocusable(false);
-          pnl.add(bts);
+         pnl.add(bts);
       }
       setSize(pnl);
       return pnl;

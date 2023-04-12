@@ -1,26 +1,18 @@
 package eg.ui;
 
-import java.awt.FlowLayout;
-
 import javax.swing.JToolBar;
 import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
-import javax.swing.border.EmptyBorder;
 
 //--Eadgyth--/
 import eg.TabbedDocuments;
 import eg.Projects;
 import eg.Edit;
+import eg.utils.ScreenParams;
 
 /**
- * Defines the tool bar
+ * Defines the main toolbar of the editor
  */
 public class ToolBar {
-
-   private final JPanel content = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-   private final JToolBar tb = new JToolBar(SwingConstants.HORIZONTAL);
 
    private final JButton openBt       = new JButton(IconFiles.OPEN_ICON);
    private final JButton saveBt       = new JButton(IconFiles.SAVE_ICON);
@@ -35,18 +27,36 @@ public class ToolBar {
    private final JButton compileBt    = new JButton(IconFiles.COMPILE_ICON);
    private final JButton runBt        = new JButton(IconFiles.RUN_ICON);
 
+   private final JToolBar tb;
+
    public ToolBar() {
-      init();
+      compileBt.setEnabled(false);
+      runBt.setEnabled(false);
+      changeProjBt.setEnabled(false);
+      JButton[] bts = new JButton[] {
+         openBt, saveBt,
+         undoBt, redoBt, cutBt, copyBt, pasteBt, indentBt, outdentBt,
+         compileBt, runBt, changeProjBt
+      };
+      String[] toolTips = new String[] {
+         "Open file", "Save file",
+         "Undo", "Redo", "Cut selection", "Copy selection", "Paste",
+         "Increase indentation (Tab)", "Decrease indentation (Shift+Tab)",
+         "Save and compile project", "", "Change Project"
+      };
+      tb = UIComponents.toolbar(bts, toolTips);
+      int h = ScreenParams.scaledSize(2);
+      tb.setBorder(UIComponents.lightBkgdMatteBorder(h, 0, h, 0));
    }
 
    /**
-    * Gets this <code>JPanel</code> the contains the tool bar
+    * Returns this toolbar
     *
-    * @return  the JPanel
+    * @return  the JToolBar
     */
-   public JPanel content() {
-      return content;
-   }
+    public JToolBar toolBar() {
+      return tb;
+    }
 
    /**
     * Sets listeners for file actions
@@ -142,39 +152,5 @@ public class ToolBar {
     */
    public void enableChangeProjBt(boolean b) {
       changeProjBt.setEnabled(b);
-   }
-
-   //
-   //--private--/
-   //
-
-   private void init() {
-      tb.setOpaque(false);
-      tb.setBorder(null);
-      tb.setFloatable(false);
-      compileBt.setEnabled(false);
-      runBt.setEnabled(false);
-      changeProjBt.setEnabled(false);
-      JButton[] bts = new JButton[] {
-         openBt, saveBt,
-         undoBt, redoBt, cutBt, copyBt, pasteBt,
-         indentBt, outdentBt,
-         compileBt, runBt, changeProjBt
-      };
-      String[] toolTips = new String[] {
-         "Open file", "Save file",
-         "Undo", "Redo", "Cut selection", "Copy selection", "Paste",
-         "Increase indentation (Tab)", "Decrease indentation (Shift+Tab)",
-         "Save and compile project",
-         "", "Change Project"
-      };
-      for (int i = 0; i < bts.length; i++) {
-         tb.add(bts[i]);
-         bts[i].setBorder(new EmptyBorder(8, 8, 8, 8));
-         bts[i].setToolTipText(toolTips[i]);
-         bts[i].setFocusable(false);
-         bts[i].setFocusPainted(false);
-      }
-      content.add(tb);
    }
 }

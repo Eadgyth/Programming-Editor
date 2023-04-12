@@ -3,25 +3,49 @@ package eg.document.styledtext;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-import java.awt.Color;
-
 //--Eadgyth--/
 import eg.BackgroundTheme;
 
 /**
- * Holds character attributes, each with a foreground color and a
- * weight. The shade of colors depend on the background theme.
+ * Holds character attributes with colors depending on
+ * the background theme.
  */
 public final class Attributes {
 
-   public final SimpleAttributeSet redPlain     = new SimpleAttributeSet();
-   public final SimpleAttributeSet bluePlain    = new SimpleAttributeSet();
-   public final SimpleAttributeSet greenPlain   = new SimpleAttributeSet();
-   public final SimpleAttributeSet orangePlain  = new SimpleAttributeSet();
-   public final SimpleAttributeSet purplePlain  = new SimpleAttributeSet();
+   /**
+    * The red colored, plain style which is a more or less
+    * pink red depending on the background.
+    */
+   public final SimpleAttributeSet redPlain = new SimpleAttributeSet();
+   /**
+    * The blue colored, plain style which can be rather cyan
+    * depending on the background
+    */
+   public final SimpleAttributeSet bluePlain = new SimpleAttributeSet();
+   /**
+    * The orange colored, plain style
+    */
+   public final SimpleAttributeSet orangePlain = new SimpleAttributeSet();
+   /**
+    * The purple colored, plain style
+    */
+   public final SimpleAttributeSet purplePlain = new SimpleAttributeSet();
+   /**
+    * The purple colored, bold style
+    */
+   public final SimpleAttributeSet purpleBold = new SimpleAttributeSet();
+   /**
+    * The bold style for brackes. The color is dark blue with
+    * a white background and a yellow tone with a dark
+    * background.
+    * {@see eg.BackgroundTheme#accentedNormalText}
+    */
    public final SimpleAttributeSet bracketsBold = new SimpleAttributeSet();
-
-   private static final Color GREEN  = new Color(80, 190, 80);
+   /**
+    * The color for comments
+    * {@see eg.BackgroundTheme#commentText}
+    */
+   public final SimpleAttributeSet comment = new SimpleAttributeSet();
 
    /**
     * @param theme  the BackgroundTheme
@@ -34,14 +58,17 @@ public final class Attributes {
       StyleConstants.setForeground(bluePlain, theme.blueText());
       StyleConstants.setBold(bluePlain, false);
 
-      StyleConstants.setForeground(greenPlain, GREEN);
-      StyleConstants.setBold(greenPlain, false);
-
       StyleConstants.setForeground(orangePlain, theme.orangeText());
       StyleConstants.setBold(orangePlain, false);
 
       StyleConstants.setForeground(purplePlain, theme.purpleText());
       StyleConstants.setBold(purplePlain, false);
+
+      StyleConstants.setForeground(purpleBold, theme.purpleText());
+      StyleConstants.setBold(purpleBold, true);
+
+      StyleConstants.setForeground(comment, theme.commentText());
+      StyleConstants.setBold(comment, false);
 
       StyleConstants.setForeground(bracketsBold, theme.accentedNormalText());
       StyleConstants.setBold(bracketsBold, true);

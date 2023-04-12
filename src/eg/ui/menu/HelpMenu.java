@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 /**
  * The menu for help actions
  */
-class HelpMenu {
+public class HelpMenu {
 
    private final JMenu     menu        = new JMenu("?");
    private final JMenuItem showHelpItm = new JMenuItem("Open help site");
@@ -26,6 +26,11 @@ class HelpMenu {
       showHelpItm.addActionListener(e -> showHelpSite());
    }
 
+   /**
+    * Returns this menu
+    *
+    * @return  the menu
+    */
    public JMenu getMenu() {
       return menu;
    }

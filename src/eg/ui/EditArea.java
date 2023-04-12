@@ -4,35 +4,53 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Font;
 
-import javax.swing.event.DocumentListener;
-import javax.swing.event.DocumentEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 import javax.swing.JTextPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.JScrollBar;
+import javax.swing.ScrollPaneConstants;
 
 import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
+
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BoxView;
+import javax.swing.text.ComponentView;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.Element;
+import javax.swing.text.IconView;
+import javax.swing.text.LabelView;
+import javax.swing.text.ParagraphView;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledEditorKit;
+import javax.swing.text.View;
+import javax.swing.text.ViewFactory;
 
 //--Eadgyth--/
 import eg.BackgroundTheme;
 import eg.utils.ScreenParams;
 
 /**
- * Defines the panel that contains the area for editing text and the
- * area that displays line numbers
+ * Defines the panel that contains the area for editing text and
+ * the area that displays line numbers.
+ * <p>
+ * Class uses code written by Stanislav Lapitsky to allow
+ * line wrapping of text in JTextPane:<br>
+ * https://stackoverflow.com/questions/30590031/jtextpane-line-wrap-behavior
  */
 public final class EditArea {
 
    private static final BackgroundTheme THEME = BackgroundTheme.givenTheme();
-
-   private static final LineBorder AREA_BORDER
+   private static final LineBorder LINE_NR_AREA_BORDER
          = new LineBorder(THEME.background(), 5);
+   private static final MatteBorder AREA_BORDER
+         = new MatteBorder(5, 5, 0, 0, THEME.background());
 
    private final JPanel content = UIComponents.grayBorderedPanel();
    private final JTextPane textArea = new JTextPane();
@@ -58,6 +76,7 @@ public final class EditArea {
 
       this.isWordwrap = wordwrap;
       content.setLayout(new BorderLayout());
+      textArea.setEditorKit(new WrapEditorKit());
       initTextArea();
       initLineNrArea();
       initLineNrScrollPane();
@@ -236,7 +255,7 @@ public final class EditArea {
    }
 
    private void initLineNrArea() {
-      lineNrArea.setBorder(AREA_BORDER);
+      lineNrArea.setBorder(LINE_NR_AREA_BORDER);
       lineNrArea.setBackground(THEME.background());
       lineNrArea.setEditable(false);
       lineNrArea.setFocusable(false);
@@ -250,4 +269,61 @@ public final class EditArea {
       lineNrScroll.getVerticalScrollBar().setModel(
             nonWordwrapScroll.getVerticalScrollBar().getModel());
    }
+
+   @SuppressWarnings("serial")
+   private static class WrapEditorKit extends StyledEditorKit {
+
+      @Override
+      public ViewFactory getViewFactory() {
+         return new WrapColumnFactory();
+      }
+   }
+
+   private static class WrapColumnFactory implements ViewFactory {
+
+      @Override
+      public View create(Element elem) {
+         //
+         // no changes in the original code of Stanislav L. although
+         // some conditions might not be relevant for a text editor
+         String kind = elem.getName();
+         if (kind != null) {
+            if (kind.equals(AbstractDocument.ContentElementName)) {
+               return new WrapLabelView(elem);
+            } else if (kind.equals(AbstractDocument.ParagraphElementName)) {
+               return new ParagraphView(elem);
+            } else if (kind.equals(AbstractDocument.SectionElementName)) {
+               return new BoxView(elem, View.Y_AXIS);
+            } else if (kind.equals(StyleConstants.ComponentElementName)) {
+               return new ComponentView(elem);
+            } else if (kind.equals(StyleConstants.IconElementName)) {
+               return new IconView(elem);
+            }
+         }
+         return new LabelView(elem);
+      }
+   }
+
+   private static class WrapLabelView extends LabelView {
+
+      private WrapLabelView(Element elem) {
+         super(elem);
+      }
+
+      @Override
+      public float getMinimumSpan(int axis) {
+         switch (axis) {
+         case View.X_AXIS:
+            //
+            // keeps the width of the content of the scrollpane
+            // because 0 means that the minimum content is never
+            // bigger than the viewport
+            return 0;
+         case View.Y_AXIS:
+            return super.getMinimumSpan(axis);
+         default:
+            throw new IllegalArgumentException("Invalid axis: " + axis);
+         }
+      }
+    }
 }

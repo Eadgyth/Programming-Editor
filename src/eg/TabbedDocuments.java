@@ -2,8 +2,6 @@ package eg;
 
 import java.awt.EventQueue;
 
-import java.awt.event.ActionListener;
-
 import javax.swing.JTabbedPane;
 import javax.swing.JOptionPane;
 
@@ -66,6 +64,10 @@ public class TabbedDocuments {
       edtDoc = new EditableDocument[editArea.length];
 
       tabPane = mw.tabPane();
+      tabPane.setTabClosing(i -> {
+         iTab = i;
+         close(true);
+      });
       tabPane.addChangeListener((ChangeEvent ce) -> {
          JTabbedPane sourceTb = (JTabbedPane) ce.getSource();
          iTab = sourceTb.getSelectedIndex();
@@ -306,7 +308,7 @@ public class TabbedDocuments {
       format.createEditAreaAt(n);
       edtDoc[n] = new EditableDocument(editArea[n], lang);
       edtDoc[n].setEditingStateReadable(editState);
-      tabPane.addTab(UNNAMED_LABEL, editArea[n].content(), closeAct());
+      tabPane.addClosableTab(UNNAMED_LABEL, editArea[n].content());
    }
 
    private void createDocument(File f) {
@@ -314,16 +316,8 @@ public class TabbedDocuments {
       format.createEditAreaAt(n);
       edtDoc[n] = new EditableDocument(editArea[n], f, lang);
       edtDoc[n].setEditingStateReadable(editState);
-      tabPane.addTab(edtDoc[n].filename(), editArea[n].content(), closeAct());
+      tabPane.addClosableTab(edtDoc[n].filename(), editArea[n].content());
       proj.retrieve();
-   }
-
-   private FunctionalAction closeAct() {
-      ActionListener close = e -> {
-         iTab = tabPane.iTabMouseOver();
-         close(true);
-      };
-      return new FunctionalAction("", eg.ui.IconFiles.CLOSE_ICON, close);
    }
 
    private boolean save(boolean setFile) {
@@ -507,7 +501,7 @@ public class TabbedDocuments {
 
    private void changeFile() {
       changedFileUpdate(edtDoc[iTab]);
-      tabPane.setTitle(iTab, edtDoc[iTab].filename());
+      tabPane.setTitleAt(iTab, edtDoc[iTab].filename());
       EventQueue.invokeLater(proj::retrieve);
    }
 

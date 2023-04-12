@@ -22,7 +22,7 @@ import eg.utils.Dialogs;
 public class Console {
 
    private final JTextArea area = new JTextArea();
-   private final JButton enterCmdBt = new JButton("Cmd...");
+   private final JButton enterCmdBt = new JButton(IconFiles.ENTER_CMD_ICON);
    private final JButton runBt = new JButton(IconFiles.RUN_CMD_ICON);
    private final JButton stopBt = new JButton(IconFiles.STOP_PROCESS_ICON);
    private final JButton[] bts = new JButton[] {

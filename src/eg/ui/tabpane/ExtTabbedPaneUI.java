@@ -1,53 +1,54 @@
 package eg.ui.tabpane;
 
-import java.awt.Color;
+import javax.swing.JComponent;
+
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Polygon;
-
-import javax.swing.UIManager;
+import java.awt.Rectangle;
 
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
+//--Eadgyth--/
+import eg.BackgroundTheme;
+
 /**
- * A modified appearance for the <code>JTabbedPane</code>.
- * <p>The background of a selected tab is yellow; other tabs are in 'normal'
- * gray.<br>
- * The tab height can be defined by {@link #setHeight(int)} and the selected
- * tab is not elevated.<br>
- * Tabs are rectangular and aligned at the left edge.<br>
- * The content area insets are set to zero and a content border is not
- * painted. The tab area insets are also set to zero.<br>
- * The tab bar is visible or hidden depending on the value passed in
- * {@link #setShowTabs(boolean)}.
+ * The UI for the <code>ExtTabbedPane</code>
  */
 public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
 
-   private static final Color BORDER_GRAY = new Color(150, 150, 150);
-   private static final Color SEL_TAB_YELLOW = new Color(250, 250, 170);
-   private static final Insets TAB_INSETS_BOTTOM = new Insets(0, 0, 0, 0);
-   private static final Insets TAB_INSETS_ZERO = new Insets(0, 0, 0, 0);
-   private static final Insets CONTENT_INSETS = new Insets(0, 0, 0, 0);
+   private static final Insets ZERO_INSETS = new Insets(0, 0, 0, 0);
+
+   private final BackgroundTheme theme;
 
    private boolean isShowTabs = true;
    private int tabHeight;
 
    /**
-    * Sets the height of the tabs
+    * Creates an <code>ExtendedTabbedPaneUI</code>
     *
-    * @param height  the height
+    * @param theme  the BackgroundTheme
+    * @param tabHeight  the height of the tabbar
     */
-   public void setHeight(int height) {
-      tabHeight = height;
+   public ExtTabbedPaneUI(BackgroundTheme theme, int tabHeight) {
+      this.theme = theme;
+      this.tabHeight = tabHeight;
    }
 
    /**
-    * Controls if the tab bar is visible when this ui is updated.
+    * Sets the boolean that indicates if the tabbar is visible
     *
-    * @param show  true/false to show/hide the tab bar
+    * @param b  true to show, false to hide the tabbar
     */
-   public void setShowTabs(boolean show) {
-      isShowTabs = show;
+   public void setShowTabs(boolean b) {
+      isShowTabs = b;
+   }
+
+   @Override
+   public void paint(Graphics g, JComponent c) {
+      Rectangle bounds = tabPane.getBounds();
+      g.setColor(theme.lightBackground());
+      g.fillRect(0, 0, bounds.width, bounds.height);
    }
 
    @Override
@@ -67,16 +68,15 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
       if (!isShowTabs) {
          return;
       }
-
       int yy = 0;
       if (tabIndex == 0 && x != 0) {
          w = w + x;
          x = 0;
       }
-      g.setColor(BORDER_GRAY);
-      g.drawLine(x, yy , x + w, yy);
+      g.setColor(theme.lineBorder());
       g.drawLine(x, yy, x, yy + h);
       g.drawLine(x + w, yy, x + w, yy + h);
+      g.drawLine(x, yy , x + w, yy);
    }
 
    @Override
@@ -86,7 +86,6 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
       if (!isShowTabs) {
          return;
       }
-
       int yy = 0;
       if (tabIndex == 0 && x != 0) {
          w = w + x;
@@ -98,10 +97,10 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
       shape.addPoint(x + w, yy + h);
       shape.addPoint(x + w, yy);
       if (isSelected) {
-         g.setColor(SEL_TAB_YELLOW);
+         g.setColor(theme.background());
       }
       else {
-         g.setColor(UIManager.getColor("Panel.background"));
+         g.setColor(theme.lightBackground());
       }
       g.fillPolygon(shape);
    }
@@ -116,22 +115,17 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
    @Override
    protected void paintContentBorder(Graphics g, int tabPlacement,
          int selectedIndex) {
-	  
+
 	  // should not paint
    }
 
    @Override
    protected Insets getContentBorderInsets(int tabPlacement) {
-      return CONTENT_INSETS;
+      return ZERO_INSETS;
    }
 
    @Override
    protected Insets getTabAreaInsets(int tabPlacement) {
-      if (isShowTabs) {
-         return TAB_INSETS_BOTTOM;
-      }
-      else {
-         return TAB_INSETS_ZERO;
-      }
+       return ZERO_INSETS;
    }
 }

@@ -8,7 +8,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.Action;
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -61,7 +60,7 @@ public class ExchangeEditor implements AddableEditTool {
    private final JMenuItem clearItm = new JMenuItem("Clear");
    private final LanguageMenu languageMenu = new LanguageMenu();
    private final FormatMenu formatMenu = new FormatMenu();
-   private final JButton closeBt = UIComponents.undecoratedButton();
+   private final JButton closeBt = new JButton();
 
    private final Formatter format = new Formatter(1, Prefs.EXCHG_PREFIX);
    private final Prefs prefs = new Prefs();
@@ -144,15 +143,10 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    private JMenuBar menuBar() {
-      JMenuBar mb = UIComponents.menuBar();
-      mb.add(textMenu());
-      mb.add(adoptMenu());
-      mb.add(editMenu());
-      mb.add(formatMenu.getMenu());
-      mb.add(Box.createHorizontalGlue());
-      mb.add(closeBt);
-      mb.add(Box.createRigidArea(ScreenParams.scaledDimension(5, 0)));
-      return mb;
+      JMenu[] menus = new JMenu[] {
+         textMenu(), adoptMenu(), editMenu(), formatMenu.getMenu()
+      };
+      return UIComponents.menuBar(menus, closeBt);
    }
 
    private JMenu textMenu() {

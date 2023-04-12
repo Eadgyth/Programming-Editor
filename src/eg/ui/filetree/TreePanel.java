@@ -32,13 +32,19 @@ import eg.ui.UIComponents;
  */
 public class TreePanel {
 
-   private final BackgroundTheme theme = BackgroundTheme.givenTheme();
    private final JPanel content;
    private final JPanel holdTree = new JPanel(new BorderLayout());
    private final JScrollPane scroll = UIComponents.scrollPane();
-   private final JButton closeBt = UIComponents.undecoratedButton();
+   private final JButton closeBt = new JButton();
+   private final BackgroundTheme theme;
 
-   public TreePanel() {
+   /**
+    * Creates a <code>TreePanel</code>
+    *
+    * @param theme  the BackgroundTheme
+    */
+   public TreePanel(BackgroundTheme theme) {
+      this.theme = theme;
       content = UIComponents.grayBorderedPanel();
       init();
    }
@@ -94,10 +100,7 @@ public class TreePanel {
    }
 
    private JToolBar toolbar() {
-      String[] tooltips = new String[] {
-         "Folder up"
-      };
-      return UIComponents.toolBar(null, tooltips, closeBt);
+      return UIComponents.toolbar(null, null, closeBt);
    }
 
    @SuppressWarnings("serial")

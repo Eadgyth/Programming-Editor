@@ -68,6 +68,8 @@ public class IconFiles {
          = ICONS.createIcon(EAD_DIR + "run.png" );
    public final static ImageIcon RUN_CMD_ICON
          = ICONS.createIcon(EAD_DIR + "runCons.png" );
+   public final static ImageIcon ENTER_CMD_ICON
+         = ICONS.createIcon(EAD_DIR + "enterCMD.png" );
    public final static ImageIcon COMPILE_ICON
          = ICONS.createIcon(EAD_DIR + "compile.png");
    public final static ImageIcon EADGYTH_ICON_16
