@@ -116,7 +116,7 @@ public class Projects {
 
    /**
     * Opens the project settings to assign a new project. If the
-    * selected file alreade belongs to project of the specified
+    * selected file alreade belongs to the project of the specified
     * project type the project settings for this project are opened.
     *
     * @param projType  the project type
