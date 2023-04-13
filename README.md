@@ -2,8 +2,8 @@
 A text and code editor with the possibility to easily set up coding projects,
 first of all for Java. Additional project categories are Python, R, Perl and
 HTML as well as 'Custom commands' to define own commands. Extending the source
-code of the editor to add support for other languages can be reasonably easily
-realized too.
+code to add support for other categories can be reasonably easily realized for
+which the additional categories give examples.
 <br><br>
 The editor may be useful for writing applications for own use, learning or quickly
 trying out code in case that a more advanced code editor or IDE is not necessary
@@ -61,8 +61,6 @@ Windows).
 <br>
 <h4>LIMITATIONS</h4>
 <p>
-Among countless limitations (one would be the rather simple syntax highlighting):
-<p>
 The console of the editor may appear "frozen" in cases that the output of a process
 is buffered because of redirecting its standard output to the GUI. Among the given
 project categories this applies to Perl (noticable in an interactive console program)
@@ -70,21 +68,24 @@ and it may apply to custom commands. This block-buffering may be disabled (or au
 flushing enabled) by a command-line switch or a command in a script itself if
 available for a language (for comparison and for the time using this editor!).
 <br>
-<h4>ACKNOWLEDGEMENTS</h4>
-<p>
-Special thanks go to William Gilreath for his advice, comments, enthusiasm.
-<br>
-<p>
-The program uses icons from
-<a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.
-<br>
+<h4>CREDITS & ACKNOWLEDGEMENTS</h4>
+<ul>
+<li>William Gilreath for his advice, comments, enthusiasm</li>
+<li>The program uses icons from
+<a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.</li>
+<li>The dark-blue background uses the
+<a href="https://github.com/dracula/dracula-theme">Dracula Color Palette</a> and 
+other dark backgrounds have learned from it.</li>
+</ul>
 <h4>LICENSE</h4>
 <p>
 MIT, see LICENSE<br>
 <p>
-<h4>SCREENSHOT</h4>
+<h4>SCREENSHOTS</h4>
 <p>
 An example for a command-line program in Java (Eadgyth run on Windows 10):
 <br>
-<br>
 <img src="docs/images/ExampleProject.png" width="800"/><br><br>
+<br>
+The 'Dracula' derived dark-blue background:
+<img src="docs/images/DarkBlueBackground.png" width="800"/><br><br>
