@@ -54,6 +54,8 @@ public class ConsolePanel {
       area.setFont(ScreenParams.SANSSERIF_PLAIN_8);
       area.setBackground(theme.background());
       area.setForeground(theme.normalText());
+      area.setSelectionColor(theme.selectionBackground());
+      area.setSelectedTextColor(theme.normalText());
       area.setBorder(new LineBorder(theme.background(), 5));
       area.setCaretColor(theme.normalText());
    }
