@@ -339,11 +339,12 @@ public class Projects {
          }
          if (!projCmnds.contains(toConfig)) {
         	   projCmnds.add(toConfig);
-            toConfig.storeConfiguration();
          }
+         toConfig.storeConfiguration();
+         fileTree.updateTree();
          //
          // a non-project tab may have been selected after opening
-         // the settings        
+         // the settings
          ProjectCommands fromList = null;
          if (edtDoc[iDoc].hasFile()) {
             fromList = selectFromList(edtDoc[iDoc].fileParent(), false);
