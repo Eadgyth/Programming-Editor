@@ -47,7 +47,7 @@ public class SettingsWindow {
 
    private static final FileChooser chooser = new FileChooser();
 
-   private final JFrame     frame              = new JFrame("Project settings");
+   private final JFrame     frame              = new JFrame();
    private final JTextField projDirTf          = new JTextField();
    private final JTextField fileTf             = new JTextField();
    private final JTextField moduleTf           = new JTextField();
@@ -81,11 +81,18 @@ public class SettingsWindow {
    private boolean useBuildSettings = false;
    private boolean useCustomCmds = false;
 
-   public SettingsWindow() {
+   /**
+    * Creates a <code>SettingsWindow</code>
+    *
+    * @param projectType  the name of the project type that is
+    * shown in the window's title
+    */
+   public SettingsWindow(String projectType) {
       chooser.initSelectFileOrDirectoryChooser();
       sourcePnl = vertBoxPnl();
       addSourceSetting("Name of project directory:", projDirTf, DIM_TF, true);
       frame.getRootPane().setDefaultButton(okBt);
+      frame.setTitle("Project settings (" + projectType + ")");
       bf = new BusyFunction(frame);
    }
 

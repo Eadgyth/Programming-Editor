@@ -243,6 +243,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          sb.append(" ").append(cmdArgs());
       }
       startCmd = sb.toString();
+      System.out.println(startCmd);
    }
 
    private void setMainClassFile() {

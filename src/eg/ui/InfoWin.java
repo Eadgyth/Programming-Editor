@@ -33,7 +33,7 @@ public class InfoWin {
          + "Programming Editor<br><br>"
          + "Version: 1.1.9<br>"
          + "Author: Malte Bussiek<br><br>"
-         + "Credit and Acknowledgements:"
+         + "Credits and Acknowledgements:"
          + "<ul>"
          + "<li>Tango Desktop Project</li>"
          + "<li>Dracula color palette</li>"

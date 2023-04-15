@@ -98,7 +98,6 @@ public abstract class AbstractProject implements Configurable {
 
    @Override
    public final boolean configure() {
-      projectDir = "";
       boolean success = false;
       String root = "";
       if (!sw.projDirInput().isEmpty()) {
@@ -191,6 +190,9 @@ public abstract class AbstractProject implements Configurable {
       if (projectDir.isEmpty()) {
          throw new IllegalStateException("The project is not configured");
       }
+      if (hasSetSourceFile() && !sourceFile.exists()) {
+         return;
+      }
       store(prefs);
       if (sw.isSaveToProjConfig()) {
          conf = new Prefs(projectDir);
@@ -226,7 +228,7 @@ public abstract class AbstractProject implements Configurable {
          this.sourceExt = null;
          this.namespaceSep = null;
       }
-      sw = new SettingsWindow();
+      sw = new SettingsWindow(projType.display());
       inputOptions = sw.inputOptionsBuilder();
       sw.setCancelAct(e -> undoSettings());
       sw.setDefaultCloseAct(defaultClosing);
