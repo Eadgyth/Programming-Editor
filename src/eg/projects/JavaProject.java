@@ -222,19 +222,13 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
 
    private void setModStartCmd() {
       StringBuilder sb = new StringBuilder("java");
-      if (!relClassDir.isEmpty() || !libMods.joinedNames().isEmpty()) {
-         sb.append(" -p \"");
-         if (!relClassDir.isEmpty()) {
-            sb.append(relClassDir);
-         }
-         if (!libMods.joinedNames().isEmpty()) {
-            if (!relClassDir.isEmpty()) {
-                sb.append(File.pathSeparator);
-            }
-            sb.append(libMods.joinedParents());
-         }
-         sb.append("\"");
+      sb.append(" -p \"");
+      sb.append(classDir);
+      if (!libMods.joinedNames().isEmpty()) {
+         sb.append(File.pathSeparator);
+         sb.append(libMods.joinedParents());
       }
+      sb.append("\"");
       if (!cmdOptions().isEmpty()) {
          sb.append(" ").append(cmdOptions());
       }
@@ -243,7 +237,6 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          sb.append(" ").append(cmdArgs());
       }
       startCmd = sb.toString();
-      System.out.println(startCmd);
    }
 
    private void setMainClassFile() {
