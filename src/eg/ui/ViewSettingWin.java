@@ -22,7 +22,7 @@ import eg.utils.ScreenParams;
 import eg.utils.SystemParams;
 
 /**
- * The dialog to enter preferences for the display of the main window
+ * The dialog to enter view preferences
  */
 public class ViewSettingWin {
 
@@ -204,7 +204,7 @@ public class ViewSettingWin {
    }
 
    /**
-    * Returns the index of combobox selection for the look and feel
+    * Returns the index of combobox selection for the LaF
     *
     * @return  the index
     */
@@ -266,6 +266,7 @@ public class ViewSettingWin {
       pnl.add(innerPnl);
       return pnl;
    }
+
    private JPanel appearanceSettingsPnl() {
       JPanel pnl = new JPanel();
       pnl.setBorder(UIComponents.titledBorder("Appearance"));
@@ -282,7 +283,7 @@ public class ViewSettingWin {
 
    private JPanel lineNumberSettingPnl() {
       return checkBxPnl(lineNumbersChBx,
-            "Show line numbers when wordwrap is disabled");
+            "Show line numbers (if wordwrap is disabled)");
    }
 
    private JPanel toolbarSettingPnl() {
