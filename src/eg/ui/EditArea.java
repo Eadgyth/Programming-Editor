@@ -43,7 +43,7 @@ import eg.utils.ScreenParams;
  * <p>
  * Class uses code written by Stanislav Lapitsky to allow
  * correct line/word wrapping in JTextPane. Two contributions
- * are combined:<br>
+ * are (and have to be) combined:<br>
  * https://stackoverflow.com/questions/30590031/
  *    jtextpane-line-wrap-behavior
  * <br>
@@ -374,13 +374,13 @@ public final class EditArea {
          resetBreakSpots();
       }
 
-      private void resetBreakSpots() {
-          for (int i = 0; i < layoutPool.getViewCount(); i++) {
-              View view = layoutPool.getView(i);
-              if (view instanceof WrapLabelView) {
-                  ((WrapLabelView) view).resetBreakSpots();
-              }
-          }
+		private void resetBreakSpots() {
+			for (int i = 0; i < layoutPool.getViewCount(); i++) {
+				View view = layoutPool.getView(i);
+            if (view instanceof WrapLabelView) {
+            	((WrapLabelView) view).resetBreakSpots();
+           	}
+			}
       }
    }
 }
