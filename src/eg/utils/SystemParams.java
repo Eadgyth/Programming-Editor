@@ -17,6 +17,9 @@ public class SystemParams {
     * True if the Java version is higher than 8, false otherwise */
    public static final boolean IS_JAVA_9_OR_HIGHER;
    /**
+    * True if the Java version is higher than 10, false otherwise */
+   public static final boolean IS_JAVA_10_OR_HIGHER;
+   /**
     * True if the Java version is 13 or higher, false otherwise */
    public static final boolean IS_JAVA_13_OR_HIGHER;
    /**
@@ -34,6 +37,8 @@ public class SystemParams {
       EADGYTH_DATA_DIR = userHome + File.separator + ".eadgyth";
       JAVA_VERSION = System.getProperty("java.version");
       IS_JAVA_9_OR_HIGHER = !JAVA_VERSION.startsWith("1.8");
+      IS_JAVA_10_OR_HIGHER = IS_JAVA_9_OR_HIGHER
+            && "10".compareTo(JAVA_VERSION) <= 0;
       IS_JAVA_13_OR_HIGHER = IS_JAVA_9_OR_HIGHER
             && "13".compareTo(JAVA_VERSION) <= 0;
       //

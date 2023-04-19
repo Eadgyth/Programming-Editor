@@ -21,12 +21,20 @@ public class JavaHighlighter implements Highlighter {
      "long",
      "native", "new", "null",
      "package", "private", "protected", "public",
-     "requires", "return",
+     "return",
      "strictfp", "switch", "synchronized", "short", "static", "super",
      "String",
      "this", "throw", "throws", "transient", "true", "try",
      "void", "volatile",
      "while"
+   };
+   
+   private static final String[] JAVA_9_PLUS_KEYWORDS = {
+      "exports", "module", "requires"
+   };
+      
+   private static final String[] JAVA_10_PLUS_KEYWORDS = {
+      "var"
    };
 
    private static final String[] JAVA_ANNOTATIONS = {
@@ -55,6 +63,12 @@ public class JavaHighlighter implements Highlighter {
       s.braces();
       s.keywords(JAVA_ANNOTATIONS, null, attr.bluePlain);
       s.keywords(JAVA_KEYWORDS, null, attr.redPlain);
+      if (SystemParams.IS_JAVA_9_OR_HIGHER) {
+         s.keywords(JAVA_9_PLUS_KEYWORDS, null, attr.redPlain);
+      }
+      if (SystemParams.IS_JAVA_10_OR_HIGHER) {
+         s.keywords(JAVA_10_PLUS_KEYWORDS, null, attr.redPlain);
+      }
       s.blockComments(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH, false);
    }
 
