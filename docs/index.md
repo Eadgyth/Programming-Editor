@@ -4,7 +4,7 @@ IDEs exist but using them seemed very complicated to me.
 
 Therefore, a goal is that it is as simple as possible to set up the editor to try out code
 from within it and provide at the same time some flexibility to use it for real coding
-coding projects.
+projects.
 
 The github repository for the program also contains, well ... "releases" (a record of my
 attempts to fix bugs and add useful features). Anyway, there an executable jar file of the
