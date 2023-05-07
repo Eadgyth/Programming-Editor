@@ -47,26 +47,34 @@ be tried out by using the executable jar file in a
 </ul>
 <h4>REQUIREMENTS</h4>
 <p>
-Compiling the program requires Java 8 or higher. Building an executable jar file of
-the editor can be done, for example, after creating a Java project with existing
-sources in Netbeans using the src folder from the repository as sources directory.
+Compiling the program requires Java 8 or higher. It can be built by creating a Java
+project with existing sources in Netbeans or Eclipse using the src folder from the
+repository as sources directory. An executable jar can also be created using
+Eadgyth Progamming Editor
+<a href="https://github.com/Eadgyth/Programming-Editor/releases">itself</a> :) where
+including .png files (for the icon files) must be specified in the
+<a href="https://eadgyth.github.io/Programming-Editor/">project settings</a>).
 <p>
 If the editor is used for compiling Java code by the built-in compile function it must
-be made sure that it is run using the JRE contained in a JDK (with Java 11 only a
+be made sure that it is run using the JRE contained in a JDK (as of Java 11 only a
 JDK but no separate JRE is available anyway).
 <p>
-For using the built-in function to run code the path variables that point to the
-executables of a programming language may have to be set in the OS (they have to under
-Windows).
+<b>Important:</b> For using the built-in functions to run code (presently the project
+categories Java, Python, R and Perl) the path variables that point to the executables
+of a programming language must be set in the OS as permanent environment variables.
 <br>
 <h4>LIMITATIONS</h4>
 <p>
+Appart from the fact that the syntax highlighting is rather simple the example of the
+Perl language shows that it cannot cover all kinds of syntax elememts (in this case:
+regex, for example).
+<p>
 The console of the editor may appear "frozen" in cases that the output of a process
-is buffered because of redirecting its standard output to the GUI. Among the given
-project categories this applies to Perl (noticable in an interactive console program)
-and it may apply to custom commands. This block-buffering may be disabled (or auto-
-flushing enabled) by a command-line switch or a command in a script itself if
-available for a language (for comparison and for the time using this editor!).
+is buffered because its standard output is redirected to the 'console' of this program.
+Among the given project categories this applies to Perl (noticable in an interactive
+console program) and it may apply to custom commands. This block-buffering may be
+disabled (or auto-flushing enabled) by a command-line switch or a command in a script
+itself if available for a language (for comparison and for the time using this editor!).
 <br>
 <h4>CREDITS & ACKNOWLEDGEMENTS</h4>
 <ul>
