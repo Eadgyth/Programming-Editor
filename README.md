@@ -1,18 +1,21 @@
 <h3>Eadgyth Programming Editor</h3>
+<p>
 A text and code editor with the possibility to easily set up coding projects,
-first of all for Java. Additional project categories are Python, R, Perl and
-HTML as well as 'Custom commands' to define own commands. Extending the source
-code to add support for other categories can be reasonably easily realized for
-which the additional categories give examples.
-<br><br>
+first of all for Java. Setting a project means that it can be run (or compiled)
+by built-in functions that are invoked by menu selections, button clicks or with
+the keyboard. Additional project categories are Python, R, Perl and HTML as well
+as a category 'Custom commands' to define own commands to run own batch files/scripts,
+for example.
+<p>
 The editor may be useful for writing applications for own use, learning or quickly
-trying out code in case that a more advanced code editor or IDE is not necessary
+trying out code in case that a more advanced code editor or an IDE is not necessary
 (examples for project settings can be found
 <a href="https://eadgyth.github.io/Programming-Editor/">here</a>). The program can
-be tried out by using the executable jar file in a
+be tried out by downloading the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a>
-(requires a JDK, version 8 or higher).
-<br>
+(requires a JDK, version 8 or higher). The additional idea is that other project
+categories can be implemented as needed (To do: add a guide for programming a
+project type).
 <p>
 <h4>Features for editing text are ...</h4>
 <ul>
@@ -35,9 +38,6 @@ be tried out by using the executable jar file in a
 <li>Run scripts in Python, R or Perl.
 <li>Specify additional options or arguments for the built-in commands.</li>
 <li>View HTML code in the default browser.</li>
-<li>Specify own system commands to compile, run and/or build (associated with
-    corrsponding UI controls) in a 'Custom commands' project category, for example,
-    to run own batch files/shell scripts.</li>
 <li>A console for showing output/error during running (or compiling) a program and
     entering input in interactive command-line programs.</li>
 <li>Set up several projects which can be switched between and retrieve project settings
@@ -49,25 +49,23 @@ be tried out by using the executable jar file in a
 <p>
 Compiling the program requires Java 8 or higher. It can be built by creating a Java
 project with existing sources in Netbeans or Eclipse using the src folder from the
-repository as sources directory. An executable jar can also be created using
-Eadgyth Progamming Editor
-<a href="https://github.com/Eadgyth/Programming-Editor/releases">itself</a> :) where
-including .png files (for the icon files) must be specified in the
-<a href="https://eadgyth.github.io/Programming-Editor/">project settings</a>).
+repository as sources directory. It can also be built by the program itself using the
+executable jar file in a
+<a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> 🙂.
 <p>
-If the editor is used for compiling Java code by the built-in compile function it must
-be made sure that it is run using the JRE contained in a JDK (as of Java 11 only a
-JDK but no separate JRE is available anyway).
+To compile Java code by the built-in compile function it must be made sure that it is
+run using the JRE contained in a JDK (as of Java 11 only a JDK but no separate JRE is
+available anyway).
 <p>
-<b>Important:</b> For using the built-in functions to run code (presently the project
+<b>Important:</b> To run code by the built-in functions (presently in the project
 categories Java, Python, R and Perl) the path variables that point to the executables
 of a programming language must be set in the OS as permanent environment variables.
 <br>
 <h4>LIMITATIONS</h4>
 <p>
-Appart from the fact that the syntax highlighting is rather simple the example of the
+Apart from the fact that the syntax highlighting is rather simple the example of the
 Perl language shows that it cannot cover all kinds of syntax elememts (in this case:
-regex, for example).
+regex give an example).
 <p>
 The console of the editor may appear "frozen" in cases that the output of a process
 is buffered because its standard output is redirected to the 'console' of this program.
@@ -76,6 +74,12 @@ console program) and it may apply to custom commands. This block-buffering may b
 disabled (or auto-flushing enabled) by a command-line switch or a command in a script
 itself if available for a language (for comparison and for the time using this editor!).
 <br>
+<h4>THE NAME</h4>
+<p>The name of the program is 'Eadgyth' although it's the owner (me) of the repo and
+not the repo name. I haven't thought about it in the beginning but it shall not be
+changed. Eadgyth (as an Old English version of the name Edith) does not refer to
+Queen Eadgyth of Wessex but to MS-DOS Editor which was invoked by typing 'edit'.
+<br>
 <h4>CREDITS & ACKNOWLEDGEMENTS</h4>
 <ul>
 <li>William Gilreath for his advice, comments, enthusiasm</li>
@@ -83,7 +87,7 @@ itself if available for a language (for comparison and for the time using this e
 <a href="https://github.com/Distrotech/tango-icon-theme">Tango Desktop Project</a>.</li>
 <li>The dark-blue background uses the
 <a href="https://github.com/dracula/dracula-theme">Dracula Color Palette</a> and 
-other dark backgrounds have learned from it.</li>
+other the dark backgrounds have learned from it.</li>
 </ul>
 <h4>LICENSE</h4>
 <p>
