@@ -87,5 +87,5 @@ in the 'bin' directory and the program can be run:
 
 <hr>
 Please also have a look at the
-<a href="https://eadgyth.github.io/Programming-Editor/docs/Help.html">help site</a> which is
+<a href="https://eadgyth.github.io/Programming-Editor/docs/Help.md">help site</a> which is
 also accessible from the '?' menu.
