@@ -86,6 +86,5 @@ in the 'bin' directory and the program can be run:
 <img src="images/run.png" width="600"/>
 
 <hr>
-Please also have a look at the
-[a relative link](Help.md) which is
+Please also have a look at the [Help](./Help.md) which is
 also accessible from the '?' menu.
