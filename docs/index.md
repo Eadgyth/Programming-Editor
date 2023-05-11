@@ -87,5 +87,5 @@ in the 'bin' directory and the program can be run:
 
 <hr>
 Please also have a look at the
-<a href=Help.md">help site</a> which is
+[a relative link](Help.md) which is
 also accessible from the '?' menu.
