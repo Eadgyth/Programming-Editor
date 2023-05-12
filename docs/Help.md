@@ -8,6 +8,7 @@
    <li><a href="#Categories">Project categories</a>
    <li><a href="#Console">Using the console</a></li>
 </ul>
+</nav>
 <hr>
 <h2 id="Requirements">Requirements</h2>
 <p>See
@@ -91,7 +92,7 @@
       <td><a href="#CustomCmd">Specify own system commands (run, compile, build)</td>
    </tr>
 </table>
-<nav>
+</nav>
 <h4 id="JavaProject">Java</h4>
 <ul>
 <li>To run a Java program first compile the source file(s) by selecting 'Save
