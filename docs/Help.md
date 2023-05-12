@@ -176,15 +176,15 @@
    the (error) output of a program that is tested.</p>
 <p>An own system command entered in a dialog can be run in the current working
    directory (the project directory) in addition to the commands defined in a
-   project (built-in or custom). The dialog is opened by selecting the 'cmd...'
+   project (built-in or custom). The dialog is opened by selecting the 'write'
    button in the toolbar of the console panel.</p>
+<p>There are different possiblilies or requirements for commands. Generally,
+   it is important to know that the console does not emulate the terminal of the
+   operating system. To be able to see output from a started program in the
+   console (the one in the editor) may require to start a shell process by
+   a command like cmd /c [program] ( Windowns)or ./bin/bash -c [program].
 <p>A started process can be forcibly quit by clicking the 'stop' symbol.</p>
-<p>NOTE: The console does not emulate the terminal of the operating system!
-   However, it is possible (or rather not prohibited) to run the system's terminal
-   in the console by running the command that starts it (e.g., cmd.exe in
-   Windows). It is important to note that a tested program thereupon started from
-   this terminal CANNOT be forcibly quit by clicking the 'stop' symbol as this
-   would only end the terminal.</p>
+<br>
 <h4>To run a system command...</h4>
 <ol>
 <li>Open the console panel by selecting 'Console' in the View menu.</li>
@@ -201,7 +201,9 @@
     project directory. To run a program in the CMD (again Windows) and keep the
     CMD open the command would be cmd /c start cmd /k [command].</li>
 <li>The option to enter commands may be used to run a batch file/shell script saved
-    in the working directory (in Windows the command would be cmd.exe /c [BatchFile.bat]).
+    in the working directory (in Windows the command would be cmd.exe /c [BatchFile.bat])
+    in which case any output of the program run from the batch file is displayed
+    in the console area of the editor.
 </li>
 </ul>
 <br>
