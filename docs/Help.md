@@ -11,9 +11,10 @@
 </nav>
 <hr>
 <h2 id="Requirements">Requirements</h2>
-<p>See
-   <a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
-   README</a>
+<p>
+For requirements see
+<a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
+README</a>
 <hr>
 <h2 id="Projects">Setup to run source code</h2>
 <h4>Setting a project</h4>
@@ -89,7 +90,7 @@
    </tr>
    <tr>
       <td>Custom commands</td>
-      <td><a href="#CustomCmd">Specify own system commands (run, compile, build)</td>
+      <td><a href="#CustomCmd">Specify own system commands (run, compile, build)</a></td>
    </tr>
 </table>
 </nav>
@@ -173,40 +174,40 @@
 <hr>
 <h2 id="Console">Using the console</h2>
 <p>The console shows messages after compiling a project (applies to Java) and
-   the (error) output of a program that is tested.</p>
-<p>An own system command entered in a dialog can be run in the current working
-   directory (the project directory) in addition to the commands defined in a
-   project (built-in or custom). The dialog is opened by selecting the 'write'
-   button in the toolbar of the console panel.</p>
-<p>There are different possiblilies or requirements for commands. Generally,
-   it is important to know that the console does not emulate the terminal of the
-   operating system. To be able to see output from a started program in the
-   console (the one in the editor) may require to start a shell process by
-   a command like cmd /c [program] ( Windowns)or ./bin/bash -c [program].
-<p>A started process can be forcibly quit by clicking the 'stop' symbol.</p>
-<br>
+   the (error) output of a program that is tested. A started program can be
+   quit by pressing the 'stop' botton in the toolbar of the console panel.</p>
+<p>Also, a system command can be entered in a dialog (by pressing the 'write'
+   button). However, commands are taken "as-is" which means they are not
+   processed in any way and there is no Eadgyth specific command syntax.
+   Therefore, the following hints may help ... </p>
+<h4>How to define commands<h4>
+<ul>
+<li>First, it is important to note that the editor's console does not emulate
+   the terminal of the operating system. Running a command just means to start
+   a program whose output is displayed (or which may ask for input).</li>
+<li>The obove point means that the command could be to run the terminal in the
+   editor's console so to speak. In Windows the command to be entered would be
+   cmd.exe. Then, for example, it would be possible to type 'dir' in the
+   (editor's) console to output the directories of the current working directory.
+   However, pressing the 'stop' button would only end the shell but not any
+   process started from there. Thus, this option is not recommended to run a
+   program to be tested as this may not terminate properly.</li>
+<li>The other way is to start a terminal process with a command like cmd.exe /c
+   [command] (Windowns) or sh -c [command] (Unix/Mac). In this way it is for
+   example possible to run batch or script files in the project directory.</li>
+<li>Some commands do not require to invoke a terminal process.</li>
+<li>It may be also be useful to open 'THE' terminal, for example by the command
+   'cmd.exe /c start' under Windows.</li>
+</ul>
 <h4>To run a system command...</h4>
 <ol>
 <li>Open the console panel by selecting 'Console' in the View menu.</li>
-<li>Press the 'write' button and enter a command in the shown dialog window. Click
-    ok to run the command. </li>
-<li>To run a previous command press the run button button (in the tool bar of the
-    console; to change a command open the command dialog again by clicking 'Cmd...'.
-</li>
+<li>Press the 'write' button and enter a command in the shown dialog window.
+    Click ok to run the command.</li>
+<li>To run a previous command press the run button (in the tool bar of the
+    console; to change a command open the dialog again by pressing the 'write'
+    button.</li>
 </ol>
-<h4>Hints</h4>
-<ul>
-<li>Using the command to start "THE" terminal window (in Windows this would be
-    cmd.exe /c start) presets the working directory for the terminal to the
-    project directory. To run a program in the CMD (again Windows) and keep the
-    CMD open the command would be cmd /c start cmd /k [command].</li>
-<li>The option to enter commands may be used to run a batch file/shell script saved
-    in the working directory (in Windows the command would be cmd.exe /c [BatchFile.bat])
-    in which case any output of the program run from the batch file is displayed
-    in the console area of the editor.
-</li>
-</ul>
-<br>
 <p><a href="#top">Back to top</a></p>
 <hr>
 <p>
