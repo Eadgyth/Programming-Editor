@@ -1,7 +1,7 @@
 <h2>Help</h2>
 <a id="top"></a>
-<nav class="left">
 <h3>Content</h3>
+<nav>
 <ul>
    <li><a href="#Requirements">Requirements</a><br></li>
    <li><a href="#Projects">Setup to run source code</a>
@@ -104,7 +104,7 @@ README</a>
 <li>If the Editor is run on Java 9 or higher a Java program may be run on the
     module path by specifying a module name in the 'Source' tab in the project
     settings. Running a module in Eadgyth requires that the module directory
-    is the source directory. Multi-module mode is not built in.
+    is the source directory. Multi-module mode is not built in.</li>
 <li>A separate destination directory for compiled class files can be specified
     in the 'sources' tab in the project settings. This directory is created in
     the project directory when Java files are compiled and can be deleted in the
