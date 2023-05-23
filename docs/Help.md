@@ -4,15 +4,31 @@
 <nav>
 <ul>
    <li><a href="#Requirements">Requirements</a><br></li>
-   <li><a href="#Projects">Setup to run source code</a>
-   <li><a href="#Categories">Project categories</a>
+   <li><a href="#Projects">Setup to run source code</a></li>
+   <li><a href="#Categories">Project categories</a></li>
    <li><a href="#Console">Using the console</a></li>
 </ul>
 </nav>
 <hr>
 <h2 id="Requirements">Requirements</h2>
 <p>
-For requirements see
+The editor requires Java 8 or higher. To compile your own Java code by the
+built-in compile function Eadgyth must be run with the runtime enverinment
+(JRE) contained in a Java Developement Kit (JDK) because it uses a compiler
+API within the JDK. As of Java 11 JREs are only available in conjunction
+with A JDK anyway.
+<p>
+Generally, the aim of Eadgyth to provide some flexibility in the settings
+of projects, e.g., in terms of directory structure, and the possiblity to
+reload project settings after newly starting the editor so that is can be
+used to work on real coding projects. However, it is still just a text editor
+and does not integrate any tools required to run code. Thus, the builit-in
+functions basically work in the same way as if system commands are run from
+a command-line. This means, that the computer must be set up in the same way:
+The executables for a language must be installed and the path to them set
+as environment variables.
+<p>
+See also
 <a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
 README</a>
 <hr>
@@ -83,6 +99,10 @@ README</a>
    <tr>
       <td>R</td>
       <td><a href="#RProject">Run an R script</a></td>
+   </tr>
+   <tr>
+      <td>Under work: an experimental C# category</td>
+      <td>Goal: Compile and run C# code</td>
    </tr>
    <tr>
       <td>HTML</td>
@@ -180,7 +200,7 @@ README</a>
    button). However, commands are taken "as-is" which means they are not
    processed in any way and there is no Eadgyth specific command syntax.
    Therefore, the following hints may help ... </p>
-<h4>How to define commands<h4>
+<h4>How to define commands</h4>
 <ul>
 <li>First, it is important to note that the editor's console does not emulate
    the terminal of the operating system. Running a command just means to start
@@ -195,9 +215,10 @@ README</a>
 <li>The other way is to start a terminal process with a command like cmd.exe /c
    [command] (Windowns) or sh -c [command] (Unix/Mac). In this way it is for
    example possible to run batch or script files in the project directory.</li>
-<li>Some commands do not require to invoke a terminal process.</li>
-<li>It may be also be useful to open 'THE' terminal, for example by the command
-   'cmd.exe /c start' under Windows.</li>
+<li>Some commands do not require to invoke a terminal process. However, it is
+   required if the command uses terminal syntax.</li>
+<li>It may also be useful to open 'THE' terminal, for example to open CMD by
+   the command 'cmd.exe /c start' under Windows.</li>
 </ul>
 <h4>To run a system command...</h4>
 <ol>
