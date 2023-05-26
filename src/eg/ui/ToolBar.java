@@ -45,7 +45,7 @@ public class ToolBar {
          "Save and compile project", "", "Change Project"
       };
       tb = UIComponents.toolbar(bts, toolTips);
-      int h = ScreenParams.scaledSize(2);
+      int h = ScreenParams.scaledSize(3);
       tb.setBorder(UIComponents.lightBkgdMatteBorder(h, 0, h, 0));
    }
 

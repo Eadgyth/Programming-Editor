@@ -76,7 +76,7 @@ public class TabbedDocuments {
          }
       });
 
-      lang = Languages.valueOf(prefs.property(Prefs.LANG_KEY));
+      lang = Languages.initialLanguage(prefs.property(Prefs.LANG_KEY));
 
       edit = new Edit(true);
       mw.setEditActions(edit, this::changeLanguage);

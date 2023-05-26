@@ -137,11 +137,10 @@ public class IndentSettingWin {
    private void initFrame() {
       frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       frame.setResizable(false);
-      frame.setLocation(550, 100);
       frame.setContentPane(combinedPnl());
       frame.getRootPane().setDefaultButton(okBt);
       frame.pack();
-      frame.setVisible(false);
+      frame.setLocationRelativeTo(null);
       frame.setAlwaysOnTop(true);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
    }

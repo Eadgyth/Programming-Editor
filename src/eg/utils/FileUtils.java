@@ -51,7 +51,8 @@ public class FileUtils {
 
    /**
     * Writes to the file 'log.txt' in the '.eadgyth' folder the date,
-    * message and stack trace of an exception
+    * message and stack trace of an exception. However, a new message
+    * replaces an older one.
     *
     * @param e  the Exception
     */

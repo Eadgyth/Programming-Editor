@@ -4,6 +4,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
+
 /**
  * The screen size and parameters that depend on the screen resolution.
  */
@@ -16,6 +20,9 @@ public class ScreenParams {
 
    private static final int SCREEN_RES
          = Toolkit.getDefaultToolkit().getScreenResolution();
+
+   private static final GraphicsEnvironment GE
+           = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
    private static final double SCREEN_RES_RATIO = SCREEN_RES / 72.0;
 
@@ -33,6 +40,22 @@ public class ScreenParams {
       int width = scaledSize(unscaledWidth);
       int height = scaledSize(unscaledHeight);
       return new Dimension(width, height);
+   }
+
+   /**
+    * Returns if currently a setting with more that one monitor
+    * is present
+    *
+    * @return true for more that one monitor, false otherwise
+    */
+   public static boolean isMultipleScreens() {
+      try {
+         GraphicsDevice[] devices = GE.getScreenDevices();
+         return devices.length > 1;
+      } catch (HeadlessException e) {
+         FileUtils.log(e);
+         return false;
+      }
    }
 
    /**
@@ -80,9 +103,13 @@ public class ScreenParams {
    }
 
    /**
-    * Returns the size which is scaled to the screen resolution. The
-    * specified <code>unscaledSize</code> is the size for the resolution
-    * assumed by Java (72 dpi).
+    * Returns the (font) size which is scaled to the screen
+    * resolution. Although fonts are measured in point (1/72
+    * of an inch) Java seems to assume a screen resolution of
+    * 72 dpi for the font size such that pt equals px.
+    * <p>
+    * Using this scaling for components other than fonts should
+    * ensure predictable dimensions relative to font sizes.
     *
     * @param  unscaledSize  the unscaled size
     * @return  the scaled size
@@ -113,7 +140,7 @@ public class ScreenParams {
    /**
     * Returns the size that is the inversion of the scaled size
     *
-    * @param  scaledSize  the previously scaled
+    * @param  scaledSize  the previously scaled size
     * @return  the rounded inverted scaled size
     * @see scaledSize
     */

@@ -31,7 +31,7 @@ public class InfoWin {
    private static final String INFO
          = "<html>"
          + "Programming Editor<br><br>"
-         + "Version: 1.1.9<br>"
+         + "Version: preparing for 1.2.0<br>"
          + "Author: Malte Bussiek<br><br>"
          + "Credits and Acknowledgements:"
          + "<ul>"
@@ -64,11 +64,11 @@ public class InfoWin {
 
       frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
-      frame.setLocation(650, 100);
       frame.setTitle("About");
       frame.setContentPane(content);
       frame.setResizable(false);
       frame.setSize(eg.utils.ScreenParams.scaledDimension(250, 240));
+      frame.setLocationRelativeTo(null);
       frame.setVisible(true);
    }
 

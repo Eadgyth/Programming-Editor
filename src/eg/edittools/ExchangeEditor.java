@@ -72,7 +72,8 @@ public class ExchangeEditor implements AddableEditTool {
       EditArea ea = format.editArea();
       editorPnl = ea.content();
       formatMenu.selectWordWrapItm(ea.isWordwrap());
-      Languages lang = Languages.valueOf(
+
+      Languages lang = Languages.initialLanguage(
             prefs.property(Prefs.EXCHG_PREFIX + Prefs.LANG_KEY));
 
       languageMenu.selectLanguageItm(lang);

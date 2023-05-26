@@ -15,7 +15,7 @@ import javax.swing.UIManager;
 public class BackgroundTheme {
 
    private static final Prefs PREFS = new Prefs();
-   private boolean isDark = false;
+   private boolean isDark = true;
    //
    // text
    private final Color background;
@@ -174,7 +174,7 @@ public class BackgroundTheme {
    public Color scrollbarThumb() {
       if (scrollbarThumb == null) {
          throw new IllegalStateException(
-               "The background theme is \"White\" and a "
+               "The background theme is not dark and a "
                + "scrollbar thumb color not available.");
       }
       return scrollbarThumb;
@@ -190,7 +190,7 @@ public class BackgroundTheme {
    public Color scrollbarTrack() {
       if (scrollbarTrack == null) {
          throw new IllegalStateException(
-               "The background theme is \"White\" and a "
+               "The background theme is is not dark and a "
                + "scrollbar track color not available.");
       }
       return scrollbarTrack;
@@ -210,8 +210,6 @@ public class BackgroundTheme {
    //
 
    private BackgroundTheme(String theme) {
-      isDark = !"White".equals(theme);
-
       if ("Dark Blue".equals(theme)) {// Dracula (D.)
          background = new Color(40, 42, 54);
          normalText = new Color(236, 236, 230);// D. -5%
@@ -291,6 +289,8 @@ public class BackgroundTheme {
          scrollbarThumb = null;
          scrollbarTrack = null;
          lineBorder = new Color(150, 150, 150);
+
+         isDark = false;
       }
    }
 }

@@ -12,9 +12,13 @@ import eg.ui.FontSettingWin;
  */
 public class Formatter {
 
+   private static final Integer[] FONT_SIZES = {
+      5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+   };
+
+   private final EditArea[] editArea;
    private final FontSettingWin fontWin;
    private final Prefs prefs = new Prefs();
-   private final EditArea[] editArea;
 
    private String fontKey;
    private String fontSizeKey;
@@ -37,7 +41,7 @@ public class Formatter {
    public Formatter (int n, String keyPrefix) {
       setPropertyKeys(keyPrefix);
       setFormatProperties();
-      fontWin = new FontSettingWin(font, fontSize);
+      fontWin = new FontSettingWin(FONT_SIZES, font, fontSize);
       fontWin.okAct(e -> setFont());
       editArea = new EditArea[n];
       if (n == 1) {
@@ -134,8 +138,8 @@ public class Formatter {
     * applies the wordwrap state to the selected or the single
     * <code>EditArea</code>.
     * <p>
-    * Enabling also hides line numbers whereas disabling shows line
-    * numbers depending if showing line numbers was previously
+    * Enabling also hides line numbers whereas disabling shows
+    * line numbers if showing line numbers was previously
     * selected.
     *
     * @see #showLineNumbers(boolean)
@@ -152,9 +156,9 @@ public class Formatter {
    }
 
    /**
-    * Sets the boolean that specifies if line numbers are shown and
-    * applies showing line numbers to objects of <code>EditArea</code>
-    * in which wordwrap is disabled.
+    * Sets the boolean that specifies if line numbers are
+    * shown and applies showing line numbers to objects of
+    * <code>EditArea</code> in which wordwrap is disabled.
     *
     * @param b  true to show, false to hide line numbers
     */
@@ -209,7 +213,13 @@ public class Formatter {
       isWordwrap = prefs.yesNoProperty(wordwrapKey);
       font = prefs.property(fontKey);
       try {
-         fontSize = Integer.parseInt(prefs.property(fontSizeKey));
+         int size = Integer.parseInt(prefs.property(fontSizeKey));
+         if (size >= FONT_SIZES[0] && size <= FONT_SIZES[FONT_SIZES.length - 1]) {
+            fontSize = size;
+         }
+         else {
+            fontSize = 9;
+         }
       }
       catch (NumberFormatException e) {
          fontSize = 9;

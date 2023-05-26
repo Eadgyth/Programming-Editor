@@ -241,7 +241,6 @@ public class ViewSettingWin {
       frame.getRootPane().setDefaultButton(okBt);
       frame.pack();
       frame.setLocationRelativeTo(null);
-      frame.setVisible(false);
       frame.setAlwaysOnTop(true);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
    }

@@ -209,25 +209,23 @@ public abstract class AbstractProject implements Configurable {
 
    /**
     * @param projType  the project type
-    * @param sourceExt  the extension of the (main) source file. Null
-    * means that the project does not use a set source file.
-    * @param namespaceSep  the separator for the {@link #namespace()}
-    * of the source file. Null to not take into account a namespace.
-    * Is ignored if sourceExt is null.
+    * @param sourceExt  the extension of the (main) source file
+    * without the dot. Null means that the project does not use a
+    * set source file.
+    * @param namespaceSep  the separator for a namespace. Null to
+    * not take into account any namespace. Is ignored if sourceExt
+    * is null.
+    *
+    * @see #namespace()
+    * @see #namespaceDir()
     */
    protected AbstractProject(ProjectTypes projType, String sourceExt,
          String namespaceSep) {
 
       this.projType = projType;
+      this.sourceExt = sourceExt != null ? "." + sourceExt : null;
+      this.namespaceSep = sourceExt != null ? namespaceSep : null;
       hasSetSourceFile = sourceExt != null;
-      if (hasSetSourceFile) {
-         this.sourceExt = "." + sourceExt;
-         this.namespaceSep = namespaceSep != null ? namespaceSep : null;
-      }
-      else {
-         this.sourceExt = null;
-         this.namespaceSep = null;
-      }
       sw = new SettingsWindow(projType.display());
       inputOptions = sw.inputOptionsBuilder();
       sw.setCancelAct(e -> undoSettings());
@@ -235,16 +233,19 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Sets command parameters
+    * Sets command parameters if the project is successfully
+    * configured after the entries in the settings window are
+    * confirmed or if a project is retrieved after loading the
+    * parameters from the Prefs file or a ProjConfig file
     */
    protected abstract void setCommandParameters();
 
    /**
     * Returns the name of the set source file without extension.
-    * If a qualified name is specified in the settings window and a
-    * namespace separator is given the returned name is nevertheless
-    * the last name and the namespace obtained by {@link #namespace()}
-    * or {@link #namespaceDir()}.
+    * If a qualified name is specified in the settings window
+    * and a namespace separator is given the returned name is
+    * nevertheless the last name and the namespace is obtained by
+    * {@link #namespaceDir()}.
     *
     * @return  the name, the empty string if the project doesn't
     * use a set source file
@@ -254,23 +255,28 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns the pathname of the set source file relative to the
-    * project directory
+    * Returns the extension of the set source file with the
+    * beginning period
     *
+    * @return  the extension
+    */
+   protected String sourceExtension() {
+      return sourceExt;
+   }
+
+   /**
+    * Returns the pathname of the set source file relative to
+    * the project directory (with file extension). The pathname
+    * may include a directory namespace relative to the source
+    * directory if a namespace separator is specified in the
+    * constructor.
+    *
+    * @see #namespaceDir()
     * @return  the relative pathname, the empty string if the
     * project doesn't use a set source file
     */
    protected String relativeSourceFile() {
       return relSourceFilePath;
-   }
-
-   /**
-    * Returns the name for the module
-    *
-    * @return  the name; the empty string of none is given
-    */
-   protected String module() {
-      return module;
    }
 
    /**
@@ -285,14 +291,22 @@ public abstract class AbstractProject implements Configurable {
       if (!locate) {
          ignoreNameConflict = false;
          locate = configForSourceFile(projectDir, true);
+         if (locate) {
+            store(prefs);
+            if (sw.isSaveToProjConfig()) {
+               conf = new Prefs(projectDir);
+               store(conf);
+            }
+         }
       }
       return locate;
    }
 
    /**
     * Returns the namespace of the set source file with the given
-    * namespace separator. Otherwise namespace is defined as in
-    * {@link #namespaceDir()}
+    * namespace separator. The namespace may be derived from a
+    * qualified name that is entered in the project settings and
+    * is otherwise defined as in {@link #namespaceDir()}
     *
     * @return  the namespace; the empty string if none is given
     * or if no namespace separator is set in the constructor
@@ -303,15 +317,22 @@ public abstract class AbstractProject implements Configurable {
 
    /**
     * Returns the namespace of the set source file with the system
-    * dependent file separator. It is derived from the entry of a
-    * qualified filename in the settings window or from a file search
-    * if no qualified name is entered. Note that the source file may
-    * exist directly under the source directory although a namespace
-    * is entered.
+    * dependent file separator.
+    * <p>The directory namespace is defined as a directory (path)
+    * inside the source directory. It is derived from the entry of
+    * a qualified filename in the settings window (with a certain
+    * separator or the file separator) or is derived from a file
+    * search. Note that the source file may exist directly in the
+    * source directory although a qualified name is entered. On the
+    * other hand a namespace is always given if only a filename is
+    * entered and the file is found in a subdirectory (path) inside
+    * the source directory.
     *
-    * @see  #namespace()
-    * @return  the namespace; the empty string if none is given
-    * or if no namespace separator is set in the constructor
+    * @see #sourceDir()
+    * @see #sourceFileName()
+    * @see #relativeSourceFile()
+    * @return  the directory namespace; the empty string if none is
+    * given or if no namespace separator is set in the constructor
     */
    protected String namespaceDir() {
       return namespaceDir;
@@ -338,13 +359,12 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns the extension of the set source file with the
-    * beginning period
+    * Returns the name for the module
     *
-    * @return  the extension
+    * @return  the name; the empty string of none is given
     */
-   protected String sourceExtension() {
-      return sourceExt;
+   protected String module() {
+      return module;
    }
 
    /**

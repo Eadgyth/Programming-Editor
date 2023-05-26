@@ -149,9 +149,10 @@ public final class EditableDocument {
    /**
     * Returns the path of this file
     *
-    * @return  the path; the empty String if no file is set
+    * @return  the path
     */
     public String filepath() {
+       checkFileForNull();
        return filepath;
     }
 

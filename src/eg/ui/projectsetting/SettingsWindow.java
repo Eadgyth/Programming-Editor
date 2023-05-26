@@ -640,7 +640,7 @@ public class SettingsWindow {
        * Builds the content of <code>SettingsWindow</code>.
        *
        * @throws IllegalStateException  if the window has been built
-       * by the same project or if the options 'file inout' and
+       * by the same project or if the options 'file input' and
        * 'custom commands' are added.
        */
       public void buildWindow() {
@@ -757,11 +757,11 @@ public class SettingsWindow {
    private void initWindow() {
       frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       frame.setResizable(false);
-      frame.setLocation(550, 100);
       frame.setVisible(false);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
       frame.getContentPane().add(contentPnl());
       frame.pack();
+      frame.setLocationRelativeTo(null);
    }
 
    private JPanel contentPnl() {

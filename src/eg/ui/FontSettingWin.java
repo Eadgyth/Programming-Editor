@@ -23,33 +23,35 @@ import eg.utils.ScreenParams;
  * The dialog for setting the font and font size
  */
 public class FontSettingWin {
-
-   private static final String[] FONT_SIZES = {
-     "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"
-   };
+   
+   private static final String[] FONTS =
+         GraphicsEnvironment.getLocalGraphicsEnvironment()
+            .getAvailableFontFamilyNames();
 
    private final JFrame frame = new JFrame("Font");
    private final JComboBox<String> selectFont;
-   private final JComboBox<String> selectSize;
+   private final JComboBox<Integer> selectSize;
    private final JButton okBt = new JButton("OK");
    private final JButton cancelBt = new JButton("Cancel");
-   private final String[] fonts;
+   private final Integer[] fontSizes;
 
    private String font;
    private int size;
 
    /**
+    * Creates a <code>FontSettingsWin</code>
+    *
+    * @param fontSizes  the array of selectable (unscaled) font sizes
     * @param  font  the font name that is initially set selected
-    * @param  size  the font size that is initiallay set selected
+    * @param  size  the (unscaled) font size that is initiallay
+    * set selected
     */
-   public FontSettingWin(String font, int size) {
+   public FontSettingWin(Integer[] fontSizes, String font, int size) {
+      this.fontSizes = fontSizes;
       this.font = font;
       this.size = size;
-      fonts = GraphicsEnvironment.getLocalGraphicsEnvironment()
-            .getAvailableFontFamilyNames();
-
-      selectFont = new JComboBox<>(fonts);
-      selectSize = new JComboBox<>(FONT_SIZES);
+      selectFont = new JComboBox<>(FONTS);
+      selectSize = new JComboBox<>(fontSizes);
       initFrame(font, size);
       cancelBt.addActionListener(e -> undoSettings());
       frame.addWindowListener(new WindowAdapter() {
@@ -86,8 +88,7 @@ public class FontSettingWin {
     * @return  the font
     */
    public String font() {
-      font = fonts[selectFont.getSelectedIndex()];
-      return font;
+      return FONTS[selectFont.getSelectedIndex()];
    }
 
    /**
@@ -96,9 +97,7 @@ public class FontSettingWin {
     * @return  the font size
     */
    public int size() {
-      String sizeStr = FONT_SIZES[selectSize.getSelectedIndex()];
-      size = Integer.parseInt(sizeStr);
-      return size;
+      return fontSizes[selectSize.getSelectedIndex()];
    }
 
    //
@@ -117,7 +116,7 @@ public class FontSettingWin {
       frame.setLocation(550, 100);
       frame.setContentPane(combinedPnl(font, size));
       frame.pack();
-      frame.setVisible(false);
+      frame.setLocationRelativeTo(null);
       frame.setAlwaysOnTop(true);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
    }
@@ -145,11 +144,11 @@ public class FontSettingWin {
    }
 
    private JPanel sizePnl(int size) {
-      selectSize.setSelectedItem(String.valueOf(size));
+      selectSize.setSelectedItem(size);
       return comboBoxPnl(selectSize, "Size:   ");
    }
 
-   private JPanel comboBoxPnl(JComboBox<String> comboBox, String title) {
+   private JPanel comboBoxPnl(JComboBox<?> comboBox, String title) {
       comboBox.setFocusable(false);
       JLabel titleLb = new JLabel(title);
       titleLb.setFont(ScreenParams.scaledFontToBold(titleLb.getFont(), 9));

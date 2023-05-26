@@ -2,6 +2,7 @@ package eg.utils;
 
 import java.awt.BorderLayout;
 
+import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -23,6 +24,9 @@ import eg.ui.IconFiles;
 public class Dialogs {
 
    private static final Border EMPTY_BORDER = new EmptyBorder(5, 5, 5, 5);
+   private static final Icon INFO_ICON = IconFiles.INFO_ICON;
+   private static final Icon WARNING_ICON = IconFiles.WARNING_ICON;
+   private static final Icon ERROR_ICON = IconFiles.ERROR_ICON;
 
    /**
     * Shows an information message
@@ -32,7 +36,7 @@ public class Dialogs {
     */
    public static void infoMessage(String message, String title) {
       JOptionPane.showMessageDialog (null, message, title,
-            JOptionPane.PLAIN_MESSAGE, IconFiles.INFO_ICON);
+            JOptionPane.PLAIN_MESSAGE, INFO_ICON);
    }
 
    /**
@@ -42,7 +46,7 @@ public class Dialogs {
     */
    public static void warnMessage(String message) {
       JOptionPane.showMessageDialog(null, message, null,
-            JOptionPane.PLAIN_MESSAGE, IconFiles.WARNING_ICON);
+            JOptionPane.PLAIN_MESSAGE, WARNING_ICON);
    }
 
    /**
@@ -54,7 +58,7 @@ public class Dialogs {
       final JDialog dialog = new JDialog();
       dialog.setAlwaysOnTop(true);
       JOptionPane.showMessageDialog(dialog, message, "",
-            JOptionPane.PLAIN_MESSAGE, IconFiles.WARNING_ICON);
+            JOptionPane.PLAIN_MESSAGE, WARNING_ICON);
    }
 
    /**
@@ -65,7 +69,7 @@ public class Dialogs {
     */
    public static void errorMessage(String message, String title) {
       JOptionPane.showMessageDialog(null, message, title,
-            JOptionPane.PLAIN_MESSAGE, IconFiles.ERROR_ICON);
+            JOptionPane.PLAIN_MESSAGE, ERROR_ICON);
    }
 
    /**
@@ -100,7 +104,7 @@ public class Dialogs {
    public static int infoConfirmYesNo(String message) {
       return JOptionPane.showConfirmDialog(null, message, null,
             JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-            IconFiles.INFO_ICON);
+            INFO_ICON);
    }
 
     /**
@@ -111,12 +115,12 @@ public class Dialogs {
     */
    public static int warnConfirmYesNo(String message) {
       return JOptionPane.showConfirmDialog(null, message, null,
-                JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-                IconFiles.WARNING_ICON);
+            JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+            WARNING_ICON);
    }
 
   /**
-   * Shows a dialog with the option to enter text in a text field
+   * Shows a dialog with the option to enter text
    *
    * @param message  the message for the dialog
    * @param title  the title for the dialog

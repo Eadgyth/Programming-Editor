@@ -4,14 +4,23 @@ import java.lang.reflect.InvocationTargetException;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Point;
 
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
+import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -42,7 +51,7 @@ import eg.projects.ProjectTypes;
  */
 public class MainWin {
 
-   private static final int DIVIDER_SIZE = 4;
+   private static final int DIVIDER_SIZE = ScreenParams.scaledSize(3);
 
    private final JFrame frame = new JFrame();
 
@@ -58,20 +67,25 @@ public class MainWin {
    private final BusyFunction bf;
    private final Prefs prefs = new Prefs();
 
+   private int width;
+   private int height;
+   private int xLoc;
+   private int yLoc;
+
    private JSplitPane splitHor;
    private JSplitPane splitHorMid;
    private JSplitPane splitVert;
-   private int dividerLocHor;
+   private int dividerLocHor = ScreenParams.scaledSize(160);
    private int dividerLocVert = 0;
 
    public MainWin() {
       initAddableEditTools();
       initFrame();
       setViewActions();
-      dividerLocHor =  (int)(frame.getWidth() * 0.25);
       initShowTabbar();
       initShowFileView();
       bf = new BusyFunction(frame);
+      frame.addComponentListener(compListener);
    }
 
    /**
@@ -496,6 +510,9 @@ public class MainWin {
       if (b) {
          splitHor.setDividerSize(DIVIDER_SIZE);
          splitHor.setLeftComponent(treePnl.content());
+         if (dividerLocHor == 0) {
+            dividerLocHor = ScreenParams.scaledSize(150);
+         }
          splitHor.setDividerLocation(dividerLocHor);
       }
       else {
@@ -511,53 +528,16 @@ public class MainWin {
          ViewMenu vm = menuBar.viewMenu();
          prefs.setYesNoProperty(Prefs.TABBAR_KEY, vm.isTabItmSelected());
          prefs.setYesNoProperty(Prefs.FILE_VIEW_KEY, vm.isFileViewItmSelected());
+         prefs.setProperty(Prefs.WIN_WIDTH_KEY, String.valueOf(width));
+         prefs.setProperty(Prefs.WIN_HEIGHT_KEY, String.valueOf(height));
+         prefs.setProperty(Prefs.WIN_XLOC_KEY, String.valueOf(xLoc));
+         prefs.setProperty(Prefs.WIN_YLOC_KEY, String.valueOf(yLoc));
+         prefs.setYesNoProperty(Prefs.MULTIPLE_SCREENS_KEY,
+               ScreenParams.isMultipleScreens());
+
          prefs.store();
          System.exit(0);
       }
-   }
-
-   private void initFrame() {
-      initSplitPane();
-      frame.setJMenuBar(menuBar.menuBar());
-      frame.add(splitHor, BorderLayout.CENTER);
-      frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-      frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
-      frame.setLocation(5, 5);
-      Dimension screen = ScreenParams.SCREEN_SIZE;
-      frame.setSize(screen.width - screen.width/3, screen.height - screen.height/4);
-   }
-
-   private void initSplitPane() {
-      splitHorMid = new JSplitPane(
-            JSplitPane.HORIZONTAL_SPLIT, true, tabPane, null);
-
-      splitHorMid.setDividerSize(0);
-      splitHorMid.setBorder(null);
-      splitVert = new JSplitPane(
-            JSplitPane.VERTICAL_SPLIT, true, splitHorMid, null);
-
-      splitVert.setDividerSize(0);
-      splitVert.setBorder(null);
-      splitVert.setResizeWeight(1);
-      splitHor = new JSplitPane(
-            JSplitPane.HORIZONTAL_SPLIT, true, null, splitVert);
-
-      splitHor.setDividerSize(0);
-      splitHor.setBorder(null);
-   }
-
-   private void initShowTabbar() {
-      boolean show = prefs.yesNoProperty(Prefs.TABBAR_KEY);
-      tabPane.showTabbar(show);
-      menuBar.viewMenu().selectTabsItm(show);
-   }
-
-   private void initShowFileView() {
-      boolean show = prefs.yesNoProperty(Prefs.FILE_VIEW_KEY);
-      if (show) {
-         showFileView(show);
-      }
-      menuBar.viewMenu().selectFileViewItm(show);
    }
 
    private void initAddableEditTools() {
@@ -578,4 +558,129 @@ public class MainWin {
          FileUtils.log(e);
       }
    }
+
+   private void initFrame() {
+      initSplitPane();
+      frame.setJMenuBar(menuBar.menuBar());
+      frame.add(splitHor, BorderLayout.CENTER);
+      frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+      frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
+      setFrameSizeAndLocation();
+   }
+
+   private void initSplitPane() {
+      splitHorMid = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, tabPane, null);
+      splitHorMid.setDividerSize(0);
+      setSplitPaneAppearance(splitHorMid);
+
+      splitVert = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, splitHorMid, null);
+      splitVert.setDividerSize(0);
+      splitVert.setResizeWeight(1);
+      setSplitPaneAppearance(splitVert);
+
+      splitHor = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, null, splitVert);
+      splitHor.setDividerSize(0);
+      setSplitPaneAppearance(splitHor);
+   }
+
+   private void setSplitPaneAppearance(JSplitPane jsp) {
+      BasicSplitPaneUI bspUI = new BasicSplitPaneUI() {
+
+         @Override
+         public BasicSplitPaneDivider createDefaultDivider() {
+            return new BasicSplitPaneDivider(this) {
+               
+               private static final long serialVersionUID = 1L;
+
+               @Override
+               public void setBorder(Border b) {
+                  // should not set any border
+               }
+
+               @Override
+               public void paint(Graphics g) {
+                  if (theme.isDark()) {
+                     g.setColor(theme.lightBackground());
+                     g.fillRect(0, 0, getSize().width, getSize().height);
+                  }
+                  else {
+                     super.paint(g);
+                  }
+               }
+            };
+         }
+      };
+      jsp.setUI(bspUI);
+      jsp.setBorder(null);
+   }
+
+   private void setFrameSizeAndLocation() {
+      Dimension screen = ScreenParams.SCREEN_SIZE;
+      boolean usePrefs = prefs.existsPrefsFile();
+      if (usePrefs) {
+         boolean isMulipleScreensPrev = prefs.yesNoProperty(Prefs.MULTIPLE_SCREENS_KEY);
+         boolean isMulipleScreens = ScreenParams.isMultipleScreens();
+         try {
+            int w = Integer.parseInt(prefs.property(Prefs.WIN_WIDTH_KEY));
+            int h = Integer.parseInt(prefs.property(Prefs.WIN_HEIGHT_KEY));
+            int x = Integer.parseInt(prefs.property(Prefs.WIN_XLOC_KEY));
+            int y = Integer.parseInt(prefs.property(Prefs.WIN_YLOC_KEY));
+            if (w > screen.width || h > screen.height
+                  || (!isMulipleScreens && isMulipleScreensPrev)) {
+
+               usePrefs = false;
+            }
+            else {
+               frame.setSize(w, h);
+               frame.setLocation(x, y);
+            }
+         }
+         catch (NumberFormatException e) {
+            usePrefs = false;
+         }
+      }
+      if (!usePrefs) {
+         frame.setSize(screen.width*4/6, screen.height*4/6);
+         frame.setLocation(screen.width/6, screen.height/8);
+      }
+   }
+
+   private void initShowTabbar() {
+      boolean show = prefs.yesNoProperty(Prefs.TABBAR_KEY);
+      tabPane.showTabbar(show);
+      menuBar.viewMenu().selectTabsItm(show);
+   }
+
+   private void initShowFileView() {
+      boolean show = prefs.yesNoProperty(Prefs.FILE_VIEW_KEY);
+      if (show) {
+         showFileView(show);
+      }
+      menuBar.viewMenu().selectFileViewItm(show);
+   }
+
+   private final ComponentListener compListener = new ComponentAdapter() {
+
+      @Override
+      public void componentResized(ComponentEvent e) {
+         if (frame.getExtendedState() != Frame.MAXIMIZED_BOTH
+               && frame.getExtendedState() != Frame.ICONIFIED) {
+
+            Dimension d = frame.getSize();
+            width = d.width;
+            height = d.height;
+         }
+      }
+
+      @Override
+      public void componentMoved(ComponentEvent e) {
+         if (frame.getExtendedState() != Frame.MAXIMIZED_BOTH
+               && frame.getExtendedState() != Frame.ICONIFIED) {
+
+            Point p = frame.getLocationOnScreen();
+            xLoc = p.x;
+            yLoc = p.y;
+         }
+      }
+   };
 }

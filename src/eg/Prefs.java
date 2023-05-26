@@ -65,8 +65,24 @@ public final class Prefs {
     * Key for the last used directory to save or open a file */
    public static final String RECENT_DIR_KEY = "RecentDir";
    /**
-    * Prefix for keys of properties of the exchange editor */
+    * Prefix for keys of properties of the 'notes' editor */
    public static final String EXCHG_PREFIX = "Exchg";
+   /**
+    * Key for the width of the window (not preset) */
+   public static final String WIN_WIDTH_KEY = "WinWidth";
+   /**
+    * Key for the height of the window (not preset) */
+   public static final String WIN_HEIGHT_KEY = "WinHeight";
+   /**
+    * Key for the x-location of the window (not preset) */
+   public static final String WIN_XLOC_KEY = "WinXLoc";
+   /**
+    * Key for the y-location of the window (not preset) */
+   public static final String WIN_YLOC_KEY = "WinYLoc";
+   /**
+    * Key for a multiple screen setting (not preset);
+    * a 'Yes-No' property */
+   public static final String MULTIPLE_SCREENS_KEY = "MultipleScreens";
    /**
     * The name of the properties file to store the configuration
     * of a project */
@@ -89,7 +105,7 @@ public final class Prefs {
    * <p>
    * Every new <code>Prefs</code> object accesses the same set of
    * properties which are loaded upon first creation. If the Prefs
-   * file does not (yet) exist the editor properties are pre-set.
+   * file does not (yet) exist editor properties are preset.
    */
    public Prefs() {
       prop = PREFS_FILE_PROP;
@@ -133,6 +149,15 @@ public final class Prefs {
       prop = new Properties();
       file = new File(projectDir + File.separator + PROJ_CONFIG_FILE);
       load();
+   }
+
+   /**
+    * Returns if the Prefs file (already) exists
+    *
+    * @return true if the file exists, false otherwise
+    */
+   public boolean existsPrefsFile() {
+      return new File(PREFS_FILE).exists();
    }
 
    /**
