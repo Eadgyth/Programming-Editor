@@ -3,8 +3,8 @@ that Notepad had a compile and a run button. I knew that really versatile code e
 IDEs exist but using them seemed very complicated to me.
 
 Therefore, a goal is that it is as simple as possible to set up the editor to try out code
-from within it and provide at the same time some flexibility to use it for a real
-coding project.
+from within it and provide at the same time some flexibility to use it for real coding
+projects.
 
 The github repository for the program also contains, well ... "releases" (a record of my
 attempts to fix bugs and add useful features). Anyway, there an executable jar file of the
@@ -18,7 +18,7 @@ README</a> for requirements.
 The program is set up for running source code by defining a "project". This is initially
 just a working directory which distinguishes "project files" from "non-project files" and
 where commands (built-in or custom) are executed. Setting a project only requires that any
-file that is found in the indended project directory is open and in the selected tab
+file that is found in the intended project directory is open and in the selected tab
 if multiple files are open. This file may also be found in a sub-directory path relative
 to the project directory and does not have to be the "main" source file. The same is true
 for running a project: it is not necessary that the "main" source file is selected (it
@@ -31,7 +31,7 @@ modified in newer versions, though).
 <hr>
 <h4> Example for a 'Hello World' program in Python</h4>
 This is an example for a 'Hello World' program in Python. The script was saved as hello_world.py
-in the directory helloworld which is also the indended project root. The project settings are
+in the directory helloworld which is also the intended project root. The project settings are
 opened by selecting 'Settings for...' and choosing the category Python:
 
 <img src="images/opensettingsPy.png" width="600"/>
@@ -54,7 +54,7 @@ Java file with a main method in any direcory which is set as the project directo
 However, this example simulates a Java project with a directory structure that includes a
 source directory, an output directory and a main class that belongs to a package: The
 'Hello World' program was saved as HelloWorld.java in the directory ..\helloworld\scr\hello
-where 'helloworld' is the indended project directory. 'src' is defined as the source root
+where 'helloworld' is should be the project directory. 'src' is defined as the source root
 directory inside the project and 'hello' is a directory that corresponds to the package
 which the source file belongs to. The package name is declared at the top of the code. The
 project settings are opened by choosing the category Java:
@@ -86,6 +86,5 @@ in the 'bin' directory and the program can be run:
 <img src="images/run.png" width="600"/>
 
 <hr>
-Please also have a look at the
-<a href="https://eadgyth.github.io/Programming-Editor/help/help.html">help site</a> which is
+Please also have a look at the [Help](./Help.md) which is
 also accessible from the '?' menu.
