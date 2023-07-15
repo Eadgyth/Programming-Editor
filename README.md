@@ -3,7 +3,7 @@
 A text and code editor with the possibility to easily set up coding projects,
 first of all for Java. Setting a project means that it can be run (or compiled)
 by built-in functions that are invoked by menu selections, button clicks or with
-the keyboard. Additional project categories are Python, R, Perl and HTML as well
+the keyboard. Additional project categories are C#, Python, R, Perl and HTML as well
 as a category 'Custom commands' to define own commands to run own batch files/scripts,
 for example.
 <p>
@@ -35,6 +35,10 @@ project type).
 <li>Compile and run Java code that may be organized in packages and create an
     executable jar file. Use external libraries and, if run with JDK 9+, library
     modules. Also, optionally run a module in Java 9+.</li>
+<li>Compile and run C# code (v. 1.2.0) and use compiler options for the output
+    target. The built-in compile command invokes csc compiler (Windows) or Mono
+    mcs compiler (Linux/Mac). The PATH to these executables must be set
+    (see Requirements).</li>
 <li>Run scripts in Python, R or Perl.
 <li>Specify additional options or arguments for the built-in commands.</li>
 <li>View HTML code in the default browser.</li>
@@ -58,7 +62,7 @@ run using the JRE contained in a JDK (as of Java 11 only a JDK but no separate J
 available anyway).
 <p>
 <b>Important:</b> To run code by the built-in functions (presently in the project
-categories Java, Python, R and Perl) the path variables that point to the executables
+categories Java, C#, Python, R and Perl) the path variables that point to the executables
 of a programming language must be set in the OS as permanent environment variables.
 <br>
 <h4>LIMITATIONS</h4>
