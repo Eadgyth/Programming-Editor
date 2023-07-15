@@ -40,7 +40,7 @@ public interface Configurable {
    public boolean configure();
 
    /**
-    * Tries to retrieve a stored project
+    * Tries to retrieve a stored project configuration
     *
     * @param dir  the directory that may be identical to or contained
     * in the directory of a stored project
@@ -57,8 +57,8 @@ public interface Configurable {
    public ProjectTypes projectType();
 
    /**
-    * Returns if the project uses a source file (a script or file
-    * with a main entry) that is specified in the settings window.
+    * Returns if the project uses a source file (a script file or
+    * file with a main entry) that is specified in the settings window.
     *
     * @return  true if a set source file is used; false otherwise
     */

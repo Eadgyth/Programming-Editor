@@ -226,6 +226,10 @@ public class FileTree {
             model.removeNodeFromParent(selectedNode);
          }
          catch (IOException e) {
+            Dialogs.errorMessage(
+                  selectedFile.getName()
+                  + " could not be deleted.", "");
+
             FileUtils.log(e);
          }
       }

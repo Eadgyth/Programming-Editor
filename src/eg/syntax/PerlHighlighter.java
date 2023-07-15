@@ -4,6 +4,7 @@ import eg.document.styledtext.Attributes;
 
 /**
  * Syntax highlighting for Perl
+ *
  */
 public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
       HeredocSearch {
@@ -21,7 +22,7 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
    };
 
    private static final char[] SECOND_POS_SCALAR = {
-      '\\', '(', ')', ';', '[', ']', '}', '.', ':', ',', '?',
+      '\\', '(', ')', ';', '[', ']', '}', '.', ':', ',', '?', '#',
       '=', '/', '+', '-', '*', '|', '&', '!', '%', '^', '<', '>', '~'
    };
 
@@ -31,7 +32,7 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
    };
 
    private static final char[] PERL_NON_OP_START = {
-      '§', '%', '&', '@', '$', '/'
+      '§', '%', '&', '@', '$', '/', '#'
    };
 
    private static final char[] PERL_Q_KEYWORD_SEC = {
@@ -67,31 +68,36 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
       SyntaxConstants.HASH
    };
 
-   private static final String POD_START = "\n=";
-   private static final String POD_END = "\n=cut";
-   private static final String HEREDOC_SYMBOL = "<<";
+   private static final String POD_SIGNAL = "\n=";
+   private static final String POD_END = "=cut";
+   private static final String HEREDOC_SIGNAL = "<<";
 
    private static final int IGNORE_COND = 0;
    private static final int LINE_CMNT_COND = 1;
+
+   private int firstPodSignal = -1;
+   private boolean prescannedForPod = false;
 
    @Override
    public void highlight(SyntaxSearcher s, Attributes attr) {
       s.resetAttributes();
       s.mapHeredocs(this);
-      s.mapQuoteOperators(this);
+      s.mapQuoteOperators(this, false);
       s.quote(false);
       s.setCondition(LINE_CMNT_COND);
       s.lineComments(LINE_CMNT_MARKS);
       s.setCondition(IGNORE_COND);
       s.keywords(SYNTAX_KEYWORDS, NON_KEY_WORD_START, attr.redPlain);
-      s.signedVariables(START_OF_ARR_HASH, END_OF_VAR, null,
-            attr.purplePlain);
-
       s.signedVariables(START_OF_SCALAR, END_OF_VAR, SECOND_POS_SCALAR,
             attr.bluePlain);
 
+      s.signedVariables(START_OF_ARR_HASH, END_OF_VAR, null,
+            attr.purplePlain);
+
       s.brackets();
       s.braces();
+      firstPodSignal = -1;
+      prescannedForPod = false;
    }
 
    @Override
@@ -113,24 +119,31 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
 
    @Override
    public int inBlockCmntMarks(String text, int pos) {
-      int start = -1;
-      int end = text.indexOf(POD_END, pos);
-      if (end != -1) {
-         int lastEnd = text.lastIndexOf(POD_END, end - 1);
-         lastEnd = lastEnd == -1 ? 0 : lastEnd + POD_END.length();
-         int startTest = text.indexOf(POD_START, lastEnd);
-         if (startTest < pos && pos < end
-               && startTest != text.indexOf(POD_END, startTest)) {
+      if (!prescannedForPod) {
+         prescanForPod(text);
+      }
+      if (firstPodSignal != -1 && pos > firstPodSignal) {
+         int lastStart = text.lastIndexOf(POD_SIGNAL, pos);
+         while (lastStart != -1 && text.length() > lastStart + 1
+               && !Character.isLetter(text.charAt(lastStart + 2))) {
 
-            start = startTest;
+            lastStart = text.lastIndexOf(POD_SIGNAL, lastStart - 1);
+         }
+         if (lastStart != -1 || firstPodSignal == -2) {
+            int start = lastStart == -1 && firstPodSignal == -2 ? 0 : lastStart + 1;
+            if (text.length() >= start + 4
+                  && !POD_END.equals(text.substring(start, start + 4))) {
+
+               return start;
+            }
          }
       }
-      return start;
+      return -1;
    }
 
    @Override
-   public int nextQuoteOperator(String text, int start) {
-      return text.indexOf('q', start);
+   public int nextQuoteOperator(String text, int pos) {
+      return text.indexOf('q', pos);
    }
 
    @Override
@@ -141,7 +154,12 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
 
          length = 2;
       }
-      return SyntaxUtils.isWord(text, pos, length, PERL_NON_OP_START) ? length : 0;
+      if (!SyntaxUtils.isWord(text, pos, length, PERL_NON_OP_START)
+            || inLineCmnt(text, pos)) {
+
+         length = 0;
+      }
+      return length;
    }
 
    @Override
@@ -175,12 +193,12 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
 
    @Override
    public int nextHeredoc(String text, int start) {
-      return text.indexOf(HEREDOC_SYMBOL, start);
+      return text.indexOf(HEREDOC_SIGNAL, start);
    }
 
    @Override
    public String heredocTag(String text, int pos, int lineEnd) {
-      int start = pos + HEREDOC_SYMBOL.length();
+      int start = pos + HEREDOC_SIGNAL.length();
       if (start == lineEnd) {
          return "";
       }
@@ -231,6 +249,22 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
    //--private--/
    //
 
+   private void prescanForPod(String text) {
+      if (text.length() > 1 && text.charAt(0) == '='
+            && Character.isLetter(text.charAt(1))) {
+         //
+         // -2: artificial value to indicate that the checked
+         // =[letter] but not \n= is found at pos 0 
+         firstPodSignal = -2;
+      }
+      else {
+         //
+         // the first occurence of \n=
+         firstPodSignal = text.indexOf(POD_SIGNAL, 0);
+      }
+      prescannedForPod = true;
+   }
+
    private boolean isLineCmntStart(String text, int pos) {
       if (pos > 0) {
          char c = text.charAt(pos - 1);
@@ -241,5 +275,15 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
          }
       }
       return true;
+   }
+
+   private boolean inLineCmnt(String text, int pos) {
+      int i = -1;
+      i = behindLineCmntMark(text, pos);
+      if (i != -1) {
+         i = SyntaxUtils.isQuoted(text, i)
+               || !isLineCmntStart(text, i) ? -1 : i;
+      }
+      return i != -1;
    }
 }

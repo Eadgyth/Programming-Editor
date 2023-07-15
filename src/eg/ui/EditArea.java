@@ -264,7 +264,7 @@ public final class EditArea {
    }
 
    private void initLineNrScrollPane() {
-      lineNrScroll.setBorder(UIComponents.grayMatteBorder(0, 0, 0, 1));
+      lineNrScroll.setBorder(UIComponents.lightBkgdMatteBorder(0, 0, 0, 1));
       lineNrScroll.setViewportView(lineNrArea);
       lineNrScroll.getVerticalScrollBar().setModel(
             nonWordwrapScroll.getVerticalScrollBar().getModel());

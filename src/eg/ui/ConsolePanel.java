@@ -25,7 +25,7 @@ public class ConsolePanel {
    private final JPanel content = UIComponents.grayBorderedPanel();
    private final JButton closeBt = new JButton();
    
-   private BackgroundTheme theme;
+   private final BackgroundTheme theme;
    
    /**
     * Creates a <code>ConsolePanel</code>

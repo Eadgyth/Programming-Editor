@@ -26,6 +26,9 @@ public class ProjectSelector {
    public ProjectCommands createProject(ProjectTypes projType) {
       ProjectCommands newProj = null;
       switch (projType) {
+         case CSHARP:
+            newProj = new CSharpProject(runner);
+            break;
          case JAVA:
             newProj = new JavaProject(runner);
             break;

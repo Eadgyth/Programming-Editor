@@ -23,7 +23,7 @@ import eg.utils.ScreenParams;
  * The dialog for setting the font and font size
  */
 public class FontSettingWin {
-   
+
    private static final String[] FONTS =
          GraphicsEnvironment.getLocalGraphicsEnvironment()
             .getAvailableFontFamilyNames();
@@ -88,7 +88,8 @@ public class FontSettingWin {
     * @return  the font
     */
    public String font() {
-      return FONTS[selectFont.getSelectedIndex()];
+      font = FONTS[selectFont.getSelectedIndex()];
+      return font;
    }
 
    /**
@@ -97,7 +98,8 @@ public class FontSettingWin {
     * @return  the font size
     */
    public int size() {
-      return fontSizes[selectSize.getSelectedIndex()];
+      size = fontSizes[selectSize.getSelectedIndex()];
+      return size;
    }
 
    //

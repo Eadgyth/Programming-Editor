@@ -23,8 +23,8 @@ public class StatusBar {
    private final JLabel languageLb = new JLabel();
    private final JLabel cursorPosLb = new JLabel();
    private final JLabel wordwrapLb = new JLabel();
-   
-   private BackgroundTheme theme;
+
+   private final BackgroundTheme theme;
 
    /**
     * Creates a <code>StatusBar</code>
@@ -121,7 +121,7 @@ public class StatusBar {
       content.add(cursorPosLb);
       projectLb.setText("Current project: none");
    }
-   
+
    private void setBackground() {
       if (!theme.isDark()) {
          return;

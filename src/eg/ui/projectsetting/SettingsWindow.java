@@ -536,8 +536,7 @@ public class SettingsWindow {
        */
       public InputOptionsBuilder addExecDirInput(String label) {
          String s = label + ":";
-         sw.addSpacer(sw.sourcePnl, SettingsWindow.DIM_VERT_SPACER);
-         sw.addSourceSetting(s, sw.execDirTf, DIM_TF_SHORT, false);
+         sw.addBuildSetting(s, sw.execDirTf, false);
          return this;
       }
 
@@ -548,7 +547,7 @@ public class SettingsWindow {
        * @return  this
        */
       public InputOptionsBuilder addLibrariesInput(String label) {
-         sw.addLibrariesSetting(label);
+         sw.addLibrariesSetting(label + ":");
          return this;
       }
 
@@ -560,7 +559,7 @@ public class SettingsWindow {
        * @return  this
        */
       public InputOptionsBuilder addLibModulesInput(String label) {
-         sw.addLibModulesSetting(label);
+         sw.addLibModulesSetting(label + ":");
          return this;
       }
 
@@ -612,6 +611,19 @@ public class SettingsWindow {
       }
 
       /**
+       * Adds the option to enter compiler options in the
+       * 'Compile/build' panel
+       *
+       * @param label  the label for the input option
+       * @return  this
+       */
+      public InputOptionsBuilder addCompileOptionsInput(String label) {
+         String s = label + ":";
+         sw.addBuildSetting(s, sw.compileOptionsTf, false);
+         return this;
+      }
+
+      /**
        * Adds the option to enter file extensions
        *
        * @param label  the label for the input option
@@ -640,7 +652,7 @@ public class SettingsWindow {
        * Builds the content of <code>SettingsWindow</code>.
        *
        * @throws IllegalStateException  if the window has been built
-       * by the same project or if the options 'file input' and
+       * by the same project or if the options 'file inout' and
        * 'custom commands' are added.
        */
       public void buildWindow() {
@@ -703,7 +715,14 @@ public class SettingsWindow {
          buildSettingsPnl = vertBoxPnl();
          useBuildSettings = true;
       }
-      buildSettingsPnl.add(singleTextfieldPnl(label, tf, DIM_TF, useBrowser));
+      Dimension d = DIM_TF;
+      if (tf == execDirTf) {
+         d = DIM_TF_SHORT;
+      }
+      buildSettingsPnl.add(singleTextfieldPnl(label, tf, d, useBrowser));
+      if (tf == execDirTf) {
+          addSpacer(buildSettingsPnl, SettingsWindow.DIM_VERT_SPACER);
+      }
    }
 
    private void addLibrariesSetting(String label) {
@@ -757,11 +776,11 @@ public class SettingsWindow {
    private void initWindow() {
       frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       frame.setResizable(false);
+      frame.setLocation(550, 100);
       frame.setVisible(false);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());
       frame.getContentPane().add(contentPnl());
       frame.pack();
-      frame.setLocationRelativeTo(null);
    }
 
    private JPanel contentPnl() {
@@ -784,11 +803,11 @@ public class SettingsWindow {
       tb.setFont(ScreenParams.scaledFontToPlain(tb.getFont(), 8));
       tb.add("Sources", textfieldsHolderPnl(sourcePnl));
       addListInputTabs(tb);
-      if (useRunSettings) {
-         tb.add("Run", textfieldsHolderPnl(runSettingsPnl));
-      }
       if (useBuildSettings) {
          tb.add("Compile/build", textfieldsHolderPnl(buildSettingsPnl));
+      }
+      if (useRunSettings) {
+         tb.add("Run", textfieldsHolderPnl(runSettingsPnl));
       }
       if (useCustomCmds) {
          tb.add("Commands", textfieldsHolderPnl(customCmdSettingsPnl));

@@ -36,8 +36,8 @@ import eg.utils.ScreenParams;
 public class Finder implements AddableEditTool {
 
    private final JPanel content       = new JPanel(new BorderLayout());
-   private final JTextField inputTf   = new JTextField();
-   private final JTextField replaceTf = new JTextField();
+   private final JTextField inputTf   = UIComponents.textField();// new JTextField();
+   private final JTextField replaceTf = UIComponents.textField();// new JTextField();
    private final JButton searchBt     = new JButton("Find");
    private final JButton replaceBt    = new JButton("Replace");
    private final JButton replaceAllBt = new JButton("Replace all");
@@ -103,11 +103,10 @@ public class Finder implements AddableEditTool {
    }
 
    private JScrollPane controlsPnl() {
-      JPanel pnl = new JPanel();
+      JPanel pnl = UIComponents.panel();
       pnl.setLayout(new BoxLayout(pnl, BoxLayout.PAGE_AXIS));
       pnl.add(labelPnl("Search for:"));
       setSize(inputTf);
-      inputTf.setFont(ScreenParams.scaledFontToPlain(inputTf.getFont(), 8));
       pnl.add(inputTf);
       pnl.add(Box.createVerticalStrut(10));
       pnl.add(radioBtPnl());
@@ -118,7 +117,6 @@ public class Finder implements AddableEditTool {
       pnl.add(Box.createVerticalStrut(20));
       pnl.add(labelPnl("Replace with:"));
       setSize(replaceTf);
-      replaceTf.setFont(ScreenParams.scaledFontToPlain(replaceTf.getFont(), 8));
       pnl.add(replaceTf);
       pnl.add(Box.createVerticalStrut(10));
       pnl.add(buttonsPnl(replaceBt, replaceAllBt));
@@ -131,8 +129,8 @@ public class Finder implements AddableEditTool {
 
    private JPanel labelPnl(String text) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      JLabel lb = new JLabel(text);
-      lb.setFont(ScreenParams.scaledFontToBold(lb.getFont(), 8));
+      pnl.setOpaque(false);
+      JLabel lb = UIComponents.label(text);
       pnl.add(lb);
       setSize(pnl);
       return pnl;
@@ -140,18 +138,15 @@ public class Finder implements AddableEditTool {
 
    private JPanel radioBtPnl() {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      JRadioButton upBt = new JRadioButton("up");
-      JRadioButton downBt = new JRadioButton("down", true);
-      upBt.setFocusable(false);
-      upBt.setFont(ScreenParams.scaledFontToPlain(upBt.getFont(), 8));
-      downBt.setFocusable(false);
-      downBt.setFont(ScreenParams.scaledFontToPlain(downBt.getFont(), 8));
+      pnl.setOpaque(false);
+      JRadioButton upBt = UIComponents.radioButton("up", false);
+      JRadioButton downBt = UIComponents.radioButton("down", true);
       ButtonGroup group = new ButtonGroup();
       group.add(upBt);
       group.add(downBt);
       pnl.add(upBt);
       pnl.add(downBt);
-      pnl.setBorder(UIComponents.titledBorder("Search direction"));
+      pnl.setBorder(UIComponents.titledBorderForBkgr("Search direction"));
       setSize(pnl);
       upBt.addItemListener(e ->
          search.setUpwardSearch(e.getStateChange() == ItemEvent.SELECTED));
@@ -161,27 +156,25 @@ public class Finder implements AddableEditTool {
 
    private JPanel checkBoxPnl() {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      JCheckBox cBxWord = new JCheckBox("Only whole word");
-      cBxWord.setFocusable(false);
-      cBxWord.setFont(ScreenParams.scaledFontToPlain(cBxWord.getFont(), 8));
+      pnl.setOpaque(false);
+      JCheckBox cBxWord = UIComponents.checkBox("Only whole words");
       cBxWord.addItemListener(e ->
          search.setRequireWord(e.getStateChange() == ItemEvent.SELECTED));
 
-      JCheckBox cBxCase = new JCheckBox("Case sensitive");
-      cBxCase.setFocusable(false);
-      cBxCase.setFont(ScreenParams.scaledFontToPlain(cBxCase.getFont(), 8));
+      JCheckBox cBxCase = UIComponents.checkBox("Case sensitive");
       cBxCase.addItemListener(e ->
          search.setCaseSensitivity(e.getStateChange() == ItemEvent.SELECTED));
 
       pnl.add(cBxWord);
       pnl.add(cBxCase);
-      pnl.setBorder(UIComponents.titledBorder("Search options"));
+      pnl.setBorder(UIComponents.titledBorderForBkgr("Search options"));
       setSize(pnl);
       return pnl;
    }
 
    private JPanel buttonsPnl(JButton... bt) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      pnl.setOpaque(false);
       for (JButton bts : bt) {
          bts.setFocusable(false);
          pnl.add(bts);

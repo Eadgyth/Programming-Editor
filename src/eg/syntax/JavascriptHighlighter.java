@@ -50,7 +50,7 @@ public class JavascriptHighlighter implements Highlighter {
 
    @Override
    public int behindLineCmntMark(String text, int pos) {
-      int res = -1;
+      int res;
       int slash = SyntaxUtils.behindMark(text, SyntaxConstants.DOUBLE_SLASH, pos);
       int htmlStartMark = SyntaxUtils.behindMark(text,
             SyntaxConstants.HTML_BLOCK_CMNT_START, pos);

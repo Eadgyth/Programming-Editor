@@ -33,13 +33,13 @@ public class CSharpHighlighter implements Highlighter, QuoteOperatorSearch {
    private static final char VERBATIM_START = '@';
 
    private static final char[] KEY_NON_START = {
-      VERBATIM_START
+      VERBATIM_START, '§', '\'', '$', '°', '@'
    };
 
    @Override
    public void highlight(SyntaxSearcher s, Attributes attr) {
       s.resetAttributes();
-      s.mapQuoteOperators(this);
+      s.mapQuoteOperators(this, true);
       s.quote(true);
       s.lineComments(LINE_CMNT_MARK);
       s.brackets();
@@ -71,18 +71,51 @@ public class CSharpHighlighter implements Highlighter, QuoteOperatorSearch {
 
    @Override
    public int quoteIdentifierLength(String text, int pos) {
-      return 1;
+      int p1 = pos + 1;
+      boolean valid = text.length() > p1
+            && (text.charAt(p1) == SyntaxConstants.DOUBLE_QUOTE
+            && !inCmnt(text, pos)
+            && !SyntaxUtils.isClosingQuoteMarkInLine(text, p1));
+
+      return valid ? 1 : 0;
    }
 
    @Override
    public int quoteLength(String text, int pos) {
       int length = 0;
-      if (text.length() - 1 > pos && text.charAt(pos) == SyntaxConstants.DOUBLE_QUOTE) {
-         int end = text.indexOf(SyntaxConstants.DOUBLE_QUOTE, pos + 1);
+      int end = -1;
+      int p1 = pos + 1;
+      if (text.length() > p1) {
+         end = text.indexOf(SyntaxConstants.DOUBLE_QUOTE, p1);
          if (end != -1) {
             length = (end - pos) + 1;
+            while (end != -1
+                  && text.length() > end + 2
+                  && text.charAt(end + 1) == SyntaxConstants.DOUBLE_QUOTE) {
+
+               end = text.indexOf(SyntaxConstants.DOUBLE_QUOTE, end + 2);
+               if (end != -1) {
+                  length = (end - pos) + 1;
+               }
+            }
          }
       }
       return length;
+   }
+
+   //
+   //--private--//
+   //
+
+   private boolean inCmnt(String text, int pos) {
+      int i = -1;
+      i = inBlockCmntMarks(text, pos);
+      if (i == -1) {
+         i = behindLineCmntMark(text, pos);
+      }
+      if (i != -1) {
+         i = SyntaxUtils.isQuotedInLine(text, i) ? -1 : i;
+      }
+      return i != -1;
    }
 }

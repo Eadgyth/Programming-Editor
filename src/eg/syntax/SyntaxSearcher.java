@@ -21,7 +21,7 @@ public class SyntaxSearcher {
    private final StringMap quotes = new StringMap();
    private final StringMap triQuotes = new StringMap();
    private final StringMap cData = new StringMap();
-   private final StringOperatorMap stringOp = new StringOperatorMap();
+   private final StringOperatorMap stringOp;
    private final List<Integer> lineCmnts = new ArrayList<>();
 
    private Highlighter hl;
@@ -47,6 +47,7 @@ public class SyntaxSearcher {
     */
    public SyntaxSearcher(StyledText txt) {
       this.txt = txt;
+      stringOp = new StringOperatorMap(txt);
       attr = txt.attributes();
    }
 
@@ -188,7 +189,7 @@ public class SyntaxSearcher {
 
    /**
     * Searches heredocs. Method should be called before
-    * {@link #quote(boolean)}
+    * {@link #quote(boolean)}.
     *
     * @param hds  the reference to HeredocSearch
     */
@@ -202,12 +203,25 @@ public class SyntaxSearcher {
 
    /**
     * Searches quote operators. Method should be called before
-    * {@link #quote(boolean)}
+    * {@link #quote(boolean)}.
     *
     * @param qos  the reference to QuoteOperatorSearch
     */
    public void mapQuoteOperators(QuoteOperatorSearch qos) {
-      if (stringOp.addQuoteOperators(qos, txt.text(), isRepair)) {
+      mapQuoteOperators(qos, false);
+   }
+
+   /**
+    * Searches quote operators. Method should be called before
+    * {@link #quote(boolean)}. If <code>highlight</code> is true,
+    * the quote sections including the starting identifier and end
+    * delimiter is highlighted in orange
+    *
+    * @param qos  the reference to QuoteOperatorSearch
+    * @param highlight  true to highlight; false otherwise
+    */
+   public void mapQuoteOperators(QuoteOperatorSearch qos, boolean highlight) {
+      if (stringOp.addQuoteOperators(qos, txt.text(), isRepair, highlight)) {
          repair(txt.text(), 0);
       }
    }
@@ -246,21 +260,19 @@ public class SyntaxSearcher {
    }
 
    /**
-    * Searches line comments and highlights in green.
+    * Searches line comments and highlights in 'comment' color.
     * Calls {@link Highlighter#isValid}.
     *
     * @param marks  the possible marks for a line comment start
     */
    public void lineComments(String[] marks) {
       String scn = isInnerSection ? section : txt.text();
-      int count = 0;
       for (String mark : marks) {
          int start = 0;
          while (start != -1) {
             int len = mark.length();
             start = scn.indexOf(mark, start);
             if (start != -1) {
-               count++;
                int absStart = isInnerSection ? start + scnStart : start;
                if (!inString(absStart, false) && isValid(absStart)) {
                   lineCmnts.add(absStart);
@@ -274,11 +286,13 @@ public class SyntaxSearcher {
             }
          }
       }
-      if (nLineCmnt != count && (!quoteInSection ||!stringOp.isQuoteOperatorEmpty())) {
+      if (nLineCmnt != lineCmnts.size()
+            && (!quoteInSection || !stringOp.isQuoteOperatorEmpty())) {
+
          repair(txt.text(), 0);
       }
       if (!isInnerSection) {
-         nLineCmnt = count;
+         nLineCmnt = lineCmnts.size();
       }
    }
 
@@ -382,7 +396,7 @@ public class SyntaxSearcher {
    }
 
    /**
-    * Searches blocks comments and highlights in green
+    * Searches blocks comments and highlights in 'comment' color
     *
     * @param blockStart  the block start
     * @param blockEnd  the block end

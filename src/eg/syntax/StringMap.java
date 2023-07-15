@@ -118,8 +118,8 @@ public class StringMap {
          }
          lastEnd = i;
       }
-      if ((lastStart != -1 & lastStart > lastEnd)
-            && (nextEnd != -1 & (nextStart == -1 || nextEnd < nextStart))) {
+      if ((lastStart != -1 && lastStart > lastEnd)
+            && (nextEnd != -1 && (nextStart == -1 || nextEnd < nextStart))) {
 
          return lastStart;
       }

@@ -4,15 +4,18 @@ package eg.projects;
  * Constants for project types
  */
 public enum ProjectTypes {
-
-   /**
-    * Constant for an HTML project;
-    * value returned by {@link display()} is HTML */
-   HTML("HTML"),
    /**
     * Constant for a Java project;
     * value returned by {@link display()} is Java */
    JAVA("Java"),
+   /**
+    * Constant for a C# project
+    * value returned by {@link display()} is C# */
+   CSHARP("C#"),
+   /**
+    * Constant for an HTML project;
+    * value returned by {@link display()} is HTML */
+   HTML("HTML"),
    /**
     * Constant for a Perl project;
     * value returned by {@link display()} is Perl */

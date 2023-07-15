@@ -20,7 +20,6 @@ public abstract class StyledText {
 
    static {
       StyleConstants.setBold(NORMAL, false);
-		StyleConstants.setLineSpacing(NORMAL, 0.14f);
    }
 
    /**

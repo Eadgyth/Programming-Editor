@@ -209,12 +209,12 @@ public abstract class AbstractProject implements Configurable {
 
    /**
     * @param projType  the project type
-    * @param sourceExt  the extension of the (main) source file
-    * without the dot. Null means that the project does not use a
-    * set source file.
+    * @param sourceExt  the extension of the source file (a script
+    * file or file with a main entry) without the dot. Null means
+    * that the project does not use a set source file.
     * @param namespaceSep  the separator for a namespace. Null to
-    * not take into account any namespace. Is ignored if sourceExt
-    * is null.
+    * not take into account any namespace. Is also ignored if
+    * sourceExt is null.
     *
     * @see #namespace()
     * @see #namespaceDir()
@@ -235,17 +235,20 @@ public abstract class AbstractProject implements Configurable {
    /**
     * Sets command parameters if the project is successfully
     * configured after the entries in the settings window are
-    * confirmed or if a project is retrieved after loading the
-    * parameters from the Prefs file or a ProjConfig file
+    * confirmed or if a configuration is retrieved from the Prefs
+    * file or a ProjConfig file
     */
    protected abstract void setCommandParameters();
 
    /**
     * Returns the name of the set source file without extension.
-    * If a qualified name is specified in the settings window
-    * and a namespace separator is given the returned name is
-    * nevertheless the last name and the namespace is obtained by
-    * {@link #namespaceDir()}.
+    * <p>
+    * The returned name is as entered in the settings window which
+    * therefore could also be a relative pathname. However, if a
+    * namespace separator is passed to the constructor the
+    * returned name is only the last name even if a qualified name
+    * has been entered. The namespace can be obtained by
+    * {@link #namespace()} or {@link #namespaceDir()} where needed.
     *
     * @return  the name, the empty string if the project doesn't
     * use a set source file
@@ -269,7 +272,8 @@ public abstract class AbstractProject implements Configurable {
     * the project directory (with file extension). The pathname
     * may include a directory namespace relative to the source
     * directory if a namespace separator is specified in the
-    * constructor.
+    * constructor and the file is found in a subdirectory (path)
+    * inside the source root.
     *
     * @see #namespaceDir()
     * @return  the relative pathname, the empty string if the
@@ -303,10 +307,11 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns the namespace of the set source file with the given
-    * namespace separator. The namespace may be derived from a
-    * qualified name that is entered in the project settings and
-    * is otherwise defined as in {@link #namespaceDir()}
+    * Returns the namespace with the given namespace separator.
+    * <p>
+    * The namespace may be derived from a qualified name that is
+    * entered in the project settings and is otherwise defined as
+    * in {@link #namespaceDir()}.
     *
     * @return  the namespace; the empty string if none is given
     * or if no namespace separator is set in the constructor
@@ -316,21 +321,19 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns the namespace of the set source file with the system
-    * dependent file separator.
-    * <p>The directory namespace is defined as a directory (path)
-    * inside the source directory. It is derived from the entry of
-    * a qualified filename in the settings window (with a certain
-    * separator or the file separator) or is derived from a file
-    * search. Note that the source file may exist directly in the
-    * source directory although a qualified name is entered. On the
-    * other hand a namespace is always given if only a filename is
-    * entered and the file is found in a subdirectory (path) inside
-    * the source directory.
+    * Returns the directory namespace with the system dependent
+    * file separator.
+    * <p>
+    * The directory namespace can be a directory (path) that contains
+    * the specified source file inside the {@link #sourceDir()}. It
+    * is derived from a file search or the entry of a qualified
+    * filename in the settings window.
+    * <p>
+    * If the namespace separator passed to the constructor is the
+    * file separator, any qualified filename must match the file
+    * location. Otherwise, the source file may exist directly in the
+    * source directory although a qualified name is entered.
     *
-    * @see #sourceDir()
-    * @see #sourceFileName()
-    * @see #relativeSourceFile()
     * @return  the directory namespace; the empty string if none is
     * given or if no namespace separator is set in the constructor
     */
@@ -359,7 +362,7 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
-    * Returns the name for the module
+    * Returns the name for a module
     *
     * @return  the name; the empty string of none is given
     */
@@ -383,33 +386,6 @@ public abstract class AbstractProject implements Configurable {
     */
    protected List<String> libModules() {
       return libModules;
-   }
-
-   /**
-    * Returns the custom run command
-    *
-    * @return  the command; the empty string if none is given
-    */
-   protected String customRunCmd() {
-      return customRunCmd;
-   }
-
-   /**
-    * Returns the custom compile command
-    *
-    * @return  the command; the empty string if none is given
-    */
-   protected String customCompileCmd() {
-      return customCompileCmd;
-   }
-
-   /**
-    * Returns the custom build command
-    *
-    * @return  the command; the empty string if none is given
-    */
-   protected String customBuildCmd() {
-      return customBuildCmd;
    }
 
    /**
@@ -451,12 +427,62 @@ public abstract class AbstractProject implements Configurable {
    }
 
    /**
+    * Returns the name for a build.
+    * @deprecated  call {@link buildName(boolean)} instead
+    *
+    * @return  the name which is the default name
+    * ([projectName]Project) if no build name is entered in the
+    * settings
+    */
+   @Deprecated
+   protected String buildName() {
+      if (buildName.isEmpty()) {
+         return projectName + "Project";
+      }
+      return buildName;
+   }
+
+   /**
     * Returns the name for a build
     *
-    * @return  the name; default is '[projectName]Project'
+    * @param useDef  true to return the default name
+    * ('[projectName]') if no build name is entered in the
+    * settings, false to return the empty string for this case
+    * @return  the name; the empty string or the default name
+    * as indicated
     */
-   protected String buildName() {
+   protected String buildName(boolean useDef) {
+      if (buildName.isEmpty() && useDef) {
+         return projectName;
+      }
       return buildName;
+   }
+
+   /**
+    * Returns the custom run command
+    *
+    * @return  the command; the empty string if none is given
+    */
+   protected String customRunCmd() {
+      return customRunCmd;
+   }
+
+   /**
+    * Returns the custom compile command
+    *
+    * @return  the command; the empty string if none is given
+    */
+   protected String customCompileCmd() {
+      return customCompileCmd;
+   }
+
+   /**
+    * Returns the custom build command
+    *
+    * @return  the command; the empty string if none is given
+    */
+   protected String customBuildCmd() {
+      return customBuildCmd;
    }
 
    //
@@ -545,13 +571,18 @@ public abstract class AbstractProject implements Configurable {
 
    private void setSourceFile() {
       isNameConflict = false;
-      absSubSourceDir = "";
       parseFilenameInput();
-      findFileInSourceDir(sourceDir, sourceFileName + sourceExt);
+      absSubSourceDir = "";
+      findSubSourceDir(sourceDir, sourceFileName + sourceExt);
       if (namespaceSep != null) {
-         isInNamespaceDir = isInNamespaceDir()
-               || (!absSubSourceDir.isEmpty()
-               && absSubSourceDir.length() > sourceDir.length());
+         boolean forceGivenNamespace = !namespaceDir.isEmpty()
+               && namespaceSep.equals(F_SEP);
+
+         boolean isSubSourceDir = !absSubSourceDir.isEmpty()
+               && absSubSourceDir.length() > sourceDir.length();
+
+         isInNamespaceDir = isInGivenNamespaceDir() || forceGivenNamespace
+               || isSubSourceDir;
 
          if (isInNamespaceDir && namespaceDir.isEmpty()) {
             namespaceDir = absSubSourceDir.substring(sourceDir.length() + 1);
@@ -585,7 +616,7 @@ public abstract class AbstractProject implements Configurable {
       }
    }
 
-   private void findFileInSourceDir(String root, String name) {
+   private void findSubSourceDir(String root, String name) {
       File[] files = new File(root).listFiles();
       if (files == null) {
     	   return;
@@ -607,7 +638,7 @@ public abstract class AbstractProject implements Configurable {
          }
       }
       if (!dirs.isEmpty()) {
-         dirs.forEach((File f) -> findFileInSourceDir(f.getPath(), name));
+         dirs.forEach((File f) -> findSubSourceDir(f.getPath(), name));
       }
    }
 
@@ -631,10 +662,6 @@ public abstract class AbstractProject implements Configurable {
          compileOptions = sw.compileOptionsInput();
          extensions = sw.fileExtensionsInput();
          buildName = sw.buildNameInput();
-         if (buildName.isEmpty()) {
-            buildName = projectName + "Project";
-            sw.displayBuildName(buildName);
-         }
       }
       else {
          customRunCmd = sw.customRunCmdInput();
@@ -661,7 +688,7 @@ public abstract class AbstractProject implements Configurable {
             namespaceDir = pr.property("Namespace");
             namespace = namespaceDir.replace(F_SEP, namespaceSep);
          }
-         isInNamespaceDir = isInNamespaceDir();
+         isInNamespaceDir = isInGivenNamespaceDir();
          setRelSourceFilePath();
          sourceFile = new File(root + F_SEP + relSourceFilePath);
          success = sourceFile.exists() && sourceFile.isFile();
@@ -673,14 +700,6 @@ public abstract class AbstractProject implements Configurable {
          displaySettings();
       }
       return success;
-   }
-
-   private boolean isInNamespaceDir() {
-      if (!namespaceDir.isEmpty()) {
-         String pathname = namespaceDir + F_SEP + sourceFileName + sourceExt;
-         return !namespaceDir.isEmpty() && new File(sourceDir, pathname).exists();
-      }
-      return false;
    }
 
    private void fetchOptionalPrefs(Prefs pr) {
@@ -708,6 +727,14 @@ public abstract class AbstractProject implements Configurable {
          customCompileCmd = pr.property("CompileCommand");
          customBuildCmd = pr.property("BuildCommand");
       }
+   }
+
+   private boolean isInGivenNamespaceDir() {
+      if (!namespaceDir.isEmpty()) {
+         String pathname = namespaceDir + F_SEP + sourceFileName + sourceExt;
+         return new File(sourceDir, pathname).exists();
+      }
+      return false;
    }
 
    private void setRelSourceFilePath() {
@@ -805,15 +832,15 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private void undoSettings() {
-      displaySettings();
       sw.setVisible(false);
+      displaySettings();
    }
 
    private final WindowAdapter defaultClosing = new WindowAdapter() {
 
       @Override
       public void windowClosing(WindowEvent we) {
-         undoSettings();
+         displaySettings();
       }
    };
 
@@ -838,6 +865,9 @@ public abstract class AbstractProject implements Configurable {
          sb.append("A source file is not specified.");
       }
       else {
+         if (isInNamespaceDir) {
+            sb.append(namespaceDir).append(F_SEP);
+         }
          sb.append(sourceFileName).append(sourceExt)
             .append("\nThe file cannot be found in the specified source root ..")
             .append(F_SEP).append(sw.projDirInput());

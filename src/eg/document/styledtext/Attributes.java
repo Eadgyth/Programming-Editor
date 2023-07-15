@@ -35,7 +35,7 @@ public final class Attributes {
     */
    public final SimpleAttributeSet purpleBold = new SimpleAttributeSet();
    /**
-    * The bold style for brackes. The color is dark blue with
+    * The bold style for brackets. The color is dark blue with
     * a white background and a yellow tone with a dark
     * background.
     * {@see eg.BackgroundTheme#accentedNormalText}

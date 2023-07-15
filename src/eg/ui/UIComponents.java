@@ -6,11 +6,14 @@ import java.awt.FlowLayout;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -33,8 +36,7 @@ import eg.ui.tabpane.ExtTabbedPane;
  * the editor.
  * <p>
  * Unless otherwise noted, the coloring depends on the selected
- * background given in {@link eg.BackgroundTheme}
- * <p>
+ * background given in {@link eg.BackgroundTheme}.
  * Other properties are the 'bar height' for menu, tool, tab bars,
  * and scaled (font) sizes given in {@link eg.utils.ScreenParams}
  */
@@ -66,26 +68,26 @@ public class UIComponents {
    }
 
    /**
-    * Creates a <code>MatteBorder</code> with the light (panel)
-    * background
+    * Creates a <code>MatteBorder</code> with the color
+    * corresponding to the 'panel' background
     *
     * @param t  the top inset
     * @param l  the left inset
     * @param b  the bottom inset
     * @param r  the right inset
-    * @return  the border
+    * @return  the new MatteBorder
     */
    public static MatteBorder lightBkgdMatteBorder(int t, int l, int b, int r) {
       return new MatteBorder(t, l, b, r, THEME.lightBackground());
    }
 
    /**
-    * Creates a titled border with 'light gray' color and a title
-    * that is displayed in Verdana with the scaled font size based on
-    * 8 pt (no usage of background theme)
+    * Creates a <code>TitledBorder</code> with 'light gray' color
+    * and a title that is displayed in Sans Serif with the scaled
+    * font size based on 8 pt (no usage of background theme)
     *
     * @param title  the title
-    * @return a new titled border
+    * @return  the new TitledBorder
     */
    public static TitledBorder titledBorder(String title) {
       TitledBorder tb = new TitledBorder(LIGHT_GRAY_LINE_BORDER, title);
@@ -94,14 +96,43 @@ public class UIComponents {
    }
 
    /**
-    * Creates a <code>JPanel</code> with a gray line border and
+    * Creates a <code>TitledBorder</code> as in
+    * {@link #titledBorder(string)} but a title color depending
+    * on the background
+    *
+    * @param title  the title
+    * @return  the new TitledBorder
+    */
+   public static TitledBorder titledBorderForBkgr(String title) {
+      TitledBorder tb = titledBorder(title);
+      if (THEME.isDark()) {
+         tb.setTitleColor(THEME.normalText());
+      }
+      return tb;
+   }
+
+   /**
+    * Creates a <code>JPanel</code> with a line border in gray and
     * weight of one pixel
     *
-    * @return  the JPanel
+    * @return  the new JPanel
     */
    public static JPanel grayBorderedPanel() {
       JPanel pnl = new JPanel();
       pnl.setBorder(GRAY_LINE_BORDER);
+      return pnl;
+   }
+
+   /**
+    * Creates a <code>JPanel</code> (with the 'panel' background)
+    *
+    * @return  the new JPanel
+    */
+   public static JPanel panel() {
+      JPanel pnl = new JPanel();
+      if (THEME.isDark()) {
+         pnl.setBackground(THEME.lightBackground());
+      }
       return pnl;
    }
 
@@ -111,8 +142,8 @@ public class UIComponents {
     * bold and scaled font size based on 8 pt (no usage of
     * background theme)
     *
-    * @param label  the label
-    * @return  the JPanel
+    * @param label  the label text
+    * @return  the new JPanel
     */
    public static JPanel labelPanel(String label) {
       JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -122,11 +153,84 @@ public class UIComponents {
       return pnl;
    }
 
+   /**
+    * Creates a <code>JLabel</code> that displays the specified
+    * string in bold and scaled font size based on 8 pt
+    *
+    * @param label  the label text
+    * @return  the new JLabel
+    */
+   public static JLabel label(String label) {
+      JLabel lb = new JLabel(label);
+      lb.setFont(ScreenParams.scaledFontToBold(lb.getFont(), 8));
+      if (THEME.isDark()) {
+        lb.setForeground(THEME.normalText());
+      }
+      return lb;
+   }
+
+   /**
+    * Creates a <code>JTextField</code> with scaled font size
+    * based on 9 pt
+    *
+    * @return  the new JTextField
+    */
+   public static JTextField textField() {
+      JTextField tf = new JTextField();
+      tf.setFont(ScreenParams.scaledFontToPlain(tf.getFont(), 9));
+      if (THEME.isDark()) {
+         tf.setBorder(LIGHT_GRAY_LINE_BORDER);
+         tf.setBackground(THEME.background());
+         tf.setForeground(THEME.normalText());
+         tf.setSelectionColor(THEME.selectionBackground());
+         tf.setSelectedTextColor(THEME.normalText());
+         tf.setCaretColor(THEME.normalText());
+      }
+      return tf;
+   }
+
+   /**
+    * Creates a <code>JRadioButton</code> which is unfocusable,
+    * not opaque and has a label with scaled font based on 8 pt.
+    *
+    * @param label  the label for the button
+    * @param select  true to select the button, false otherwise
+    * @return  the new JRadioButton
+    */
+   public static JRadioButton radioButton(String label, boolean select) {
+      JRadioButton rbt = new JRadioButton(label, select);
+      rbt.setFocusable(false);
+      rbt.setFont(ScreenParams.scaledFontToPlain(rbt.getFont(), 8));
+      rbt.setOpaque(false);
+      if (THEME.isDark()) {
+         rbt.setForeground(THEME.normalText());
+      }
+      return rbt;
+   }
+
+   /**
+    * Creates a <code>JCheckBox</code> which is unfocusable,
+    * not opaque and has a label with scaled font based on 8 pt.
+    *
+    * @param label  the label for the check box
+    * @return  the new JCheckBox
+    */
+   public static JCheckBox checkBox(String label) {
+      JCheckBox cbx = new JCheckBox(label);
+      cbx.setFocusable(false);
+      cbx.setFont(ScreenParams.scaledFontToPlain(cbx.getFont(), 8));
+      cbx.setOpaque(false);
+      if (THEME.isDark()) {
+         cbx.setForeground(THEME.normalText());
+      }
+      return cbx;
+   }
+
   /**
    * Creates a <code>JMenuBar</code>
    *
    * @param menus  the JMenus to add to the
-   * @return  the JMenuBar
+   * @return  the new JMenuBar
    */
    public static JMenuBar menuBar(JMenu[] menus) {
       JMenuBar mb = new JMenuBar();
@@ -143,7 +247,7 @@ public class UIComponents {
     *
     * @param menus  the objects of JMenu to add to the menubar
     * @param rightBt  the button aligned to the right. Can be null
-    * @return  the JMenuBar
+    * @return  the new JMenuBar
     */
    public static JMenuBar menuBar(JMenu[] menus, JButton rightBt) {
       JMenuBar mb = menuBar(menus);
@@ -164,7 +268,7 @@ public class UIComponents {
     * @param bts  the objects of JButton to add. Can be null
     * @param tooltips  the objects of tooltips for bts in the
     * corresponding order. Can be null
-    * @return  the JToolbar
+    * @return  the new JToolbar
     */
    public static JToolBar toolbar(JButton[] bts, String[] tooltips) {
       JToolBar tb = new JToolBar(SwingConstants.HORIZONTAL);
@@ -188,7 +292,7 @@ public class UIComponents {
     * @param tooltips  the objects of tooltips for bts in the
     * corresponding order. Can be null
     * @param rightBt  the button aligned to the right. Can be null
-    * @return  the JToolbar
+    * @return  the new JToolbar
     */
    public static JToolBar toolbar(JButton[] bts, String[] tooltips,
          JButton rightBt) {
@@ -210,7 +314,7 @@ public class UIComponents {
     * Creates an <code>ExtTabbedPane</code> with the
     * <code>BackgroundTheme</code> and the 'bar height'
     *
-    * @return  the ExtTabbedPane
+    * @return  the new ExtTabbedPane
     * @see eg.ui.tabpane.ExtTabbedPane
     */
    public static ExtTabbedPane tabPane() {
@@ -245,11 +349,11 @@ public class UIComponents {
       if ("Windows".equals(UIManager.getLookAndFeel().getName())) {
          strutSize = 5;
       }
-      for (int i = 0; i < menus.length; i ++) {
-         mb.add(menus[i]);
+      for (JMenu menu : menus) {
+         mb.add(menu);
          mb.add(Box.createHorizontalStrut(strutSize));
          if (!IS_SYSTEM_LAF && THEME != null && THEME.isDark()) {
-             menus[i].setForeground(THEME.normalText());
+            menu.setForeground(THEME.normalText());
          }
       }
    }

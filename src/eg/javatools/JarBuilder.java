@@ -43,14 +43,14 @@ public class JarBuilder {
       isManifestInfo = !classpaths.isEmpty();
       File f = new File(dir + File.separator + MANIFEST_INFO_FILE);
       if (isManifestInfo) {
-         FileWriter writer = new FileWriter(f);
-         writer.write("Class-Path:");
-         for (String s : classpaths) {
-            writer.write(" ");
-            writer.write(s);
+         try (FileWriter writer = new FileWriter(f)) {
+            writer.write("Class-Path:");
+            for (String s : classpaths) {
+               writer.write(" ");
+               writer.write(s);
+            }
+            writer.write("\n");
          }
-         writer.write("\n");
-         writer.close();
       }
       else {
          if (f.exists() && FileUtils.isWriteable(f)) {

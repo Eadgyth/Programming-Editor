@@ -90,8 +90,8 @@ public class EditorUpdating {
    public void disableUpdating(boolean b) {
       if (undo.canUndo() || undo.canRedo() || !txt.text().isEmpty()) {
          throw new IllegalStateException(
-               "Cannot disable updating because the document is being"
-               + " edited already.");
+               "Cannot disable updating because the document has been "
+               + " already edited.");
       }
       isUpdate = !b;
       if (!b) {
@@ -104,7 +104,7 @@ public class EditorUpdating {
     * Sets the editing mode which enables source code editing
     * (syntax highlighting, auto indent) if the language in the
     * specified <code>CurrentLanguage</code> is not 'normal text'.
-    * Removes any highlighing if changed from a highlighted
+    * Removes any highlighting if changed from a highlighted
     * language to 'normal text'
     *
     * @param cl  the CurrentLanguage

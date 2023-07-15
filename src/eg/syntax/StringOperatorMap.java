@@ -5,21 +5,28 @@ import java.util.ArrayList;
 
 //--Eadgyth--/
 import eg.utils.LinesFinder;
+import eg.document.styledtext.StyledText;
 
 /**
- * The mapping of strings defined by operators, i.e. here doc and
- * "quote operator"
+ * The mapping of strings defined by operators, i.e., heredocs and
+ * those named 'quote operator'
  */
 public class StringOperatorMap {
 
    private final StringMap heredocs = new StringMap();
    private final StringMap quoteOprs = new StringMap();
+   private final StyledText txt;
    //
    // to remember after reset
    private final List<Integer> hLengths = new ArrayList<>();
    private final List<Integer> qLengths = new ArrayList<>();
-   private int nHeredoc;
-   private int nQuoteOp;
+
+   /**
+    * @param txt  the reference to StyledText
+    */
+   public StringOperatorMap(StyledText txt) {
+      this.txt = txt;
+   }
 
    /**
     * Clears the string map for a renewed mapping
@@ -40,23 +47,23 @@ public class StringOperatorMap {
    }
 
    /**
-    * Searches and adds all string starts and ends defined by heredocs
+    * Adds all string starts and ends defined by heredocs
     *
     * @param hds  the HeredocSearch
     * @param text  the text
     * @param scnStart  the start of text which is only larger than
     * 0 if the text is an inner section
-    * @param repairMode  true to indicate that the search takes place
-    * in repairMode
-    * @return  true if a change (number of here docs, length change
-    * in a here doc) occured that requires a renewed highlighting;
-    * false otherwise
+    * @param repairMode  true to indicate that the search takes
+    * place in repair mode which means that the entire text is
+    * updated
+    * @return  true if a change happened that requires repair
+    * of the entire text; false otherwise
     */
    public boolean addHeredocs(HeredocSearch hds, String text, int scnStart,
          boolean repairMode) {
 
-      int n = nHeredoc;
-      int count = 0;
+      int nTested = 0;
+      int nChecked = 0;
       int iLen = -1;
       boolean lengthChange = false;
       int start = 0;
@@ -64,23 +71,26 @@ public class StringOperatorMap {
          start = hds.nextHeredoc(text, start);
          int len = 2;
          if (start != -1) {
+            nTested++;
             int lineEnd = LinesFinder.nextNewline(text, start);
             String tag = hds.heredocTag(text, start, lineEnd);
             if (!tag.isEmpty()) {
-               count++;
+               nChecked++;
                int end = text.indexOf(tag, lineEnd);
                while (end != -1 && !hds.validHeredocEnd(text, end, tag.length())) {
                   end = text.indexOf(tag, end + 1);
                }
                if (end != -1) {
-                  count++;
                   iLen++;
                   int absEnd = end + scnStart;
                   int absStart = start + scnStart;
                   heredocs.add(absStart, absEnd);
                   len = end - lineEnd;
-                  if (scnStart == 0) { // for inner section entire text
-                     if (!repairMode) { //    is updated anyway
+                  //
+                  // for inner section (scnStart > 0) the entire
+                  // section is updated anyway
+                  if (scnStart == 0) {
+                     if (!repairMode) {
                         lengthChange = lengthChange(iLen, len, hLengths);
                      }
                      setLength(iLen, len, hLengths);
@@ -90,60 +100,81 @@ public class StringOperatorMap {
             start += len;
          }
       }
-      nHeredoc = count;
-      return n != count || lengthChange;
+      return heredocs.sizeChange(nTested, nChecked) || lengthChange;
    }
 
    /**
-    * Searches and adds all string starts and ends defined by a quote
-    * operator
+    * Adds all string starts and ends defined by 'quote operators'
     *
     * @param qos  the QuoteOperatorSearch
     * @param text  the text
-    * @param repairMode  true to indicate that the search takes place
-    * in repairMode
-    * @return  true if a change (number of quotes, length
-    * change in a quote) occurred that requires a renewed highlighting;
-    * false otherwise
+    * @param repairMode  true to indicate that the search takes
+    * place in repair mode which means that the entire text is
+    * updated
+    * @return  true if a change happened that requires repair
+    * of the entire text; false otherwise
     */
    public boolean addQuoteOperators(QuoteOperatorSearch qos, String text,
          boolean repairMode) {
 
-      int n = nQuoteOp;
-      int count = 0;
-      int iLen = -1;
+      return addQuoteOperators(qos, text, repairMode, false);
+   }
+
+   /**
+    * Adds all string starts and ends defined by 'quote operators'
+    *
+    * @param qos  the QuoteOperatorSearch
+    * @param text  the text
+    * @param repairMode  true to indicate that the search takes
+    * place in repair mode which means that the entire text is
+    * updated
+    * @param highlight  true to highlight the quote section including
+    * identifier and end delimiter in orange; false otherwise
+    * @return  true if a change happened that requires repair
+    * of the entire text; false otherwise
+    */
+   public boolean addQuoteOperators(QuoteOperatorSearch qos, String text,
+            boolean repairMode, boolean highlight) {
+
+      int nTested = 0;
+      int nChecked = 0;
       boolean lengthChange = false;
+      int iLen = -1;
       int start = 0;
       while (start != -1 && !lengthChange) {
          start = qos.nextQuoteOperator(text, start);
-         int keyLength = 1;
-         int len = 1;
+         int step = 1;
          if (start != -1) {
-            keyLength = qos.quoteIdentifierLength(text, start);
+            nTested++;
+            int keyLength = qos.quoteIdentifierLength(text, start);
             if (keyLength != 0) {
-               count++;
+               step += keyLength;
+               nChecked++;
                int qStart = start + keyLength;
-               len = qos.quoteLength(text, qStart);
+               int len = qos.quoteLength(text, qStart);
                if (len != 0) {
-                  count++;
+                  step += len;
                   iLen++;
                   quoteOprs.add(qStart, qStart + len);
                   if (!repairMode) {
                      lengthChange = lengthChange(iLen, len, qLengths);
                   }
                   setLength(iLen, len, qLengths);
+                  if (highlight) {
+                     txt.setAttributes(start, len + keyLength,
+                           txt.attributes().orangePlain);
+                  }
                }
             }
-            start += len + keyLength;
+            start += step;
          }
       }
-      nQuoteOp = count;
-      return n != count || lengthChange;
+      return quoteOprs.sizeChange(nTested, nChecked) || lengthChange;
    }
 
    /**
-    * Returns if the specified position is inside a string defined by
-    * either heredoc or quote operator
+    * Returns if the specified position is inside a string defined
+    * by either heredoc or quote operator
     *
     * @param pos  the position
     * @return  the start position of the string; -1 if not in a
@@ -192,7 +223,9 @@ public class StringOperatorMap {
    //
 
    //
-   // This can fail when keeping a key pressed!!!
+   // The two following methods are called consecutively which fails
+   // when keeping a key pressed in a large document
+   //
    private boolean lengthChange(int i, int length, List<Integer> l) {
       boolean b = true;
       if (l.isEmpty() || i >= l.size()) {
@@ -201,7 +234,6 @@ public class StringOperatorMap {
       if (b) {
          int len = l.get(i);
          b = (length - len) * (length - len) >= 4;
-         l.set(i, length);
       }
       return b;
    }

@@ -39,6 +39,7 @@ public class ProcessStarter {
     * dialog */
    private final HashMap<String, String> cmdMap = new HashMap<>();
 
+   private String startMsg = "";
    private String workingDir;
    private File fWorkingDir;
    private String workingDirName;
@@ -81,6 +82,25 @@ public class ProcessStarter {
       cons.enableRunBt(previousCmd.length() > 0);
    }
 
+  /**
+    * Runs the specified system command with this working directory
+    * as described for {@link #startProcess(String)}.
+    *
+    * @param cmd  the start command in which arguments are separated
+    * by spaces and arguments with spaces quoted
+    * @param startMsg  an initial message that describes the command
+    * and that will be formatted such that it starts with two closing
+    * angle brackets and ends with a colon followed by the line
+    * separator. Default (if null or the empty string) is 'Run'.
+    */
+   public void startProcess(String cmd, String startMsg) {
+      if (startMsg != null && !startMsg.isEmpty()) {
+         this.startMsg = ">> " + startMsg + ":\n";
+      }
+      startProcess(cmd);
+      this.startMsg = "";
+   }
+
    /**
     * Runs the specified system command with this working directory.
     * <p>
@@ -91,7 +111,7 @@ public class ProcessStarter {
     * the process is not started.
     *
     * @param cmd  the start command in which arguments are separated
-    * by spaces where arguments with spaces are quoted
+    * by spaces and arguments with spaces quoted
     */
    public void startProcess(String cmd) {
       isAborted = false;
@@ -100,7 +120,8 @@ public class ProcessStarter {
          return;
       }
       cons.enableRunBt(false);
-      cons.setText(START_MESSAGE);
+      String msg = startMsg.isEmpty() ? START_MESSAGE : startMsg;
+      cons.setText(msg);
       consoleText = cons.getText();
       List<String> cmdList = cmdList(cmd);
       ProcessBuilder pb = new ProcessBuilder(cmdList).redirectErrorStream(true);

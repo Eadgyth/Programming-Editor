@@ -50,13 +50,13 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          inputOptions.addLibModulesInput(LIB_LABEL)
             .addModuleNameInput(MODULE_LABEL);
       }
-      inputOptions.addExecDirInput(CLASS_DIR_LABEL)
-         .addLibrariesInput(LIB_LABEL)
-         .addCmdOptionsInput()
-         .addCmdArgsInput()
+      inputOptions.addLibrariesInput(LIB_LABEL)
+         .addExecDirInput(CLASS_DIR_LABEL)
          .addCompileOptionsInput()
          .addFileExtensionsInput(INCLUDED_FILES_LABEL)
          .addBuildNameInput(JAR_NAME_LABEL)
+         .addCmdOptionsInput()
+         .addCmdArgsInput()
          .buildWindow();
    }
 
@@ -272,7 +272,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
 
    private void setJarName() {
       jarNameErr = "";
-      String name = buildName();
+      String name = buildName(true);
       File f = new File(name);
       if (!f.isAbsolute()) {
          name = projectDir() + File.separator + name;
@@ -280,11 +280,12 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
       }
       if (f.isDirectory()) {
          jarNameErr = f.getPath()
-               + "\n\nA directory cannot be used as name for the jar file.";
+               + "\n\nThe specified jar name is a directory"
+               + " (to still use this name add the .jar extension in the settings).";
       }
       if (!f.getParentFile().isDirectory()) {
           jarNameErr = f.getParentFile()
-                + "\n\nThe destination directory for the jar file cannot be found.";
+               + "\n\nThe destination directory for the jar file cannot be found.";
       }
       name = FileUtils.addExtension(f.getPath(), ".jar");
       jarName = name;
@@ -340,7 +341,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
          "Name or pathname for jar file";
 
    private static final String LIB_LABEL =
-         "Directory or jar file (relative to project or absolute):";
+         "Directory or jar file (relative to project or absolute)";
 
    private static final String INCLUDED_FILES_LABEL =
          "Extensions of included non-Java files";

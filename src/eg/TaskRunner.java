@@ -89,7 +89,7 @@ public class TaskRunner {
    }
 
    /**
-    * Runs the specified system command in the current project
+    * Runs the specified system command with the current project
     * directory.
     * Method invokes {@link ProcessStarter#startProcess(String)}
     *
@@ -98,6 +98,20 @@ public class TaskRunner {
    public void runSystemCommand(String cmd) {
       mw.showConsole();
       proc.startProcess(cmd);
+   }
+   
+   /**
+    * Runs the specified system command with the current project
+    * directory.
+    * Method invokes {@link ProcessStarter#startProcess(String, String)}
+    *
+    * @param cmd  the system command
+    * @param startMsg  an initial message that describes the command
+    * in the console
+    */
+   public void runSystemCommand(String cmd, String startMsg) {
+      mw.showConsole();
+      proc.startProcess(cmd, startMsg);
    }
 
    /**

@@ -325,7 +325,7 @@ public class SyntaxUtils {
     *
     * @param text  the entire text
     * @param pos  the position
-    * @return  true if quoted
+    * @return  true if a closing quote; false otherwise
     */
    public static boolean isClosingQuoteMarkInLine(String text, int pos) {
       String line = LinesFinder.lineAtPos(text, pos);
@@ -421,7 +421,7 @@ public class SyntaxUtils {
       else {
          return false;
       }
-   }
+   }      
 
    private SyntaxUtils() {}
 }

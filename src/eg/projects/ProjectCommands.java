@@ -25,7 +25,7 @@ public interface ProjectCommands extends Configurable {
    }
 
    /**
-    * Runs the project using a source file set in the project
+    * Runs the project
     */
    public default void run() {
       throw new UnsupportedOperationException(
@@ -33,9 +33,7 @@ public interface ProjectCommands extends Configurable {
    }
 
    /**
-    * Runs the project using the specified file.
-    * Method is called when the project does not use a main source
-    * file that is executed.
+    * Runs the project using the specified file
     *
     * @param  filepath  the full filepath
     */

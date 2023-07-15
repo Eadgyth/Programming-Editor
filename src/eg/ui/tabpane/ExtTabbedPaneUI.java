@@ -20,9 +20,9 @@ public class ExtTabbedPaneUI extends BasicTabbedPaneUI {
    private static final Insets ZERO_INSETS = new Insets(0, 0, 0, 0);
 
    private final BackgroundTheme theme;
+   private final int tabHeight;
 
    private boolean isShowTabs = true;
-   private int tabHeight;
 
    /**
     * Creates an <code>ExtendedTabbedPaneUI</code>

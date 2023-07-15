@@ -589,7 +589,7 @@ public class MainWin {
          @Override
          public BasicSplitPaneDivider createDefaultDivider() {
             return new BasicSplitPaneDivider(this) {
-               
+
                private static final long serialVersionUID = 1L;
 
                @Override

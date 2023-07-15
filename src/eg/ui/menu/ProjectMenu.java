@@ -157,7 +157,7 @@ public class ProjectMenu {
          assignProjItm[i] = new JRadioButtonMenuItem(ProjectTypes.values()[i].display());
          group.add(assignProjItm[i]);
          assignProjMenu.add(assignProjItm[i]);
-         if (i == assignProjItm.length - 2) {
+         if (i == 0 || i == assignProjItm.length - 2) {
             assignProjMenu.addSeparator();
          }
       }

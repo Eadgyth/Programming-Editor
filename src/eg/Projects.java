@@ -116,7 +116,7 @@ public class Projects {
 
    /**
     * Opens the project settings to assign a new project. If the
-    * selected file alreade belongs to the project of the specified
+    * selected file already belongs to the project of the specified
     * project type the project settings for this project are opened.
     *
     * @param projType  the project type
@@ -131,9 +131,7 @@ public class Projects {
          }
          else {
             int res = replaceRes(projType, fromList.projectType());
-            if (0 == res) {
-               isNewProject = true;
-            }
+            isNewProject = 0 == res;
          }
       }
       if (isNewProject) {
