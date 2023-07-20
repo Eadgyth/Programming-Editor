@@ -288,7 +288,7 @@ public final class EditArea {
          String kind = elem.getName();
          if (kind != null) {
             if (kind.equals(AbstractDocument.ContentElementName)) {
-               return new LabelView(elem);
+               return new WrapLabelView(elem);
             } else if (kind.equals(AbstractDocument.ParagraphElementName)) {
                //
                // Using WrapParagraphView is (for some reason)
