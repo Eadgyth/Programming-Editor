@@ -119,15 +119,6 @@ public class EditableText extends StyledText {
    }
 
    /**
-    * (Re)sets character attributes to normal text and ensures
-    * that newly typed text is normal text too
-    */
-   public void resetToNormalText() {
-      textArea.setCharacterAttributes(NORMAL, false);
-      setAttributes(0, doc.getLength(), NORMAL);
-   }
-
-   /**
     * Returns the text area that displays the text
     *
     * @return  the text area

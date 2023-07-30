@@ -36,6 +36,7 @@ public class EditorUpdating {
    private final UndoEditing undo;
 
    private boolean isUpdate = true;
+   private boolean isTypedEdit = true;
    private boolean isCodeEditing = false;
    private boolean isUndoRedo = false;
 
@@ -112,7 +113,7 @@ public class EditorUpdating {
    public void setEditingMode(CurrentLanguage cl) {
       boolean isNormalText = cl.lang() == Languages.NORMAL_TEXT;
       if (isCodeEditing && isNormalText) {
-         txt.resetToNormalText();
+         txt.resetAttributes(0, txt.text().length());
       }
       syntax.setHighlighter(cl.createHighlighter());
       indent.enableCurlyBracketMode(cl.curlyBracketMode());
@@ -131,10 +132,9 @@ public class EditorUpdating {
     * {@link #INSERT} or {@link #OMIT}.
     */
    public void editText(TextChange tc, int editValue) {
-      boolean isCodeEditingHelper = isCodeEditing;
-      isCodeEditing = false; // disable highlighting from DocumentListener
+      isTypedEdit = false;
       tc.edit();
-      if (isCodeEditingHelper && editValue != EditorUpdating.OMIT) {
+      if (isCodeEditing && editValue != EditorUpdating.OMIT) {
          if (editValue == EditorUpdating.ALL_TEXT && !txt.text().isEmpty()) {
             syntax.highlight();
          }
@@ -142,7 +142,7 @@ public class EditorUpdating {
             syntax.highlight(change, chgPos);
          }
       }
-      isCodeEditing = isCodeEditingHelper;
+      isTypedEdit = true;
    }
 
    /**
@@ -295,10 +295,14 @@ public class EditorUpdating {
          chgPos = de.getOffset();
          updateText();
          change = txt.text().substring(chgPos, chgPos + de.getLength());
+         if (!isCodeEditing) {
+            EventQueue.invokeLater(
+                   () -> txt.resetAttributes(chgPos, change.length()));
+         }
          if (!isUndoRedo) {
             undo.addEdit(change, chgPos, isInsert);
             updateUndoableState();
-            if (isCodeEditing) {
+            if (isTypedEdit && isCodeEditing) {
                boolean isNewline = change.equals("\n");
                EventQueue.invokeLater(() -> syntax.highlight(chgPos, isNewline));
                EventQueue.invokeLater(() -> indent.adjustIndent(chgPos));
@@ -318,7 +322,7 @@ public class EditorUpdating {
          if (!isUndoRedo) {
             undo.addEdit(change, chgPos, isInsert);
             updateUndoableState();
-            if (isCodeEditing) {
+            if (isTypedEdit && isCodeEditing) {
                EventQueue.invokeLater(() -> syntax.highlight(chgPos, false));
             }
          }

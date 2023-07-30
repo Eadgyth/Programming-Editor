@@ -31,7 +31,7 @@ public class InfoWin {
    private static final String INFO
          = "<html>"
          + "Programming Editor<br><br>"
-         + "Version: preparing for 1.2.0<br>"
+         + "Version: 1.2.0<br>"
          + "Author: Malte Bussiek<br><br>"
          + "Credits and Acknowledgements:"
          + "<ul>"
