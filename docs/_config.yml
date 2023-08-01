@@ -2,4 +2,4 @@ plugins:
  - jekyll-seo-tag
 theme: jekyll-theme-slate
 title: Eadgyth Programming Editor
-description: A text editor and basic code editor written in Java. Write and run code in Java, Perl, Python, R or HTML
+description: A text editor and basic code editor written in Java. Write and run code in Java, C#, Perl, Python, R or HTML
