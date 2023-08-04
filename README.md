@@ -61,9 +61,9 @@ To compile Java code by the built-in compile function it must be made sure that 
 run using the JRE contained in a JDK (as of Java 11 only a JDK but no separate JRE is
 available anyway).
 <p>
-<b>Important:</b> To run code by the built-in functions (presently in the project
-categories Java, C#, Python, R and Perl) the path variables that point to the executables
-of a programming language must be set in the OS as permanent environment variables.
+<b>Important:</b> To run code (or possibly to compile code as for C#) by the built-in
+functions the path variables that point to the executables of a programming language
+must be set in the OS as permanent environment variables.
 <br>
 <h4>LIMITATIONS</h4>
 <p>
