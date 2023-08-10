@@ -13,14 +13,10 @@ public abstract class StyledText {
 
    /**
     * The <code>SimpleAttributeSte</code> for normal text */
-   protected static final SimpleAttributeSet NORMAL = new SimpleAttributeSet();
+   protected final SimpleAttributeSet normal = new SimpleAttributeSet();
    /**
     * The <code>StyledDocument</code> that contains the text */
    protected final StyledDocument doc;
-
-   static {
-      StyleConstants.setBold(NORMAL, false);
-   }
 
    /**
     * @param doc  the document that contains the text
@@ -28,8 +24,9 @@ public abstract class StyledText {
     */
    protected StyledText(StyledDocument doc, Color normalText) {
       this.doc = doc;
-      StyleConstants.setForeground(NORMAL, normalText);
-      doc.setParagraphAttributes(0, doc.getLength(), NORMAL, false);
+      StyleConstants.setBold(normal, false);
+      StyleConstants.setForeground(normal, normalText);
+      doc.setParagraphAttributes(0, doc.getLength(), normal, false);
    }
 
    /**
@@ -54,7 +51,7 @@ public abstract class StyledText {
     * @param length  the length of the section
     */
    public void resetAttributes(int pos, int length) {
-      setAttributes(pos, length, NORMAL);
+      setAttributes(pos, length, normal);
    }
 
    /**

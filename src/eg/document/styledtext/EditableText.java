@@ -105,8 +105,8 @@ public class EditableText extends StyledText {
          ts[i] = new TabStop((i + 1) * length);
       }
       TabSet tabSet = new TabSet(ts);
-      StyleConstants.setTabSet(NORMAL, tabSet);
-      doc.setParagraphAttributes(0, doc.getLength(), NORMAL, false);
+      StyleConstants.setTabSet(normal, tabSet);
+      doc.setParagraphAttributes(0, doc.getLength(), normal, false);
    }
 
    /**
