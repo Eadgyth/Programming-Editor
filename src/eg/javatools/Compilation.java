@@ -14,6 +14,7 @@ import java.io.StringWriter;
 
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.nio.charset.StandardCharsets;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class Compilation {
             = new DiagnosticCollector<>();
 
       StandardJavaFileManager fileManager
-            = compiler.getStandardFileManager(null, null, null);
+            = compiler.getStandardFileManager(null, null, StandardCharsets.UTF_8);
 
       List<File> sources = fFind.filteredFiles(sourceDir, ".java", classDir, "");
       File[] fileArr = sources.toArray(new File[sources.size()]);

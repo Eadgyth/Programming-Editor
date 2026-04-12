@@ -106,7 +106,7 @@ public final class CSharpProject extends AbstractProject implements ProjectComma
    protected void setCommandParameters() {
       preOutputFile = parsedOutputFile();
       //
-      // both -target: and and short form -t:
+      // both -target: and short form -t:
       // by chance contain 't:'
       if (compileOptions().contains("t:library")) {
          outputFile = FileUtils.addExtension(preOutputFile, ".dll");

@@ -32,7 +32,7 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
    };
 
    private static final char[] PERL_NON_OP_START = {
-      '§', '%', '&', '@', '$', '/', '#'
+      'Â§', '%', '&', '@', '$', '/', '#'
    };
 
    private static final char[] PERL_Q_KEYWORD_SEC = {
@@ -40,7 +40,7 @@ public class PerlHighlighter implements Highlighter, QuoteOperatorSearch,
    };
 
    private static final char[] NON_KEY_WORD_START = {
-      '§', '$', '%', '_', '°'
+      'Â§', '$', '%', '_', 'Â°'
    };
 
    private static final String[] SYNTAX_KEYWORDS = {

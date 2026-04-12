@@ -235,7 +235,7 @@ public class UIComponents {
    public static JMenuBar menuBar(JMenu[] menus) {
       JMenuBar mb = new JMenuBar();
       if (!IS_SYSTEM_LAF && THEME != null && THEME.isDark()) {
-         mb.setBackground(THEME.background());
+         mb.setBackground(THEME.lightBackground());
       }
       addMenus(menus, mb);
       return mb;

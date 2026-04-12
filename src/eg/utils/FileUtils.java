@@ -37,8 +37,7 @@ public class FileUtils {
     * @return  true if writeable
     */
    public static boolean isWriteable(File f) {
-      File sameName = new File(f.toString());
-      boolean isWriteable = !f.exists() || f.renameTo(sameName);
+      boolean isWriteable = !f.exists() || f.renameTo(f);
       if (!isWriteable) {
          Dialogs.errorMessage(
                f.getName()

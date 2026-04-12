@@ -4,9 +4,13 @@ import javax.swing.JTextPane;
 
 import java.io.File;
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.FileInputStream;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 //--Eadgyth--/
 import eg.Languages;
@@ -291,7 +295,7 @@ public final class EditableDocument {
 
    /**
     * Replaces the current text with the content of the specified
-    * if no file is set in this <code>EditableDocument</code>.
+    * file if no file is set in this <code>EditableDocument</code>.
     * <p>
     * The file is not set either and the language is set according to
     * the file type
@@ -433,15 +437,17 @@ public final class EditableDocument {
    }
 
    private void readFileContent(File f) {
-      try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+      try (BufferedReader br = new BufferedReader(
+         new InputStreamReader(
+            new FileInputStream(f), StandardCharsets.UTF_8))) {
+
          StringBuilder sb = new StringBuilder();
          String line;
          while ((line = br.readLine()) != null) {
-            sb.append(line + "\n");
+            sb.append(line).append('\n');
          }
          txt.textArea().setText(sb.toString());
-      }
-      catch (IOException e) {
+      } catch (IOException e) {
          FileUtils.log(e);
       }
    }
@@ -456,23 +462,21 @@ public final class EditableDocument {
    }
 
    private boolean writeToFile(File f) {
-      boolean isWriteable = FileUtils.isWriteable(f);
-      if (!isWriteable) {
-          return false;
+      if (!FileUtils.isWriteable(f)) {
+         return false;
       }
-      try (FileWriter writer = new FileWriter(f)) {
-         if (txt.text().equals("")) {
-            writer.write("");
-         }
-         else {
-            String[] lines = txt.text().split("\n");
-            for (String s : lines) {
-               writer.write(s + System.lineSeparator());
-            }
-         }
+      try (BufferedWriter writer = new BufferedWriter(
+         new OutputStreamWriter(
+            new FileOutputStream(f), StandardCharsets.UTF_8))) {
+
+         String text = txt.text();
+         String normalized = text
+               .replaceAll("\r\n|\r", "\n")
+               .replace("\n", System.lineSeparator());
+
+         writer.write(normalized);
          return true;
-      }
-      catch (IOException e) {
+      } catch (IOException e) {
          FileUtils.log(e);
       }
       return false;

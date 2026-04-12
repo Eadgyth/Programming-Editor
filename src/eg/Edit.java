@@ -149,8 +149,10 @@ public class Edit {
    public void cut() {
       int start = textArea.getSelectionStart();
       int end = textArea.getSelectionEnd();
-      setClipboard();
-      edtDoc.remove(start, end - start);
+      if (start != end) {
+         setClipboard();
+         edtDoc.remove(start, end - start);
+      }
    }
 
    /**
@@ -168,8 +170,11 @@ public class Edit {
     * Pastes text from the clipboard
     */
    public void pasteText() {
-      String clipboard = getClipboard();
-      if (clipboard.length() == 0) {
+      String clipboard = getClipboard()
+            .replace("\r\n", "\n")
+            .replace("\r", "\n");
+
+      if (clipboard.isEmpty()) {
          return;
       }
       int pos = textArea.getSelectionStart();
@@ -385,7 +390,9 @@ public class Edit {
       for (String s : textArr) {
          int startOfSpaces = startOfTrailingSpaces(s);
          int spacesLength = s.length() - startOfSpaces;
-         edtDoc.removeIgnoreSyntax(startOfSpaces + lineStart, spacesLength);
+         if (spacesLength < 0) {
+            edtDoc.removeIgnoreSyntax(startOfSpaces + lineStart, spacesLength);
+         }
          lineStart += startOfSpaces + 1;
       }
       edtDoc.enableUndoMerging(false);
@@ -399,10 +406,13 @@ public class Edit {
       String inClipboard = "";
       Transferable transf = CLIPBOARD.getContents(null);
       try {
-         if (transf != null
-               && transf.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+         DataFlavor plainFlavor = new DataFlavor(
+               "text/plain; class=java.lang.String; charset=Unicode", "Plain text");
 
-            inClipboard = (String) transf.getTransferData(DataFlavor.stringFlavor);
+         if (transf != null
+               && transf.isDataFlavorSupported(plainFlavor)) {
+
+            inClipboard = (String) transf.getTransferData(plainFlavor);
          }
       }
       catch (IOException | UnsupportedFlavorException e) {

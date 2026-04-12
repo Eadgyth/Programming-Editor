@@ -32,7 +32,7 @@ import eg.document.styledtext.EditableText;
  * <li> The edit is a removal and the content is longer than one
  *      character.
  * <li> A mark was set by {@link #markBreakpoint()} or
-        {@link #markSavingPoint} after the previous edit.
+        {@link #markSavingPoint()} after the previous edit.
  * </ul>
  * <p>
  * Adding breakpoints may be disabled to form a larger undoable

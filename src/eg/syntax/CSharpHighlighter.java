@@ -33,7 +33,7 @@ public class CSharpHighlighter implements Highlighter, QuoteOperatorSearch {
    private static final char VERBATIM_START = '@';
 
    private static final char[] KEY_NON_START = {
-      VERBATIM_START, '§', '\'', '$', '°', '@'
+      VERBATIM_START, 'Â§', '\'', '$', 'Â°', '@'
    };
 
    @Override

@@ -187,7 +187,10 @@ public class ProcessStarter {
          }
       }
       if (i == -1) {
-         l.add(cmd.substring(prev).trim());
+         String token = cmd.substring(prev).trim();
+         if (!token.isEmpty()) {
+            l.add(token);
+         }
       }
       return l;
    }

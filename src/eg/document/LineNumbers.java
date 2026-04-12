@@ -77,7 +77,7 @@ public class LineNumbers {
    private void removeLineNumbers(int prevLineNr, int lineNr) {
       int length = 0;
       for (int i = prevLineNr; i > lineNr; i--) {
-          length += ((int) Math.log10(i) + 1) + 1;
+          length += digitCount(i) + 1;
       }
       try {
          doc.remove(doc.getLength() - length, length);
@@ -85,5 +85,14 @@ public class LineNumbers {
       catch (BadLocationException e) {
          FileUtils.log(e);
       }
+   }
+   
+   private int digitCount(int n) {
+      int count = 0;
+      while (n > 0) {
+         n /= 10; //integer division
+         count++;
+      }
+      return count;
    }
 }
