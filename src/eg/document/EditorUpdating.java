@@ -297,7 +297,7 @@ public class EditorUpdating {
          change = txt.text().substring(chgPos, chgPos + de.getLength());
          if (!isCodeEditing) {
             EventQueue.invokeLater(
-                   () -> txt.resetAttributes(chgPos, change.length()));
+                  () -> txt.resetAttributes(chgPos, change.length()));
          }
          if (!isUndoRedo) {
             undo.addEdit(change, chgPos, isInsert);

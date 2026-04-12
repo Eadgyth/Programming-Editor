@@ -293,7 +293,7 @@ public final class EditArea {
                //
                // Using WrapParagraphView is (for some reason)
                // absolutely necessary for synthax highlighted text
-               // because otherwise letters can clash
+               // because otherwise letters can clash.
                return new WrapParagraphView(elem);
             } else if (kind.equals(AbstractDocument.SectionElementName)) {
                return new BoxView(elem, View.Y_AXIS);
