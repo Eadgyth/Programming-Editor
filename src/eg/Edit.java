@@ -390,7 +390,7 @@ public class Edit {
       for (String s : textArr) {
          int startOfSpaces = startOfTrailingSpaces(s);
          int spacesLength = s.length() - startOfSpaces;
-         if (spacesLength < 0) {
+         if (spacesLength > 0) {
             edtDoc.removeIgnoreSyntax(startOfSpaces + lineStart, spacesLength);
          }
          lineStart += startOfSpaces + 1;
