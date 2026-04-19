@@ -1,21 +1,17 @@
 <h3>Eadgyth Programming Editor</h3>
 <p>
-A text and code editor with the possibility to easily set up coding projects,
-first of all for Java. Setting a project means that it can be run (or compiled)
-by built-in functions that are invoked by menu selections, button clicks or with
-the keyboard. Additional project categories are C#, Python, R, Perl and HTML as well
-as a category 'Custom commands' to define own commands to run own batch files/scripts,
-for example.
+A lightweight text and code editor, programmed in Java, for writing, compiling and
+running code — designed for learning, quick prototyping, or small projects where a 
+full IDE is not necessary.
 <p>
-The editor may be useful for writing applications for own use, learning or quickly
-trying out code in case that a more advanced code editor or an IDE is not necessary
-(examples for project settings can be found
-<a href="https://eadgyth.github.io/Programming-Editor/">here</a>). The program can
-be tried out by downloading the executable jar file in a
-<a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a>
-(requires a JDK, version 8 or higher). The additional idea is that other project
-categories can be implemented as needed (To do: add a guide for programming a
-project type).
+The editor can be tried out by downloading the executable jar file in a
+<a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> (requires a
+JDK, version 8 or higher).
+<p>
+:warning: The current source code is modified for UTF-8 encoding only. This is work in
+progress. Be careful when opening existing non-UTF-8 files if you run the program after
+compiling yourself.
+
 <p>
 <h4>Features for editing text are ...</h4>
 <ul>
