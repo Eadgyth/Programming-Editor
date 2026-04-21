@@ -1,7 +1,8 @@
 <h3>Eadgyth Programming Editor</h3>
 <p>
-A text and code editor, programmed in Java, for writing, compiling and
-running code — intended for learning, quick prototyping, or small projects for personel use.
+A text and code editor written in Java. It features a simple project setup to compile
+and run code from within the editor, making it ideal for learning, quick prototyping,
+or small projects for personal use.
 <p>
 The editor can be tried out by downloading the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> (requires a
