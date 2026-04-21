@@ -1,8 +1,7 @@
 <h3>Eadgyth Programming Editor</h3>
 <p>
-A lightweight text and code editor, programmed in Java, for writing, compiling and
-running code — designed for learning, quick prototyping, or small projects where a 
-full IDE is not necessary.
+A text and code editor, programmed in Java, for writing, compiling and
+running code — intended for learning, quick prototyping, or small projects for personel use.
 <p>
 The editor can be tried out by downloading the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> (requires a
@@ -20,8 +19,7 @@ compiling yourself.
 <li>Choosing between spaces and tabs for indentation.</li>
 <li>Auto-indentation which distinguishes "curly-bracket-indentation".</li>
 <li>Block-wise increase or decrease of the indentation.</li>
-<li>A 'notes' editor next to the main editor for notes, viewing text
-    or facilitated exchange of text.</li>
+<li>A 'notes' editor next to the main editor.</li>
 <li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
     Javascript, PHP, C#).</li>
 </ul>
