@@ -3,7 +3,9 @@ package eg.ui.filetree;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.BorderLayout;
+import java.awt.Font;
 
+import javax.swing.Icon;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.JScrollPane;
@@ -19,6 +21,9 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
 import java.io.File;
+
+import java.util.HashMap;
+import java.util.Map;
 
 //--Eadgyth--/
 import eg.BackgroundTheme;
@@ -73,6 +78,7 @@ public class TreePanel {
 
       tree.setFocusable(false);
       tree.setBackground(theme.background());
+      tree.setOpaque(true);
       holdTree.add(tree);
       holdTree.revalidate();
    }
@@ -97,6 +103,7 @@ public class TreePanel {
       holdTree.setBackground(theme.background());
       holdTree.setBorder(new LineBorder(theme.background(), 5));
       scroll.setViewportView(holdTree);
+      scroll.getViewport().setOpaque(true);
    }
 
    private JToolBar toolbar() {
@@ -106,7 +113,9 @@ public class TreePanel {
    @SuppressWarnings("serial")
    private class TreeRenderer extends DefaultTreeCellRenderer {
 
-	  private final transient FileSystemView fsv = FileSystemView.getFileSystemView();
+      private final transient FileSystemView fsv = FileSystemView.getFileSystemView();
+      private final Map<String, Icon> icons = new HashMap<>();
+      private Font font = null;
 
       @Override
       public Color getBackgroundNonSelectionColor() {
@@ -136,12 +145,26 @@ public class TreePanel {
            value = ((DefaultMutableTreeNode) value).getUserObject();
            if (value instanceof File) {
               File f = (File) value;
-              setIcon(fsv.getSystemIcon(f));
-              setFont(ScreenParams.scaledFontToPlain(getFont(), 8));
+              setIcon(getIcon(f));
+              if (font == null) {
+                 font = ScreenParams.scaledFontToPlain(getFont(), 8);
+              }
+              setFont(font);
               setText(f.getName());
            }
         }
         return this;
+      }
+
+      private Icon getIcon(File f) {
+         String key = f.isDirectory() ? "__dir__" : getExtension(f);
+         return icons.computeIfAbsent(key, k -> fsv.getSystemIcon(f));
+      }
+
+      private String getExtension(File file) {
+         String name = file.getName();
+         int i = name.lastIndexOf('.');
+         return i > 0 ? name.substring(i).toLowerCase() : "__noext__";
       }
    }
 }
