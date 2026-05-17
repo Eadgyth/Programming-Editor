@@ -11,7 +11,6 @@ public enum Languages {
    HTML("HTML"),
    JAVA("Java"),
    JAVASCRIPT("Javascript"),
-   PERL("Perl"),
    PHP_MIXED("PHP (embedded)"),
    PHP_PURE("PHP (pure)"),
    PYTHON("Python"),

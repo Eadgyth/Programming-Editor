@@ -4,7 +4,16 @@ import java.io.File;
 
 //--Eadgyth--/
 import eg.Languages;
-import eg.syntax.*;
+import eg.syntax.CSSHighlighter;
+import eg.syntax.CSharpHighlighter;
+import eg.syntax.HTMLHighlighter;
+import eg.syntax.Highlighter;
+import eg.syntax.JavaHighlighter;
+import eg.syntax.JavascriptHighlighter;
+import eg.syntax.PHPHighlighter;
+import eg.syntax.PythonHighlighter;
+import eg.syntax.RHighlighter;
+import eg.syntax.XMLHighlighter;
 
 /**
  * The language that is used for a document
@@ -28,7 +37,7 @@ public class CurrentLanguage {
     * @param file  the file
     */
    public void setLanguage(String file) {
-      String ext = fileExtension(file);
+      String ext = fileExtension(file).toLowerCase();
       switch (ext) {
          case "java":
             lang = Languages.JAVA;
@@ -53,9 +62,6 @@ public class CurrentLanguage {
                lang = Languages.PHP_MIXED;
                break;
             }
-         case "pl": case "pm":
-            lang = Languages.PERL;
-            break;
          case "py":
             lang = Languages.PYTHON;
             break;
@@ -106,9 +112,6 @@ public class CurrentLanguage {
          case JAVASCRIPT:
             hl = new JavascriptHighlighter();
             break;
-         case PERL:
-            hl = new PerlHighlighter();
-            break;
          case PHP_MIXED:
             hl = new HTMLHighlighter();
             break;
@@ -140,7 +143,6 @@ public class CurrentLanguage {
       switch (lang) {
          case JAVA:
          case JAVASCRIPT:
-         case PERL:
          case PHP_PURE:
          case CSS:
          case C_SHARP:

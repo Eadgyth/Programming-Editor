@@ -170,13 +170,14 @@ public class Edit {
     * Pastes text from the clipboard
     */
    public void pasteText() {
-      String clipboard = getClipboard()
+      String s = getClipboard();
+      if (s == null || s.isEmpty()) {
+         return;
+      }
+      String clipboard = s
             .replace("\r\n", "\n")
             .replace("\r", "\n");
 
-      if (clipboard.isEmpty()) {
-         return;
-      }
       int pos = textArea.getSelectionStart();
       int end = textArea.getSelectionEnd();
       int length = end - pos;
@@ -403,22 +404,19 @@ public class Edit {
    //
 
    private String getClipboard() {
-      String inClipboard = "";
-      Transferable transf = CLIPBOARD.getContents(null);
-      try {
-         DataFlavor plainFlavor = new DataFlavor(
-               "text/plain; class=java.lang.String; charset=Unicode", "Plain text");
-
-         if (transf != null
-               && transf.isDataFlavorSupported(plainFlavor)) {
-
-            inClipboard = (String) transf.getTransferData(plainFlavor);
+      Transferable contents =
+            Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+            
+      if (contents != null
+            && contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+               
+         try {
+            return (String) contents.getTransferData(DataFlavor.stringFlavor);
+         } catch (UnsupportedFlavorException | IOException e) {
+            FileUtils.log(e);
          }
       }
-      catch (IOException | UnsupportedFlavorException e) {
-         FileUtils.log(e);
-      }
-      return inClipboard;
+      return "";
    }
 
    private void insertIndent(int pos) {

@@ -2,6 +2,7 @@ package eg.utils;
 
 import java.io.File;
 import java.awt.Toolkit;
+import java.util.Locale;
 
 /**
  * Static system properties
@@ -22,6 +23,15 @@ public class SystemParams {
    /**
     * True if the Java version is 13 or higher, false otherwise */
    public static final boolean IS_JAVA_13_OR_HIGHER;
+    /**
+    * True if the Java version is 14 or higher, false otherwise */
+   public static final boolean IS_JAVA_14_OR_HIGHER;
+   /**
+    * The locale language before locale is set to US in main method */
+   public static final String LOCALE_LANG;
+   /**
+    * The locale country before locale is set to US in main method */
+   public static final String LOCALE_COUNTRY;
    /**
     * The modifier mask for menu shortcuts */
    public static final int MODIFIER_MASK;
@@ -33,14 +43,16 @@ public class SystemParams {
    static {
       String os = System.getProperty("os.name").toLowerCase();
       IS_WINDOWS = os.contains("win");
+      LOCALE_LANG = Locale.getDefault().getLanguage();
+      LOCALE_COUNTRY = Locale.getDefault().getCountry();
       String userHome = System.getProperty("user.home");
       EADGYTH_DATA_DIR = userHome + File.separator + ".eadgyth";
       JAVA_VERSION = System.getProperty("java.version");
-      IS_JAVA_9_OR_HIGHER = !JAVA_VERSION.startsWith("1.8");
-      IS_JAVA_10_OR_HIGHER = IS_JAVA_9_OR_HIGHER
-            && "10".compareTo(JAVA_VERSION) <= 0;
-      IS_JAVA_13_OR_HIGHER = IS_JAVA_9_OR_HIGHER
-            && "13".compareTo(JAVA_VERSION) <= 0;
+      int major = major(JAVA_VERSION);
+      IS_JAVA_9_OR_HIGHER = major >= 9;
+      IS_JAVA_10_OR_HIGHER = major >= 10;
+      IS_JAVA_13_OR_HIGHER = major >= 13;
+      IS_JAVA_14_OR_HIGHER = major >= 14;
       //
       // up to Java 9:
       MODIFIER_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
@@ -65,4 +77,15 @@ public class SystemParams {
    //
 
    private SystemParams() {}
+   
+   private static int major(String version) {
+      int major;
+      if (version.startsWith("1.")) {
+         major = 8;
+      } else {
+         major = Integer.parseInt(version.split("[.\\-+]")[0]);
+      }
+      return major;
+   }
+      
 }

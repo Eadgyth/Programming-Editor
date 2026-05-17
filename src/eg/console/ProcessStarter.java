@@ -1,21 +1,20 @@
 package eg.console;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.File;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import java.awt.EventQueue;
-
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.KeyAdapter;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.SwingWorker;
 
@@ -119,18 +118,20 @@ public class ProcessStarter {
       if (!cons.setUnlockedActive()) {
          return;
       }
-      cons.enableRunBt(false);
       String msg = startMsg.isEmpty() ? START_MESSAGE : startMsg;
       cons.setText(msg);
       consoleText = cons.getText();
       List<String> cmdList = cmdList(cmd);
       ProcessBuilder pb = new ProcessBuilder(cmdList).redirectErrorStream(true);
       pb.directory(fWorkingDir);
+      setEnvironment(pb);
       new Thread(() -> {
          try {
             process = pb.start();
             new CaptureInput().execute();
-            out = new PrintWriter(process.getOutputStream());
+            out = new PrintWriter(new OutputStreamWriter(
+                  process.getOutputStream(), StandardCharsets.UTF_8), true);
+
             exitVal = process.waitFor();
             EventQueue.invokeLater(cons::setInactive);
          }
@@ -180,25 +181,41 @@ public class ProcessStarter {
          i = cmd.indexOf(' ', i);
          if (i != -1) {
             if (!SyntaxUtils.isQuoted(cmd, i)) {
-               l.add(cmd.substring(prev, i).trim());
+               addCleanToken(l, cmd.substring(prev, i));
                prev = i;
             }
             i++;
          }
       }
       if (i == -1) {
-         String token = cmd.substring(prev).trim();
-         if (!token.isEmpty()) {
-            l.add(token);
-         }
+         addCleanToken(l, cmd.substring(prev));
       }
       return l;
+   }
+
+   private void addCleanToken(List<String> list, String token) {
+      token = token.trim();
+      if (token.isEmpty()) {
+         return;
+      }
+      if (token.startsWith("\"") && token.endsWith("\"") && token.length() >= 2) {
+         token = token.substring(1, token.length() - 1);
+      }
+      token = token.replace("\\\"", "\"");
+      list.add(token);
+   }
+
+   private void setEnvironment(ProcessBuilder pb) {
+      pb.environment().put("PYTHONUTF8", "1");
+      pb.environment().put("PYTHONIOENCODING", "utf-8");
    }
 
    private class CaptureInput extends SwingWorker<Void, String> {
 
       private final InputStream is = process.getInputStream();
-      private final InputStreamReader isr = new InputStreamReader(is);
+      private final InputStreamReader isr = new InputStreamReader(
+            is, StandardCharsets.UTF_8);
+
       private final BufferedReader reader = new BufferedReader(isr);
 
       @Override
@@ -292,7 +309,6 @@ public class ProcessStarter {
             String output = cons.getText().substring(consoleText.length());
             consoleText = cons.getText();
             out.println(output);
-            out.flush();
          }
       }
 

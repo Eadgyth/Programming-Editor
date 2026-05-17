@@ -1,6 +1,7 @@
 package eg.ui;
 
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
@@ -31,7 +32,7 @@ public class InfoWin {
    private static final String INFO
          = "<html>"
          + "Programming Editor<br><br>"
-         + "Version: 1.2.0<br>"
+         + "Version: 1.2.1<br>"
          + "Author: Malte Bussiek<br><br>"
          + "Credits and Acknowledgements:"
          + "<ul>"
@@ -76,9 +77,11 @@ public class InfoWin {
       JPanel pnl = UIComponents.grayBorderedPanel();
       JPanel textPnl = new JPanel();
       JLabel  titleLb  = new JLabel("Eadgyth");
-      titleLb.setFont(ScreenParams.SANSSERIF_BOLD_11);
+      Font titleFont = titleLb.getFont();
+      titleLb.setFont(ScreenParams.scaledFontToBold(titleFont, 11));
       JLabel  infoLb   = new JLabel(INFO);
-      infoLb.setFont(ScreenParams.SANSSERIF_PLAIN_9);
+      Font infoFont = infoLb.getFont();
+      infoLb.setFont(ScreenParams.scaledFontToPlain(infoFont, 9));
       textPnl.setLayout(new BorderLayout());
       textPnl.setBackground(Color.white);
       textPnl.add(titleLb, BorderLayout.NORTH);
@@ -95,7 +98,8 @@ public class InfoWin {
       linkBt.setContentAreaFilled(false);
       linkBt.setText("<html><u>" + LINK + "</u></html>");
       linkBt.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-      linkBt.setFont(ScreenParams.SANSSERIF_PLAIN_9);
+      Font linkBtFont = linkBt.getFont();
+      linkBt.setFont(ScreenParams.scaledFontToPlain(linkBtFont, 9));
       linkBt.setForeground(Color.BLUE);
       linkBt.addActionListener(e -> openWebSite());
    }

@@ -1,13 +1,14 @@
 package eg.javatools;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-
-import java.util.Collections;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 //--Eadgyth--/
@@ -19,7 +20,6 @@ import eg.utils.FileUtils;
 public class JarBuilder {
 
    private static final String MANIFEST_INFO_FILE = "ManifestInfo.txt";
-   private static final String F_SEP = File.separator;
    private final FilesFinder fFind = new FilesFinder();
 
    private boolean isManifestInfo;
@@ -34,7 +34,7 @@ public class JarBuilder {
     * created or deleted if it exists.
     *
     * @param dir  the directory where the 'info'-file is saved
-    * @param classpaths  the list of classpaths
+    * @param classpaths  the list of class paths
     * @throws  IOException  as specified in java.io.FileWriter
     */
    public void createClasspathInfo(String dir, List<String> classpaths)
@@ -43,13 +43,28 @@ public class JarBuilder {
       isManifestInfo = !classpaths.isEmpty();
       File f = new File(dir + File.separator + MANIFEST_INFO_FILE);
       if (isManifestInfo) {
-         try (FileWriter writer = new FileWriter(f)) {
-            writer.write("Class-Path:");
-            for (String s : classpaths) {
-               writer.write(" ");
-               writer.write(s);
+         StringBuilder sb = new StringBuilder("Class-Path:");
+         for (String s : classpaths) {
+            String path = s.replace(" ", "%20");
+            sb.append(" ").append(path);
+         }
+         String fullLine = sb.toString();
+         try (BufferedWriter writer = Files.newBufferedWriter(f.toPath(),
+               StandardCharsets.UTF_8)) {
+
+            int start = 0;
+            while (start < fullLine.length()) {
+               int end = Math.min(start + 70, fullLine.length());
+               writer.write(fullLine.substring(start, end));
+               writer.write("\n");
+               start = end;
+               if (start < fullLine.length()) {
+                  writer.write(" ");
+                  if (fullLine.charAt(start) == ' ') {
+                     start++;
+                  }
+               }
             }
-            writer.write("\n");
          }
       }
       else {
@@ -190,13 +205,10 @@ public class JarBuilder {
    }
 
    private List<File> relativePaths(String searchPath, List<File> listOfFiles) {
-      if (searchPath.endsWith(F_SEP)) {
-         searchPath = searchPath.substring(0, searchPath.length() - 1);
-      }
+      Path p = Paths.get(searchPath);
       List<File> relativePath = new ArrayList<>();
-      for (File i : listOfFiles) {
-         String filePath = i.getAbsolutePath();
-         relativePath.add(new File(filePath.substring(searchPath.length() + 1)));
+      for (File f : listOfFiles) {
+         relativePath.add(p.relativize(f.toPath()).toFile());
       }
       return relativePath;
    }

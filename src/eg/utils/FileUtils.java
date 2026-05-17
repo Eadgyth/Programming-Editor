@@ -2,7 +2,11 @@ package eg.utils;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+
+import java.nio.charset.StandardCharsets;
 
 import java.util.Date;
 
@@ -57,7 +61,7 @@ public class FileUtils {
     */
    public static void log(Exception e) {
       File f = new File(SystemParams.EADGYTH_DATA_DIR + "/log.txt");
-      String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+      String date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date());
       String msg = "";
       if (e.getMessage() != null) {
          msg = e.getMessage();
@@ -68,10 +72,20 @@ public class FileUtils {
       else {
          msg = "A problem occured";
       }
-      try (PrintWriter writer = new PrintWriter(f)) {
+      if (f.exists() && f.length() > 1024 * 1024) {
+         f.delete();
+      }
+      try (FileOutputStream fos = new FileOutputStream(f, true); 
+         OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+         PrintWriter writer = new PrintWriter(osw)) {
+         
+         writer.println();
+         writer.println();
          writer.println(date);
          writer.println("_________________");
          e.printStackTrace(writer);
+         writer.println();
+         
          Dialogs.errorMessage(
                "Error: "
                + msg

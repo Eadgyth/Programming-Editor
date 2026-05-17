@@ -1,6 +1,7 @@
 package eg.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 
 import javax.swing.JButton;
 import javax.swing.JToolBar;
@@ -51,7 +52,8 @@ public class ConsolePanel {
       scroll.setViewportView(area);
       content.add(scroll, BorderLayout.CENTER);
 
-      area.setFont(ScreenParams.SANSSERIF_PLAIN_8);
+      Font f = area.getFont();
+      area.setFont(ScreenParams.scaledFontToPlain(f, 8));
       area.setBackground(theme.background());
       area.setForeground(theme.normalText());
       area.setSelectionColor(theme.selectionBackground());

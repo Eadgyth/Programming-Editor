@@ -35,9 +35,6 @@ public class ProjectSelector {
          case HTML:
             newProj = new HtmlProject();
             break;
-         case PERL:
-            newProj = new PerlProject(runner);
-            break;
          case PYTHON:
             newProj = new PythonProject(runner);
             break;

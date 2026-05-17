@@ -17,10 +17,6 @@ public enum ProjectTypes {
     * value returned by {@link display()} is HTML */
    HTML("HTML"),
    /**
-    * Constant for a Perl project;
-    * value returned by {@link display()} is Perl */
-   PERL("Perl"),
-   /**
     * Constant for a Python project;
     * value returned by {@link display()} is Python */
    PYTHON("Python"),

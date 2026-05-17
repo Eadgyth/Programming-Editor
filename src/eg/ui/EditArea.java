@@ -292,7 +292,7 @@ public final class EditArea {
             } else if (kind.equals(AbstractDocument.ParagraphElementName)) {
                //
                // Using WrapParagraphView is (for some reason)
-               // absolutely necessary for synthax highlighted text
+               // absolutely necessary for syntax highlighted text
                // because otherwise letters can clash.
                return new WrapParagraphView(elem);
             } else if (kind.equals(AbstractDocument.SectionElementName)) {
@@ -379,13 +379,13 @@ public final class EditArea {
          resetBreakSpots();
       }
 
-		private void resetBreakSpots() {
-			for (int i = 0; i < layoutPool.getViewCount(); i++) {
-				View view = layoutPool.getView(i);
+      private void resetBreakSpots() {
+         for (int i = 0; i < layoutPool.getViewCount(); i++) {
+            View view = layoutPool.getView(i);
             if (view instanceof WrapLabelView) {
-            	((WrapLabelView) view).resetBreakSpots();
-           	}
-			}
+               ((WrapLabelView) view).resetBreakSpots();
+            }
+         }
       }
    }
 }

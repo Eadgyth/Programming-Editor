@@ -1,10 +1,9 @@
 package eg;
 
-import java.io.File;
-
-import java.util.Locale;
-
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.io.File;
+import java.util.Locale;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -14,8 +13,8 @@ import javax.swing.border.EmptyBorder;
 import eg.ui.MainWin;
 import eg.ui.ViewSettingWin;
 import eg.utils.FileUtils;
-import eg.utils.SystemParams;
 import eg.utils.ScreenParams;
+import eg.utils.SystemParams;
 
 /**
  * Contains the main method
@@ -25,21 +24,28 @@ import eg.utils.ScreenParams;
 public class Eadgyth {
 
    public static void main(String[] arg) {
-
+      try {
+         Class.forName("eg.utils.SystemParams");
+      }
+      catch (ClassNotFoundException e) {
+         throw new IllegalStateException("SystemParams was not found", e);
+      }
       Locale.setDefault(Locale.US);
-      uiManagerSettings();
       createEadgythDataDir();
       Prefs prefs = new Prefs();
+      if (SystemParams.IS_JAVA_9_OR_HIGHER) {
+          System.setProperty("sun.java2d.uiScale", "1.0");
+      }
       String laf = prefs.property(Prefs.LAF_KEY);
       setLaf(laf);
+      uiManagerSettings();
 
       MainWin mw = new MainWin();
       ViewSettingWin viewSetWin = new ViewSettingWin();
       Formatter f = new Formatter(TabbedDocuments.MAX_TABS, "");
       ViewSetter viewSet = new ViewSetter(mw, viewSetWin, f);
       TabbedDocuments tabDocs = new TabbedDocuments(mw, f);
-
-      mw.setFileActions(tabDocs);
+      mw.setFileActions(tabDocs, tabDocs::setFallbackCharset);
       mw.setViewSettingWinAction(viewSetWin);
       mw.setFormatActions(f);
       viewSetWin.setOkAct(e -> {
@@ -50,29 +56,16 @@ public class Eadgyth {
    }
 
    private static void uiManagerSettings() {
-      //
-      // The dpi scaling is disabled when the Java version is 9+
-      // because the positioning of the mouse pointer in text
-      // is not working properly on a high dpi screen (plus some
-      // other graphics issues, at least under Windows). The
-      // following 'if' statement may be commented out to verify
-      // the problem. Then, the methods 'scaledSize' and
-      // 'invertedScaledSize' in eg.utils.ScreenParams should be
-      // modified as mentioned in the comments there.
-      //
-      if (SystemParams.IS_JAVA_9_OR_HIGHER) {
-         System.setProperty("sun.java2d.uiScale", "1.0");
-         UIManager.put("OptionPane.messageFont", ScreenParams.SANSSERIF_PLAIN_9);
-         UIManager.put("OptionPane.font", ScreenParams.SANSSERIF_PLAIN_9);
-         UIManager.put("Button.font", ScreenParams.SANSSERIF_PLAIN_8);
-         UIManager.put("ComboBox.font", ScreenParams.SANSSERIF_PLAIN_8);
+     if (SystemParams.IS_JAVA_9_OR_HIGHER) {
+         scaleFont("OptionPane.messageFont", 9);
+         scaleFont("OptionPane.font", 9);
       }
       UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-      UIManager.put("Menu.font", ScreenParams.SANSSERIF_PLAIN_9);
-      UIManager.put("MenuItem.font", ScreenParams.SANSSERIF_PLAIN_9);
-      UIManager.put("CheckBoxMenuItem.font", ScreenParams.SANSSERIF_PLAIN_9);
       UIManager.put("SplitPaneDivider.border", new EmptyBorder(0, 0, 0, 0));
       UIManager.put("Tree.rowHeight", ScreenParams.scaledSize(13));
+      scaleFont("Menu.font", 9);
+      scaleFont("MenuItem.font", 9);
+      scaleFont("CheckBoxMenuItem.font", 9);
    }
 
    private static void setLaf(String laf) {
@@ -93,5 +86,15 @@ public class Eadgyth {
    private static void createEadgythDataDir() {
       File dir = new File(SystemParams.EADGYTH_DATA_DIR);
       dir.mkdir();
+   }
+
+   private static void scaleFont(String uiKey, int size) {
+      Font font = UIManager.getFont(uiKey);
+      if (font == null) {
+         return;
+      }
+      int style = font.isBold() ? Font.PLAIN : font.getStyle();
+      int scaled = ScreenParams.scaledSize(size);
+      UIManager.put(uiKey, font.deriveFont(style, scaled));
    }
 }

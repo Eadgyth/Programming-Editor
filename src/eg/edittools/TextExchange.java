@@ -98,36 +98,6 @@ public class TextExchange {
    }
 
    /**
-    * Loads the content of a file that is selected in the file chooser
-    *
-    * @param lm  the langauge menu in which the item for the language
-    * determined by the file extension will be selected
-    */
-   public void loadFile(LanguageMenu lm) {
-      File f = fc.selectedFile();
-      if (f == null) {
-         return;
-      }
-      if (!f.exists()) {
-         Dialogs.warnMessage(f.getName() + " was not found.");
-         return;
-      }
-      int res = 0;
-      if (exchangeDoc.textLength() > 0) {
-         res = Dialogs.confirmYesNo(
-               "The current text content will be replaced.\n"
-               + " Continue?");
-      }
-      if (res == 0) {
-         Runnable r = () -> {
-            exchangeDoc.replaceWithFileContent(f);
-            lm.selectLanguageItm(exchangeDoc.language());
-         };
-         busyFunction().execute(r);
-      }
-   }
-
-   /**
     * Changes the language in the exchange editor
     *
     * @param lang  the language to change to

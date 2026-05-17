@@ -219,7 +219,7 @@ public class EditorUpdating {
       updateChangedState();
    }
 
-   private void updateChangedState() {
+   public void updateChangedState() {
       if (esr == null) {
          return;
       }

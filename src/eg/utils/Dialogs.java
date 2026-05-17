@@ -107,7 +107,7 @@ public class Dialogs {
             INFO_ICON);
    }
 
-    /**
+   /**
     * Shows a warning confirmation dialog with Yes and No options
     *
     * @param message  the message for the dialog
@@ -117,6 +117,41 @@ public class Dialogs {
       return JOptionPane.showConfirmDialog(null, message, null,
             JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
             WARNING_ICON);
+   }
+
+   /**
+    * Shows a warning confirmation dialog with Yes and No options
+    *
+    * @param message  the message for the dialog
+    * @param title  the title for the dialog
+    * @return  the Yes or No option specified in <code>JOptionPane</code>
+    */
+   public static int warnConfirmYesNo(String message, String title) {
+      return JOptionPane.showConfirmDialog(null, message, title,
+            JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+            WARNING_ICON);
+   }
+
+   /**
+    * Shows a warning dialog with OK and ignore options.
+    *
+    * @param message  the message for the dialog
+    * @param title  the title for the dialog
+    * @param options labels for the buttons, where options[0] is default
+    * @return  0 if default (left) was clicked, 1, 2 ... for following options,
+    *          -1 if dialog was closed
+    */
+   public static int warnConfirmOptions(String message, String title, Object[] options) {
+      return JOptionPane.showOptionDialog(
+               null,
+               message,
+               title,
+               JOptionPane.DEFAULT_OPTION,
+               JOptionPane.WARNING_MESSAGE,
+               WARNING_ICON,
+               options,
+               options[0]   // default focus: left button
+       );
    }
 
   /**

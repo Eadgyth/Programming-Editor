@@ -1,14 +1,14 @@
 package eg.syntax;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.text.SimpleAttributeSet;
 
-import java.util.List;
-import java.util.ArrayList;
-
+import eg.document.styledtext.Attributes;
+import eg.document.styledtext.StyledText;
 //--Eadgyth--/
 import eg.utils.LinesFinder;
-import eg.document.styledtext.StyledText;
-import eg.document.styledtext.Attributes;
 
 /**
  * The search and highlighting of text elements

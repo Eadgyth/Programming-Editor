@@ -11,7 +11,8 @@ import eg.ui.UIComponents;
  */
 public class MenuBar {
 
-   private final FileMenu fileMenu = new FileMenu();
+   private final CharsetMenu charsetMenu = new CharsetMenu();
+   private final FileMenu fileMenu = new FileMenu(charsetMenu);
    private final LanguageMenu languageMenu = new LanguageMenu();
    private final EditMenu editMenu = new EditMenu(languageMenu);
    private final FormatMenu formatMenu = new FormatMenu();
@@ -49,6 +50,15 @@ public class MenuBar {
     */
    public FileMenu fileMenu() {
       return fileMenu;
+   }
+   
+   /**
+    * Gets this charset menu
+    *
+    * @return  this {@link CharsetMenu}
+    */
+   public CharsetMenu charsetMenu() {
+      return charsetMenu;
    }
 
    /**

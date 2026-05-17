@@ -180,8 +180,9 @@ public abstract class AbstractProject implements Configurable {
       return projectName;
    }
 
+
    @Override
-   public final String executableDir() {
+   public String executableDir() {
       return execDir;
    }
 
@@ -424,22 +425,6 @@ public abstract class AbstractProject implements Configurable {
     */
    protected String[] fileExtensions() {
       return extensions.isEmpty() ? new String[0] : extensions.split(",");
-   }
-
-   /**
-    * Returns the name for a build.
-    * @deprecated  call {@link buildName(boolean)} instead
-    *
-    * @return  the name which is the default name
-    * ([projectName]Project) if no build name is entered in the
-    * settings
-    */
-   @Deprecated
-   protected String buildName() {
-      if (buildName.isEmpty()) {
-         return projectName + "Project";
-      }
-      return buildName;
    }
 
    /**

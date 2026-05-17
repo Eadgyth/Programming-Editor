@@ -3,8 +3,13 @@ package eg;
 import java.util.Properties;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
-import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
 
 //--Eadgyth--/
 import eg.utils.FileUtils;
@@ -215,11 +220,16 @@ public final class Prefs {
       if (!file.exists()) {
          return;
       }
-      try (FileInputStream reader = new FileInputStream(file)) {
+      try (BufferedReader reader = Files.newBufferedReader(file.toPath(),
+            StandardCharsets.UTF_8)) {
+               
          prop.load(reader);
-      }
-      catch (IOException e) {
-         FileUtils.log(e);
+      } catch (Exception e) {
+         try (FileInputStream fis = new FileInputStream(file)) {
+            prop.load(new InputStreamReader(fis, StandardCharsets.ISO_8859_1));
+         } catch (IOException ex) {
+            FileUtils.log(ex);
+         }
       }
    }
 
@@ -231,10 +241,11 @@ public final class Prefs {
       if (!file.getParentFile().exists()) {
          return;
       }
-      try (FileWriter writer = new FileWriter(file)) {
+      try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(),
+            StandardCharsets.UTF_8)) {
+               
          prop.store(writer, null);
-      }
-      catch (IOException | NullPointerException | ClassCastException e) {
+      } catch (IOException | NullPointerException | ClassCastException e) {
          FileUtils.log(e);
       }
    }

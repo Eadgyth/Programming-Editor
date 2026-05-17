@@ -23,7 +23,7 @@ public final class PythonProject extends AbstractProject implements ProjectComma
 
    @Override
    public void buildSettingsWindow() {
-      inputOptions.addSourceDirInput(SRC_DIR_LABEL)
+      inputOptions
          .addFileInput(PY_SCRIPT_LABEL, true)
          .addCmdOptionsInput()
          .addCmdArgsInput()
@@ -58,7 +58,4 @@ public final class PythonProject extends AbstractProject implements ProjectComma
 
    private static final String PY_SCRIPT_LABEL =
          "Name of Python script file";
-
-   private static final String SRC_DIR_LABEL =
-         "Subdirectory containing Python script (if present)";
 }

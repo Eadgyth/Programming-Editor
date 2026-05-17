@@ -117,6 +117,15 @@ public class EditableText extends StyledText {
    public final void addDocumentListener(DocumentListener dl) {
       doc.addDocumentListener(dl);
    }
+   
+   /**
+    * Removes a <code>DocumentListener</code>
+    *
+    * @param dl  the DocumentListener
+    */
+   public final void removeDocumentListener(DocumentListener dl) {
+      doc.removeDocumentListener(dl);
+   }
 
    /**
     * Returns the text area that displays the text

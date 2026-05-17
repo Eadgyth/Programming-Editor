@@ -1,23 +1,23 @@
 package eg;
 
 import java.awt.EventQueue;
-
-import javax.swing.JTabbedPane;
-import javax.swing.JOptionPane;
-
-import javax.swing.event.ChangeEvent;
-
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
+
+import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
 
 //--Eadgyth--/
 import eg.document.EditableDocument;
 import eg.document.EditingStateReadable;
-import eg.ui.MainWin;
+import eg.document.FileCharset;
 import eg.ui.EditArea;
-import eg.ui.tabpane.ExtTabbedPane;
+import eg.ui.MainWin;
 import eg.ui.filetree.FileTree;
+import eg.ui.tabpane.ExtTabbedPane;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 
@@ -35,8 +35,9 @@ public class TabbedDocuments {
 
    /**
     * The maximum number of tabs */
-   public static final int MAX_TABS = 15;
+   public static final int MAX_TABS = 10;
 
+   private static final long MAX_FILE_SIZE = 10 * 1024 * 1024L;
    private static final String UNNAMED_LABEL = "unnamed";
 
    private final MainWin mw;
@@ -52,6 +53,7 @@ public class TabbedDocuments {
 
    private int iTab = -1;
    private Languages lang;
+   private Charset userFallbackCharset = null;
 
    /**
     * @param mw  the reference to MainWin
@@ -77,7 +79,6 @@ public class TabbedDocuments {
       });
 
       lang = Languages.initialLanguage(prefs.property(Prefs.LANG_KEY));
-
       edit = new Edit(true);
       mw.setEditActions(edit, this::changeLanguage);
 
@@ -105,6 +106,19 @@ public class TabbedDocuments {
       if (isTabOpenable() && !isMaxTabNumber()) {
          createDocument();
       }
+   }
+
+   /**
+    * Sets a falbback charset specified in the File menu.
+    *
+    * The charset is used for opening a new file. Fallback
+    * is the charset assumed if a file is detected as invalid
+    * UTF-8.
+    *
+    * @param cs  the fallback charset
+    */
+   public void setFallbackCharset(Charset cs) {
+      userFallbackCharset = cs;
    }
 
    /**
@@ -197,6 +211,22 @@ public class TabbedDocuments {
    }
 
    /**
+    * Converts the selected document to UTF-8 encoding
+    */
+   public void convert() {
+      edtDoc[iTab].convertToUtf8();
+      updateEncodingDisplay(edtDoc[iTab]);
+   }
+
+   /**
+    * Converts the selected document to fallback encoding
+    */
+   public void convertToFallback() {
+      edtDoc[iTab].revertToFallback();
+      updateEncodingDisplay(edtDoc[iTab]);
+   }
+
+   /**
     * Closes the selected document and may ask for saving; opens a new
     * blank document if the only one open was closed
     */
@@ -242,15 +272,24 @@ public class TabbedDocuments {
    //
 
    private void open(File f) {
-      if (f == null || !exists(f) || isFileOpen(f) || isMaxTabNumber()) {
+      if (f == null || !exists(f) || isFileOpen(f) || isMaxTabNumber()
+            || !isMaxFileSize(f)) {
+
          return;
       }
+      FileCharset fileCharset = new FileCharset(f, userFallbackCharset);
+      fileCharset.readBytes();
+      if (rejectBinary(fileCharset)) {
+         return;
+      }
+      fileCharset.checkUtf8Encoding();
       Runnable r = () -> {
          if (isOnlyUnnamedBlank()) {
             removeTab();
          }
          if (isTabOpenable()) {
-            createDocument(f);
+            createDocument(f, fileCharset);
+            updateEncodingDisplay(edtDoc[iTab]);
          }
       };
       mw.busyFunction().execute(r);
@@ -288,6 +327,32 @@ public class TabbedDocuments {
       }
    }
 
+   private boolean isMaxFileSize(File f) {
+      long fileBytes = f.length();
+      if (fileBytes > MAX_FILE_SIZE) {
+         String mb = String.format("%.1f", fileBytes / (1024.0 * 1024.0));
+         Dialogs.errorMessage(
+               "Opening a file of size "
+               + mb + " MB is not supported by this Editor." , "File Size Error");
+
+         return false;
+      }
+      return true;
+   }
+
+   private boolean rejectBinary(FileCharset fileCharset) {
+      if (fileCharset.isBinary()) {
+         Object[] options = { "Cancel", "Open" };
+         int result = Dialogs.warnConfirmOptions(
+               "File appears to be not plain text, or uses a character encoding" +
+               " that is not supported, i.e. UTF-16/32.",
+               "Binary File", options);
+
+         return result != 1;
+      }
+      return false;
+   }
+
    private boolean isOnlyUnnamedBlank() {
       return nTabs() == 1
             && !edtDoc[iTab].hasFile()
@@ -311,10 +376,10 @@ public class TabbedDocuments {
       tabPane.addClosableTab(UNNAMED_LABEL, editArea[n].content());
    }
 
-   private void createDocument(File f) {
+   private void createDocument(File f, FileCharset fileCharset) {
       int n = nTabs();
       format.createEditAreaAt(n);
-      edtDoc[n] = new EditableDocument(editArea[n], f, lang);
+      edtDoc[n] = new EditableDocument(editArea[n], f, fileCharset, lang);
       edtDoc[n].setEditingStateReadable(editState);
       tabPane.addClosableTab(edtDoc[n].filename(), editArea[n].content());
       proj.retrieve();
@@ -322,11 +387,15 @@ public class TabbedDocuments {
 
    private boolean save(boolean setFile) {
       if (edtDoc[iTab].hasFile() && edtDoc[iTab].file().exists()) {
-         return edtDoc[iTab].saveFile();
+         if (edtDoc[iTab].saveFile()) {
+            updateEncodingDisplay(edtDoc[iTab]);
+            return true;
+         }
       }
       else {
          return saveAs(setFile);
       }
+      return false;
    }
 
    private boolean saveAs(boolean setFile) {
@@ -346,6 +415,9 @@ public class TabbedDocuments {
       }
       else {
          b = edtDoc[iTab].saveCopy(f);
+         if (b) {
+            updateEncodingDisplay(edtDoc[iTab]);
+         }
       }
       if (b) {
          proj.updateFileTree(f.getParent());
@@ -486,7 +558,7 @@ public class TabbedDocuments {
       }
    }
 
-   String displayFilename() {
+   private String displayFilename() {
       if (edtDoc[iTab].hasFile()) {
          return edtDoc[iTab].filename();
       }
@@ -522,9 +594,18 @@ public class TabbedDocuments {
       proj.changedDocumentUpdate();
       mw.enableRename(doc.hasFile());
       mw.setLanguageSelected(doc.language());
+      updateEncodingDisplay(doc);
       String title = doc.hasFile() ? doc.filepath() : UNNAMED_LABEL;
       mw.displayFrameTitle(title);
    }
+
+   private void updateEncodingDisplay(EditableDocument doc) {
+      String display = doc.charsetDisplay();
+      boolean utf8 = display.toLowerCase().contains("utf-8");
+      mw.displayCharset(display);
+      mw.enableConvert(doc.isFallback() && !utf8);
+      mw.enableConvertToFallback(doc.isFallback() && utf8);
+  }
 
    private void changeLanguage(Languages lang) {
       this.lang = lang;

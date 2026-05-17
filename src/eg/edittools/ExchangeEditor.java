@@ -37,7 +37,6 @@ import eg.utils.SystemParams;
 public class ExchangeEditor implements AddableEditTool {
 
    private final JPanel content = new JPanel(new BorderLayout());
-   private final JMenuItem loadItm = new JMenuItem("Load file content ...");
    private final JMenuItem copyAllFromItm
          = new JMenuItem("Copy all from main editor");
    private final JMenuItem copyFromItm
@@ -152,7 +151,6 @@ public class ExchangeEditor implements AddableEditTool {
 
    private JMenu textMenu() {
       JMenu menu  = new JMenu("Text");
-      menu.add(loadItm);
       menu.add(copyAllFromItm);
       menu.add(copyFromItm);
       menu.add(copyToItm);
@@ -203,8 +201,6 @@ public class ExchangeEditor implements AddableEditTool {
    }
 
    private void setActions() {
-      loadItm.addActionListener(e -> exch.loadFile(languageMenu));
-
       copyAllFromItm.addActionListener(e -> exch.copyAllTextFromSource());
       copyAllFromItm.setAccelerator(KeyStroke.getKeyStroke(
             KeyEvent.VK_W, SystemParams.MODIFIER_MASK));

@@ -1,14 +1,12 @@
 package eg;
 
-import java.lang.reflect.InvocationTargetException;
-
 import java.awt.Cursor;
 import java.awt.EventQueue;
-
 import java.awt.event.MouseAdapter;
+import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.JPanel;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 //--Eadgyth--/
 import eg.utils.FileUtils;
@@ -33,11 +31,13 @@ public class BusyFunction {
    /**
     * Executes the specified <code>Runnable</code> at the end of
     * pending EDT events and blocks until completion.
-    * The task is run by java.awt.EventQueue.invokeAndWait method.
     *
     * @param r  the Runnable
     */
-   public void execute(Runnable r) {
+    public void execute(Runnable r) {
+      if (glass.isVisible()) {
+         return;
+      }
       glass.setVisible(true);
       new Thread(() -> {
          try {

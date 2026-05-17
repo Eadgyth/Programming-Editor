@@ -1,35 +1,30 @@
 package eg.ui.filetree;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.BorderLayout;
 import java.awt.Font;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.Icon;
-import javax.swing.JPanel;
-import javax.swing.JTree;
-import javax.swing.JScrollPane;
 import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-
+import javax.swing.JTree;
 import javax.swing.border.LineBorder;
-
 import javax.swing.filechooser.FileSystemView;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
-import java.io.File;
-
-import java.util.HashMap;
-import java.util.Map;
-
 //--Eadgyth--/
 import eg.BackgroundTheme;
 import eg.FunctionalAction;
-import eg.utils.ScreenParams;
 import eg.ui.UIComponents;
+import eg.utils.ScreenParams;
 
 /**
  * Defines the panel which contains a tool bar and panel for adding
@@ -115,7 +110,7 @@ public class TreePanel {
 
       private final transient FileSystemView fsv = FileSystemView.getFileSystemView();
       private final Map<String, Icon> icons = new HashMap<>();
-      private Font font = null;
+      private Font scaledFont = null;
 
       @Override
       public Color getBackgroundNonSelectionColor() {
@@ -146,10 +141,10 @@ public class TreePanel {
            if (value instanceof File) {
               File f = (File) value;
               setIcon(getIcon(f));
-              if (font == null) {
-                 font = ScreenParams.scaledFontToPlain(getFont(), 8);
+              if (scaledFont == null) {
+                 scaledFont = ScreenParams.scaledFontToPlain(getFont(), 8);
               }
-              setFont(font);
+              setFont(scaledFont);
               setText(f.getName());
            }
         }

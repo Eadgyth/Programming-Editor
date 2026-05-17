@@ -1,7 +1,6 @@
 package eg.javatools;
 
 import java.io.File;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +14,7 @@ public class LibModules {
 
    private final List<String> mods = new ArrayList<>();
    private final List<String> modsAbs = new ArrayList<>();
+   //private final List<String> modsForJar = new ArrayList<>(); todo
    private final StringBuilder notFound = new StringBuilder();
 
    private String joinedParents = "";

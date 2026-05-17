@@ -36,6 +36,10 @@ public class JavaHighlighter implements Highlighter {
    private static final String[] JAVA_10_PLUS_KEYWORDS = {
       "var"
    };
+   
+   private static final String[] JAVA_14_PLUS_KEYWORDS = {
+      "record"
+   };
 
    private static final String[] JAVA_ANNOTATIONS = {
       "@Override", "@Deprecated", "@SuppressWarnings", "@SafeVarargs",
@@ -68,6 +72,9 @@ public class JavaHighlighter implements Highlighter {
       }
       if (SystemParams.IS_JAVA_10_OR_HIGHER) {
          s.keywords(JAVA_10_PLUS_KEYWORDS, null, attr.redPlain);
+      }
+      if (SystemParams.IS_JAVA_14_OR_HIGHER) {
+         s.keywords(JAVA_14_PLUS_KEYWORDS, null, attr.redPlain);
       }
       s.blockComments(SyntaxConstants.SLASH_STAR, SyntaxConstants.STAR_SLASH, false);
    }

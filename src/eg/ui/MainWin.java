@@ -1,50 +1,49 @@
 package eg.ui;
 
-import java.lang.reflect.InvocationTargetException;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Point;
-
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
-
-import java.util.List;
-import java.util.ArrayList;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 //--Eadgyth--/
 import eg.BackgroundTheme;
-import eg.TabbedDocuments;
-import eg.Projects;
+import eg.BusyFunction;
+import eg.CharsetChanger;
 import eg.Edit;
 import eg.Formatter;
-import eg.Prefs;
-import eg.Languages;
-import eg.LanguageChanger;
 import eg.FunctionalAction;
-import eg.BusyFunction;
-import eg.edittools.*;
-import eg.ui.menu.MenuBar;
-import eg.ui.menu.FormatMenu;
-import eg.ui.menu.ViewMenu;
-import eg.ui.filetree.TreePanel;
-import eg.ui.tabpane.ExtTabbedPane;
-import eg.utils.ScreenParams;
-import eg.utils.FileUtils;
+import eg.LanguageChanger;
+import eg.Languages;
+import eg.Prefs;
+import eg.Projects;
+import eg.TabbedDocuments;
+import eg.edittools.AddableEditTool;
+import eg.edittools.EditTools;
 import eg.projects.ProjectTypes;
+import eg.ui.filetree.TreePanel;
+import eg.ui.menu.FormatMenu;
+import eg.ui.menu.MenuBar;
+import eg.ui.menu.ViewMenu;
+import eg.ui.tabpane.ExtTabbedPane;
+import eg.utils.FileUtils;
+import eg.utils.ScreenParams;
 
 /**
  * The main window
@@ -192,6 +191,15 @@ public class MainWin {
    }
 
    /**
+    * Displays the charset info in the status bar
+    *
+    * @param encoding  the charset display
+    */
+   public void displayCharset(String charsetInfo) {
+      statusBar.displayCharset(charsetInfo);
+   }
+
+   /**
     * Enables or disables to save text
     *
     * @param b  true to enable, false to disbable
@@ -208,6 +216,25 @@ public class MainWin {
     */
    public void enableRename(boolean b) {
       menuBar.fileMenu().enableRenameItm(b);
+   }
+
+   /**
+    * Enables or disables to convert a file to UTF-8.
+    *
+    * @param b  true to enable, false to disable
+    */
+   public void enableConvert(boolean b) {
+      menuBar.fileMenu().enableConvertItm(b);
+   }
+
+   /**
+    * Enables or disables to revert a file to the fallback
+    * charset.
+    *
+    * @param b  true to enable, false to disable
+    */
+   public void enableConvertToFallback(boolean b) {
+      menuBar.fileMenu().enableConvertToFallbackItm(b);
    }
 
    /**
@@ -357,10 +384,12 @@ public class MainWin {
     * Sets listeners for file actions
     *
     * @param td  the reference to {@link TabbedDocuments}
+    * @param cc  the {@linkCharsetChanger}
     */
-   public void setFileActions(TabbedDocuments td) {
+   public void setFileActions(TabbedDocuments td, CharsetChanger cc) {
       menuBar.fileMenu().setActions(td);
       menuBar.fileMenu().setExitAction(e -> exit(td));
+      menuBar.charsetMenu().setChangeCharsetActions(cc);
       toolBar.setFileActions(td);
 
       frame.addWindowListener(new WindowAdapter() {
@@ -480,7 +509,7 @@ public class MainWin {
             int currWidth = splitHorMid.getWidth()
                   - ScreenParams.scaledSize(DIVIDER_SIZE); // approximation
 
-            double loc =  1.0 - width / (double) currWidth;
+            double loc =  1.0 - width / currWidth;
             splitHorMid.setDividerLocation(loc);
          }
       }

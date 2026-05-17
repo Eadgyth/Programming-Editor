@@ -229,7 +229,7 @@ public class BackgroundTheme {
       else if ("Gray".equals(theme)) {
          background = new Color(57, 57, 57);
          normalText = new Color(250, 250, 250);
-         redText = new Color(255, 128, 198); // 255, 158, 203
+         redText = new Color(255, 128, 198);
          blueText = new Color(143, 224, 250);
          purpleText = new Color(222, 163, 255);
          orangeText = new Color(255, 177, 87);

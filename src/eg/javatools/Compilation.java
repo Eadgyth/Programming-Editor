@@ -129,6 +129,8 @@ public class Compilation {
 
    private Iterable<String> compileOptions(String classDir, String options) {
       List <String> optList = new ArrayList<>();
+      optList.add("-encoding");
+      optList.add("UTF-8");
       optList.add("-d");
       optList.add(classDir);
       addDepsOptions(optList);

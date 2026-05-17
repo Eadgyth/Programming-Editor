@@ -137,6 +137,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
                if (!jar.incudedFilesErr().isEmpty()) {
                   msg.append(jar.incudedFilesErr()).append(".");
                }
+               System.out.println(msg.toString());
                Dialogs.infoMessage(msg.toString(), null);
             }
             else {
@@ -191,7 +192,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    }
 
    private void setCpStartCmd() {
-      StringBuilder sb = new StringBuilder("java");
+      StringBuilder sb = new StringBuilder("java -Dfile.encoding=UTF-8");
       if (!relClassDir.isEmpty() || !libs.joined().isEmpty()) {
          sb.append(" -cp \"");
          if (!relClassDir.isEmpty()) {
@@ -201,14 +202,16 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
             if (relClassDir.isEmpty()) {
                 sb.append(".");
              }
-             sb.append(File.pathSeparator).append(libs.joined());
+             sb.append(File.pathSeparator)
+                .append(libs.joined());
          }
          sb.append("\"");
       }
       if (!libMods.joinedNames().isEmpty()) {
          sb.append(" -p ")
             .append("\"" + libMods.joinedParents() + "\"")
-            .append(" --add-modules ").append(libMods.joinedNames());
+            .append(" --add-modules ")
+            .append(libMods.joinedNames());
       }
       if (!cmdOptions().isEmpty()) {
          sb.append(" ").append(cmdOptions());
@@ -221,7 +224,7 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    }
 
    private void setModStartCmd() {
-      StringBuilder sb = new StringBuilder("java");
+      StringBuilder sb = new StringBuilder("java -Dfile.encoding=UTF-8");
       sb.append(" -p \"");
       sb.append(classDir);
       if (!libMods.joinedNames().isEmpty()) {

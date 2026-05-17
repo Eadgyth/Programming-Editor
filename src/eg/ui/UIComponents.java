@@ -1,5 +1,6 @@
 package eg.ui;
 
+import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -27,7 +28,6 @@ import javax.swing.plaf.basic.BasicScrollBarUI;
 
 //--Eadgyth--/
 import eg.BackgroundTheme;
-import eg.Prefs;
 import eg.utils.ScreenParams;
 import eg.ui.tabpane.ExtTabbedPane;
 
@@ -42,9 +42,10 @@ import eg.ui.tabpane.ExtTabbedPane;
  */
 public class UIComponents {
 
-   private static final Prefs PREFS = new Prefs();
-   private static final boolean IS_SYSTEM_LAF
-         = PREFS.property(Prefs.LAF_KEY).equals("System");
+   private static final boolean IS_SYSTEM_LAF =
+         UIManager.getLookAndFeel().getClass().getName()
+         .equals(UIManager.getSystemLookAndFeelClassName());
+
    private static final BackgroundTheme THEME = BackgroundTheme.givenTheme();
    private static final int BAR_HEIGHT = ScreenParams.scaledSize(17);
    private static final Color GRAY = THEME.lineBorder();
@@ -91,7 +92,8 @@ public class UIComponents {
     */
    public static TitledBorder titledBorder(String title) {
       TitledBorder tb = new TitledBorder(LIGHT_GRAY_LINE_BORDER, title);
-      tb.setTitleFont(ScreenParams.SANSSERIF_PLAIN_8);
+      Font f = tb.getTitleFont();
+      tb.setTitleFont(ScreenParams.scaledFontToPlain(f, 8));
       return tb;
    }
 

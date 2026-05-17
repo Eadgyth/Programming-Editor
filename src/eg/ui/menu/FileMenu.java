@@ -30,11 +30,14 @@ public class FileMenu {
    private final JMenuItem saveAsItm   = new JMenuItem("Save as ...");
    private final JMenuItem saveCopyItm = new JMenuItem("Save copy as ...");
    private final JMenuItem renameItm   = new JMenuItem("Rename ...");
+   private final JMenuItem convertItm  = new JMenuItem("Convert to UTF-8");
+   private final JMenuItem convertToFallbackItm
+                                       = new JMenuItem("Revert to fallback encoding");
    private final JMenuItem printItm    = new JMenuItem("Print ...");
    private final JMenuItem exitItm     = new JMenuItem("Exit");
 
-   public FileMenu() {
-      assembleMenu();
+   public FileMenu(CharsetMenu cc) {
+      assembleMenu(cc);
       shortCuts();
    }
 
@@ -63,6 +66,8 @@ public class FileMenu {
       saveAsItm.addActionListener(e -> td.saveAs());
       saveCopyItm.addActionListener(e -> td.saveCopy());
       renameItm.addActionListener(e -> td.rename());
+      convertItm.addActionListener(e -> td.convert());
+      convertToFallbackItm.addActionListener(e -> td.convertToFallback());
       printItm.addActionListener(e -> td.print());
    }
 
@@ -92,12 +97,30 @@ public class FileMenu {
    public void enableRenameItm(boolean b) {
       renameItm.setEnabled(b);
    }
+   
+   /**
+    * Enables or disables the item for converting to UTF-8
+    *
+    * @param b  true to enable, false to disable
+    */
+   public void enableConvertItm(boolean b) {
+      convertItm.setEnabled(b);
+   }
+   
+   /**
+    * Enables or disables the item for reverting to fallback encoding
+    *
+    * @param b  true to enable, false to disable
+    */
+   public void enableConvertToFallbackItm(boolean b) {
+      convertToFallbackItm.setEnabled(b);
+   }
 
    //
    //--private--/
    //
 
-   private void assembleMenu() {
+   private void assembleMenu(CharsetMenu cc) {
       menu.add(newFileItm);
       menu.add(openItm);
       menu.add(closeItm);
@@ -108,6 +131,13 @@ public class FileMenu {
       menu.add(saveAsItm);
       menu.add(saveCopyItm);
       menu.add(renameItm);
+      menu.addSeparator();
+      menu.add(cc.menu());
+      menu.addSeparator();
+      menu.add(convertItm);
+      menu.add(convertToFallbackItm);
+      convertItm.setEnabled(false);
+      convertToFallbackItm.setEnabled(false);
       menu.addSeparator();
       menu.add(printItm);
       menu.addSeparator();

@@ -1,25 +1,25 @@
 package eg.document;
 
-import javax.swing.JTextPane;
-
-import java.io.File;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.FileInputStream;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+
+import javax.swing.JTextPane;
 
 //--Eadgyth--/
 import eg.Languages;
-import eg.utils.FileUtils;
-import eg.ui.EditArea;
-import eg.syntax.SyntaxHighlighter;
-import eg.syntax.Highlighter;
 import eg.document.styledtext.EditableText;
 import eg.document.styledtext.PrintableText;
+import eg.syntax.Highlighter;
+import eg.syntax.SyntaxHighlighter;
+import eg.ui.EditArea;
+import eg.utils.Dialogs;
+import eg.utils.FileUtils;
+import eg.utils.LinesFinder;
 
 /**
  * Represents the editable document with a language and possibly a
@@ -31,6 +31,7 @@ public final class EditableDocument {
    private final EditableText txt;
    private final UndoEditing undo;
    private final Indentation indent;
+   private final FileCharset fileCharset;
    private final CurrentLanguage currLang = new CurrentLanguage();
 
    private File file = null;
@@ -38,19 +39,31 @@ public final class EditableDocument {
    private String filepath = "";
    private String fileParent = "";
 
+   private Charset charset = StandardCharsets.UTF_8;
+   private String charsetDisplay = charset.displayName();
+   private boolean hasEncodingErrors = false;
+   private boolean isConvertPending = false;
+
    /**
     * Creates an <code>EditableDocument</code> with the specified file
     *
     * @param editArea  the {@link EditArea}
     * @param prevLang  the language set previously
+    * @param fileCharset  the {@link FileCharset} which is supposed
+    * to be configured
     * @param f  the file
     */
-   public EditableDocument(EditArea editArea, File f, Languages prevLang) {
-      this(editArea);
+   public EditableDocument(EditArea editArea, File f, FileCharset fileCharset,
+         Languages prevLang) {
+
+      this(editArea, fileCharset);
+      charset = fileCharset.charset();
+      hasEncodingErrors = fileCharset.isFailedFallback();
       currLang.setLanguage(prevLang);
       setFileParams(f);
       setEditingMode(f);
-      update.editText(() -> displayFileContentImpl(f), EditorUpdating.ALL_TEXT);
+      updateCharsetDisplay();
+      update.editText(this::displayFileContentImpl, EditorUpdating.ALL_TEXT);
    }
 
    /**
@@ -61,7 +74,7 @@ public final class EditableDocument {
     * @param lang  the language
     */
    public EditableDocument(EditArea editArea, Languages lang) {
-      this(editArea);
+      this(editArea, new FileCharset());
       currLang.setLanguage(lang);
       setEditingMode();
    }
@@ -95,9 +108,65 @@ public final class EditableDocument {
    }
 
    /**
+    * Returns the display for the encoding state.
+    * The fileCharset name may be suffixed with:
+    * <ul>
+    * <li>"error", indicating UTF-8 decoding mismatches.
+    * <li>"system default", indicating a fallback to the system
+    * default with no selection by the user.
+    * <li>"selected", indicating a fallback to a selected
+    * charset
+    * </ul>
+    *
+    * @return  the fileCharset display
+    */
+   public String charsetDisplay() {
+      return charsetDisplay;
+   }
+
+   /**
+    * Returns if this file was read in a fallback charset. False
+    * is returned if the file was detected as valid UTF-8 but also
+    * if this is not the case and a fallback was not possible.
+    *
+    * @return  true if file was read in with a fallback charset,
+    * false otherwise
+    */
+   public boolean isFallback() {
+      return fileCharset.isFallback();
+   }
+
+   /**
+    * Converts the fileCharset to UTF-8, pending confirmation
+    * by saving.
+    */
+   public void convertToUtf8() {
+      checkFileForNull();
+      if (charset == StandardCharsets.UTF_8) {
+         throw new IllegalStateException("The charset is already UTF-8");
+      }
+      charset = StandardCharsets.UTF_8;
+      isConvertPending = true;
+      updateCharsetDisplay();
+   }
+
+   /**
+    * Reverts to the previous fallback charset, pending confirmation
+    * by saving.
+    */
+   public void revertToFallback() {
+      checkFileForNull();
+      if (charset != StandardCharsets.UTF_8) {
+         throw new IllegalStateException("The charset is not UTF-8");
+      }
+      charset = fileCharset.charset();
+      isConvertPending = true;
+      updateCharsetDisplay();
+   }
+
+   /**
     * Reads the parameters for the current editing state by
     * invoking all methods in {@link EditingStateReadable}
-    *
     */
    public void readEditingState() {
       update.readEditingState();
@@ -108,9 +177,9 @@ public final class EditableDocument {
     *
     * @return  the text area
     */
-    public JTextPane textArea() {
-       return txt.textArea();
-    }
+   public JTextPane textArea() {
+      return txt.textArea();
+   }
 
    /**
     * Returns if a file is set
@@ -155,7 +224,7 @@ public final class EditableDocument {
     *
     * @return  the path
     */
-    public String filepath() {
+   public String filepath() {
        checkFileForNull();
        return filepath;
     }
@@ -219,7 +288,7 @@ public final class EditableDocument {
     * @return  true if changed; false otherwise
     */
    public boolean isChanged() {
-      return update.isChanged();
+      return update.isChanged() || isConvertPending;
    }
 
    /**
@@ -290,29 +359,8 @@ public final class EditableDocument {
     */
    public void displayFileContent(File f) {
       checkFileForNonNull();
-      update.editText(() -> displayFileContentImpl(f), EditorUpdating.ALL_TEXT);
-   }
-
-   /**
-    * Replaces the current text with the content of the specified
-    * file if no file is set in this <code>EditableDocument</code>.
-    * <p>
-    * The file is not set either and the language is set according to
-    * the file type
-    *
-    * @param f  the file
-    */
-   public void replaceWithFileContent(File f) {
-      checkFileForNonNull();
-      setEditingMode(f);
-      TextChange tc = () -> {
-         txt.remove(0, textLength());
-         undo.disableBreakpointAdding(true);
-         readFileContent(f);
-         undo.disableBreakpointAdding(false);
-         txt.textArea().setCaretPosition(0);
-      };
-      update.editText(tc, EditorUpdating.ALL_TEXT);
+      fileCharset.readBytes(f);
+      update.editText(this::displayFileContentImpl, EditorUpdating.ALL_TEXT);
    }
 
    /**
@@ -397,7 +445,7 @@ public final class EditableDocument {
    /**
     * Prints the document text to a printer
     */
-    public void print() {
+   public void print() {
       PrintableText printTxt = new PrintableText(txt.text(), textArea().getFont());
       if (currLang.lang() != Languages.NORMAL_TEXT) {
          Highlighter hl = currLang.createHighlighter();
@@ -412,7 +460,8 @@ public final class EditableDocument {
    //--private--/
    //
 
-   private EditableDocument(EditArea editArea) {
+   private EditableDocument(EditArea editArea, FileCharset fileCharset) {
+      this.fileCharset = fileCharset;
       txt = new EditableText(editArea.textArea());
       undo = new UndoEditing(txt);
       LineNumbers lineNum = new LineNumbers(editArea.lineNrArea());
@@ -430,25 +479,23 @@ public final class EditableDocument {
       fileParent = f.getParent();
    }
 
-   private void displayFileContentImpl(File f) {
+   private void displayFileContentImpl() {
       update.disableUpdating(true);
-      readFileContent(f);
+      readFileContent();
       update.disableUpdating(false);
    }
 
-   private void readFileContent(File f) {
-      try (BufferedReader br = new BufferedReader(
-         new InputStreamReader(
-            new FileInputStream(f), StandardCharsets.UTF_8))) {
-
-         StringBuilder sb = new StringBuilder();
-         String line;
-         while ((line = br.readLine()) != null) {
-            sb.append(line).append('\n');
+   private void readFileContent() {
+      String content = new String(fileCharset.getBytes(), charset);
+      if (!content.isEmpty()) {
+         if (fileCharset.hasBOM()) {
+            content = content.substring(1);
          }
-         txt.textArea().setText(sb.toString());
-      } catch (IOException e) {
-         FileUtils.log(e);
+         content = content.replace("\r\n", "\n").replace("\r", "\n");
+         if (!content.isEmpty() && !content.endsWith("\n")) {
+            content += "\n";
+         }
+         txt.textArea().setText(content);
       }
    }
 
@@ -465,21 +512,99 @@ public final class EditableDocument {
       if (!FileUtils.isWriteable(f)) {
          return false;
       }
+      if (hasEncodingErrors) {
+         int find = findReplacementChar();
+         if (find != -1 && keepUtf8ErrWarning(find)) {
+           return false;
+         }
+      }
+      if (isConvertPending && keepConvertWarning()) {
+         return false;
+      }
       try (BufferedWriter writer = new BufferedWriter(
          new OutputStreamWriter(
-            new FileOutputStream(f), StandardCharsets.UTF_8))) {
+            new FileOutputStream(f), charset))) {
 
          String text = txt.text();
-         String normalized = text
-               .replaceAll("\r\n|\r", "\n")
-               .replace("\n", System.lineSeparator());
-
-         writer.write(normalized);
+         if (fileCharset.hasBOM()) {
+            writer.write("\uFEFF");
+         }
+         writer.write(text.replace("\n", System.lineSeparator()));
+         hasEncodingErrors = false;
+         isConvertPending = false;
+         updateCharsetDisplay();
          return true;
-      } catch (IOException e) {
+      }
+      catch (IOException e) {
          FileUtils.log(e);
       }
       return false;
+   }
+
+   private int findReplacementChar() {
+      for (int i = 0; i < txt.text().length(); i++) {
+         char c = txt.text().charAt(i);
+         if (c == '\uFFFD' || c == '\u0000') {
+            hasEncodingErrors = true;
+            return i;
+         }
+      }
+      hasEncodingErrors = false;
+      updateCharsetDisplay();
+      return -1;
+   }
+
+   private void updateCharsetDisplay() {
+      String name = charset.displayName();
+      if (hasEncodingErrors) {
+         //
+         // for invalid UTF-8 with no fallback
+         name = name + " error";
+      }
+      //
+      // fallback but no pending conversion to UTF-8
+      if (fileCharset.isFallback()
+            && !this.charset.displayName().equalsIgnoreCase("UTF-8")) {
+
+         if (fileCharset.isUserFallback()) {
+            name = name + " (selected)";
+         }
+         else {
+            name = name + " (system default)";
+         }
+      }
+      if (fileCharset.hasBOM()) {
+         name = name + " (with BOM)";
+      }
+      charsetDisplay = name;
+   }
+
+   private boolean keepUtf8ErrWarning(int findReplacement) {
+      Object[] options = { "Cancel", "Save" };
+      int result = Dialogs.warnConfirmOptions(
+            utf8ErrWarning(findReplacement), "Encoding", options);
+
+      return result != 1;
+   }
+
+   private String utf8ErrWarning(int findReplacement) {
+      int line = LinesFinder.lineNrAtPos(txt.text(), findReplacement);
+      return
+         "<html>" +
+         "<b>The file contains invalid UTF-8 characters.</b><br><br>" +
+         "First replacement character at line " + line + "." +
+         " Invalid characters cannot be recovered once saved." +
+         "</html>";
+   }
+
+   private boolean keepConvertWarning() {
+      Object[] options = { "OK", "Don't save" };
+      int result = Dialogs.warnConfirmOptions(
+            "The file will be saved with encoding " + charset.displayName() + ".",
+            "Encoding",
+            options);
+
+      return result != 0;
    }
 
    private void checkFileForNull() {
