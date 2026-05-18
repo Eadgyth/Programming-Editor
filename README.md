@@ -21,7 +21,7 @@ java -jar Eadgyth.jar
 <li>Auto-indentation which distinguishes "curly-bracket-indentation".</li>
 <li>Block-wise increase or decrease of the indentation.</li>
 <li>A 'notes' editor next to the main editor.</li>
-<li>A basic syntax highlighting (for Java, Perl, Python, R, HTML, XML, CSS,
+<li>A basic syntax highlighting (for Java, Python, R, HTML, XML, CSS,
     Javascript, PHP, C#).</li>
 </ul>
 <p>
@@ -41,14 +41,18 @@ settings after newly starting the editor.</li>
 </ul>
 <h4>REQUIREMENTS</h4>
 <ul>
-<li>JDK 8 or higher to run and build the editor</li>.
+<li>JDK 8 or higher to run and build the editor.</li>
 <li>To compile Java code by the built-in compile function mus be run with the JRE
 contained in a JDK (not an issue with Java 11+).</li>
-<li>[!Important]: Environment variables must be set to compile or run code from
-within the Editor (i.e. the paths to Python, R, dotnet).</li>
 <li>The editor expects UTF-8 to run source code (the option to convert files to
 UTF-8 is available).</li>
 </ul>
+
+> [!IMPORTANT]
+> Environment variables must be set in your operating system (OS) settings to
+> compile or run code from within the Editor (i.e., the system PATH for Python, R,
+> and dotnet).
+
 <h4>LIMITATIONS</h4>
 <ul>
 <li>Syntax highlighting is basic.</li>
