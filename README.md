@@ -9,9 +9,9 @@ The editor can be tried out by downloading the executable jar file in a
 <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> (requires a
 JDK, version 8 or higher). It is run with:
 
-'''
+```
 java -jar Eadgyth.jar
-'''
+```
 
 <h4>Features for editing text are ...</h4>
 <ul>
