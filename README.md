@@ -6,12 +6,26 @@ Java, C#, Python and R. The editor is intended for learning, quick prototyping, 
 programming projects for personal use.
 <p>
 The editor can be tried out by downloading the executable jar file in a
-<a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a> (requires a
-JDK, version 8 or higher). It is run with:
+<a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a>. It is run with:
 
 ```
 java -jar Eadgyth.jar
 ```
+
+<h4>REQUIREMENTS</h4>
+<ul>
+<li>JDK 8 or higher to run and build the editor.</li>
+<li>To compile Java code by the built-in compile function, the editor must be run
+with the JRE contained in a JDK (not an issue with Java 11+).</li>
+<li>The editor requires UTF-8 encoding to execute source files as of vs. 1.2.1
+(the option to convert files to UTF-8 is available). Previous versions (in releases)
+assume the system (or JVM) default encoding.</li>
+</ul>
+
+> [!IMPORTANT]
+> Environment variables must be set in your operating system (OS) settings to
+> compile or run code from within the Editor (i.e., the system PATH for Python, R,
+> and dotnet).
 
 <h4>Features for editing text are ...</h4>
 <ul>
@@ -39,20 +53,6 @@ and entering input in interactive command-line programs.</li>
 <li>Set up several projects which can be switched between and retrieve project
 settings after newly starting the editor.</li>
 </ul>
-<h4>REQUIREMENTS</h4>
-<ul>
-<li>JDK 8 or higher to run and build the editor.</li>
-<li>To compile Java code by the built-in compile function mus be run with the JRE
-contained in a JDK (not an issue with Java 11+).</li>
-<li>The editor requires UTF-8 encoding to execute source files as of vs. 1.2.1
-(the option to convert files to UTF-8 is available). Previous versions (in releases)
-assume the system (or JMV) default encoding only.</li>
-</ul>
-
-> [!IMPORTANT]
-> Environment variables must be set in your operating system (OS) settings to
-> compile or run code from within the Editor (i.e., the system PATH for Python, R,
-> and dotnet).
 
 <h4>LIMITATIONS</h4>
 <ul>
