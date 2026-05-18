@@ -18,12 +18,15 @@ built-in compile function Eadgyth must be run with the runtime environment
 API contained in the JDK. As of Java 11 JREs are only available in conjunction
 with a JDK anyway.
 <p>
-It is further important to note that the built-in commands to run code from
-within the editor basically work in the same way as if commands are run from
-the command line or terminal. This means, that the computer must be set up
-accordingly:<br><b>The executables of a language must be installed and the
-paths to them set permanently as PATH system (environment) variables.</b>
+It is further important to note that the built-in commands to run C#, Python
+an R assume that the pathx to the executables are set as PATH system
+(environment) variables.</b>
 <p>
+Running code (and comiling) code using the built-in function requires UTF-8
+encoded files for reliable output as of vs.1.2.1. The editor can open files
+with legacy encodings (the system default used as fallback, or a fallback
+encoding can be selected in the File menu before opening a file). Files may
+be converted to UTF-8 (and reverted to the original encoding).
 See also
 <a href="https://github.com/Eadgyth/Programming-Editor/blob/master/README.md">
 README</a>
@@ -32,12 +35,10 @@ README</a>
 <h4>Setting a project</h4>
 <ol>
 <li>Open a file from or save a new file to the directory that is the intended
-    root directory of the project. The file may also be saved in a subdirectory
-    or a subdirectory path contained in the project directory. Assigning a
-    project only requires that a (any) file that is contained in the project
-    directory is open or in the selected tab if multiple files are open. The
-    project directory is the working directory where commands (built-in or
-    custom) are executed.</li>
+    root directory of the project. Assigning a project only requires that a
+    (any) file that is contained in the project directory is open or in the
+    selected tab if multiple files are open. The project directory is the
+    working directory where commands (built-in or custom) are executed.</li>
 <li>Open the project settings by selecting 'Settings for...' in the 'Project'
     menu and choose the suitable <a href="#Categories">category</a> to open
     the project settings.
@@ -45,13 +46,8 @@ README</a>
 <li>The input options to set a project depend on the category. The required
     entries are the name of the project directory and, except for the
     categories 'HTML' and 'Custom commands', the name of the "main" source
-    file. The name of a separate subdirectory containing source files inside
-    the project (a source directory) would have to be entered in the
-    corresponding text field below the field for the project directory. Click
-    ok. If the input was correct, that is, the specified source file is found
-    in the project directory, the project is set "active" and the project
-    files can be viewed in the 'Project explorer' which is opened from the
-    'View' menu.</li>
+    file. Click ok. If the input was correct, that is, the specified source
+    file is found in the project directory, the project is set "active".</li>
 </ol>
 <h4>Retrieving projects</h4>
 <ul>
@@ -64,8 +60,7 @@ README</a>
     unselecting the option to save it.<br>
     The ProjConfig file marks a project as an "Eadgyth project". This means that
     a project is loaded even if it was not active lastly or other projects are
-    already active. If another project is already active, it is asked to change
-    to the newly loaded project.</li>
+    already active.</li>
 </ul>
 <br>
 <p><a href="#top">Back to top</a></p>
@@ -86,10 +81,6 @@ README</a>
       <td><a href="#CSharpProject">C#</a></td>
       <td>Compile and run C# code; specify DLLs used as
          libraries or also create a DLL</td>
-   </tr>
-   <tr>
-      <td><a href="#PerlProject">Perl</a></td>
-      <td>Run a Perl script; check syntax without running</td>
    </tr>
    <tr>
       <td><a href="#PythonProject">Python</a></td>
@@ -149,12 +140,6 @@ README</a>
 </ul>
 <h4 id="CSharpProject">C#</h4>
 <ul>
-<li>First, it is necessary to set the path to the C# compiler as a system
-    variable. In Windows the path to csc.exe is like:
-   'C:\Windows\Microsoft.NET\Framework64\v[?]\'.
-    For Linux/Mac it is assumed that Mono is installed to compile and run C#
-    and the paths to Mono and the Mono mcs compiler are set permanently as
-    well.</li>
 <li>Compile the source file(s) by selecting 'Save and compile' in the 'Project'
     menu (or clicking the corresponding button in the toolbar). If the
     compilation was successful the program is started by selecting 'Run' in the
@@ -163,27 +148,9 @@ README</a>
     file specified in the project settings. An alternative name (or a pathname)
     for an output file can be entered in the 'Compile/build' tab in the
     project settings.</li>
-<li>A separate destination directory for a compiled file inside the project
-    directory can be specified in the 'Compile/build' tab (like 'bin' or 'out').
-    This folder is created when .cs files are compiled.</li>
-<li>A DLL may be created by specifying the corresponding compiler option
-    '-t:library' (or '-target:library') in the 'Compile/build' tab. It is also
-    possible to enter a pathname for the output file so that the DLL is
-    created in another project that uses or tries it.</li>
-<li>DLLs to be used by a C# program are specified in the 'Libraries' tab. The
-    referenced DLLs must be found in the same directory as the .exe that uses
-    them.</li>
-</ul>
-<h4 id="PerlProject">Perl</h4>
-<ul>
-<li>A Perl script is started by selecting 'Save and run' (or by clicking
-    the corresponding button in the toolbar).</li>
-<li>The Perl script may be checked for correct syntax without running it by
-    by selecting 'Save and compile' (this starts the script with the -c
-    option).</li>
-<li>NOTE: For correct output of a Perl program to the console window it may be
-    necessary to turn of buffering of the standard output in the script (e.g.
-    by adding $| = 1 at the beginning of the script).</li>
+<li>A library DLL may be created by specifying the corresponding compiler option
+    '-t:library' (or '-target:library') in the 'Compile/build' tab.</li>
+<li>DLLs to be used by a C# program are specified in the 'Libraries' tab.</li>
 </ul>
 <h4 id="PythonProject">Python</h4>
 <ul>
