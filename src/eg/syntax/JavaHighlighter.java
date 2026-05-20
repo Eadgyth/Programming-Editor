@@ -30,7 +30,8 @@ public class JavaHighlighter implements Highlighter {
    };
    
    private static final String[] JAVA_9_PLUS_KEYWORDS = {
-      "exports", "module", "requires"
+      "exports", "module", "open", "opens", "provides",
+      "requires", "to", "uses", "with", "transitive" 
    };
       
    private static final String[] JAVA_10_PLUS_KEYWORDS = {
@@ -38,7 +39,7 @@ public class JavaHighlighter implements Highlighter {
    };
    
    private static final String[] JAVA_14_PLUS_KEYWORDS = {
-      "record"
+      "record", "yield"
    };
 
    private static final String[] JAVA_ANNOTATIONS = {
