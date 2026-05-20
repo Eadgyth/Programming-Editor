@@ -56,16 +56,18 @@ public class Eadgyth {
    }
 
    private static void uiManagerSettings() {
-     if (SystemParams.IS_JAVA_9_OR_HIGHER) {
+      if (SystemParams.IS_JAVA_9_OR_HIGHER) {
          scaleFont("OptionPane.messageFont", 9);
          scaleFont("OptionPane.font", 9);
+         scaleFont("Button.font", 8);
+         scaleFont("ComboBox.font", 8);
       }
       UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
       UIManager.put("SplitPaneDivider.border", new EmptyBorder(0, 0, 0, 0));
       UIManager.put("Tree.rowHeight", ScreenParams.scaledSize(13));
       scaleFont("Menu.font", 9);
-      scaleFont("MenuItem.font", 9);
       scaleFont("CheckBoxMenuItem.font", 9);
+      scaleFont("MenuItem.font", 9);
    }
 
    private static void setLaf(String laf) {
@@ -93,8 +95,6 @@ public class Eadgyth {
       if (font == null) {
          return;
       }
-      int style = font.isBold() ? Font.PLAIN : font.getStyle();
-      int scaled = ScreenParams.scaledSize(size);
-      UIManager.put(uiKey, font.deriveFont(style, scaled));
+      UIManager.put(uiKey, font.deriveFont((float) ScreenParams.scaledSize(size)));
    }
 }
