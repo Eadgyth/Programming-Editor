@@ -46,6 +46,7 @@ public class EditorUpdating {
 
    private EditingStateReadable esr;
    private boolean changedState = false;
+   private boolean pendingChange = false;
    private boolean selectionState = false;
    private int lineNr = 1;
    private int colNr = 1;
@@ -161,7 +162,7 @@ public class EditorUpdating {
       if (isCodeEditing) {
          if (isInsert) {
             //
-            // compromise; defined quite arbitrarily
+            // defined quite arbitrarily
             if (txt.text().length() > 90000) {
                EventQueue.invokeLater(syntax::highlight);
             }
@@ -188,12 +189,28 @@ public class EditorUpdating {
    }
 
    /**
-    * Returns if text has been changed
+    * Returns if the editor is in changed or pending changed state
     *
-    * @return  true if changed; false otherwise
+    * @return  true if changed or pending; false otherwise
     */
    public boolean isChanged() {
-      return changedState;
+      return changedState || pendingChange;
+   }
+   
+   /**
+    * Sets the boolean that indicates a pending change and invokes
+    * {@link EditingStateReadable.updateChangedState(boolean)}.
+    *
+    * The pending change overrides the changed state due to text changes.
+    * 
+    * @param b  true for a pending change, false to end
+    * the pending change
+    */
+   public void setPendingChange(boolean b) {
+      pendingChange = b;
+      if (b) {
+         esr.updateChangedState(b);
+      }
    }
 
    /**
@@ -202,7 +219,7 @@ public class EditorUpdating {
     */
    public void readEditingState() {
       if (esr != null) {
-         esr.updateChangedState(changedState);
+         esr.updateChangedState(changedState || pendingChange);
          esr.updateUndoableState(undo.canUndo(), undo.canRedo());
          esr.updateSelectionState(selectionState);
          esr.updateCursorState(lineNr, colNr);
@@ -219,7 +236,7 @@ public class EditorUpdating {
       updateChangedState();
    }
 
-   public void updateChangedState() {
+   private void updateChangedState() {
       if (esr == null) {
          return;
       }
@@ -232,7 +249,7 @@ public class EditorUpdating {
       }
       if (b != changedState) {
          changedState = b;
-         esr.updateChangedState(changedState);
+         esr.updateChangedState(changedState || pendingChange);
       }
    }
 

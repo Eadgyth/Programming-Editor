@@ -155,7 +155,7 @@ public class FileCharset {
     * @return  true if a fallback was assumed, false otherwise
     */
    public boolean isFallback() {
-      return !charset.displayName().equalsIgnoreCase("UTF-8");
+      return charset != StandardCharsets.UTF_8;
    }
 
    /**

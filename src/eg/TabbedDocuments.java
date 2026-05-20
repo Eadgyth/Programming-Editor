@@ -508,9 +508,7 @@ public class TabbedDocuments {
    private boolean canCloseUnsavedFile(int i) {
       tabPane.setSelectedIndex(i);
       int res = Dialogs.confirmYesNoCancel(
-            "Save changes in "
-            + displayFilename()
-            + "?");
+            "Save \"" + displayFilename() + "\"?");
 
       boolean b;
       if (JOptionPane.YES_OPTION == res) {
