@@ -31,7 +31,6 @@ public class CharsetMenu {
       "ISO-8859-8",
       "windows-1256",
       "windows-1257",
-      "ISO-8859-4",
       "ISO-8859-13",
       "windows-1258",
       "Shift_JIS",
