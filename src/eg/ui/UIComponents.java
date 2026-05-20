@@ -4,10 +4,12 @@ import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -24,6 +26,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
+
+import javax.swing.plaf.basic.BasicMenuBarUI;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
 //--Eadgyth--/
@@ -236,10 +240,12 @@ public class UIComponents {
    */
    public static JMenuBar menuBar(JMenu[] menus) {
       JMenuBar mb = new JMenuBar();
+      boolean allowTheme = false;
       if (!IS_SYSTEM_LAF && THEME != null && THEME.isDark()) {
+         allowTheme = true;
          mb.setBackground(THEME.lightBackground());
       }
-      addMenus(menus, mb);
+      addMenus(menus, mb, allowTheme);
       return mb;
    }
 
@@ -252,9 +258,19 @@ public class UIComponents {
     * @return  the new JMenuBar
     */
    public static JMenuBar menuBar(JMenu[] menus, JButton rightBt) {
-      JMenuBar mb = menuBar(menus);
+      JMenuBar mb = new JMenuBar();
+      if (THEME != null && THEME.isDark()) {
+         mb.setUI(new BasicMenuBarUI() {
+            @Override
+            public void paint(Graphics g, JComponent c) {
+               g.setColor(THEME.lightBackground());
+               g.fillRect(0, 0, c.getWidth(), c.getHeight());
+            }
+         });
+      }
       mb.setPreferredSize(new Dimension(0, BAR_HEIGHT));
       mb.setBorder(MATTE_BOTTOM_GRAY);
+      addMenus(menus, mb, true);
       if (rightBt != null) {
          mb.add(Box.createHorizontalGlue());
          undecorateButton(rightBt);
@@ -346,7 +362,7 @@ public class UIComponents {
    //--private--/
    //
 
-   private static void addMenus(JMenu[] menus, JMenuBar mb) {
+   private static void addMenus(JMenu[] menus, JMenuBar mb, boolean allowTheme) {
       int strutSize = 0;
       if ("Windows".equals(UIManager.getLookAndFeel().getName())) {
          strutSize = 5;
@@ -354,7 +370,7 @@ public class UIComponents {
       for (JMenu menu : menus) {
          mb.add(menu);
          mb.add(Box.createHorizontalStrut(strutSize));
-         if (!IS_SYSTEM_LAF && THEME != null && THEME.isDark()) {
+         if (allowTheme && THEME != null && THEME.isDark()) {
             menu.setForeground(THEME.normalText());
          }
       }
