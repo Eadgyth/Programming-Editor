@@ -135,7 +135,7 @@ public final class Prefs {
          setProperty(FILE_VIEW_KEY, "No");
          setProperty(ICON_SIZE_KEY, ViewSettingWin.ICON_SIZES[1]);
          setProperty(THEME_KEY, ViewSettingWin.THEME_OPT[0]);
-         setProperty(LAF_KEY, ViewSettingWin.LAF_OPT[1]);
+         setProperty(LAF_KEY, ViewSettingWin.LAF_OPT[0]);
          setProperty(LANG_KEY,  String.valueOf(Languages.NORMAL_TEXT));
          setProperty(EXCHG_PREFIX + LANG_KEY, String.valueOf(Languages.NORMAL_TEXT));
          setProperty(RECENT_DIR_KEY, "");
@@ -222,7 +222,7 @@ public final class Prefs {
       }
       try (BufferedReader reader = Files.newBufferedReader(file.toPath(),
             StandardCharsets.UTF_8)) {
-               
+
          prop.load(reader);
       } catch (Exception e) {
          try (FileInputStream fis = new FileInputStream(file)) {
@@ -243,7 +243,7 @@ public final class Prefs {
       }
       try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(),
             StandardCharsets.UTF_8)) {
-               
+
          prop.store(writer, null);
       } catch (IOException | NullPointerException | ClassCastException e) {
          FileUtils.log(e);
