@@ -1,28 +1,26 @@
 package eg.javatools;
 
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.ToolProvider;
-import javax.tools.JavaCompiler.CompilationTask;
-import javax.tools.StandardJavaFileManager;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.nio.charset.StandardCharsets;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaCompiler.CompilationTask;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+
+import eg.TaskRunner.ConsolePrinter;
 //--Eadgyth--/
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
-import eg.TaskRunner.ConsolePrinter;
 
 /**
  * The compilation of java files using the Java Compiler API
@@ -36,7 +34,7 @@ public class Compilation {
    private final FilesFinder fFind = new FilesFinder();
    private final ConsolePrinter pr;
    private final Libraries libs;
-   private final LibModules mods;
+   private final ModLibraries mods;
 
    private boolean success = false;
 
@@ -45,16 +43,16 @@ public class Compilation {
     * @param libs  the <code>Libraries</code> that may contain external
     * libraries that are added to the classpath
     * @param mods  the <code>LibModules</code> that may contain external
-    * library modules that are added to the module path
+    * modular libraies that are added to the module path
     */
-   public Compilation(ConsolePrinter printer, Libraries libs, LibModules mods) {
+   public Compilation(ConsolePrinter printer, Libraries libs, ModLibraries mods) {
       pr = printer;
       this.libs = libs;
       this.mods = mods;
    }
 
    /**
-    * Compiles java files and copies non java files with the specified
+    * Compiles java files and copies non-Java files with the specified
     * extensions to the compilation
     *
     * @param classDir  the destination directory for the compiles class
@@ -65,9 +63,11 @@ public class Compilation {
     * zero length array.
     * @param options  Compiler options, in which several options and
     * arguments are separated by spaces.
+    * @param isMultiModuleMode  indicates if --module-source-path sould be added
+    * as compiler option
     */
    public void compile(String classDir, String sourceDir, String[] nonJavaExt,
-         String options) {
+         String options, boolean isMultiModuleMode) {
 
       if (compiler == null) {
          Dialogs.errorMessage("The compiler was not found.", null);
@@ -85,7 +85,9 @@ public class Compilation {
       Iterable<? extends JavaFileObject>units
             = fileManager.getJavaFileObjects(fileArr);
 
-      Iterable<String> compileOptions = compileOptions(classDir, options);
+      Iterable<String> compileOptions = compileOptions(classDir, sourceDir,
+            options, isMultiModuleMode);
+
       StringWriter writer = new StringWriter();
       try {
          CompilationTask task = compiler.getTask(
@@ -127,10 +129,16 @@ public class Compilation {
    //--private--/
    //
 
-   private Iterable<String> compileOptions(String classDir, String options) {
+   private Iterable<String> compileOptions(String classDir, String sourceDir,
+            String options, boolean isMultiModuleMode) {
+
       List <String> optList = new ArrayList<>();
       optList.add("-encoding");
       optList.add("UTF-8");
+      if (isMultiModuleMode) {
+        optList.add("--module-source-path");
+        optList.add(sourceDir);
+      }
       optList.add("-d");
       optList.add(classDir);
       addDepsOptions(optList);
@@ -143,11 +151,9 @@ public class Compilation {
          optList.add("-cp");
          optList.add(libs.joinedAbs());
       }
-      if (!mods.joinedParentsAbs().isEmpty()) {
+      if (!mods.joinedAbs().isEmpty()) {
          optList.add("-p");
-         optList.add(mods.joinedParentsAbs());
-         optList.add("--add-modules");
-         optList.add(mods.joinedNames());
+         optList.add(mods.joinedAbs());
       }
    }
 
@@ -155,12 +161,9 @@ public class Compilation {
       if (options.isEmpty()) {
          return;
       }
-      String[] test = options.split("\\s+");
-      for (int i = 0; i < test.length; i++) {
-         if (test[i].startsWith("-") && -1 == compiler.isSupportedOption(test[i])) {
-            pr.printBr("NOTE: " + test[i] + " is invalid or cannot be used");
-         }
-         optList.add(test[i]);
+      String[] split = options.split("\\s+");
+      for (int i = 0; i < split.length; i++) {
+         optList.add(split[i]);
       }
    }
 

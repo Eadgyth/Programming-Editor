@@ -48,7 +48,7 @@ public class FilesFinder {
       resultList = new ArrayList<>();
       setFilteredFiles(fDir, extension, excl, excludedFileName);
       return resultList;
-   }
+   }      
 
    //
    //--private--//

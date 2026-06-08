@@ -216,31 +216,35 @@ public class Projects {
       private String buildLabel = DEF_BUILD_LB;
 
       /**
-       * Enables actions to compile a project
+       * Enables or disables actions to compile a project
+       *
+       * @param b  true to enable; false to disable
        */
-      public void enableCompile() {
-         isCompile = true;
+      public void enableCompile(boolean b) {
+         isCompile = b;
       }
 
       /**
-       * Enables actions to run a project
+       * Enables or disables actions to run a project
        *
+       * @param b  true to enable; false to disable
        * @param save  true to save project files before running, false
        * otherwise
        */
-      public void enableRun(boolean save) {
-         isRun = true;
+      public void enableRun(boolean b, boolean save) {
+         isRun = b;
          isSaveAndRun = save; // isSaveAndRun in outer class
       }
 
       /**
-       * Enables actions to build a project
+       * Enables or disables to build a project
        *
+       * @param b  true to enable; false to disable
        * @param label  the label for the action that indicates the kind
        * of build; null or the empty string to set default 'Build'
        */
-      public void enableBuild(String label) {
-         isBuild = true;
+      public void enableBuild(boolean b, String label) {
+         isBuild = b;
          if (label != null && !label.isEmpty()) {
             buildLabel = label;
          }

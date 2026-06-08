@@ -99,7 +99,7 @@ public class TaskRunner {
       mw.showConsole();
       proc.startProcess(cmd);
    }
-   
+
    /**
     * Runs the specified system command with the current project
     * directory.

@@ -1,22 +1,19 @@
 package eg.projects;
 
-import java.io.File;
-import java.io.IOException;
-
-import java.nio.file.Files;
-
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 //--Eadgyth--/
 import eg.Prefs;
+import eg.ui.projectsetting.SettingsWindow;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
-import eg.ui.projectsetting.SettingsWindow;
 
 /**
  * The configuration of a project
@@ -57,6 +54,7 @@ public abstract class AbstractProject implements Configurable {
    private String relSourceDir = "";
    private String namespace = "";
    private String namespaceDir = "";
+   private String subNamespaceRoot = "";
    private String customRunCmd = "";
    private String customCompileCmd = "";
    private String customBuildCmd = "";
@@ -110,7 +108,12 @@ public abstract class AbstractProject implements Configurable {
          }
       }
       else {
-         success = !hasSetSourceFile || configForSourceFile(root, false);
+         success = !hasSetSourceFile
+               //
+               // keep project alive even if filename has not
+               // yet been entered
+               || (sw.filenameInput().isEmpty()
+               || configForSourceFile(root, false));
       }
       if (success) {
          projectDir = root;
@@ -191,9 +194,6 @@ public abstract class AbstractProject implements Configurable {
       if (projectDir.isEmpty()) {
          throw new IllegalStateException("The project is not configured");
       }
-      if (hasSetSourceFile() && !sourceFile.exists()) {
-         return;
-      }
       store(prefs);
       if (sw.isSaveToProjConfig()) {
          conf = new Prefs(projectDir);
@@ -213,20 +213,12 @@ public abstract class AbstractProject implements Configurable {
     * @param sourceExt  the extension of the source file (a script
     * file or file with a main entry) without the dot. Null means
     * that the project does not use a set source file.
-    * @param namespaceSep  the separator for a namespace. Null to
-    * not take into account any namespace. Is also ignored if
-    * sourceExt is null.
-    *
-    * @see #namespace()
-    * @see #namespaceDir()
     */
-   protected AbstractProject(ProjectTypes projType, String sourceExt,
-         String namespaceSep) {
-
+   protected AbstractProject(ProjectTypes projType, String sourceExt) {
       this.projType = projType;
       this.sourceExt = sourceExt != null ? "." + sourceExt : null;
-      this.namespaceSep = sourceExt != null ? namespaceSep : null;
       hasSetSourceFile = sourceExt != null;
+      namespaceSep = projType == ProjectTypes.JAVA ? "." : null;
       sw = new SettingsWindow(projType.display());
       inputOptions = sw.inputOptionsBuilder();
       sw.setCancelAct(e -> undoSettings());
@@ -252,7 +244,7 @@ public abstract class AbstractProject implements Configurable {
     * {@link #namespace()} or {@link #namespaceDir()} where needed.
     *
     * @return  the name, the empty string if the project doesn't
-    * use a set source file
+    * use a set source file or no file is yet set
     */
    protected String sourceFileName() {
       return sourceFileName;
@@ -278,7 +270,7 @@ public abstract class AbstractProject implements Configurable {
     *
     * @see #namespaceDir()
     * @return  the relative pathname, the empty string if the
-    * project doesn't use a set source file
+    * project doesn't use a set source file or
     */
    protected String relativeSourceFile() {
       return relSourceFilePath;
@@ -292,6 +284,9 @@ public abstract class AbstractProject implements Configurable {
     * @return  true if the file can be located; false otherwise
     */
    protected boolean locateSourceFile() {
+      if (sourceFile == null) {
+         return false;
+      }
       boolean locate = sourceFile.exists();
       if (!locate) {
          ignoreNameConflict = false;
@@ -501,11 +496,16 @@ public abstract class AbstractProject implements Configurable {
    }
 
    private boolean configForSourceFile(String root, boolean reconfig) {
+      module = sw.moduleInput();
       setSourceDir(root);
       setSourceFile();
-      setRelSourceFilePath();
-      sourceFile = new File(root, relSourceFilePath);
-      if (!sourceFile.exists()) {
+      sourceFile = new File(absSubSourceDir,
+            FileUtils.addExtension(sourceFileName, sourceExt));
+
+      if (sourceFile.exists()) {
+         relSourceFilePath = sourceFile.getPath().substring(root.length() + 1);
+      }
+      else {
          if (reconfig) {
             if (0 == Dialogs.warnConfirmYesNo(fileInputWarning(true))) {
                openSettingsWindow(projectDir);
@@ -558,20 +558,34 @@ public abstract class AbstractProject implements Configurable {
       isNameConflict = false;
       parseFilenameInput();
       absSubSourceDir = "";
+      subNamespaceRoot = "";
       findSubSourceDir(sourceDir, sourceFileName + sourceExt);
+      if (!module.isEmpty()) {
+         applyModuleRule();
+      }
       if (namespaceSep != null) {
-         boolean forceGivenNamespace = !namespaceDir.isEmpty()
-               && namespaceSep.equals(F_SEP);
-
          boolean isSubSourceDir = !absSubSourceDir.isEmpty()
                && absSubSourceDir.length() > sourceDir.length();
 
-         isInNamespaceDir = isInGivenNamespaceDir() || forceGivenNamespace
-               || isSubSourceDir;
+         isInNamespaceDir = isInGivenNamespaceDir() || isSubSourceDir;
 
          if (isInNamespaceDir && namespaceDir.isEmpty()) {
-            namespaceDir = absSubSourceDir.substring(sourceDir.length() + 1);
+            int cutLength = subNamespaceRoot.isEmpty() ?
+                  sourceDir.length() + 1
+                  : sourceDir.length() + subNamespaceRoot.length() + 2;
+
+            namespaceDir = absSubSourceDir.substring(cutLength);
             namespace = namespaceDir.replace(F_SEP, namespaceSep);
+         }
+      }
+   }
+
+   private void applyModuleRule() {
+      if (projType == ProjectTypes.JAVA) {
+         File moduleTestDir = new File(sourceDir, module);
+         File moduleInfoTestFile = new File(sourceDir, "modue-info.java");
+         if (moduleTestDir.exists() && !moduleInfoTestFile.exists()) {
+            subNamespaceRoot = module;
          }
       }
    }
@@ -640,7 +654,6 @@ public abstract class AbstractProject implements Configurable {
       if (hasSetSourceFile) {
          sw.assignLibrariesInput(libraries);
          sw.assignLibModulesInput(libModules);
-         module = sw.moduleInput();
          cmdOptions = sw.cmdOptionsInput();
          cmdArgs = sw.cmdArgsInput();
          execDir = sw.execDirInput().replace("/", F_SEP);
@@ -660,24 +673,21 @@ public abstract class AbstractProject implements Configurable {
       if (!projTypeToTest.equals(projType.toString())) {
          return false;
       }
-      boolean success;
-      if (!hasSetSourceFile) {
-         File f = new File(root);
-         success = f.exists() && f.isDirectory();
+      boolean success = false;
+      File f = new File(root);
+      success = f.exists() && f.isDirectory();
+      sourceFileName = pr.property("MainProjectFile");
+      relSourceDir = pr.property("SourceDir");
+      sourceDir = relSourceDir.isEmpty() ? root : root + F_SEP + relSourceDir;
+      module = pr.property("Module");
+      subNamespaceRoot = pr.property("subNamespaceRoot");
+      if (namespaceSep != null) {
+         namespaceDir = pr.property("Namespace");
+         namespace = namespaceDir.replace(F_SEP, namespaceSep);
       }
-      else {
-         sourceFileName = pr.property("MainProjectFile");
-         relSourceDir = pr.property("SourceDir");
-         sourceDir = relSourceDir.isEmpty() ? root : root + F_SEP + relSourceDir;
-         if (namespaceSep != null) {
-            namespaceDir = pr.property("Namespace");
-            namespace = namespaceDir.replace(F_SEP, namespaceSep);
-         }
-         isInNamespaceDir = isInGivenNamespaceDir();
-         setRelSourceFilePath();
-         sourceFile = new File(root + F_SEP + relSourceFilePath);
-         success = sourceFile.exists() && sourceFile.isFile();
-      }
+      isInNamespaceDir = isInGivenNamespaceDir();
+      setRelSourceFilePath();
+      sourceFile = new File(root + F_SEP + relSourceFilePath);
       if (success) {
          projectDir = root;
          projectName = new File(projectDir).getName();
@@ -699,7 +709,6 @@ public abstract class AbstractProject implements Configurable {
             String[] modInputArr = modInput.split(File.pathSeparator);
             libModules.addAll(Arrays.asList(modInputArr));
          }
-         module = pr.property("Module");
          execDir = pr.property("ExecDir");
          cmdOptions = pr.property("CmdOptions");
          cmdArgs = pr.property("CmdArgs");
@@ -717,7 +726,10 @@ public abstract class AbstractProject implements Configurable {
    private boolean isInGivenNamespaceDir() {
       if (!namespaceDir.isEmpty()) {
          String pathname = namespaceDir + F_SEP + sourceFileName + sourceExt;
-         return new File(sourceDir, pathname).exists();
+         String root = subNamespaceRoot.isEmpty() ?
+               sourceDir : sourceDir + F_SEP + subNamespaceRoot;
+
+         return new File(root, pathname).exists();
       }
       return false;
    }
@@ -726,6 +738,9 @@ public abstract class AbstractProject implements Configurable {
       StringBuilder sb = new StringBuilder();
       if (!relSourceDir.isEmpty()) {
          sb.append(relSourceDir).append(F_SEP);
+      }
+      if (!subNamespaceRoot.isEmpty()) {
+         sb.append(subNamespaceRoot).append(F_SEP);
       }
       if (isInNamespaceDir) {
          sb.append(namespaceDir).append(F_SEP);
@@ -762,6 +777,7 @@ public abstract class AbstractProject implements Configurable {
          pr.setProperty("ProjectRoot", projectDir);
       }
       pr.setProperty("MainProjectFile", sourceFileName);
+      pr.setProperty("subNamespaceRoot", subNamespaceRoot);
       pr.setProperty("Namespace", namespaceDir);
       pr.setProperty("SourceDir", relSourceDir);
       pr.setProperty("Module", module);
@@ -854,13 +870,13 @@ public abstract class AbstractProject implements Configurable {
             sb.append(namespaceDir).append(F_SEP);
          }
          sb.append(sourceFileName).append(sourceExt)
-            .append("\nThe file cannot be found in the specified source root ..")
+            .append("\nThe file could not be found in \"..")
             .append(F_SEP).append(sw.projDirInput());
 
          if (!relSourceDir.isEmpty()) {
             sb.append(F_SEP).append(relSourceDir);
          }
-         sb.append(".");
+         sb.append("\" or its subdirectories.");
       }
       if (confirm) {
          sb.append("\n\nOpen the project settings?");

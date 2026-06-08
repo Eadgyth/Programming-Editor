@@ -1,8 +1,8 @@
 package eg.projects;
 
+import eg.Projects.ProjectActionsUpdate;
 //--Eadgyth--/
 import eg.TaskRunner;
-import eg.Projects.ProjectActionsUpdate;
 
 /**
  * Represents a programming project in Python
@@ -17,7 +17,7 @@ public final class PythonProject extends AbstractProject implements ProjectComma
     * @param runner  the reference to TaskRunner
     */
    public PythonProject(TaskRunner runner) {
-      super(ProjectTypes.PYTHON, "py", null);
+      super(ProjectTypes.PYTHON, "py");
       this.runner = runner;
    }
 
@@ -32,7 +32,8 @@ public final class PythonProject extends AbstractProject implements ProjectComma
 
    @Override
    public void enable(ProjectActionsUpdate update) {
-      update.enableRun(true);
+      boolean b = !sourceFileName().isEmpty();
+      update.enableRun(b, true);
    }
 
    @Override

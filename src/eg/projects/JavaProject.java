@@ -3,13 +3,17 @@ package eg.projects;
 import java.io.File;
 import java.io.IOException;
 
+import eg.Projects.ProjectActionsUpdate;
 //--Eadgyth--/
 import eg.TaskRunner;
-import eg.javatools.*;
+import eg.javatools.Compilation;
+import eg.javatools.JarBuilder;
+import eg.javatools.Libraries;
+import eg.javatools.ModLibraries;
+import eg.ui.projectsetting.SettingsWindow;
 import eg.utils.Dialogs;
 import eg.utils.FileUtils;
 import eg.utils.SystemParams;
-import eg.Projects.ProjectActionsUpdate;
 
 /**
  * Represents a programming project in Java
@@ -20,11 +24,12 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
    private final Compilation comp;
    private final JarBuilder jar = new JarBuilder();
    private final Libraries libs = new Libraries();
-   private final LibModules libMods = new LibModules();
+   private final ModLibraries modLibs = new ModLibraries();
 
    private String qualifiedMain = "";
    private File mainClassFile = null;
-   private String module = "";
+   private boolean isMultiModuleMode = false;
+   private boolean moduleNameConflict = false;
    private String classDir = "";
    private String relClassDir = "";
    private String startCmd = "";
@@ -37,20 +42,25 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
     * @param runner  the reference to TaskRunner
     */
    public JavaProject(TaskRunner runner) {
-      super(ProjectTypes.JAVA, "java", ".");
+      super(ProjectTypes.JAVA, "java");
       this.runner = runner;
-      comp = new Compilation(runner.consolePrinter(), libs, libMods);
+      comp = new Compilation(runner.consolePrinter(), libs, modLibs);
    }
 
    @Override
    public void buildSettingsWindow() {
-      inputOptions.addSourceDirInput(SRC_DIR_LABEL);
-      inputOptions.addFileInput(MAIN_FILE_LABEL, false);
+      inputOptions.addSourceDirInput(SRC_DIR_LABEL)
+         .addFileInput(MAIN_FILE_LABEL, true);
+
       if (SystemParams.IS_JAVA_9_OR_HIGHER) {
-         inputOptions.addLibModulesInput(LIB_LABEL)
+         inputOptions.addLibrariesInput(LIB_MOD_LABEL,
+               SettingsWindow.InputOptionsBuilder.JAVA_MOD_LIB_OPT)
+
             .addModuleNameInput(MODULE_LABEL);
       }
-      inputOptions.addLibrariesInput(LIB_LABEL)
+      inputOptions.addLibrariesInput(LIB_LABEL,
+            SettingsWindow.InputOptionsBuilder.JAVA_CP_LIB_OPT)
+
          .addExecDirInput(CLASS_DIR_LABEL)
          .addCompileOptionsInput()
          .addFileExtensionsInput(INCLUDED_FILES_LABEL)
@@ -62,9 +72,15 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
 
    @Override
    public void enable(ProjectActionsUpdate update) {
-      update.enableRun(false);
-      update.enableCompile();
-      update.enableBuild("Create executable jar");
+      boolean b = !sourceFileName().isEmpty();
+      update.enableCompile(b);
+      update.enableRun(b, false);
+      if (module().isEmpty()) {
+         update.enableBuild(b, "Create executable jar");
+      }
+      else {
+         update.enableBuild(false, null);
+      }
    }
 
    @Override
@@ -75,12 +91,16 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
       if (!createClassDir()) {
          return;
       }
+      if (moduleNameConflict) {
+         Dialogs.errorMessage(moduleNameConflictMsg, "Project structure");
+         return;
+      }
       if (!libs.errorMessage().isEmpty()) {
          Dialogs.errorMessage(libs.errorMessage(), "Libraries");
          return;
       }
-      if (!libMods.errorMessage().isEmpty()) {
-         Dialogs.errorMessage(libMods.errorMessage(), "Modules");
+      if (!modLibs.errorMessage().isEmpty()) {
+         Dialogs.errorMessage(modLibs.errorMessage(), "Modules");
          return;
       }
       if (!inclExtErrMsg.isEmpty()) {
@@ -91,7 +111,9 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
             classDir,
             sourceDir(),
             nonJavaExt,
-            compileOptions());
+            compileOptions(),
+            isMultiModuleMode);
+
 
       String initialMsg = "Compile:";
       runner.runWithConsoleOutput(compile, initialMsg, true);
@@ -137,7 +159,6 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
                if (!jar.incudedFilesErr().isEmpty()) {
                   msg.append(jar.incudedFilesErr()).append(".");
                }
-               System.out.println(msg.toString());
                Dialogs.infoMessage(msg.toString(), null);
             }
             else {
@@ -158,15 +179,26 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
       setNonJavaExtensions();
       libs.configure(libraries(), projectDir());
       if (SystemParams.IS_JAVA_9_OR_HIGHER) {
-         libMods.configure(libModules(), projectDir());
-         module = module();
+         modLibs.configure(libModules(), projectDir());
       }
       setClassDir();
-      if (module.isEmpty()) {
+      moduleNameConflict = false;
+      isMultiModuleMode = false;
+      if (module().isEmpty()) {
          setCpStartCmd();
+         isMultiModuleMode = false;
       }
       else {
          setModStartCmd();
+         File moduleTestDir = new File(sourceDir(), module());
+         File moduleInfoTestFile = new File(sourceDir(), "module-info.java");
+         if (moduleTestDir.exists() && !moduleInfoTestFile.exists()) {
+            isMultiModuleMode = true;
+         }
+         if (!moduleTestDir.exists() && !moduleInfoTestFile.exists()) {
+            moduleNameConflict = true;
+         }
+
       }
       setMainClassFile();
       setJarName();
@@ -193,30 +225,31 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
 
    private void setCpStartCmd() {
       StringBuilder sb = new StringBuilder("java -Dfile.encoding=UTF-8");
+
       if (!relClassDir.isEmpty() || !libs.joined().isEmpty()) {
          sb.append(" -cp \"");
+
          if (!relClassDir.isEmpty()) {
             sb.append(relClassDir);
          }
+
          if (!libs.joined().isEmpty()) {
+
             if (relClassDir.isEmpty()) {
                 sb.append(".");
-             }
-             sb.append(File.pathSeparator)
-                .append(libs.joined());
+            }
+            sb.append(File.pathSeparator)
+               .append(libs.joined());
          }
          sb.append("\"");
       }
-      if (!libMods.joinedNames().isEmpty()) {
-         sb.append(" -p ")
-            .append("\"" + libMods.joinedParents() + "\"")
-            .append(" --add-modules ")
-            .append(libMods.joinedNames());
-      }
+
       if (!cmdOptions().isEmpty()) {
          sb.append(" ").append(cmdOptions());
       }
+
       sb.append(" ").append(qualifiedMain);
+
       if (!cmdArgs().isEmpty()) {
          sb.append(" ").append(cmdArgs());
       }
@@ -225,27 +258,47 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
 
    private void setModStartCmd() {
       StringBuilder sb = new StringBuilder("java -Dfile.encoding=UTF-8");
-      sb.append(" -p \"");
-      sb.append(classDir);
-      if (!libMods.joinedNames().isEmpty()) {
-         sb.append(File.pathSeparator);
-         sb.append(libMods.joinedParents());
+
+      sb.append(" -p \"")
+         .append(classDir); // dir in project or the project root
+
+      if (!modLibs.joined().isEmpty()) {
+         sb.append(File.pathSeparator)
+            .append(modLibs.joined());
       }
       sb.append("\"");
-      if (!cmdOptions().isEmpty()) {
-         sb.append(" ").append(cmdOptions());
+
+      if (!libs.joined().isEmpty()) {
+         sb.append(" ")
+            .append("-cp \"")
+            .append(libs.joined())
+            .append("\"");
       }
-      sb.append(" -m ").append(module).append("/").append(qualifiedMain);
+
+      if (!cmdOptions().isEmpty()) {
+         sb.append(" ")
+            .append(cmdOptions());
+      }
+
+      sb.append(" -m ")
+         .append(module())
+         .append("/")
+         .append(qualifiedMain);
+
       if (!cmdArgs().isEmpty()) {
-         sb.append(" ").append(cmdArgs());
+         sb.append(" ")
+            .append(cmdArgs());
       }
       startCmd = sb.toString();
    }
 
    private void setMainClassFile() {
-      StringBuilder sb = new StringBuilder(projectDir() + "/");
+      StringBuilder sb = new StringBuilder(projectDir() + File.separator);
       if (!relClassDir.isEmpty()) {
          sb.append(relClassDir).append(File.separator);
+      }
+      if (!module().isEmpty() && isMultiModuleMode) {
+         sb.append(module()).append(File.separator);
       }
       if (!namespaceDir().isEmpty()) {
          sb.append(namespaceDir()).append(File.separator);
@@ -328,23 +381,39 @@ public final class JavaProject extends AbstractProject implements ProjectCommand
       return sb.toString();
    }
 
+   //--Messages:
+
+   private String moduleNameConflictMsg =
+         "<html>" +
+         "The project structure could not be determined.One of two module modes may be defined:<br>" +
+         "<ul>" +
+         "<li><b>Single-module:</b> a \"module-info\" is saved directly in the source directory.</li>" +
+         "<li><b>Multi-module:</b> a \"module-info\" is saved in module directory that is a direct<br>" +
+         "subdirectory of the source directory and has a name matching the module name.</li>" +
+         "</html>";
+
+   //--Labels for settings:
+   //
    private static final String SRC_DIR_LABEL =
-         "Source subdirectory (if present)";
+         "Source directory name (if present)";
 
    private static final String MAIN_FILE_LABEL =
-         "Name of main Java file (maybe qualified)";
+         "Name of main Java file (may be qualified)";
 
    private static final String MODULE_LABEL =
-         "Module name (if used)";
+         "Main module name (for modular projects only)";
 
    private static final String CLASS_DIR_LABEL =
-         "Destination subdirectory for class files";
+         "Destination directory name for class files";
 
    private static final String JAR_NAME_LABEL =
-         "Name or pathname for jar file";
+         "Name or pathname for JAR file";
 
    private static final String LIB_LABEL =
-         "Directory or jar file (relative to project or absolute)";
+         "JAR file (relative to project root or absolute)";
+
+   private static final String LIB_MOD_LABEL =
+         "JAR file or parent directory (relative to project root or absolute)";
 
    private static final String INCLUDED_FILES_LABEL =
          "Extensions of included non-Java files";

@@ -105,14 +105,12 @@ public class StatusBar {
    }
 
    /**
-    * Displays the charset with optinonal info.
+    * Displays the charset with optional info.
     *
-    * If <code>charsetInfo</code> contains "assumed", a warning
-    * icon and a tooltip text are added.
     * If <code>charsetInfo</code> contains "error, an error
     * icon and a tooltip text is added.
     *
-    * @param encoding  the display for the necoding
+    * @param charsetInfo  the display for the necoding
     */
    public void displayCharset(String charsetInfo) {
       if (charsetInfo.contains("error")) {

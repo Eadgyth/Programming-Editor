@@ -217,6 +217,7 @@ public class ProcessStarter {
             is, StandardCharsets.UTF_8);
 
       private final BufferedReader reader = new BufferedReader(isr);
+      boolean hasReplacementChar = false;
 
       @Override
       protected Void doInBackground() {
@@ -231,6 +232,9 @@ public class ProcessStarter {
                   publish(sb.toString());
                   sb.setLength(0);
                   Thread.sleep(1);
+               }
+               if (c == '\uFFFD') {
+                  hasReplacementChar = true;
                }
             }
          }
@@ -274,6 +278,11 @@ public class ProcessStarter {
                   "Process ended normally (exit value: "
                   + exitVal
                   + ")");
+
+            if (hasReplacementChar) {
+               cons.appendTextBr(
+                     "NOTE: The output contains invalid UTF-8 characters.");
+            }
          }
          else {
             if (isAborted) {

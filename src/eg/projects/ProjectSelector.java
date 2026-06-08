@@ -32,6 +32,9 @@ public class ProjectSelector {
          case JAVA:
             newProj = new JavaProject(runner);
             break;
+         case JAVA_SINGLE_FILE:
+            newProj = new JavaSingleFileProject(runner);
+            break;
          case HTML:
             newProj = new HtmlProject();
             break;

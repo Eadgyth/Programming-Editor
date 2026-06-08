@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
@@ -71,6 +72,7 @@ public class MainWin {
    private int xLoc;
    private int yLoc;
 
+   private JPanel topPnl = new JPanel(new BorderLayout());
    private JSplitPane splitHor;
    private JSplitPane splitHorMid;
    private JSplitPane splitVert;
@@ -193,7 +195,7 @@ public class MainWin {
    /**
     * Displays the charset info in the status bar
     *
-    * @param encoding  the charset display
+    * @param charsetInfo  the charset info
     */
    public void displayCharset(String charsetInfo) {
       statusBar.displayCharset(charsetInfo);
@@ -348,12 +350,12 @@ public class MainWin {
     */
    public void showToolbar(boolean b) {
       if (b) {
-         frame.add(toolBar.toolBar(), BorderLayout.NORTH);
+         topPnl.add(toolBar.toolBar(), BorderLayout.SOUTH);
       }
       else {
-         frame.remove(toolBar.toolBar());
+         topPnl.remove(toolBar.toolBar());
       }
-      frame.revalidate();
+      topPnl.revalidate();
    }
 
   /**
@@ -384,7 +386,7 @@ public class MainWin {
     * Sets listeners for file actions
     *
     * @param td  the reference to {@link TabbedDocuments}
-    * @param cc  the {@linkCharsetChanger}
+    * @param cc  the {@link CharsetChanger}
     */
    public void setFileActions(TabbedDocuments td, CharsetChanger cc) {
       menuBar.fileMenu().setActions(td);
@@ -590,7 +592,9 @@ public class MainWin {
 
    private void initFrame() {
       initSplitPane();
-      frame.setJMenuBar(menuBar.menuBar());
+      frame.add(topPnl, BorderLayout.NORTH);
+      topPnl.add(menuBar.menuBar(), BorderLayout.NORTH);
+      //frame.setJMenuBar(menuBar.menuBar());
       frame.add(splitHor, BorderLayout.CENTER);
       frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       frame.setIconImage(IconFiles.EADGYTH_ICON_16.getImage());

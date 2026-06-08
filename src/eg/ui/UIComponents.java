@@ -1,9 +1,9 @@
 package eg.ui;
 
-import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 
 import javax.swing.Box;
@@ -20,20 +20,18 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
-
 import javax.swing.plaf.basic.BasicMenuBarUI;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
 //--Eadgyth--/
 import eg.BackgroundTheme;
-import eg.utils.ScreenParams;
 import eg.ui.tabpane.ExtTabbedPane;
+import eg.utils.ScreenParams;
 
 /**
  * Static methods to create UI components with common layouts for
@@ -45,10 +43,6 @@ import eg.ui.tabpane.ExtTabbedPane;
  * and scaled (font) sizes given in {@link eg.utils.ScreenParams}
  */
 public class UIComponents {
-
-   private static final boolean IS_SYSTEM_LAF =
-         UIManager.getLookAndFeel().getClass().getName()
-         .equals(UIManager.getSystemLookAndFeelClassName());
 
    private static final BackgroundTheme THEME = BackgroundTheme.givenTheme();
    private static final int BAR_HEIGHT = ScreenParams.scaledSize(17);
@@ -241,9 +235,15 @@ public class UIComponents {
    public static JMenuBar menuBar(JMenu[] menus) {
       JMenuBar mb = new JMenuBar();
       boolean allowTheme = false;
-      if (!IS_SYSTEM_LAF && THEME != null && THEME.isDark()) {
+      if (THEME != null && THEME.isDark()) {
+         mb.setUI(new BasicMenuBarUI() {
+            @Override
+            public void paint(Graphics g, JComponent c) {
+               g.setColor(THEME.lightBackground());
+               g.fillRect(0, 0, c.getWidth(), c.getHeight());
+            }
+         });
          allowTheme = true;
-         mb.setBackground(THEME.lightBackground());
       }
       addMenus(menus, mb, allowTheme);
       return mb;
@@ -258,19 +258,9 @@ public class UIComponents {
     * @return  the new JMenuBar
     */
    public static JMenuBar menuBar(JMenu[] menus, JButton rightBt) {
-      JMenuBar mb = new JMenuBar();
-      if (THEME != null && THEME.isDark()) {
-         mb.setUI(new BasicMenuBarUI() {
-            @Override
-            public void paint(Graphics g, JComponent c) {
-               g.setColor(THEME.lightBackground());
-               g.fillRect(0, 0, c.getWidth(), c.getHeight());
-            }
-         });
-      }
+      JMenuBar mb = menuBar(menus);
       mb.setPreferredSize(new Dimension(0, BAR_HEIGHT));
       mb.setBorder(MATTE_BOTTOM_GRAY);
-      addMenus(menus, mb, true);
       if (rightBt != null) {
          mb.add(Box.createHorizontalGlue());
          undecorateButton(rightBt);

@@ -16,7 +16,7 @@ import eg.Projects.ProjectActionsUpdate;
 public final class HtmlProject extends AbstractProject implements ProjectCommands {
 
    public HtmlProject() {
-      super(ProjectTypes.HTML, null, null);
+      super(ProjectTypes.HTML, null);
    }
 
    @Override
@@ -26,7 +26,7 @@ public final class HtmlProject extends AbstractProject implements ProjectCommand
 
    @Override
    public void enable(ProjectActionsUpdate update) {
-      update.enableRun(true);
+      update.enableRun(true, true);
    }
 
    /**

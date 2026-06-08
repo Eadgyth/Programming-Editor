@@ -154,10 +154,19 @@ public class ProjectMenu {
    private void assembleMenu() {
       menu.add(assignProjMenu);
       for (int i = 0; i < assignProjItm.length; i++) {
-         assignProjItm[i] = new JRadioButtonMenuItem(ProjectTypes.values()[i].display());
+         ProjectTypes type = ProjectTypes.values()[i];
+         assignProjItm[i] =
+               new JRadioButtonMenuItem(type.display());
+
          group.add(assignProjItm[i]);
          assignProjMenu.add(assignProjItm[i]);
-         if (i == 0 || i == assignProjItm.length - 2) {
+
+         if (type == ProjectTypes.JAVA_SINGLE_FILE
+               && !SystemParams.IS_JAVA_11_OR_HIGHER) {
+
+            assignProjItm[i].setEnabled(false);
+         }
+         if (i == 1 || i == assignProjItm.length - 2) {
             assignProjMenu.addSeparator();
          }
       }

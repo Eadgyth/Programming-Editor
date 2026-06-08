@@ -1,28 +1,25 @@
 package eg.ui.projectsetting;
 
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.io.File;
+import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
-import java.awt.Dimension;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-
 import javax.swing.event.ChangeEvent;
-
-import java.io.File;
-
-import java.util.List;
 
 //--Eadgyth--/
 import eg.BusyFunction;
@@ -39,7 +36,7 @@ import eg.utils.ScreenParams;
  */
 public class SettingsWindow {
 
-   private static final Dimension DIM_TF = ScreenParams.scaledDimension(220, 14);
+   private static final Dimension DIM_TF = ScreenParams.scaledDimension(180, 14);
    private static final Dimension DIM_TF_LONG = ScreenParams.scaledDimension(300, 14);
    private static final Dimension DIM_TF_SHORT = ScreenParams.scaledDimension(100, 14);
    private static final Dimension DIM_VERT_SPACER = ScreenParams.scaledDimension(0, 14);
@@ -75,8 +72,9 @@ public class SettingsWindow {
    private JPanel runSettingsPnl;
    private JPanel buildSettingsPnl;
    private JPanel customCmdSettingsPnl;
-   private boolean useLibs = false;
-   private boolean useMods = false;
+   private boolean useGenLibs = false;
+   private boolean useJavaCpLibs = false;
+   private boolean useJavaModLibs = false;
    private boolean useRunSettings = false;
    private boolean useBuildSettings = false;
    private boolean useCustomCmds = false;
@@ -139,11 +137,11 @@ public class SettingsWindow {
     * @param dir  the directory
     */
    public void setDirectory(String dir) {
-      if (useLibs) {
+      if (useGenLibs || useJavaCpLibs) {
          librariesPnl.setDirectory(dir);
          librariesPnl.trySetProjectDir(projDirTf.getText().trim());
       }
-      if (useMods) {
+      if (useJavaModLibs) {
          libModulesPnl.setDirectory(dir);
          libModulesPnl.trySetProjectDir(projDirTf.getText().trim());
       }
@@ -216,7 +214,7 @@ public class SettingsWindow {
     * @param l  the list
     */
    public void assignLibrariesInput(List<String> l) {
-      if (useLibs) {
+      if (useGenLibs || useJavaCpLibs) {
          librariesPnl.assignListInput(l);
       }
    }
@@ -228,7 +226,7 @@ public class SettingsWindow {
     * @param l  the list
     */
    public void assignLibModulesInput(List<String> l) {
-      if (useMods) {
+      if (useJavaModLibs) {
          libModulesPnl.assignListInput(l);
       }
    }
@@ -362,7 +360,7 @@ public class SettingsWindow {
     * @param l  the list of libraries
     */
    public void displayLibraries(List<String> l) {
-      if (useLibs) {
+      if (useGenLibs || useJavaCpLibs) {
          librariesPnl.displayList(l);
       }
    }
@@ -374,7 +372,7 @@ public class SettingsWindow {
     * @param l  the list of libraries
     */
    public void displayLibModules(List<String> l) {
-      if (useMods) {
+      if (useJavaModLibs) {
          libModulesPnl.displayList(l);
       }
    }
@@ -481,6 +479,16 @@ public class SettingsWindow {
     */
    public static class InputOptionsBuilder {
 
+      /**
+       * The value for labeling the library tab with "Libraries" */
+      public static final int GENERAL_LIB_OPT = 0;
+      /**
+       * The value for labeling the library tab with "Libraries (classpath)" */
+      public static final int JAVA_CP_LIB_OPT = 1;
+      /**
+       * The value for labeling the library tab with "Libraries (module path)" */
+      public static final int JAVA_MOD_LIB_OPT = 2;
+
       private final SettingsWindow sw;
 
       private boolean useCustomCmd = false;
@@ -523,7 +531,7 @@ public class SettingsWindow {
       public InputOptionsBuilder addModuleNameInput(String label) {
          String s = label + ":";
          sw.addSpacer(sw.sourcePnl, SettingsWindow.DIM_VERT_SPACER);
-         sw.addSourceSetting(s, sw.moduleTf, DIM_TF_SHORT, false);
+         sw.addSourceSetting(s, sw.moduleTf, DIM_TF, false);
          return this;
       }
 
@@ -541,25 +549,21 @@ public class SettingsWindow {
       }
 
       /**
-       * Adds the option to enter libraries in the 'Libraries' panel
+       * Adds the option to enter libraries in a 'Libraries' panel
        *
        * @param label  the label for the input option
+       * @param libType  the integer that indicates the tab label. The values
+       * are:
+       * <ul>
+       * <li>{@link #GENERAL_LIB_OPT}</li>
+       * <li> {@link #JAVA_CP_LIB_OPT}</li>
+       * <li> {@link #JAVA_MOD_LIB_OPT}</li>
+       * </ul>
+       * 
        * @return  this
        */
-      public InputOptionsBuilder addLibrariesInput(String label) {
-         sw.addLibrariesSetting(label + ":");
-         return this;
-      }
-
-      /**
-       * Adds the option to enter library modules in the 'Library
-       * modules' panel
-       *
-       * @param label  the label for the input option
-       * @return  this
-       */
-      public InputOptionsBuilder addLibModulesInput(String label) {
-         sw.addLibModulesSetting(label + ":");
+      public InputOptionsBuilder addLibrariesInput(String label, int libType) {
+         addLibrariesSetting(label + ":", libType);
          return this;
       }
 
@@ -676,6 +680,26 @@ public class SettingsWindow {
       private InputOptionsBuilder(SettingsWindow sw) {
          this.sw = sw;
       }
+
+      private void addLibrariesSetting(String label, int libType) {
+         switch (libType) {
+            case GENERAL_LIB_OPT:
+               sw.useGenLibs = true;
+               sw.librariesPnl = new ListInputPanel(label, chooser);
+               break;
+            case JAVA_CP_LIB_OPT:
+               sw.useJavaCpLibs = true;
+               sw.librariesPnl = new ListInputPanel(label, chooser);
+               break;
+            case JAVA_MOD_LIB_OPT:
+               sw.useJavaModLibs = true;
+               sw.libModulesPnl = new ListInputPanel(label, chooser);
+               break;
+            default:
+               // no default
+               break;
+         }
+      }
    }
 
    //
@@ -723,16 +747,6 @@ public class SettingsWindow {
       if (tf == execDirTf) {
           addSpacer(buildSettingsPnl, SettingsWindow.DIM_VERT_SPACER);
       }
-   }
-
-   private void addLibrariesSetting(String label) {
-      librariesPnl = new ListInputPanel(label, chooser);
-      useLibs = true;
-   }
-
-   private void addLibModulesSetting(String label) {
-      libModulesPnl = new ListInputPanel(label, chooser);
-      useMods = true;
    }
 
    private JPanel singleTextfieldPnl(String label, JTextField tf, Dimension tfDim,
@@ -786,7 +800,9 @@ public class SettingsWindow {
    private JPanel contentPnl() {
       JPanel pnl = vertBoxPnl();
       pnl.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-      if (useLibs || useRunSettings || useBuildSettings || useCustomCmds) {
+      if ((useGenLibs || useJavaCpLibs)
+            || useRunSettings || useBuildSettings || useCustomCmds) {
+
          pnl.add(tabPane());
       }
       else {
@@ -818,13 +834,17 @@ public class SettingsWindow {
 
    private void addListInputTabs(JTabbedPane tb) {
       int i = 0;
-      if (useLibs) {
+      if (useGenLibs) {
          i = 1;
          tb.add("Libraries", librariesPnl.content());
       }
-      if (useMods) {
+      else if (useJavaCpLibs) {
+         i = 1;
+         tb.add("Libraries (classpath)", librariesPnl.content());
+      }
+      if (useJavaModLibs) {
          i = 2;
-         tb.add("Library modules", libModulesPnl.content());
+         tb.add("Libraries (module path)", libModulesPnl.content());
       }
       if (i > 0) {
          int iFin = i;

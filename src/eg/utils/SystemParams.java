@@ -18,8 +18,11 @@ public class SystemParams {
     * True if the Java version is higher than 8, false otherwise */
    public static final boolean IS_JAVA_9_OR_HIGHER;
    /**
-    * True if the Java version is higher than 10, false otherwise */
+    * True if the Java version is higher than 9, false otherwise */
    public static final boolean IS_JAVA_10_OR_HIGHER;
+   /**
+    * True if the Java version is higher than 10, false otherwise */
+   public static final boolean IS_JAVA_11_OR_HIGHER;
    /**
     * True if the Java version is 13 or higher, false otherwise */
    public static final boolean IS_JAVA_13_OR_HIGHER;
@@ -51,6 +54,7 @@ public class SystemParams {
       int major = major(JAVA_VERSION);
       IS_JAVA_9_OR_HIGHER = major >= 9;
       IS_JAVA_10_OR_HIGHER = major >= 10;
+      IS_JAVA_11_OR_HIGHER = major >= 11;
       IS_JAVA_13_OR_HIGHER = major >= 13;
       IS_JAVA_14_OR_HIGHER = major >= 14;
       //

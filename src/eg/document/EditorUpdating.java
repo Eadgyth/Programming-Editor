@@ -199,7 +199,7 @@ public class EditorUpdating {
    
    /**
     * Sets the boolean that indicates a pending change and invokes
-    * {@link EditingStateReadable.updateChangedState(boolean)}.
+    * {@link EditingStateReadable#updateChangedState}.
     *
     * The pending change overrides the changed state due to text changes.
     * 

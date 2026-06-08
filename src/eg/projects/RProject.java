@@ -17,7 +17,7 @@ public final class RProject extends AbstractProject implements ProjectCommands {
     * @param runner  the reference to TaskRunner
     */
    public RProject(TaskRunner runner) {
-      super(ProjectTypes.R, "R", null);
+      super(ProjectTypes.R, "R");
       this.runner = runner;
    }
 
@@ -32,7 +32,8 @@ public final class RProject extends AbstractProject implements ProjectCommands {
 
    @Override
    public void enable(ProjectActionsUpdate update) {
-      update.enableRun(true);
+      boolean b = !sourceFileName().isEmpty();
+      update.enableRun(b, true);
    }
 
    @Override

@@ -9,9 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import eg.Projects.ProjectActionsUpdate;
 //--Eadgyth--/
+import eg.Projects.ProjectActionsUpdate;
 import eg.TaskRunner;
+import eg.ui.projectsetting.SettingsWindow;
 import eg.utils.Dialogs;
 import eg.utils.SystemParams;
 
@@ -33,7 +34,7 @@ public final class CSharpProject extends AbstractProject implements ProjectComma
    private String startCmd       = "";
 
    public CSharpProject(TaskRunner runner) {
-      super(ProjectTypes.CSHARP, "cs", File.separator);
+      super(ProjectTypes.CSHARP, "cs");
       this.runner = runner;
    }
 
@@ -41,7 +42,8 @@ public final class CSharpProject extends AbstractProject implements ProjectComma
    public void buildSettingsWindow() {
       inputOptions
          .addFileInput(FILE_LABEL, true)
-         .addLibrariesInput(LIB_LABEL)
+         .addLibrariesInput(LIB_LABEL,
+               SettingsWindow.InputOptionsBuilder.GENERAL_LIB_OPT)
          .addCompileOptionsInput(COMPILE_OPT_LABEL)
          .addBuildNameInput(OUTPUT_NAME_LABEL)
          .addCmdOptionsInput()
@@ -51,8 +53,9 @@ public final class CSharpProject extends AbstractProject implements ProjectComma
 
    @Override
    public void enable(ProjectActionsUpdate update) {
-      update.enableRun(false);
-      update.enableCompile();
+      boolean b = !sourceFileName().isEmpty();
+      update.enableRun(b, false);
+      update.enableCompile(b);
    }
 
    @Override

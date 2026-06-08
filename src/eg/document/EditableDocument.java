@@ -109,10 +109,10 @@ public final class EditableDocument {
     * The display name may be suffixed with:
     * <ul>
     * <li>"error", indicating UTF-8 decoding mismatches.
-    * <li>"system default", indicating a fallback to the
-    * system default encoding.
+    * <li>"assumed", indicating a fallback to the system default
+    * encoding.
     * <li>"selected", indicating a fallback to a selected
-    * charset.
+    * fallback charset.
     * </ul>
     *
     * @return  the charset display

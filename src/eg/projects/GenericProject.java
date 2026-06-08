@@ -16,7 +16,7 @@ public final class GenericProject extends AbstractProject implements ProjectComm
     * @param runner  the TaskRunner
     */
    public GenericProject(TaskRunner runner) {
-      super(ProjectTypes.GENERIC, null, null);
+      super(ProjectTypes.GENERIC, null);
       this.runner = runner;
    }
 
@@ -29,13 +29,13 @@ public final class GenericProject extends AbstractProject implements ProjectComm
    @Override
    public void enable(ProjectActionsUpdate update) {
       if (!customCompileCmd().isEmpty()) {
-         update.enableCompile();
+         update.enableCompile(true);
       }
       if (!customRunCmd().isEmpty()) {
-         update.enableRun(false);
+         update.enableRun(true, false);
       }
       if (!customBuildCmd().isEmpty()) {
-         update.enableBuild(null);
+         update.enableBuild(true, null);
       }
    }
 
