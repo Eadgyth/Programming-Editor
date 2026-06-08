@@ -18,7 +18,7 @@ The program can be built in Netbeans or Eclipse (or with a build of Eadgyth itse
 <li>JDK 8 or higher to run and build the editor.</li>
 <li>To compile Java code by the built-in compile function, the editor must be run with the JRE contained in a JDK (not an issue with Java 11+).</li>
 <li>To run C#, Python, or R, the executable paths must be present in your system PATH. To compile and run C# code, the editor internally calls the dotnet command. This requires a .NET SDK to be installed. A minimalistic .csproj file is generated automatically upon compilation.</li>
-<li>:information_source: As of v1.2.1, the editor requires UTF-8 encoded source files for reliable execution and compilation. An option to convert files to UTF-8 is available. When openeing non-UTF-8 files, the system's default or a selectable encoding is used as a fallback. Previous versions rely on the JVM default encoding; therefore, avoid those versions for existing files that differ from your system's default encoding.</li>
+<li>:information_source: As of v1.2.1, the editor requires UTF-8 encoded source files for reliable execution and compilation. An option to convert files to UTF-8 is available. When opening non-UTF-8 files, the system's default or a selectable encoding is used as a fallback. Previous versions rely on the JVM default encoding; therefore, avoid those versions for existing files that differ from your system's default encoding.</li>
 </ul>
 
 <h4>LIMITATIONS</h4>
