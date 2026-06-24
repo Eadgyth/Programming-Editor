@@ -87,7 +87,7 @@ Running code (and comiling) using the built-in function prefers or requires UTF-
 <ul>
 <li><b>Compile and Run: </b>To run a Java program, first compile the source file(s) by selecting 'Save and compile'. If the compilation was successful the Java program can be started by selecting 'Run'.
 </li>
-<li><b>Modular program: </b>A Java program can be run on the module path (for Java 9 or higher). To activate "module mode", specify the name of the (main) module in the "Source" tab of the project settings. Leaving the module name blank will use the classpath. The editor can handle the following simple program structures: A <code>module-info.java</code> file is saved directly in the source directory (for single-module mode), or <code>module-info.java</code> files are stored in direct subdirectories of the source directory (for multi-module mode). In the latter case, the specified main module name must exactly match the name of the module's subdirectory.</li>
+<li><b>Modular program: </b>A Java program can be run on the module path (for Java 9 or higher). To activate "module mode", specify the name of the (main) module in the "Source" tab of the project settings. Leaving the module name blank will use the classpath. The editor can handle the following simple program structures: A <code>module-info.java</code> file is saved directly in the source directory (for single-module mode), or <code>module-info.java</code> files are stored in direct subdirectories of the source directory (for multi-module mode). In the latter case, the specified main module name must exactly match the name of the module's subdirectory.
 </li>
 <li><b>Output directory: </b>A destination directory name for compiled class files can be specified in the 'Compile/build' tab in the project settings (like 'bin', or, for single-module mode also 'bin/my.module'). This directory is created in the project directory on compilation. Unlike other non-empty folders, this directory can be deleted in the editor's Project Explorer to allow recompilation from scratch.
 </li>
@@ -105,6 +105,7 @@ Running code (and comiling) using the built-in function prefers or requires UTF-
 <li>Java "source-file mode" allows running a Java program without the compilation step as described in the Java specification, introduced in Java 11 and extended in Java 22: Prior to Java 22, the program must consist of a single Java file. Since Java 22, multiple source files as well as a modular program in single-module mode are allowed.
 </li>
 <li>The editor enables selecting source-file mode if it is run with Java 11 or higher. Attempting to run a program with more than one source file on Java prior to 22 would result in compilation errors because the editor itself does not check if multiple files are used on Java below 22. However, the editor runs a program on the module path if a <code>module-info.java</code> file is found in the source root and the Java version is 22 or higher.
+</li>
 </ul>
 <h4 id="CSharpProject">C#</h4>
 <ul>
