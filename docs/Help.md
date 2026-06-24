@@ -100,7 +100,6 @@ Running code (and comiling) using the built-in function prefers or requires UTF-
 </ul>
 <h4 id="JavaSourceFileModeProject">Java source-file mode</h4>
 <ul>
-</li>
 <li>Select "Save and run" to run the Java program whose name is entered in the project settings.
 </li>
 <li>Java "source-file mode" allows running a Java program without the compilation step as described in the Java specification, introduced in Java 11 and extended in Java 22: Prior to Java 22, the program must consist of a single Java file. Since Java 22, multiple source files as well as a modular program in single-module mode are allowed.
