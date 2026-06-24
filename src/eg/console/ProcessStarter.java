@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.SwingWorker;
 
@@ -81,7 +82,7 @@ public class ProcessStarter {
       cons.enableRunBt(previousCmd.length() > 0);
    }
 
-  /**
+   /**
     * Runs the specified system command with this working directory
     * as described for {@link #startProcess(String)}.
     *
@@ -113,11 +114,11 @@ public class ProcessStarter {
     * by spaces and arguments with spaces quoted
     */
    public void startProcess(String cmd) {
-      isAborted = false;
-      process = null;
       if (!cons.setUnlockedActive()) {
          return;
       }
+      isAborted = false;
+      process = null;
       String msg = startMsg.isEmpty() ? START_MESSAGE : startMsg;
       cons.setText(msg);
       consoleText = cons.getText();
@@ -339,7 +340,15 @@ public class ProcessStarter {
    private void endProcess() {
       if (process != null && process.isAlive()) {
          process.destroy();
-         isAborted = true;
+         try {
+            if (!process.waitFor(5, TimeUnit.SECONDS)) {
+                process.destroyForcibly();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            process.destroyForcibly();
+        }
+        isAborted = true;
       }
    }
 

@@ -282,9 +282,7 @@ public class Projects {
       if (isSaveAndRun && !save()) {
          return;
       }
-      if (currentProject.hasSetSourceFile()
-            || currentProject.projectType() == ProjectTypes.GENERIC) {
-
+      if (currentProject.hasSetSourceFile()) {
          currentProject.run();
       }
       else {

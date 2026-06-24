@@ -161,7 +161,7 @@ public class ProjectMenu {
          group.add(assignProjItm[i]);
          assignProjMenu.add(assignProjItm[i]);
 
-         if (type == ProjectTypes.JAVA_SINGLE_FILE
+         if (type == ProjectTypes.JAVA_SOURCE_FILE
                && !SystemParams.IS_JAVA_11_OR_HIGHER) {
 
             assignProjItm[i].setEnabled(false);

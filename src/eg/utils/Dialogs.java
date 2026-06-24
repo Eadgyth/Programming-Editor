@@ -133,7 +133,7 @@ public class Dialogs {
    }
 
    /**
-    * Shows a warning dialog with OK and ignore options.
+    * Shows a warning dialog with the specified options.
     *
     * @param message  the message for the dialog
     * @param title  the title for the dialog

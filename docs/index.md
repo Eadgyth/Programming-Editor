@@ -15,8 +15,9 @@
 <h4>Features for running source code are ...</h4>
 <ul>
 <li>Compile and run Java code that may be organized in packages and create an executable jar file. Includes support for using external libraries. A Java program may also be run on the module path and be compiled in multi-module mode provided module name and module directory name match. Creating a modular JAR is yet not supported, though.</li>
+<li>Run a Java prgram in source-file mode.</li>
 <li>Run a Java program in single-file mode.</li>
-<li>Compile and run C# code. The internal commands use .NET SDK (as of vs. 1.2.1.) Note: the editor creates a new minimal .csproj file on every compile.</li>
+<li>Compile and run C# code. The internal commands use .NET SDK (as of vs. 1.2.1.).</li>
 <li>Run scripts in Python or R.</li>
 <li>Specify additional options or arguments for the built-in commands.</li>
 <li>Run own commands in a project categorie "Custom Commands".</li>

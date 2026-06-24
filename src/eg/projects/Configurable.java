@@ -57,10 +57,11 @@ public interface Configurable {
    public ProjectTypes projectType();
 
    /**
-    * Returns if the project uses a source file (a script file or
-    * file with a main entry) that is specified in the settings window.
+    * Returns if the project uses at a set source file.
     *
-    * @return  true if a set source file is used; false otherwise
+    * @return  true if a set source file is used; false indicates
+    * that the file currently selected in the editor is used to
+    * run a command
     */
    public boolean hasSetSourceFile();
 

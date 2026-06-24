@@ -27,6 +27,11 @@ public final class GenericProject extends AbstractProject implements ProjectComm
    }
 
    @Override
+   public boolean hasSetSourceFile() {
+      return true;
+   }
+
+   @Override
    public void enable(ProjectActionsUpdate update) {
       if (!customCompileCmd().isEmpty()) {
          update.enableCompile(true);

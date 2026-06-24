@@ -38,7 +38,6 @@ public class SettingsWindow {
 
    private static final Dimension DIM_TF = ScreenParams.scaledDimension(180, 14);
    private static final Dimension DIM_TF_LONG = ScreenParams.scaledDimension(300, 14);
-   private static final Dimension DIM_TF_SHORT = ScreenParams.scaledDimension(100, 14);
    private static final Dimension DIM_VERT_SPACER = ScreenParams.scaledDimension(0, 14);
    private static final Dimension DIM_RIGHT_SPACER = ScreenParams.scaledDimension(28, 14);
 
@@ -220,12 +219,12 @@ public class SettingsWindow {
    }
 
    /**
-    * Assigns the input for library modules to the specified list if
+    * Assigns the input for modular libraries to the specified list if
     * this option is added by a project
     *
     * @param l  the list
     */
-   public void assignLibModulesInput(List<String> l) {
+   public void assignModLibrariesInput(List<String> l) {
       if (useJavaModLibs) {
          libModulesPnl.assignListInput(l);
       }
@@ -366,12 +365,12 @@ public class SettingsWindow {
    }
 
    /**
-    * Shows in the corresponding text fields the library modules
+    * Shows in the corresponding text fields the modular Libraries
     * if this option is added by a project
     *
     * @param l  the list of libraries
     */
-   public void displayLibModules(List<String> l) {
+   public void displayModLibraries(List<String> l) {
       if (useJavaModLibs) {
          libModulesPnl.displayList(l);
       }
@@ -740,9 +739,6 @@ public class SettingsWindow {
          useBuildSettings = true;
       }
       Dimension d = DIM_TF;
-      if (tf == execDirTf) {
-         d = DIM_TF_SHORT;
-      }
       buildSettingsPnl.add(singleTextfieldPnl(label, tf, d, useBrowser));
       if (tf == execDirTf) {
           addSpacer(buildSettingsPnl, SettingsWindow.DIM_VERT_SPACER);

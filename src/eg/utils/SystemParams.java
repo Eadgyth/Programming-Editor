@@ -26,9 +26,12 @@ public class SystemParams {
    /**
     * True if the Java version is 13 or higher, false otherwise */
    public static final boolean IS_JAVA_13_OR_HIGHER;
-    /**
+   /**
     * True if the Java version is 14 or higher, false otherwise */
    public static final boolean IS_JAVA_14_OR_HIGHER;
+   /**
+    * True if the Java version is 14 or higher, false otherwise */
+   public static final boolean IS_JAVA_22_OR_HIGHER;
    /**
     * The locale language before locale is set to US in main method */
    public static final String LOCALE_LANG;
@@ -57,6 +60,7 @@ public class SystemParams {
       IS_JAVA_11_OR_HIGHER = major >= 11;
       IS_JAVA_13_OR_HIGHER = major >= 13;
       IS_JAVA_14_OR_HIGHER = major >= 14;
+      IS_JAVA_22_OR_HIGHER = major >= 22;
       //
       // up to Java 9:
       MODIFIER_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();

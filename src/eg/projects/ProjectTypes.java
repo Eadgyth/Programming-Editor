@@ -9,9 +9,9 @@ public enum ProjectTypes {
     * value returned by {@link display()} is Java */
    JAVA("Java"),
    /**
-    * Constant for a Java project in single-file mode;
-    * value returned by {@link display()} is Java single-file)*/
-   JAVA_SINGLE_FILE("Java single-file"),
+    * Constant for a Java project in source-file mode;
+    * value returned by {@link display()} is Java source-file)*/
+   JAVA_SOURCE_FILE("Java source-file mode"),
    /**
     * Constant for a C# project
     * value returned by {@link display()} is C# */

@@ -68,7 +68,7 @@ public class CurrentLanguage {
          case "R":
             lang = Languages.R;
             break;
-         case "xml": case "fxml":
+         case "xml": case "fxml": case "csproj":
             lang = Languages.XML;
             break;
          default:
