@@ -1,6 +1,6 @@
 <h3>Eadgyth Programming Editor</h3>
 <p>
-A text and code editor written in Java. It features an easy project setup to run code from within the editor with support for Java, C#, Python and R. The editor is suited for learning, quick prototyping, or programming projects for personal use.
+A text and code editor written in Java. It features an easy project setup to run code from within the editor with built-in support for Java, C#, Python and R. Project settings persist across restarts and range from simple script execution to structured Java projects. A 'Custom Commands' category additionally allows defining own compile, run, or build commands.
 <p>
 The editor can be tried out by downloading the JAR in a <a href="https://github.com/Eadgyth/Programming-Editor/releases">release</a>.
  
