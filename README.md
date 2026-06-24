@@ -12,7 +12,8 @@ java -jar Eadgyth.jar
 
 <p>
 The program can be built in Netbeans or Eclipse (or with a build of Eadgyth itself) using the src directory in the repository. The name of the main file is eg.Eadgyth.java.
-
+<p>
+Features & Screenshots: https://eadgyth.github.io/Programming-Editor/
 <h4>REQUIREMENTS</h4>
 <ul>
 <li>JDK 8 or higher to run and build the editor.</li>
