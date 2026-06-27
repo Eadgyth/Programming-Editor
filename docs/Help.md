@@ -37,9 +37,15 @@ Running code (and comiling) using the built-in function prefers or requires UTF-
 </ul>
 <h4>Switching between projects</h4>
 <ul>
-<li>Multiple projects can be created within a session. Selecting a file that belongs to a project other than the currently active one will disable running (or compiling, where applicable) that project. The editor may prompt you to switch projects (e.g., when opening a file belonging to a project defined in a 'ProjConfig.properties' file), or you can use 'Change Project' to set it active.
+<li>Multiple projects can be created within a session. 
+</li>
+<li>Selecting a file that belongs to a project other than the currently active one will disable running (or compiling, where applicable) that project. Use 'Change Project' in the Project menu to switch to the project that the selected file belongs to.
+</li>
+<li>The editor may prompt you to switch projects (e.g., when opening a file belonging to a project defined in a 'ProjConfig.properties' file).
 </li>
 </ul>
+<h4>Saving changed in project files</h4>
+<p>The label or tooltip 'Save and run' (or 'Save and compile', where applicable) means that all open files of an active project but no other open files are saved before execution. If 'Save' is not indicated, no file is saved.</p>
 <br>
 <p><a href="#top">Back to top</a></p>
 <hr>
